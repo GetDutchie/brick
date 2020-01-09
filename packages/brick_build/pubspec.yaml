@@ -1,0 +1,24 @@
+name: brick_build
+description: Generated code library and interface for Brick components
+homepage: https://github.com/greenbits/brick/packages/brick_build
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+
+dependencies:
+  source_gen: ^0.9.0
+  analyzer: ^0.39.0
+  build: '>=1.2.0 <2.0.0'
+  build_config: '>=0.4.0 <1.0.0'
+  glob: '>=1.2.0 <2.0.0'
+  brick_offline_first_abstract:
+    path: ../brick_offline_first_abstract
+
+dev_dependencies:
+  test: ">=1.9.4 <2.0.0"
+  build_verify: ^1.1.0
+  source_gen_test: ^0.1.0+6

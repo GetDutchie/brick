@@ -1,0 +1,18 @@
+name: brick_core
+description: A data persistence library
+homepage: https://github.com/greenbits/brick/packages/brick_core
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: ">=2.4.0 <3.0.0"
+
+dependencies:
+  collection: ">=1.14.11 <2.0.0"
+
+dev_dependencies:
+  mockito: ^4.0.0
+  test: ">=1.9.4 <2.0.0"
+  dart_style: ^1.2.4

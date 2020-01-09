@@ -1,0 +1,30 @@
+name: brick_sqlite
+description: SQLite connector for Brick, a data persistence library for Flutter
+homepage: https://github.com/greenbits/brick/packages/brick_sqlite
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+  flutter: ">=1.9.0 <2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  brick_core:
+    path: ../brick_core
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
+  brick_offline_first_abstract:
+    path: ../brick_offline_first_abstract
+  logging: any
+  sqflite: '>=1.1.6 <2.0.0'
+  synchronized: ^2.1.0+1
+
+dev_dependencies:
+  test: ">=1.9.4 <2.0.0"
+  mockito: ^4.0.0
+  flutter_test:
+    sdk: flutter

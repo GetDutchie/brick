@@ -1,0 +1,66 @@
+import 'package:brick_build/src/builders/base.dart';
+import 'package:source_gen/source_gen.dart';
+import 'package:build/build.dart';
+import 'package:glob/glob.dart';
+
+/// Combine all `@ConnectOfflineFirst` and `@Migratable` classes and annotations
+///
+/// Since [LibraryElement] only reads from one file and not an entire directory, all relevant
+/// classes and annotation are inserted into copies of all input files. If there is ever a
+/// performance concern with build times, start here. Only one file is needed, but it is impossible
+/// to access [LibraryReader]s outside the build step of the created asset, and this was the only
+/// successful way amongst dozens.
+/// This does **not** output a file used by Brick in the app implementation.
+///
+/// See the
+/// [`build` docs](https://github.com/dart-lang/build/blob/master/docs/writing_an_aggregate_builder.md#defining-your-builder)
+/// example for more.
+class AggregateBuilder implements Builder {
+  /// A list of packages that must be included for adapters and models to build:
+  /// field-level annotation imports, helper classes, etc.
+  /// For example: `['import "package:brick_sqlite_abstract/db.dart";']`
+  final List<String> requiredImports;
+
+  static final migrationFiles = Glob("lib/app/db/*.migration.dart");
+  static final modelFiles = Glob("lib/app/models/*.dart");
+  static final adapterFiles = Glob("lib/app/adapters/*.g.dart");
+  static final importRegex = RegExp(r"(^import\s.*;)", multiLine: true);
+  static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
+
+  AggregateBuilder({this.requiredImports = const <String>[]});
+
+  Future<void> build(BuildStep buildStep) async {
+    brickLogger.info("Aggregating models and migrations...");
+
+    final imports = Set<String>();
+    imports.addAll([
+      "library big_messy_models_migrations_file;",
+    ]);
+    imports.addAll(requiredImports);
+
+    final files = List<String>();
+    for (final glob in [migrationFiles, modelFiles]) {
+      await for (final input in buildStep.findAssets(glob)) {
+        final contents = await buildStep.readAsString(input);
+        imports.addAll(findAllImports(contents));
+        final newContents =
+            contents.replaceAll(importRegex, "").replaceAll("part of 'schema.g.dart';", "");
+        files.add(newContents);
+      }
+    }
+
+    final contents = "${imports.join('\n')}\n${files.join('\n')}";
+    await buildStep.writeAsString(
+        AssetId(buildStep.inputId.package, "lib/$outputFileName"), contents);
+  }
+
+  /// All unique `import:package` within a large body of text
+  static Set<String> findAllImports(String contents) {
+    return importRegex.allMatches(contents).map((m) => m[0]).toSet();
+  }
+
+  @override
+  final buildExtensions = const {
+    r'$lib$': [outputFileName]
+  };
+}

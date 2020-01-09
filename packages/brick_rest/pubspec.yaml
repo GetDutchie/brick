@@ -1,0 +1,19 @@
+name: brick_rest
+description: RESTful API connector for Brick, a data persistence library
+homepage: https://github.com/greenbits/brick/packages/brick_rest
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: ">=2.4.0 <3.0.0"
+
+dependencies:
+  logging: any
+  brick_core:
+    path: ../brick_core
+
+dev_dependencies:
+  mockito: ^4.0.0
+  test: ">=1.9.4 <2.0.0"

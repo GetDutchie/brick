@@ -1,0 +1,16 @@
+name: brick_offline_first_abstract
+description: Annotations and models required by the Offline First domain.
+homepage: https://github.com/greenbits/brick/packages/brick_offline_first_abstract
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: ">=2.4.0 <3.0.0"
+
+dependencies:
+  brick_rest:
+    path: ../brick_rest
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
