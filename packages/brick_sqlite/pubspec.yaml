@@ -14,11 +14,17 @@ dependencies:
   flutter:
     sdk: flutter
   brick_core:
-    path: ../brick_core
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_core
   brick_sqlite_abstract:
-    path: ../brick_sqlite_abstract
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_sqlite_abstract
   brick_offline_first_abstract:
-    path: ../brick_offline_first_abstract
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_offline_first_abstract
   logging: any
   sqflite: '>=1.1.6 <2.0.0'
   synchronized: ^2.1.0+1

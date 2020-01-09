@@ -11,6 +11,10 @@ environment:
 
 dependencies:
   brick_rest:
-    path: ../brick_rest
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_rest
   brick_sqlite_abstract:
-    path: ../brick_sqlite_abstract
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_sqlite_abstract

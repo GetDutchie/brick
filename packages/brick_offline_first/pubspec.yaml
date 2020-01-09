@@ -15,14 +15,18 @@ dependencies:
   flutter:
     sdk: flutter
   connectivity: '>=0.4.3 <2.0.0'
-  brick_core:
-    path: ../brick_core
   brick_rest:
-    path: ../brick_rest
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_rest
   brick_sqlite:
-    path: ../brick_sqlite
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_sqlite
   brick_offline_first_abstract:
-    path: ../brick_offline_first_abstract
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_offline_first_abstract
   logging: any
 
 dev_dependencies:

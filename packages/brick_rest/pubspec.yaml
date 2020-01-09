@@ -12,7 +12,9 @@ environment:
 dependencies:
   logging: any
   brick_core:
-    path: ../brick_core
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_core
 
 dev_dependencies:
   mockito: ^4.0.0

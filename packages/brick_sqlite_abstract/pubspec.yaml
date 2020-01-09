@@ -12,7 +12,9 @@ environment:
 dependencies:
   meta: any
   brick_core:
-    path: ../brick_core
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_core
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"

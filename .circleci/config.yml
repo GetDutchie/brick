@@ -35,7 +35,7 @@ jobs:
           working_directory: ~/project/packages/brick_offline_first
           command: flutter pub get
       - run:
-          working_directory: ~/project/brick_offline_first
+          working_directory: ~/project/packages/brick_offline_first
           command: flutter test
 
   brick_rest:
@@ -66,10 +66,10 @@ jobs:
       - checkout
       - run:
           working_directory: ~/project/packages/brick_sqlite_abstract
-          command: flutter pub get
+          command: pub get
       - run:
           working_directory: ~/project/packages/brick_sqlite_abstract
-          command: flutter test
+          command: pub run test
 
 workflows:
   version: 2
