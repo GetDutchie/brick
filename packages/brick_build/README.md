@@ -27,17 +27,17 @@ If you're not using `watch`, be sure to run `build` twice for the schema to dete
 (flutter) pub run build_runner build
 ```
 
-It is recommended to **not** commit files appended with `.g.dart` to version control. Instead, build these files on every `pull` or on every build in a CI/CD pipeline. This ensures your code is generated with the most recent version of Brick and remains untouchable by contributors. For instance, these files can be built with a `post-checkout` git hook:
-
-```shell
-# .git/post-checkout
-#!/bin/sh
-
-cd `dirname "$0"`
-cd ../../myapp
-pub get
-pub run build_runner build
+An application directory **must** resemble the following:
 ```
+| my-app
+|--lib
+|--|--app
+|--|--|--adapters
+|--|--|--db
+|--|--|--models
+```
+
+This ensures a consistent path to access child data, such as models, [by build generators](#why-are-all-models-hacked-into-a-single-file).
 
 ## Glossary
 
@@ -391,6 +391,8 @@ Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
 ## How does this work?
 
 ### End-to-end Case Study: `@ConnectOfflineFirst`
+
+![OfflineFirst Builder](https://user-images.githubusercontent.com/865897/72175884-1c399900-3392-11ea-8baa-7d50f8db6773.jpg)
 
 1. A class is discovered with the `@ConnectOfflineFirst` annotation.
       ```dart

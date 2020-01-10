@@ -1,29 +1,29 @@
 ![An intuitive way to work with persistent data](./doc/logo.svg)
 
-An intuitive way to work with persistent data.
+An intuitive way to work with persistent data in Dart.
 
 ## What is Brick?
 
-Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.  
+Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
 
-Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries. 
+Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries.
 
 ## Why Brick?
 
-* Handles and hides all complex serialization/deserialization logic from an external source
-* Requires little configuration to incorporate existing apps
-* Opinionated DSL establishes consistency when pushing and pulling data across your app
-* Automatic, [intelligently-generated migrations](packages/brick_sqlite) return focus to app code
+* Handles and hides all complex serialization/deserialization logic between any external source(s)
+* Single access point and opinionated DSL establishes consistency when pushing and pulling data across your app
+* Automatic, [intelligently-generated migrations](packages/brick_sqlite)
+* Legible querying interface
 
 ## When should I not use Brick?
 
 * When data doesn't persist between sessions
-* When large datasets are frequently used (images, document storage)
+* When large datasets are frequently used (images, document storage, etc.)
 * When key-value data is stored (instead consider [localstorage](https://pub.dev/packages/localstorage))
 
 ## Usage
 
-Models are the app's business logic carriers. They **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+Create a model as the app's business logic:
 
 ```dart
 // app/models/user.dart
@@ -31,7 +31,7 @@ Models are the app's business logic carriers. They **must be** saved in `lib/app
 class User extends OfflineFirstWithRestModel {}
 ```
 
-Now generate (de)serializing code:
+And generate (de)serializing code to fetch to and from multiple providers:
 
 ```shell
 $ (flutter) pub run build_runner build
@@ -54,10 +54,8 @@ final users = await repository.get<User>();
 
 Behind the scenes, this repository could poll a memory cache, then SQLite, then a REST API. The repository intelligently determines how and when to use each of the providers to return the fastest, most reliable data.
 
-Data fetching can also be narrowed using `Query`s:
-
 ```dart
-// These queries can be general:
+// Queries can be general:
 final query = Query(where: [Where('lastName', 'Muster', compare: Compare.contains)]);
 final users = await repository.get<User>(query: query);
 
@@ -85,6 +83,7 @@ class Hat extends OfflineFirstWithRestModel {
   Hat({this.color});
 }
 class User extends OfflineFirstWithRestModel {
+  // user has many hats
   final List<Hat> hats;
 }
 
@@ -92,11 +91,49 @@ final query = Query.where('hats', Where('color', 'brown'));
 final usersWithBrownHats = repository.get<User>(query: query);
 ```
 
-## Quick Start
+# Table of Contents
+
+- [Setup](#setup)
+- [Glossary](#glossary)
+- [Models](#models)
+  * [Setup](#setup-1)
+  * [Serialized Fields](#serialized-fields)
+  * [Annotations](#annotations)
+  * [Custom Generators](#custom-generators)
+    - [Placeholders](#placeholders)
+  * [FAQ](#faq)
+- [Query](#query)
+  * [where:](#where)
+    - [Associations](#associations)
+    - [compare:](#compare)
+    - [required:](#required)
+  * [Filtering](#filtering)
+    - [Where.byField](#wherebyfield)
+    - [Where.firstByField](#wherefirstbyfield)
+- [Providers](#providers)
+  * [Fetching and Mutating Data](#fetching-and-mutating-data)
+  * [Query](#query-1)
+    - [params:](#params)
+    - [where:](#where-1)
+  * [Translation and the Model Dictionary](#translation-and-the-model-dictionary)
+  * [Class-level Configuration](#class-level-configuration)
+  * [Field-level Configuration](#field-level-configuration)
+- [Repository](#repository)
+  * [Setup](#setup-2)
+    - [Access](#access)
+  * [Creating a Custom Repository](#creating-a-custom-repository)
+    - [Methods](#methods)
+      * [Applying Query#action](#applying-queryaction)
+    - [Class-level Configuration](#class-level-configuration-1)
+    - [Field-level Configuration](#field-level-configuration-1)
+  * [FAQ](#faq-1)
+- [Providers and Repositories](#providers-and-repositories)
+- [General FAQ](#general-faq)
+
+# Setup
 
 1. Add the packages:
     ```yaml
-    # pubspec.yaml
     dependencies:
       brick_offline_first: any
     dev_dependencies:
@@ -126,22 +163,20 @@ final usersWithBrownHats = repository.get<User>(query: query);
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
     ```
 
-    Now your folder structure should resemble
-    ```
-    | my-app
-    |--lib
-    |--|--app
-    |--|--|--adapters
-    |--|--|--db
-    |--|--|--models
+    Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+
+1. Extend [an existing repository](#providers-and-repositories) or create your own:
+    ```dart
+    // lib/app/repository.dart
+    class MyRepository extends OfflineFirstWithRepository {}
     ```
 
 # Glossary
 
-* **Provider** - Fetches from and pushes to a data source.
-* **Repository** - Manages `Provider`(s) as middleware between the app logic and the `Provider` logic.
+* [**Provider**](#providers) - Fetches from and pushes to a data source.
+* [**Repository**](#repository) - Manages `Provider`(s) as middleware between the app logic and the `Provider` logic.
 * **Adapter** - Normalizizes data input and output between `Provider`s. Almost always generated.
-* **Model** - Business logic layer unique to the app. Can be queried by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
+* [**Model**](#models) - Business logic unique to the app. Can be queried by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
 * **ModelDictionary** - Connects a `Provider` to the `Model`'s `Adapter`. Almost always generated.
 * **field** - Single, accessible property of a model. For example, `final String id`.
 * **deserialize** - convert raw data _from_ a provider.
@@ -267,6 +302,125 @@ There are several globally-defined placeholders:
 
 The annotation is required to build the generated files (adapters, migrations, etc.). The type extension (e.g. `OfflineFirstModel`) is used by the repository's type system.
 
+# Query
+
+Filter local data using `Query`. Providers will use the `Query` to translate requested data into their query language. For the universality and legibility of SQL, that provider's translations will be used in the following examples but it is not the de facto query language of all providers.
+
+## `where:`
+
+When using `Query`, use the field name to find pertinent data instead of the column name. For example:
+
+```dart
+class User extends OfflineFirstModel {
+  final SqliteAssociation association;
+  @Sqlite(name: 'name')
+  final String lastName;
+}
+
+// A query for all users with the last name "Mustermann":
+Query.where('lastName', 'Mustermann') // note this is lastName and not name or last_name
+```
+
+Querying can be done with `Where` or `WherePhrase`:
+
+1) `WherePhrase` is a collection of `Where` statements.
+2) `WherePhrase` can't contain mixed `required:` because this will output invalid SQL. For example, when it's mixed: `WHERE id = 2 AND name = 'Thomas' OR name = 'Guy'`. The OR needs to be its own phrase: `WHERE (id = 2 AND name = 'Thomas') OR (name = 'Guy')`.
+3) `WherePhrase` can be intermixed with `Where`.
+      ```dart
+      [
+        Where('id', 2),
+        WherePhrase([
+          Where('name', 'Guy', required: false),
+          Where('name', 'Thomas', required: false)
+        ], required: false)
+      ]
+      // => (id == 2) || (name == 'Thomas' || name == 'Guy')
+      ```
+
+:warning: Queried enum values should map to a primitive. Plainly, **always include `.index`**: `Where('type', MyEnumType.value.index)`.
+
+### Associations
+
+Params are forwarded to the provider which chooses to accept or reject specific keys. For example, Rest accepts the `headers` key to control request headers. SQLite supports operators like `groupBy`, `orderBy`, `offset`, and others in its params.
+
+When querying associations, use a nested `Where`, again searching by field name on the association. For example:
+
+```dart
+Query(where: [
+  Where(
+    'association',
+    Where('name', 'Thomas'),
+  )])
+```
+
+### `compare:`
+
+Fields can be compared to their values beyond an exact match (the default).
+
+```dart
+Where('name', 'Thomas', compare: Compare.contains);
+```
+
+* `between`
+* `contains`
+* `exact`
+* `greaterThan`
+* `greaterThanOrEqualTo`
+* `lessThan`
+* `lessThanOrEqualTo`
+* `notEqual`
+
+Please note that the provider is ultimately responsible for supporting `Where` queries.
+
+### `required:`
+
+Conditions that are required must evaluate to true for the query to satisfy. They can be specified individually:
+
+```dart
+Query(where: [
+  Where('name', 'Thomas', required: true),
+  Where('age', 42, required: true),
+])
+// => name == 'Thomas' && age == 42
+```
+
+Or specified as a whole phrase:
+
+```dart
+Query(where: [
+  WherePhrase([
+    Where('name', 'Thomas', required: true),
+    Where('age', 42, required: true),
+  ], required: true),
+  WherePhrase([
+    Where('height', 182),
+    Where('country', 'France'),
+  ], required: true)
+])
+// =>  (name == 'Thomas' && age == 42) && (height == 182 || country == 'France')
+```
+
+## Filtering
+
+In the provider (or even a REST endpoint), convenience methods are available to quickly interpret a query.
+
+### `Where.byField`
+
+Find conditions that evaluate a specific field. A field is a member on a model, such as `myUserId` in `final String myUserId`. If the use case for the field only requires one result, say `id` or `primaryKey`, `Where.firstByField` may be more useful.
+
+```dart
+Where.byField('lastName', query.where);
+```
+
+### `Where.firstByField`
+
+Find the first occurrance of a condition that evaluates a specific field. This is useful when querying for a unique record. For all conditions, use `Where.byField`.
+
+```dart
+final condition = Where.firstByField('id', query.where);
+final id = condition?.value;
+```
+
 # Providers
 
 Providers deliver data from a single source as a model. For example, a provider could fetch from Firebase. Or from a SQL database.
@@ -298,7 +452,7 @@ Underscore prefixing of type declarations ensure that 1) they will likely not co
 
 Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
 
-### `params`
+### `params:`
 
 `params` describe how to interact with a provider's source.
 
@@ -467,12 +621,12 @@ There are several principles for repositories that should be considered beyond i
 
 * [ ] The repository only fetches data from providers
 * [ ] The repository cannot (de)serialize models with a provider
-* [ ] The repository is not stateful
+* [ ] The repository does not preserve model states
 * [ ] Every method returns from the same provider
 * [ ] `Query#action` is applied when it does not exist on a `query` from arguments
 * [ ] Annotations created for the repository
 
-## Methods
+### Methods
 
 While repositories share method names with providers, they are distinct from providers in that they are synthesizers:
 
@@ -521,9 +675,9 @@ upsert() {
 
 Repositories should be the _only_ class that can call a provider method. This enforces a consistent data stream throughout an application.
 
-### Applying `Query#action`
+#### Applying `Query#action`
 
-Before passing a query to a provider method, the repository may elect to apply an action to a query if it doesn't otherwise exist. For example, while `RestProvider#upsert` accepts both new and updated instances, its invoking repository has separate methods for `update` and `insert`:
+Before passing a query to a provider method, it is recommended for the repository to apply an action to a query if it doesn't otherwise exist. For example, while `RestProvider#upsert` accepts both new and updated instances, its invoking repository has separate methods for `update` and `insert`:
 
 ```dart
 class MyRepository {
@@ -547,9 +701,7 @@ class RestProvider {
 }
 ```
 
-It is recommended to apply a `QueryAction` in the repository to deduplicate logic within the application.
-
-## Class-level Configuration
+### Class-level Configuration
 
 A model annotation should be named `Connect<DOMAIN>`, include provider configuration, and not manipulate configuration used by other providers. If configuration is required for the repository, it should only be relevant at the repository level:
 
@@ -577,7 +729,7 @@ A model annotation should be named `Connect<DOMAIN>`, include provider configura
 )
 ```
 
-## Field-level Configuration
+### Field-level Configuration
 
 Annotations should only reflect configuration relevant to the repository (e.g. directives on how to synthesize). They should not be shortcuts:
 
@@ -612,129 +764,22 @@ Unlike atomic provider annotations, repositories **can and should** access all r
 
 Repositories do not have model dictionaries because they do not interpret sources. Providers are the only classes with access to adapters.
 
-# Query
+# Providers and Repositories
 
-Filter local data using `Query`. Providers will use the `Query` to translate requested data into their query language. For the universality and legibility of SQL, that provider's translations will be used in the following examples but it is not the de facto query language of all providers.
+* [REST Provider](packages/brick_rest) - Connect a REST API to Brick
+* [SQLite Provider](packages/brick_sqlite) - Connect a SQLite database to Brick (requires Flutter)
+* [Memory Cache Provider](packages/brick_sqlite#memory-cache-provider) - Store models in memory for easy access. Requires [brick_sqlite](packages/brick_sqlite)
+* [Offline First Repository](packages/brick_offline_first) - Fetch results from a local storage (SQLite or Memory Cache). SQLite is hydrated by a remote provider.
+* [Offline First With Rest Repository](packages/brick_offline_first#offline-first-with-rest-repository) - Uses the REST Provider as Offline First Repository's remote provider.
 
-## `Query#where:`
-
-When using `Query`, use the field name to find pertinent data instead of the column name. For example:
-
-```dart
-class User extends OfflineFirstModel {
-  final SqliteAssociation association;
-  @Sqlite(name: 'name')
-  final String lastName;
-}
-
-// A query for all users with the last name "Mustermann":
-Query.where('lastName', 'Mustermann') // note this is lastName and not name or last_name
-```
-
-Querying can be done with `Where` or `WherePhrase`:
-
-1) `WherePhrase` is a collection of `Where` statements.
-2) `WherePhrase` can't contain mixed `required:` because this will output invalid SQL. For example, when it's mixed: `WHERE id = 2 AND name = 'Thomas' OR name = 'Guy'`. The OR needs to be its own phrase: `WHERE (id = 2 AND name = 'Thomas') OR (name = 'Guy')`.
-3) `WherePhrase` can be intermixed with `Where`.
-      ```dart
-      [
-        Where('id', 2),
-        WherePhrase([
-          Where('name', 'Guy', required: false),
-          Where('name', 'Thomas', required: false)
-        ], required: false)
-      ]
-      // => (id == 2) || (name == 'Thomas' || name == 'Guy')
-      ```
-
-:warning: Queried enum values should map to a primitive. Plainly, **always include `.index`**: `Where('type', MyEnumType.value.index)`.
-
-### Associations
-
-Params are forwarded to the provider which chooses to accept or reject specific keys. For example, Rest accepts the `headers` key to control request headers. SQLite supports operators like `groupBy`, `orderBy`, `offset`, and others in its params.
-
-When querying associations, use a nested `Where`, again searching by field name on the association. For example:
-
-```dart
-Query(where: [
-  Where(
-    'association',
-    Where('name', 'Thomas'),
-  )])
-```
-
-### `compare:`
-
-Fields can be compared to their values beyond an exact match (the default).
-
-```dart
-Where('name', 'Thomas', compare: Compare.contains);
-```
-
-* `between`
-* `contains`
-* `exact`
-* `greaterThan`
-* `greaterThanOrEqualTo`
-* `lessThan`
-* `lessThanOrEqualTo`
-* `notEqual`
-
-Please note that the provider is ultimately responsible for supporting `Where` queries.
-
-### `required:`
-
-Conditions that are required must evaluate to true for the query to satisfy. They can be specified individually:
-
-```dart
-Query(where: [
-  Where('name', 'Thomas', required: true),
-  Where('age', 42, required: true),
-])
-// => name == 'Thomas' && age == 42
-```
-
-Or specified as a whole phrase:
-
-```dart
-Query(where: [
-  WherePhrase([
-    Where('name', 'Thomas', required: true),
-    Where('age', 42, required: true),
-  ], required: true),
-  WherePhrase([
-    Where('height', 182),
-    Where('country', 'France'),
-  ], required: true)
-])
-// =>  (name == 'Thomas' && age == 42) && (height == 182 || country == 'France')
-```
-
-## Filtering Queries
-
-In the provider (or even a REST endpoint), convenience methods are available to quickly interpret a query.
-
-### `Where.byField`
-
-Find conditions that evaluate a specific field. A field is a member on a model, such as `myUserId` in `final String myUserId`. If the use case for the field only requires one result, say `id` or `primaryKey`, `Where.firstByField` may be more useful.
-
-```dart
-Where.byField('lastName', query.where);
-```
-
-### `Where.firstByField`
-
-Find the first occurrance of a condition that evaluates a specific field. This is useful when querying for a unique record. For all conditions, use `Where.byField`.
-
-```dart
-final condition = Where.firstByField('id', query.where);
-final id = condition?.value;
-```
-
-## FAQ
+## General FAQ
 
 ### Do I have to get rid of BLoC or Scoped Model or Redux in my app to use Brick?
 
 Nope. Those are _state_ managers. As a _store_ manager, Brick tracks and delivers persistent data across many sources, but it does not care about how you render that data. In fact, in its first app, Brick was integrated with BLoCs - the BLoC requested the data, Brick discovered the data, delivered the data back to the BLoC, and the BLoC delivered the data to the UI component for rendering.
 
 As Repositories can output streams in `#getBatched`, a state manager could be easily bypassed. However, after trial and error, the Brick team determined the maintainence benefits of separating presentation and logic outweighed forgoing a state manager.
+
+### What's in the name?
+
+Brick isn't a state management library, it's a data _store_ management library. While Brick doesn't persist data itself, it routes data between different source. "Brick" plays on the adage "brick and mortar store."
