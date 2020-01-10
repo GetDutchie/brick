@@ -1,6 +1,6 @@
 ![An intuitive way to work with persistent data](./doc/logo.svg)
 
-An intuitive way to work with persistent data.
+An intuitive way to work with persistent data in Dart.
 
 ## Why Brick?
 
