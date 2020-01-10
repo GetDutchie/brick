@@ -11,21 +11,13 @@ environment:
   flutter: ">=1.9.0 <2.0.0"
 
 dependencies:
+  brick_core: ">=0.0.1 <1.0.0"
+  brick_sqlite_abstract: ">=0.0.1+1 <1.0.0"
   flutter:
     sdk: flutter
-  brick_core:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_core
-  brick_sqlite_abstract:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_sqlite_abstract
-  brick_offline_first_abstract:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_offline_first_abstract
-  logging: any
+  logging: ^0.11.3+2
+  meta: ">=1.1.6 <2.0.0"
+  path: ">=1.6.3 <2.0.0"
   sqflite: '>=1.1.6 <2.0.0'
   synchronized: ^2.1.0+1
 

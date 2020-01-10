@@ -1,6 +1,6 @@
 # SQLite Provider
 
-Local storage for Flutter apps using Brick.
+Local storage for Flutter apps using [Brick](../../).
 
 ## Supported `Query` Configuration
 

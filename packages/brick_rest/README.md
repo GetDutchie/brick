@@ -1,6 +1,6 @@
-# Brick REST Provider
+# REST Provider
 
-Connecting Brick with a RESTful API.
+Connecting [Brick](../../) with a RESTful API.
 
 ## Supported `Query` Configuration
 

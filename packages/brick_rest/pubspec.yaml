@@ -10,11 +10,10 @@ environment:
   sdk: ">=2.4.0 <3.0.0"
 
 dependencies:
-  logging: any
-  brick_core:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_core
+  brick_core: ">=0.0.0 <1.0.0"
+  http: ">=0.12.0 <1.0.0"
+  logging: ^0.11.3+2
+  meta: ">=1.1.6 <2.0.0"
 
 dev_dependencies:
   mockito: ^4.0.0

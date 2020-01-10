@@ -1,6 +1,6 @@
 # Brick SQLite Abstract
 
-Adding class- and field-level configuration to the SQLite provider.
+Adding class- and field-level configuration to the [SQLite provider](../brick_sqlite).
 
 ## FAQ
 

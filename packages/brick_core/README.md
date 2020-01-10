@@ -1,6 +1,6 @@
 # Brick Core
 
-Interfaces and shared helpers for implementing models, adapters, providers, and repositories.
+Interfaces and shared helpers for implementing models, adapters, providers, and repositories in [Brick](../../).
 
 ## Principles
 
