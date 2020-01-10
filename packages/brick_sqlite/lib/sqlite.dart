@@ -5,8 +5,8 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_offline_first_abstract/abstract.dart' show SqliteModel, NEW_RECORD_ID;
-export 'package:brick_offline_first_abstract/abstract.dart' show SqliteModel, NEW_RECORD_ID;
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
+export 'package:brick_sqlite_abstract/sqlite_model.dart';
 
 import 'package:brick_sqlite/src/sqlite/alter_column_helper.dart';
 import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';

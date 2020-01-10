@@ -7,12 +7,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  brick_core:
-    path: ../../brick_core
-  brick_offline_first:
-    path: ../
+  brick_core: any
+  brick_offline_first: any
+
 dev_dependencies:
   build_runner: any
   build_resolvers: ^1.2.1
-  brick_build:
-    path: ../../brick_build
+  brick_build: any

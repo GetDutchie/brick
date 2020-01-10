@@ -1,6 +1,6 @@
 # Brick Build
 
-Code generator for Brick adapters, model dictionaries.
+Code generator for [Brick](../../) adapters, model dictionaries.
 
 ## Install
 

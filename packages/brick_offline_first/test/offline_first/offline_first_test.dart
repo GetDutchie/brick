@@ -1,10 +1,13 @@
 import 'package:brick_offline_first/testing.dart' hide MockClient;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
+import 'package:test/test.dart' show TypeMatcher;
 
 import '__mocks__.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group("OfflineFirstModel", () {
     test("instantiates", () {
       final m = DemoModel('Thomas');
@@ -39,9 +42,10 @@ void main() {
       StubOfflineFirstWithRest(
         repository: TestRepository(),
         modelStubs: [
-          TestStubOfflineFirstModel<DemoModel>(
+          StubOfflineFirstWithRestModel<DemoModel>(
             repository: TestRepository(),
-            filePath: 'api/people.json',
+            filePath: 'offline_first/api/people.json',
+            endpoints: ['people'],
           ),
         ],
       );
@@ -76,7 +80,10 @@ void main() {
       await TestRepository().get<DemoModel>(requireRemote: true);
       final logs = StubOfflineFirstWithRest.sqliteLogs.map((l) => (l.arguments ?? {})['sql']);
 
-      verify(TestRepository().remoteProvider.client.get(any, headers: anyNamed('headers')));
+      verify(TestRepository()
+          .remoteProvider
+          .client
+          .get("http://localhost:3000/people", headers: anyNamed('headers')));
       expect(
         logs,
         containsAllInOrder([

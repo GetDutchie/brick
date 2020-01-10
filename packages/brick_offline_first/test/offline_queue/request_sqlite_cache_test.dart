@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
@@ -8,6 +8,8 @@ import '../../lib/src/offline_queue/request_sqlite_cache.dart';
 class MockLogger extends Mock implements Logger {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group("RequestSqliteCache", () {
     final getReq = http.Request("GET", Uri.parse("http://example.com"));
     final getResp = RequestSqliteCache(getReq, 'db');

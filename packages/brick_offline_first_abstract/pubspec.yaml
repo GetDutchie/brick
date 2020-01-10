@@ -4,17 +4,13 @@ homepage: https://github.com/greenbits/brick/packages/brick_offline_first_abstra
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.1
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.4.0 <3.0.0"
 
 dependencies:
-  brick_rest:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_rest
-  brick_sqlite_abstract:
-    git:
-      url: git@github.com:greenbits/brick.git
-      path: packages/brick_sqlite_abstract
+  meta: ">=1.1.6 <2.0.0"
+  brick_core: ">=0.0.1 <1.0.0"
+  brick_rest: ">=0.0.1 <1.0.0"
+  brick_sqlite_abstract: ">=0.0.1+1 <1.0.0"
