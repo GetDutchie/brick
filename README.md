@@ -91,6 +91,8 @@ final query = Query.where('hats', Where('color', 'brown'));
 final usersWithBrownHats = repository.get<User>(query: query);
 ```
 
+Brick natively [serializes primitives, associations, and more](packages/brick_offline_first/example/lib/app/models/kitchen_sink.dart).
+
 # Table of Contents
 
 - [Setup](#setup)
