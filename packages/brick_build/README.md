@@ -392,6 +392,8 @@ Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
 
 ### End-to-end Case Study: `@ConnectOfflineFirst`
 
+![OfflineFirst Builder](https://user-images.githubusercontent.com/865897/72175884-1c399900-3392-11ea-8baa-7d50f8db6773.jpg)
+
 1. A class is discovered with the `@ConnectOfflineFirst` annotation.
       ```dart
       @ConnectOfflineFirst(

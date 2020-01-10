@@ -1,6 +1,8 @@
 # Brick Offline First
 
-Offline First combines SQLite and a remote provider into one unified repository. And, optionally, a memory cache layer as the entry point. The remote provider could query Firebase or REST, hydrate the results to SQLite, and then deliver those SQLite results back to the app. In this way, the app functions identically when it's online or offline.
+Offline First combines SQLite and a remote provider into one unified repository. And, optionally, a memory cache layer as the entry point. The remote provider could query Firebase or REST, hydrate the results to SQLite, and then deliver those SQLite results back to the app. In this way, the app functions identically when it's online or offline:
+
+![OfflineFirst#get](https://user-images.githubusercontent.com/865897/72176226-cdd8ca00-3392-11ea-867d-42f5f4620153.jpg)
 
 ## Models
 
@@ -120,6 +122,8 @@ final client = OfflineQueueHttpClient(
   "OfflineQueue",
 );
 ```
+
+![OfflineQueue logic flow](https://user-images.githubusercontent.com/865897/72175823-f44a3580-3391-11ea-8961-bbeccd74fe7b.jpg)
 
 :warning: The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT`. `get` requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
 
