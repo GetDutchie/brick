@@ -1,6 +1,6 @@
-# Brick SQLite Provider
+# SQLite Provider
 
-Local storage for Flutter apps.
+Local storage for Flutter apps using Brick.
 
 ## Supported `Query` Configuration
 
@@ -117,7 +117,7 @@ StubSqlite(MyRepository().sqliteProvider, responses: {
 
 Table names, association column names, and primary key column names are managed by the package. They are currently unchangeable.
 
-# Brick Memory Cache Provider
+# Memory Cache Provider
 
 The Memory Cache Provider is a key-value store that functions based on the SQLite primary keys to optimize the SQLite provider queries. This is especially effective for low-level associations. The provider only caches models it's aware of:
 

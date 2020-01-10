@@ -80,7 +80,7 @@ class Weight extends OfflineFirstSerdes<Map<int, String>, String> {
 
 `OfflineFirstSerdes` should not be used when the managed data must be queried. Plainly, Brick does not support JSON searches.
 
-# OfflineFirstWithRestRepository
+# Offline First With Rest Repository
 
 `OfflineFirstWithRestRepository` streamlines the REST integration with an `OfflineFirstRepository`. A serial queue is included to track REST requests in a separate SQLite database, only removing requests when a response is not returned from the host (i.e. the device has lost internet connectivity).
 

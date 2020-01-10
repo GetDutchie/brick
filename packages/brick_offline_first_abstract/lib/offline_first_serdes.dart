@@ -9,7 +9,7 @@
 /// following: `bool`, `DateTime`, `double`, `int`, `num`, `String`. The Rest type supports the same
 /// types in addition to `Iterable` and `Map`s digestible by [jsonEncode] and [jsonDecode].
 ///
-/// Declare `factory` methods `fromSqlite` and `fromRest` to deserialize. Both use one unnamed
+/// Declare `factory` methods `fromSqlite` and `from<REMOTE PROIVDER(s)>` (like `fromRest`) to deserialize. Both use one unnamed
 /// arg with a type post-`jsonDecode`.
 abstract class OfflineFirstSerdes<_RestType, _SqliteType> {
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
@@ -21,6 +21,5 @@ abstract class OfflineFirstSerdes<_RestType, _SqliteType> {
   /// Often, [_SqliteType] is a `String` and `toSqlite` performs `jsonEncode(toRest())`.
   _SqliteType toSqlite() => null;
 
-  // factory.fromRest(_RestType data) {}
   // factory.fromSqlite(_SqliteType data) {}
 }

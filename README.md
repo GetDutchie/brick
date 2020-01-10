@@ -4,9 +4,9 @@ An intuitive way to work with persistent data in Dart.
 
 ## What is Brick?
 
-Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.  
+Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
 
-Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries. 
+Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries.
 
 ## Why Brick?
 
@@ -108,8 +108,8 @@ final usersWithBrownHats = repository.get<User>(query: query);
     - [compare:](#compare)
     - [required:](#required)
   * [Filtering](#filtering)
-    - [Where.byField](#where-byfield)
-    - [Where.firstByField](#where-firstbyfield)
+    - [Where.byField](#wherebyfield)
+    - [Where.firstByField](#wherefirstbyfield)
 - [Providers](#providers)
   * [Fetching and Mutating Data](#fetching-and-mutating-data)
   * [Query](#query-1)
@@ -119,7 +119,7 @@ final usersWithBrownHats = repository.get<User>(query: query);
   * [Class-level Configuration](#class-level-configuration)
   * [Field-level Configuration](#field-level-configuration)
 - [Repository](#repository)
-  * [Setup](#setup)
+  * [Setup](#setup-2)
     - [Access](#access)
   * [Creating a Custom Repository](#creating-a-custom-repository)
     - [Methods](#methods)
@@ -452,7 +452,7 @@ Underscore prefixing of type declarations ensure that 1) they will likely not co
 
 Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
 
-### `params`
+### `params:`
 
 `params` describe how to interact with a provider's source.
 
@@ -768,9 +768,9 @@ Repositories do not have model dictionaries because they do not interpret source
 
 * [REST Provider](packages/brick_rest) - Connect a REST API to Brick
 * [SQLite Provider](packages/brick_sqlite) - Connect a SQLite database to Brick (requires Flutter)
-* [Memory Cache Provider](packages/brick_sqlite/lib/memory_cache_provider.dart) - Store models in memory for easy access. Requires [brick_sqlite](packages/brick_sqlite)
+* [Memory Cache Provider](packages/brick_sqlite#memory-cache-provider) - Store models in memory for easy access. Requires [brick_sqlite](packages/brick_sqlite)
 * [Offline First Repository](packages/brick_offline_first) - Fetch results from a local storage (SQLite or Memory Cache). SQLite is hydrated by a remote provider.
-* [Offline First With Rest Repository](packages/brick_offline_first/lib/offline_first_with_rest.dart) - Uses the REST Provider as Offline First Repository's remote provider.
+* [Offline First With Rest Repository](packages/brick_offline_first#offline-first-with-rest-repository) - Uses the REST Provider as Offline First Repository's remote provider.
 
 ## General FAQ
 
