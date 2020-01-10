@@ -4,9 +4,9 @@ An intuitive way to work with persistent data.
 
 ## What is Brick?
 
-Brick is an extensible database wrapper and query generator for Flutter apps. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, Flutter developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.  
+Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.  
 
-Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/) and similar libraries. 
+Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries. 
 
 ## Why Brick?
 
