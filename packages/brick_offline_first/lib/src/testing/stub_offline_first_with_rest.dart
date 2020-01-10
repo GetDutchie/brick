@@ -71,10 +71,10 @@ class StubOfflineFirstWithRest {
       }
 
       for (final modelStub in modelStubs) {
-        final responses = await modelStub.sqliteResponse();
         final isRelevantModel =
             StubSqlite.statementIncludesModel(modelStub.adapter.tableName, methodCall);
         if (isRelevantModel) {
+          final responses = await modelStub.sqliteResponse();
           return StubSqlite.returnFromResponses(
             responses: responses,
             tableName: modelStub.adapter.tableName,

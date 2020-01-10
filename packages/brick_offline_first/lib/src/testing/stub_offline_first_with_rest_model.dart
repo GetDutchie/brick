@@ -31,7 +31,16 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     return apiFile.readAsStringSync();
   }
 
-  String get currentDirectory => p.dirname(Platform.script.path);
+  String get currentDirectory {
+    final directory = p.dirname(Platform.script.path);
+    // when running this script from the project (i.e. `flutter test`),
+    // the directory is where main.dart lives. We want the test directory.
+    if (directory.contains("/test")) {
+      return directory;
+    }
+
+    return p.join(directory, "test");
+  }
 
   /// Decode the JSON with the response key, if applicable
   dynamic get decodedApiResponse {
@@ -45,8 +54,8 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     }
   }
 
-  /// The relative path to the stub data.
-  /// For example, `api/user.json`
+  /// The path **relative to the top-level /test directory** containing stub data.
+  /// For example, `api/user.json` in `my-app/test/api/user.json`
   final String filePath;
 
   /// All endpoints to stub. For example, `user/1` or `users?limit=20&offset=1`.

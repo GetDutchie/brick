@@ -105,26 +105,6 @@ class TestRepository extends OfflineFirstWithRestRepository {
   }
 }
 
-class TestStubOfflineFirstModel<_Model extends OfflineFirstWithRestModel>
-    extends StubOfflineFirstWithRestModel<_Model> {
-  @override
-  String get currentDirectory {
-    final currentDirectoryList = Platform.script.path.split('/');
-    final projectIndex = currentDirectoryList.indexOf('brick_sqlite');
-    final projectDirectory = currentDirectoryList.sublist(0, projectIndex);
-    projectDirectory.addAll(['brick_sqlite', 'test', 'offline_first']);
-    return projectDirectory.join('/');
-  }
-
-  TestStubOfflineFirstModel({
-    String filePath,
-    OfflineFirstRepository repository,
-  }) : super(
-          filePath: filePath,
-          repository: repository,
-        );
-}
-
 final _mappings = {
   DemoModel: DemoModelAdapter(),
   MemoryDemoModel: DemoModelAdapter(),
