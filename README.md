@@ -103,7 +103,7 @@ final usersWithBrownHats = repository.get<User>(query: query);
     - [required:](#required)
   * [Filtering](#filtering)
     - [Where.byField](#where-byfield)
-    - [Where.firstByField](#where-firstby-field)
+    - [Where.firstByField](#where-firstbyfield)
 - [Providers](#providers)
   * [Fetching and Mutating Data](#fetching-and-mutating-data)
   * [Query](#query-1)
@@ -117,7 +117,7 @@ final usersWithBrownHats = repository.get<User>(query: query);
     - [Access](#access)
   * [Creating a Custom Repository](#creating-a-custom-repository)
     - [Methods](#methods)
-      * [Applying Query#action](#applying-query-action)
+      * [Applying Query#action](#applying-queryaction)
     - [Class-level Configuration](#class-level-configuration-1)
     - [Field-level Configuration](#field-level-configuration-1)
   * [FAQ](#faq-1)
@@ -168,7 +168,7 @@ final usersWithBrownHats = repository.get<User>(query: query);
 # Glossary
 
 * [**Provider**](#providers) - Fetches from and pushes to a data source.
-* [**Repository**](#repositories) - Manages `Provider`(s) as middleware between the app logic and the `Provider` logic.
+* [**Repository**](#repository) - Manages `Provider`(s) as middleware between the app logic and the `Provider` logic.
 * **Adapter** - Normalizizes data input and output between `Provider`s. Almost always generated.
 * [**Model**](#models) - Business logic unique to the app. Can be queried by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
 * **ModelDictionary** - Connects a `Provider` to the `Model`'s `Adapter`. Almost always generated.
