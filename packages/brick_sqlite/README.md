@@ -1,4 +1,4 @@
-# SQLite Provider
+# Brick SQLite Provider
 
 Local storage for Flutter apps using Brick.
 
