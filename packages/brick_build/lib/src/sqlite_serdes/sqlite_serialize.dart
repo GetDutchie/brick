@@ -220,6 +220,11 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
       return _finalTypeForField(checker.argType);
     }
 
+    if (checker.isMap) {
+      // remove arg types as they can't be declared in final fields
+      return "Map";
+    }
+
     return type.getDisplayString();
   }
 }
