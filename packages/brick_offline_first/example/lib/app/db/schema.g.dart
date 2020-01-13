@@ -7,7 +7,8 @@ part '20200106215035.migration.dart';
 part '20200106215014.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final Set<Migration> migrations = Set.from([Migration20200106215035(), Migration20200106215014()]);
+final Set<Migration> migrations =
+    Set.from([Migration20200106215035(), Migration20200106215014()]);
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(20200106215035,

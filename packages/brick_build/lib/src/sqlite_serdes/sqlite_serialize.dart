@@ -60,7 +60,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     return [
       'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
-      'final String tableName = "$tableName";'
+      "final String tableName = '$tableName';"
     ];
   }
 
