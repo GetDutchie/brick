@@ -103,7 +103,7 @@ void main() {
         );
 
         expect(output, _$fromNewSchema.output);
-      }, skip: "Temporary skip until sqlite_abstract is bumped");
+      });
 
       test("with an identical schema", () async {
         final reader = await generateLibrary('from_identical_schema');
