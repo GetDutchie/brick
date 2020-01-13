@@ -12,8 +12,8 @@ environment:
 dependencies:
   analyzer: ^0.39.0
   brick_core: ">=0.0.1 <1.0.0"
-  brick_sqlite_abstract: ">=0.0.1 <1.0.0"
-  brick_offline_first_abstract: ">=0.0.1 <1.0.0"
+  brick_sqlite_abstract: ">=0.0.1+1 <1.0.0"
+  brick_offline_first_abstract: ">=0.0.1+1 <1.0.0"
   build: '>=1.2.0 <2.0.0'
   build_config: '>=0.4.0 <1.0.0'
   dart_style: ">=1.2.4 <2.0.0"
