@@ -21,10 +21,12 @@ const List<MigrationCommand> _migration_20200106215035_up = [
   InsertColumn("enum_from_index", Column.integer, onTable: "KitchenSink"),
   InsertColumn("any_list", Column.varchar, onTable: "KitchenSink"),
   InsertColumn("any_set", Column.varchar, onTable: "KitchenSink"),
-  InsertForeignKey("KitchenSink", "Mounty", foreignKeyColumn: "offline_first_model_Mounty_brick_id"),
+  InsertForeignKey("KitchenSink", "Mounty",
+      foreignKeyColumn: "offline_first_model_Mounty_brick_id"),
   InsertColumn("list_offline_first_model", Column.varchar, onTable: "KitchenSink"),
   InsertColumn("set_offline_first_model", Column.varchar, onTable: "KitchenSink"),
-  InsertForeignKey("KitchenSink", "Mounty", foreignKeyColumn: "future_offline_first_model_Mounty_brick_id"),
+  InsertForeignKey("KitchenSink", "Mounty",
+      foreignKeyColumn: "future_offline_first_model_Mounty_brick_id"),
   InsertColumn("future_list_offline_first_model", Column.varchar, onTable: "KitchenSink"),
   InsertColumn("future_set_offline_first_model", Column.varchar, onTable: "KitchenSink"),
   InsertColumn("offline_first_serdes", Column.varchar, onTable: "KitchenSink"),
@@ -92,15 +94,15 @@ const List<MigrationCommand> _migration_20200106215035_down = [
 //
 
 @Migratable(
-  version: "20200106215035",
+  version: '20200106215035',
   up: _migration_20200106215035_up,
   down: _migration_20200106215035_down,
 )
 class Migration20200106215035 extends Migration {
   const Migration20200106215035()
-    : super(
-        version: 20200106215035,
-        up: _migration_20200106215035_up,
-        down: _migration_20200106215035_down,
-      );
+      : super(
+          version: 20200106215035,
+          up: _migration_20200106215035_up,
+          down: _migration_20200106215035_down,
+        );
 }

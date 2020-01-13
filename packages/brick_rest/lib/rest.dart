@@ -58,10 +58,10 @@ class RestProvider implements Provider<RestModel> {
 
   /// [Query]'s `params` can extend the [get] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
-  /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{'user': {'id'...}}`).
+  /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{"user": {"id"...}}`).
   /// It is recommended to use `RestSerializable#fromKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
-  /// regardless of the first key (in the example, `{'id'...}`).
+  /// regardless of the first key (in the example, `{"id"...}`).
   Future<List<_Model>> get<_Model extends RestModel>({query, repository}) async {
     final url = urlForModel<_Model>(query);
     if (url == null) return List<_Model>();
@@ -95,7 +95,7 @@ class RestProvider implements Provider<RestModel> {
   /// [Query]'s `params` can extend the [upsert] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
-  /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{'user': {'id'...}}`)
+  /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
   Future<http.Response> upsert<_Model extends RestModel>(instance, {query, repository}) async {
@@ -170,7 +170,7 @@ class RestProvider implements Provider<RestModel> {
   ]) async {
     final encodedBody = jsonEncode(body);
     final topLevelKey = (query?.params ?? {})['topLevelKey'] ?? toKey;
-    final wrappedBody = topLevelKey != null ? "{'$topLevelKey':$encodedBody}" : encodedBody;
+    final wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
     final headers = headersForQuery(query);
 
     if ((query?.params ?? {})['request'] == 'PUT') {

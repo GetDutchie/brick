@@ -8,7 +8,7 @@ class RestException implements Exception {
   RestException(this.response);
 
   /// Decoded error messages if included under the top-level key 'errors' in the response.
-  /// For example, ```{'phone': ['Phone required']}``` in ```{'errors':{'phone': ['Phone required']}}```.
+  /// For example, `{"phone": ["Phone required"]}` in `{"errors":{"phone": ["Phone required"]}}`.
   Map<String, dynamic> get errors {
     if (response.body != null) {
       try {

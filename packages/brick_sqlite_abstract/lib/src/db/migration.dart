@@ -182,7 +182,7 @@ const List<MigrationCommand> _migration_${version}_down = [
 //
 
 @Migratable(
-  version: "$version",
+  version: '$version',
   up: _migration_${version}_up,
   down: _migration_${version}_down,
 )

@@ -28,15 +28,15 @@ const List<MigrationCommand> _migration_20200106215014_down = [
 //
 
 @Migratable(
-  version: "20200106215014",
+  version: '20200106215014',
   up: _migration_20200106215014_up,
   down: _migration_20200106215014_down,
 )
 class Migration20200106215014 extends Migration {
   const Migration20200106215014()
-    : super(
-        version: 20200106215014,
-        up: _migration_20200106215014_up,
-        down: _migration_20200106215014_down,
-      );
+      : super(
+          version: 20200106215014,
+          up: _migration_20200106215014_up,
+          down: _migration_20200106215014_down,
+        );
 }
