@@ -1,5 +1,6 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
+import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
 Future<Assoc> _$AssocFromRest(Map<String, dynamic> data,

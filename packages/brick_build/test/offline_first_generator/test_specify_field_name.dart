@@ -1,4 +1,5 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromRest(Map<String, dynamic> data,

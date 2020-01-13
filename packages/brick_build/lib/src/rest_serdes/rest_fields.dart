@@ -1,7 +1,7 @@
 // Generously inspired by JsonSerializable
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show Rest, RestSerializable, FieldRename;
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/string_helpers.dart';

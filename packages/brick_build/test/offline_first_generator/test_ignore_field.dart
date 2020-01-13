@@ -1,4 +1,5 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
 Future<IgnoreField> _$IgnoreFieldFromRest(Map<String, dynamic> data,
