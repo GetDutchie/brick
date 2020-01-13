@@ -31,6 +31,10 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// the [Adapter].
   get<_Model extends _ManagedModel>({Query query});
 
+  /// Perform required setup work. For example, migrating a database, starting a queue,
+  /// or authenticating with a [Provider]'s service.
+  Future<void> initialize() async => null;
+
   /// Insert or update a model in all [Provider]s
   ///
   /// Optionally, the repository can
@@ -53,6 +57,8 @@ abstract class SingleProviderRepository<_Model extends Model> implements ModelRe
   /// Query provider for raw data and convert to an app model
   FutureOr<List<T>> get<T extends _Model>({Query query}) =>
       provider.get<T>(query: query, repository: this);
+
+  initialize() => null;
 
   /// Query provider for raw data and convert to an app model
   FutureOr<T> upsert<T extends _Model>(T instance, {Query query}) =>

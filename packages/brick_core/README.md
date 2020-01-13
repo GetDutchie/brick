@@ -6,11 +6,11 @@ Interfaces and shared helpers for implementing models, adapters, providers, and 
 
 Brick's architecture encourages using data through a single access point: the repository.
 
-![Data flow with a single provider](https://user-images.githubusercontent.com/865897/72176093-88b49800-3392-11ea-952b-9209f083f93d.jpg)
+<img src="https://user-images.githubusercontent.com/865897/72239135-d4369400-3594-11ea-9a3f-49f8cdc9328a.jpg" width="180" height="490" alt="Data flow with a single provider" />
 
 A repository _may_ implement multiple providers, but after instantiation the end application is only aware of the repository. The stream of data follows one course through each provider:
 
-![Data flow with many providers](https://user-images.githubusercontent.com/865897/72176037-691d6f80-3392-11ea-9585-56ec2b363148.jpg)
+![Data flow with many providers](https://user-images.githubusercontent.com/865897/72239157-e3b5dd00-3594-11ea-83cb-157b3efcbb02.jpg)
 
 The repository is aware of provider(s), the provider(s) are aware of the adapters, the adapters are aware of models, and the models are aware of only themselves. From the reverse, models are unaware, adapters are unaware of providers and providers are unaware of repositories.
 

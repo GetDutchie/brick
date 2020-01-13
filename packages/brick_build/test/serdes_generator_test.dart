@@ -32,7 +32,7 @@ class CustomSerdes extends SerdesGenerator<Rest> {
   final providerName = "CustomSerdes";
   final repositoryName = "Some";
   String addField(FieldElement field, Rest fieldAnnotation) {
-    return "${field.name}: '${field.type.name}'";
+    return "${field.name}: '${field.type.getDisplayString()}'";
   }
 }
 

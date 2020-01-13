@@ -156,7 +156,8 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
   /// otherwise, return the field's annotated name;
   String serializedFieldName(OfflineFirstChecker checker, String annotatedName) {
     if (checker.isSibling && providerName == SQLITE_PROVIDER_NAME) {
-      return InsertForeignKey.foreignKeyColumnName(checker.unFuturedType.name, annotatedName);
+      return InsertForeignKey.foreignKeyColumnName(
+          checker.unFuturedType.getDisplayString(), annotatedName);
     }
 
     return annotatedName;
