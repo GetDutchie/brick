@@ -1,0 +1,61 @@
+# Created with package:mono_repo v2.3.0
+language: dart
+
+# Custom configuration
+branches:
+  only:
+    - master
+
+jobs:
+  include:
+    - stage: analyze
+      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings .`"
+      dart: dev
+      os: linux
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite packages/brick_sqlite_abstract"
+      script: ./tool/travis.sh dartanalyzer
+    - stage: analyze
+      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings .`"
+      dart: stable
+      os: linux
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite packages/brick_sqlite_abstract"
+      script: ./tool/travis.sh dartanalyzer
+    - stage: unit_test
+      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite_abstract; TASKS: `pub run test`"
+      dart: dev
+      os: linux
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite_abstract"
+      script: ./tool/travis.sh test
+    - stage: unit_test
+      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite_abstract; TASKS: `pub run test`"
+      dart: stable
+      os: linux
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite_abstract"
+      script: ./tool/travis.sh test
+    - stage: unit_test
+      name: "SDK: dev; PKGS: packages/brick_offline_first, packages/brick_sqlite; TASKS: `flutter test`"
+      dart: dev
+      os: linux
+      env: PKGS="packages/brick_offline_first packages/brick_sqlite"
+      script: ./tool/travis.sh command
+    - stage: unit_test
+      name: "SDK: stable; PKGS: packages/brick_offline_first, packages/brick_sqlite; TASKS: `flutter test`"
+      dart: stable
+      os: linux
+      env: PKGS="packages/brick_offline_first packages/brick_sqlite"
+      script: ./tool/travis.sh command
+
+stages:
+  - analyze
+  - unit_test
+
+cache:
+  directories:
+    - "$HOME/.pub-cache"
+    - packages/brick_build/.dart_tool/build
+    - packages/brick_core/.dart_tool/build
+    - packages/brick_offline_first/.dart_tool/build
+    - packages/brick_offline_first_abstract/.dart_tool/build
+    - packages/brick_rest/.dart_tool/build
+    - packages/brick_sqlite/.dart_tool/build
+    - packages/brick_sqlite_abstract/.dart_tool/build
