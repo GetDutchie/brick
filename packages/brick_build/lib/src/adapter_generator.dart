@@ -19,7 +19,7 @@ class AdapterGenerator {
 
   /// Generated adapter methods
   String get allAdapterMethods {
-    return generators.fold<List<String>>(<String>[], (acc, generator) {
+    return generators.fold<Set<String>>(<String>{}, (acc, generator) {
       final expectedOutput = 'Future<${generator.adapterMethodOutputType}>';
       final methodAction = generator.doesDeserialize ? 'from' : 'to';
       final methodArguments = '${generator.adapterMethodInputType} input, {provider, repository}';

@@ -33,7 +33,7 @@ class AggregateBuilder implements Builder {
   Future<void> build(BuildStep buildStep) async {
     brickLogger.info('Aggregating models and migrations...');
 
-    final imports = <String>[];
+    final imports = <String>{};
     imports.addAll([
       'library big_messy_models_migrations_file;',
     ]);

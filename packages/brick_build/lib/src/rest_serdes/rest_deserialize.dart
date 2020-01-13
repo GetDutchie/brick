@@ -195,7 +195,7 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
 
   /// Define [iterableArgument] to condition value with one that comes from an iterated result
   String _convertSqliteLookupToString(Map<String, String> lookup, {String iterableArgument}) {
-    final conditions = lookup.entries.fold(<String>{}, (acc, pair) {
+    final conditions = lookup.entries.fold<Set<String>>(<String>{}, (acc, pair) {
       final matchedValue = iterableArgument ?? pair.value;
       acc.add("Where('${pair.key}', $matchedValue)");
       return acc;
