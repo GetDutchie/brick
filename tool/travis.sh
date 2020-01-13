@@ -41,7 +41,7 @@ for PKG in ${PKGS}; do
   pushd "${PKG}" || exit $?
 
   PUB_EXIT_CODE=0
-  pub upgrade --no-precompile || PUB_EXIT_CODE=$?
+  flutter pub upgrade --no-precompile || PUB_EXIT_CODE=$?
 
   if [[ ${PUB_EXIT_CODE} -ne 0 ]]; then
     EXIT_CODE=1
