@@ -14,11 +14,12 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
   /// [FieldsForClass] for the `@OfflineFirst` annotation
   final OfflineFirstFields offlineFirstFields;
 
+  @override
   final String repositoryName;
 
-  String get constructorName => "from$providerName";
+  String get constructorName => 'from$providerName';
 
-  String get serializeMethod => "to$providerName";
+  String get serializeMethod => 'to$providerName';
 
   /// All fields that are serializable by this generator and are not declared
   /// to be ignored by an annotation.
@@ -31,15 +32,15 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
     });
   }
 
-  static const REST_PROVIDER_NAME = "Rest";
-  static const SQLITE_PROVIDER_NAME = "Sqlite";
+  static const REST_PROVIDER_NAME = 'Rest';
+  static const SQLITE_PROVIDER_NAME = 'Sqlite';
 
   OfflineFirstSerdesGenerator(
     ClassElement element,
     FieldsForClass<_FieldAnnotation> _fields, {
     String repositoryName,
   })  : offlineFirstFields = OfflineFirstFields(element),
-        repositoryName = repositoryName ?? "OfflineFirst",
+        repositoryName = repositoryName ?? 'OfflineFirst',
         super(element, _fields);
 
   /// Produces serializing or deserializing method given a field type and [OfflineFirstChecker]
@@ -58,7 +59,7 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
 
   @override
   String addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
-    bool wrappedInFuture = false;
+    var wrappedInFuture = false;
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     var checker = OfflineFirstChecker(field.type);
@@ -75,8 +76,8 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
 
     if (wrappedInFuture && checker.isIterable && checker.isArgTypeAFuture) {
       throw InvalidGenerationSourceError(
-        "Future iterable future types are not supported by Brick. Please revise to `Future<Iterable<Type>>` or `Iterable<Future<Type>>`.",
-        todo: "Revise to `Future<Iterable<Type>>` or `Iterable<Future<Type>>`",
+        'Future iterable future types are not supported by Brick. Please revise to `Future<Iterable<Type>>` or `Iterable<Future<Type>>`.',
+        todo: 'Revise to `Future<Iterable<Type>>` or `Iterable<Future<Type>>`',
         element: field,
       );
     }
@@ -93,8 +94,8 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
       final name = serializedFieldName(checker, fieldAnnotation.name);
       final deserializerNullability =
           fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
-      final prefix = doesDeserialize ? "${field.name}: $deserializerNullability" : "'$name':";
-      return "$prefix $coder";
+      final prefix = doesDeserialize ? '${field.name}: $deserializerNullability' : "'$name':";
+      return '$prefix $coder';
     }
 
     return null;
@@ -120,7 +121,7 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
     input = input
         .replaceAll(OfflineFirst.ANNOTATED_NAME_VARIABLE, annotatedName)
         .replaceAll(OfflineFirst.DATA_PROPERTY_VARIABLE, "data['$annotatedName']")
-        .replaceAll(OfflineFirst.INSTANCE_PROPERTY_VARIABLE, "instance.$fieldName");
+        .replaceAll(OfflineFirst.INSTANCE_PROPERTY_VARIABLE, 'instance.$fieldName');
     return super.digestCustomGeneratorPlaceholders(input);
   }
 
@@ -145,11 +146,11 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
   }) {
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';
-      final castType = isFuture ? "Future<$argType>" : argType;
-      return "?.to$method()?.cast<$castType>()";
+      final castType = isFuture ? 'Future<$argType>' : argType;
+      return '?.to$method()?.cast<$castType>()';
     }
 
-    return "?.cast<$argType>()";
+    return '?.cast<$argType>()';
   }
 
   /// Generate foreign key column if the type is a sibling;

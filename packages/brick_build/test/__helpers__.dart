@@ -11,7 +11,7 @@ Future<LibraryReader> _libraryForFolder(String folder, String filename) async {
   );
 }
 
-typedef Future<LibraryReader> LibraryGenerator(String filename);
+typedef LibraryGenerator = Future<LibraryReader> Function(String filename);
 
 /// Thunks a reader generator that assumes the filename is prefixed `test_`
 /// and suffixed `.dart` and nested in [folder] in the `test` folder.

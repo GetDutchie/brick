@@ -84,7 +84,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Set<Migration> migrations,
     String loggerName,
   })  : autoHydrate = autoHydrate ?? false,
-        logger = Logger(loggerName ?? "OfflineFirstRepository"),
+        logger = Logger(loggerName ?? 'OfflineFirstRepository'),
         migrationManager = MigrationManager(migrations),
         memoryCacheProvider = memoryCacheProvider ?? MemoryCacheProvider(),
         assert(sqliteProvider != null) {
@@ -94,12 +94,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   }
 
   /// Remove a model from SQLite and the [remoteProvider]
+  @override
   Future<bool> delete<_Model extends _RepositoryModel>(
     _Model instance, {
     Query query,
   }) async {
     query = (query ?? Query()).copyWith(action: QueryAction.delete);
-    logger.finest("#delete: $query");
+    logger.finest('#delete: $query');
 
     final rowsDeleted = await sqliteProvider.delete<_Model>(
       instance,
@@ -111,7 +112,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     try {
       await remoteProvider.delete<_Model>(instance, query: query, repository: this);
     } on ClientException catch (e) {
-      logger.warning("#delete client failure: $e");
+      logger.warning('#delete client failure: $e');
     }
 
     if (autoHydrate && isConnected) hydrate<_Model>(query: query);
@@ -150,6 +151,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
+  @override
   Future<List<_Model>> get<_Model extends _RepositoryModel>({
     Query query,
     bool alwaysHydrate = false,
@@ -158,7 +160,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool seedOnly = false,
   }) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
-    logger.finest("#get: $_Model $query");
+    logger.finest('#get: $_Model $query');
 
     final modelExists = await exists<_Model>(query: query);
     if (memoryCacheProvider.canFind<_Model>(query)) {
@@ -184,7 +186,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
   Future<List<_Model>> getAssociation<_Model extends _RepositoryModel>(Query query) async {
-    logger.finest("#getAssociation: $_Model $query");
+    logger.finest('#getAssociation: $_Model $query');
     final results = await get<_Model>(query: query, alwaysHydrate: false);
     if (results?.isEmpty ?? true) return null;
     return results;
@@ -210,7 +212,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool seedOnly = false,
   }) async {
     query = (query ?? Query()).copyWith(params: {'limit': batchSize});
-    final total = List<_Model>();
+    final total = <_Model>[];
 
     /// Retrieve up to [batchSize] starting at [offset]. Recursively retrieves the next
     /// [batchSize] until no more results are retrieved.
@@ -264,6 +266,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   }
 
   /// Send a model to [remoteProvider] and [hydrate].
+  @override
   Future<_Model> upsert<_Model extends _RepositoryModel>(
     _Model instance, {
     Query query,
@@ -271,7 +274,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     if (query?.action == null) {
       query = (query ?? Query()).copyWith(action: QueryAction.upsert);
     }
-    logger.finest("#upsert: $query $instance");
+    logger.finest('#upsert: $query $instance');
 
     final modelId = await sqliteProvider.upsert<_Model>(
       instance,
@@ -285,7 +288,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       try {
         await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
       } on ClientException catch (e) {
-        logger.warning("#upsert client failure: $e");
+        logger.warning('#upsert client failure: $e');
       }
 
       if (autoHydrate) hydrate<_Model>(query: query);
@@ -305,7 +308,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Query query,
   }) async {
     try {
-      logger.finest("#hydrate: $_Model $query");
+      logger.finest('#hydrate: $_Model $query');
       final modelsFromRemote = await remoteProvider.get<_Model>(query: query, repository: this);
       final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
       final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
@@ -316,10 +319,10 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
           .get<_Model>(query: query, repository: this)
           .then((d) => memoryCacheProvider.hydrate<_Model>(d));
     } on ClientException catch (e) {
-      logger.warning("#hydrate client failure: $e");
+      logger.warning('#hydrate client failure: $e');
     }
 
-    return List<_Model>();
+    return <_Model>[];
   }
 
   /// Save response results to SQLite.

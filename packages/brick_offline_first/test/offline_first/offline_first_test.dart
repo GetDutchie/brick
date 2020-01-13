@@ -8,22 +8,22 @@ import '__mocks__.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("OfflineFirstModel", () {
-    test("instantiates", () {
+  group('OfflineFirstModel', () {
+    test('instantiates', () {
       final m = DemoModel('Thomas');
-      expect(m, TypeMatcher<DemoModel>());
+      expect(m, const TypeMatcher<DemoModel>());
     });
   });
 
-  group("OfflineFirstAdapter", () {
-    test("instantiates", () {
+  group('OfflineFirstAdapter', () {
+    test('instantiates', () {
       final m = DemoModelAdapter();
-      expect(m, TypeMatcher<DemoModelAdapter>());
+      expect(m, const TypeMatcher<DemoModelAdapter>());
       expect(m.tableName, 'Demo');
     });
   });
 
-  group("OfflineFirstRepository", () {
+  group('OfflineFirstRepository', () {
     final baseUrl = 'http://localhost:3000';
     final client = MockClient();
     final List<Map<String, dynamic>> responses = [
@@ -51,7 +51,7 @@ void main() {
       );
     });
 
-    test("instantiates", () {
+    test('instantiates', () {
       final repository = TestRepository.createInstance(
         baseUrl: baseUrl,
         dbName: 'db.sqlite',
@@ -63,27 +63,27 @@ void main() {
       expect(repository.remoteProvider.client.runtimeType.toString(), 'OfflineQueueHttpClient');
     });
 
-    test("#delete", () {}, skip: 'Is this worth testing because of all the stubbing?');
+    test('#delete', () {}, skip: 'Is this worth testing because of all the stubbing?');
 
-    test("#get", () async {
+    test('#get', () async {
       final results = await TestRepository().get<DemoModel>();
       expect(results, hasLength(1));
       expect(results.first.name, 'SqliteName');
     });
 
-    test("#getBatched", () async {
+    test('#getBatched', () async {
       final results = await TestRepository().getBatched<DemoModel>(requireRemote: false);
       expect(results, [DemoModel('SqliteName')]);
     });
 
-    test("#hydrateSqlite / #get requireRest:true", () async {
+    test('#hydrateSqlite / #get requireRest:true', () async {
       await TestRepository().get<DemoModel>(requireRemote: true);
       final logs = StubOfflineFirstWithRest.sqliteLogs.map((l) => (l.arguments ?? {})['sql']);
 
       verify(TestRepository()
           .remoteProvider
           .client
-          .get("http://localhost:3000/people", headers: anyNamed('headers')));
+          .get('http://localhost:3000/people', headers: anyNamed('headers')));
       expect(
         logs,
         containsAllInOrder([
@@ -93,7 +93,7 @@ void main() {
       );
     });
 
-    test("#reset", () async {
+    test('#reset', () async {
       final instance = MemoryDemoModel('SqliteName');
       await TestRepository().upsert<MemoryDemoModel>(instance);
 
@@ -102,7 +102,7 @@ void main() {
       expect(TestRepository().memoryCacheProvider.managedObjects, isEmpty);
     });
 
-    test("#storeRestResults", () async {
+    test('#storeRestResults', () async {
       final instance = DemoModel('SqliteName');
       final results = await TestRepository().storeRemoteResults([instance]);
 
@@ -110,7 +110,7 @@ void main() {
       expect(results.first.primaryKey, responses.length + 1);
     });
 
-    test("#upsert", () async {
+    test('#upsert', () async {
       final instance = DemoModel('SqliteName');
       final results = await TestRepository().upsert<DemoModel>(instance);
 

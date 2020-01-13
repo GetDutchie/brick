@@ -80,7 +80,7 @@ class SharedChecker {
   /// Returns the type arguments of `Map<Key, Value>` as `[Key, Value]`.
   /// If the Map does not declare type arguments, return is `null`.
   List<DartType> get mapArgs {
-    assert(isMap, "$targetType is not a Map");
+    assert(isMap, '$targetType is not a Map');
 
     final type = targetType as InterfaceType;
     if (type.typeArguments.isNotEmpty && type.typeArguments.length > 1) {
@@ -98,9 +98,9 @@ class SharedChecker {
     if (classElement.supertype?.typeArguments == null ||
         classElement.supertype.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        "Type argument for ${targetType.getDisplayString()} is undefined.",
+        'Type argument for ${targetType.getDisplayString()} is undefined.',
         todo:
-            "Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype.getDisplayString()}<int>`",
+            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype.getDisplayString()}<int>`',
         element: targetType.element,
       );
     }

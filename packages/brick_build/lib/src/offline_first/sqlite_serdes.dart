@@ -16,19 +16,21 @@ class SqliteSerdes extends ProviderSerializable<SqliteSerializable> {
     Element element,
     ConstantReader reader, {
     this.repositoryName,
-  }) : super(element, reader, configKey: "sqliteConfig");
+  }) : super(element, reader, configKey: 'sqliteConfig');
 
-  get config {
+  @override
+  SqliteSerializable get config {
     if (reader.read(configKey).isNull) {
       return SqliteSerializable.defaults;
     }
 
     return SqliteSerializable(
-          nullable: withinConfigKey("nullable")?.boolValue ?? SqliteSerializable.defaults.nullable,
+          nullable: withinConfigKey('nullable')?.boolValue ?? SqliteSerializable.defaults.nullable,
         ) ??
         SqliteSerializable.defaults;
   }
 
+  @override
   get generators {
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);

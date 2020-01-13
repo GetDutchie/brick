@@ -2,14 +2,14 @@ import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 
-final _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
-final _dropColumnChecker = TypeChecker.fromRuntime(DropColumn);
-final _dropTableChecker = TypeChecker.fromRuntime(DropTable);
-final _insertColumnChecker = TypeChecker.fromRuntime(InsertColumn);
-final _insertForeignKeyChecker = TypeChecker.fromRuntime(InsertForeignKey);
-final _insertTableChecker = TypeChecker.fromRuntime(InsertTable);
-final _renameColumnChecker = TypeChecker.fromRuntime(RenameColumn);
-final _renameTableChecker = TypeChecker.fromRuntime(RenameTable);
+const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
+const _dropColumnChecker = TypeChecker.fromRuntime(DropColumn);
+const _dropTableChecker = TypeChecker.fromRuntime(DropTable);
+const _insertColumnChecker = TypeChecker.fromRuntime(InsertColumn);
+const _insertForeignKeyChecker = TypeChecker.fromRuntime(InsertForeignKey);
+const _insertTableChecker = TypeChecker.fromRuntime(InsertTable);
+const _renameColumnChecker = TypeChecker.fromRuntime(RenameColumn);
+const _renameTableChecker = TypeChecker.fromRuntime(RenameTable);
 
 /// [Migration] is an abstract class; this is a library-specific implementation
 /// to access migration properties.
@@ -24,7 +24,7 @@ class _MigrationImpl extends Migration {
 /// Recreate existing migrations as manageable objects.
 /// Eventually used in [SchemaDifference] to generate new [Migration]s
 class MigrationGenerator extends Generator {
-  static final emptySchema = Schema(0, tables: Set<SchemaTable>());
+  static final emptySchema = Schema(0, tables: <SchemaTable>{});
 
   const MigrationGenerator();
 
@@ -97,7 +97,7 @@ class MigrationGenerator extends Generator {
           reader.read('newName').stringValue,
         );
       } else {
-        throw new FallThroughError();
+        throw FallThroughError();
       }
     }).toList();
   }
@@ -128,10 +128,9 @@ class MigrationGenerator extends Generator {
   /// Useful for generating an import or list of all migrations.
   static Map<String, String> allMigrationsByFilePath(LibraryReader library) {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
-    return Map<String, String>.fromIterable(
-      annotations,
-      key: (annotation) => annotation.element.name,
-      value: (annotation) => annotation.element.source.shortName,
-    );
+    return {
+      for (var annotation in annotations)
+        '${annotation.element.name}': annotation.element.source.shortName,
+    };
   }
 }

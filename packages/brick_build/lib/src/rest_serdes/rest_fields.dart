@@ -30,7 +30,8 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
     }
   }
 
-  from(element) {
+  @override
+  Rest from(element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -61,10 +62,11 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
 
 /// Converts all fields to [Rest]s for later consumption
 class RestFields extends FieldsForClass<Rest> {
+  @override
   final RestAnnotationFinder finder;
   final RestSerializable config;
 
-  RestFields(ClassElement element, [RestSerializable this.config])
+  RestFields(ClassElement element, [this.config])
       : finder = RestAnnotationFinder(config),
         super(element: element);
 }

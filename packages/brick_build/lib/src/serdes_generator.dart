@@ -20,7 +20,7 @@ abstract class SerdesGenerator<_FieldAnnotation> {
   /// [serializingFunctionName].
   /// Can access `input` and `provider`.
   String get adapterMethod {
-    return "await $serializingFunctionName(input, provider: provider, repository: repository)";
+    return 'await $serializingFunctionName(input, provider: provider, repository: repository)';
   }
 
   /// The expected input type for the [adapterMethod]
@@ -39,7 +39,7 @@ abstract class SerdesGenerator<_FieldAnnotation> {
 
   /// Mash the [element]'s fields into a list for serialization or deserialization
   String get fieldsForGenerator {
-    return fields.stableInstanceFields.fold(List<String>(), (acc, field) {
+    return fields.stableInstanceFields.fold<List<String>>(<String>[], (acc, field) {
       final fieldAnnotation = fields.annotationForField(field);
       final serialization = addField(field, fieldAnnotation);
       if (serialization != null) {
@@ -67,7 +67,7 @@ abstract class SerdesGenerator<_FieldAnnotation> {
   String get providerName;
 
   /// For example, `OfflineFirst`
-  String get repositoryName => "Model";
+  String get repositoryName => 'Model';
 
   /// Expected arguments for the serializing/deserializing function.
   /// Does **not** include parentheses.
@@ -76,19 +76,19 @@ abstract class SerdesGenerator<_FieldAnnotation> {
   /// as a named argument.
   String get serializingFunctionArguments {
     final input = doesDeserialize ? '$deserializeInputType data' : '$className instance';
-    return "$input, {${providerName}Provider provider, ${repositoryName}Repository repository}";
+    return '$input, {${providerName}Provider provider, ${repositoryName}Repository repository}';
   }
 
   /// The generated deserialize function name
   String get serializingFunctionName {
     final action = doesDeserialize ? 'From' : 'To';
-    return "_\$${className}$action$providerName";
+    return '_\$$className$action$providerName';
   }
 
   /// The [Type] expected by the provider when serializing
   String get serializeOutputType => 'Map<String, dynamic>';
 
-  SerdesGenerator(ClassElement this.element, FieldsForClass<_FieldAnnotation> this.fields);
+  SerdesGenerator(this.element, this.fields);
 
   /// Given each field, determine whether it can be added to the serdes function
   /// and, more importantly, determine how it should be added. If the field should not
@@ -101,35 +101,35 @@ abstract class SerdesGenerator<_FieldAnnotation> {
   /// If a custom generator is provided, replace variables with desired values
   /// Useful for hacking around `const` functions when duplicating logic
   String digestCustomGeneratorPlaceholders(String input) {
-    return input.replaceAllMapped(RegExp(r"%((?:[\w\d]+)+)%"), (placeholderMatch) {
+    return input.replaceAllMapped(RegExp(r'%((?:[\w\d]+)+)%'), (placeholderMatch) {
       // Swap placeholders with values
 
       final placeholderName = placeholderMatch?.group(1);
-      final valueRegex = RegExp("@$placeholderName@([^@]+)@/$placeholderName@");
+      final valueRegex = RegExp('@$placeholderName@([^@]+)@/$placeholderName@');
       if (placeholderName == null || !input.contains(valueRegex)) {
-        throw InvalidGenerationSourceError("`$input` does not declare variable @$placeholderName@");
+        throw InvalidGenerationSourceError('`$input` does not declare variable @$placeholderName@');
       }
 
       final valueMatch = valueRegex.firstMatch(input);
       if (valueMatch?.group(1) == null) {
         throw InvalidGenerationSourceError(
-            "@$placeholderName@ requires a trailing value: @NAME@value@/NAME@");
+            '@$placeholderName@ requires a trailing value: @NAME@value@/NAME@');
       }
 
       return valueMatch.group(1);
-    }).replaceAll(RegExp(r"@([\w\d]+)@.*@\/\1@"), ""); // Remove variable values
+    }).replaceAll(RegExp(r'@([\w\d]+)@.*@\/\1@'), ''); // Remove variable values
   }
 
   /// Wraps [fieldsForGenerator] in a method to produce serialization or deserialization
   String generate() {
-    final expectedOutput = doesDeserialize ? "Future<$className>" : "Future<$serializeOutputType>";
+    final expectedOutput = doesDeserialize ? 'Future<$className>' : 'Future<$serializeOutputType>';
     final returnWrapper =
-        doesDeserialize ? "$className($fieldsForGenerator)" : "{$fieldsForGenerator}";
-    final output = """
-      $expectedOutput ${serializingFunctionName}($serializingFunctionArguments) async {
+        doesDeserialize ? '$className($fieldsForGenerator)' : '{$fieldsForGenerator}';
+    final output = '''
+      $expectedOutput $serializingFunctionName($serializingFunctionArguments) async {
         return $returnWrapper$generateSuffix
       }
-    """;
+    ''';
 
     return _formatter.format(output);
   }

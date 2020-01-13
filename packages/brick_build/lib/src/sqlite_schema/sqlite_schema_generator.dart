@@ -22,7 +22,7 @@ class SqliteSchemaGenerator {
     final existingMigrations = migrationGenerator.expandAllMigrations(library);
 
     final parts = existingMigrations.map((m) => "part '${m.version}.migration.dart';");
-    final migrationClasses = existingMigrations.map((m) => "Migration${m.version}()");
+    final migrationClasses = existingMigrations.map((m) => 'Migration${m.version}()');
 
     final output = """
       // GENERATED CODE DO NOT EDIT
@@ -56,7 +56,7 @@ class SqliteSchemaGenerator {
   /// Create a schema from the contents of all annotated models.
   /// The schema version is incremented from the largest version of all annotated migrations.
   Schema _createNewSchema(LibraryReader library, List<SqliteFields> fieldses, {int version}) {
-    final tables = fieldses.fold<Set<SchemaTable>>(Set<SchemaTable>(), (acc, fields) {
+    final tables = fieldses.fold<Set<SchemaTable>>(<SchemaTable>{}, (acc, fields) {
       acc.add(_createTable(fields.element.name, fields));
       return acc;
     });
@@ -84,7 +84,7 @@ class SqliteSchemaGenerator {
 
   Iterable<SchemaColumn> _createColumns(SqliteFields fields) {
     return fields.stableInstanceFields.map((field) {
-      OfflineFirstChecker checker = OfflineFirstChecker(field.type);
+      var checker = OfflineFirstChecker(field.type);
       final column = fields.finder.annotationForField(field);
       final columnName = column.name;
       if (checker.isFuture) {

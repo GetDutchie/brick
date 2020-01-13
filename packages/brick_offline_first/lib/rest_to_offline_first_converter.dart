@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
-import 'dart:io';
 import 'package:dart_style/dart_style.dart' as dart_style;
 
 final _formatter = dart_style.DartFormatter();
@@ -35,14 +35,14 @@ class RestToOfflineFirstConverter {
     this.topLevelKey,
   }) {
     _client = Client();
-    headers?.addAll({"Content-Type": "application/json"});
+    headers?.addAll({'Content-Type': 'application/json'});
   }
 
   /// Fetch from the rest endpoint
   Future<Map<String, dynamic>> getRestPayload() async {
     final resp = await client.get(endpoint, headers: headers);
     if (resp.statusCode != 200) {
-      throw StateError("Request unsuccessful; status code ${resp.statusCode}");
+      throw StateError('Request unsuccessful; status code ${resp.statusCode}');
     }
 
     final result = jsonDecode(resp.body);
@@ -69,19 +69,19 @@ class RestToOfflineFirstConverter {
   String generateFields(Map<String, dynamic> fields) {
     final keys = fields.keys.toList().cast<String>();
     keys.sort();
-    return keys.fold(List<String>(), (acc, key) {
+    return keys.fold<List<String>>(<String>[], (acc, key) {
       final valueType = fields[key].runtimeType.toString();
-      return acc..add("  final $valueType ${toCamelCase(key)};");
-    }).join("\n\n");
+      return acc..add('  final $valueType ${toCamelCase(key)};');
+    }).join('\n\n');
   }
 
   /// Produce fields to be invoked in the default constructor
   String generateConstructorFields(Map<String, dynamic> fields) {
     final keys = fields.keys.toList().cast<String>();
     keys.sort();
-    return keys.fold(List<String>(), (acc, key) {
-      return acc..add("    this.${toCamelCase(key)}");
-    }).join(",\n");
+    return keys.fold<List<String>>(<String>[], (acc, key) {
+      return acc..add('    this.${toCamelCase(key)}');
+    }).join(',\n');
   }
 
   /// Output a usable class annotated by `@ConnectOfflineFirst` and extending [OfflineFirstModel].
@@ -91,20 +91,20 @@ class RestToOfflineFirstConverter {
     final fields = _fields ?? await getRestPayload();
     final generatedFields = generateFields(fields);
     final generatedConstructorFields = generateConstructorFields(fields);
-    final splitEndpoint = endpoint.split("/");
+    final splitEndpoint = endpoint.split('/');
     final camelizedClass = toCamelCase(splitEndpoint.last);
     final className = camelizedClass[0].toUpperCase() + camelizedClass.substring(1);
-    final restEndpoint = splitEndpoint.sublist(3).join("/");
-    final fromKey = topLevelKey != null ? 'fromKey: "$topLevelKey",' : '';
+    final restEndpoint = splitEndpoint.sublist(3).join('/');
+    final fromKey = topLevelKey != null ? "fromKey: '$topLevelKey'," : '';
 
-    final output = """
+    final output = '''
       import 'package:brick_offline_first/offline_first.dart';
       import 'package:brick_offline_first_abstract/annotations.dart';
 
       @ConnectOfflineFirst(
         restConfig: RestSerializable(
           fieldRename: FieldRename.snake,
-          endpoint: '=> "/$restEndpoint"',$fromKey
+          endpoint: '=> '/$restEndpoint'',$fromKey
         ),
       )
       class $className extends OfflineFirstModel {
@@ -114,7 +114,7 @@ class RestToOfflineFirstConverter {
       $generatedConstructorFields,
         });
       }
-    """;
+    ''';
 
     return _formatter.format(output);
   }
@@ -122,7 +122,7 @@ class RestToOfflineFirstConverter {
   /// Save generated class to file.
   /// Defaults to `app/models/LAST_ENDPOINT_PATH.dart`
   Future<File> saveToFile([String filePath]) async {
-    filePath = filePath ?? "app/models/${endpoint.split("/").last}.dart";
+    filePath = filePath ?? 'app/models/${endpoint.split('/').last}.dart';
     final contents = await generate();
     final file = File(filePath);
     return await file.writeAsString(contents);

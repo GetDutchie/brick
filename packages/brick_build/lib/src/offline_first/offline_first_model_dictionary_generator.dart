@@ -15,11 +15,12 @@ import 'package:sqflite/sqflite.dart' show DatabaseExecutor;""";
   /// All classes annotated with `@ConnectOfflineFirst`
   const OfflineFirstModelDictionaryGenerator();
 
+  @override
   String generate(Map<String, String> classNamesToFileNames) {
     final adapters = adaptersFromFiles(classNamesToFileNames);
     final dictionary = dictionaryFromFiles(classNamesToFileNames);
     final models = modelsFromFiles(classNamesToFileNames);
-    return """
+    return '''
 ${ModelDictionaryGenerator.HEADER}
 $requiredImports
 
@@ -38,6 +39,6 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   $dictionary
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);
-""";
+''';
   }
 }

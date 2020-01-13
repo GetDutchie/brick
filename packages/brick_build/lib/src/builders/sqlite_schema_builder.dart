@@ -4,10 +4,12 @@ import 'package:build/build.dart';
 
 /// Write a [Schema] from existing migrations. Outputs to app/db/schema.g.dart
 class SchemaBuilder extends SqliteBaseBuilder {
+  @override
   final outputExtension = '.schema_builder.dart';
 
   SchemaBuilder(AnnotationSuperGenerator generator) : super(generator);
 
+  @override
   Future<void> build(BuildStep buildStep) async {
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -16,8 +18,8 @@ class SchemaBuilder extends SqliteBaseBuilder {
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final output = schemaGenerator.generate(libraryReader, fieldses);
 
-    await manuallyUpsertAppFile("db/schema.g.dart", output);
+    await manuallyUpsertAppFile('db/schema.g.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
-    logStopwatch("Generated db/schema.g.dart", stopwatch);
+    logStopwatch('Generated db/schema.g.dart', stopwatch);
   }
 }

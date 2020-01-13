@@ -28,14 +28,14 @@ class OfflineRequestQueue {
     @required this.client,
     Duration interval,
     this.maximumRequests = 1,
-  })  : this.interval = interval ?? Duration(seconds: 5),
-        _logger = Logger("OfflineRequestQueue#${client.databaseName}");
+  })  : this.interval = interval ?? const Duration(seconds: 5),
+        _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();
-    _logger.finer("Queue started");
+    _logger.finer('Queue started');
     _timer = Timer.periodic(interval, _process);
   }
 
@@ -43,7 +43,7 @@ class OfflineRequestQueue {
   void stop() {
     _timer?.cancel();
     _timer = null;
-    _logger.finer("Queue stopped");
+    _logger.finer('Queue stopped');
   }
 
   /// Resend unproccessed requests to the client.
@@ -55,7 +55,7 @@ class OfflineRequestQueue {
 
     final requeuedRequests = requests.map(client.send);
     if (requeuedRequests.isNotEmpty) {
-      _logger.finer("Processing ${requeuedRequests.length} requests");
+      _logger.finer('Processing ${requeuedRequests.length} requests');
       await Future.wait(requeuedRequests);
     }
   }

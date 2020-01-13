@@ -3,11 +3,11 @@ import 'package:brick_sqlite_abstract/db.dart';
 const version = 1;
 
 const up = [
-  const InsertTable("demo"),
-  const InsertForeignKey("demo", "users"),
+  InsertTable('demo'),
+  InsertForeignKey('demo', 'users'),
 ];
 
-const down = [];
+const down = <MigrationCommand>[];
 
 @Migratable(version: '$version', up: up, down: down)
 class Migration1 extends Migration {
