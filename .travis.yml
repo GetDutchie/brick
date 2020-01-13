@@ -5,17 +5,21 @@ language: dart
 branches:
   only:
     - master
+before_install:
+  - "git clone https://github.com/flutter/flutter.git -b beta"
+  - "export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH"
+  - flutter doctor
 
 jobs:
   include:
     - stage: analyze
-      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings .`"
+      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings lib`"
       dart: dev
       os: linux
       env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite packages/brick_sqlite_abstract"
       script: ./tool/travis.sh dartanalyzer
     - stage: analyze
-      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings .`"
+      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_rest, packages/brick_sqlite, packages/brick_sqlite_abstract; TASKS: `dartanalyzer --fatal-warnings lib`"
       dart: stable
       os: linux
       env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_rest packages/brick_sqlite packages/brick_sqlite_abstract"

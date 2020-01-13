@@ -59,8 +59,8 @@ for PKG in ${PKGS}; do
       flutter test || EXIT_CODE=$?
       ;;
     dartanalyzer)
-      echo 'dartanalyzer --fatal-warnings .'
-      dartanalyzer --fatal-warnings . || EXIT_CODE=$?
+      echo 'dartanalyzer --fatal-warnings lib'
+      dartanalyzer --fatal-warnings lib || EXIT_CODE=$?
       ;;
     test)
       echo 'pub run test'

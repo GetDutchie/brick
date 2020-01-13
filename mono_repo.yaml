@@ -2,6 +2,10 @@ travis:
   branches:
     only:
     - master
+  before_install:
+    - git clone https://github.com/flutter/flutter.git -b beta
+    - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+    - flutter doctor
 
 merge_stages:
 - analyze

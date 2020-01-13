@@ -1,4 +1,0 @@
-# Analyzer freaks out about example code which isn't relevant
-analyzer:
-  exclude:
-    - example/**
