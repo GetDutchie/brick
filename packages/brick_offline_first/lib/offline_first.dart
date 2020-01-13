@@ -13,7 +13,7 @@ import 'package:http/src/exception.dart'; // ignore: implementation_imports
 
 export 'package:brick_core/core.dart' show Query, Where, WherePhrase, Compare, QueryAction;
 export 'package:brick_offline_first_abstract/abstract.dart' hide OfflineFirstWithRestModel;
-export 'package:brick_offline_first_abstract/annotations.dart' hide Rest, RestSerializable;
+export 'package:brick_offline_first_abstract/annotations.dart';
 export 'package:brick_sqlite/sqlite.dart' show SqliteProvider;
 export 'package:brick_offline_first/src/offline_first_exception.dart';
 
