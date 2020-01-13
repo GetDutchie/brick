@@ -98,9 +98,9 @@ class SharedChecker {
     if (classElement.supertype?.typeArguments == null ||
         classElement.supertype.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        "Type argument for ${targetType.name} is undefined.",
+        "Type argument for ${targetType.getDisplayString()} is undefined.",
         todo:
-            "Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype.name}<int>`",
+            "Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype.getDisplayString()}<int>`",
         element: targetType.element,
       );
     }

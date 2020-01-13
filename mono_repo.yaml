@@ -1,0 +1,8 @@
+travis:
+  branches:
+    only:
+    - master
+
+merge_stages:
+- analyze
+- unit_test

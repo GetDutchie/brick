@@ -31,6 +31,10 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// the [Adapter].
   get<_Model extends _ManagedModel>({Query query});
 
+  /// Perform required setup work. For example, migrating a database, starting a queue,
+  /// or authenticating with a [Provider]'s service.
+  Future<void> initialize() async => null;
+
   /// Insert or update a model in all [Provider]s
   ///
   /// Optionally, the repository can

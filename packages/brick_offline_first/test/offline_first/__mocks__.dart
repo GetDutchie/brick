@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:brick_sqlite/sqlite.dart';
-import 'package:brick_offline_first/testing.dart' hide MockClient;
 
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_offline_first/offline_first.dart';

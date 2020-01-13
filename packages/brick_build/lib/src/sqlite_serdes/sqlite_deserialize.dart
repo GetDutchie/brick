@@ -90,7 +90,7 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
       if (argTypeChecker.hasSerdes) {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
-          final serializableType = argTypeChecker.superClassTypeArgs.last.name;
+          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
           return """
             jsonDecode(data['$name']).map(
               (c) => $argType.$constructorName(c as $serializableType)
@@ -141,7 +141,7 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
     } else if (checker.hasSerdes) {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
-        final serializableType = checker.superClassTypeArgs.last.name;
+        final serializableType = checker.superClassTypeArgs.last.getDisplayString();
         return "${field.type}.$constructorName(data['$name'] as $serializableType)";
       }
 

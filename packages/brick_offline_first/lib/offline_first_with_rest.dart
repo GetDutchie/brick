@@ -13,6 +13,7 @@ import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart
 
 export 'package:brick_offline_first/offline_first.dart' hide OfflineFirstRepository;
 export 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstWithRestModel;
+export 'package:brick_rest/rest.dart' show FieldRename, Rest, RestProvider, RestSerializable;
 
 /// This adapter fetches first from [SqliteProvider] then hydrates with [RestProvider].
 abstract class OfflineFirstWithRestAdapter<_Model extends OfflineFirstWithRestModel>
@@ -41,7 +42,7 @@ abstract class OfflineFirstWithRestRepository
   OfflineFirstWithRestRepository({
     @required RestProvider restProvider,
     @required SqliteProvider sqliteProvider,
-    @required MemoryCacheProvider memoryCacheProvider,
+    MemoryCacheProvider memoryCacheProvider,
     Set<Migration> migrations,
     bool autoHydrate,
     String loggerName,
