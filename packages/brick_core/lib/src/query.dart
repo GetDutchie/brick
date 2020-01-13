@@ -49,14 +49,14 @@ class Query {
     this.where,
   }) : this.params = params ?? {} {
     /// Number of results first returned from query; `0` returns all. Must be greater than -1
-    if (params['limit'] != null) {
-      assert(params['limit'] > -1);
+    if (this.params['limit'] != null) {
+      assert(this.params['limit'] > -1);
     }
 
     /// Offset results returned from query. Must be greater than -1 and must be used with limit
-    if (params['offset'] != null) {
-      assert(params['offset'] > -1);
-      assert(params['limit'] != null);
+    if (this.params['offset'] != null) {
+      assert(this.params['offset'] > -1);
+      assert(this.params['limit'] != null);
     }
   }
 
