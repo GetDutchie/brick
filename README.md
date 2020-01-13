@@ -170,7 +170,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
 1. Extend [an existing repository](#providers-and-repositories) or create your own:
     ```dart
     // lib/app/repository.dart
-    class MyRepository extends OfflineFirstWithRepository {}
+    class MyRepository extends OfflineFirstWithRestRepository {}
     ```
 
 # Glossary
