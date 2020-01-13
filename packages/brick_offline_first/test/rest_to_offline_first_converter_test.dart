@@ -23,7 +23,7 @@ void main() {
 
       test('with top-level map', () async {
         when(client.get('http://localhost:3000/person'))
-            .thenAnswer((_) async => http.Response("{'name': 'Thomas'}", 200));
+            .thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
         final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/person');
         converter.client = client;
@@ -74,7 +74,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 @ConnectOfflineFirst(
   restConfig: RestSerializable(
     fieldRename: FieldRename.snake,
-    endpoint: '=> '/people'',
+    endpoint: "=> '/people';",
   ),
 )
 class People extends OfflineFirstModel {

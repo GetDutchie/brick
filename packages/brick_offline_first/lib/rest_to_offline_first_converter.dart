@@ -104,7 +104,7 @@ class RestToOfflineFirstConverter {
       @ConnectOfflineFirst(
         restConfig: RestSerializable(
           fieldRename: FieldRename.snake,
-          endpoint: '=> '/$restEndpoint'',$fromKey
+          endpoint: "=> '/$restEndpoint';",$fromKey
         ),
       )
       class $className extends OfflineFirstModel {
