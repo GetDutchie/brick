@@ -11,7 +11,7 @@ const down = [
   const DropColumn("address", onTable: "User"),
 ];
 
-@Migratable(version: "$version", up: up, down: down)
+@Migratable(version: '$version', up: up, down: down)
 class Migration1 extends Migration {
   const Migration1() : super(version: version, up: up, down: down);
 }
@@ -53,7 +53,7 @@ const List<MigrationCommand> _migration_2_down = [
 //
 
 @Migratable(
-  version: "2",
+  version: '2',
   up: _migration_2_up,
   down: _migration_2_down,
 )

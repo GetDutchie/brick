@@ -41,11 +41,15 @@ for PKG in ${PKGS}; do
   pushd "${PKG}" || exit $?
 
   PUB_EXIT_CODE=0
-  pub upgrade --no-precompile || PUB_EXIT_CODE=$?
+  if [ -x "$(command -v flutter)" ]; then
+    flutter pub get || PUB_EXIT_CODE=$?
+  else
+    pub get --no-precompile || PUB_EXIT_CODE=$?
+  fi
 
   if [[ ${PUB_EXIT_CODE} -ne 0 ]]; then
     EXIT_CODE=1
-    echo -e '\033[31mpub upgrade failed\033[0m'
+    echo -e '\033[31mpub get failed\033[0m'
     popd
     continue
   fi
@@ -59,8 +63,8 @@ for PKG in ${PKGS}; do
       flutter test || EXIT_CODE=$?
       ;;
     dartanalyzer)
-      echo 'dartanalyzer --fatal-warnings .'
-      dartanalyzer --fatal-warnings . || EXIT_CODE=$?
+      echo 'dartanalyzer --fatal-warnings lib'
+      dartanalyzer --fatal-warnings lib || EXIT_CODE=$?
       ;;
     test)
       echo 'pub run test'

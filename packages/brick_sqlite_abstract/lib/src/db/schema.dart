@@ -47,7 +47,7 @@ class Schema {
     assert((version == null) || (version != null && version > -1));
     version = version ?? MigrationManager.latestMigrationVersion(migrations);
     final commands = expandMigrations(migrations);
-    final tables = commands.fold(Set<SchemaTable>(), _commandToSchema);
+    final tables = commands.fold(<SchemaTable>{}, _commandToSchema);
 
     return Schema(
       version,
@@ -60,7 +60,7 @@ class Schema {
     SchemaTable findTable(String tableName) {
       return tables.firstWhere(
         (s) => s.name == tableName,
-        orElse: () => throw StateError("Table $tableName must be inserted first"),
+        orElse: () => throw StateError('Table $tableName must be inserted first'),
       );
     }
 
@@ -97,7 +97,7 @@ class Schema {
       final table = findTable(command.onTable);
       final column = table.columns.firstWhere(
         (s) => s.name == command.oldName,
-        orElse: () => throw StateError("Column ${command.oldName} must be inserted first"),
+        orElse: () => throw StateError('Column ${command.oldName} must be inserted first'),
       );
       final newColumn = column..name = command.newName;
 
@@ -107,7 +107,7 @@ class Schema {
       final table = findTable(command.onTable);
       final column = table.columns.firstWhere(
         (s) => s.name == command.name,
-        orElse: () => throw StateError("Column ${command.name} must be inserted first"),
+        orElse: () => throw StateError('Column ${command.name} must be inserted first'),
       );
       table.columns.remove(column);
     } else if (command is InsertForeignKey) {
@@ -128,17 +128,17 @@ class Schema {
   /// Output for generator
   String get forGenerator {
     final tableString = tables
-        .map((t) => t.forGenerator.replaceAll("\n\t", "\n\t\t\t").replaceAll("\n)", "\n\t\t)"))
-        .join(",\n\t\t");
+        .map((t) => t.forGenerator.replaceAll('\n\t', '\n\t\t\t').replaceAll('\n)', '\n\t\t)'))
+        .join(',\n\t\t');
 
-    return """Schema(
+    return '''Schema(
 \t$version,
 \tgeneratorVersion: $generatorVersion,
 \ttables: Set<SchemaTable>.from([
 \t\t$tableString
 \t])
-)"""
-        .replaceAll("\t", "  ");
+)'''
+        .replaceAll('\t', '  ');
   }
 
   @override

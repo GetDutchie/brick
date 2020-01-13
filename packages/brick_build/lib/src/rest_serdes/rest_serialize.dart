@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show Rest;
 import 'package:brick_build/src/offline_first/offline_first_checker.dart';
 import 'package:brick_build/src/offline_first/offline_first_serdes_generator.dart';
 import 'package:brick_build/src/rest_serdes/rest_fields.dart';
@@ -12,10 +12,17 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
     String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
+  @override
   final providerName = OfflineFirstSerdesGenerator.REST_PROVIDER_NAME;
+
+  @override
   final doesDeserialize = false;
+
+  @override
   String get adapterMethod =>
-      "await $serializingFunctionName(input, provider: provider, repository: repository)";
+      'await $serializingFunctionName(input, provider: provider, repository: repository)';
+
+  @override
   List<String> get instanceFieldsAndMethods {
     String toKey = (fields as RestFields).config?.toKey?.trim();
 

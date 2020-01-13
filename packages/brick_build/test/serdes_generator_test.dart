@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show Rest;
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 import 'package:brick_build/src/serdes_generator.dart';

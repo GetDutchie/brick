@@ -4,7 +4,7 @@ import 'package:brick_build/src/rest_serdes/rest_deserialize.dart';
 import 'package:brick_build/src/rest_serdes/rest_fields.dart';
 import 'package:brick_build/src/rest_serdes/rest_serialize.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_rest/rest.dart' show RestSerializable, FieldRename;
 
 /// Digest a `restConfig` (`@ConnectOfflineFirst`) from [reader] and manage serdes generators
 /// to and from a `RestProvider`.

@@ -8,6 +8,7 @@ class Rest implements FieldSerializable {
   ///
   /// Must be a primitive type: `bool`, `DateTime`, `double`, `int`, `List`, `Map`,
   /// `Set`, or `String`. [defaultValue] must also match the field's `Type`.
+  @override
   final dynamic defaultValue;
 
   /// By default, all enums from REST are assumed to be delivered as `int`. For APIs that
@@ -17,10 +18,12 @@ class Rest implements FieldSerializable {
   /// The type of this field should be an enum. Defaults to `false`.
   final bool enumAsString;
 
+  @override
   final String fromGenerator;
 
   /// `true` if the generator should ignore this field completely.
   /// When `true`, takes precedence over [ignoreFrom] and [ignoreTo]. Defaults to `false`.
+  @override
   final bool ignore;
 
   /// `true` if this field should be ignored **only during** deserializization
@@ -37,12 +40,14 @@ class Rest implements FieldSerializable {
   /// Associations should not be annotated with `name`.
   ///
   /// If `null`, the snake case value of the field is used.
+  @override
   final String name;
 
   /// When `true`, `null` fields are handled gracefully when encoding from JSON.
   /// Defaults to `false`.
   final bool nullable;
 
+  @override
   final String toGenerator;
 
   /// Creates a new [Rest] instance.

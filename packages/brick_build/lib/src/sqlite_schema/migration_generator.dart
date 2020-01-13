@@ -35,9 +35,9 @@ class MigrationGenerator extends Generator {
     return classes.map((migration) {
       final reader = migration.annotation;
       return _MigrationImpl(
-        version: int.parse(reader.read("version").stringValue),
-        up: _migrationCommandsFromReader(reader.read("up").listValue),
-        down: _migrationCommandsFromReader(reader.read("down").listValue),
+        version: int.parse(reader.read('version').stringValue),
+        up: _migrationCommandsFromReader(reader.read('up').listValue),
+        down: _migrationCommandsFromReader(reader.read('down').listValue),
       );
     });
   }
@@ -48,53 +48,53 @@ class MigrationGenerator extends Generator {
       final reader = ConstantReader(object);
       if (_dropColumnChecker.isExactlyType(object.type)) {
         return DropColumn(
-          reader.read("name").stringValue,
-          onTable: reader.read("onTable").stringValue,
+          reader.read('name').stringValue,
+          onTable: reader.read('onTable').stringValue,
         );
       } else if (_dropTableChecker.isExactlyType(object.type)) {
         return DropTable(
-          reader.read("name").stringValue,
+          reader.read('name').stringValue,
         );
       } else if (_insertColumnChecker.isExactlyType(object.type)) {
         final definitionObject =
-            reader.read("definitionType").isNull ? null : reader.read("definitionType").objectValue;
+            reader.read('definitionType').isNull ? null : reader.read('definitionType').objectValue;
         final definitionValue = Column.values.singleWhere(
           (f) => definitionObject?.getField(f.toString().split('.')[1]) != null,
           orElse: () => null,
         );
         return InsertColumn(
-          reader.read("name").stringValue,
+          reader.read('name').stringValue,
           definitionValue,
           autoincrement:
-              reader.read("autoincrement").isNull ? null : reader.read("autoincrement").boolValue,
+              reader.read('autoincrement').isNull ? null : reader.read('autoincrement').boolValue,
           defaultValue:
-              reader.read("defaultValue").isNull ? null : reader.read("defaultValue").literalValue,
-          nullable: reader.read("nullable").isNull ? null : reader.read("nullable").boolValue,
-          onTable: reader.read("onTable").stringValue,
-          unique: reader.read("unique").isNull ? null : reader.read("unique").boolValue,
+              reader.read('defaultValue').isNull ? null : reader.read('defaultValue').literalValue,
+          nullable: reader.read('nullable').isNull ? null : reader.read('nullable').boolValue,
+          onTable: reader.read('onTable').stringValue,
+          unique: reader.read('unique').isNull ? null : reader.read('unique').boolValue,
         );
       } else if (_insertForeignKeyChecker.isExactlyType(object.type)) {
         return InsertForeignKey(
-          reader.read("localTableName").stringValue,
-          reader.read("foreignTableName").stringValue,
-          foreignKeyColumn: reader.read("foreignKeyColumn").isNull
+          reader.read('localTableName').stringValue,
+          reader.read('foreignTableName').stringValue,
+          foreignKeyColumn: reader.read('foreignKeyColumn').isNull
               ? null
-              : reader.read("foreignKeyColumn").stringValue,
+              : reader.read('foreignKeyColumn').stringValue,
         );
       } else if (_insertTableChecker.isExactlyType(object.type)) {
         return InsertTable(
-          reader.read("name").stringValue,
+          reader.read('name').stringValue,
         );
       } else if (_renameColumnChecker.isExactlyType(object.type)) {
         return RenameColumn(
-          reader.read("oldName").stringValue,
-          reader.read("newName").stringValue,
-          onTable: reader.read("onTable").stringValue,
+          reader.read('oldName').stringValue,
+          reader.read('newName').stringValue,
+          onTable: reader.read('onTable').stringValue,
         );
       } else if (_renameTableChecker.isExactlyType(object.type)) {
         return RenameTable(
-          reader.read("oldName").stringValue,
-          reader.read("newName").stringValue,
+          reader.read('oldName').stringValue,
+          reader.read('newName').stringValue,
         );
       } else {
         throw new FallThroughError();

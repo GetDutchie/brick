@@ -1,6 +1,6 @@
 name: brick_sqlite
 description: SQLite connector for Brick, a data persistence library for Flutter
-homepage: https://github.com/greenbits/brick/packages/brick_sqlite
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 

@@ -16,12 +16,16 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
+  @override
   final providerName = OfflineFirstSerdesGenerator.SQLITE_PROVIDER_NAME;
+
+  @override
   final doesDeserialize = false;
 
+  @override
   List<String> get instanceFieldsAndMethods {
-    final fieldsToColumns = List<String>();
-    final uniqueFields = Map<String, String>();
+    final fieldsToColumns = <String>[];
+    final uniqueFields = <String, String>{};
     final tableName = element.name;
 
     fieldsToColumns.add('''

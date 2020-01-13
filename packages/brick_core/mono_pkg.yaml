@@ -4,6 +4,6 @@ dart:
 
 stages:
   - analyze:
-    - dartanalyzer: --fatal-warnings .
+    - dartanalyzer: --fatal-warnings lib
   - unit_test:
     - test

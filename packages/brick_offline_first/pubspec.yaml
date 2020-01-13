@@ -1,7 +1,7 @@
 name: brick_offline_first
 description: A Brick domain that routes data fetching through local providers
   before remote providers.
-homepage: https://github.com/greenbits/brick/packages/brick_offline_first
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_first
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 

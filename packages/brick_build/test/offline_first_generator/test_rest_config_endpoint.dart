@@ -1,5 +1,6 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
+import 'package:brick_rest/rest.dart' show RestSerializable;
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT

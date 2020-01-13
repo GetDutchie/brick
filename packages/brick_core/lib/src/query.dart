@@ -2,8 +2,8 @@ import 'package:collection/collection.dart' show MapEquality, ListEquality;
 import 'package:brick_core/src/where.dart';
 import 'dart:convert';
 
-const _mapEquality = const MapEquality();
-const _listEquality = const ListEquality();
+const _mapEquality = MapEquality();
+const _listEquality = ListEquality();
 
 /// An interface to request data from a [Provider] or [Repository].
 class Query {
@@ -106,7 +106,8 @@ class Query {
     };
   }
 
-  toString() => jsonEncode(toJson());
+  @override
+  String toString() => jsonEncode(toJson());
 
   @override
   bool operator ==(Object other) =>

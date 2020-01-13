@@ -27,7 +27,7 @@ const List<MigrationCommand> _migration_1_down = [
 //
 
 @Migratable(
-  version: "1",
+  version: '1',
   up: _migration_1_up,
   down: _migration_1_down,
 )

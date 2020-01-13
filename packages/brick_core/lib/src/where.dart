@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart' show ListEquality;
 import 'dart:convert';
 
-const _listEquality = const ListEquality();
+const _listEquality = ListEquality();
 
 /// Lower-level control over the value of a `Query#where` map.
 ///
@@ -54,7 +54,7 @@ abstract class WhereCondition<T extends dynamic> {
 
   Map<String, dynamic> toJson() {
     return {
-      'subclass': this.runtimeType.toString(),
+      'subclass': runtimeType.toString(),
       if (evaluatedField != null) 'evaluatedField': evaluatedField,
       if (compare != null) 'compare': Compare.values.indexOf(compare),
       if (conditions != null)
@@ -64,17 +64,18 @@ abstract class WhereCondition<T extends dynamic> {
     };
   }
 
-  toString() => jsonEncode(toJson());
+  @override
+  String toString() => jsonEncode(toJson());
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WhereCondition &&
-          this?.evaluatedField == other?.evaluatedField &&
-          this?.compare == other?.compare &&
-          this?.required == other?.required &&
-          _listEquality.equals(this?.conditions, other?.conditions) &&
-          this?.value == other?.value;
+          evaluatedField == other?.evaluatedField &&
+          compare == other?.compare &&
+          required == other?.required &&
+          _listEquality.equals(conditions, other?.conditions) &&
+          value == other?.value;
 
   @override
   int get hashCode =>
