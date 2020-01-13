@@ -122,7 +122,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          final serializableType = argTypeChecker.superClassTypeArgs.last.name;
+          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
           return """
             jsonEncode(instance.${field.name}?.map(
               (${checker.unFuturedArgType} c) => c?.$serializeMethod()
@@ -213,6 +213,6 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
       return _finalTypeForField(checker.argType);
     }
 
-    return type.name;
+    return type.getDisplayString();
   }
 }

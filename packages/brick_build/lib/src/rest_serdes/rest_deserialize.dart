@@ -127,7 +127,7 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
       if (argTypeChecker.hasSerdes) {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
-          final serializableType = argTypeChecker.superClassTypeArgs.first.name;
+          final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
           return "data['$name'].map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue";
         }
       }

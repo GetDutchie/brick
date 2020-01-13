@@ -54,7 +54,7 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
         if (fieldAnnotation.enumAsString) {
           return "instance.${field.name}?.map((e) => e.toString().split('.').last)";
         } else {
-          return "instance.${field.name}?.map((e) => ${checker.argType.name}.values.indexOf(e))";
+          return "instance.${field.name}?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))";
         }
       }
 
@@ -62,7 +62,7 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return "instance.${field.name}?.map((${checker.argType.name} c) => c?.$serializeMethod())";
+          return "instance.${field.name}?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())";
         }
       }
 

@@ -111,10 +111,11 @@ class SqliteSchemaGenerator {
         );
       } else if (checker.isSibling) {
         return SchemaColumn(
-          InsertForeignKey.foreignKeyColumnName(checker.unFuturedType.name, column.name),
+          InsertForeignKey.foreignKeyColumnName(
+              checker.unFuturedType.getDisplayString(), column.name),
           int,
           isForeignKey: true,
-          foreignTableName: checker.unFuturedType.name,
+          foreignTableName: checker.unFuturedType.getDisplayString(),
           nullable: column?.nullable,
         );
       } else if (checker.hasSerdes) {
