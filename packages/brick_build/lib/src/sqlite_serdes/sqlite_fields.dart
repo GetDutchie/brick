@@ -12,7 +12,8 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 
   SqliteAnnotationFinder([this.config]);
 
-  from(element) {
+  @override
+  Sqlite from(element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -26,12 +27,12 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 
     return Sqlite(
       defaultValue: valueForDynamicField('defaultValue', element),
-      fromGenerator: obj.getField("fromGenerator").toStringValue(),
+      fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,
       name: obj.getField('name').toStringValue() ?? StringHelpers.snakeCase(element.name),
       nullable:
           obj.getField('nullable').toBoolValue() ?? config?.nullable ?? Sqlite.defaults.nullable,
-      toGenerator: obj.getField("toGenerator").toStringValue(),
+      toGenerator: obj.getField('toGenerator').toStringValue(),
       unique: obj.getField('unique').toBoolValue() ?? Sqlite.defaults.unique,
     );
   }
@@ -39,10 +40,11 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 
 /// Converts all fields to [Sqlite]s for later consumption
 class SqliteFields extends FieldsForClass<Sqlite> {
+  @override
   final SqliteAnnotationFinder finder;
   final SqliteSerializable config;
 
-  SqliteFields(ClassElement element, [SqliteSerializable this.config])
+  SqliteFields(ClassElement element, [this.config])
       : finder = SqliteAnnotationFinder(config),
         super(element: element);
 }

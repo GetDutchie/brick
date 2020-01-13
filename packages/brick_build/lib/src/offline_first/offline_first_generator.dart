@@ -20,29 +20,31 @@ class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst
   final String repositoryName;
 
   const OfflineFirstGenerator({
-    this.superAdapterName = "OfflineFirst",
-    this.repositoryName = "OfflineFirst",
+    this.superAdapterName = 'OfflineFirst',
+    this.repositoryName = 'OfflineFirst',
   });
 
   /// Given an [element] and an [annotation], scaffold generators
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final rest = RestSerdes(element, annotation, repositoryName: repositoryName);
     final sqlite = SqliteSerdes(element, annotation, repositoryName: repositoryName);
-    final generators = List<SerdesGenerator>();
+    final generators = <SerdesGenerator>[];
     generators.addAll(rest.generators);
     generators.addAll(sqlite.generators);
     return generators;
   }
 
+  @override
   String generateForAnnotatedElement(element, annotation, buildStep) {
     final generators = buildGenerators(element, annotation);
 
-    return generators.fold(List<String>(), (acc, generator) {
+    return generators.fold<List<String>>(<String>[], (acc, generator) {
       acc.add(generator.generate());
       return acc;
-    }).join("\n");
+    }).join('\n');
   }
 
+  @override
   String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
     final generators = buildGenerators(element, annotation);
 

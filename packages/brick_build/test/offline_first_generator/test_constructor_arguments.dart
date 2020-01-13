@@ -42,21 +42,21 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends OfflineFirstAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
-  String restEndpoint({query, instance}) => "";
+  String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     }
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
       null;
-  final String tableName = "OfflineFirstGeneratorArguments";
+  final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
@@ -115,21 +115,21 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends SuperDuperAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
-  String restEndpoint({query, instance}) => "";
+  String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     }
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
       null;
-  final String tableName = "OfflineFirstGeneratorArguments";
+  final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>

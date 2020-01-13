@@ -8,73 +8,73 @@ class MockClient extends Mock implements http.Client {}
 void main() {
   final client = MockClient();
 
-  group("RestToOfflineFirstConverter", () {
-    group("#getRestPayload", () {
-      test("with top-level array", () async {
+  group('RestToOfflineFirstConverter', () {
+    group('#getRestPayload', () {
+      test('with top-level array', () async {
         when(client.get('http://localhost:3000/people'))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
-        final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/people");
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
         converter.client = client;
 
         final result = await converter.getRestPayload();
-        expect(result, {"name": "Thomas"});
+        expect(result, {'name': 'Thomas'});
       });
 
-      test("with top-level map", () async {
+      test('with top-level map', () async {
         when(client.get('http://localhost:3000/person'))
             .thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
-        final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/person");
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/person');
         converter.client = client;
 
         final result = await converter.getRestPayload();
-        expect(result, {"name": "Thomas"});
+        expect(result, {'name': 'Thomas'});
       });
 
-      test("with top-level key", () async {
+      test('with top-level key', () async {
         when(client.get('http://localhost:3000/person'))
             .thenAnswer((_) async => http.Response('{ "person": { "name": "Thomas"} }', 200));
 
         final converter = RestToOfflineFirstConverter(
-            endpoint: "http://localhost:3000/person", topLevelKey: "person");
+            endpoint: 'http://localhost:3000/person', topLevelKey: 'person');
         converter.client = client;
 
         final result = await converter.getRestPayload();
-        expect(result, {"name": "Thomas"});
+        expect(result, {'name': 'Thomas'});
       });
     });
 
-    test("#generateFields", () {
+    test('#generateFields', () {
       final fields = {'name': 'Thomas', 'age': 26, 'pocket_change': 1.05};
-      final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/people");
+      final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
 
       final fieldsOutput = converter.generateFields(fields);
-      expect(fieldsOutput, """  final int age;
+      expect(fieldsOutput, '''  final int age;
 
   final String name;
 
-  final double pocketChange;""");
+  final double pocketChange;''');
     });
 
-    test("#generateConstructorFields", () {
+    test('#generateConstructorFields', () {
       final fields = {'name': 'Thomas', 'age': 26, 'pocket_change': 1.05};
-      final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/people");
+      final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
 
       final fieldsOutput = converter.generateConstructorFields(fields);
-      expect(fieldsOutput, """    this.age,
+      expect(fieldsOutput, '''    this.age,
     this.name,
-    this.pocketChange""");
+    this.pocketChange''');
     });
 
-    group("#generate", () {
-      final expectedOutput = """import 'package:brick_offline_first/offline_first.dart';
+    group('#generate', () {
+      final expectedOutput = '''import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 
 @ConnectOfflineFirst(
   restConfig: RestSerializable(
     fieldRename: FieldRename.snake,
-    endpoint: '=> "/people"',
+    endpoint: "=> '/people';",
   ),
 )
 class People extends OfflineFirstModel {
@@ -84,43 +84,43 @@ class People extends OfflineFirstModel {
     this.name,
   });
 }
-""";
-      test("from map", () async {
-        final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/people");
+''';
+      test('from map', () async {
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
         final output = await converter.generate({'name': 'Thomas'});
 
         expect(output, expectedOutput);
       });
 
-      test("from rest", () async {
+      test('from rest', () async {
         when(client.get('http://localhost:3000/people'))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
-        final converter = RestToOfflineFirstConverter(endpoint: "http://localhost:3000/people");
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
         converter.client = client;
 
         final output = await converter.generate();
         expect(output, expectedOutput);
       });
 
-      test("with topLevelKey", () async {
+      test('with topLevelKey', () async {
         when(client.get('http://localhost:3000/people'))
             .thenAnswer((_) async => http.Response('{"people": [{"name": "Thomas"}]}', 200));
 
         final converter = RestToOfflineFirstConverter(
-            endpoint: "http://localhost:3000/people", topLevelKey: "people");
+            endpoint: 'http://localhost:3000/people', topLevelKey: 'people');
         converter.client = client;
         final output = await converter.generate();
-        expect(output, contains('fromKey: "people",'));
+        expect(output, contains("fromKey: 'people',"));
       });
     });
 
-    test(".toCamelCase", () {
-      final snake = RestToOfflineFirstConverter.toCamelCase("from_snake_case");
-      expect(snake, "fromSnakeCase");
+    test('.toCamelCase', () {
+      final snake = RestToOfflineFirstConverter.toCamelCase('from_snake_case');
+      expect(snake, 'fromSnakeCase');
 
-      final kebab = RestToOfflineFirstConverter.toCamelCase("from-kebab-case");
-      expect(kebab, "fromKebabCase");
+      final kebab = RestToOfflineFirstConverter.toCamelCase('from-kebab-case');
+      expect(kebab, 'fromKebabCase');
     });
   });
 }

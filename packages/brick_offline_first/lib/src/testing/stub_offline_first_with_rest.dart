@@ -22,7 +22,7 @@ class StubOfflineFirstWithRest {
   /// Saves all logs for all tests in the current execution.
   /// Running `StubOfflineFirstWithRest.sqliteLogs.clear()` during `setUp`
   /// is advisable to ensure a clean test environment.
-  static final sqliteLogs = List<MethodCall>();
+  static final sqliteLogs = <MethodCall>[];
 
   StubOfflineFirstWithRest({
     @required this.modelStubs,
@@ -41,7 +41,7 @@ class StubOfflineFirstWithRest {
   /// Stub a response
   void forRest({int statusCode = 200}) {
     for (final modelStub in modelStubs) {
-      modelStub.endpoints.forEach((endpoint) {
+      for (final endpoint in modelStub.endpoints) {
         when(StubOfflineFirstWithRest.client.get('$baseUrl/$endpoint'))
             .thenAnswer((_) async => http.Response(modelStub.apiResponse, statusCode));
 
@@ -54,7 +54,7 @@ class StubOfflineFirstWithRest {
         when(StubOfflineFirstWithRest.client
                 .delete('$baseUrl/$endpoint', headers: anyNamed('headers')))
             .thenAnswer((_) async => http.Response('{"status": "OK"}', 204));
-      });
+      }
     }
   }
 

@@ -6,7 +6,7 @@ import 'package:brick_build/src/annotation_finder.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Checker for the field having a predetermined annotation
-typedef bool HasFieldAnnotation(FieldElement field);
+typedef HasFieldAnnotation = bool Function(FieldElement field);
 
 const _dartCoreObjectChecker = TypeChecker.fromRuntime(Object);
 
@@ -76,7 +76,7 @@ abstract class FieldsForClass<_FieldAnnotation> {
 
   /// Returns `true` for `int get name => 5`
   static bool isComputedGetter(FieldElement field) {
-    return !field.getter.runtimeType.toString().contains("ImplicitGetter");
+    return !field.getter.runtimeType.toString().contains('ImplicitGetter');
   }
 }
 

@@ -46,7 +46,7 @@ abstract class AnnotationFinder<_Annotation> {
 
     final checker = SharedChecker(dynamicValue.type);
     if (checker.isEnum || !checker.isSerializable) {
-      throw Exception("$fieldName on ${element.name} must be a primitive");
+      throw Exception('$fieldName on ${element.name} must be a primitive');
     }
 
     if (checker.isBool) return dynamicValue.toBoolValue();

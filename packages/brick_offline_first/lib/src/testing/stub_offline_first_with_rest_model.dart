@@ -15,8 +15,8 @@ import 'package:path/path.dart' as p;
 /// ```json
 /// // /test/api/user.json
 /// {
-///   "user": {
-///     "name" : "Thomas"
+///   'user': {
+///     'name' : 'Thomas'
 ///   }
 /// }
 /// ```
@@ -35,11 +35,11 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     final directory = p.dirname(Platform.script.path);
     // when running this script from the project (i.e. `flutter test`),
     // the directory is where main.dart lives. We want the test directory.
-    if (directory.contains("/test")) {
+    if (directory.contains('/test')) {
       return directory;
     }
 
-    return p.join(directory, "test");
+    return p.join(directory, 'test');
   }
 
   /// Decode the JSON with the response key, if applicable
@@ -75,7 +75,7 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     this.endpoints = const <String>[],
     Type model,
   }) : _model = model ?? _Model {
-    final dictionary = Map<Type, Adapter>();
+    final dictionary = <Type, Adapter>{};
     dictionary.addAll(repository?.remoteProvider?.modelDictionary?.adapterFor ?? {});
     dictionary.addAll(repository?.sqliteProvider?.modelDictionary?.adapterFor ?? {});
     modelDictionary = dictionary.cast<Type, OfflineFirstWithRestAdapter>();

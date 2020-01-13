@@ -19,12 +19,12 @@ abstract class BaseBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        "$aggregateExtension.dart": ["${BaseBuilder.aggregateExtension}$outputExtension"]
+        '$aggregateExtension.dart': ['${BaseBuilder.aggregateExtension}$outputExtension']
       };
 
   BaseBuilder(this.generator);
 
-  static const aggregateExtension = ".brick_aggregate";
+  static const aggregateExtension = '.brick_aggregate';
 
   /// Classes with the class-level annotation. For example, `ConnectOfflineFirst`.
   Future<Iterable<AnnotatedElement>> getAnnotatedElements(BuildStep buildStep) async {
@@ -34,7 +34,7 @@ abstract class BaseBuilder implements Builder {
 
   /// Replace contents of file
   Future<File> replaceWithinFile(String path, Pattern from, String to) async {
-    final file = File(p.join("lib", "app", path));
+    final file = File(p.join('lib', 'app', path));
     final fileExists = await file.exists();
     if (!fileExists) {
       return null;
@@ -47,17 +47,17 @@ abstract class BaseBuilder implements Builder {
 
   /// Create or write to file.
   Future<File> manuallyUpsertAppFile(String path, String contents) async {
-    final dirName = path.split("/").first;
+    final dirName = path.split('/').first;
 
-    if (!dirName.contains(".dart")) {
-      final dir = Directory(p.join("lib", "app", dirName));
+    if (!dirName.contains('.dart')) {
+      final dir = Directory(p.join('lib', 'app', dirName));
       final dirExists = await dir.exists();
       if (!dirExists) {
         await dir.create();
       }
     }
 
-    final newFile = File(p.join("lib", "app", path));
+    final newFile = File(p.join('lib', 'app', path));
     final fileExists = await newFile.exists();
     if (!fileExists) {
       await newFile.create();
@@ -72,15 +72,16 @@ abstract class BaseBuilder implements Builder {
     final milliseconds = stopwatch.elapsedMilliseconds;
 
     if (milliseconds > 1000) {
-      return (milliseconds / 1000).toStringAsFixed(2) + "s";
+      final roundedMilliseconds = (milliseconds / 1000).toStringAsFixed(2);
+      return '${roundedMilliseconds}s';
     } else {
-      return "${milliseconds}ms";
+      return '${milliseconds}ms';
     }
   }
 
   /// After a task has completed, log time to completion.
   void logStopwatch(String task, Stopwatch stopwatch) {
     final elapsedSeconds = stopwatchToSeconds(stopwatch);
-    logger.info("$task, took $elapsedSeconds");
+    logger.info('$task, took $elapsedSeconds');
   }
 }

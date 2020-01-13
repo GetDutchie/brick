@@ -21,5 +21,6 @@ class OfflineFirstException implements Exception {
     return (originalError as RestException).errors;
   }
 
-  toString() => message;
+  @override
+  String toString() => message;
 }

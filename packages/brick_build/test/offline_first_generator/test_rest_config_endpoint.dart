@@ -49,23 +49,23 @@ class RestConfigEndpointAdapter
   final String fromKey = null;
   final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     },
-    "someField": {
-      "name": "some_field",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'someField': {
+      'name': 'some_field',
+      'type': int,
+      'iterable': false,
+      'association': false,
     }
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigEndpoint instance, DatabaseExecutor executor) async =>
       null;
-  final String tableName = "RestConfigEndpoint";
+  final String tableName = 'RestConfigEndpoint';
 
   Future<RestConfigEndpoint> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
@@ -87,7 +87,11 @@ class RestConfigEndpointAdapter
 ''';
 
 @ConnectOfflineFirst(
-    restConfig: RestSerializable(endpoint: "{ return 'anEndpoint'; }", nullable: false))
+  restConfig: RestSerializable(
+    endpoint: "{ return 'anEndpoint'; }",
+    nullable: false,
+  ),
+)
 class RestConfigEndpoint extends OfflineFirstModel {
   final int someField;
 

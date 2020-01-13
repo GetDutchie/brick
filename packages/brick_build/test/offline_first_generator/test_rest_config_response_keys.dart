@@ -42,27 +42,27 @@ class RestConfigResponseKeysAdapter
     extends OfflineFirstAdapter<RestConfigResponseKeys> {
   RestConfigResponseKeysAdapter();
 
-  String restEndpoint({query, instance}) => "";
-  final String fromKey = "users";
-  final String toKey = "user";
+  String restEndpoint({query, instance}) => '';
+  final String fromKey = 'users';
+  final String toKey = 'user';
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     },
-    "someField": {
-      "name": "some_field",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'someField': {
+      'name': 'some_field',
+      'type': int,
+      'iterable': false,
+      'association': false,
     }
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>
       null;
-  final String tableName = "RestConfigResponseKeys";
+  final String tableName = 'RestConfigResponseKeys';
 
   Future<RestConfigResponseKeys> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
@@ -83,7 +83,7 @@ class RestConfigResponseKeysAdapter
 }
 ''';
 
-@ConnectOfflineFirst(restConfig: RestSerializable(fromKey: "users", toKey: "user"))
+@ConnectOfflineFirst(restConfig: RestSerializable(fromKey: 'users', toKey: 'user'))
 class RestConfigResponseKeys extends OfflineFirstModel {
   final int someField;
 

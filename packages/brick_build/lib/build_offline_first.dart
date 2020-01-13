@@ -7,9 +7,9 @@ import 'package:brick_build/src/offline_first/offline_first_generator.dart';
 import 'package:brick_build/src/offline_first/offline_first_model_dictionary_generator.dart';
 import 'package:build/build.dart';
 
-final offlineFirstGenerator = OfflineFirstGenerator(
-  superAdapterName: "OfflineFirstWithRest",
-  repositoryName: "OfflineFirstWithRest",
+final offlineFirstGenerator = const OfflineFirstGenerator(
+  superAdapterName: 'OfflineFirstWithRest',
+  repositoryName: 'OfflineFirstWithRest',
 );
 
 Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
@@ -20,7 +20,7 @@ Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImport
 Builder offlineFirstAdaptersBuilder(options) => AdapterBuilder(offlineFirstGenerator);
 Builder offlineFirstModelDictionaryBuilder(options) => ModelDictionaryBuilder(
       offlineFirstGenerator,
-      OfflineFirstModelDictionaryGenerator(),
+      const OfflineFirstModelDictionaryGenerator(),
       expectedImportRemovals: [
         "import 'package:brick_offline_first_abstract/annotations.dart';",
         'import "package:brick_offline_first_abstract/annotations.dart";',

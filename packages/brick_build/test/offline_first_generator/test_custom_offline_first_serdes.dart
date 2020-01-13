@@ -52,7 +52,8 @@ Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToSqlite(
 class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
   final int age;
   Serializable(this.age);
-  toRest() => {'age': '$age'};
+  @override
+  Map<String, dynamic> toRest() => {'age': '$age'};
 
   factory Serializable.fromRest(Map<String, dynamic> data) {
     return Serializable(data['age']);

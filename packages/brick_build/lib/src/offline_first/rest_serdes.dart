@@ -17,28 +17,30 @@ class RestSerdes extends ProviderSerializable<RestSerializable> {
     Element element,
     ConstantReader reader, {
     this.repositoryName,
-  }) : super(element, reader, configKey: "restConfig");
+  }) : super(element, reader, configKey: 'restConfig');
 
-  get config {
+  @override
+  RestSerializable get config {
     if (reader.read(configKey).isNull) {
       return RestSerializable.defaults;
     }
 
-    final fieldRenameObject = withinConfigKey("fieldRename")?.objectValue;
+    final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
     final fieldRenameByEnumName = FieldRename.values.singleWhere(
       (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
       orElse: () => null,
     );
 
     return RestSerializable(
-      nullable: withinConfigKey("nullable")?.boolValue ?? RestSerializable.defaults.nullable,
+      nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
       fieldRename: fieldRenameByEnumName ?? RestSerializable.defaults.fieldRename,
-      endpoint: withinConfigKey("endpoint")?.stringValue ?? RestSerializable.defaults.endpoint,
-      fromKey: withinConfigKey("fromKey")?.stringValue ?? RestSerializable.defaults.fromKey,
-      toKey: withinConfigKey("toKey")?.stringValue ?? RestSerializable.defaults.toKey,
+      endpoint: withinConfigKey('endpoint')?.stringValue ?? RestSerializable.defaults.endpoint,
+      fromKey: withinConfigKey('fromKey')?.stringValue ?? RestSerializable.defaults.fromKey,
+      toKey: withinConfigKey('toKey')?.stringValue ?? RestSerializable.defaults.toKey,
     );
   }
 
+  @override
   get generators {
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);

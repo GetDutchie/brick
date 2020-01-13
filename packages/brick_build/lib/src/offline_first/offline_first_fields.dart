@@ -7,15 +7,16 @@ import 'package:brick_build/src/utils/fields_for_class.dart';
 class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {
   _OfflineFirstSerdesFinder();
 
-  from(element) {
+  @override
+  OfflineFirst from(element) {
     final obj = objectForField(element);
 
     if (obj == null) {
-      return OfflineFirst();
+      return const OfflineFirst();
     }
 
     final where = obj
-        .getField("where")
+        .getField('where')
         .toMapValue()
         ?.map((key, value) => MapEntry(key.toStringValue(), value.toStringValue()));
 
@@ -27,6 +28,7 @@ class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {
 
 /// Discover all fields with `@OfflineFirst`
 class OfflineFirstFields extends FieldsForClass<OfflineFirst> {
+  @override
   final finder = _OfflineFirstSerdesFinder();
 
   OfflineFirstFields(ClassElement element) : super(element: element);

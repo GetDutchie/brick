@@ -16,6 +16,7 @@ class ModelDictionaryBuilder extends BaseBuilder {
 
   final ModelDictionaryGenerator modelDictionaryGenerator;
 
+  @override
   final outputExtension = '.model_dictionary_builder.dart';
 
   ModelDictionaryBuilder(
@@ -24,6 +25,7 @@ class ModelDictionaryBuilder extends BaseBuilder {
     this.expectedImportRemovals = const <String>[],
   }) : super(generator);
 
+  @override
   Future<void> build(BuildStep buildStep) async {
     final annotatedElements = await getAnnotatedElements(buildStep);
     final contents = await buildStep.readAsString(buildStep.inputId);
@@ -36,12 +38,12 @@ class ModelDictionaryBuilder extends BaseBuilder {
     allImports.removeAll(["import 'dart:convert';", 'import "dart:convert";']);
     allImports.removeAll(expectedImportRemovals);
     final analyzedImports =
-        allImports.map((i) => "// ignore: unused_import, unused_shown_name\n$i").join("\n");
+        allImports.map((i) => '// ignore: unused_import, unused_shown_name\n$i').join('\n');
     final output = analyzedImports + modelDictionaryOutput;
 
-    await manuallyUpsertAppFile("brick.g.dart", output);
+    await manuallyUpsertAppFile('brick.g.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
-    logStopwatch("Generated brick.g.dart", stopwatch);
+    logStopwatch('Generated brick.g.dart', stopwatch);
   }
 
   static Map<String, String> classFilePathsFromAnnotations(Iterable<AnnotatedElement> annotations) {
@@ -50,7 +52,7 @@ class ModelDictionaryBuilder extends BaseBuilder {
       key: (annotation) => annotation.element.name,
       value: (annotation) {
         final fileName = StringHelpers.snakeCase(annotation.element.name);
-        return "$fileName.dart";
+        return '$fileName.dart';
       },
     );
   }

@@ -18,40 +18,41 @@ import 'package:glob/glob.dart';
 class AggregateBuilder implements Builder {
   /// A list of packages that must be included for adapters and models to build:
   /// field-level annotation imports, helper classes, etc.
-  /// For example: `['import "package:brick_sqlite_abstract/db.dart";']`
+  /// For example: `['import 'package:brick_sqlite_abstract/db.dart';']`
   final List<String> requiredImports;
 
-  static final migrationFiles = Glob("lib/app/db/*.migration.dart");
-  static final modelFiles = Glob("lib/app/models/*.dart");
-  static final adapterFiles = Glob("lib/app/adapters/*.g.dart");
-  static final importRegex = RegExp(r"(^import\s.*;)", multiLine: true);
+  static final migrationFiles = Glob('lib/app/db/*.migration.dart');
+  static final modelFiles = Glob('lib/app/models/*.dart');
+  static final adapterFiles = Glob('lib/app/adapters/*.g.dart');
+  static final importRegex = RegExp(r'(^import\s.*;)', multiLine: true);
   static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
 
   AggregateBuilder({this.requiredImports = const <String>[]});
 
+  @override
   Future<void> build(BuildStep buildStep) async {
-    brickLogger.info("Aggregating models and migrations...");
+    brickLogger.info('Aggregating models and migrations...');
 
-    final imports = Set<String>();
+    final imports = <String>{};
     imports.addAll([
-      "library big_messy_models_migrations_file;",
+      'library big_messy_models_migrations_file;',
     ]);
     imports.addAll(requiredImports);
 
-    final files = List<String>();
+    final files = <String>[];
     for (final glob in [migrationFiles, modelFiles]) {
       await for (final input in buildStep.findAssets(glob)) {
         final contents = await buildStep.readAsString(input);
         imports.addAll(findAllImports(contents));
         final newContents =
-            contents.replaceAll(importRegex, "").replaceAll("part of 'schema.g.dart';", "");
+            contents.replaceAll(importRegex, '').replaceAll("part of 'schema.g.dart';", '');
         files.add(newContents);
       }
     }
 
-    final contents = "${imports.join('\n')}\n${files.join('\n')}";
+    final contents = '${imports.join('\n')}\n${files.join('\n')}';
     await buildStep.writeAsString(
-        AssetId(buildStep.inputId.package, "lib/$outputFileName"), contents);
+        AssetId(buildStep.inputId.package, 'lib/$outputFileName'), contents);
   }
 
   /// All unique `import:package` within a large body of text

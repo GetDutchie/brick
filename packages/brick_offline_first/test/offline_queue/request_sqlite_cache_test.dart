@@ -10,19 +10,19 @@ class MockLogger extends Mock implements Logger {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("RequestSqliteCache", () {
-    final getReq = http.Request("GET", Uri.parse("http://example.com"));
+  group('RequestSqliteCache', () {
+    final getReq = http.Request('GET', Uri.parse('http://example.com'));
     final getResp = RequestSqliteCache(getReq, 'db');
 
-    final postReq = http.Request("POST", Uri.parse("http://example.com"));
+    final postReq = http.Request('POST', Uri.parse('http://example.com'));
     final postResp = RequestSqliteCache(postReq, 'db');
 
-    final putReq = http.Request("PUT", Uri.parse("http://example.com"));
+    final putReq = http.Request('PUT', Uri.parse('http://example.com'));
     final putResp = RequestSqliteCache(putReq, 'db');
-    var sqliteLogs = List<String>();
+    var sqliteLogs = <String>[];
 
     setUpAll(() {
-      MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
+      const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
         if (methodCall.method == 'getDatabasesPath') {
           return Future.value('db');
         }
@@ -40,8 +40,8 @@ void main() {
 
           return Future.value([
             {
-              HTTP_JOBS_REQUEST_METHOD_COLUMN: "PUT",
-              HTTP_JOBS_URL_COLUMN: "http://localhost:3000/stored-query",
+              HTTP_JOBS_REQUEST_METHOD_COLUMN: 'PUT',
+              HTTP_JOBS_URL_COLUMN: 'http://localhost:3000/stored-query',
               HTTP_JOBS_ATTEMPTS_COLUMN: 1,
             }
           ]);
@@ -57,14 +57,14 @@ void main() {
 
     tearDown(sqliteLogs.clear);
 
-    test("#requestIsPush", () {
+    test('#requestIsPush', () {
       expect(getResp.requestIsPush, isFalse);
       expect(postResp.requestIsPush, isTrue);
       expect(putResp.requestIsPush, isTrue);
     });
 
-    test("#toSqlite", () {
-      var request = http.Request("GET", Uri.parse("http://example.com"));
+    test('#toSqlite', () {
+      final request = http.Request('GET', Uri.parse('http://example.com'));
       request.headers.addAll({'Content-Type': 'application/json'});
       final instance = RequestSqliteCache(request, 'db');
       final asSqlite = instance.toSqlite();
@@ -76,25 +76,25 @@ void main() {
       expect(asSqlite, containsPair(HTTP_JOBS_UPDATED_AT, isA<int>()));
     });
 
-    test("#delete", () async {
+    test('#delete', () async {
       await getResp.delete();
 
       expect(
         sqliteLogs,
         [
-          "SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?",
-          "BEGIN IMMEDIATE",
-          "DELETE FROM HttpJobs WHERE id = ?",
-          "COMMIT",
+          'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
+          'BEGIN IMMEDIATE',
+          'DELETE FROM HttpJobs WHERE id = ?',
+          'COMMIT',
         ],
       );
     });
 
-    group("#insertOrUpdate", () {
+    group('#insertOrUpdate', () {
       final logger = MockLogger();
 
-      test("insert", () async {
-        final uninsertedRequest = http.Request("GET", Uri.parse("http://uninserted.com"));
+      test('insert', () async {
+        final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
         final uninserted = RequestSqliteCache(uninsertedRequest, 'db');
 
         await uninserted.insertOrUpdate(logger);
@@ -103,90 +103,90 @@ void main() {
         expect(
           sqliteLogs,
           [
-            "SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?",
-            "BEGIN IMMEDIATE",
-            "INSERT INTO HttpJobs (attempts, body, encoding, headers, request_method, updated_at, url) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            "COMMIT",
+            'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
+            'BEGIN IMMEDIATE',
+            'INSERT INTO HttpJobs (attempts, body, encoding, headers, request_method, updated_at, url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            'COMMIT',
           ],
         );
       });
 
-      test("update", () async {
+      test('update', () async {
         await getResp.insertOrUpdate(logger);
 
         verify(logger.warning(any));
         expect(
           sqliteLogs,
           [
-            "SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?",
-            "BEGIN IMMEDIATE",
-            "UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?",
-            "COMMIT",
+            'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
+            'BEGIN IMMEDIATE',
+            'UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?',
+            'COMMIT',
           ],
         );
       });
     });
 
-    test(".migrate", () async {
+    test('.migrate', () async {
       await RequestSqliteCache.migrate('fake_db');
 
-      expect(sqliteLogs.first, contains("CREATE TABLE IF NOT EXISTS `HttpJobs`"));
-      expect(sqliteLogs.first, contains("`id` INTEGER PRIMARY KEY AUTOINCREMENT,"));
-      expect(sqliteLogs.first, contains("`updated_at` INTEGER DEFAULT 0,"));
+      expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
+      expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
+      expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
     });
 
-    test(".unprocessedRequests", () async {
+    test('.unprocessedRequests', () async {
       final requests = await RequestSqliteCache.unproccessedRequests('fake_db');
       expect(
         sqliteLogs,
         [
-          "BEGIN IMMEDIATE",
-          "UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC LIMIT 1);",
-          "SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;",
-          "COMMIT"
+          'BEGIN IMMEDIATE',
+          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC LIMIT 1);',
+          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;',
+          'COMMIT'
         ],
       );
 
       expect(requests, isNotEmpty);
-      expect(requests.first.method, "PUT");
-      expect(requests.first.url.toString(), "http://localhost:3000/stored-query");
+      expect(requests.first.method, 'PUT');
+      expect(requests.first.url.toString(), 'http://localhost:3000/stored-query');
     });
 
-    group(".toRequest", () {
-      test("basic", () {
+    group('.toRequest', () {
+      test('basic', () {
         final request = RequestSqliteCache.toRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
         });
 
-        expect(request.method, "POST");
-        expect(request.url.toString(), "http://localhost:3000");
+        expect(request.method, 'POST');
+        expect(request.url.toString(), 'http://localhost:3000');
         expect(request.body, 'POST body');
       });
 
-      test("missing headers", () {
+      test('missing headers', () {
         final request = RequestSqliteCache.toRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000'
         });
 
-        expect(request.method, "GET");
-        expect(request.url.toString(), "http://localhost:3000");
+        expect(request.method, 'GET');
+        expect(request.url.toString(), 'http://localhost:3000');
         expect(request.headers, {});
         expect(request.body, '');
       });
 
-      test("with headers", () {
+      test('with headers', () {
         final request = RequestSqliteCache.toRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
         });
 
-        expect(request.method, "GET");
-        expect(request.url.toString(), "http://localhost:3000");
-        expect(request.headers, {"Content-Type": "application/json"});
+        expect(request.method, 'GET');
+        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.headers, {'Content-Type': 'application/json'});
         expect(request.body, '');
       });
     });

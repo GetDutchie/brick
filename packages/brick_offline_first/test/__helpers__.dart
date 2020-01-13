@@ -7,7 +7,7 @@ void stubConnectivity({bool isOnline = false}) {
       return isOnline ? 'wifi' : null;
     }
 
-    return "";
+    return '';
   });
 
   MethodChannel(Connectivity.eventChannel.name)

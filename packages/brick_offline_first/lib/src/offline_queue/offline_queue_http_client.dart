@@ -23,7 +23,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final cacheItem = RequestSqliteCache(request as http.Request, databaseName);
-    _logger.finest("sending: ${cacheItem.toSqlite()}");
+    _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     // "Pull" requests are ignored. See documentation of `RequestSqliteCache#requestIsPush`.
     if (cacheItem.requestIsPush) {
@@ -47,7 +47,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
 
       if (receivedResponseFromPushRequest) {
         // request was successfully sent and can be removed
-        _logger.finest("removing from queue: ${cacheItem.toSqlite()}");
+        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete();
       }
 

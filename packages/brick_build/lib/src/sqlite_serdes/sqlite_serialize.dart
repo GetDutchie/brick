@@ -29,62 +29,64 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     final tableName = element.name;
 
     fieldsToColumns.add('''
-      "${InsertTable.PRIMARY_KEY_FIELD}": {
-        "name": "${InsertTable.PRIMARY_KEY_COLUMN}",
-        "type": int,
-        "iterable": false,
-        "association": false,
+      '${InsertTable.PRIMARY_KEY_FIELD}': {
+        'name': '${InsertTable.PRIMARY_KEY_COLUMN}',
+        'type': int,
+        'iterable': false,
+        'association': false,
       }''');
 
-    unignoredFields.forEach((field) {
+    for (var field in unignoredFields) {
       final annotation = fields.annotationForField(field);
       final checker = checkerForField(field);
       final columnName = serializedFieldName(checker, annotation.name);
       final columnInsertionType = _finalTypeForField(field.type);
 
-      // T0D0 support List<Future<Sibling>> for "association"
+      // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
-          "${field.name}": {
-            "name": "$columnName",
-            "type": $columnInsertionType,
-            "iterable": ${checker.isIterable},
-            "association": ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
+          '${field.name}': {
+            'name': '$columnName',
+            'type': $columnInsertionType,
+            'iterable': ${checker.isIterable},
+            'association': ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
           }''');
       if (annotation.unique) {
         uniqueFields[field.name] = serializedFieldName(checker, annotation.name);
       }
-    });
+    }
+
     final primaryKeyByUniqueColumns = _generateUniqueSqliteFunction(uniqueFields, tableName);
 
     return [
-      "final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};",
+      'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
-      'final String tableName = "$tableName";'
+      "final String tableName = '$tableName';"
     ];
   }
 
-  coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
+  @override
+  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
     final name = serializedFieldName(checker, fieldAnnotation.name);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
-        "Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key",
-        todo: "Rename the field from ${InsertTable.PRIMARY_KEY_COLUMN}",
+        'Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key',
+        todo: 'Rename the field from ${InsertTable.PRIMARY_KEY_COLUMN}',
         element: field,
       );
     }
 
     if (fieldAnnotation?.toGenerator != null) {
       final custom = digestPlaceholders(fieldAnnotation.toGenerator, name, field.name);
-      return "$custom";
+      return '$custom';
     }
 
     // DateTime
     if (checker.isDateTime) {
-      return "instance.${field.name}?.toIso8601String()";
+      return 'instance.${field.name}?.toIso8601String()';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return "instance.${field.name}";
+      return 'instance.${field.name}';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -93,7 +95,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
       if (checker.isArgTypeASibling) {
         // Iterable<Future<OfflineFirstModel>>
         if (argTypeChecker.isFuture) {
-          return """jsonEncode(
+          return '''jsonEncode(
             (await Future.wait<int>(instance.${field.name}
               ?.map(
                 (s) async => (await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)
@@ -102,14 +104,14 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
               ?.cast<Future<int>>()
               ?? []
             )).where((s) => s != null).toList().cast<int>()
-          )""";
+          )''';
 
           // Iterable<OfflineFirstModel>
         } else {
           final instanceAndField =
-              wrappedInFuture ? "(await instance.${field.name})" : "instance.${field.name}";
+              wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
 
-          return """jsonEncode(
+          return '''jsonEncode(
             (await Future.wait<int>($instanceAndField
               ?.map((s) async {
                 return s?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository);
@@ -118,7 +120,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
               ?.cast<Future<int>>()
               ?? []
             )).where((s) => s != null).toList().cast<int>()
-          )""";
+          )''';
         }
       }
 
@@ -127,22 +129,22 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
           final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
-          return """
+          return '''
             jsonEncode(instance.${field.name}?.map(
               (${checker.unFuturedArgType} c) => c?.$serializeMethod()
             )?.toList()?.cast<$serializableType>() ?? [])
-          """;
+          ''';
         }
       }
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return "jsonEncode(instance.${field.name}?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])";
+        return 'jsonEncode(instance.${field.name}?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
       }
 
       // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        return "jsonEncode(instance.${field.name} ?? [])";
+        return 'jsonEncode(instance.${field.name} ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -151,30 +153,30 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
         final futureChecker = OfflineFirstChecker(argTypeChecker.argType);
 
         if (futureChecker.isSerializable) {
-          return "jsonEncode(await Future.wait<${argTypeChecker.argType}>(instance.${field.name}) ?? [])";
+          return 'jsonEncode(await Future.wait<${argTypeChecker.argType}>(instance.${field.name}) ?? [])';
         }
       }
 
       // OfflineFirstModel, Future<OfflineFirstModel>
     } else if (checker.isSibling) {
       final instance =
-          wrappedInFuture ? "(await instance.${field.name})" : "instance.${field.name}";
-      return "$instance?.${InsertTable.PRIMARY_KEY_FIELD}";
+          wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
+      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD}';
 
       // enum
     } else if (checker.isEnum) {
-      return "${field.type}.values.indexOf(instance.${field.name})";
+      return '${field.type}.values.indexOf(instance.${field.name})';
 
       // serializable non-adapter OfflineFirstModel, OfflineFirstSerdes
     } else if (checker.hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        return "instance.${field.name}?.$serializeMethod()";
+        return 'instance.${field.name}?.$serializeMethod()';
       }
 
       // Map
     } else if (checker.isMap) {
-      return "jsonEncode(instance.${field.name} ?? {})";
+      return 'jsonEncode(instance.${field.name} ?? {})';
     }
 
     return null;
@@ -184,22 +186,23 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
   String _generateUniqueSqliteFunction(Map<String, String> uniqueFields, String tableName) {
     final functionDeclaration =
         'Future<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
-    final whereStatement = List<String>();
-    final valuesStatement = List<String>();
-    final selectStatement = List<String>();
-    uniqueFields.entries.forEach((entry) {
-      whereStatement.add("${entry.value} = ?");
-      valuesStatement.add("instance.${entry.key}");
-      selectStatement.add(entry.value);
-    });
+    final whereStatement = <String>[];
+    final valuesStatement = <String>[];
+    final selectStatement = <String>[];
 
-    if (selectStatement.isEmpty && whereStatement.isEmpty) {
-      return "$functionDeclaration => null;";
+    for (var entry in uniqueFields.entries) {
+      whereStatement.add('${entry.value} = ?');
+      valuesStatement.add('instance.${entry.key}');
+      selectStatement.add(entry.value);
     }
 
-    return '''$functionDeclaration {
-      final results = await executor.rawQuery("""
-        SELECT * FROM `$tableName` WHERE ${whereStatement.join(' OR ')} LIMIT 1""",
+    if (selectStatement.isEmpty && whereStatement.isEmpty) {
+      return '$functionDeclaration => null;';
+    }
+
+    return """$functionDeclaration {
+      final results = await executor.rawQuery('''
+        SELECT * FROM `$tableName` WHERE ${whereStatement.join(' OR ')} LIMIT 1''',
         [${valuesStatement.join(',')}]
       );
 
@@ -207,7 +210,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
       if (results?.isEmpty == true || (results?.length == 1 && results?.first?.isEmpty == true)) return null;
 
       return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'];
-    }''';
+    }""";
   }
 
   String _finalTypeForField(DartType type) {
@@ -215,6 +218,11 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
       return _finalTypeForField(checker.argType);
+    }
+
+    if (checker.isMap) {
+      // remove arg types as they can't be declared in final fields
+      return "Map";
     }
 
     return type.getDisplayString();

@@ -14,18 +14,24 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
     String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
+  @override
   final providerName = OfflineFirstSerdesGenerator.SQLITE_PROVIDER_NAME;
+
+  @override
   final doesDeserialize = true;
+
+  @override
   final generateSuffix =
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
-  coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
+  @override
+  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
     final name = serializedFieldName(checker, fieldAnnotation.name);
     final defaultValue = defaultValueSuffix(fieldAnnotation);
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(
-        "Field `${InsertTable.PRIMARY_KEY_FIELD}` conflicts with reserved `SqliteModel` getter.",
-        todo: "Rename the field from `${InsertTable.PRIMARY_KEY_FIELD}`",
+        'Field `${InsertTable.PRIMARY_KEY_FIELD}` conflicts with reserved `SqliteModel` getter.',
+        todo: 'Rename the field from `${InsertTable.PRIMARY_KEY_FIELD}`',
         element: field,
       );
     }
@@ -56,20 +62,20 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
           isFuture: checker.isArgTypeASibling || checker.isArgTypeAFuture);
 
       if (checker.isArgTypeASibling) {
-        final awaited = wrappedInFuture ? "async => await" : "=>";
-        final query = """
+        final awaited = wrappedInFuture ? 'async => await' : '=>';
+        final query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
-        """;
-        final String method = """
+        ''';
+        final method = '''
           jsonDecode(data['$name'] ?? []).map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
               $query
             )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
           )$castIterable
-        """;
+        ''';
 
         // Future<Iterable<OfflineFirstModel>>
         if (wrappedInFuture) {
-          return "Future.wait<$argType>($method)";
+          return 'Future.wait<$argType>($method)';
         }
 
         // Iterable<Future<OfflineFirstModel>>
@@ -79,10 +85,10 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
           // Iterable<OfflineFirstModel>
         } else {
           if (checker.isSet) {
-            return "(await Future.wait<$argType>($method)).toSet().cast<$argType>()";
+            return '(await Future.wait<$argType>($method)).toSet().cast<$argType>()';
           }
 
-          return "await Future.wait<$argType>($method)";
+          return 'await Future.wait<$argType>($method)';
         }
       }
 
@@ -91,11 +97,11 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
           final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
-          return """
+          return '''
             jsonDecode(data['$name']).map(
               (c) => $argType.$constructorName(c as $serializableType)
             )$castIterable
-          """;
+          ''';
         }
       }
 
@@ -111,7 +117,7 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
       // Iterable<bool>
       if (argTypeChecker.isBool) {
-        "jsonDecode(data['$name']).map((d) => d == 1)$castIterable";
+        return "jsonDecode(data['$name']).map((d) => d == 1)$castIterable";
       }
 
       // Iterable<double>, Iterable<int>, Iterable<num>, Iterable<Map>, Iterable<String>
@@ -119,19 +125,19 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
       // OfflineFirstModel, Future<OfflineFirstModel>
     } else if (checker.isSibling) {
-      final query = """
+      final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', data['$name'] as int, limit1: true),
-      """;
+      ''';
 
       if (wrappedInFuture) {
-        return """(data['$name'] > -1
+        return '''(data['$name'] > -1
             ? repository?.getAssociation<${checker.unFuturedType}>($query)?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
-            : null)""";
+            : null)''';
       }
 
-      return """(data['$name'] > -1
+      return '''(data['$name'] > -1
             ? (await repository?.getAssociation<${checker.unFuturedType}>($query))?.first
-            : null)""";
+            : null)''';
 
       // enum
     } else if (checker.isEnum) {

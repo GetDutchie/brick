@@ -35,6 +35,7 @@ abstract class OfflineFirstWithRestRepository
     extends OfflineFirstRepository<OfflineFirstWithRestModel> {
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
+  @override
   final RestProvider remoteProvider;
 
   OfflineRequestQueue _offlineRequestQueue;
@@ -69,7 +70,7 @@ abstract class OfflineFirstWithRestRepository
     try {
       return await super.delete<_Model>(instance, query: query);
     } on RestException catch (e) {
-      logger.warning("#delete rest failure: $e");
+      logger.warning('#delete rest failure: $e');
       throw OfflineFirstException(e);
     }
   }
@@ -96,7 +97,7 @@ abstract class OfflineFirstWithRestRepository
     try {
       return await super.upsert<_Model>(instance, query: query);
     } on RestException catch (e) {
-      logger.warning("#upsert rest failure: $e");
+      logger.warning('#upsert rest failure: $e');
       throw OfflineFirstException(e);
     }
   }
@@ -110,10 +111,10 @@ abstract class OfflineFirstWithRestRepository
     try {
       return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
     } on RestException catch (e) {
-      logger.warning("#hydrate rest failure: $e");
+      logger.warning('#hydrate rest failure: $e');
     }
 
-    return List<_Model>();
+    return <_Model>[];
   }
 }
 

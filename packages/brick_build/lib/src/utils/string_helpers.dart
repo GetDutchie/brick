@@ -125,5 +125,6 @@ class _EscapedDartString {
     return '\\x$value';
   }
 
+  @override
   String toString() => escape();
 }

@@ -5,8 +5,8 @@ import 'package:analyzer/dart/element/type.dart';
 
 import 'package:brick_offline_first_abstract/offline_first_model.dart';
 
-final _serializableClassChecker = TypeChecker.fromRuntime(OfflineFirstModel);
-final _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
+const _serializableClassChecker = TypeChecker.fromRuntime(OfflineFirstModel);
+const _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
 
 /// Utility to check for core Dart Types and and similarly-annotated
 /// classes (i.e. other `OfflineFirstModel`s)

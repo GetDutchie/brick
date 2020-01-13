@@ -10,10 +10,10 @@ class RequestSqliteCache {
   final http.Request request;
   final String databaseName;
 
-  /// Matches any HTTP requests that send data (or "push"). "Pull" requests most often have an
+  /// Matches any HTTP requests that send data (or 'push'). 'Pull' requests most often have an
   /// outcome that exists in memory (e.g. deserializing to a model). Since callbacks cannot
   /// be stored in SQLite and there's no guarantee of the destination existing (say
-  /// disposal or a crash has since occurred), "pull" requests will be ignored.
+  /// disposal or a crash has since occurred), 'pull' requests will be ignored.
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
 
   RequestSqliteCache(
@@ -46,7 +46,7 @@ class RequestSqliteCache {
       return await db.transaction((txn) async {
         return await txn.delete(
           HTTP_JOBS_TABLE_NAME,
-          where: "id = ?",
+          where: 'id = ?',
           whereArgs: [response['id']],
         );
       });
@@ -65,14 +65,14 @@ class RequestSqliteCache {
       if (response == null || response.isEmpty) {
         final serialized = toSqlite();
 
-        logger.fine("adding to queue: $serialized");
+        logger.fine('adding to queue: $serialized');
         return await txn.insert(
           HTTP_JOBS_TABLE_NAME,
           serialized,
         );
       }
 
-      logger.warning("failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} $response");
+      logger.warning('failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} $response');
       return await txn.update(
         HTTP_JOBS_TABLE_NAME,
         {
@@ -80,7 +80,7 @@ class RequestSqliteCache {
           HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
           HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
         },
-        where: "id = ?",
+        where: 'id = ?',
         whereArgs: [response['id']],
       );
     });
@@ -97,12 +97,12 @@ class RequestSqliteCache {
       HTTP_JOBS_URL_COLUMN,
     ];
 
-    final whereStatement = columns.join(" = ? AND ");
+    final whereStatement = columns.join(' = ? AND ');
     final serialized = toSqlite();
 
     final response = await db.query(
       HTTP_JOBS_TABLE_NAME,
-      where: "$whereStatement = ?",
+      where: '$whereStatement = ?',
       whereArgs: columns.map((c) => serialized[c]).toList(),
     );
 
@@ -112,14 +112,12 @@ class RequestSqliteCache {
   Database _db;
   Future<Database> _getDb() async {
     if (_db?.isOpen == true) return _db;
-    _db = await _openDb(databaseName);
-
-    return _db;
+    return _db = await _openDb(databaseName);
   }
 
   /// Prepare schema.
   static Future<void> migrate(String dbName) async {
-    final statement = """
+    final statement = '''
       CREATE TABLE IF NOT EXISTS `$HTTP_JOBS_TABLE_NAME` (
         `id` INTEGER PRIMARY KEY AUTOINCREMENT,
         `$HTTP_JOBS_ATTEMPTS_COLUMN` INTEGER DEFAULT 1,
@@ -131,7 +129,7 @@ class RequestSqliteCache {
         `$HTTP_JOBS_UPDATED_AT` INTEGER DEFAULT 0,
         `$HTTP_JOBS_URL_COLUMN` TEXT
       );
-    """;
+    ''';
     final db = await _openDb(dbName);
     return await db.execute(statement);
   }
@@ -150,9 +148,9 @@ class RequestSqliteCache {
 
       // lock the requests for idempotency
       await txn.rawUpdate(
-          "UPDATE $HTTP_JOBS_TABLE_NAME SET $HTTP_JOBS_LOCKED_COLUMN = 1 WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);");
+          'UPDATE $HTTP_JOBS_TABLE_NAME SET $HTTP_JOBS_LOCKED_COLUMN = 1 WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);');
 
-      return txn.rawQuery("$whereLocked;");
+      return txn.rawQuery('$whereLocked;');
     });
 
     return unprocessedJobs.map(toRequest);
@@ -162,16 +160,22 @@ class RequestSqliteCache {
   @visibleForTesting
   @protected
   static http.Request toRequest(Map<String, dynamic> data) {
-    http.Request _request = http.Request(
+    var _request = http.Request(
       data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
       Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
     );
 
-    if (data[HTTP_JOBS_ENCODING_COLUMN] != null)
+    if (data[HTTP_JOBS_ENCODING_COLUMN] != null) {
       _request.encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
-    if (data[HTTP_JOBS_HEADERS_COLUMN] != null)
+    }
+
+    if (data[HTTP_JOBS_HEADERS_COLUMN] != null) {
       _request.headers.addAll(Map<String, String>.from(jsonDecode(data[HTTP_JOBS_HEADERS_COLUMN])));
-    if (data[HTTP_JOBS_BODY_COLUMN] != null) _request.body = data[HTTP_JOBS_BODY_COLUMN];
+    }
+
+    if (data[HTTP_JOBS_BODY_COLUMN] != null) {
+      _request.body = data[HTTP_JOBS_BODY_COLUMN];
+    }
 
     return _request;
   }
@@ -197,11 +201,11 @@ Future<Database> _openDb(String dbName) async {
 /// Generate SQLite query for [unprocessedRequests]
 String _lockedQuery(bool whereIsLocked, int limit, [String selectFields = '*']) {
   return [
-    "SELECT DISTINCT",
+    'SELECT DISTINCT',
     selectFields,
-    "FROM $HTTP_JOBS_TABLE_NAME",
-    "WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}",
-    "ORDER BY $HTTP_JOBS_UPDATED_AT ASC",
-    "LIMIT $limit"
+    'FROM $HTTP_JOBS_TABLE_NAME',
+    'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
+    'ORDER BY $HTTP_JOBS_UPDATED_AT ASC',
+    'LIMIT $limit'
   ].join(' ');
 }
