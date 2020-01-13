@@ -2,8 +2,8 @@ import 'package:collection/collection.dart' show MapEquality, ListEquality;
 import 'package:brick_core/src/where.dart';
 import 'dart:convert';
 
-const _mapEquality = const MapEquality();
-const _listEquality = const ListEquality();
+const _mapEquality = MapEquality();
+const _listEquality = ListEquality();
 
 /// An interface to request data from a [Provider] or [Repository].
 class Query {
@@ -49,14 +49,14 @@ class Query {
     this.where,
   }) : this.params = params ?? {} {
     /// Number of results first returned from query; `0` returns all. Must be greater than -1
-    if (this.params['limit'] != null) {
-      assert(this.params['limit'] > -1);
+    if (params['limit'] != null) {
+      assert(params['limit'] > -1);
     }
 
     /// Offset results returned from query. Must be greater than -1 and must be used with limit
-    if (this.params['offset'] != null) {
-      assert(this.params['offset'] > -1);
-      assert(this.params['limit'] != null);
+    if (params['offset'] != null) {
+      assert(params['offset'] > -1);
+      assert(params['limit'] != null);
     }
   }
 
@@ -106,7 +106,8 @@ class Query {
     };
   }
 
-  toString() => jsonEncode(toJson());
+  @override
+  String toString() => jsonEncode(toJson());
 
   @override
   bool operator ==(Object other) =>

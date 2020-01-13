@@ -12,10 +12,17 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
     String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
+  @override
   final providerName = OfflineFirstSerdesGenerator.REST_PROVIDER_NAME;
+
+  @override
   final doesDeserialize = false;
+
+  @override
   String get adapterMethod =>
-      "await $serializingFunctionName(input, provider: provider, repository: repository)";
+      'await $serializingFunctionName(input, provider: provider, repository: repository)';
+
+  @override
   List<String> get instanceFieldsAndMethods {
     String toKey = (fields as RestFields).config?.toKey?.trim();
 

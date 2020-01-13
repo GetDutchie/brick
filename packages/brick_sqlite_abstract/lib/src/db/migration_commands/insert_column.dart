@@ -36,16 +36,16 @@ class InsertColumn extends MigrationCommand {
       return null;
     }
 
-    return "DEFAULT $defaultValue";
+    return 'DEFAULT $defaultValue';
   }
 
-  String get _nullStatement => nullable ? "NULL" : "NOT NULL";
+  String get _nullStatement => nullable ? 'NULL' : 'NOT NULL';
   String get _autoincrementStatement {
     if (!autoincrement) {
       return null;
     }
 
-    return "AUTOINCREMENT";
+    return 'AUTOINCREMENT';
   }
 
   String get definition => Migration.ofDefinition(definitionType);
@@ -55,6 +55,7 @@ class InsertColumn extends MigrationCommand {
     return list.join(' ');
   }
 
+  @override
   String get statement => 'ALTER TABLE `$onTable` ADD `$name` $definition $_addons';
 
   String get forGenerator {
@@ -65,30 +66,30 @@ class InsertColumn extends MigrationCommand {
     ];
 
     if (defaultValue != null) {
-      parts.add("defaultValue: $defaultValue");
+      parts.add('defaultValue: $defaultValue');
     }
 
     if (autoincrement != defaults.autoincrement) {
-      parts.add("autoincrement: $autoincrement");
+      parts.add('autoincrement: $autoincrement');
     }
 
     if (nullable != defaults.nullable) {
-      parts.add("nullable: $nullable");
+      parts.add('nullable: $nullable');
     }
 
     if (unique != defaults.unique) {
-      parts.add("unique: $unique");
+      parts.add('unique: $unique');
     }
 
-    return 'InsertColumn(${parts.join(", ")})';
+    return 'InsertColumn(${parts.join(', ')})';
   }
 
   get down => DropColumn(name, onTable: onTable);
 
   static const InsertColumn defaults = const InsertColumn(
-    "PLACEHOLDER",
+    'PLACEHOLDER',
     Column.varchar,
-    onTable: "PLACEHOLDER",
+    onTable: 'PLACEHOLDER',
     autoincrement: false,
     nullable: true,
     unique: false,

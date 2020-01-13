@@ -7,6 +7,7 @@ import 'schema_base.dart';
 /// Describes a column object managed by SQLite
 /// This should not exist outside of a SchemaTable
 class SchemaColumn extends BaseSchemaObject {
+  @override
   String name;
   final Type type;
   final bool autoincrement;
@@ -32,39 +33,40 @@ class SchemaColumn extends BaseSchemaObject {
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
-        assert(Migration.fromDartPrimitive(type) != null, "Type must serializable"),
-        assert(!isPrimaryKey || type == int, "Primary key must be an integer"),
+        assert(Migration.fromDartPrimitive(type) != null, 'Type must serializable'),
+        assert(!isPrimaryKey || type == int, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
-  get forGenerator {
+  @override
+  String get forGenerator {
     List<dynamic> parts = ['"$name"', type];
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
-      parts.add("autoincrement: $autoincrement");
+      parts.add('autoincrement: $autoincrement');
     }
 
     if (defaultValue != null) {
-      parts.add("defaultValue: $defaultValue");
+      parts.add('defaultValue: $defaultValue');
     }
 
     if (nullable != InsertColumn.defaults.nullable) {
-      parts.add("nullable: $nullable");
+      parts.add('nullable: $nullable');
     }
 
     if (isPrimaryKey != false) {
-      parts.add("isPrimaryKey: $isPrimaryKey");
+      parts.add('isPrimaryKey: $isPrimaryKey');
     }
 
     if (isForeignKey != false) {
-      parts.add("isForeignKey: $isForeignKey");
+      parts.add('isForeignKey: $isForeignKey');
       parts.add('foreignTableName: "$foreignTableName"');
     }
 
     if (unique != InsertColumn.defaults.unique) {
-      parts.add("unique: $unique");
+      parts.add('unique: $unique');
     }
 
-    return "SchemaColumn(${parts.join(", ")})";
+    return 'SchemaColumn(${parts.join(', ')})';
   }
 
   toCommand({bool shouldDrop = false}) {

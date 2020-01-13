@@ -33,9 +33,9 @@ abstract class Migration {
 
   String get statement => upStatement;
 
-  String get upStatement => up.map((c) => c.statement).join(";\n") + ";";
+  String get upStatement => up.map((c) => c.statement).join(';\n') + ';';
 
-  String get downStatement => down.map((c) => c.statement).join(";\n") + ";";
+  String get downStatement => down.map((c) => c.statement).join(';\n') + ';';
 
   /// Convert `Column` to SQLite data types
   static String ofDefinition(Column definition) {
@@ -72,7 +72,7 @@ abstract class Migration {
         return 'VARCHAR';
         break;
       default:
-        return throw ArgumentError("$definition not found in Column");
+        return throw ArgumentError('$definition not found in Column');
     }
   }
 
@@ -98,7 +98,7 @@ abstract class Migration {
         return Column.varchar;
         break;
       default:
-        return throw ArgumentError("$type not associated with a Column");
+        return throw ArgumentError('$type not associated with a Column');
     }
   }
 
@@ -137,7 +137,7 @@ abstract class Migration {
         return String;
         break;
       default:
-        return throw ArgumentError("$definition not found in Column");
+        return throw ArgumentError('$definition not found in Column');
     }
   }
 
@@ -145,19 +145,19 @@ abstract class Migration {
   /// which renames tables. Some versions of SQLite attempt to rename the constraint which
   /// can cause unforeseen race conditions with other migrations. Therefore, foreign keys
   /// are disabled before the transaction and enabled immediately afterward.
-  static String wrapInTransaction(String statement) => """
+  static String wrapInTransaction(String statement) => '''
 PRAGMA foreign_keys=off;
 BEGIN IMMEDIATE;
 $statement
 COMMIT;
-PRAGMA foreign_keys=on;""";
+PRAGMA foreign_keys=on;''';
 
   static String generate(List<MigrationCommand> commands, int version) {
-    final upCommands = commands.map((m) => m.forGenerator).join(",\n  ");
+    final upCommands = commands.map((m) => m.forGenerator).join(',\n  ');
     final downCommands = commands.map((m) => m.down?.forGenerator).toList();
     downCommands.removeWhere((m) => m == null);
 
-    return """
+    return '''
 // GENERATED CODE EDIT WITH CAUTION
 // THIS FILE **WILL NOT** BE REGENERATED
 // This file should be version controlled and can be manually edited.
@@ -174,7 +174,7 @@ const List<MigrationCommand> _migration_${version}_up = [
 ];
 
 const List<MigrationCommand> _migration_${version}_down = [
-  ${downCommands.join(",\n  ")}
+  ${downCommands.join(',\n  ')}
 ];
 
 //
@@ -194,7 +194,7 @@ class Migration$version extends Migration {
         down: _migration_${version}_down,
       );
 }
-""";
+''';
   }
 
   @override

@@ -1,6 +1,6 @@
 name: brick_core
 description: A data persistence library
-homepage: https://github.com/greenbits/brick/packages/brick_core
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_core
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 

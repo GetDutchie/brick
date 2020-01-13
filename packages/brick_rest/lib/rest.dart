@@ -21,6 +21,7 @@ class RestProvider implements Provider<RestModel> {
   final String baseEndpoint;
 
   /// The glue between app models and generated adapters.
+  @override
   final RestModelDictionary modelDictionary;
 
   /// Headers supplied for every [get], [delete], and [upsert] call.
@@ -29,7 +30,7 @@ class RestProvider implements Provider<RestModel> {
   /// All requests pass through this client.
   http.Client client;
 
-  Logger _logger;
+  final Logger _logger;
 
   RestProvider(
     this.baseEndpoint, {
@@ -39,12 +40,13 @@ class RestProvider implements Provider<RestModel> {
         _logger = Logger('RestProvider');
 
   /// Sends a DELETE request method to the endpoint
+  @override
   Future<http.Response> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final url = urlForModel<_Model>(query, instance);
-    _logger.fine("DELETE $url");
+    _logger.fine('DELETE $url');
     final resp = await client.delete(url, headers: headersForQuery(query));
 
-    _logger.finest("caller=delete url=$url statusCode=${resp?.statusCode} body=${resp?.body}");
+    _logger.finest('caller=delete url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
@@ -56,20 +58,20 @@ class RestProvider implements Provider<RestModel> {
 
   /// [Query]'s `params` can extend the [get] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
-  /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{"user": {"id"...}}`).
+  /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{'user': {'id'...}}`).
   /// It is recommended to use `RestSerializable#fromKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
-  /// regardless of the first key (in the example, `{"id"...}`).
+  /// regardless of the first key (in the example, `{'id'...}`).
   Future<List<_Model>> get<_Model extends RestModel>({query, repository}) async {
     final url = urlForModel<_Model>(query);
     if (url == null) return List<_Model>();
 
-    _logger.fine("GET $url");
+    _logger.fine('GET $url');
 
     final adapter = modelDictionary.adapterFor[_Model];
     final resp = await client.get(url, headers: headersForQuery(query));
 
-    _logger.finest("caller=get url=$url statusCode=${resp?.statusCode} body=${resp?.body}");
+    _logger.finest('caller=get url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       final topLevelKey = (query?.params ?? {})['topLevelKey'] ?? adapter.fromKey;
@@ -93,7 +95,7 @@ class RestProvider implements Provider<RestModel> {
   /// [Query]'s `params` can extend the [upsert] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
-  /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
+  /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{'user': {'id'...}}`)
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
   Future<http.Response> upsert<_Model extends RestModel>(instance, {query, repository}) async {
@@ -103,7 +105,7 @@ class RestProvider implements Provider<RestModel> {
     final url = urlForModel<_Model>(query, instance);
     final resp = await _sendUpsertResponse(url, body, query, adapter.toKey);
 
-    _logger.finest("caller=upsert url=$url statusCode=${resp?.statusCode} body=${resp?.body}");
+    _logger.finest('caller=upsert url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
@@ -134,7 +136,7 @@ class RestProvider implements Provider<RestModel> {
   String urlForModel<_Model extends RestModel>(Query query, [_Model instance]) {
     assert(
       modelDictionary.adapterFor.containsKey(_Model),
-      "REST provider does not contain $_Model",
+      'REST provider does not contain $_Model',
     );
     final adapter = modelDictionary.adapterFor[_Model];
     final endpoint = adapter.restEndpoint(query: query, instance: instance);
@@ -168,17 +170,17 @@ class RestProvider implements Provider<RestModel> {
   ]) async {
     final encodedBody = jsonEncode(body);
     final topLevelKey = (query?.params ?? {})['topLevelKey'] ?? toKey;
-    final wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
+    final wrappedBody = topLevelKey != null ? "{'$topLevelKey':$encodedBody}" : encodedBody;
     final headers = headersForQuery(query);
 
     if ((query?.params ?? {})['request'] == 'PUT') {
-      _logger.fine("PUT $url");
-      _logger.finer("method=PUT url=$url headers=$headers body=$wrappedBody");
+      _logger.fine('PUT $url');
+      _logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
       return await client.put(url, body: wrappedBody, headers: headers);
     }
 
-    _logger.fine("POST $url");
-    _logger.finer("method=POST url=$url headers=$headers body=$wrappedBody");
+    _logger.fine('POST $url');
+    _logger.finer('method=POST url=$url headers=$headers body=$wrappedBody');
     return await client.post(url, body: wrappedBody, headers: headers);
   }
 }
