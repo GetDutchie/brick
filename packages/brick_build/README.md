@@ -60,8 +60,8 @@ Before reading further, this process appears to require a lot of code. This is l
 A provider will likely require high-level information about a class that would be inappropriate to define on every instance of a class. And, because Dart's Type system can't infer static methods, this must be declared outside the class in an annotation:
 
 ```dart
-// in this example, @ConnectOfflineFirst is our super or class-level annotation
-@ConnectOfflineFirst(
+// in this example, @ConnectOfflineFirstWithRest is our super or class-level annotation
+@ConnectOfflineFirstWithRest(
   // RestSerializable is our configuration body.
   restConfig: RestSerializable(
     // a REST endpoint is inappropriate to define as an instance-level definition
@@ -192,13 +192,13 @@ class RestFields extends FieldsForClass<Rest> {
 An AnnotationSuperGenerator manages sub generators. This generator is most likely the entrypoint for other builders. It should be simple, with most of its logic delegated to sub generators.
 
 ```dart
-// @ConnectOfflineFirst is the annotation that decorates our models
-class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst> {
-  final ConnectOfflineFirst config;
+// @ConnectOfflineFirstWithRest is the annotation that decorates our models
+class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
+  final ConnectOfflineFirstWithRest config;
 
   const OfflineFirstGenerator({
-    ConnectOfflineFirst argConfig,
-  }) : config = argConfig ?? ConnectOfflineFirst.defaults;
+    ConnectOfflineFirstWithRest argConfig,
+  }) : config = argConfig ?? ConnectOfflineFirstWithRest.defaults;
 
   String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
     final rest = RestSerdes(element, annotation);
@@ -288,12 +288,12 @@ class RestSerdes extends ProviderSerializable<RestSerializable> {
 Finally, the adapter code is ready to be sent to a builder.
 
 ```dart
-class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst> {
-  final ConnectOfflineFirst config;
+class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
+  final ConnectOfflineFirstWithRest config;
 
   const OfflineFirstGenerator({
-    ConnectOfflineFirst argConfig,
-  }) : config = argConfig ?? ConnectOfflineFirst.defaults;
+    ConnectOfflineFirstWithRest argConfig,
+  }) : config = argConfig ?? ConnectOfflineFirstWithRest.defaults;
 
   String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
     final rest = RestSerdes(element, annotation);
@@ -390,13 +390,13 @@ Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
 
 ## How does this work?
 
-### End-to-end Case Study: `@ConnectOfflineFirst`
+### End-to-end Case Study: `@ConnectOfflineFirstWithRest`
 
 ![OfflineFirst Builder](https://user-images.githubusercontent.com/865897/72175884-1c399900-3392-11ea-8baa-7d50f8db6773.jpg)
 
-1. A class is discovered with the `@ConnectOfflineFirst` annotation.
+1. A class is discovered with the `@ConnectOfflineFirstWithRest` annotation.
       ```dart
-      @ConnectOfflineFirst(
+      @ConnectOfflineFirstWithRest(
         sqliteConfig: SqliteSerializable(
           nullable: false
         ),
@@ -406,7 +406,7 @@ Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
       )
       class MyClass extends OfflineFirstModel
       ```
-1. `OfflineFirstGenerator` expands respective sub configuration from the `@ConnectOfflineFirst` configuration.
+1. `OfflineFirstGenerator` expands respective sub configuration from the `@ConnectOfflineFirstWithRest` configuration.
 1. Instances of `RestFields` and `SqliteFields` are created and passed to their respective generators. This will expand all fields of the class into consumable code. Namely, the `#sorted` method ensures there are no duplicates and the fields are passed in the order they're declared in the class.
 1. `RestSerialize`, `RestDeserialize`, `SqliteSerialize`, and `SqliteDeserialize` generators are created from the previous configurations and the aforementioned fields. Since these generators inherit from the same base class, this documentation will continue with `RestSerialize` as the primary example.
 1. The fields are iterated through `RestSerialize#coderForField` to generate the transforming code. This function produces output by checking the field's type. For example, `final List<Future<int>> futureNumbers` may produce `'future_numbers': await Future.wait<int>(futureNumbers)`.
@@ -425,7 +425,7 @@ Dart's build discovers one file at a time. Because Brick makes use of associatio
 
 While `JsonSerializable` is an incredibly robust library, it is, in short, opinionated. Just like this library is opinionated. This prevents incorporation in a number of ways:
 
-* `@JsonSerializable` detects serializable models [via a class method check](https://github.com/dart-lang/json_serializable/blob/6a39a76ff8967de50db0f4b344181328269cf978/json_serializable/lib/src/type_helpers/json_helper.dart#L131-L133). Since `@ConnectOfflineFirst` uses an abstracted builder, checking the source class is not effective.
+* `@JsonSerializable` detects serializable models [via a class method check](https://github.com/dart-lang/json_serializable/blob/6a39a76ff8967de50db0f4b344181328269cf978/json_serializable/lib/src/type_helpers/json_helper.dart#L131-L133). Since `@ConnectOfflineFirstWithRest` uses an abstracted builder, checking the source class is not effective.
 * `@JsonSerializable` only supports enums as strings, not as indexes. While this is admittedly more resilient, it can’t be retrofitted to enums passed as integers from an API.
 * Lastly, dynamically applying a configuration is an uphill battle with `ConstantReader` (the annotation would have to be converted into a [digestable format](https://github.com/dart-lang/json_serializable/blob/5cbe2f9b3009cd78c7a55277f5278ea09952340d/json_serializable/lib/src/json_serializable_generator.dart#L103)). While ultimately this could be possible, the library is still unusable because of the aforementioned points.
 

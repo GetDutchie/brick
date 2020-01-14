@@ -124,7 +124,7 @@ void main() {
       });
     });
 
-    group('@ConnectOfflineFirst', () {
+    group('@ConnectOfflineFirstWithRest', () {
       test('restSerializable#endpoint', () async {
         await generateAdapterExpectation('rest_config_endpoint', _$restConfigEndpoint.output);
       });

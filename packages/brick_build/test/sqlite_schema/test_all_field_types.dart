@@ -31,7 +31,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class AllFieldTypes {
   AllFieldTypes({
     this.integer,

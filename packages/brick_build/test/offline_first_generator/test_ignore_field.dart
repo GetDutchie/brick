@@ -25,7 +25,7 @@ Future<Map<String, dynamic>> _$IgnoreFieldToSqlite(IgnoreField instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class IgnoreField {
   @Sqlite(ignore: true)
   final String name;

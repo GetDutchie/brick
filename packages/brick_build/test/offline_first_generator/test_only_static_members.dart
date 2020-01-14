@@ -28,7 +28,7 @@ Future<Map<String, dynamic>> _$OnlyStaticMembersToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OnlyStaticMembers {
   // To ensure static members are not considered for serialization.
   static const answer = 42;

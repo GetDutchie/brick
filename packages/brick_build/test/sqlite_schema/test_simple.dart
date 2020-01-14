@@ -64,7 +64,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class Simple {
   final String name;
 

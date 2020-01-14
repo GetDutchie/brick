@@ -15,7 +15,7 @@ abstract class ProviderSerializable<_Config> {
   ///
   /// Example, `"restConfig"` here:
   /// ```dart
-  /// @ConnectOfflineFirst(
+  /// @ConnectOfflineFirstWithRest(
   ///   restConfig: RestSerializable(...)
   /// )
   /// ```

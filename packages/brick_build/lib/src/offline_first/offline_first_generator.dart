@@ -8,8 +8,8 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 
-/// Output serializing code for all models with the @[ConnectOfflineFirst] annotation
-class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst> {
+/// Output serializing code for all models with the @[ConnectOfflineFirstWithRest] annotation
+class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
   /// The prefix to the adapter name; useful if extending `OfflineFirstRepository`.
   /// Defaults to `OfflineFirst`.
   final String superAdapterName;

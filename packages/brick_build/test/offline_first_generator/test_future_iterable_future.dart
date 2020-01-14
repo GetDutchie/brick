@@ -2,7 +2,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 
 final output = r'''''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class FutureIterableFuture {
   FutureIterableFuture(this.willBeBad);
 

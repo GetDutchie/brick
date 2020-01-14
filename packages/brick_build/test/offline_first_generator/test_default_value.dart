@@ -25,7 +25,7 @@ Future<Map<String, dynamic>> _$DefaultValueToSqlite(DefaultValue instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class DefaultValue {
   DefaultValue({
     this.string,

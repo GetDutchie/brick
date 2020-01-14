@@ -83,7 +83,7 @@ class SqliteUniqueAdapter extends OfflineFirstAdapter<SqliteUnique> {
 }
 """;
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class SqliteUnique extends OfflineFirstModel {
   @Sqlite(unique: true)
   final int someField;

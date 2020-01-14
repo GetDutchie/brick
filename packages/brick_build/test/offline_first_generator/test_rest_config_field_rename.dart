@@ -132,7 +132,7 @@ Future<Map<String, dynamic>> _$RestConfigPascalRenameToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(fieldRename: FieldRename.none),
 )
 class RestConfigNoRename extends OfflineFirstModel {
@@ -141,7 +141,7 @@ class RestConfigNoRename extends OfflineFirstModel {
   RestConfigNoRename(this.someLongField);
 }
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(fieldRename: FieldRename.snake),
 )
 class RestConfigSnakeRename extends OfflineFirstModel {
@@ -150,7 +150,7 @@ class RestConfigSnakeRename extends OfflineFirstModel {
   RestConfigSnakeRename(this.someLongField);
 }
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(fieldRename: FieldRename.kebab),
 )
 class RestConfigKebabRename extends OfflineFirstModel {
@@ -159,7 +159,7 @@ class RestConfigKebabRename extends OfflineFirstModel {
   RestConfigKebabRename(this.someLongField);
 }
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(fieldRename: FieldRename.pascal),
 )
 class RestConfigPascalRename extends OfflineFirstModel {

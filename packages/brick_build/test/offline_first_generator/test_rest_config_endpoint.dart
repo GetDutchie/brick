@@ -86,7 +86,7 @@ class RestConfigEndpointAdapter
 }
 ''';
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: "{ return 'anEndpoint'; }",
     nullable: false,

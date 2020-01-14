@@ -43,7 +43,7 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
 }
 ''';
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(nullable: false),
   sqliteConfig: SqliteSerializable(nullable: false),
 )

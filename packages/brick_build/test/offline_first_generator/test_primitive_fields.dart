@@ -83,7 +83,7 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class PrimitiveFields {
   PrimitiveFields({
     this.integer,

@@ -142,10 +142,10 @@ Future<Map<String, dynamic>> _$EagerLoadToSqlite(EagerLoad instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class Assoc extends OfflineFirstModel {}
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class EagerLoad extends OfflineFirstModel {
   EagerLoad({
     this.string,

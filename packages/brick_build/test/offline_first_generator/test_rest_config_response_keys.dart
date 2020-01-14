@@ -83,7 +83,7 @@ class RestConfigResponseKeysAdapter
 }
 ''';
 
-@ConnectOfflineFirst(restConfig: RestSerializable(fromKey: 'users', toKey: 'user'))
+@ConnectOfflineFirstWithRest(restConfig: RestSerializable(fromKey: 'users', toKey: 'user'))
 class RestConfigResponseKeys extends OfflineFirstModel {
   final int someField;
 

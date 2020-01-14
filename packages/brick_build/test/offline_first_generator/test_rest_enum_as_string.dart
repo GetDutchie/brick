@@ -54,7 +54,7 @@ Future<Map<String, dynamic>> _$EnumAsStringToSqlite(EnumAsString instance,
 
 enum Hat { party, dance, sleeping }
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class EnumAsString {
   EnumAsString({
     this.hat,

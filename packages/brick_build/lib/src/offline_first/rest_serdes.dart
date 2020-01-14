@@ -6,7 +6,7 @@ import 'package:brick_build/src/rest_serdes/rest_serialize.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_rest/rest.dart' show RestSerializable, FieldRename;
 
-/// Digest a `restConfig` (`@ConnectOfflineFirst`) from [reader] and manage serdes generators
+/// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
 /// to and from a `RestProvider`.
 class RestSerdes extends ProviderSerializable<RestSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and

@@ -6,7 +6,7 @@ import 'package:source_gen/source_gen.dart';
 /// This generator is the annotation that discovers all models in the domain
 /// and most commonly invokes sub generators.
 ///
-/// For example, all `@ConnectOfflineFirst` models may be discovered and passed to
+/// For example, all `@ConnectOfflineFirstWithRest` models may be discovered and passed to
 /// subsequent generators.
 abstract class AnnotationSuperGenerator<_Annotation> extends GeneratorForAnnotation<_Annotation> {
   const AnnotationSuperGenerator() : super();

@@ -2,7 +2,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class SqliteAssoc extends OfflineFirstModel {
   @Rest(ignore: true)
   @Sqlite(ignore: true)
@@ -93,7 +93,7 @@ Future<Map<String, dynamic>> _$OneToManyAssociationToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OneToManyAssociation extends OfflineFirstModel {
   OneToManyAssociation({this.assoc});
 

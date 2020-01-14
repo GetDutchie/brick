@@ -64,7 +64,7 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
   }
 }
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class CustomOfflineFirstSerdes {
   CustomOfflineFirstSerdes({this.string, this.strings});
 
