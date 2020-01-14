@@ -2,11 +2,11 @@
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
 import 'package:meta/meta.dart' show required, visibleForTesting;
 
-import 'schema/schema_table.dart';
-import 'schema/schema_column.dart';
-import 'migration_manager.dart';
 import 'migration.dart';
 import 'migration_commands.dart';
+import 'migration_manager.dart';
+import 'schema/schema_column.dart';
+import 'schema/schema_table.dart';
 
 export 'package:brick_sqlite_abstract/src/db/schema/schema_table.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_column.dart';
@@ -144,7 +144,7 @@ class Schema {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Schema && this?.version == other?.version && this?.tables == other?.tables;
+      other is Schema && version == other?.version && tables == other?.tables;
 
   @override
   int get hashCode => version.hashCode ^ tables.hashCode;

@@ -10,9 +10,12 @@ class RenameTable extends MigrationCommand {
     this.newName,
   );
 
+  @override
   String get statement => 'ALTER TABLE `$oldName` RENAME TO `$newName`';
 
-  String get forGenerator => 'RenameTable("$oldName", "$newName")';
+  @override
+  String get forGenerator => "RenameTable('$oldName', '$newName')";
 
-  get down => RenameTable(newName, oldName);
+  @override
+  MigrationCommand get down => RenameTable(newName, oldName);
 }

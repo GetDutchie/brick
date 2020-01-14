@@ -1,5 +1,5 @@
-import 'migration_command.dart';
 import 'insert_table.dart';
+import 'migration_command.dart';
 
 /// Drop table from DB if it exists
 class DropTable extends MigrationCommand {
@@ -7,9 +7,12 @@ class DropTable extends MigrationCommand {
 
   const DropTable(this.name);
 
+  @override
   String get statement => 'DROP TABLE IF EXISTS `$name`';
 
-  String get forGenerator => 'DropTable("$name")';
+  @override
+  String get forGenerator => "DropTable('$name')";
 
-  get down => InsertTable(name);
+  @override
+  MigrationCommand get down => InsertTable(name);
 }

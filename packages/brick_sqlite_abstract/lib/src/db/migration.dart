@@ -1,7 +1,7 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/migration.dart)
 
-import 'migration_commands/migration_command.dart';
 import 'package:meta/meta.dart';
+import 'migration_commands/migration_command.dart';
 
 /// SQLite data types.
 ///
@@ -199,7 +199,7 @@ class Migration$version extends Migration {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Migration && this?.version == other?.version;
+      identical(this, other) || other is Migration && version == other?.version;
 
   @override
   int get hashCode => version.hashCode;

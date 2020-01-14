@@ -15,7 +15,9 @@ class DropColumn extends MigrationCommand {
 
   /// SQLite does not support dropping individual columns. Instead, this command
   /// must be handled during migration when access to the table schema is available.
+  @override
   String get statement => null;
 
-  String get forGenerator => 'DropColumn("$name", onTable: "$onTable")';
+  @override
+  String get forGenerator => "DropColumn('$name', onTable: '$onTable')";
 }

@@ -9,17 +9,18 @@ abstract class MigrationCommand {
   /// Outputs the opposite command to be used in a generator
   MigrationCommand get down => null;
 
-  /// Alias for [statement]
-  toString() => statement;
-
   const MigrationCommand();
+
+  /// Alias for [statement]
+  @override
+  String toString() => statement;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MigrationCommand &&
-          this?.statement == other?.statement &&
-          this?.forGenerator == other?.forGenerator;
+          statement == other?.statement &&
+          forGenerator == other?.forGenerator;
 
   @override
   int get hashCode => statement.hashCode ^ forGenerator.hashCode;

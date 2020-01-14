@@ -1,6 +1,4 @@
-import 'package:brick_core/src/model.dart';
-import 'package:brick_core/src/provider.dart';
-import 'package:brick_core/src/model_repository.dart';
+import 'package:brick_core/core.dart';
 
 const int NEW_RECORD_ID = null;
 

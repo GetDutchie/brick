@@ -1,6 +1,6 @@
 import '../../lib/db.dart';
-export '../../lib/db.dart';
 export 'package:test/test.dart';
+export '../../lib/db.dart';
 
 class Migration1 extends Migration {
   const Migration1()

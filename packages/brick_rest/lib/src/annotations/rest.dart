@@ -45,6 +45,7 @@ class Rest implements FieldSerializable {
 
   /// When `true`, `null` fields are handled gracefully when encoding from JSON.
   /// Defaults to `false`.
+  @override
   final bool nullable;
 
   @override

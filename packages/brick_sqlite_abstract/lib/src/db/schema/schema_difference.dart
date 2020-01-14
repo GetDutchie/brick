@@ -1,7 +1,7 @@
-import 'schema_table.dart';
-import 'schema_column.dart';
-import '../schema.dart';
 import '../migration_commands.dart';
+import '../schema.dart';
+import 'schema_column.dart';
+import 'schema_table.dart';
 
 /// Compares two schemas to produce migrations that conver the difference
 class SchemaDifference {
@@ -26,21 +26,27 @@ class SchemaDifference {
 
   /// Generates migration commands from the schemas' differences
   List<MigrationCommand> toMigrationCommands() {
-    final Iterable<DropTable> removedTables = droppedTables.map((item) {
+    final removedTables = droppedTables.map((item) {
       return item.toCommand(shouldDrop: true);
-    });
+    }).cast<DropTable>();
 
     // Only drop column if the table isn't being dropped too
-    final Iterable<DropColumn> removedColumns = droppedColumns.where((item) {
-      return !removedTables.any((command) => command.name == item.tableName);
-    }).map((c) => c.toCommand(shouldDrop: true));
+    final removedColumns = droppedColumns
+        .where((item) {
+          return !removedTables.any((command) => command.name == item.tableName);
+        })
+        .map((c) => c.toCommand(shouldDrop: true))
+        .cast<DropColumn>();
 
     final addedColumns = insertedColumns.where((c) => !c.isPrimaryKey).toSet();
-    final Iterable<MigrationCommand> added = [insertedTables, addedColumns].map((generatedSet) {
-      return generatedSet.map((item) {
-        return item.toCommand();
-      });
-    }).expand((s) => s);
+    final added = [insertedTables, addedColumns]
+        .map((generatedSet) {
+          return generatedSet.map((item) {
+            return item.toCommand();
+          });
+        })
+        .expand((s) => s)
+        .cast<MigrationCommand>();
 
     return [removedTables, removedColumns, added]
         .expand((l) => l)
@@ -50,7 +56,7 @@ class SchemaDifference {
 
   /// Output to be used when building `up` statements in a [Migration]
   String get forGenerator {
-    final stringified = toMigrationCommands().map((c) => c.forGenerator).join(",\n");
+    final stringified = toMigrationCommands().map((c) => c.forGenerator).join(',\n');
     return '[\n$stringified\n]';
   }
 
@@ -58,9 +64,9 @@ class SchemaDifference {
     Set<SchemaColumn> differenceFromTable(SchemaTable fromTable) {
       final toColumns =
           to.tables.firstWhere((t) => t.name == fromTable.name, orElse: () => null)?.columns ??
-              Set<SchemaColumn>();
+              <SchemaColumn>{};
 
-      final fromColumns = Set<SchemaColumn>()..addAll(fromTable.columns);
+      final fromColumns = <SchemaColumn>{}..addAll(fromTable.columns);
 
       // Primary keys are added on [InsertTable]
       fromColumns.removeWhere((c) => c.isPrimaryKey);
