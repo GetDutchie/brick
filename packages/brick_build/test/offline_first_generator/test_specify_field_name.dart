@@ -29,7 +29,7 @@ Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class SpecifyFieldName {
   SpecifyFieldName({this.email});
 

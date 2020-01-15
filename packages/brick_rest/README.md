@@ -23,7 +23,7 @@ Every REST API is built differently, and with a fair amount of technical debt. B
 Since Dart requires annotations to be constants, functions cannot be used. This is a headache. Instead, the function must be stringified. The annotation only expects the function body: `query` will always be available, and `instance` will be available to methods handling an `instance` argument like `upsert` or `delete`. The function body must return a string.
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: '=> "/users";';
   )
@@ -34,7 +34,7 @@ class User extends OfflineFirstModel {}
 When managing an instance, say in `delete`, the endpoint will have to be expanded:
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: r'''{
       if (query?.action == QueryAction.delete) return "/users/${instance.id}";
@@ -51,7 +51,7 @@ class User extends OfflineFirstModel {}
 #### With Query#params
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: r'''{
       if (query?.action == QueryAction.delete) return "/users/${instance.id}";
@@ -72,7 +72,7 @@ class User extends OfflineFirstModel {}
 #### With Query#where
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: r'''{
       if (query?.action == QueryAction.delete) return "/users/${instance.id}";
@@ -124,7 +124,7 @@ class EndpointHelpers {
 
 // user.dart
 import 'package:my_flutter_app/endpoint_helpers.dart';
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: '=> EndpointHelpers.indexOrMemberEndpoint("users")';
   )
@@ -134,7 +134,7 @@ class User extends OfflineFirstModel {}
 // hat.dart
 // Brick has already discovered and imported endpoint_helpers.dart, so while it
 // can be imported again in this file for consistency, it's not necessary
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: '=> EndpointHelpers.indexOrMemberEndpoint("hats")';
   )
@@ -153,7 +153,7 @@ Data will be nested beneath a top-level key in a JSON response. The key is deter
 `fromKey` and `toKey` are defined in the model's annotation:
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     toKey: 'user',
     fromKey: 'users',

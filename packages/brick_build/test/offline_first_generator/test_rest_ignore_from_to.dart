@@ -46,7 +46,7 @@ Future<Map<String, dynamic>> _$RestIgnoreFromToToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class RestIgnoreFromTo extends OfflineFirstModel {
   @Rest(ignoreFrom: true)
   final bool ignoredFrom;

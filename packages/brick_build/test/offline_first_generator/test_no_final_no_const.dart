@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> _$NoFinalNoConstToSqlite(NoFinalNoConst instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class NoFinalNoConst {
   int declaredVar = 5;
   var regularVar = true;

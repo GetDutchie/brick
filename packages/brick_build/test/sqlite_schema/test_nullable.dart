@@ -23,7 +23,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class Nullable {
   @Sqlite(nullable: false)
   final String name;

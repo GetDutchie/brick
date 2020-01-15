@@ -71,7 +71,7 @@ void main() {
       final expectedOutput = '''import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     fieldRename: FieldRename.snake,
     endpoint: "=> '/people';",

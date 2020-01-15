@@ -6,10 +6,10 @@ Offline First combines SQLite and a remote provider into one unified repository.
 
 ## Models
 
-`@ConnectOfflineFirst` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
+`@ConnectOfflineFirstWithRest` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
 
 ```dart
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(),
   sqliteConfig: SqliteSerializable(),
 )

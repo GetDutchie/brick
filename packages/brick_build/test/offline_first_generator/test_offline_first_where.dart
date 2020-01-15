@@ -184,19 +184,19 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class Assoc extends OfflineFirstModel {
   final String name;
   Assoc({this.name});
 }
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OtherAssoc extends OfflineFirstModel {
   final String name;
   OtherAssoc({this.name});
 }
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OfflineFirstWhere extends OfflineFirstModel {
   OfflineFirstWhere({
     this.assoc,

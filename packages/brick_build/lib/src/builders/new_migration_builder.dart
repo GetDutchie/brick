@@ -2,7 +2,7 @@ import 'package:brick_build/src/builders/sqlite_base_builder.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
-/// Create a new [Migration] from the contents of all [ConnectOfflineFirst] models
+/// Create a new [Migration] from the contents of all [ConnectOfflineFirstWithRest] models
 class NewMigrationBuilder extends SqliteBaseBuilder {
   @override
   final outputExtension = '.migration_builder.dart';

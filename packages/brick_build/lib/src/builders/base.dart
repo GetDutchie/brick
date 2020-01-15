@@ -26,7 +26,7 @@ abstract class BaseBuilder implements Builder {
 
   static const aggregateExtension = '.brick_aggregate';
 
-  /// Classes with the class-level annotation. For example, `ConnectOfflineFirst`.
+  /// Classes with the class-level annotation. For example, `ConnectOfflineFirstWithRest`.
   Future<Iterable<AnnotatedElement>> getAnnotatedElements(BuildStep buildStep) async {
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
     return libraryReader.annotatedWith(generator.typeChecker);

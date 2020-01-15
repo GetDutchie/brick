@@ -6,7 +6,7 @@ import 'package:brick_build/src/sqlite_serdes/sqlite_serialize.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 
-/// Digest a `sqliteConfig` (`@ConnectOfflineFirst`) from [reader] and manage serdes generators
+/// Digest a `sqliteConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
 /// to and from a `SqliteProvider`.
 class SqliteSerdes extends ProviderSerializable<SqliteSerializable> {
   /// Repository prefix passed to the generators. Does not include `Repository`.

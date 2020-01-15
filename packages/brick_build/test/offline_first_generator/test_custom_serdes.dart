@@ -26,7 +26,7 @@ Future<Map<String, dynamic>> _$CustomSerdesToSqlite(CustomSerdes instance,
 }
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class CustomSerdes {
   CustomSerdes({
     this.string,

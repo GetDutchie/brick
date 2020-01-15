@@ -3,7 +3,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
 
-/// Combine all `@ConnectOfflineFirst` and `@Migratable` classes and annotations
+/// Combine all `@ConnectOfflineFirstWithRest` and `@Migratable` classes and annotations
 ///
 /// Since [LibraryElement] only reads from one file and not an entire directory, all relevant
 /// classes and annotation are inserted into copies of all input files. If there is ever a
