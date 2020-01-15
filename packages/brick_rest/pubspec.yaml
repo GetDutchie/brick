@@ -11,9 +11,9 @@ environment:
 
 dependencies:
   brick_core: ">=0.0.2 <1.0.0"
-  http: ">=0.12.0 <1.0.0"
+  http: ^0.12.0
   logging: ^0.11.3+2
-  meta: ">=1.1.6 <2.0.0"
+  meta: ^1.1.6
 
 dev_dependencies:
   mockito: ^4.0.0

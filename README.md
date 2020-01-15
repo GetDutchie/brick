@@ -1,6 +1,10 @@
+[![Build Status](https://travis-ci.org/greenbits/brick.svg?branch=master)](https://travis-ci.org/greenbits/brick)
+
 ![An intuitive way to work with persistent data](./doc/logo.svg)
 
 An intuitive way to work with persistent data in Dart.
+
+**Brick is still in an alpha release**. Files and APIs changes will be reported in package CHANGELOGs.
 
 ## What is Brick?
 
@@ -10,6 +14,7 @@ Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record
 
 ## Why Brick?
 
+* Your app requires [offline access](packages/brick_offline_first) to data
 * Handles and hides all complex serialization/deserialization logic between any external source(s)
 * Single access point and opinionated DSL establishes consistency when pushing and pulling data across your app
 * Automatic, [intelligently-generated migrations](packages/brick_sqlite)

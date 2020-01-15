@@ -1,6 +1,6 @@
 # Brick Build
 
-Code generator for [Brick](../../) adapters, model dictionaries.
+Code generator for [Brick](https://github.com/greenbits/brick) adapters, model dictionaries.
 
 ## Install
 
@@ -328,7 +328,7 @@ final Map<Type, RestAdapter<RestModel>> restMappings = {
 };
 final restModelDictionary = RestModelDictionary(restMappings);
 
-/// Sqlite mappings should only be used when initializizing a [SqliteProvider]
+/// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   $dictionary
 };
