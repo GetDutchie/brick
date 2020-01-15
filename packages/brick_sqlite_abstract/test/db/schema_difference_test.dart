@@ -1,14 +1,14 @@
 import '__mocks__.dart';
 
 void main() {
-  group("SchemaDifference", () {
-    final column = SchemaColumn("name", String);
+  group('SchemaDifference', () {
+    final column = SchemaColumn('name', String);
     SchemaTable table;
 
     final tableNoColumn = SchemaTable(
       'demo',
       columns: Set<SchemaColumn>.from([
-        SchemaColumn("_brick_id", int, autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
       ]),
     );
 
@@ -16,13 +16,13 @@ void main() {
       table = SchemaTable(
         'demo',
         columns: Set<SchemaColumn>.from([
-          SchemaColumn("_brick_id", int, autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
           column
         ]),
       );
     });
 
-    test("#droppedTables", () {
+    test('#droppedTables', () {
       final oldSchema = Schema(0, tables: Set.from([table]));
       final newSchema = Schema(1, tables: Set.from([]));
 
@@ -32,7 +32,7 @@ void main() {
       expect(diff.hasDifference, isTrue);
     });
 
-    test("#insertedTables", () {
+    test('#insertedTables', () {
       final oldSchema = Schema(0, tables: Set.from([]));
       final newSchema = Schema(1, tables: Set.from([table]));
 
@@ -43,8 +43,8 @@ void main() {
       expect(diff.hasDifference, isTrue);
     });
 
-    group("columns", () {
-      test("#droppedColumns", () {
+    group('columns', () {
+      test('#droppedColumns', () {
         table.columns.add(column);
         final oldSchema = Schema(0, tables: Set.from([table]));
         final newSchema = Schema(1, tables: Set.from([tableNoColumn]));
@@ -55,7 +55,7 @@ void main() {
         expect(diff.hasDifference, isTrue);
       });
 
-      test("#insertedColumns", () {
+      test('#insertedColumns', () {
         table.columns.add(column);
         final oldSchema = Schema(0, tables: Set.from([tableNoColumn]));
         final newSchema = Schema(1, tables: Set.from([table]));
@@ -66,14 +66,14 @@ void main() {
         expect(diff.hasDifference, isTrue);
       });
 
-      test("#insertedColumns across multiple tables", () {
+      test('#insertedColumns across multiple tables', () {
         final schema = Schema(
           2,
           tables: Set<SchemaTable>.from([
             SchemaTable(
               'demo',
               columns: Set<SchemaColumn>.from([
-                SchemaColumn("_brick_id", int,
+                SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 column,
               ]),
@@ -81,9 +81,9 @@ void main() {
             SchemaTable(
               'users',
               columns: Set<SchemaColumn>.from([
-                SchemaColumn("_brick_id", int,
+                SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
-                SchemaColumn("email", String)
+                SchemaColumn('email', String)
               ]),
             ),
           ]),
@@ -92,19 +92,19 @@ void main() {
         expect(
           schema.forGenerator,
           stringContainsInOrder([
-            'SchemaTable(\n      "demo"',
-            'SchemaTable(\n      "users"',
+            "SchemaTable(\n      'demo'",
+            "SchemaTable(\n      'users'",
           ]),
         );
       });
     });
 
-    test("#addedForeignKeys", () {
+    test('#addedForeignKeys', () {
       final foreignKeyColumn = SchemaColumn(
-        "user_id",
+        'user_id',
         int,
         isForeignKey: true,
-        foreignTableName: "user",
+        foreignTableName: 'user',
       );
       table.columns.add(foreignKeyColumn);
 
@@ -117,8 +117,8 @@ void main() {
       expect(diff.hasDifference, isTrue);
     });
 
-    group("#toMigrationCommands", () {
-      test("#insertedTables", () {
+    group('#toMigrationCommands', () {
+      test('#insertedTables', () {
         final oldSchema = Schema(0, tables: Set.from([]));
         final newSchema = Schema(1, tables: Set.from([table]));
 
@@ -133,7 +133,7 @@ void main() {
         expect(diff.hasDifference, isTrue);
       });
 
-      test("#insertedColumns", () {
+      test('#insertedColumns', () {
         table.columns.add(column);
         final oldSchema = Schema(0, tables: Set.from([]));
         final newSchema = Schema(1, tables: Set.from([table]));
@@ -149,7 +149,7 @@ void main() {
         expect(diff.hasDifference, isTrue);
       });
 
-      test("#droppedColumns", () {
+      test('#droppedColumns', () {
         final oldSchema = Schema(0, tables: Set.from([table]));
         final newSchema = Schema(1, tables: Set.from([tableNoColumn]));
 
@@ -159,7 +159,7 @@ void main() {
         expect(diff.insertedColumns, isEmpty);
       });
 
-      test("#droppedTables", () {
+      test('#droppedTables', () {
         final oldSchema = Schema(0, tables: Set.from([table]));
         final newSchema = Schema(1, tables: Set.from([]));
 
@@ -170,19 +170,19 @@ void main() {
       });
     });
 
-    test("#forGenerator", () {
+    test('#forGenerator', () {
       final oldSchema = Schema(0, tables: Set.from([]));
       final newSchema = Schema(1, tables: Set.from([table]));
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(
         diff.forGenerator,
-        '[\nInsertTable("demo"),\nInsertColumn("name", Column.varchar, onTable: "demo")\n]',
+        "[\nInsertTable('demo'),\nInsertColumn('name', Column.varchar, onTable: 'demo')\n]",
       );
       expect(diff.hasDifference, isTrue);
     });
 
-    test("#hasDifference between equal schemas", () {
+    test('#hasDifference between equal schemas', () {
       final oldSchema = Schema(0, tables: Set.from([table]));
       final newSchema = Schema(1, tables: Set.from([table]));
 
@@ -190,7 +190,7 @@ void main() {
       expect(diff.hasDifference, isFalse);
     });
 
-    test("oldSchema is less than newSchema", () {
+    test('oldSchema is less than newSchema', () {
       final old = Schema(2, tables: Set<SchemaTable>());
       final fresh = Schema(1, tables: Set<SchemaTable>());
 

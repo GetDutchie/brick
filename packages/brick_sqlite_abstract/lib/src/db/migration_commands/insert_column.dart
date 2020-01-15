@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
-import 'migration_command.dart';
-import 'drop_column.dart';
 import '../migration.dart';
+import 'drop_column.dart';
+import 'migration_command.dart';
 
 /// Creates a new SQLite column in a table
 class InsertColumn extends MigrationCommand {
@@ -58,11 +58,12 @@ class InsertColumn extends MigrationCommand {
   @override
   String get statement => 'ALTER TABLE `$onTable` ADD `$name` $definition $_addons';
 
+  @override
   String get forGenerator {
-    List<dynamic> parts = [
-      '"$name"',
+    final parts = [
+      "'$name'",
       definitionType,
-      'onTable: "$onTable"',
+      "onTable: '$onTable'",
     ];
 
     if (defaultValue != null) {
@@ -84,9 +85,10 @@ class InsertColumn extends MigrationCommand {
     return 'InsertColumn(${parts.join(', ')})';
   }
 
-  get down => DropColumn(name, onTable: onTable);
+  @override
+  MigrationCommand get down => DropColumn(name, onTable: onTable);
 
-  static const InsertColumn defaults = const InsertColumn(
+  static const InsertColumn defaults = InsertColumn(
     'PLACEHOLDER',
     Column.varchar,
     onTable: 'PLACEHOLDER',

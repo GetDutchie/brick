@@ -62,9 +62,10 @@ class RestProvider implements Provider<RestModel> {
   /// It is recommended to use `RestSerializable#fromKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
   /// regardless of the first key (in the example, `{"id"...}`).
+  @override
   Future<List<_Model>> get<_Model extends RestModel>({query, repository}) async {
     final url = urlForModel<_Model>(query);
-    if (url == null) return List<_Model>();
+    if (url == null) return <_Model>[];
 
     _logger.fine('GET $url');
 
@@ -98,6 +99,7 @@ class RestProvider implements Provider<RestModel> {
   /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
+  @override
   Future<http.Response> upsert<_Model extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model];
     final body = await adapter.toRest(instance, provider: this, repository: repository);
@@ -127,8 +129,8 @@ class RestProvider implements Provider<RestModel> {
 
     return {}
       ..addAll({'Content-Type': 'application/json'})
-      ..addAll(defaultHeaders ?? Map<String, String>())
-      ..addAll(query.params['headers'] ?? Map<String, String>());
+      ..addAll(defaultHeaders ?? <String, String>{})
+      ..addAll(query.params['headers'] ?? <String, String>{});
   }
 
   /// Given a model instance and a query, produce a fully-qualified URL

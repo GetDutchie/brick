@@ -1,6 +1,6 @@
-import 'migration_command.dart';
-import 'insert_table.dart';
 import 'drop_column.dart';
+import 'insert_table.dart';
+import 'migration_command.dart';
 
 /// Create a foreign key column to reference another table
 class InsertForeignKey extends MigrationCommand {
@@ -24,13 +24,16 @@ class InsertForeignKey extends MigrationCommand {
     return foreignKeyColumnName(foreignTableName);
   }
 
+  @override
   String get statement =>
       'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)';
 
+  @override
   String get forGenerator =>
-      'InsertForeignKey("$localTableName", "$foreignTableName", foreignKeyColumn: "$_foreignKeyColumn")';
+      "InsertForeignKey('$localTableName', '$foreignTableName', foreignKeyColumn: '$_foreignKeyColumn')";
 
-  get down => DropColumn(_foreignKeyColumn, onTable: localTableName);
+  @override
+  MigrationCommand get down => DropColumn(_foreignKeyColumn, onTable: localTableName);
 
   /// Generate a column that references another table.
   ///
@@ -39,9 +42,9 @@ class InsertForeignKey extends MigrationCommand {
   ///
   /// If [prefix] is provided, it will be prepended to the normal convention with a `_`.
   static String foreignKeyColumnName(String foreignTableName, [String prefix]) {
-    final defaultName = "$foreignTableName${InsertTable.PRIMARY_KEY_COLUMN}";
+    final defaultName = '$foreignTableName${InsertTable.PRIMARY_KEY_COLUMN}';
     if (prefix != null) {
-      return "${prefix}_$defaultName";
+      return '${prefix}_$defaultName';
     }
 
     return defaultName;

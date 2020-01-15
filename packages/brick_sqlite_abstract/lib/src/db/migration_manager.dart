@@ -16,7 +16,7 @@ class MigrationManager {
 
   /// Key/value migrations based on their version
   Map<int, Migration> get migrationByVersion {
-    return Map.fromIterable(migrations, key: (m) => m.version, value: (m) => m);
+    return {for (var m in migrations) m.version: m};
   }
 
   /// Migrations after a version

@@ -1,7 +1,7 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
 import '../migration.dart' show Migration;
-import '../migration_commands.dart' show InsertColumn, InsertForeignKey, DropColumn;
+import '../migration_commands.dart';
 import 'schema_base.dart';
 
 /// Describes a column object managed by SQLite
@@ -39,7 +39,7 @@ class SchemaColumn extends BaseSchemaObject {
 
   @override
   String get forGenerator {
-    List<dynamic> parts = ['"$name"', type];
+    final parts = ["'$name'", type];
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
       parts.add('autoincrement: $autoincrement');
@@ -59,7 +59,7 @@ class SchemaColumn extends BaseSchemaObject {
 
     if (isForeignKey != false) {
       parts.add('isForeignKey: $isForeignKey');
-      parts.add('foreignTableName: "$foreignTableName"');
+      parts.add("foreignTableName: '$foreignTableName'");
     }
 
     if (unique != InsertColumn.defaults.unique) {
@@ -69,7 +69,8 @@ class SchemaColumn extends BaseSchemaObject {
     return 'SchemaColumn(${parts.join(', ')})';
   }
 
-  toCommand({bool shouldDrop = false}) {
+  @override
+  MigrationCommand toCommand({bool shouldDrop = false}) {
     if (shouldDrop) {
       return DropColumn(name, onTable: tableName);
     }
@@ -93,11 +94,11 @@ class SchemaColumn extends BaseSchemaObject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SchemaColumn &&
-          this?.name == other?.name &&
-          this?.type == other?.type &&
+          name == other?.name &&
+          type == other?.type &&
           // tableNames don't compare nicely since they're non-final
-          (this?.tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
-          this?.forGenerator == other?.forGenerator;
+          (tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
+          forGenerator == other?.forGenerator;
 
   @override
   int get hashCode => name.hashCode ^ type.hashCode ^ forGenerator.hashCode;

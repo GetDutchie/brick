@@ -8,10 +8,13 @@ class Sqlite implements FieldSerializable {
   ///
   /// Must be a serializable primitive type: `bool`, `DateTime` `double`, `int`, or `String`.
   /// [defaultValue] must also match the field's `Type`.
+  @override
   final dynamic defaultValue;
 
+  @override
   final String fromGenerator;
 
+  @override
   final bool ignore;
 
   /// The column name to use when reading and writing values corresponding
@@ -20,11 +23,13 @@ class Sqlite implements FieldSerializable {
   /// Associations will not respect `name`.
   ///
   /// If `null`, the snake case value of the field is used.
+  @override
   final String name;
 
   /// When `false`, the column will be inserted as `NOT NULL` and a value will be required in
   /// subsequent operations. Takes precedence over [SqliteSerializable]'s `#nullable`.
   /// Defaults to `true`.
+  @override
   final bool nullable;
 
   /// Manipulates output for the field in the SqliteSerializeGenerator
@@ -33,6 +38,7 @@ class Sqlite implements FieldSerializable {
   /// `instance` and `provider` is available as the invoking model.
   ///
   /// Placeholders can be used in the value of this field.
+  @override
   final String toGenerator;
 
   /// When `true`, the column will be inserted with a `UNIQUE` constraint. Unique columns will

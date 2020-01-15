@@ -14,9 +14,12 @@ class RenameColumn extends MigrationCommand {
   });
 
   /// This is intentionally null. The SqliteProvider handles renaming columns.
+  @override
   String get statement => null;
 
-  String get forGenerator => 'RenameColumn("$oldName", "$newName", onTable: "$onTable")';
+  @override
+  String get forGenerator => "RenameColumn('$oldName', '$newName', onTable: '$onTable')";
 
-  get down => RenameColumn(newName, oldName, onTable: onTable);
+  @override
+  MigrationCommand get down => RenameColumn(newName, oldName, onTable: onTable);
 }

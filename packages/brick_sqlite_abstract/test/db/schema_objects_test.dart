@@ -2,70 +2,70 @@ import 'package:test/test.dart';
 import '../../lib/db.dart';
 
 void main() {
-  group("SchemaTable", () {
-    test("#forGenerator", () {
+  group('SchemaTable', () {
+    test('#forGenerator', () {
       final table = SchemaTable(
-        "users",
+        'users',
         columns: Set.from([
-          SchemaColumn("first_name", String),
-          SchemaColumn("_brick_id", int, autoincrement: true, isPrimaryKey: true),
-          SchemaColumn("amount", int, defaultValue: 0),
-          SchemaColumn("last_name", String, nullable: false),
+          SchemaColumn('first_name', String),
+          SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
+          SchemaColumn('amount', int, defaultValue: 0),
+          SchemaColumn('last_name', String, nullable: false),
         ]),
       );
 
-      expect(table.forGenerator, """SchemaTable(
-\t"users",
+      expect(table.forGenerator, '''SchemaTable(
+\t'users',
 \tcolumns: Set.from([
-\t\tSchemaColumn("first_name", String),
-\t\tSchemaColumn("_brick_id", int, autoincrement: true, isPrimaryKey: true),
-\t\tSchemaColumn("amount", int, defaultValue: 0),
-\t\tSchemaColumn("last_name", String, nullable: false)
+\t\tSchemaColumn('first_name', String),
+\t\tSchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
+\t\tSchemaColumn('amount', int, defaultValue: 0),
+\t\tSchemaColumn('last_name', String, nullable: false)
 \t])
-)""");
+)''');
     });
 
-    group("#toCommand", () {
-      final table = SchemaTable("users", columns: Set.from([]));
+    group('#toCommand', () {
+      final table = SchemaTable('users', columns: Set.from([]));
 
-      test("shouldDrop:false", () {
-        expect(table.toCommand(shouldDrop: false), InsertTable("users"));
+      test('shouldDrop:false', () {
+        expect(table.toCommand(shouldDrop: false), const InsertTable('users'));
       });
 
-      test("shouldDrop:true", () {
-        expect(table.toCommand(shouldDrop: true), DropTable("users"));
+      test('shouldDrop:true', () {
+        expect(table.toCommand(shouldDrop: true), const DropTable('users'));
       });
     });
 
-    group("==", () {
-      test("same name, different columns", () {
+    group('==', () {
+      test('same name, different columns', () {
         final table1 = SchemaTable(
-          "users",
+          'users',
           columns: Set.from([
-            SchemaColumn("first_name", String),
+            SchemaColumn('first_name', String),
           ]),
         );
         final table2 = SchemaTable(
-          "users",
+          'users',
           columns: Set.from([
-            SchemaColumn("last_name", String),
+            SchemaColumn('last_name', String),
           ]),
         );
 
         expect(table1, equals(table2));
       });
 
-      test("different name, same columns", () {
+      test('different name, same columns', () {
         final table1 = SchemaTable(
-          "users",
+          'users',
           columns: Set.from([
-            SchemaColumn("first_name", String),
+            SchemaColumn('first_name', String),
           ]),
         );
         final table2 = SchemaTable(
-          "people",
+          'people',
           columns: Set.from([
-            SchemaColumn("first_name", String),
+            SchemaColumn('first_name', String),
           ]),
         );
 
@@ -74,15 +74,15 @@ void main() {
     });
   });
 
-  group("SchemaColumn", () {
-    test("isPrimaryKey must be int", () {
+  group('SchemaColumn', () {
+    test('isPrimaryKey must be int', () {
       expect(
         () => SchemaColumn(InsertTable.PRIMARY_KEY_COLUMN, String, isPrimaryKey: true),
         throwsA(TypeMatcher<AssertionError>()),
       );
     });
 
-    test("defaults", () {
+    test('defaults', () {
       final column = SchemaColumn(InsertTable.PRIMARY_KEY_COLUMN, String);
 
       // These expectations can never be removed, otherwise old schemas would be invalid
@@ -92,64 +92,64 @@ void main() {
       expect(column.isForeignKey, isFalse);
     });
 
-    test("#forGenerator", () {
-      var column = SchemaColumn("first_name", String);
-      expect(column.forGenerator, 'SchemaColumn("first_name", String)');
+    test('#forGenerator', () {
+      var column = SchemaColumn('first_name', String);
+      expect(column.forGenerator, "SchemaColumn('first_name', String)");
 
-      column = SchemaColumn("_brick_id", int, autoincrement: true, isPrimaryKey: true);
+      column = SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true);
       expect(
         column.forGenerator,
-        'SchemaColumn("_brick_id", int, autoincrement: true, isPrimaryKey: true)',
+        "SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true)",
       );
 
-      column = SchemaColumn("amount", int, defaultValue: 0);
-      expect(column.forGenerator, 'SchemaColumn("amount", int, defaultValue: 0)');
+      column = SchemaColumn('amount', int, defaultValue: 0);
+      expect(column.forGenerator, "SchemaColumn('amount', int, defaultValue: 0)");
 
-      column = SchemaColumn("last_name", String, nullable: false);
-      expect(column.forGenerator, 'SchemaColumn("last_name", String, nullable: false)');
+      column = SchemaColumn('last_name', String, nullable: false);
+      expect(column.forGenerator, "SchemaColumn('last_name', String, nullable: false)");
 
-      column = SchemaColumn("hat_id", int, isForeignKey: true, foreignTableName: "hat");
+      column = SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       expect(
         column.forGenerator,
-        'SchemaColumn("hat_id", int, isForeignKey: true, foreignTableName: "hat")',
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat')",
       );
     });
 
-    test("#toCommand", () {
-      var column = SchemaColumn("first_name", String);
+    test('#toCommand', () {
+      var column = SchemaColumn('first_name', String);
       column.tableName = 'demo';
-      expect(column.toCommand(), InsertColumn("first_name", Column.varchar, onTable: 'demo'));
+      expect(column.toCommand(), const InsertColumn('first_name', Column.varchar, onTable: 'demo'));
 
-      column = SchemaColumn("_brick_id", int, autoincrement: true, isPrimaryKey: true);
+      column = SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true);
       column.tableName = 'demo';
       expect(
         column.toCommand(),
-        InsertColumn("_brick_id", Column.integer, onTable: 'demo', autoincrement: true),
+        const InsertColumn('_brick_id', Column.integer, onTable: 'demo', autoincrement: true),
       );
 
-      column = SchemaColumn("amount", int, defaultValue: 0);
+      column = SchemaColumn('amount', int, defaultValue: 0);
       column.tableName = 'demo';
       expect(
         column.toCommand(),
-        InsertColumn("amount", Column.integer, onTable: 'demo', defaultValue: 0),
+        const InsertColumn('amount', Column.integer, onTable: 'demo', defaultValue: 0),
       );
 
-      column = SchemaColumn("last_name", String, nullable: false);
+      column = SchemaColumn('last_name', String, nullable: false);
       column.tableName = 'demo';
       expect(
         column.toCommand(),
-        InsertColumn("last_name", Column.varchar, onTable: 'demo', nullable: false),
+        const InsertColumn('last_name', Column.varchar, onTable: 'demo', nullable: false),
       );
 
-      column = SchemaColumn("Hat_id", int, isForeignKey: true, foreignTableName: "hat");
+      column = SchemaColumn('Hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       column.tableName = 'demo';
-      expect(column.toCommand(), InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
+      expect(column.toCommand(), const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
     });
 
-    test("==", () {
-      final column1 = InsertColumn("1", Column.varchar, onTable: "table1");
-      final column1b = InsertColumn("1", Column.varchar, onTable: "table1");
-      final column2 = InsertColumn("1", Column.varchar, onTable: "table2");
+    test('==', () {
+      const column1 = InsertColumn('1', Column.varchar, onTable: 'table1');
+      const column1b = InsertColumn('1', Column.varchar, onTable: 'table1');
+      const column2 = InsertColumn('1', Column.varchar, onTable: 'table2');
 
       expect(column1, isNot(column2));
       expect(column1, column1b);
