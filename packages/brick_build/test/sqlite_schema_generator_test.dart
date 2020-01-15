@@ -48,7 +48,7 @@ void main() {
   });
 }
 
-final annotationChecker = TypeChecker.fromRuntime(ConnectOfflineFirst);
+final annotationChecker = TypeChecker.fromRuntime(ConnectOfflineFirstWithRest);
 Future<Map<LibraryReader, List<SqliteFields>>> generateSchemaMap(String filename) async {
   final reader = await generateReader(filename);
 

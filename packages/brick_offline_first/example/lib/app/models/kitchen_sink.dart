@@ -4,7 +4,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_example/app/models/hat.dart';
 import 'package:brick_offline_first_example/app/models/mounty.dart';
 
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: '=> "/my-path";',
     // These are NOT necessary unless other properties are present

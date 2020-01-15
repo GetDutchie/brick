@@ -27,7 +27,7 @@ Create a model as the app's business logic:
 
 ```dart
 // app/models/user.dart
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class User extends OfflineFirstWithRestModel {}
 ```
 
@@ -192,7 +192,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
 Every model must be decorated by an annotation and extend a base type that the repository manages:
 
 ```dart
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class User extends OfflineFirstModel {}
 ```
 
@@ -709,7 +709,7 @@ A model annotation should be named `Connect<DOMAIN>`, include provider configura
 
 ```dart
 // BAD
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   fieldRename: FieldRename.snake,
   restConfig: RestSerializable(
     // two places to declare the same configuration
@@ -719,7 +719,7 @@ A model annotation should be named `Connect<DOMAIN>`, include provider configura
 )
 
 // GOOD
-@ConnectOfflineFirst(
+@ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     fieldRename: FieldRename.pascal,
   ),

@@ -1,7 +1,7 @@
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OfflineFirstGeneratorArguments extends OfflineFirstModel {}
 
 final repositoryNameAdapterExpectation = r'''

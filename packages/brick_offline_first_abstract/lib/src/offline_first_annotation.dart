@@ -1,4 +1,4 @@
-/// Low-level field config for the `OfflineFirstProvider` and `ConnectOfflineFirst`
+/// Low-level field config for the `OfflineFirst` domain.
 class OfflineFirst {
   /// This field is an association that is also an `OfflineFirstModel` and can be queried.
   /// The key is the association's SQLite column name and the value is the remote provider key with `data`.

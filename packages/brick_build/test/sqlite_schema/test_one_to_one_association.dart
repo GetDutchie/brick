@@ -2,7 +2,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class SqliteAssoc extends OfflineFirstModel {
   @Rest(ignore: true)
   @Sqlite(ignore: true)
@@ -40,7 +40,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 class OneToOneAssocation extends OfflineFirstModel {
   final SqliteAssoc assoc;
   final SqliteAssoc assoc2;

@@ -1,4 +1,4 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 
-@ConnectOfflineFirst()
+@ConnectOfflineFirstWithRest()
 const topLevelVariable = 0;
