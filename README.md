@@ -56,7 +56,7 @@ Behind the scenes, this repository could poll a memory cache, then SQLite, then 
 
 ```dart
 // Queries can be general:
-final query = Query(where: [Where('lastName', 'Muster', compare: Compare.contains)]);
+final query = Query(where: [And('lastName').contains('Muster')]);
 final users = await repository.get<User>(query: query);
 
 // Or specific:
