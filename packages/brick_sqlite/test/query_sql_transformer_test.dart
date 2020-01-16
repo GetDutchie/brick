@@ -96,16 +96,16 @@ void main() {
         modelDictionary: dictionary,
         query: Query(where: [
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: false),
+            Where('id', 1, required: true),
+            Where('name', 'Guy', required: false),
           ]),
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: true),
+            Where('id', 1, required: true),
+            Where('name', 'Guy', required: true),
           ], required: true),
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: true),
+            Where('id', 1, required: true),
+            Where('name', 'Guy', required: true),
           ]),
         ]),
       );
@@ -123,8 +123,8 @@ void main() {
         query: Query(where: [
           Where('id', 1),
           WherePhrase([
-            Where<String>('name', 'Thomas', required: false),
-            Where<String>('name', 'Guy', required: false),
+            Where('name', 'Thomas', required: false),
+            Where('name', 'Guy', required: false),
           ], required: true),
         ]),
       );
@@ -141,7 +141,7 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where<Where>('assoc', Where<int>('id', 1)),
+            Where<Where>('assoc', Where('id', 1)),
           ]),
         );
 
@@ -156,11 +156,11 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where<WherePhrase>(
+            Where(
               'assoc',
               WherePhrase([
-                Where<int>('id', 1, required: false),
-                Where<String>('name', 'Guy', required: false),
+                Where('id', 1, required: false),
+                Where('name', 'Guy', required: false),
               ]),
             ),
           ]),
@@ -179,7 +179,7 @@ void main() {
           query: Query(where: [
             Where(
               'manyAssoc',
-              Where<int>('id', 1),
+              Where('id', 1),
             ),
           ]),
         );

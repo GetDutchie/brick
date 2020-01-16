@@ -12,7 +12,7 @@ const _listEquality = ListEquality();
 ///   Where('myOtherField', 'must_contain_this_value', compare: Compare.contains)
 /// })
 /// ```
-abstract class WhereCondition<T extends dynamic> {
+abstract class WhereCondition {
   /// The Dart name of the field. For example, `myField` when querying `final String myField`.
   ///
   /// The [Provider] should provide mappings between the field name
@@ -33,7 +33,7 @@ abstract class WhereCondition<T extends dynamic> {
   bool get required;
 
   /// The value to compare on the [evaluatedField].
-  T get value;
+  dynamic get value;
 
   const WhereCondition();
 
@@ -87,13 +87,13 @@ abstract class WhereCondition<T extends dynamic> {
       value.hashCode;
 }
 
-class Where<_Value extends dynamic> extends WhereCondition<_Value> {
+class Where extends WhereCondition {
   final String evaluatedField;
   final Compare compare;
-  final _Value value;
+  final dynamic value;
   final bool required;
 
-  static const defaults = const Where<Null>(
+  static const defaults = const Where(
     '',
     null,
     compare: Compare.exact,
@@ -145,7 +145,7 @@ class Where<_Value extends dynamic> extends WhereCondition<_Value> {
   }
 }
 
-class WherePhrase<Null> extends WhereCondition<Null> {
+class WherePhrase extends WhereCondition {
   final evaluatedField = null;
   final compare = Compare.exact;
   final value = null;
@@ -165,17 +165,17 @@ class WherePhrase<Null> extends WhereCondition<Null> {
   /// Invalid:
   /// ```dart
   /// WherePhrase([
-  ///   Where<bool>('myField', true, required: true),
-  ///   Where<int>('myOtherField', 0, required: false)
+  ///   Where('myField', true, required: true),
+  ///   Where('myOtherField', 0, required: false)
   /// ])
   /// ```
   ///
   /// Valid:
   /// ```dart
   /// WherePhrase([
-  ///   Where<bool>('myField', true, required: true),
+  ///   Where('myField', true, required: true),
   ///   WherePhrase([
-  ///     Where<int>('myOtherField', 0, required: false)
+  ///     Where('myOtherField', 0, required: false)
   ///   )]
   /// ])
   /// ```

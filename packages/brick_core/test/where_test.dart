@@ -1,6 +1,5 @@
-import 'package:brick_core/src/where.dart';
+import 'package:brick_core/src/query/where.dart';
 import "package:test/test.dart";
-import 'package:brick_core/core.dart' show Where, WherePhrase;
 
 void main() {
   group("Where", () {
@@ -64,24 +63,24 @@ void main() {
     test("#toJson", () {
       final where = Where("id", 1);
       expect(where.toJson(), {
-        "subclass": "Where<int>",
+        "subclass": "Where",
         "evaluatedField": "id",
         "compare": 0,
         "required": true,
-        "value": 1
+        "value": 1,
       });
 
       final phrase = WherePhrase([Where("id", 1)]);
       expect(phrase.toJson(), {
-        "subclass": "WherePhrase<dynamic>",
+        "subclass": "WherePhrase",
         "compare": 0,
         "conditions": [
           {
-            "subclass": "Where<dynamic>",
+            "subclass": "Where",
             "evaluatedField": "id",
             "compare": 0,
             "required": true,
-            "value": 1
+            "value": 1,
           }
         ],
         "required": false

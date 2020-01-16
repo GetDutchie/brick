@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Add `And` and `Or` `Where` subclasses
+* Removes Type argument from `Where`
 
 ## 0.0.2
 

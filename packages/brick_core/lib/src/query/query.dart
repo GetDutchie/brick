@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart' show MapEquality, ListEquality;
-import 'package:brick_core/src/where.dart';
+import 'package:brick_core/src/query/where.dart';
 import 'dart:convert';
 
 const _mapEquality = MapEquality();
