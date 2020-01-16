@@ -69,14 +69,15 @@ abstract class WhereCondition {
   String toString() => jsonEncode(toJson());
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WhereCondition &&
-          evaluatedField == other?.evaluatedField &&
-          compare == other?.compare &&
-          required == other?.required &&
-          _listEquality.equals(conditions, other?.conditions) &&
-          value == other?.value;
+  bool operator ==(Object other) => identical(this, other) ||
+          other is WhereCondition &&
+              evaluatedField == other?.evaluatedField &&
+              compare == other?.compare &&
+              required == other?.required &&
+              _listEquality.equals(conditions, other?.conditions) &&
+              value is List
+      ? _listEquality.equals(value, (other as WhereCondition)?.value)
+      : value == (other as WhereCondition)?.value;
 
   @override
   int get hashCode =>
@@ -190,34 +191,6 @@ class WherePhrase extends WhereCondition {
     this.conditions, {
     bool required,
   }) : this.required = required ?? false;
-}
-
-/// Append a required condition to the existing [WherePhrase]. Carries [this.required].
-class And extends Where {
-  const And(
-    String evaluatedField,
-    dynamic value, {
-    Compare compare,
-  }) : super(
-          evaluatedField,
-          value,
-          compare: compare,
-          required: true,
-        );
-}
-
-/// Append an unrequired condition to the existing [WherePhrase]. Carries [this.required].
-class Or extends Where {
-  const Or(
-    String evaluatedField,
-    dynamic value, {
-    Compare compare,
-  }) : super(
-          evaluatedField,
-          value,
-          compare: compare,
-          required: false,
-        );
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

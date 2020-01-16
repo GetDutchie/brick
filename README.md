@@ -391,24 +391,31 @@ Or specified as a whole phrase:
 ```dart
 Query(where: [
   WherePhrase([
-    Where('name', 'Thomas', required: true),
-    Where('age', 42, required: true),
+    Where('name', 'Thomas', required: false),
+    Where('age', 42, compare: Compare.notEqual, required: false),
   ], required: true),
   WherePhrase([
-    Where('height', 182),
+    Where('height', [182, 186], compare: Compare.between),
     Where('country', 'France'),
   ], required: true)
 ])
-// =>  (name == 'Thomas' && age == 42) && (height == 182 || country == 'France')
+// =>  (name == 'Thomas' || age != 42) && (height > 182 && height < 186 && country == 'France')
 ```
 
-If expanded `WherePhrase`s become unlegible, helpers `And` and `Or` can be used:
+:bulb: If expanded `WherePhrase`s become unlegible, helpers `And` and `Or` can be used:
 
 ```dart
 Query(where: [
-  And('name', 'Thomas'),
-  And('age', 42),
+  AndPhrase([
+    Or('name').isExactly('Thomas'),
+    Or('age').isNot(42),
+  ]),
+  AndPhrase([
+    And('height').isBetween(182, 186),
+    And('country').isExactly('France'),
+  ]),
 ])
+// =>  (name == 'Thomas' || age != 42) && (height > 182 && height < 186 && country == 'France')
 ```
 
 ## Filtering

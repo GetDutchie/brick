@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:brick_core/core.dart' show Query, QueryAction, Where;
+import 'package:brick_core/src/query/query.dart';
+import 'package:brick_core/src/query/where.dart';
 
 void main() {
   group('Query', () {
