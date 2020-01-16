@@ -56,7 +56,7 @@ Behind the scenes, this repository could poll a memory cache, then SQLite, then 
 
 ```dart
 // Queries can be general:
-final query = Query(where: [And('lastName').contains('Muster')]);
+final query = Query(where: [Where('lastName').contains('Muster')]);
 final users = await repository.get<User>(query: query);
 
 // Or specific:
@@ -87,7 +87,7 @@ class User extends OfflineFirstWithRestModel {
   final List<Hat> hats;
 }
 
-final query = Query.where('hats', Where('color', 'brown'));
+final query = Query.where('hats', Where('color'.isExactly('brown')));
 final usersWithBrownHats = repository.get<User>(query: query);
 ```
 
@@ -330,16 +330,16 @@ Querying can be done with `Where` or `WherePhrase`:
 3) `WherePhrase` can be intermixed with `Where`.
       ```dart
       [
-        Where('id', 2),
+        Where('id').isExactly(2),
         WherePhrase([
-          Where('name', 'Guy', required: false),
-          Where('name', 'Thomas', required: false)
+          Or('name').isExactly('Guy'),
+          Or('name').isExactly('Thomas')
         ], required: false)
       ]
       // => (id == 2) || (name == 'Thomas' || name == 'Guy')
       ```
 
-:warning: Queried enum values should map to a primitive. Plainly, **always include `.index`**: `Where('type', MyEnumType.value.index)`.
+:warning: Queried enum values should map to a primitive. Plainly, **always include `.index`**: `Where('type').isExactly(MyEnumType.value.index)`.
 
 ### Associations
 
@@ -349,10 +349,10 @@ When querying associations, use a nested `Where`, again searching by field name 
 
 ```dart
 Query(where: [
-  Where(
-    'association',
-    Where('name', 'Thomas'),
-  )])
+  Where('association').isExactly(
+    Where('name').isExactly('Thomas'),
+  ),
+])
 ```
 
 ### `compare:`
@@ -360,7 +360,7 @@ Query(where: [
 Fields can be compared to their values beyond an exact match (the default).
 
 ```dart
-Where('name', 'Thomas', compare: Compare.contains);
+Where('name').contains('Thomas');
 ```
 
 * `between`
@@ -380,8 +380,8 @@ Conditions that are required must evaluate to true for the query to satisfy. The
 
 ```dart
 Query(where: [
-  Where('name', 'Thomas', required: true),
-  Where('age', 42, required: true),
+  And('name').isExactly('Thomas'),
+  And('age').isExactly(42),
 ])
 // => name == 'Thomas' && age == 42
 ```
@@ -391,12 +391,12 @@ Or specified as a whole phrase:
 ```dart
 Query(where: [
   WherePhrase([
-    Where('name', 'Thomas', required: false),
-    Where('age', 42, compare: Compare.notEqual, required: false),
+    Where('name', ofValue: 'Thomas', required: false),
+    Where('age', ofValue: 42, compare: Compare.notEqual, required: false),
   ], required: true),
   WherePhrase([
-    Where('height', [182, 186], compare: Compare.between),
-    Where('country', 'France'),
+    Where('height', ofValue: [182, 186], compare: Compare.between),
+    Where('country', ofValue: 'France'),
   ], required: true)
 ])
 // =>  (name == 'Thomas' || age != 42) && (height > 182 && height < 186 && country == 'France')
@@ -488,7 +488,7 @@ As `params` can vary from provider to provider and IDE suggestions are unavailab
 `where` queries with a model's properties. A provider may optionally support `where` arguments. For example, while a SQLite provider will always support column querying, a RESTful API will likely be less consistent and may require massaging the field name:
 
 ```dart
-[Where('firstName', 'Thomas'), Where('age', 42)];
+[Where('firstName').isExactly('Thomas'), Where('age').isExactly(42)];
 // SQLite => SELECT * FROM Users WHERE first_name = "Thomas" AND age = 42;
 // REST => https://api.com/users?by_first_name=Thomas&age=42
 ```

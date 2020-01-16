@@ -8,9 +8,9 @@ const _listEquality = ListEquality();
 /// Example:
 /// ```dart
 /// Query(where: [
-///   Where('myField', 'must_match_this_value')
-///   Where('myOtherField', 'must_contain_this_value', compare: Compare.contains)
-/// })
+///   Where.exact('myField', 'must_match_this_value')
+///   Where('myOtherField').contains('must_contain_this_value'),
+/// ])
 /// ```
 abstract class WhereCondition {
   /// The Dart name of the field. For example, `myField` when querying `final String myField`.
@@ -47,7 +47,7 @@ abstract class WhereCondition {
 
     return Where(
       data['evaluatedField'],
-      data['value'],
+      ofValue: data['value'],
       compare: Compare.values[data['compare']],
       required: data['required'],
     );
@@ -96,7 +96,6 @@ class Where extends WhereCondition {
 
   static const defaults = const Where(
     '',
-    null,
     compare: Compare.exact,
     required: true,
   );
@@ -106,12 +105,43 @@ class Where extends WhereCondition {
   /// This class should be exposed by the implemented [Repository] and not imported from
   /// this package as repositories may choose to extend or inhibit functionality.
   const Where(
-    this.evaluatedField,
-    this.value, {
+    this.evaluatedField, {
+    dynamic ofValue,
     Compare compare,
     bool required,
   })  : this.required = required ?? true,
-        this.compare = compare ?? Compare.exact;
+        this.compare = compare ?? Compare.exact,
+        this.value = ofValue;
+
+  factory Where.exact(String evaluatedField, dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.exact, required: true);
+
+  Where isExactly(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.exact, required: required);
+
+  Where isBetween(dynamic value1, dynamic value2) {
+    assert(value1.runtimeType == value2.runtimeType, "Comparison values must be the same type");
+    return Where(evaluatedField,
+        ofValue: [value1, value2], compare: Compare.between, required: required);
+  }
+
+  Where contains(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.contains, required: required);
+
+  Where isLessThan(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.lessThan, required: required);
+
+  Where isLessThanOrEqualTo(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.lessThanOrEqualTo, required: required);
+
+  Where isGreaterThan(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.greaterThan, required: required);
+
+  Where isGreaterThanOrEqualTo(dynamic value) => Where(evaluatedField,
+      ofValue: value, compare: Compare.greaterThanOrEqualTo, required: required);
+
+  Where isNot(dynamic value) =>
+      Where(evaluatedField, ofValue: value, compare: Compare.notEqual, required: required);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
@@ -166,17 +196,18 @@ class WherePhrase extends WhereCondition {
   /// Invalid:
   /// ```dart
   /// WherePhrase([
-  ///   Where('myField', true, required: true),
-  ///   Where('myOtherField', 0, required: false)
+  ///   Where.exact('myField', true),
+  ///   Or('myOtherField').isExactly(0),
   /// ])
   /// ```
   ///
   /// Valid:
   /// ```dart
   /// WherePhrase([
-  ///   Where('myField', true, required: true),
+  ///   Where.exact('myField', true),
   ///   WherePhrase([
-  ///     Where('myOtherField', 0, required: false)
+  ///     Or('myOtherField').isExactly(0),
+  ///     Or('myOtherField').isExactly(1),
   ///   )]
   /// ])
   /// ```

@@ -49,7 +49,7 @@ void main() {
 
       test('#where', () {
         final q = Query(where: [
-          Where('name', 'Thomas'),
+          Where('name', ofValue: 'Thomas'),
         ]);
 
         expect(q.where.first.evaluatedField, 'name');
@@ -178,7 +178,7 @@ void main() {
 
       group('.where', () {
         test("required arguments", () {
-          final expandedQuery = Query(where: [Where('id', 2)]);
+          final expandedQuery = Query(where: [Where('id', ofValue: 2)]);
           final factoried = Query.where('id', 2);
           expect(factoried, expandedQuery);
           expect(Where.firstByField('id', factoried.where).value, 2);
@@ -186,7 +186,7 @@ void main() {
         });
 
         test("limit1:true", () {
-          final expandedQuery = Query(where: [Where('id', 2)], params: {'limit': 1});
+          final expandedQuery = Query(where: [Where('id', ofValue: 2)], params: {'limit': 1});
           final factoried = Query.where('id', 2, limit1: true);
           expect(factoried, expandedQuery);
           expect(factoried.unlimited, isFalse);

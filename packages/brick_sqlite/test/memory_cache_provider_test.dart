@@ -58,7 +58,7 @@ void main() {
         provider.hydrate<Person>([instance]);
         final results = provider.get<Person>(
           query: Query(
-            where: [Where(InsertTable.PRIMARY_KEY_FIELD, 1)],
+            where: [Where.exact(InsertTable.PRIMARY_KEY_FIELD, 1)],
             params: {'limit': 1},
           ),
         );
