@@ -20,6 +20,30 @@ class OfflineQueueHttpClient extends http.BaseClient {
     this.databaseName,
   ) : _logger = Logger('OfflineQueueHttpClient#$databaseName');
 
+  Future<http.Response> post(url, {headers, body, encoding}) async {
+    final resp = await super.post(url, headers: headers, body: body, encoding: encoding);
+    await _ignoreOrRemoveFromQueue(resp);
+    return resp;
+  }
+
+  Future<http.Response> put(url, {headers, body, encoding}) async {
+    final resp = await super.put(url, headers: headers, body: body, encoding: encoding);
+    await _ignoreOrRemoveFromQueue(resp);
+    return resp;
+  }
+
+  Future<http.Response> delete(url, {headers}) async {
+    final resp = await super.delete(url, headers: headers);
+    await _ignoreOrRemoveFromQueue(resp);
+    return resp;
+  }
+
+  Future<http.Response> patch(url, {headers, body, encoding}) async {
+    final resp = await super.patch(url, headers: headers, body: body, encoding: encoding);
+    await _ignoreOrRemoveFromQueue(resp);
+    return resp;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final cacheItem = RequestSqliteCache(request as http.Request, databaseName);
@@ -42,15 +66,6 @@ class OfflineQueueHttpClient extends http.BaseClient {
       // Attempt to make HTTP Request
       final resp = await _inner.send(request);
 
-      // if a response was delivered back to the device and this is not a fetch request
-      final receivedResponseFromPushRequest = cacheItem.requestIsPush && resp != null;
-
-      if (receivedResponseFromPushRequest) {
-        // request was successfully sent and can be removed
-        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-        await cacheItem.delete();
-      }
-
       return resp ?? _genericErrorResponse;
     } catch (e) {
       _logger.warning(e);
@@ -62,5 +77,25 @@ class OfflineQueueHttpClient extends http.BaseClient {
   Future<void> reattemptUnprocessedJobs() async {
     final requests = await RequestSqliteCache.unproccessedRequests(databaseName);
     requests.forEach(send);
+  }
+
+  /// Parse the returned response and determine if it needs to be removed from the queue.
+  /// As a device with connectivity will still return a response if the endpoint is unreachable,
+  /// false positives need to be filtered after the [response] is available.
+  Future<void> _ignoreOrRemoveFromQueue(http.Response response) async {
+    if (response == null || response.request == null) return;
+    final cacheItem = RequestSqliteCache(response.request as http.Request, databaseName);
+
+    // The device is connected but the url is unavailable
+    final tunnelNotFound = response.body != null &&
+        response.statusCode == 404 &&
+        response.body.startsWith("Tunnel") &&
+        response.body.endsWith("not found");
+
+    if (tunnelNotFound) return;
+
+    // request was successfully sent and can be removed
+    _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
+    await cacheItem.delete();
   }
 }

@@ -12,8 +12,12 @@ class MockClient extends Mock implements http.Client {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("OfflineQueueHttpClient", () {
+  group('OfflineQueueHttpClient', () {
     var sqliteLogs = List<String>();
+    const SQLITE_INSERT_STATEMENT =
+        'INSERT INTO HttpJobs (attempts, body, encoding, headers, request_method, updated_at, url) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const SQLITE_UPDATE_STATEMENT =
+        'UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?';
 
     setUpAll(() {
       MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
@@ -27,7 +31,7 @@ void main() {
 
         sqliteLogs.add(methodCall.arguments['sql']);
         if (methodCall.method == 'query') {
-          if (methodCall.arguments['arguments'].contains("existing record")) {
+          if (methodCall.arguments['arguments'].contains('existing record')) {
             return Future.value([
               {'id': 1, 'attempts': 1}
             ]);
@@ -46,95 +50,114 @@ void main() {
 
     tearDown(sqliteLogs.clear);
 
-    test("#send forwards to inner client", () async {
-      final inner = stubClient('hello from inner');
-      final client = OfflineQueueHttpClient(inner, "test_db");
+    test('#send forwards to inner client', () async {
+      final inner = stubResult(response: 'hello from inner');
+      final client = OfflineQueueHttpClient(inner, 'test_db');
 
       final resp = await client.get('http://localhost:3000');
       expect(resp.body, 'hello from inner');
     });
 
-    test("#send does not track GET requests", () async {
-      final inner = stubClient();
-      final client = OfflineQueueHttpClient(inner, "test_db");
+    test('GET requests are not tracked', () async {
+      final inner = stubResult();
+      final client = OfflineQueueHttpClient(inner, 'test_db');
       await client.get('http://localhost:3000');
 
       expect(sqliteLogs, isEmpty);
     });
 
-    test("#send stores in SQLite", () async {
-      final inner = stubClient();
-      final client = OfflineQueueHttpClient(inner, "test_db");
-      final resp = await client.post('http://localhost:3000', body: "new record");
+    test('request is stored in SQLite', () async {
+      final inner = stubResult();
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+      final resp = await client.post('http://localhost:3000', body: 'new record');
 
       expect(
         sqliteLogs,
-        contains(
-          "INSERT INTO HttpJobs (attempts, body, encoding, headers, request_method, updated_at, url) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        ),
+        contains(SQLITE_INSERT_STATEMENT),
       );
       expect(resp.statusCode, 200);
     });
 
-    test("#send increments and deletes for a successful request", () async {
-      final inner = stubClient();
-      final client = OfflineQueueHttpClient(inner, "test_db");
-      final resp = await client.post('http://localhost:3000', body: "existing record");
+    test('request increments and deletes after a successful response', () async {
+      final inner = stubResult(requestBody: 'existing record');
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+      final resp = await client.post('http://localhost:3000', body: 'existing record');
 
       expect(
         sqliteLogs,
         containsAllInOrder([
-          "UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?",
-          "COMMIT",
-          "BEGIN IMMEDIATE",
-          "DELETE FROM HttpJobs WHERE id = ?",
+          SQLITE_UPDATE_STATEMENT,
+          'COMMIT',
+          'BEGIN IMMEDIATE',
+          'DELETE FROM HttpJobs WHERE id = ?',
         ]),
       );
       expect(resp.statusCode, 200);
     });
 
-    test("#send creates and does not delete for an unsuccessful request", () async {
+    test('request creates and does not delete after an unsuccessful response', () async {
       final inner = MockClient();
       when(inner.send(any)).thenThrow(StateError('server not found'));
 
-      final client = OfflineQueueHttpClient(inner, "test_db");
-      final resp = await client.post('http://localhost:3000', body: "existing record");
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+      final resp = await client.post('http://localhost:3000', body: 'existing record');
 
-      expect(
-        sqliteLogs[sqliteLogs.length - 2],
-        "UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?",
-      );
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_UPDATE_STATEMENT);
       expect(resp.statusCode, 501);
     });
 
-    test("#send does not delete for a missing endpoint", () async {
+    test('request is not deleted after sending to a misconfigured client', () async {
       final inner = MockClient();
 
-      final client = OfflineQueueHttpClient(inner, "test_db");
-      final resp = await client.post('http://localhost:3000', body: "existing record");
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+      final resp = await client.post('http://localhost:3000', body: 'existing record');
 
-      expect(
-        sqliteLogs[sqliteLogs.length - 2],
-        "UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?",
-      );
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_UPDATE_STATEMENT);
       expect(resp.statusCode, 501);
+    });
+
+    test('request is not deleted after sending to an inaccessible endpoint', () async {
+      final body = 'Tunnel http://localhost:3000 not found';
+      final inner = stubResult(response: body, statusCode: 404);
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+
+      final resp = await client.post('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+      expect(resp.statusCode, 404);
+      expect(resp.body, body);
+
+      await client.put('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+
+      await client.delete('http://localhost:3000');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+
+      await client.patch('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
     });
   });
 }
 
-MockClient stubClient([String response = 'response']) {
+MockClient stubResult({String response = 'response', int statusCode, String requestBody}) {
   final inner = MockClient();
 
   when(inner.send(any)).thenAnswer((_) {
-    return Future.value(_buildStreamedResponse(response));
+    return Future.value(_buildStreamedResponse(response, statusCode, requestBody));
   });
 
   return inner;
 }
 
 /// Useful for mocking a response to [http.Client]'s `#send` method
-http.StreamedResponse _buildStreamedResponse(String response, [int statusCode = 200]) {
-  final resp = http.Response(response, statusCode);
+http.StreamedResponse _buildStreamedResponse(String response,
+    [int statusCode, String requestBody]) {
+  statusCode ??= 200;
+
+  // args don't matter,
+  final request = http.Request("POST", Uri.parse("http://localhost:3000"));
+  request.body = requestBody ?? response;
+
+  final resp = http.Response(response, statusCode, request: request);
   final stream = Stream.fromFuture(Future.value(resp.bodyBytes));
   return http.StreamedResponse(
     stream,
