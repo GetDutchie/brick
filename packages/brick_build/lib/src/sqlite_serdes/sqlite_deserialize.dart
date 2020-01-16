@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
 import 'package:brick_build/src/offline_first/offline_first_serdes_generator.dart';
+import 'package:brick_build/src/serdes_generator.dart';
 import 'package:brick_build/src/sqlite_serdes/sqlite_fields.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
@@ -25,19 +26,15 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
-  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
-    final name = serializedFieldName(checker, fieldAnnotation.name);
-    final defaultValue = defaultValueSuffix(fieldAnnotation);
+  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+    final name = providerNameForField(fieldAnnotation.name, checker);
+    final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(
         'Field `${InsertTable.PRIMARY_KEY_FIELD}` conflicts with reserved `SqliteModel` getter.',
         todo: 'Rename the field from `${InsertTable.PRIMARY_KEY_FIELD}`',
         element: field,
       );
-    }
-
-    if (fieldAnnotation?.fromGenerator != null) {
-      return digestPlaceholders(fieldAnnotation.fromGenerator, name, field.name);
     }
 
     // DateTime
@@ -56,7 +53,7 @@ class SqliteDeserialize extends OfflineFirstSerdesGenerator<Sqlite> {
     } else if (checker.isIterable) {
       final argTypeChecker = OfflineFirstChecker(checker.argType);
       final argType = checker.unFuturedArgType;
-      final castIterable = iterableCast(argType,
+      final castIterable = SerdesGenerator.iterableCast(argType,
           isSet: checker.isSet,
           isList: checker.isList,
           isFuture: checker.isArgTypeASibling || checker.isArgTypeAFuture);

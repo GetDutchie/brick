@@ -32,14 +32,8 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
   }
 
   @override
-  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
+  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
     if (fieldAnnotation.ignoreTo) return null;
-
-    if (fieldAnnotation?.toGenerator != null) {
-      final name = serializedFieldName(checker, fieldAnnotation.name);
-      final custom = digestPlaceholders(fieldAnnotation.toGenerator, name, field.name);
-      return custom;
-    }
 
     if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where.length > 1) {
       return null;

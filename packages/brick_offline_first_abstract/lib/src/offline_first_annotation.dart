@@ -26,17 +26,5 @@ class OfflineFirst {
     this.where,
   });
 
-  /// Placeholder. Replaces with name (e.g. `@Rest(name:)` or `@Sqlite(name:)`).
-  /// Defaults to field name after any applicable renaming transforms.
-  static const ANNOTATED_NAME_VARIABLE = '%ANNOTATED_NAME%';
-
-  /// Placeholder. Replaces with `data['annotated_name']` per `@Rest(name:)` or `@Sqlite(name:)`.
-  /// Only valuable for `from` generators.
-  static const DATA_PROPERTY_VARIABLE = '%DATA_PROPERTY%';
-
-  /// Placeholder. Replaces with field name (`instance.myField` in `final String myField`).
-  /// Only valuable for `to` generators.
-  static const INSTANCE_PROPERTY_VARIABLE = '%INSTANCE_PROPERTY%';
-
   static const defaults = OfflineFirst();
 }

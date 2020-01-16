@@ -39,7 +39,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     for (var field in unignoredFields) {
       final annotation = fields.annotationForField(field);
       final checker = checkerForField(field);
-      final columnName = serializedFieldName(checker, annotation.name);
+      final columnName = providerNameForField(annotation.name, checker);
       final columnInsertionType = _finalTypeForField(field.type);
 
       // T0D0 support List<Future<Sibling>> for 'association'
@@ -51,7 +51,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
             'association': ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
           }''');
       if (annotation.unique) {
-        uniqueFields[field.name] = serializedFieldName(checker, annotation.name);
+        uniqueFields[field.name] = providerNameForField(annotation.name, checker);
       }
     }
 
@@ -65,19 +65,14 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
   }
 
   @override
-  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
-    final name = serializedFieldName(checker, fieldAnnotation.name);
+  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+    final name = providerNameForField(fieldAnnotation.name, checker);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
         'Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key',
         todo: 'Rename the field from ${InsertTable.PRIMARY_KEY_COLUMN}',
         element: field,
       );
-    }
-
-    if (fieldAnnotation?.toGenerator != null) {
-      final custom = digestPlaceholders(fieldAnnotation.toGenerator, name, field.name);
-      return '$custom';
     }
 
     // DateTime

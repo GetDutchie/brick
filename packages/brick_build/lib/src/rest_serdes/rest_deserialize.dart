@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/src/serdes_generator.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 import 'package:brick_build/src/offline_first/offline_first_checker.dart';
 import 'package:brick_build/src/offline_first/offline_first_serdes_generator.dart';
@@ -37,16 +38,11 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
   }
 
   @override
-  String coderForField({checker, offlineFirstAnnotation, wrappedInFuture, field, fieldAnnotation}) {
-    final name = serializedFieldName(checker, fieldAnnotation.name);
-    final defaultValue = defaultValueSuffix(fieldAnnotation);
+  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+    final name = providerNameForField(fieldAnnotation.name, checker);
+    final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
-
-    if (fieldAnnotation?.fromGenerator != null) {
-      final custom = digestPlaceholders(fieldAnnotation.fromGenerator, name, field.name);
-      return '$custom$defaultValue';
-    }
 
     // DateTime
     if (checker.isDateTime) {
@@ -60,15 +56,15 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
     } else if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = OfflineFirstChecker(checker.argType);
-      final castIterable = iterableCast(argType,
+      final castIterable = SerdesGenerator.iterableCast(argType,
           isSet: checker.isSet,
           isList: checker.isList,
           isFuture: wrappedInFuture || checker.isFuture);
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
-        final fromRestCast =
-            iterableCast(argType, isSet: checker.isSet, isList: checker.isList, isFuture: true);
+        final fromRestCast = SerdesGenerator.iterableCast(argType,
+            isSet: checker.isSet, isList: checker.isList, isFuture: true);
 
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {

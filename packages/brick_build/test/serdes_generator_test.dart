@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -8,14 +9,14 @@ import '__helpers__.dart';
 
 final generateReader = generateLibraryForFolder('serdes_generator');
 
-class DefaultSerdes extends SerdesGenerator<Rest> {
+class DefaultSerdes extends SerdesGenerator<Rest, SharedChecker> {
   DefaultSerdes(ClassElement element, RestFields fields) : super(element, fields);
 
   final providerName = 'DefaultSerdes';
-  String addField(FieldElement field, Rest fieldAnnotation) => null;
+  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
 }
 
-class CustomSerdes extends SerdesGenerator<Rest> {
+class CustomSerdes extends SerdesGenerator<Rest, SharedChecker> {
   CustomSerdes(ClassElement element, RestFields fields) : super(element, fields);
 
   final doesDeserialize = false;
@@ -31,7 +32,7 @@ class CustomSerdes extends SerdesGenerator<Rest> {
 
   final providerName = 'CustomSerdes';
   final repositoryName = 'Some';
-  String addField(FieldElement field, Rest fieldAnnotation) {
+  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) {
     return "${field.name}: '${field.type.getDisplayString()}'";
   }
 }
@@ -135,38 +136,38 @@ Future<Bar> unspecificPublicMethod(Map,
       expect(custom.generate(), customOutput);
     });
 
-    group('#digestCustomGeneratorPlaceholders', () {
+    group('.digestCustomGeneratorPlaceholders', () {
       test('without a variable declaration', () {
         expect(
-          () =>
-              defaults.digestCustomGeneratorPlaceholders('%UNDECLARED_VARIABLE%otherserialization'),
+          () => SerdesGenerator.digestCustomGeneratorPlaceholders(
+              '%UNDECLARED_VARIABLE%otherserialization'),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
       test('without a value', () {
         expect(
-          () => defaults.digestCustomGeneratorPlaceholders(
+          () => SerdesGenerator.digestCustomGeneratorPlaceholders(
               '%UNDEFINED_VALUE%otherserialization@UNDEFINED_VALUE@'),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
 
         // Malformed declaration
         expect(
-          () => defaults.digestCustomGeneratorPlaceholders(
+          () => SerdesGenerator.digestCustomGeneratorPlaceholders(
               '%UNDEFINED_VALUE%otherserialization@UNDEFINED_VALUE'),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
       test('single placeholder', () {
-        final output = defaults.digestCustomGeneratorPlaceholders(
+        final output = SerdesGenerator.digestCustomGeneratorPlaceholders(
             "data.values((v) => v.split('%DELIMITER%'))@DELIMITER@,@/DELIMITER@");
         expect(output, "data.values((v) => v.split(','))");
       });
 
       test('multi placeholder', () {
-        final output = defaults.digestCustomGeneratorPlaceholders(
+        final output = SerdesGenerator.digestCustomGeneratorPlaceholders(
             "%INPUT%.values((v) => v.split('%DELIMITER%'))@DELIMITER@,@/DELIMITER@@INPUT@data@/INPUT@");
         expect(output, "data.values((v) => v.split(','))");
       });
