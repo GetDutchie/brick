@@ -406,8 +406,8 @@ If expanded `WherePhrase`s become unlegible, helpers `And` and `Or` can be used:
 
 ```dart
 Query(where: [
-  And('name', 'Thomas')
-  Or('age', 42)
+  And('name', 'Thomas'),
+  And('age', 42),
 ])
 ```
 
