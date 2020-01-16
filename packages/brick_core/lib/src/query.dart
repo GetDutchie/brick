@@ -75,9 +75,10 @@ class Query {
   factory Query.where(
     String evaluatedField,
     dynamic value, {
-    Compare compare = Compare.exact,
+    Compare compare,
     bool limit1 = false,
   }) {
+    compare ??= Where.defaults.compare;
     return Query(
       where: [Where(evaluatedField, value, compare: compare)],
       params: {

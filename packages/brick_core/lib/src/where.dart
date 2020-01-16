@@ -26,7 +26,7 @@ abstract class WhereCondition<T extends dynamic> {
   /// It is the responsibility of the [Provider] to ignore or interpret the requested comparison.
   Compare get compare;
 
-  /// Whether all conditions within this phrase must evaluate to true. Defaults `true`.
+  /// Whether the condition(s) must evaluate to true. Defaults `true`.
   ///
   /// For example, `true` would translate to `AND` in SQL instead of `OR`.
   /// Some [Provider]s may ignore this field.
@@ -41,6 +41,7 @@ abstract class WhereCondition<T extends dynamic> {
     if (data['subclass'] == 'WherePhrase') {
       return WherePhrase(
         data['conditions'].map((s) => WhereCondition.fromJson(s)),
+        required: data['required'],
       );
     }
 
@@ -92,6 +93,13 @@ class Where<_Value extends dynamic> extends WhereCondition<_Value> {
   final _Value value;
   final bool required;
 
+  static const defaults = const Where<Null>(
+    '',
+    null,
+    compare: Compare.exact,
+    required: true,
+  );
+
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
   ///
   /// This class should be exposed by the implemented [Repository] and not imported from
@@ -99,9 +107,26 @@ class Where<_Value extends dynamic> extends WhereCondition<_Value> {
   const Where(
     this.evaluatedField,
     this.value, {
-    this.compare = Compare.exact,
-    this.required = true,
-  });
+    Compare compare,
+    bool required,
+  })  : this.required = required ?? true,
+        this.compare = compare ?? Compare.exact;
+
+  /// Append a required condition to the existing [WherePhrase]. Carries [this.required].
+  factory Where.and(
+    String evaluatedField,
+    dynamic value, {
+    Compare compare,
+  }) =>
+      Where(evaluatedField, value, compare: compare, required: true);
+
+  /// Append an unrequired condition to the existing [WherePhrase]. Carries [this.required].
+  factory Where.or(
+    String evaluatedField,
+    dynamic value, {
+    Compare compare,
+  }) =>
+      Where(evaluatedField, value, compare: compare, required: false);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
@@ -140,6 +165,10 @@ class WherePhrase<Null> extends WhereCondition<Null> {
   final evaluatedField = null;
   final compare = Compare.exact;
   final value = null;
+
+  /// Whether all [conditions] must evaulate to `true` for the query to return results.
+  ///
+  /// Defaults `false`.
   final bool required;
 
   final List<WhereCondition> conditions;
@@ -168,15 +197,15 @@ class WherePhrase<Null> extends WhereCondition<Null> {
   /// ```
   ///
 // Why isn't WherePhrase a Where?
-// The type hinting of distinct classes leads to a positive dev experience. When you type Where( you get a hint that the first param is a column and the second param is a value. When you type WherePhrase(, you get a hint that the first param is a List.
+// The type hinting of distinct classes leads to a positive dev experience. When you type Where( you get a hint that the first arg is a column and the second arg is a value. When you type WherePhrase(, you get a hint that the first arg is a List.
 //
 // This also avoids putting too much logic into a single class by splitting it between two that should functionally be different. Determining if we're dealing with a Where or a WherePhrase also makes life easy on the translator.
 //
 // `required` also operates slightly differently for both. In where, it's the column. In WherePhrase, it's the whole chunk.
   const WherePhrase(
     this.conditions, {
-    this.required = false,
-  });
+    bool required,
+  }) : this.required = required ?? false;
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

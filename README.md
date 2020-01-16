@@ -402,6 +402,15 @@ Query(where: [
 // =>  (name == 'Thomas' && age == 42) && (height == 182 || country == 'France')
 ```
 
+If expanded `WherePhrase`s become unlegible, factories `and` and `or` can be used:
+
+```dart
+Query(where: [
+  Where.and('name', 'Thomas')
+  Where.and('age', 42)
+])
+```
+
 ## Filtering
 
 In the provider (or even a REST endpoint), convenience methods are available to quickly interpret a query.

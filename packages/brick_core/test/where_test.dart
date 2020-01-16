@@ -4,6 +4,20 @@ import 'package:brick_core/core.dart' show Where, WherePhrase;
 
 void main() {
   group("Where", () {
+    test(".and", () {
+      expect(
+        Where.and('id', 1),
+        Where('id', 1, required: true),
+      );
+    });
+
+    test(".or", () {
+      expect(
+        Where.or('id', 1),
+        Where('id', 1, required: false),
+      );
+    });
+
     group(".byField", () {
       test("single field", () {
         final conditions = [Where("id", 1), Where("name", "Thomas")];
