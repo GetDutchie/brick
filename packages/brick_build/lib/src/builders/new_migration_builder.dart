@@ -3,11 +3,11 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Create a new [Migration] from the contents of all [ConnectOfflineFirstWithRest] models
-class NewMigrationBuilder extends SqliteBaseBuilder {
+class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation> {
   @override
   final outputExtension = '.migration_builder.dart';
 
-  NewMigrationBuilder(AnnotationSuperGenerator generator) : super(generator);
+  NewMigrationBuilder();
 
   @override
   Future<void> build(BuildStep buildStep) async {
