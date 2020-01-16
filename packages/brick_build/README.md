@@ -55,6 +55,8 @@ A new provider will likely require expected data to be massaged before creating 
 
 Before reading further, this process appears to require a lot of code. This is largely boilerplate required for type checking and Dart's analyzer. The majority of the custom code and logic will live in the adapter serdes.
 
+:warning: Annotation and configuration definitions must be declared outside of the build package if they depend on a package that conflicts with mirrors (Flutter conflicts with mirrors). As other packages may use these annotations (for example, `OfflineFirst` considers `@Rest` and `@Sqlite` annotations along with `@OfflineFirst`), it's safest to keep annotations and builders as independent packages.
+
 #### Declaring Class-level Configuration
 
 A provider will likely require high-level information about a class that would be inappropriate to define on every instance of a class. And, because Dart's Type system can't infer static methods, this must be declared outside the class in an annotation:
@@ -88,8 +90,6 @@ class MyModel
   final bool isDeleted;
 ```
 
-:warning: Annotation and configuration definitions must be declared outside of the build package if they depend on a package that conflicts with mirrors (Flutter conflicts with mirrors). As other packages may use these annotations (for example, `OfflineFirst` considers `@Rest` and `@Sqlite` annotations along with `@OfflineFirst`), it's safest to keep annotations and builders as independent packages.
-
 #### Advanced Type Checking
 
 Most generators may not require an extension of basic type checking (e.g. is this a string, is this an int, is this a list). For advanced checking, say, for the discovery of a package-specific class, a new checker will have to be created:
@@ -106,7 +106,7 @@ For every new or removed type check, always update `SharedChecker`'s computed ge
 
 ### Interpreting Class-level Annotations
 
-Class-level annotations must be expanded from their constantized versions back to an easily-digestible Dart form:1
+Class-level annotations must be expanded from their constantized versions back to an easily-digestible Dart form:
 
 ```dart
 // RestSerializable is our previously-noted configuration class
@@ -315,7 +315,7 @@ class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst
 
 The Model Dictionary generator must generate model dictionaries for **each** provider. Defining instructions - such as not committing generated code - and guiding code comments - such as the contents of a `mapping` - are important but not required.
 
-As each model should extend/implement each provider model type, and each adapter should extend/implement each provider adapter type, the same dictionary is used for each provider mapping:
+As each model should extend/implement each provider's model type, and each adapter should extend/implement each provider's adapter type, the same dictionary is used for each provider mapping:
 
 ```dart
 // this method is inherited from the super class
