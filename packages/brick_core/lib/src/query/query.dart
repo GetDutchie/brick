@@ -58,6 +58,14 @@ class Query {
       assert(this.params['offset'] > -1);
       assert(this.params['limit'] != null);
     }
+
+    if (where != null && where.isNotEmpty) {
+      for (final condition in where)
+        assert(
+          WherePhrase.validateValuePresenceRecursively(condition),
+          "All Where conditions must have values",
+        );
+    }
   }
 
   factory Query.fromJson(Map<String, dynamic> json) {

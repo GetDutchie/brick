@@ -113,6 +113,7 @@ class Where extends WhereCondition {
         this.compare = compare ?? Compare.exact,
         this.value = ofValue;
 
+  /// A condition written with brevity. ALways [required].
   factory Where.exact(String evaluatedField, dynamic value) =>
       Where(evaluatedField, ofValue: value, compare: Compare.exact, required: true);
 
@@ -222,6 +223,18 @@ class WherePhrase extends WhereCondition {
     this.conditions, {
     bool required,
   }) : this.required = required ?? false;
+
+  /// Ensure that all nested conditions have a value
+  static bool validateValuePresenceRecursively(WhereCondition condition) {
+    if (condition.runtimeType == WherePhrase) {
+      return condition.conditions.fold<bool>(true, (isValid, c) {
+        if (!isValid) return false;
+        return validateValuePresenceRecursively(c);
+      });
+    }
+
+    return condition.value != null;
+  }
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].
