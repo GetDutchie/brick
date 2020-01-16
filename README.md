@@ -402,12 +402,12 @@ Query(where: [
 // =>  (name == 'Thomas' && age == 42) && (height == 182 || country == 'France')
 ```
 
-If expanded `WherePhrase`s become unlegible, factories `and` and `or` can be used:
+If expanded `WherePhrase`s become unlegible, helpers `And` and `Or` can be used:
 
 ```dart
 Query(where: [
-  Where.and('name', 'Thomas')
-  Where.and('age', 42)
+  And('name', 'Thomas')
+  Or('age', 42)
 ])
 ```
 

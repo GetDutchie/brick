@@ -4,18 +4,20 @@ import 'package:brick_core/core.dart' show Where, WherePhrase;
 
 void main() {
   group("Where", () {
-    test(".and", () {
-      expect(
-        Where.and('id', 1),
-        Where('id', 1, required: true),
-      );
-    });
+    group("subclass shortcuts", () {
+      test("And", () {
+        expect(
+          And('id', 1),
+          Where('id', 1, required: true),
+        );
+      });
 
-    test(".or", () {
-      expect(
-        Where.or('id', 1),
-        Where('id', 1, required: false),
-      );
+      test("Or", () {
+        expect(
+          Or('id', 1),
+          Where('id', 1, required: false),
+        );
+      });
     });
 
     group(".byField", () {

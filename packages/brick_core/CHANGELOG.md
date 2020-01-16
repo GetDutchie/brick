@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add `And` and `Or` `Where` subclasses
+
 ## 0.0.2
 
 * Fix linter hints

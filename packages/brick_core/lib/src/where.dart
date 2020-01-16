@@ -112,22 +112,6 @@ class Where<_Value extends dynamic> extends WhereCondition<_Value> {
   })  : this.required = required ?? true,
         this.compare = compare ?? Compare.exact;
 
-  /// Append a required condition to the existing [WherePhrase]. Carries [this.required].
-  factory Where.and(
-    String evaluatedField,
-    dynamic value, {
-    Compare compare,
-  }) =>
-      Where(evaluatedField, value, compare: compare, required: true);
-
-  /// Append an unrequired condition to the existing [WherePhrase]. Carries [this.required].
-  factory Where.or(
-    String evaluatedField,
-    dynamic value, {
-    Compare compare,
-  }) =>
-      Where(evaluatedField, value, compare: compare, required: false);
-
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
   /// If the use case for the field only requires one result, say `id` or `primaryKey`,
@@ -206,6 +190,34 @@ class WherePhrase<Null> extends WhereCondition<Null> {
     this.conditions, {
     bool required,
   }) : this.required = required ?? false;
+}
+
+/// Append a required condition to the existing [WherePhrase]. Carries [this.required].
+class And extends Where {
+  const And(
+    String evaluatedField,
+    dynamic value, {
+    Compare compare,
+  }) : super(
+          evaluatedField,
+          value,
+          compare: compare,
+          required: true,
+        );
+}
+
+/// Append an unrequired condition to the existing [WherePhrase]. Carries [this.required].
+class Or extends Where {
+  const Or(
+    String evaluatedField,
+    dynamic value, {
+    Compare compare,
+  }) : super(
+          evaluatedField,
+          value,
+          compare: compare,
+          required: false,
+        );
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].
