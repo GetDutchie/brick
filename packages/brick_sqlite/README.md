@@ -24,7 +24,7 @@ final String lastName;
 
 // my query would use the column name in `params:` but not in `where:`
 Query(
-  where: [Where('lastName', 'Mustermann')],
+  where: [Where.exact('lastName', 'Mustermann')],
   params: {'orderBy': 'last_name ASC'},
 )
 ```

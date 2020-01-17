@@ -11,7 +11,7 @@ import 'package:brick_sqlite/sqlite.dart';
 import 'package:brick_offline_first/src/connectivity_indicator.dart';
 import 'package:http/src/exception.dart'; // ignore: implementation_imports
 
-export 'package:brick_core/core.dart' show Query, Where, WherePhrase, Compare, QueryAction;
+export 'package:brick_core/query.dart';
 export 'package:brick_offline_first_abstract/abstract.dart' hide OfflineFirstWithRestModel;
 export 'package:brick_offline_first_abstract/annotations.dart';
 export 'package:brick_sqlite/sqlite.dart' show SqliteProvider;
