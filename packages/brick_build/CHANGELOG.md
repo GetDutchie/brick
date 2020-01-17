@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Update for new [brick_core](https://github.com/greenbits/brick/tree/master/packages/brick_core) API on `Where`
+* Move shareable methods from `OfflineFirstSerdesGenerator` to `SerdesGenerator`
+* Constraint version of [brick_core](https://github.com/greenbits/brick/tree/master/packages/brick_core)
 
 ## 0.0.3
 
