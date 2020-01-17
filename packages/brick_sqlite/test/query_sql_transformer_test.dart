@@ -1,4 +1,4 @@
-import 'package:brick_core/core.dart' show Query, Where, WherePhrase;
+import 'package:brick_core/query.dart';
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:flutter_test/flutter_test.dart' show isMethodCall;
@@ -101,10 +101,10 @@ void main() {
           ]),
           WherePhrase([
             Where.exact('id', 1),
-            Where.exact('name','Guy'),
+            Where.exact('name', 'Guy'),
           ], required: true),
           WherePhrase([
-            Where.exact('id', 1)
+            Where.exact('id', 1),
             Where.exact('name', 'Guy'),
           ]),
         ]),
