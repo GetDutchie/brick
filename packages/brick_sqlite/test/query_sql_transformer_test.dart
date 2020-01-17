@@ -1,4 +1,4 @@
-import 'package:brick_core/core.dart' show Query, Where, WherePhrase;
+import 'package:brick_core/query.dart';
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:flutter_test/flutter_test.dart' show isMethodCall;
@@ -96,16 +96,16 @@ void main() {
         modelDictionary: dictionary,
         query: Query(where: [
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: false),
+            Where.exact('id', 1),
+            Or('name').isExactly('Guy'),
           ]),
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: true),
+            Where.exact('id', 1),
+            Where.exact('name', 'Guy'),
           ], required: true),
           WherePhrase([
-            Where<int>('id', 1, required: true),
-            Where<String>('name', 'Guy', required: true),
+            Where.exact('id', 1),
+            Where.exact('name', 'Guy'),
           ]),
         ]),
       );
@@ -121,10 +121,10 @@ void main() {
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query(where: [
-          Where('id', 1),
+          Where.exact('id', 1),
           WherePhrase([
-            Where<String>('name', 'Thomas', required: false),
-            Where<String>('name', 'Guy', required: false),
+            Or('name').isExactly('Thomas'),
+            Or('name').isExactly('Guy'),
           ], required: true),
         ]),
       );
@@ -141,7 +141,7 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where<Where>('assoc', Where<int>('id', 1)),
+            Where.exact('assoc', Where.exact('id', 1)),
           ]),
         );
 
@@ -156,11 +156,11 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where<WherePhrase>(
+            Where.exact(
               'assoc',
               WherePhrase([
-                Where<int>('id', 1, required: false),
-                Where<String>('name', 'Guy', required: false),
+                Or('id').isExactly(1),
+                Or('name').isExactly('Guy'),
               ]),
             ),
           ]),
@@ -177,9 +177,9 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where(
+            Where.exact(
               'manyAssoc',
-              Where<int>('id', 1),
+              Where.exact('id', 1),
             ),
           ]),
         );
@@ -290,8 +290,8 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where('name', true, required: false),
-            Where('name', false, required: false),
+            Or('name').isExactly(true),
+            Or('name').isExactly(false),
           ]),
         );
         expect(sqliteQuery.statement, statement);

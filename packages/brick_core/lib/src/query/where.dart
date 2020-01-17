@@ -8,11 +8,11 @@ const _listEquality = ListEquality();
 /// Example:
 /// ```dart
 /// Query(where: [
-///   Where('myField', 'must_match_this_value')
-///   Where('myOtherField', 'must_contain_this_value', compare: Compare.contains)
-/// })
+///   Where.exact('myField', 'must_match_this_value')
+///   Where('myOtherField').contains('must_contain_this_value'),
+/// ])
 /// ```
-abstract class WhereCondition<T extends dynamic> {
+abstract class WhereCondition {
   /// The Dart name of the field. For example, `myField` when querying `final String myField`.
   ///
   /// The [Provider] should provide mappings between the field name
@@ -26,14 +26,14 @@ abstract class WhereCondition<T extends dynamic> {
   /// It is the responsibility of the [Provider] to ignore or interpret the requested comparison.
   Compare get compare;
 
-  /// Whether all conditions within this phrase must evaluate to true. Defaults `true`.
+  /// Whether the condition(s) must evaluate to true. Defaults `true`.
   ///
   /// For example, `true` would translate to `AND` in SQL instead of `OR`.
   /// Some [Provider]s may ignore this field.
   bool get required;
 
   /// The value to compare on the [evaluatedField].
-  T get value;
+  dynamic get value;
 
   const WhereCondition();
 
@@ -41,12 +41,13 @@ abstract class WhereCondition<T extends dynamic> {
     if (data['subclass'] == 'WherePhrase') {
       return WherePhrase(
         data['conditions'].map((s) => WhereCondition.fromJson(s)),
+        required: data['required'],
       );
     }
 
     return Where(
       data['evaluatedField'],
-      data['value'],
+      value: data['value'],
       compare: Compare.values[data['compare']],
       required: data['required'],
     );
@@ -75,7 +76,9 @@ abstract class WhereCondition<T extends dynamic> {
           compare == other?.compare &&
           required == other?.required &&
           _listEquality.equals(conditions, other?.conditions) &&
-          value == other?.value;
+          ((value is List && other.value is List)
+              ? _listEquality.equals(value, other?.value)
+              : value == other?.value);
 
   @override
   int get hashCode =>
@@ -86,22 +89,60 @@ abstract class WhereCondition<T extends dynamic> {
       value.hashCode;
 }
 
-class Where<_Value extends dynamic> extends WhereCondition<_Value> {
+class Where extends WhereCondition {
   final String evaluatedField;
   final Compare compare;
-  final _Value value;
+  final dynamic value;
   final bool required;
+
+  static const defaults = const Where(
+    '',
+    compare: Compare.exact,
+    required: true,
+  );
 
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
   ///
   /// This class should be exposed by the implemented [Repository] and not imported from
   /// this package as repositories may choose to extend or inhibit functionality.
   const Where(
-    this.evaluatedField,
-    this.value, {
-    this.compare = Compare.exact,
-    this.required = true,
-  });
+    this.evaluatedField, {
+    this.value,
+    Compare compare,
+    bool required,
+  })  : this.required = required ?? true,
+        this.compare = compare ?? Compare.exact;
+
+  /// A condition written with brevity. [required] defaults `true`.
+  factory Where.exact(String evaluatedField, dynamic value, {bool required = true}) =>
+      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
+
+  Where isExactly(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
+
+  Where isBetween(dynamic value1, dynamic value2) {
+    assert(value1.runtimeType == value2.runtimeType, "Comparison values must be the same type");
+    return Where(evaluatedField,
+        value: [value1, value2], compare: Compare.between, required: required);
+  }
+
+  Where contains(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.contains, required: required);
+
+  Where isLessThan(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.lessThan, required: required);
+
+  Where isLessThanOrEqualTo(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.lessThanOrEqualTo, required: required);
+
+  Where isGreaterThan(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.greaterThan, required: required);
+
+  Where isGreaterThanOrEqualTo(dynamic value) => Where(evaluatedField,
+      value: value, compare: Compare.greaterThanOrEqualTo, required: required);
+
+  Where isNot(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.notEqual, required: required);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
@@ -136,10 +177,14 @@ class Where<_Value extends dynamic> extends WhereCondition<_Value> {
   }
 }
 
-class WherePhrase<Null> extends WhereCondition<Null> {
+class WherePhrase extends WhereCondition {
   final evaluatedField = null;
   final compare = Compare.exact;
   final value = null;
+
+  /// Whether all [conditions] must evaulate to `true` for the query to return results.
+  ///
+  /// Defaults `false`.
   final bool required;
 
   final List<WhereCondition> conditions;
@@ -152,31 +197,44 @@ class WherePhrase<Null> extends WhereCondition<Null> {
   /// Invalid:
   /// ```dart
   /// WherePhrase([
-  ///   Where<bool>('myField', true, required: true),
-  ///   Where<int>('myOtherField', 0, required: false)
+  ///   Where.exact('myField', true),
+  ///   Or('myOtherField').isExactly(0),
   /// ])
   /// ```
   ///
   /// Valid:
   /// ```dart
   /// WherePhrase([
-  ///   Where<bool>('myField', true, required: true),
+  ///   Where.exact('myField', true),
   ///   WherePhrase([
-  ///     Where<int>('myOtherField', 0, required: false)
+  ///     Or('myOtherField').isExactly(0),
+  ///     Or('myOtherField').isExactly(1),
   ///   )]
   /// ])
   /// ```
   ///
 // Why isn't WherePhrase a Where?
-// The type hinting of distinct classes leads to a positive dev experience. When you type Where( you get a hint that the first param is a column and the second param is a value. When you type WherePhrase(, you get a hint that the first param is a List.
+// The type hinting of distinct classes leads to a positive dev experience. When you type Where( you get a hint that the first arg is a column and the second arg is a value. When you type WherePhrase(, you get a hint that the first arg is a List.
 //
 // This also avoids putting too much logic into a single class by splitting it between two that should functionally be different. Determining if we're dealing with a Where or a WherePhrase also makes life easy on the translator.
 //
 // `required` also operates slightly differently for both. In where, it's the column. In WherePhrase, it's the whole chunk.
   const WherePhrase(
     this.conditions, {
-    this.required = false,
-  });
+    bool required,
+  }) : this.required = required ?? false;
+
+  /// Ensure that all nested conditions have a value
+  static bool validateValuePresenceRecursively(WhereCondition condition) {
+    if (condition.runtimeType == WherePhrase) {
+      return condition.conditions.fold<bool>(true, (isValid, c) {
+        if (!isValid) return false;
+        return validateValuePresenceRecursively(c);
+      });
+    }
+
+    return condition.value != null;
+  }
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

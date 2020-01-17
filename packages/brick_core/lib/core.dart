@@ -3,5 +3,4 @@ export 'package:brick_core/src/model.dart';
 export 'package:brick_core/src/model_dictionary.dart';
 export 'package:brick_core/src/model_repository.dart';
 export 'package:brick_core/src/provider.dart';
-export 'package:brick_core/src/query.dart';
-export 'package:brick_core/src/where.dart';
+export 'package:brick_core/query.dart';
