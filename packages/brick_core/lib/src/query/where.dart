@@ -47,7 +47,7 @@ abstract class WhereCondition {
 
     return Where(
       data['evaluatedField'],
-      ofValue: data['value'],
+      value: data['value'],
       compare: Compare.values[data['compare']],
       required: data['required'],
     );
@@ -69,15 +69,16 @@ abstract class WhereCondition {
   String toString() => jsonEncode(toJson());
 
   @override
-  bool operator ==(Object other) => identical(this, other) ||
-          other is WhereCondition &&
-              evaluatedField == other?.evaluatedField &&
-              compare == other?.compare &&
-              required == other?.required &&
-              _listEquality.equals(conditions, other?.conditions) &&
-              value is List
-      ? _listEquality.equals(value, (other as WhereCondition)?.value)
-      : value == (other as WhereCondition)?.value;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WhereCondition &&
+          evaluatedField == other?.evaluatedField &&
+          compare == other?.compare &&
+          required == other?.required &&
+          _listEquality.equals(conditions, other?.conditions) &&
+          ((value is List && other.value is List)
+              ? _listEquality.equals(value, other?.value)
+              : value == other?.value);
 
   @override
   int get hashCode =>
@@ -106,43 +107,42 @@ class Where extends WhereCondition {
   /// this package as repositories may choose to extend or inhibit functionality.
   const Where(
     this.evaluatedField, {
-    dynamic ofValue,
+    this.value,
     Compare compare,
     bool required,
   })  : this.required = required ?? true,
-        this.compare = compare ?? Compare.exact,
-        this.value = ofValue;
+        this.compare = compare ?? Compare.exact;
 
-  /// A condition written with brevity. ALways [required].
-  factory Where.exact(String evaluatedField, dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.exact, required: true);
+  /// A condition written with brevity. [required] defaults `true`.
+  factory Where.exact(String evaluatedField, dynamic value, {bool required = true}) =>
+      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
 
   Where isExactly(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.exact, required: required);
+      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
 
   Where isBetween(dynamic value1, dynamic value2) {
     assert(value1.runtimeType == value2.runtimeType, "Comparison values must be the same type");
     return Where(evaluatedField,
-        ofValue: [value1, value2], compare: Compare.between, required: required);
+        value: [value1, value2], compare: Compare.between, required: required);
   }
 
   Where contains(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.contains, required: required);
+      Where(evaluatedField, value: value, compare: Compare.contains, required: required);
 
   Where isLessThan(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.lessThan, required: required);
+      Where(evaluatedField, value: value, compare: Compare.lessThan, required: required);
 
   Where isLessThanOrEqualTo(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.lessThanOrEqualTo, required: required);
+      Where(evaluatedField, value: value, compare: Compare.lessThanOrEqualTo, required: required);
 
   Where isGreaterThan(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.greaterThan, required: required);
+      Where(evaluatedField, value: value, compare: Compare.greaterThan, required: required);
 
   Where isGreaterThanOrEqualTo(dynamic value) => Where(evaluatedField,
-      ofValue: value, compare: Compare.greaterThanOrEqualTo, required: required);
+      value: value, compare: Compare.greaterThanOrEqualTo, required: required);
 
   Where isNot(dynamic value) =>
-      Where(evaluatedField, ofValue: value, compare: Compare.notEqual, required: required);
+      Where(evaluatedField, value: value, compare: Compare.notEqual, required: required);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.

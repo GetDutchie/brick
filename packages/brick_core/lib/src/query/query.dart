@@ -88,7 +88,7 @@ class Query {
   }) {
     compare ??= Where.defaults.compare;
     return Query(
-      where: [Where(evaluatedField, ofValue: value, compare: compare)],
+      where: [Where(evaluatedField, value: value, compare: compare)],
       params: {
         if (limit1) 'limit': 1,
       },

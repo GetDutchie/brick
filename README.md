@@ -87,7 +87,7 @@ class User extends OfflineFirstWithRestModel {
   final List<Hat> hats;
 }
 
-final query = Query.where('hats', Where('color'.isExactly('brown')));
+final query = Query.where('hats', Where('color').isExactly('brown'));
 final usersWithBrownHats = repository.get<User>(query: query);
 ```
 
@@ -391,12 +391,12 @@ Or specified as a whole phrase:
 ```dart
 Query(where: [
   WherePhrase([
-    Where('name', ofValue: 'Thomas', required: false),
-    Where('age', ofValue: 42, compare: Compare.notEqual, required: false),
+    Where('name', value: 'Thomas', required: false),
+    Where('age', value: 42, compare: Compare.notEqual, required: false),
   ], required: true),
   WherePhrase([
-    Where('height', ofValue: [182, 186], compare: Compare.between),
-    Where('country', ofValue: 'France'),
+    Where('height', value: [182, 186], compare: Compare.between),
+    Where('country', value: 'France'),
   ], required: true)
 ])
 // =>  (name == 'Thomas' || age != 42) && (height > 182 && height < 186 && country == 'France')
