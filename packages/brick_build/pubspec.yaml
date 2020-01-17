@@ -11,17 +11,17 @@ environment:
 
 dependencies:
   analyzer: ^0.39.0
-  brick_core: 0.0.3+1
-  brick_offline_first_abstract: ">=0.0.3 <1.0.0"
-  brick_rest: ">=0.0.2 <1.0.0"
-  brick_sqlite_abstract: ">=0.0.2 <1.0.0"
-  build: '>=1.2.0 <2.0.0'
-  build_config: '>=0.4.0 <1.0.0'
-  dart_style: ">=1.2.4 <2.0.0"
-  glob: '>=1.2.0 <2.0.0'
-  logging: ^0.11.3+2
-  meta: ">=1.1.6 <2.0.0"
-  path: ">=1.6.3 <2.0.0"
+  brick_core: ^0.0.3
+  brick_offline_first_abstract: ^0.0.3
+  brick_rest: ^0.0.2
+  brick_sqlite_abstract: ^0.0.2
+  build: ^1.2.0
+  build_config: ^0.4.0
+  dart_style: ^1.2.4
+  glob: ^1.2.0
+  logging: ^0.11.3
+  meta: ^1.1.6
+  path: ^1.6.3
   source_gen: ^0.9.0
 
 dev_dependencies:

@@ -1,6 +1,10 @@
+[![Build Status](https://travis-ci.org/greenbits/brick.svg?branch=master)](https://travis-ci.org/greenbits/brick)
+
 ![An intuitive way to work with persistent data](./doc/logo.svg)
 
 An intuitive way to work with persistent data in Dart.
+
+**Brick is still in an alpha release**. Files and APIs changes will be reported in package CHANGELOGs.
 
 ## What is Brick?
 
@@ -10,6 +14,7 @@ Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record
 
 ## Why Brick?
 
+* Your app requires [offline access](packages/brick_offline_first) to data
 * Handles and hides all complex serialization/deserialization logic between any external source(s)
 * Single access point and opinionated DSL establishes consistency when pushing and pulling data across your app
 * Automatic, [intelligently-generated migrations](packages/brick_sqlite)
@@ -175,15 +180,15 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
 
 # Glossary
 
-* [**Provider**](#providers) - Fetches from and pushes to a data source.
-* [**Repository**](#repository) - Manages `Provider`(s) as middleware between the app logic and the `Provider` logic.
-* **Adapter** - Normalizizes data input and output between `Provider`s. Almost always generated.
-* [**Model**](#models) - Business logic unique to the app. Can be queried by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
-* **ModelDictionary** - Connects a `Provider` to the `Model`'s `Adapter`. Almost always generated.
-* **field** - Single, accessible property of a model. For example, `final String id`.
-* **deserialize** - convert raw data _from_ a provider.
-* **serialize** - convert a model instance _to_ raw data for a provider.
-* **source** - external information warehouse that delivers unrefined or raw data
+* **source** - external information warehouse that delivers unrefined data
+* [**Provider**](#providers) - fetches from and pushes to a `source`
+* [**Repository**](#repository) - manages `Provider`(s) and determines which provider results to send
+* **Adapter** - normalizes data input and output between `Provider`s
+* [**Model**](#models) - business logic unique to the app. Fetched by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
+* **ModelDictionary** - guides a `Provider` to the `Model`'s `Adapter`. Unique per `Provider`.
+* **field** - single, accessible property of a model. For example, `final String id`
+* **deserialize** - convert raw data _from_ a provider
+* **serialize** - convert a model instance _to_ raw data for a provider
 
 # Models
 

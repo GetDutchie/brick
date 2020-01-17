@@ -1,5 +1,5 @@
 name: brick_core
-description: A data persistence library
+description: Interfaces and shared helpers for implementing models, adapters, providers, and repositories in Brick, an intuitive way to work with persistent data in Dart.
 homepage: https://github.com/greenbits/brick/tree/master/packages/brick_core
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.4.0 <3.0.0"
 
 dependencies:
-  collection: ">=1.14.11 <2.0.0"
+  collection: ^1.14.11
 
 dev_dependencies:
   mockito: ^4.0.0

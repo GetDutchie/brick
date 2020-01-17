@@ -7,12 +7,13 @@ import 'package:brick_offline_first/offline_first_with_rest.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_offline_first_example/app/models/hat.dart';
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first_example/app/models/mounty.dart';// GENERATED CODE DO NOT EDIT
+import 'package:brick_offline_first_example/app/models/mounty.dart'; // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 // ignore: unused_import
 import 'dart:convert';
 import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary;
-import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
+import 'package:brick_rest/rest.dart'
+    show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
 import 'package:brick_core/core.dart' show Query, QueryAction;
 // ignore: unused_import, unused_shown_name
@@ -31,7 +32,7 @@ final Map<Type, RestAdapter<RestModel>> restMappings = {
 };
 final restModelDictionary = RestModelDictionary(restMappings);
 
-/// Sqlite mappings should only be used when initializizing a [SqliteProvider]
+/// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   KitchenSink: KitchenSinkAdapter(),
   Mounty: MountyAdapter()

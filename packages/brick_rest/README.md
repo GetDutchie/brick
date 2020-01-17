@@ -1,6 +1,6 @@
 # REST Provider
 
-Connecting [Brick](../../) with a RESTful API.
+Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.
 
 ## Supported `Query` Configuration
 

@@ -1,6 +1,6 @@
 # Brick Build
 
-Code generator for [Brick](../../) adapters, model dictionaries.
+Code generator for [Brick](https://github.com/greenbits/brick) adapters, model dictionaries.
 
 ## Install
 
@@ -76,6 +76,15 @@ class MyModel
 ```
 
 These configurations may be injected directly into the adapater (like `endpoint`) or may change behavior for generated code (like `fieldRename`).
+
+When creating a model that the provider relies on, only declare members if they're used by the provider. Using these members should be discouraged in the application.
+
+```dart
+abstract class SqliteModel {
+  // the provider relies on the primary key to make associations with other models
+  int primaryKey;
+}
+```
 
 #### Declaring Field-level Configuration
 
@@ -259,6 +268,22 @@ class RestSerialize extends OfflineFirstGenerator<Rest> {
 
 At a minimum, all primitive types should be evaluated by the checker and returned to the generator with appropriate serializing or deserializing code. Serdes generators come out as code spaghetti and _that's OK_. Explicit, verbose declarations - even when duplicated across generators - are reliable and easy to debug.
 
+Adapter members, like models, should only be declared if they are used by the provider.
+
+```dart
+abstract class SqliteAdapter extends Adapter<SqliteModel> {
+  // the analyzer won't be available at run time, so the provider needs to be aware
+  // of relevant information to build a SQLite query
+  final fieldsToColumns = {
+    'firstName': {
+      'type': String,
+      'association': false,
+      'columnName': 'first_name',
+    },
+  };
+}
+```
+
 #### Associations
 
 Associations can require complex fetching. When a domain supports associations between providers, the class-level annotation should be used in a custom checker. For example, `isSibling` or `isAssociation`.
@@ -328,7 +353,7 @@ final Map<Type, RestAdapter<RestModel>> restMappings = {
 };
 final restModelDictionary = RestModelDictionary(restMappings);
 
-/// Sqlite mappings should only be used when initializizing a [SqliteProvider]
+/// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   $dictionary
 };

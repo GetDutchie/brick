@@ -10,8 +10,8 @@ environment:
   sdk: '>=2.4.0 <3.0.0'
 
 dependencies:
-  brick_core: ">=0.0.2 <1.0.0"
-  meta: ">=1.1.6 <2.0.0"
+  brick_core: ^0.0.2
+  meta: ^1.1.6
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"
