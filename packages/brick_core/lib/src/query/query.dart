@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart' show MapEquality, ListEquality;
-import 'package:brick_core/src/where.dart';
+import 'package:brick_core/src/query/where.dart';
 import 'dart:convert';
 
 const _mapEquality = MapEquality();
@@ -32,15 +32,15 @@ class Query {
   /// final String email;
   ///
   /// // BAD:
-  /// Where('e-mail', '.org', compare: Compare.contains);
+  /// Where('e-mail').contains('.org');
   ///
   /// // GOOD:
-  /// Where('email', '.org', compare: Compare.contains);
+  /// Where('email').contains('.org');
   /// ```
   ///
   /// By default, every [WhereCondition] should be presumed to be an `and`.
-  /// For example, `where: [Where('id', 1), Where('name', 'Thomas')]`
-  /// will only return results where the ID is 1 and the name is Thomas.
+  /// For example, `where: [Where.exact('id', 1), Where.exact('name', 'Thomas')]`
+  /// will only return results where the ID is 1 **and** the name is Thomas.
   final List<WhereCondition> where;
 
   Query({
@@ -75,11 +75,12 @@ class Query {
   factory Query.where(
     String evaluatedField,
     dynamic value, {
-    Compare compare = Compare.exact,
+    Compare compare,
     bool limit1 = false,
   }) {
+    compare ??= Where.defaults.compare;
     return Query(
-      where: [Where(evaluatedField, value, compare: compare)],
+      where: [Where(evaluatedField, value: value, compare: compare)],
       params: {
         if (limit1) 'limit': 1,
       },

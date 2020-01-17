@@ -4,11 +4,13 @@ import 'package:build/build.dart';
 
 /// Writes adapter code (model serialization/deserialization).
 /// Outputs to app/adapters/<MODEL>_adapter.g.dart
-class AdapterBuilder extends BaseBuilder {
+class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
+  final AnnotationSuperGenerator generator;
+
   @override
   final outputExtension = '.adapter_builder.dart';
 
-  AdapterBuilder(AnnotationSuperGenerator generator) : super(generator);
+  AdapterBuilder(this.generator);
 
   @override
   Future<void> build(BuildStep buildStep) async {
