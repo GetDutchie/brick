@@ -11,6 +11,6 @@ environment:
 
 dependencies:
   meta: ^1.1.6
-  brick_core: ">=0.0.2 <1.0.0"
-  brick_rest: ">=0.0.2 <1.0.0"
-  brick_sqlite_abstract: ">=0.0.2 <1.0.0"
+  brick_core: ^0.0.3
+  brick_rest: ^0.0.2
+  brick_sqlite_abstract: ^0.0.2
