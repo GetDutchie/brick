@@ -33,6 +33,7 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
 
   @override
   String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;
 
     if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where.length > 1) {
@@ -41,11 +42,11 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
 
     // DateTime
     if (checker.isDateTime) {
-      return 'instance.${field.name}?.toIso8601String()';
+      return '$fieldValue?.toIso8601String()';
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
-      return 'instance.${field.name}';
+      return '$fieldValue';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -54,9 +55,9 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return "instance.${field.name}?.map((e) => e.toString().split('.').last)";
+          return "$fieldValue?.map((e) => e.toString().split('.').last)";
         } else {
-          return 'instance.${field.name}?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))';
+          return '$fieldValue?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))';
         }
       }
 
@@ -64,7 +65,7 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return 'instance.${field.name}?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())';
+          return '$fieldValue?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())';
         }
       }
 
@@ -73,26 +74,24 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
         if (offlineFirstAnnotation.where != null) {
           final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
           final pair = offlineFirstAnnotation.where.entries.first;
-          final instanceWithField =
-              wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
+          final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
           return '$instanceWithField?.map((s) $awaited.${pair.key})';
         }
 
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
         return '''await Future.wait<Map<String, dynamic>>(
-          instance.${field.name}?.map((s) $awaited =>
+          $fieldValue?.map((s) $awaited =>
             ${checker.unFuturedArgType}Adapter().toRest($awaitedValue)
           )?.toList() ?? []
         )''';
       }
 
-      return 'instance.${field.name}';
+      return '$fieldValue';
 
       // OfflineFirstModel, Future<OfflineFirstModel>
     } else if (checker.isSibling) {
-      final wrappedField =
-          wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
       if (offlineFirstAnnotation.where != null) {
         final pair = offlineFirstAnnotation.where.entries.first;
         return '$wrappedField?.${pair.key}';
@@ -103,16 +102,16 @@ class RestSerialize extends OfflineFirstSerdesGenerator<Rest> {
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "instance.${field.name}?.toString()?.split('.')?.last";
+        return "$fieldValue?.toString()?.split('.')?.last";
       } else {
-        return 'instance.${field.name} != null ? ${field.type}.values.indexOf(instance.${field.name}) : null';
+        return '$fieldValue != null ? ${field.type}.values.indexOf($fieldValue) : null';
       }
 
       // serializable non-adapter OfflineFirstModel
     } else if (checker.hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        return 'instance.${field.name}?.$serializeMethod()';
+        return '$fieldValue?.$serializeMethod()';
       }
     }
 

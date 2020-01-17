@@ -39,18 +39,18 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
 
   @override
   String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
-    final name = providerNameForField(fieldAnnotation.name, checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
 
     // DateTime
     if (checker.isDateTime) {
-      return "data['$name'] == null ? null : DateTime.tryParse(data['$name']$defaultValue as String)";
+      return "$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)";
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return "data['$name'] as ${field.type}$defaultValue";
+      return "$fieldValue as ${field.type}$defaultValue";
 
       // Iterable
     } else if (checker.isIterable) {
@@ -79,7 +79,7 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
           } else {
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where, iterableArgument: 's');
-            final getAssociations = '''(data['$name'] ?? []).map((s) => repository
+            final getAssociations = '''($fieldValue ?? []).map((s) => repository
               ?.getAssociation<$argType>(Query(where: $where))
               ?.then((a) => a?.isNotEmpty == true ? a.first : null)
             )$fromRestCast''';
@@ -97,7 +97,7 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
         }
 
         var deserializeMethod = '''
-          data['$name']?.map((d) =>
+          $fieldValue?.map((d) =>
             ${argType}Adapter().fromRest(d, provider: provider, repository: repository)
           )$fromRestCast
         ''';
@@ -118,12 +118,12 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return '''data['$name'].map((value) =>
+          return '''$fieldValue.map((value) =>
               $argType.values.firstWhere((e) => e.toString().split('.').last == value, orElse: () => null)
             )$castIterable$defaultValue
           ''';
         } else {
-          return "data['$name'].map((e) => $argType.values.indexOf(e))$castIterable$defaultValue";
+          return "$fieldValue.map((e) => $argType.values.indexOf(e))$castIterable$defaultValue";
         }
       }
 
@@ -132,23 +132,23 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
           final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
-          return "data['$name'].map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue";
+          return "$fieldValue.map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue";
         }
       }
 
       // List
       if (checker.isList) {
         final addon = fieldAnnotation.defaultValue ?? 'List<${checker.argType}>()';
-        return "data['$name']$castIterable ?? $addon";
+        return "$fieldValue$castIterable ?? $addon";
 
         // Set
       } else if (checker.isSet) {
         final addon = fieldAnnotation.defaultValue ?? 'Set<${checker.argType}>()';
-        return "data['$name']$castIterable ?? $addon";
+        return "$fieldValue$castIterable ?? $addon";
 
         // other Iterable
       } else {
-        return "data['$name']$castIterable$defaultValue";
+        return "$fieldValue$castIterable$defaultValue";
       }
 
       // OfflineFirstModel
@@ -162,27 +162,27 @@ class RestDeserialize extends OfflineFirstSerdesGenerator<Rest> {
           ?.getAssociation<$type>(Query(where: $where, params: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null)''';
       } else {
         return '''$shouldAwait${checker.unFuturedType}Adapter().fromRest(
-          data['$name'], provider: provider, repository: repository
+          $fieldValue, provider: provider, repository: repository
         )''';
       }
 
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "${field.type}.values.firstWhere((h) => h.toString().split('.').last == data['$name'], orElse: () => null)$defaultValue";
+        return "${field.type}.values.firstWhere((h) => h.toString().split('.').last == $fieldValue, orElse: () => null)$defaultValue";
       } else {
-        return "data['$name'] is int ? ${field.type}.values[data['$name'] as int] : null$defaultValue";
+        return "$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue";
       }
 
       // Map
     } else if (checker.isMap) {
-      return "data['$name']$defaultValue";
+      return "$fieldValue$defaultValue";
 
       // serializable non-adapter OfflineFirstModel, OfflineFirstSerdes
     } else if (checker.hasSerdes) {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
-        return "${field.type}.$constructorName(data['$name'])";
+        return "${field.type}.$constructorName($fieldValue)";
       }
     }
 

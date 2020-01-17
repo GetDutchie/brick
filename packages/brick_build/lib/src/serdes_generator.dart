@@ -47,6 +47,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   bool get doesDeserialize => true;
 
   /// Mash the [element]'s fields into a list for serialization or deserialization
+  @visibleForTesting
+  @visibleForOverriding
   String get fieldsForGenerator {
     return fields.stableInstanceFields.fold<List<String>>(<String>[], (acc, field) {
       final fieldAnnotation = fields.annotationForField(field);
@@ -120,15 +122,16 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   ///
   /// Private fields, methods, static members, and computed setters are automatically ignored.
   /// See [FieldsForClass#stableInstanceFields].
+  @visibleForOverriding
   String addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
     var wrappedInFuture = false;
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
-    final isFuture = SharedChecker(field.type).isFuture;
+    final futureChecker = SharedChecker(field.type);
     var checker = checkerForField(field, type: field.type);
-    if (isFuture) {
+    if (futureChecker.isFuture) {
       wrappedInFuture = true;
-      checker = checkerForField(field, type: checker.argType);
+      checker = checkerForField(field, type: futureChecker.argType);
     }
 
     if ((isComputedGetter && doesDeserialize) ||
@@ -154,7 +157,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     final contents = expandGenerator(fieldAnnotation, field: field, checker: checker) ?? coder;
 
     if (contents != null) {
-      final name = providerNameForField(fieldAnnotation.name, checker);
+      final name = providerNameForField(fieldAnnotation.name, checker: checker);
       if (doesDeserialize) {
         final deserializerNullability =
             fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
@@ -168,7 +171,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   /// Return a `SharedChecker` for a field.
-  /// If the field is a future type, returns a checker of the arg type.
+  /// If the field is a future type, a checker of the Future's arg type **must be returned**.
   /// If including a custom checker in your domain, overwrite this field
   SharedChecker checkerForField(FieldElement field, {DartType type}) {
     final checker = SharedChecker(type ?? field.type);
@@ -180,6 +183,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   /// Produces serializing or deserializing method given a field and checker.
+  ///
+  /// The assignment (`data['my_field']: ` in serializers or `myField: ` in deserializers)
+  /// is automatically injected by the superclass and should not be included in the
+  /// output of the coder.
   ///
   /// To simplify checking, `Future`s are unwrapped before they get to this method.
   /// If the type was originally a future, `wrappedInFuture` is `true`.
@@ -207,7 +214,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     FieldElement field,
     _CustomChecker checker,
   }) {
-    final name = providerNameForField(annotation.name, checker);
+    final name = providerNameForField(annotation.name, checker: checker);
 
     if (doesDeserialize && annotation.fromGenerator != null) {
       return digestPlaceholders(annotation.fromGenerator, name, field.name);
@@ -235,8 +242,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   /// Forwards arguments to `coderForField`.
-  /// Implementations may elect to add extra values to coder with field, such
-  /// as annotations that synthesize two providers.
+  /// For implementations that elect to add extra values to coder with field, such
+  /// as annotations that synthesize two providers, override this method.
   String generateCoder(
     FieldElement field,
     _CustomChecker checker, {
@@ -267,7 +274,20 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal
   /// the field's purpose.
   @protected
-  String providerNameForField(String annotatedName, [_CustomChecker checker]) => annotatedName;
+  String providerNameForField(String annotatedName, {_CustomChecker checker}) => annotatedName;
+
+  /// The field's value when used by the generator.
+  /// For example, `data['my_field']` when used by a deserializing generator
+  /// or `instance.myField` when used by a serializing generator
+  @protected
+  String serdesValueForField(FieldElement field, String annotatedName, {_CustomChecker checker}) {
+    if (doesDeserialize) {
+      final name = providerNameForField(annotatedName, checker: checker);
+      return "data['$name']";
+    }
+
+    return "instance.${field.name}";
+  }
 
   /// If the annotation includes a [defaultValue], use it when the received value is null
   static String defaultValueSuffix(FieldSerializable fieldAnnotation) {

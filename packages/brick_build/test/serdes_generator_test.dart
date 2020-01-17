@@ -33,7 +33,8 @@ class CustomSerdes extends SerdesGenerator<Rest, SharedChecker> {
   final providerName = 'CustomSerdes';
   final repositoryName = 'Some';
   String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) {
-    return "${field.name}: '${field.type.getDisplayString()}'";
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    return "$fieldValue as ${field.type}";
   }
 }
 
@@ -80,7 +81,7 @@ void main() {
 
     test('fieldsForGenerator', () {
       expect(defaults.fieldsForGenerator, isEmpty);
-      expect(custom.fieldsForGenerator, "someField: 'int'");
+      expect(custom.fieldsForGenerator, "'some_field': instance.someField as int");
     });
 
     test('generateSuffix', () {
@@ -129,7 +130,7 @@ Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
       final customOutput = r'''
 Future<Bar> unspecificPublicMethod(Map,
     {provider, SomeRepository repository}) async {
-  return {someField: 'int'}..nullableField = true;
+  return {'some_field': instance.someField as int}..nullableField = true;
 }
 ''';
       expect(defaults.generate(), defaultOutput);

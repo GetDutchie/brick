@@ -39,7 +39,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
     for (var field in unignoredFields) {
       final annotation = fields.annotationForField(field);
       final checker = checkerForField(field);
-      final columnName = providerNameForField(annotation.name, checker);
+      final columnName = providerNameForField(annotation.name, checker: checker);
       final columnInsertionType = _finalTypeForField(field.type);
 
       // T0D0 support List<Future<Sibling>> for 'association'
@@ -51,7 +51,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
             'association': ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
           }''');
       if (annotation.unique) {
-        uniqueFields[field.name] = providerNameForField(annotation.name, checker);
+        uniqueFields[field.name] = providerNameForField(annotation.name, checker: checker);
       }
     }
 
@@ -66,7 +66,8 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
   @override
   String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
-    final name = providerNameForField(fieldAnnotation.name, checker);
+    final name = providerNameForField(fieldAnnotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
         'Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key',
@@ -77,11 +78,11 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
     // DateTime
     if (checker.isDateTime) {
-      return 'instance.${field.name}?.toIso8601String()';
+      return '$fieldValue?.toIso8601String()';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return 'instance.${field.name}';
+      return '$fieldValue';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -91,7 +92,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
         // Iterable<Future<OfflineFirstModel>>
         if (argTypeChecker.isFuture) {
           return '''jsonEncode(
-            (await Future.wait<int>(instance.${field.name}
+            (await Future.wait<int>($fieldValue
               ?.map(
                 (s) async => (await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)
               )
@@ -103,8 +104,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
           // Iterable<OfflineFirstModel>
         } else {
-          final instanceAndField =
-              wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
+          final instanceAndField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
 
           return '''jsonEncode(
             (await Future.wait<int>($instanceAndField
@@ -125,7 +125,7 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
         if (_hasSerializer) {
           final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
           return '''
-            jsonEncode(instance.${field.name}?.map(
+            jsonEncode($fieldValue?.map(
               (${checker.unFuturedArgType} c) => c?.$serializeMethod()
             )?.toList()?.cast<$serializableType>() ?? [])
           ''';
@@ -134,12 +134,12 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode(instance.${field.name}?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
+        return 'jsonEncode($fieldValue?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
       }
 
       // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        return 'jsonEncode(instance.${field.name} ?? [])';
+        return 'jsonEncode($fieldValue ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -148,30 +148,29 @@ class SqliteSerialize extends OfflineFirstSerdesGenerator<Sqlite> {
         final futureChecker = OfflineFirstChecker(argTypeChecker.argType);
 
         if (futureChecker.isSerializable) {
-          return 'jsonEncode(await Future.wait<${argTypeChecker.argType}>(instance.${field.name}) ?? [])';
+          return 'jsonEncode(await Future.wait<${argTypeChecker.argType}>($fieldValue) ?? [])';
         }
       }
 
       // OfflineFirstModel, Future<OfflineFirstModel>
     } else if (checker.isSibling) {
-      final instance =
-          wrappedInFuture ? '(await instance.${field.name})' : 'instance.${field.name}';
+      final instance = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
       return '$instance?.${InsertTable.PRIMARY_KEY_FIELD}';
 
       // enum
     } else if (checker.isEnum) {
-      return '${field.type}.values.indexOf(instance.${field.name})';
+      return '${field.type}.values.indexOf($fieldValue)';
 
       // serializable non-adapter OfflineFirstModel, OfflineFirstSerdes
     } else if (checker.hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        return 'instance.${field.name}?.$serializeMethod()';
+        return '$fieldValue?.$serializeMethod()';
       }
 
       // Map
     } else if (checker.isMap) {
-      return 'jsonEncode(instance.${field.name} ?? {})';
+      return 'jsonEncode($fieldValue ?? {})';
     }
 
     return null;

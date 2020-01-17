@@ -62,7 +62,7 @@ abstract class OfflineFirstSerdesGenerator<_FieldAnnotation extends FieldSeriali
   /// Generate foreign key column if the type is a sibling;
   /// otherwise, return the field's annotated name;
   @override
-  String providerNameForField(annotatedName, [checker]) {
+  String providerNameForField(annotatedName, {checker}) {
     if (checker.isSibling && providerName == SQLITE_PROVIDER_NAME) {
       return InsertForeignKey.foreignKeyColumnName(
           checker.unFuturedType.getDisplayString(), annotatedName);
