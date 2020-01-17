@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.0.3+1
+
+* Moves generator placeholders to `FieldSerializable` form `OfflineFirst`
+* Removes query validation that ensures all Where conditions have a non-null value
+
 ## 0.0.3
 
 * Add `And` and `Or` `Where` subclasses

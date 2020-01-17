@@ -111,29 +111,4 @@ void main() {
       });
     });
   });
-
-  group("WherePhrase", () {
-    test(".validateValuePresenceRecursively", () {
-      final badWhere = Where('id');
-      expect(WherePhrase.validateValuePresenceRecursively(badWhere), isFalse);
-
-      final badWherePhrase = WherePhrase([badWhere]);
-      expect(WherePhrase.validateValuePresenceRecursively(badWherePhrase), isFalse);
-
-      final badWhereNestedPhrase = WherePhrase([badWherePhrase]);
-      expect(WherePhrase.validateValuePresenceRecursively(badWhereNestedPhrase), isFalse);
-
-      final goodWhere = Where('id', value: 1);
-      expect(WherePhrase.validateValuePresenceRecursively(goodWhere), isTrue);
-
-      final goodWherePhrase = WherePhrase([goodWhere]);
-      expect(WherePhrase.validateValuePresenceRecursively(goodWherePhrase), isTrue);
-
-      final goodWhereNestedPhrase = WherePhrase([goodWherePhrase]);
-      expect(WherePhrase.validateValuePresenceRecursively(goodWhereNestedPhrase), isTrue);
-
-      final mixedPhrase = WherePhrase([goodWhere, badWhere]);
-      expect(WherePhrase.validateValuePresenceRecursively(mixedPhrase), isFalse);
-    });
-  });
 }

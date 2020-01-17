@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:brick_build/src/annotation_super_generator.dart';
 import 'package:path/path.dart' as p;
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
@@ -8,9 +7,8 @@ export 'package:brick_build/src/annotation_super_generator.dart';
 
 final brickLogger = Logger('Brick');
 
-abstract class BaseBuilder implements Builder {
-  /// The generator used to discover annotated classes
-  final AnnotationSuperGenerator generator;
+abstract class BaseBuilder<_ClassAnnotation> implements Builder {
+  final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
 
   Logger get logger => brickLogger;
 
@@ -22,14 +20,12 @@ abstract class BaseBuilder implements Builder {
         '$aggregateExtension.dart': ['${BaseBuilder.aggregateExtension}$outputExtension']
       };
 
-  BaseBuilder(this.generator);
-
   static const aggregateExtension = '.brick_aggregate';
 
   /// Classes with the class-level annotation. For example, `ConnectOfflineFirstWithRest`.
   Future<Iterable<AnnotatedElement>> getAnnotatedElements(BuildStep buildStep) async {
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
-    return libraryReader.annotatedWith(generator.typeChecker);
+    return libraryReader.annotatedWith(typeChecker);
   }
 
   /// Replace contents of file

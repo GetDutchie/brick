@@ -223,18 +223,6 @@ class WherePhrase extends WhereCondition {
     this.conditions, {
     bool required,
   }) : this.required = required ?? false;
-
-  /// Ensure that all nested conditions have a value
-  static bool validateValuePresenceRecursively(WhereCondition condition) {
-    if (condition.runtimeType == WherePhrase) {
-      return condition.conditions.fold<bool>(true, (isValid, c) {
-        if (!isValid) return false;
-        return validateValuePresenceRecursively(c);
-      });
-    }
-
-    return condition.value != null;
-  }
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

@@ -3,11 +3,11 @@ import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
 
 /// Write a [Schema] from existing migrations. Outputs to app/db/schema.g.dart
-class SchemaBuilder extends SqliteBaseBuilder {
+class SchemaBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation> {
   @override
   final outputExtension = '.schema_builder.dart';
 
-  SchemaBuilder(AnnotationSuperGenerator generator) : super(generator);
+  SchemaBuilder();
 
   @override
   Future<void> build(BuildStep buildStep) async {
