@@ -1,17 +1,19 @@
-name: brick_build
-description: Code generation library and interface for Brick components
-homepage: https://github.com/greenbits/brick/tree/master/packages/brick_build
+name: brick_sqlite_build
+description: Code generation library for the SQLite system
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite_build
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.3
+version: 0.0.1
 
 environment:
   sdk: '>=2.4.0 <3.0.0'
 
 dependencies:
   analyzer: ^0.39.0
-  brick_core: ^0.0.3
+  brick_build:
+    path: ../brick_build
+  brick_sqlite_abstract: ^0.0.2
   build: ^1.2.0
   build_config: ^0.4.0
   dart_style: ^1.2.4
