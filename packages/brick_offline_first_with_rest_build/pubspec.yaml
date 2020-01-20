@@ -1,4 +1,4 @@
-name: brick_offline_first_build
+name: brick_offline_first_with_rest_build
 description: Code generation library for the Brick Offline First Domain
 homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_first_build
 issue_tracker: https://github.com/greenbits/brick/issues

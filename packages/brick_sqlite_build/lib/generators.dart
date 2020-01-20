@@ -3,3 +3,4 @@ export 'package:brick_sqlite_build/src/sqlite_schema/sqlite_schema_generator.dar
 
 export 'package:brick_sqlite_build/src/sqlite_deserialize.dart';
 export 'package:brick_sqlite_build/src/sqlite_serialize.dart';
+export 'package:brick_sqlite_build/src/sqlite_fields.dart';

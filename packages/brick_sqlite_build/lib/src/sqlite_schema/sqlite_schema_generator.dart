@@ -1,6 +1,10 @@
-import 'package:brick_sqlite_build/src/sqlite_checker.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
+import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:brick_sqlite_build/src/sqlite_schema/migration_generator.dart';
 import 'package:brick_sqlite_build/src/sqlite_fields.dart';
+import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:brick_sqlite_abstract/db.dart'
@@ -83,61 +87,56 @@ class SqliteSchemaGenerator {
   }
 
   Iterable<SchemaColumn> _createColumns(SqliteFields fields) {
-    return fields.stableInstanceFields.map((field) {
-      var checker = SqliteChecker(field.type);
-      final column = fields.finder.annotationForField(field);
-      final columnName = column.name;
-      if (checker.isFuture) {
-        checker = SqliteChecker(checker.argType);
-      }
+    return fields.stableInstanceFields
+        .map((field) => columnForField(field, fields.finder.annotationForField(field)));
+  }
 
-      if (column.ignore || !checker.isSerializable) {
-        return null;
-      }
+  @visibleForOverriding
+  @mustCallSuper
+  SchemaColumn columnForField(FieldElement field, Sqlite column) {
+    var checker = SharedChecker<SqliteModel>(field.type);
+    final columnName = column.name;
+    if (checker.isFuture) {
+      checker = SharedChecker<SqliteModel>(checker.argType);
+    }
 
-      if (checker.isDartCoreType) {
-        return SchemaColumn(
-          columnName,
-          checker.asPrimitive,
-          nullable: column?.nullable,
-          unique: column?.unique,
-        );
-      } else if (checker.isEnum) {
-        return SchemaColumn(
-          columnName,
-          int,
-          nullable: column?.nullable,
-          unique: column?.unique,
-        );
-      } else if (checker.isSibling) {
-        return SchemaColumn(
-          InsertForeignKey.foreignKeyColumnName(
-              checker.unFuturedType.getDisplayString(), column.name),
-          int,
-          isForeignKey: true,
-          foreignTableName: checker.unFuturedType.getDisplayString(),
-          nullable: column?.nullable,
-        );
-      } else if (checker.hasSerdes) {
-        final sqliteType = checker.superClassTypeArgs.last;
-        final sqliteChecker = SqliteChecker(sqliteType);
-        return SchemaColumn(
-          columnName,
-          sqliteChecker.asPrimitive,
-          nullable: column?.nullable,
-          unique: column?.unique,
-        );
-      } else if (checker.isMap || checker.isIterable) {
-        // Iterables and Maps are stored as JSON
-        return SchemaColumn(
-          columnName,
-          String,
-          nullable: column?.nullable,
-          unique: column?.unique,
-        );
-      }
-
+    if (column.ignore || !checker.isSerializable) {
       return null;
-    });
+    }
+
+    if (checker.isDartCoreType) {
+      return SchemaColumn(
+        columnName,
+        checker.asPrimitive,
+        nullable: column?.nullable,
+        unique: column?.unique,
+      );
+    } else if (checker.isEnum) {
+      return SchemaColumn(
+        columnName,
+        int,
+        nullable: column?.nullable,
+        unique: column?.unique,
+      );
+    } else if (checker.isSibling) {
+      return SchemaColumn(
+        InsertForeignKey.foreignKeyColumnName(
+            checker.unFuturedType.getDisplayString(), column.name),
+        int,
+        isForeignKey: true,
+        foreignTableName: checker.unFuturedType.getDisplayString(),
+        nullable: column?.nullable,
+      );
+    } else if (checker.isMap || checker.isIterable) {
+      // Iterables and Maps are stored as JSON
+      return SchemaColumn(
+        columnName,
+        String,
+        nullable: column?.nullable,
+        unique: column?.unique,
+      );
+    }
+
+    return null;
   }
 }

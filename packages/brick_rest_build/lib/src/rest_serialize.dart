@@ -1,10 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_build/src/rest_fields.dart';
 import 'package:brick_rest_build/src/rest_serdes_generator.dart';
 
 /// Generate a function to produce a [ClassElement] to REST data
-class RestSerialize extends RestSerdesGenerator {
+class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model> {
   RestSerialize(
     ClassElement element,
     RestFields fields, {
@@ -30,14 +31,9 @@ class RestSerialize extends RestSerdesGenerator {
     return ['final String toKey = $toKey;'];
   }
 
-  @override
-  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;
-
-    if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where.length > 1) {
-      return null;
-    }
 
     // DateTime
     if (checker.isDateTime) {
@@ -49,7 +45,7 @@ class RestSerialize extends RestSerdesGenerator {
 
       // Iterable
     } else if (checker.isIterable) {
-      final argTypeChecker = SharedChecker(checker.argType);
+      final argTypeChecker = checkerForField(field, type: checker.argType);
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
@@ -59,6 +55,25 @@ class RestSerialize extends RestSerdesGenerator {
           return '$fieldValue?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))';
         }
       }
+
+      // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
+      if (checker.isArgTypeASibling) {
+        final awaited = checker.isArgTypeAFuture ? 'async' : '';
+        final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
+        return '''await Future.wait<Map<String, dynamic>>(
+          $fieldValue?.map((s) $awaited =>
+            ${checker.unFuturedArgType}Adapter().toRest($awaitedValue)
+          )?.toList() ?? []
+        )''';
+      }
+
+      return '$fieldValue';
+
+      // OfflineFirstModel, Future<OfflineFirstModel>
+    } else if (checker.isSibling) {
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+
+      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField ?? {})';
 
       // enum
     } else if (checker.isEnum) {

@@ -1,22 +1,19 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
 import 'package:analyzer/dart/element/type.dart' show DartType;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_build/src/sqlite_serdes_generator.dart';
 
 import 'sqlite_fields.dart';
-import 'sqlite_checker.dart';
 
 /// Generate a function to produce a [ClassElement] to SQLite data
-class SqliteSerialize extends SqliteSerdesGenerator {
+class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
   SqliteSerialize(
     ClassElement element,
     SqliteFields fields, {
     String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
-
-  @override
-  final providerName = SqliteSerdesGenerator.SQLITE_PROVIDER_NAME;
 
   @override
   final doesDeserialize = false;
@@ -64,7 +61,7 @@ class SqliteSerialize extends SqliteSerdesGenerator {
   }
 
   @override
-  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
@@ -85,7 +82,7 @@ class SqliteSerialize extends SqliteSerdesGenerator {
 
       // Iterable
     } else if (checker.isIterable) {
-      final argTypeChecker = SqliteChecker(checker.argType);
+      final argTypeChecker = checkerForField(field, type: checker.argType);
 
       if (checker.isArgTypeASibling) {
         // Iterable<Future<SqliteModel>>
@@ -131,7 +128,7 @@ class SqliteSerialize extends SqliteSerdesGenerator {
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
       if (argTypeChecker.isFuture) {
-        final futureChecker = SqliteChecker(argTypeChecker.argType);
+        final futureChecker = checkerForField(field, type: argTypeChecker.argType);
 
         if (futureChecker.isSerializable) {
           return 'jsonEncode(await Future.wait<${argTypeChecker.argType}>($fieldValue) ?? [])';
@@ -187,7 +184,7 @@ class SqliteSerialize extends SqliteSerdesGenerator {
   }
 
   String _finalTypeForField(DartType type) {
-    final checker = SqliteChecker(type);
+    final checker = checkerForField(null, type: type);
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
       return _finalTypeForField(checker.argType);

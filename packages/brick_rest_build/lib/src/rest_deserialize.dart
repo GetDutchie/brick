@@ -36,7 +36,7 @@ class RestDeserialize extends RestSerdesGenerator {
   }
 
   @override
-  String coderForField(field, checker, {offlineFirstAnnotation, wrappedInFuture, fieldAnnotation}) {
+  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
@@ -53,11 +53,35 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable
     } else if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
-      final argTypeChecker = SharedChecker(checker.argType);
+      final argTypeChecker = checkerForField(field, type: checker.argType);
       final castIterable = SerdesGenerator.iterableCast(argType,
           isSet: checker.isSet,
           isList: checker.isList,
           isFuture: wrappedInFuture || checker.isFuture);
+
+      // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
+      if (checker.isArgTypeASibling) {
+        final fromRestCast = SerdesGenerator.iterableCast(argType,
+            isSet: checker.isSet, isList: checker.isList, isFuture: true);
+
+        var deserializeMethod = '''
+          $fieldValue?.map((d) =>
+            ${argType}Adapter().fromRest(d, provider: provider, repository: repository)
+          )$fromRestCast
+        ''';
+
+        if (wrappedInFuture) {
+          deserializeMethod = 'Future.wait<$argType>($deserializeMethod ?? [])';
+        } else if (!checker.isArgTypeAFuture && !checker.isFuture) {
+          deserializeMethod = 'await Future.wait<$argType>($deserializeMethod ?? [])';
+        }
+
+        if (checker.isSet) {
+          return '($deserializeMethod$defaultValue)?.toSet()';
+        }
+
+        return '$deserializeMethod$defaultValue';
+      }
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
@@ -85,6 +109,14 @@ class RestDeserialize extends RestSerdesGenerator {
       } else {
         return "$fieldValue$castIterable$defaultValue";
       }
+
+      // OfflineFirstModel
+    } else if (checker.isSibling) {
+      final shouldAwait = wrappedInFuture ? '' : 'await ';
+
+      return '''$shouldAwait${checker.unFuturedType}Adapter().fromRest(
+          $fieldValue, provider: provider, repository: repository
+        )''';
 
       // enum
     } else if (checker.isEnum) {

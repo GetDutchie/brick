@@ -1,10 +1,9 @@
 import 'package:brick_build/src/builders/adapter_builder.dart';
 import 'package:brick_build/src/builders/aggregate_builder.dart';
 import 'package:brick_build/src/builders/model_dictionary_builder.dart';
-import 'package:brick_sqlite_build/src/builders/new_migration_builder.dart';
-import 'package:brick_sqlite_build/src/builders/sqlite_schema_builder.dart';
-import 'package:brick_offline_first_build/src/offline_first_generator.dart';
-import 'package:brick_offline_first_build/src/offline_first_model_dictionary_generator.dart';
+import 'package:brick_offline_first_with_rest_build/src/sqlite_builders.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_model_dictionary_generator.dart';
 import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
 import 'package:build/build.dart';
 
@@ -30,6 +29,5 @@ Builder offlineFirstModelDictionaryBuilder(options) =>
         'import "package:brick_offline_first/offline_first.dart";',
       ],
     );
-Builder offlineFirstNewMigrationBuilder(options) =>
-    NewMigrationBuilder<ConnectOfflineFirstWithRest>();
-Builder offlineFirstSchemaBuilder(options) => SchemaBuilder<ConnectOfflineFirstWithRest>();
+Builder offlineFirstNewMigrationBuilder(options) => OfflineFirstMigrationBuilder();
+Builder offlineFirstSchemaBuilder(options) => OfflineFirstSchemaBuilder();
