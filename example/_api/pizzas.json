@@ -1,0 +1,13 @@
+{
+  "pizzas": [
+    {
+      "id": 1,
+      "customer_id": 1,
+      "frozen": false,
+      "toppings": [
+        "pepperoni",
+        "olives"
+      ]
+    }
+  ]
+}
