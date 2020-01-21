@@ -152,7 +152,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       );
     }
 
-    final coder = generateCoder(
+    final coder = coderForField(
       field,
       checker,
       fieldAnnotation: fieldAnnotation,
@@ -236,22 +236,6 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
     return _formatter.format(output);
   }
-
-  /// Forwards arguments to `coderForField`.
-  /// For implementations that elect to add extra values to coder with field, such
-  /// as annotations that synthesize two providers, override this method.
-  String generateCoder(
-    FieldElement field,
-    SharedChecker checker, {
-    _FieldAnnotation fieldAnnotation,
-    bool wrappedInFuture,
-  }) =>
-      coderForField(
-        field,
-        checker,
-        fieldAnnotation: fieldAnnotation,
-        wrappedInFuture: wrappedInFuture,
-      );
 
   /// If this element possesses a factory such as `fromRest`
   @protected
