@@ -112,7 +112,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   Iterable<FieldElement> get unignoredFields {
     return fields.stableInstanceFields.where((field) {
       final annotation = fields.annotationForField(field);
-      final checker = checkerForField(field);
+      final checker = checkerForType(field.type);
 
       return !annotation.ignore && checker.isSerializable;
     });
@@ -132,10 +132,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     final futureChecker = SharedChecker(field.type);
-    var checker = checkerForField(field, type: field.type);
+    var checker = checkerForType(field.type);
     if (futureChecker.isFuture) {
       wrappedInFuture = true;
-      checker = checkerForField(field, type: futureChecker.argType);
+      checker = checkerForType(futureChecker.argType);
     }
 
     if ((isComputedGetter && doesDeserialize) ||
@@ -177,10 +177,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Return a `SharedChecker` for a field.
   /// If the field is a future type, a checker of the Future's arg type **must be returned**.
   /// If including a custom checker in your domain, overwrite this field
-  SharedChecker checkerForField(FieldElement field, {DartType type}) {
-    final checker = SharedChecker(type ?? field.type);
+  SharedChecker checkerForType(DartType type) {
+    final checker = SharedChecker(type);
     if (checker.isFuture) {
-      return checkerForField(field, type: checker.argType);
+      return checkerForType(type);
     }
 
     return checker;

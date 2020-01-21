@@ -192,6 +192,7 @@ Future<void> generateExpectation(String filename, String output,
     {OfflineFirstGenerator generator}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, null);
+  print(generated);
   expect(generated.trim(), output.trim());
 }
 

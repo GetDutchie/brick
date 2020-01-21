@@ -15,7 +15,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
+  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
@@ -28,7 +28,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 
     if (checker.isIterable) {
-      final argTypeChecker = checkerForField(field, type: checker.argType);
+      final argTypeChecker = checkerForType(checker.argType);
       if (checker.isArgTypeASibling && offlineFirstAnnotation.where != null) {
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where.entries.first;
@@ -74,7 +74,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
+  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {

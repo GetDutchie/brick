@@ -12,14 +12,14 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
       : super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
+  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 
     if (checker.isIterable) {
-      final argTypeChecker = checkerForField(field, type: checker.argType);
+      final argTypeChecker = checkerForType(checker.argType);
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
@@ -53,7 +53,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       : super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
+  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {

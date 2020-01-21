@@ -44,7 +44,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // Iterable
     } else if (checker.isIterable) {
-      final argTypeChecker = checkerForField(field, type: checker.argType);
+      final argTypeChecker = checkerForType(checker.argType);
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {

@@ -34,7 +34,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     for (var field in unignoredFields) {
       final annotation = fields.annotationForField(field);
-      final checker = checkerForField(field);
+      final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
       final columnInsertionType = _finalTypeForField(field.type);
 
@@ -82,7 +82,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable
     } else if (checker.isIterable) {
-      final argTypeChecker = checkerForField(field, type: checker.argType);
+      final argTypeChecker = checkerForType(checker.argType);
 
       if (checker.isArgTypeASibling) {
         // Iterable<Future<SqliteModel>>
@@ -127,11 +127,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
-      if (argTypeChecker.isFuture) {
-        final futureChecker = checkerForField(field, type: argTypeChecker.argType);
-
-        if (futureChecker.isSerializable) {
-          return 'jsonEncode(await Future.wait<${argTypeChecker.argType}>($fieldValue) ?? [])';
+      if (checker.isArgTypeAFuture) {
+        if (argTypeChecker.isSerializable) {
+          return 'jsonEncode(await Future.wait<${argTypeChecker.unFuturedArgType}>($fieldValue) ?? [])';
         }
       }
 
@@ -184,7 +182,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   String _finalTypeForField(DartType type) {
-    final checker = checkerForField(null, type: type);
+    final checker = checkerForType(type);
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
       return _finalTypeForField(checker.argType);

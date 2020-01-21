@@ -53,7 +53,7 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable
     } else if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
-      final argTypeChecker = checkerForField(field, type: checker.argType);
+      final argTypeChecker = checkerForType(checker.argType);
       final castIterable = SerdesGenerator.iterableCast(argType,
           isSet: checker.isSet,
           isList: checker.isList,
