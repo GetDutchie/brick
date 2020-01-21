@@ -14,8 +14,8 @@ dependencies:
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
-  brick_build:
-    path: ../packages/brick_build
+  brick_offline_first_with_rest_build:
+    path: ../packages/brick_offline_first_with_rest_build
   build_runner: any
   shelf: any
 

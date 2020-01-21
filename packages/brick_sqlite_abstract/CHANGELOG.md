@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.4
+
 * `Sqlite#defaultValue` updated to reflect `FieldSerializable#defaultValue` change
 
 ## 0.0.2
