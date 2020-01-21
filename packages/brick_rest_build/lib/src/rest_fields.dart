@@ -44,7 +44,7 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
     }
 
     return Rest(
-      defaultValue: valueForDynamicField('defaultValue', element),
+      defaultValue: obj.getField('defaultValue').toStringValue(),
       enumAsString: obj.getField('enumAsString').toBoolValue() ?? Rest.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Rest.defaults.ignore,

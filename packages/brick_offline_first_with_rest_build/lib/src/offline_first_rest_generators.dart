@@ -24,6 +24,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       return null;
     }
 
+    if (fieldAnnotation.ignoreTo) return null;
+
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 
     if (checker.isIterable) {
@@ -80,6 +82,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
+
+    if (fieldAnnotation.ignoreFrom) return null;
 
     // Iterable
     if (checker.isIterable) {

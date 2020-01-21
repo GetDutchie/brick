@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
@@ -87,33 +87,35 @@ class SqliteSchemaGenerator {
   }
 
   Iterable<SchemaColumn> _createColumns(SqliteFields fields) {
-    return fields.stableInstanceFields
-        .map((field) => columnForField(field, fields.finder.annotationForField(field)));
+    return fields.stableInstanceFields.map((field) {
+      var checker = checkerForType(field.type);
+      if (checker.isFuture) {
+        checker = checkerForType(checker.argType);
+      }
+      final column = fields.finder.annotationForField(field);
+
+      if (column.ignore || !checker.isSerializable) return null;
+
+      return schemaColumn(column, checker: checker);
+    });
   }
 
   @visibleForOverriding
+  SharedChecker<SqliteModel> checkerForType(DartType type) => SharedChecker<SqliteModel>(type);
+
+  @visibleForOverriding
   @mustCallSuper
-  SchemaColumn columnForField(FieldElement field, Sqlite column) {
-    var checker = SharedChecker<SqliteModel>(field.type);
-    final columnName = column.name;
-    if (checker.isFuture) {
-      checker = SharedChecker<SqliteModel>(checker.argType);
-    }
-
-    if (column.ignore || !checker.isSerializable) {
-      return null;
-    }
-
+  SchemaColumn schemaColumn(Sqlite column, {SharedChecker checker}) {
     if (checker.isDartCoreType) {
       return SchemaColumn(
-        columnName,
+        column.name,
         checker.asPrimitive,
         nullable: column?.nullable,
         unique: column?.unique,
       );
     } else if (checker.isEnum) {
       return SchemaColumn(
-        columnName,
+        column.name,
         int,
         nullable: column?.nullable,
         unique: column?.unique,
@@ -130,7 +132,7 @@ class SqliteSchemaGenerator {
     } else if (checker.isMap || checker.isIterable) {
       // Iterables and Maps are stored as JSON
       return SchemaColumn(
-        columnName,
+        column.name,
         String,
         nullable: column?.nullable,
         unique: column?.unique,

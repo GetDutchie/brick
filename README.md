@@ -232,7 +232,7 @@ As providers are ultimately responsible for converting raw data into model data,
 |---|---|---|
 | `ignore:` | Do not deserialize (from) or serialize (to) this field to a provider | `@Rest(ignore: true)` |
 | `name:` | Stored key for this field according to the provider. In SQLite, for example, this would be the column name. | `@Sqlite(name: "address_2")` |
-| `defaultValue:` | Value to use in absence or `null` of the instance. This is only applied on transmission to and from the provider; it does not dictate what the Dart model will hold on empty instantiation. Note that while the annotation accepts a `dynamic` type, the accepted primitives vary by provider. | `@Rest(defaultValue: 1)` |
+| `defaultValue:` | Value to use in absence or `null` of the instance. It does not dictate what the Dart model will hold on empty instantiation. **Recommended to use Dart's default constructor assignment instead**. | `@Rest(defaultValue: '[]')` |
 | `nullable:` | `null` fields are handled gracefully when serializing and deserializing. | `@Rest(nullable: true)` |
 | `fromGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated deserialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Rest(fromGenerator: "int.tryParse(%DATA_PROPERTY%.toString())")` |
 | `toGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated serialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Sqlite(toGenerator: "%INSTANCE_PROPERTY% > 1 ? 1 : 0")` |

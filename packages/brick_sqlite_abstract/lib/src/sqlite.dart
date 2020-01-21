@@ -3,13 +3,8 @@ import 'package:brick_core/field_serializable.dart';
 /// An annotation used to specify how a field is serialized.
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
 class Sqlite implements FieldSerializable {
-  /// The value to use if the source does not contain this column or if the
-  /// value is `null`. **Only applicable during deserialization.**
-  ///
-  /// Must be a serializable primitive type: `bool`, `DateTime` `double`, `int`, or `String`.
-  /// [defaultValue] must also match the field's `Type`.
   @override
-  final dynamic defaultValue;
+  final String defaultValue;
 
   @override
   final String fromGenerator;

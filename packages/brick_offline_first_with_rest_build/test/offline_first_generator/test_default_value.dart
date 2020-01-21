@@ -31,7 +31,7 @@ class DefaultValue {
     this.string,
   });
 
-  @Rest(defaultValue: 'Thomas')
-  @Sqlite(defaultValue: 'Guy')
+  @Rest(defaultValue: '"Thomas"')
+  @Sqlite(defaultValue: '"Guy"')
   final String string;
 }

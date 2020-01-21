@@ -1,5 +1,7 @@
 ## Unreleased
 
+* `FieldSerializable#defaultValue` changes from `dynamic` to `String`. As this is injected directly into the adapter, it does not need to be dynamic and should better reflect its purpose.
+
 ## 0.0.3+1
 
 * Moves generator placeholders to `FieldSerializable` form `OfflineFirst`

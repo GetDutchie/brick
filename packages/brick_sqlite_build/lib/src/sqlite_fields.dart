@@ -26,7 +26,7 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
     }
 
     return Sqlite(
-      defaultValue: valueForDynamicField('defaultValue', element),
+      defaultValue: obj.getField('defaultValue').toStringValue(),
       fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,
       name: obj.getField('name').toStringValue() ?? StringHelpers.snakeCase(element.name),

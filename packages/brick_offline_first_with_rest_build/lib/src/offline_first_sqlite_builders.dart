@@ -3,6 +3,7 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite_build/builders.dart';
 import 'package:brick_sqlite_build/generators.dart';
 import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
+import 'package:meta/meta.dart';
 
 class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithRest> {
   final schemaGenerator = _schemaGenerator;
@@ -12,35 +13,27 @@ class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithRes
   final schemaGenerator = _schemaGenerator;
 }
 
-class _OfflineFirstSchemaGenerator extends SqliteSchemaGenerator {
+@visibleForTesting
+@protected
+class OfflineFirstSchemaGenerator extends SqliteSchemaGenerator {
   @override
-  columnForField(field, column) {
-    final result = super.columnForField(field, column);
-    if (result != null) return result;
+  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
-    var checker = OfflineFirstChecker(field.type);
-    final columnName = column.name;
-    if (checker.isFuture) {
-      checker = OfflineFirstChecker(checker.argType);
-    }
-
-    if (!checker.isSerializable) {
-      return null;
-    }
-
+  @override
+  SchemaColumn schemaColumn(column, {covariant OfflineFirstChecker checker}) {
     if (checker.hasSerdes) {
-      final sqliteType = checker.superClassTypeArgs.last;
-      final sqliteChecker = OfflineFirstChecker(sqliteType);
+      final sqliteSerializerType = checker.superClassTypeArgs[1];
+      final sqliteChecker = checkerForType(sqliteSerializerType);
       return SchemaColumn(
-        columnName,
+        column.name,
         sqliteChecker.asPrimitive,
         nullable: column?.nullable,
         unique: column?.unique,
       );
     }
 
-    return null;
+    return super.schemaColumn(column, checker: checker);
   }
 }
 
-final _schemaGenerator = _OfflineFirstSchemaGenerator();
+final _schemaGenerator = OfflineFirstSchemaGenerator();
