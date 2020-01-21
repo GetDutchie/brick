@@ -10,7 +10,7 @@ abstract class FileModel extends Model {
 
   Future<dynamic> get contents async {
     final contents = await asFile.readAsString();
-    if (contents.startsWith("{")) return jsonDecode(contents);
+    if (contents.startsWith('{')) return jsonDecode(contents);
     return contents;
   }
 
@@ -42,11 +42,11 @@ class FileProvider implements Provider<FileModel> {
     if (query.where != null) {
       final filePath = Where.firstByField('filePath', query.where)?.value;
 
-      final contents = await File("${adapter.directory}/$filePath.json").readAsString();
+      final contents = await File('${adapter.directory}/$filePath.json').readAsString();
       return [await adapter.fromFile(contents)];
     }
 
-    final files = Glob("${adapter.directory}/**.${adapter.fileExtension}");
+    final files = Glob('${adapter.directory}/**.${adapter.fileExtension}');
     return Future.wait<T>(files.listSync().map<Future<T>>((file) async {
       final contents = await File(file.path).readAsString();
       return await adapter.fromFile(contents);
@@ -66,9 +66,9 @@ abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
   /// Folder to store all of these
   String get directory;
 
-  String get fileExtension => ".json";
+  String get fileExtension => '.json';
 
-  String filePath(String fileName) => "$directory/$fileName$fileExtension";
+  String filePath(String fileName) => '$directory/$fileName$fileExtension';
 
   Future<FileModel> fromFile(
     String data, {
@@ -82,15 +82,17 @@ abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
   });
 }
 
-/// This is generated
+/// This is generated. As this is an example, `FileProvider` does not
+/// have a complimenting build system to generate this adapter. It was handwritten
+/// for this example.
 class UserAdapter extends FileAdapter<User> {
-  final directory = "users";
+  final directory = 'users';
 
   UserAdapter();
 
   Future<User> fromFile(input, {provider, repository}) async {
     final contents = jsonDecode(input);
-    return User(name: contents["name"]);
+    return User(name: contents['name']);
   }
 
   Future<String> toFile(instance, {provider, repository}) async =>
@@ -114,7 +116,7 @@ class FileRepository extends SingleProviderRepository<FileModel> {
 void main() async {
   final repository = FileRepository();
 
-  await repository.upsert<User>(User(name: "Thomas"));
+  await repository.upsert<User>(User(name: 'Thomas'));
 
   final users = await repository.get<User>(query: Query.where('fileName', 'Thomas'));
   await repository.delete<User>(users.first);

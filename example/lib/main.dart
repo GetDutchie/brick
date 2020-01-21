@@ -30,13 +30,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var loaded = false;
   @override
   void initState() {
-    Repository.configure("http://localhost:8080");
-    // Note that `.reset` is only called here for a clean debug environment
-    // A production app should only call initialize, as using stored data is
-    // essential with offline-first requirements
-    Repository().reset().then((_) => Repository().initialize());
+    // be sure to run `dart server.dart` before using this example
+    Repository.configure('http://localhost:8080');
+    // Note that subsequent boots of the app will use cached data
+    // To clear this, wipe data on android or tap-press on iOS and delete the app
+    Repository().initialize().then((_) => setState(() => loaded = true));
     super.initState();
   }
 
@@ -46,20 +47,23 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: FutureBuilder(
-          future: Repository().get<Customer>(),
-          builder: (context, AsyncSnapshot<List<Customer>> customerList) {
-            final customers = customerList.data;
+      body: loaded
+          ? Container(
+              padding: const EdgeInsets.all(20.0),
+              child: FutureBuilder(
+                future: Repository().get<Customer>(),
+                builder: (context, AsyncSnapshot<List<Customer>> customerList) {
+                  final customers = customerList.data;
+                  print(customers);
 
-            return ListView.builder(
-              itemCount: customers?.length ?? 0,
-              itemBuilder: (ctx, index) => CustomerTile(customers[index]),
-            );
-          },
-        ),
-      ),
+                  return ListView.builder(
+                    itemCount: customers?.length ?? 0,
+                    itemBuilder: (ctx, index) => CustomerTile(customers[index]),
+                  );
+                },
+              ),
+            )
+          : Text("Migrating database..."),
     );
   }
 }
@@ -72,16 +76,19 @@ class CustomerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text("id: ${customer.id}"),
-        Text("name: ${customer.firstName} ${customer.lastName}"),
-        Text("pizzas:"),
+        Text('id: ${customer.id}'),
+        Text('name: ${customer.firstName} ${customer.lastName}'),
+        Text('pizzas:'),
         Padding(
           padding: const EdgeInsets.only(left: 20.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               for (var pizza in customer.pizzas)
-                Text("id: ${pizza.id}\nfrozen: ${pizza.frozen}\ncustomer: ${pizza.customer.id}"),
+                Text(
+                    'id: ${pizza.id}\nfrozen: ${pizza.frozen}\ncustomer.firstName: ${pizza.customer?.firstName}'),
             ],
           ),
         )

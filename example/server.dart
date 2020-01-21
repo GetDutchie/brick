@@ -11,7 +11,7 @@ void main() {
 }
 
 Future<shelf.Response> _echoRequest(shelf.Request request) async {
-  final endpoints = ["customers", "pizza", "pizzas"];
+  final endpoints = ["customer", "customers", "pizza", "pizzas"];
 
   return await endpoints
       .fold(shelf.Response.notFound("Request ${request.url} does not match a known endpoint"),

@@ -14,7 +14,9 @@ import 'package:pizza_shoppe/app/models/pizza.dart';
       if (byId.value != null) {
         return "/customer/${byId.value}";
       }
+    }
 
+    if (query.action == QueryAction.get) {
       return "/customers";
     }
 
