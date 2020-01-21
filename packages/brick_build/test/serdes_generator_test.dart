@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/builders.dart';
 import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -42,7 +43,8 @@ void main() {
     SerdesGenerator custom;
 
     setUpAll(() async {
-      final annotation = await annotationForFile('serdes_generator', 'simple');
+      final annotation =
+          await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
       defaults = DefaultSerdes(annotation.element, TestFields(annotation.element));
       custom = CustomSerdes(annotation.element, TestFields(annotation.element));
     });
@@ -79,7 +81,7 @@ void main() {
 
     test('fieldsForGenerator', () {
       expect(defaults.fieldsForGenerator, isEmpty);
-      expect(custom.fieldsForGenerator, "'some_field': instance.someField as int");
+      expect(custom.fieldsForGenerator, "'someField': instance.someField as int");
     });
 
     test('generateSuffix', () {
@@ -128,7 +130,7 @@ Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
       final customOutput = r'''
 Future<Bar> unspecificPublicMethod(Map,
     {provider, SomeRepository repository}) async {
-  return {'some_field': instance.someField as int}..nullableField = true;
+  return {'someField': instance.someField as int}..nullableField = true;
 }
 ''';
       expect(defaults.generate(), defaultOutput);
