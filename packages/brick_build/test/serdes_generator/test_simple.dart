@@ -1,7 +1,6 @@
-import '../__helpers__.dart';
+import 'package:brick_core/core.dart';
 
-@ConnectAnnotation()
-class Simple extends OfflineFirstModel {
+class Simple extends Model {
   final int someField;
 
   Simple(this.someField);

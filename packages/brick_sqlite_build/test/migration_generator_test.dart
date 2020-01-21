@@ -1,4 +1,4 @@
-import '__helpers__.dart';
+import 'package:brick_build/testing.dart';
 import 'package:test/test.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 import '../lib/src/sqlite_schema/migration_generator.dart';

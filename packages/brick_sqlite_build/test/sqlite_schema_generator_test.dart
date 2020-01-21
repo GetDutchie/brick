@@ -3,7 +3,7 @@ import 'package:brick_sqlite_build/src/sqlite_schema/sqlite_schema_generator.dar
 import 'package:brick_sqlite_build/src/sqlite_fields.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import '__helpers__.dart';
+import 'package:brick_build/testing.dart';
 
 import 'sqlite_schema/test_simple.dart' as _$simple;
 import 'sqlite_schema/test_nullable.dart' as _$nullable;
