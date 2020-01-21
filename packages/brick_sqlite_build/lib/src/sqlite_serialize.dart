@@ -78,7 +78,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return '$fieldValue';
+      return fieldValue;
 
       // Iterable
     } else if (checker.isIterable) {
@@ -86,7 +86,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       if (checker.isArgTypeASibling) {
         // Iterable<Future<SqliteModel>>
-        if (argTypeChecker.isFuture) {
+        if (checker.isArgTypeAFuture) {
           return '''jsonEncode(
             (await Future.wait<int>($fieldValue
               ?.map(
@@ -100,7 +100,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
           // Iterable<SqliteModel>
         } else {
-          final instanceAndField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+          final instanceAndField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
           return '''jsonEncode(
             (await Future.wait<int>($instanceAndField
@@ -137,7 +137,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
-      final instance = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+      final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       return '$instance?.${InsertTable.PRIMARY_KEY_FIELD}';
 
       // enum
