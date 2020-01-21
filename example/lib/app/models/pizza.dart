@@ -33,17 +33,11 @@ class Pizza extends OfflineFirstWithRestModel {
   @Rest(enumAsString: true)
   final List<Topping> toppings;
 
-  /// Read more about `@OfflineFirst`: https://github.com/greenbits/brick/tree/master/packages/brick_offline_first#fields
-  @OfflineFirst(where: {'id': "data['customer_id']"})
-  @Rest(name: 'customer_id')
-  final Customer customer;
-
   final bool frozen;
 
   Pizza({
     this.id,
     this.toppings,
-    this.customer,
     this.frozen,
   });
 }

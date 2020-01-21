@@ -14,6 +14,8 @@ class Repository extends OfflineFirstWithRestRepository {
             "pizzaShoppe.sqlite",
             modelDictionary: sqliteModelDictionary,
           ),
+          // as both models store each other as associations, we should
+          // cache neither
           memoryCacheProvider: MemoryCacheProvider(),
           migrations: migrations,
         );

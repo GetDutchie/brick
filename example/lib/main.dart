@@ -30,14 +30,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var loaded = false;
+  var migrated = false;
   @override
   void initState() {
     // be sure to run `dart server.dart` before using this example
     Repository.configure('http://localhost:8080');
     // Note that subsequent boots of the app will use cached data
     // To clear this, wipe data on android or tap-press on iOS and delete the app
-    Repository().initialize().then((_) => setState(() => loaded = true));
+    Repository().initialize().then((_) => setState(() => migrated = true));
     super.initState();
   }
 
@@ -47,14 +47,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: loaded
+      body: migrated
           ? Container(
               padding: const EdgeInsets.all(20.0),
               child: FutureBuilder(
                 future: Repository().get<Customer>(),
                 builder: (context, AsyncSnapshot<List<Customer>> customerList) {
                   final customers = customerList.data;
-                  print(customers);
 
                   return ListView.builder(
                     itemCount: customers?.length ?? 0,
@@ -86,9 +85,7 @@ class CustomerTile extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              for (var pizza in customer.pizzas)
-                Text(
-                    'id: ${pizza.id}\nfrozen: ${pizza.frozen}\ncustomer.firstName: ${pizza.customer?.firstName}'),
+              for (var pizza in customer.pizzas) Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
             ],
           ),
         )

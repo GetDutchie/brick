@@ -18,7 +18,6 @@ const List<MigrationCommand> _migration_20200120200549_up = [
   InsertColumn("pizzas", Column.varchar, onTable: "Customer"),
   InsertColumn("id", Column.integer, onTable: "Pizza", unique: true),
   InsertColumn("toppings", Column.varchar, onTable: "Pizza"),
-  InsertForeignKey("Pizza", "Customer", foreignKeyColumn: "customer_Customer_brick_id"),
   InsertColumn("frozen", Column.boolean, onTable: "Pizza"),
 ];
 
@@ -32,7 +31,6 @@ const List<MigrationCommand> _migration_20200120200549_down = [
   DropColumn("id", onTable: "Pizza"),
   DropColumn("toppings", onTable: "Pizza"),
   DropColumn("frozen", onTable: "Pizza"),
-  DropColumn("customer_Customer_brick_id", onTable: "Pizza")
 ];
 
 //
