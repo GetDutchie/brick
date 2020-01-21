@@ -1,0 +1,10 @@
+{
+  "customer": {
+    "id": 1,
+    "pizza_ids": [
+      1
+    ],
+    "firstName": "Wallace",
+    "lastName": "Wallaceton"
+  }
+}
