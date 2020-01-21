@@ -30,6 +30,7 @@ class Pizza extends OfflineFirstWithRestModel {
   final List<Topping> toppings;
 
   @OfflineFirst(where: {'id': "data['customer_id']"})
+  @Rest(name: 'customer_id')
   final Customer customer;
 
   final bool frozen;

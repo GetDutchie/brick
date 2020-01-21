@@ -31,6 +31,7 @@ class Customer extends OfflineFirstWithRestModel {
   final String lastName;
 
   @OfflineFirst(where: {'id': "data['pizza_ids']"})
+  @Rest(name: 'pizza_ids')
   final List<Pizza> pizzas;
 
   Customer({
