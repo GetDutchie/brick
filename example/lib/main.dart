@@ -11,6 +11,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+          body1: TextStyle(fontSize: 20.0),
+        ),
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -30,7 +33,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     Repository.configure("http://localhost:8080");
-    Repository().initialize();
+    // Note that `.reset` is only called here for a clean debug environment
+    // A production app should only call initialize, as using stored data is
+    // essential with offline-first requirements
+    Repository().reset().then((_) => Repository().initialize());
     super.initState();
   }
 
@@ -40,21 +46,46 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Container(
+        padding: const EdgeInsets.all(20.0),
         child: FutureBuilder(
           future: Repository().get<Customer>(),
           builder: (context, AsyncSnapshot<List<Customer>> customerList) {
             final customers = customerList.data;
 
             return ListView.builder(
-              itemCount: customers.length,
-              itemBuilder: (ctx, index) {
-                return Text("${customers[index].firstName}");
-              },
+              itemCount: customers?.length ?? 0,
+              itemBuilder: (ctx, index) => CustomerTile(customers[index]),
             );
           },
         ),
       ),
+    );
+  }
+}
+
+class CustomerTile extends StatelessWidget {
+  final Customer customer;
+
+  CustomerTile(this.customer);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text("id: ${customer.id}"),
+        Text("name: ${customer.firstName} ${customer.lastName}"),
+        Text("pizzas:"),
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Column(
+            children: <Widget>[
+              for (var pizza in customer.pizzas)
+                Text("id: ${pizza.id}\nfrozen: ${pizza.frozen}\ncustomer: ${pizza.customer.id}"),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

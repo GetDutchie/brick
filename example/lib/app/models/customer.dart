@@ -8,12 +8,17 @@ import 'package:pizza_shoppe/app/models/pizza.dart';
       return "/customers";
     }
 
-    // member endpoint
-    if (query.action == QueryAction.get && instance != null) {
-      return "/customer/${instance.id}";
+    if (query.action == QueryAction.get && query?.where != null) {
+      final byId = Where.firstByField('id', query.where);
+      // member endpoint
+      if (byId.value != null) {
+        return "/customer/${byId.value}";
+      }
+
+      return "/customers";
     }
 
-    return "/customers";
+    return null;
   }''',
   ),
 )
