@@ -3,12 +3,12 @@ import 'package:brick_sqlite_abstract/db.dart';
 const version = 1;
 
 const up = [
-  const InsertTable("User"),
-  const InsertColumn("address", Column.varchar, onTable: "User"),
+  const InsertTable('User'),
+  const InsertColumn('address', Column.varchar, onTable: 'User'),
 ];
 
 const down = [
-  const DropColumn("address", onTable: "User"),
+  const DropColumn('address', onTable: 'User'),
 ];
 
 @Migratable(version: '$version', up: up, down: down)
@@ -19,12 +19,12 @@ class Migration1 extends Migration {
 final schema = Schema(2,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
-      SchemaTable("User",
+      SchemaTable('User',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn("address", String),
-            SchemaColumn("email", String),
+            SchemaColumn('address', String),
+            SchemaColumn('email', String),
           ]))
     ]));
 
@@ -41,11 +41,11 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_2_up = [
-  InsertColumn("email", Column.varchar, onTable: "User")
+  InsertColumn('email', Column.varchar, onTable: 'User')
 ];
 
 const List<MigrationCommand> _migration_2_down = [
-  DropColumn("email", onTable: "User")
+  DropColumn('email', onTable: 'User')
 ];
 
 //

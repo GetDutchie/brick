@@ -14,11 +14,11 @@ final Set<Migration> migrations = Set.from([]);
 final schema = Schema(0,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
-      SchemaTable("Nullable",
+      SchemaTable('Nullable',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn("name", String, nullable: false)
+            SchemaColumn('name', String, nullable: false)
           ]))
     ]));
 ''';

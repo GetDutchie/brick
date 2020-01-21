@@ -25,19 +25,19 @@ final Set<Migration> migrations = Set.from([]);
 final schema = Schema(0,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
-      SchemaTable("SqliteAssoc",
+      SchemaTable('SqliteAssoc',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true)
           ])),
-      SchemaTable("OneToOneAssocation",
+      SchemaTable('OneToOneAssocation',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn("assoc_SqliteAssoc_brick_id", int,
-                isForeignKey: true, foreignTableName: "SqliteAssoc"),
-            SchemaColumn("assoc2_SqliteAssoc_brick_id", int,
-                isForeignKey: true, foreignTableName: "SqliteAssoc")
+            SchemaColumn('assoc_SqliteAssoc_brick_id', int,
+                isForeignKey: true, foreignTableName: 'SqliteAssoc'),
+            SchemaColumn('assoc2_SqliteAssoc_brick_id', int,
+                isForeignKey: true, foreignTableName: 'SqliteAssoc')
           ]))
     ]));
 ''';

@@ -16,17 +16,17 @@ final Set<Migration> migrations = Set.from([]);
 final schema = Schema(0,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
-      SchemaTable("AllFieldTypes",
+      SchemaTable('AllFieldTypes',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn("integer", int),
-            SchemaColumn("boolean", bool),
-            SchemaColumn("dub", double),
-            SchemaColumn("string", String),
-            SchemaColumn("list", String),
-            SchemaColumn("longer_camelized_variable", String),
-            SchemaColumn("casing", int)
+            SchemaColumn('integer', int),
+            SchemaColumn('boolean', bool),
+            SchemaColumn('dub', double),
+            SchemaColumn('string', String),
+            SchemaColumn('list', String),
+            SchemaColumn('longer_camelized_variable', String),
+            SchemaColumn('casing', int)
           ]))
     ]));
 ''';

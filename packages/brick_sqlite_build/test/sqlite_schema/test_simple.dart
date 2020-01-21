@@ -14,13 +14,13 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_1_up = [
-  InsertTable("Simple"),
-  InsertColumn("name", Column.varchar, onTable: "Simple")
+  InsertTable('Simple'),
+  InsertColumn('name', Column.varchar, onTable: 'Simple')
 ];
 
 const List<MigrationCommand> _migration_1_down = [
-  DropTable("Simple"),
-  DropColumn("name", onTable: "Simple")
+  DropTable('Simple'),
+  DropColumn('name', onTable: 'Simple')
 ];
 
 //
@@ -56,11 +56,11 @@ final Set<Migration> migrations = Set.from([]);
 final schema = Schema(0,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
-      SchemaTable("Simple",
+      SchemaTable('Simple',
           columns: Set.from([
-            SchemaColumn("_brick_id", int,
+            SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn("name", String)
+            SchemaColumn('name', String)
           ]))
     ]));
 ''';
