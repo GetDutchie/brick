@@ -1,6 +1,10 @@
 import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
+/// [SqliteSerializable] **does not** produce code.
+/// A `const` class is required from an non-relative import,
+/// and [SqliteSerializable] was arbitrarily chosen for this test.
+/// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class SqliteAssoc extends SqliteModel {
   @Sqlite(ignore: true)
@@ -38,6 +42,10 @@ final schema = Schema(0,
     ]));
 ''';
 
+/// [SqliteSerializable] **does not** produce code.
+/// A `const` class is required from an non-relative import,
+/// and [SqliteSerializable] was arbitrarily chosen for this test.
+/// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class OneToOneAssocation extends SqliteModel {
   final SqliteAssoc assoc;

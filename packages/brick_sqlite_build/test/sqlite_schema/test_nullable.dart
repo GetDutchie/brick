@@ -23,6 +23,10 @@ final schema = Schema(0,
     ]));
 ''';
 
+/// [SqliteSerializable] **does not** produce code.
+/// A `const` class is required from an non-relative import,
+/// and [SqliteSerializable] was arbitrarily chosen for this test.
+/// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class Nullable {
   @Sqlite(nullable: false)
