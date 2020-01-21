@@ -4,21 +4,21 @@
 
 An intuitive way to work with persistent data in Dart.
 
-**Brick is still in an alpha release**. Files and APIs changes will be reported in package CHANGELOGs.
+**Brick is still in a pre-alpha release**. Bugs and API changes will occur frequently; these will be recorded in package CHANGELOGs.
 
 ## What is Brick?
 
-Brick is an extensible query generator for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
+Brick is an extensible query interface for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
 
 Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries.
 
 ## Why Brick?
 
 * Your app requires [offline access](packages/brick_offline_first) to data
-* Handles and hides all complex serialization/deserialization logic between any external source(s)
-* Single access point and opinionated DSL establishes consistency when pushing and pulling data across your app
+* Handles and [hides](packages/brick_build) all complex serialization/deserialization logic between any external source(s)
+* Single [access point](#repository) and opinionated DSL establishes consistency when pushing and pulling data across your app
 * Automatic, [intelligently-generated migrations](packages/brick_sqlite)
-* Legible querying interface
+* Legible [querying interface](#query)
 
 ## When should I not use Brick?
 
@@ -64,7 +64,7 @@ Behind the scenes, this repository could poll a memory cache, then SQLite, then 
 final query = Query(where: [Where('lastName').contains('Muster')]);
 final users = await repository.get<User>(query: query);
 
-// Or specific:
+// Or singular:
 final query = Query.where('email', 'user@example.com', limit1: true);
 final user = await repository.get<User>(query: query);
 ```
@@ -144,7 +144,10 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
     dependencies:
       brick_offline_first: any
     dev_dependencies:
-      brick_build: any
+      brick_build_offline_first_with_rest:
+        git:
+          url: https://github.com/greenbits/brick.git
+          path: packages/brick_build_offline_first_with_rest
       build_runner: any
     ```
 1. Ignore generated files in `.gitignore`. It is recommended to **not** commit files appended with `.g.dart` to version control. Instead, these files should be built on every `pull` as well as on every build in a CI/CD pipeline. This ensures your code is generated with the most recent version of Brick and remains untouchable by contributors.
@@ -229,7 +232,7 @@ As providers are ultimately responsible for converting raw data into model data,
 |---|---|---|
 | `ignore:` | Do not deserialize (from) or serialize (to) this field to a provider | `@Rest(ignore: true)` |
 | `name:` | Stored key for this field according to the provider. In SQLite, for example, this would be the column name. | `@Sqlite(name: "address_2")` |
-| `defaultValue:` | Value to use in absence or `null` of the instance. This is only applied on transmission to and from the provider; it does not dictate what the Dart model will hold on empty instantiation. Note that while the annotation accepts a `dynamic` type, the accepted primitives vary by provider. | `@Rest(defaultValue: 1)` |
+| `defaultValue:` | Value to use in absence or `null` of the instance. It does not dictate what the Dart model will hold on empty instantiation. **Recommended to use Dart's default constructor assignment instead**. | `@Rest(defaultValue: '[]')` |
 | `nullable:` | `null` fields are handled gracefully when serializing and deserializing. | `@Rest(nullable: true)` |
 | `fromGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated deserialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Rest(fromGenerator: "int.tryParse(%DATA_PROPERTY%.toString())")` |
 | `toGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated serialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Sqlite(toGenerator: "%INSTANCE_PROPERTY% > 1 ? 1 : 0")` |

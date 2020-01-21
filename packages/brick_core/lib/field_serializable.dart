@@ -1,9 +1,12 @@
 /// Interface for other field-level annotations.
 /// For example, `class Rest extends FieldSerializable {}`
 abstract class FieldSerializable {
-  /// The value to use if the source does not contain this key or if the
-  /// value is `null`. **Only applicable during deserialization.**
-  dynamic get defaultValue;
+  /// The value to use if the source's value is `null`.
+  /// This is often directly injected to the adapter, and wrapping is required for strings.
+  /// (e.g. `defaultValue: "'Missing Last Name'"`)
+  ///
+  /// This value is usually only applied during deserialization.
+  String get defaultValue;
 
   /// Manipulates output for the field in the deserialize generator.
   /// The instance's field name is automatically defined. While the build method is ultimately

@@ -1,23 +1,22 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_build/src/utils/shared_checker.dart';
-import 'package:brick_rest/rest.dart' show Rest;
+import 'package:brick_build/builders.dart';
+import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 import 'package:brick_build/src/serdes_generator.dart';
-import 'package:brick_build/src/rest_serdes/rest_fields.dart';
 import '__helpers__.dart';
 
 final generateReader = generateLibraryForFolder('serdes_generator');
 
-class DefaultSerdes extends SerdesGenerator<Rest, SharedChecker> {
-  DefaultSerdes(ClassElement element, RestFields fields) : super(element, fields);
+class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
+  DefaultSerdes(ClassElement element, TestFields fields) : super(element, fields);
 
   final providerName = 'DefaultSerdes';
   String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
 }
 
-class CustomSerdes extends SerdesGenerator<Rest, SharedChecker> {
-  CustomSerdes(ClassElement element, RestFields fields) : super(element, fields);
+class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
+  CustomSerdes(ClassElement element, TestFields fields) : super(element, fields);
 
   final doesDeserialize = false;
   final deserializeInputType = 'Foo';
@@ -44,9 +43,10 @@ void main() {
     SerdesGenerator custom;
 
     setUpAll(() async {
-      final annotation = await annotationForFile('serdes_generator', 'simple');
-      defaults = DefaultSerdes(annotation.element, RestFields(annotation.element));
-      custom = CustomSerdes(annotation.element, RestFields(annotation.element));
+      final annotation =
+          await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
+      defaults = DefaultSerdes(annotation.element, TestFields(annotation.element));
+      custom = CustomSerdes(annotation.element, TestFields(annotation.element));
     });
 
     test('adapterMethod', () {
@@ -81,7 +81,7 @@ void main() {
 
     test('fieldsForGenerator', () {
       expect(defaults.fieldsForGenerator, isEmpty);
-      expect(custom.fieldsForGenerator, "'some_field': instance.someField as int");
+      expect(custom.fieldsForGenerator, "'someField': instance.someField as int");
     });
 
     test('generateSuffix', () {
@@ -130,7 +130,7 @@ Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
       final customOutput = r'''
 Future<Bar> unspecificPublicMethod(Map,
     {provider, SomeRepository repository}) async {
-  return {'some_field': instance.someField as int}..nullableField = true;
+  return {'someField': instance.someField as int}..nullableField = true;
 }
 ''';
       expect(defaults.generate(), defaultOutput);

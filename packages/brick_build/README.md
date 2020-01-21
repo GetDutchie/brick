@@ -413,32 +413,52 @@ Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
 );
 ```
 
-## How does this work?
+## Testing
 
-### End-to-end Case Study: `@ConnectOfflineFirstWithRest`
+Generated code can be compared with expected output using the `lib/testing.dart` helper utilities.
 
-![OfflineFirst Builder](https://user-images.githubusercontent.com/865897/72175884-1c399900-3392-11ea-8baa-7d50f8db6773.jpg)
+The source of the code-to-be-generated must be saved in a separate file from the test suite:
 
-1. A class is discovered with the `@ConnectOfflineFirstWithRest` annotation.
-      ```dart
-      @ConnectOfflineFirstWithRest(
-        sqliteConfig: SqliteSerializable(
-          nullable: false
-        ),
-        restConfig: RestSerializable(
-          endpoint: """=> '/my/path/to/classes'"""
-        )
-      )
-      class MyClass extends OfflineFirstModel
-      ```
-1. `OfflineFirstGenerator` expands respective sub configuration from the `@ConnectOfflineFirstWithRest` configuration.
-1. Instances of `RestFields` and `SqliteFields` are created and passed to their respective generators. This will expand all fields of the class into consumable code. Namely, the `#sorted` method ensures there are no duplicates and the fields are passed in the order they're declared in the class.
-1. `RestSerialize`, `RestDeserialize`, `SqliteSerialize`, and `SqliteDeserialize` generators are created from the previous configurations and the aforementioned fields. Since these generators inherit from the same base class, this documentation will continue with `RestSerialize` as the primary example.
-1. The fields are iterated through `RestSerialize#coderForField` to generate the transforming code. This function produces output by checking the field's type. For example, `final List<Future<int>> futureNumbers` may produce `'future_numbers': await Future.wait<int>(futureNumbers)`.
-1. The output is gathered via `RestSerialize#generate` and wrapped in a function such as `MODELToRest()`. All such functions from all generators are included in the output of the adapter generator. As some down-stream providers or repositories may require extra information in the adapter (such as `restEndpoint` or `tableName`), this data is also passed through `#generate`.
-1. Now with the complete adapter code, the AdapterBuilder saves `adapters/MODELNAME.g.dart`.
-1. Now with all annotated classes having adapter counterparts, a model dictionary is generated and saved to `brick.g.dart` with the ModelDictionaryBuilder.
-1. Concurrently, the super generator may produce a new schema that reflects the new data structure. `SqliteSchemaGenerator` generates a new schema. Using `SchemaDifference`, a new migration is created (this will be saved to `db/migrations/VERSION_migration.dart`). The new migration is logged and prepended to the generated code. This will be saved to `db/schema.g.dart` with the SqliteSchemaBuilder. A new migration will be saved to `db/<INCREMENT_VERSION>.g.dart` with the NewMigrationBuilder.
+```dart
+// test/generated_source/test_simple.dart
+@ConnectMyDomain()
+class User extends MyDomainModel {}
+
+// for easy discovery, it's recommended to include the output in the same file
+final output = r'''
+class MyDomainAdapter....
+''';
+```
+
+In the test suite, an expectation can be written:
+
+```dart
+import 'package:brick_build/testing.dart';
+import 'generated_source/test_simple.dart' as _$simple;
+
+final generator = MyDomainGenerator();
+
+test('simple', () {
+  final annotation = await annotationForFile<ConnectOfflineFirstWithRest>('generated_source', 'simple');
+  final generated = await (generator ?? _generator).generateAdapter(
+    annotation?.element,
+    annotation?.annotation,
+    null,
+  );
+  expect(generated, _$simple.output);
+});
+```
+
+As adapters can often include excess code not related to serialization, such as supporting information for the provider, the scope of the test can be narrowed to only the (de)serialization code:
+
+```dart
+final generateReader = generateLibraryForFolder('generated_source');
+test('simple', () {
+  final reader = await generateReader('simple');
+  final generated = await generator.generate(reader, null);
+  expect(generated, _$simple.output);
+});
+```
 
 ## FAQ
 

@@ -9,7 +9,7 @@ class Rest implements FieldSerializable {
   /// Must be a primitive type: `bool`, `DateTime`, `double`, `int`, `List`, `Map`,
   /// `Set`, or `String`. [defaultValue] must also match the field's `Type`.
   @override
-  final dynamic defaultValue;
+  final String defaultValue;
 
   /// By default, all enums from REST are assumed to be delivered as `int`. For APIs that
   /// deliver enums as `String` (e.g. `{"party", "baseball", ...}`). Works for Iterable and

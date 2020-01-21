@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
+import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
@@ -11,8 +12,11 @@ final _formatter = dart_style.DartFormatter();
 
 /// A generator that converts raw input into Dart code or Dart code into raw input. Most
 /// [Provider]s will require a `SerdesGenerator` to help the Repository normalize data.
+///
+/// [_FieldAnnotation] describes the field-level class, such as @`Rest`
+/// [_SiblingModel] describes the domain or provider model, such as `SqliteModel`
 abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
-    _CustomChecker extends SharedChecker> {
+    _SiblingModel extends Model> {
   /// The annotated class
   final ClassElement element;
 
@@ -108,7 +112,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   Iterable<FieldElement> get unignoredFields {
     return fields.stableInstanceFields.where((field) {
       final annotation = fields.annotationForField(field);
-      final checker = checkerForField(field);
+      final checker = checkerForType(field.type);
 
       return !annotation.ignore && checker.isSerializable;
     });
@@ -128,10 +132,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     final futureChecker = SharedChecker(field.type);
-    var checker = checkerForField(field, type: field.type);
+    var checker = checkerForType(field.type);
     if (futureChecker.isFuture) {
       wrappedInFuture = true;
-      checker = checkerForField(field, type: futureChecker.argType);
+      checker = checkerForType(futureChecker.argType);
     }
 
     if ((isComputedGetter && doesDeserialize) ||
@@ -148,7 +152,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       );
     }
 
-    final coder = generateCoder(
+    final coder = coderForField(
       field,
       checker,
       fieldAnnotation: fieldAnnotation,
@@ -170,17 +174,9 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return null;
   }
 
-  /// Return a `SharedChecker` for a field.
-  /// If the field is a future type, a checker of the Future's arg type **must be returned**.
+  /// Return a `SharedChecker` for a type.
   /// If including a custom checker in your domain, overwrite this field
-  SharedChecker checkerForField(FieldElement field, {DartType type}) {
-    final checker = SharedChecker(type ?? field.type);
-    if (checker.isFuture) {
-      return checkerForField(field, type: checker.argType);
-    }
-
-    return checker;
-  }
+  SharedChecker checkerForType(DartType type) => SharedChecker(type);
 
   /// Produces serializing or deserializing method given a field and checker.
   ///
@@ -194,7 +190,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// `wrappedInFuture` will be `true`.
   String coderForField(
     FieldElement field,
-    _CustomChecker checker, {
+    SharedChecker checker, {
     _FieldAnnotation fieldAnnotation,
     bool wrappedInFuture,
   });
@@ -212,7 +208,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   String expandGenerator(
     _FieldAnnotation annotation, {
     FieldElement field,
-    _CustomChecker checker,
+    SharedChecker checker,
   }) {
     final name = providerNameForField(annotation.name, checker: checker);
 
@@ -241,22 +237,6 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return _formatter.format(output);
   }
 
-  /// Forwards arguments to `coderForField`.
-  /// For implementations that elect to add extra values to coder with field, such
-  /// as annotations that synthesize two providers, override this method.
-  String generateCoder(
-    FieldElement field,
-    _CustomChecker checker, {
-    _FieldAnnotation fieldAnnotation,
-    bool wrappedInFuture,
-  }) =>
-      coderForField(
-        field,
-        checker,
-        fieldAnnotation: fieldAnnotation,
-        wrappedInFuture: wrappedInFuture,
-      );
-
   /// If this element possesses a factory such as `fromRest`
   @protected
   bool hasConstructor(DartType type) {
@@ -274,13 +254,13 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal
   /// the field's purpose.
   @protected
-  String providerNameForField(String annotatedName, {_CustomChecker checker}) => annotatedName;
+  String providerNameForField(String annotatedName, {SharedChecker checker}) => annotatedName;
 
   /// The field's value when used by the generator.
   /// For example, `data['my_field']` when used by a deserializing generator
   /// or `instance.myField` when used by a serializing generator
   @protected
-  String serdesValueForField(FieldElement field, String annotatedName, {_CustomChecker checker}) {
+  String serdesValueForField(FieldElement field, String annotatedName, {SharedChecker checker}) {
     if (doesDeserialize) {
       final name = providerNameForField(annotatedName, checker: checker);
       return "data['$name']";
