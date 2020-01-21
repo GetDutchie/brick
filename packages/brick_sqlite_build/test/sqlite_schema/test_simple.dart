@@ -1,4 +1,5 @@
-import '../__helpers__.dart';
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite_abstract/annotations.dart';
 
 final migrationOutput = r'''
 // GENERATED CODE EDIT WITH CAUTION
@@ -64,8 +65,8 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectAnnotation()
-class Simple {
+@SqliteSerializable()
+class Simple extends SqliteModel {
   final String name;
 
   Simple({this.name});

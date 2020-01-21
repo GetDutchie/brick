@@ -1,4 +1,4 @@
-import '../__helpers__.dart';
+import 'package:brick_sqlite_abstract/annotations.dart';
 
 enum Casing { Snake, Camel }
 
@@ -31,7 +31,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectAnnotation()
+@SqliteSerializable()
 class AllFieldTypes {
   AllFieldTypes({
     this.integer,

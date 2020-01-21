@@ -1,3 +1,4 @@
+import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_build/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:brick_sqlite_build/src/sqlite_fields.dart';
 import 'package:source_gen/source_gen.dart';
@@ -47,7 +48,7 @@ void main() {
   });
 }
 
-final annotationChecker = TypeChecker.fromRuntime(ConnectAnnotation);
+final annotationChecker = TypeChecker.fromRuntime(SqliteSerializable);
 Future<Map<LibraryReader, List<SqliteFields>>> generateSchemaMap(String filename) async {
   final reader = await generateReader(filename);
 

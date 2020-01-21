@@ -1,8 +1,7 @@
 import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
-import '../__helpers__.dart';
 
-@ConnectAnnotation()
+@SqliteSerializable()
 class SqliteAssoc extends SqliteModel {
   @Sqlite(ignore: true)
   final int key = -1;
@@ -39,7 +38,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectAnnotation()
+@SqliteSerializable()
 class OneToOneAssocation extends SqliteModel {
   final SqliteAssoc assoc;
   final SqliteAssoc assoc2;
