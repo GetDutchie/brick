@@ -1,4 +1,4 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
+import '../__helpers__.dart';
 
 enum Casing { Snake, Camel }
 
@@ -31,7 +31,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirstWithRest()
+@ConnectAnnotation()
 class AllFieldTypes {
   AllFieldTypes({
     this.integer,

@@ -5,10 +5,12 @@ import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.da
 import 'package:brick_offline_first_with_rest_build/src/offline_first_fields.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_serdes_generator.dart';
 import 'package:brick_rest_build/generators.dart';
+import 'package:brick_rest_build/rest_serdes.dart';
+import 'package:source_gen/source_gen.dart';
 
-class OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
+class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
   final OfflineFirstFields offlineFirstFields;
-  OfflineFirstRestSerialize(ClassElement element, RestFields fields)
+  _OfflineFirstRestSerialize(ClassElement element, RestFields fields)
       : this.offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: REPOSITORY_NAME);
 
@@ -65,9 +67,9 @@ class OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel>
   }
 }
 
-class OfflineFirstRestDeserialize extends RestDeserialize {
+class _OfflineFirstRestDeserialize extends RestDeserialize {
   final OfflineFirstFields offlineFirstFields;
-  OfflineFirstRestDeserialize(ClassElement element, RestFields fields)
+  _OfflineFirstRestDeserialize(ClassElement element, RestFields fields)
       : this.offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: REPOSITORY_NAME);
 
@@ -166,5 +168,20 @@ class OfflineFirstRestDeserialize extends RestDeserialize {
       return acc;
     }).join(',\n');
     return '[$conditions]';
+  }
+}
+
+class OfflineFirstRestSerdes extends RestSerdes {
+  OfflineFirstRestSerdes(Element element, ConstantReader reader)
+      : super(element, reader, repositoryName: REPOSITORY_NAME);
+
+  @override
+  get generators {
+    final classElement = element as ClassElement;
+    final fields = RestFields(classElement, config);
+    return [
+      _OfflineFirstRestDeserialize(classElement, fields),
+      _OfflineFirstRestSerialize(classElement, fields),
+    ];
   }
 }

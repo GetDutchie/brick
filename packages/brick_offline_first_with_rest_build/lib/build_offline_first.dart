@@ -1,7 +1,7 @@
 import 'package:brick_build/src/builders/adapter_builder.dart';
 import 'package:brick_build/src/builders/aggregate_builder.dart';
 import 'package:brick_build/src/builders/model_dictionary_builder.dart';
-import 'package:brick_offline_first_with_rest_build/src/sqlite_builders.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_sqlite_builders.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_model_dictionary_generator.dart';
 import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;

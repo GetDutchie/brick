@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/adapter_generator.dart';
 import 'package:brick_build/src/annotation_super_generator.dart';
-import 'package:brick_rest_build/rest_serdes.dart';
-import 'package:brick_sqlite_build/sqlite_serdes.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_rest_generators.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_sqlite_generators.dart';
 import 'package:brick_build/src/serdes_generator.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
@@ -26,8 +26,8 @@ class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst
 
   /// Given an [element] and an [annotation], scaffold generators
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
-    final rest = RestSerdes(element, annotation, repositoryName: repositoryName);
-    final sqlite = SqliteSerdes(element, annotation, repositoryName: repositoryName);
+    final rest = OfflineFirstRestSerdes(element, annotation);
+    final sqlite = OfflineFirstSqliteSerdes(element, annotation);
     final generators = <SerdesGenerator>[];
     generators.addAll(rest.generators);
     generators.addAll(sqlite.generators);

@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
-import '../lib/src/offline_first/offline_first_generator.dart';
+import '../lib/src/offline_first_generator.dart';
 import '__helpers__.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;

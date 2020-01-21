@@ -1,7 +1,6 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
-import 'package:brick_offline_first_abstract/abstract.dart';
+import '../__helpers__.dart';
 
-@ConnectOfflineFirstWithRest()
+@ConnectAnnotation()
 class Simple extends OfflineFirstModel {
   final int someField;
 

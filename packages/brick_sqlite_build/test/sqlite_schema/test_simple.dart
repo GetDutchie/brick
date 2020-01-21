@@ -1,4 +1,4 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
+import '../__helpers__.dart';
 
 final migrationOutput = r'''
 // GENERATED CODE EDIT WITH CAUTION
@@ -64,7 +64,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirstWithRest()
+@ConnectAnnotation()
 class Simple {
   final String name;
 

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../lib/src/offline_first/offline_first_model_dictionary_generator.dart';
+import '../lib/src/offline_first_model_dictionary_generator.dart';
 
 void main() {
   group("OfflineFirstModelDictionaryGenerator", () {

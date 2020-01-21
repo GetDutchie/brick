@@ -2,7 +2,6 @@ import 'package:brick_sqlite_build/src/sqlite_schema/sqlite_schema_generator.dar
 import 'package:brick_sqlite_build/src/sqlite_fields.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
 import '__helpers__.dart';
 
 import 'sqlite_schema/test_simple.dart' as _$simple;
@@ -48,7 +47,7 @@ void main() {
   });
 }
 
-final annotationChecker = TypeChecker.fromRuntime(ConnectOfflineFirstWithRest);
+final annotationChecker = TypeChecker.fromRuntime(ConnectAnnotation);
 Future<Map<LibraryReader, List<SqliteFields>>> generateSchemaMap(String filename) async {
   final reader = await generateReader(filename);
 

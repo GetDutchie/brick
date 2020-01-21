@@ -1,4 +1,5 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_sqlite_abstract/annotations.dart';
+import '../__helpers__.dart';
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -23,7 +24,7 @@ final schema = Schema(0,
     ]));
 ''';
 
-@ConnectOfflineFirstWithRest()
+@ConnectAnnotation()
 class Nullable {
   @Sqlite(nullable: false)
   final String name;
