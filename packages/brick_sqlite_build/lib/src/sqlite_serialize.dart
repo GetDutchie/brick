@@ -122,8 +122,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
-      if (argTypeChecker.isFuture) {
-        if (argTypeChecker.isSerializable) {
+      if (checker.isArgTypeAFuture) {
+        if (checker.isSerializable) {
           return 'jsonEncode(await Future.wait<${argTypeChecker.unFuturedArgType}>($fieldValue) ?? [])';
         }
       }

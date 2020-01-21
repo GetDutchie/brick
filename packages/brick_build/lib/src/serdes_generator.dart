@@ -174,17 +174,9 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return null;
   }
 
-  /// Return a `SharedChecker` for a field.
-  /// If the field is a future type, a checker of the Future's arg type **must be returned**.
+  /// Return a `SharedChecker` for a type.
   /// If including a custom checker in your domain, overwrite this field
-  SharedChecker checkerForType(DartType type) {
-    final checker = SharedChecker(type);
-    if (checker.isFuture) {
-      return checkerForType(type);
-    }
-
-    return checker;
-  }
+  SharedChecker checkerForType(DartType type) => SharedChecker(type);
 
   /// Produces serializing or deserializing method given a field and checker.
   ///

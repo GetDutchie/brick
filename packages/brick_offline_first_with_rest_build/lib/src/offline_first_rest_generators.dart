@@ -3,7 +3,6 @@ import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_fields.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_serdes_generator.dart';
 import 'package:brick_rest_build/generators.dart';
 import 'package:brick_rest_build/rest_serdes.dart';
 import 'package:source_gen/source_gen.dart';
@@ -15,7 +14,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
+  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
@@ -74,7 +73,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         super(element, fields, repositoryName: repositoryName);
 
   @override
-  OfflineFirstChecker checkerForType(type) => checkerCallback(type);
+  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
