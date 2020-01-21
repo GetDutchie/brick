@@ -10,9 +10,9 @@ import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
   final OfflineFirstFields offlineFirstFields;
-  _OfflineFirstRestSerialize(ClassElement element, RestFields fields)
+  _OfflineFirstRestSerialize(ClassElement element, RestFields fields, {String repositoryName})
       : this.offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: REPOSITORY_NAME);
+        super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
@@ -69,9 +69,9 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
 
 class _OfflineFirstRestDeserialize extends RestDeserialize {
   final OfflineFirstFields offlineFirstFields;
-  _OfflineFirstRestDeserialize(ClassElement element, RestFields fields)
+  _OfflineFirstRestDeserialize(ClassElement element, RestFields fields, {String repositoryName})
       : this.offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: REPOSITORY_NAME);
+        super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
@@ -172,16 +172,16 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 }
 
 class OfflineFirstRestSerdes extends RestSerdes {
-  OfflineFirstRestSerdes(Element element, ConstantReader reader)
-      : super(element, reader, repositoryName: REPOSITORY_NAME);
+  OfflineFirstRestSerdes(Element element, ConstantReader reader, {String repositoryName})
+      : super(element, reader, repositoryName: repositoryName);
 
   @override
   get generators {
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);
     return [
-      _OfflineFirstRestDeserialize(classElement, fields),
-      _OfflineFirstRestSerialize(classElement, fields),
+      _OfflineFirstRestDeserialize(classElement, fields, repositoryName: repositoryName),
+      _OfflineFirstRestSerialize(classElement, fields, repositoryName: repositoryName),
     ];
   }
 }

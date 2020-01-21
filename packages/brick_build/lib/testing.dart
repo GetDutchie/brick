@@ -1,7 +1,6 @@
 import 'package:path/path.dart' as p;
 import 'package:source_gen_test/source_gen_test.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
 
 /// In the test directory, filename prefix `test_`, suffix `.dart`
 Future<LibraryReader> _libraryForFolder(String folder, String filename) async {
@@ -22,9 +21,10 @@ LibraryGenerator generateLibraryForFolder(String folder) {
 }
 
 /// The first annotation in a file
-Future<AnnotatedElement> annotationForFile(String folder, String filename) async {
+///
+/// [_Annotation] should reflect the class-level annotation, e.g. `@ConnectOfflineFirstWithRest`
+Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String filename) async {
+  final annotaionChecker = TypeChecker.fromRuntime(_Annotation);
   final reader = await _libraryForFolder(folder, filename);
-  return reader.annotatedWith(offlineFirstChecker)?.first;
+  return reader.annotatedWith(annotaionChecker)?.first;
 }
-
-const offlineFirstChecker = TypeChecker.fromRuntime(ConnectOfflineFirstWithRest);

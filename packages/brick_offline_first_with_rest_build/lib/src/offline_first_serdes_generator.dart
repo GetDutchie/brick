@@ -2,8 +2,6 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
 
-const REPOSITORY_NAME = "OfflineFirstWithRest";
-
 OfflineFirstChecker checkerCallback(FieldElement field, {DartType type}) {
   final checker = OfflineFirstChecker(type ?? field.type);
   if (checker.isFuture) {

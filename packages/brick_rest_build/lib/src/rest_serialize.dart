@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_build/generators.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_build/src/rest_fields.dart';
 import 'package:brick_rest_build/src/rest_serdes_generator.dart';

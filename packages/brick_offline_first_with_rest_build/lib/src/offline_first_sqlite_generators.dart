@@ -8,8 +8,8 @@ import 'package:brick_sqlite_build/sqlite_serdes.dart';
 import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestModel> {
-  _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields)
-      : super(element, fields, repositoryName: REPOSITORY_NAME);
+  _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields, {String repositoryName})
+      : super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
@@ -49,8 +49,8 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
 }
 
 class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
-  _OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields)
-      : super(element, fields, repositoryName: REPOSITORY_NAME);
+  _OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields, {String repositoryName})
+      : super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForField(field, {type}) => checkerCallback(field, type: type);
@@ -97,16 +97,16 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
 }
 
 class OfflineFirstSqliteSerdes extends SqliteSerdes {
-  OfflineFirstSqliteSerdes(Element element, ConstantReader reader)
-      : super(element, reader, repositoryName: REPOSITORY_NAME);
+  OfflineFirstSqliteSerdes(Element element, ConstantReader reader, {String repositoryName})
+      : super(element, reader, repositoryName: repositoryName);
 
   @override
   get generators {
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);
     return [
-      _OfflineFirstSqliteDeserialize(classElement, fields),
-      _OfflineFirstSqliteSerialize(classElement, fields),
+      _OfflineFirstSqliteDeserialize(classElement, fields, repositoryName: repositoryName),
+      _OfflineFirstSqliteSerialize(classElement, fields, repositoryName: repositoryName),
     ];
   }
 }

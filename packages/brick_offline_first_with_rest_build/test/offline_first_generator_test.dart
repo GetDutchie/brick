@@ -1,7 +1,8 @@
+import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
 import '../lib/src/offline_first_generator.dart';
-import '__helpers__.dart';
+import 'package:brick_build/testing.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;
 import 'offline_first_generator/test_sqlite_unique.dart' as _$sqliteUnique;
@@ -196,7 +197,7 @@ Future<void> generateExpectation(String filename, String output,
 
 Future<void> generateAdapterExpectation(String filename, String output,
     {OfflineFirstGenerator generator}) async {
-  final annotation = await annotationForFile(folder, filename);
+  final annotation = await annotationForFile<ConnectOfflineFirstWithRest>(folder, filename);
   final generated = await (generator ?? _generator).generateAdapter(
     annotation?.element,
     annotation?.annotation,
