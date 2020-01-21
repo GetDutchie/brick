@@ -120,19 +120,18 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         return 'jsonEncode($fieldValue?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
       }
 
-      // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
-      if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        return 'jsonEncode($fieldValue ?? [])';
-      }
-
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
-      if (checker.isArgTypeAFuture) {
+      if (argTypeChecker.isFuture) {
         if (argTypeChecker.isSerializable) {
           return 'jsonEncode(await Future.wait<${argTypeChecker.unFuturedArgType}>($fieldValue) ?? [])';
         }
       }
 
+      // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
+      if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
+        return 'jsonEncode($fieldValue ?? [])';
+      }
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;

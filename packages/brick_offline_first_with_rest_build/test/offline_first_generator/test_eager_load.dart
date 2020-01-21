@@ -113,7 +113,8 @@ Future<Map<String, dynamic>> _$EagerLoadToSqlite(EagerLoad instance,
   return {
     'string': instance.string,
     'strings': jsonEncode(instance.strings ?? []),
-    'future_strings': jsonEncode(instance.futureStrings ?? []),
+    'future_strings':
+        jsonEncode(await Future.wait<String>(instance.futureStrings) ?? []),
     'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey,
     'assocs': jsonEncode((await Future.wait<int>((await instance.assocs)
                 ?.map((s) async {
