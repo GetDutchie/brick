@@ -144,10 +144,10 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
     dependencies:
       brick_offline_first: any
     dev_dependencies:
-      brick_build_offline_first_with_rest:
+      brick_offline_first_with_rest_build:
         git:
           url: https://github.com/greenbits/brick.git
-          path: packages/brick_build_offline_first_with_rest
+          path: packages/brick_offline_first_with_rest_build
       build_runner: any
     ```
 1. Ignore generated files in `.gitignore`. It is recommended to **not** commit files appended with `.g.dart` to version control. Instead, these files should be built on every `pull` as well as on every build in a CI/CD pipeline. This ensures your code is generated with the most recent version of Brick and remains untouchable by contributors.
