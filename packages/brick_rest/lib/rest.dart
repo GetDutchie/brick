@@ -56,7 +56,7 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
-  /// [Query]'s `params` can extend the [get] functionality:
+  /// [Query]'s `providerArgs` can extend the [get] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{"user": {"id"...}}`).
   /// It is recommended to use `RestSerializable#fromKey` instead to simplify queries
@@ -75,7 +75,7 @@ class RestProvider implements Provider<RestModel> {
     _logger.finest('caller=get url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
-      final topLevelKey = (query?.params ?? {})['topLevelKey'] ?? adapter.fromKey;
+      final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
       final parsed = _convertJson(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
@@ -93,7 +93,7 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
-  /// [Query]'s `params` can extend the [upsert] functionality:
+  /// [Query]'s `providerArgs` can extend the [upsert] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
   /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
@@ -123,14 +123,14 @@ class RestProvider implements Provider<RestModel> {
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery([Query query]) {
-    if (query == null || query.params['headers'] == null) {
+    if (query == null || query.providerArgs['headers'] == null) {
       return defaultHeaders;
     }
 
     return {}
       ..addAll({'Content-Type': 'application/json'})
       ..addAll(defaultHeaders ?? <String, String>{})
-      ..addAll(query.params['headers'] ?? <String, String>{});
+      ..addAll(query.providerArgs['headers'] ?? <String, String>{});
   }
 
   /// Given a model instance and a query, produce a fully-qualified URL
@@ -171,11 +171,11 @@ class RestProvider implements Provider<RestModel> {
     String toKey,
   ]) async {
     final encodedBody = jsonEncode(body);
-    final topLevelKey = (query?.params ?? {})['topLevelKey'] ?? toKey;
+    final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? toKey;
     final wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
     final headers = headersForQuery(query);
 
-    if ((query?.params ?? {})['request'] == 'PUT') {
+    if ((query?.providerArgs ?? {})['request'] == 'PUT') {
       _logger.fine('PUT $url');
       _logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
       return await client.put(url, body: wrappedBody, headers: headers);

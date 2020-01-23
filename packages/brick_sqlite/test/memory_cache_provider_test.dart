@@ -59,7 +59,7 @@ void main() {
         final results = provider.get<Person>(
           query: Query(
             where: [Where.exact(InsertTable.PRIMARY_KEY_FIELD, 1)],
-            params: {'limit': 1},
+            providerArgs: {'limit': 1},
           ),
         );
         expect(results, isNotEmpty);

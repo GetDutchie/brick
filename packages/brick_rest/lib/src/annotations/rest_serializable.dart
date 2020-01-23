@@ -31,8 +31,8 @@ class RestSerializable {
   /// **Example**:
   /// ```dart
   /// ({Query query, Model instance}) {
-  ///   if (query.params['limit'] == 1) {
-  ///     return "person/${query.params['id']}";
+  ///   if (query.providerArgs['limit'] == 1) {
+  ///     return "person/${query.providerArgs['id']}";
   ///   }
   ///
   ///   return "people";
@@ -42,8 +42,8 @@ class RestSerializable {
   /// Should be included as
   /// ```dart
   /// endpoint: r"""{
-  ///   if (query.params['limit'] == 1) {
-  ///     return "person/${query.params['id']}";
+  ///   if (query.providerArgs['limit'] == 1) {
+  ///     return "person/${query.providerArgs['id']}";
   ///   }
   ///
   ///   return "people";
@@ -64,7 +64,7 @@ class RestSerializable {
 
   /// When deserializing from REST, the response may be nested within a top level key.
   /// If no key is defined, the first value will be returned. This configuration is overriden
-  /// when a query specifies `params['topLevelKey']`.
+  /// when a query specifies `providerArgs['topLevelKey']`.
   ///
   /// **Example**
   /// Given the API:

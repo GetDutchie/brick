@@ -78,7 +78,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     Query query,
     ModelRepository<SqliteModel> repository,
   }) async {
-    if (!_supportsParams(query)) return false;
+    if (!_supportsArgs(query)) return false;
 
     if (query?.where != null) {
       final results = await get<_Model>(query: query, repository: repository);
@@ -93,7 +93,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Fetch one time from the SQLite database
-  /// Available query `params`:
+  /// Available query `providerArgs`:
   /// * `collate` - a SQL `COLLATE` clause
   /// * `groupBy` - a SQL `GROUP BY` clause
   /// * `having` - a SQL `HAVING` clause
@@ -101,12 +101,12 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// * `orderBy` - a SQL `ORDER BY` clause
   ///
   /// Use field names not column names. For example, given a `final DateTime createdAt;` field:
-  /// `params: { 'orderBy': 'createdAt ASC' }`. If the column cannot be found for the first value
+  /// `providerArgs: { 'orderBy': 'createdAt ASC' }`. If the column cannot be found for the first value
   /// before a space, the value is left unchanged.
   ///
   /// In a more complex query using multiple tables and lookups like `createdAt ASC, name ASC`
-  /// to produce `SELECT * FROM "TableName" ORDER BY created_at ASC, name ASC;`, `params` would
-  /// equal `'params': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
+  /// to produce `SELECT * FROM "TableName" ORDER BY created_at ASC, name ASC;`, `providerArgs` would
+  /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   Future<List<_Model>> get<_Model extends SqliteModel>({
     query,
@@ -265,17 +265,17 @@ class SqliteProvider implements Provider<SqliteModel> {
     return id;
   }
 
-  /// Ensure that the provided `params` are support by this provider.
+  /// Ensure that the provided `providerArgs` are support by this provider.
   ///
-  /// Available query `params`:
+  /// Available query `providerArgs`:
   /// * `collate` - a SQL `COLLATE` clause
   /// * `groupBy` - a SQL `GROUP BY` clause
   /// * `having` - a SQL `HAVING` clause
   /// * `offset` - a SQL `OFFSET` clause
   /// * `limit` - a SQL `LIMIT` clause
   /// * `orderBy` - a SQL `ORDER BY` clause
-  bool _supportsParams(Query query) {
-    if (query?.params == null) return true;
+  bool _supportsArgs(Query query) {
+    if (query?.providerArgs == null) return true;
 
     final supportedParams = [
       'collate',
@@ -286,7 +286,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       'orderBy',
     ];
 
-    return query.params.keys.every((paramKey) {
+    return query.providerArgs.keys.every((paramKey) {
       return supportedParams.contains(paramKey);
     });
   }

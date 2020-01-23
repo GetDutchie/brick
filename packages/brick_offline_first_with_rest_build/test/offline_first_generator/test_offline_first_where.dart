@@ -50,7 +50,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
   return OfflineFirstWhere(
       assoc: repository
           ?.getAssociation<OtherAssoc>(Query(
-              where: [Where.exact('id', data['id'])], params: {'limit': 1}))
+              where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           ?.then((a) => a?.isNotEmpty == true ? a.first : null),
       assocs: (data['assocs'] ?? [])
           .map((s) => repository
@@ -60,7 +60,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
           ?.toList()
           ?.cast<Future<Assoc>>(),
       loadedAssoc: await repository
-          ?.getAssociation<Assoc>(Query(where: [Where.exact('id', data['id'])], params: {'limit': 1}))
+          ?.getAssociation<Assoc>(Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           ?.then((a) => a?.isNotEmpty == true ? a.first : null),
       loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository?.getAssociation<Assoc>(Query(where: [Where.exact('id', s)]))?.then((a) => a?.isNotEmpty == true ? a.first : null))?.toList()?.cast<Future<Assoc>>() ?? []),
       multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository?.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)]))?.then((a) => a?.isNotEmpty == true ? a.first : null))?.toList()?.cast<Future<Assoc>>());

@@ -147,7 +147,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where);
         return '''${shouldAwait}repository
-          ?.getAssociation<$type>(Query(where: $where, params: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null)''';
+          ?.getAssociation<$type>(Query(where: $where, providerArgs: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null)''';
       }
     }
 

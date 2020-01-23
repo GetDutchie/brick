@@ -54,7 +54,7 @@ Future<KitchenSink> _$KitchenSinkFromRest(Map<String, dynamic> data,
       sqliteAnnotationIgnore: data['sqlite_annotation_ignore'] as String,
       sqliteAnnotationUnique: data['sqlite_annotation_unique'] as String,
       sqliteAnnotationName: data['sqlite_annotation_name'] as String,
-      offlineFirstWhere: await repository?.getAssociation<Mounty>(Query(where: [Where('email', data['mounty_email'])], params: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null));
+      offlineFirstWhere: await repository?.getAssociation<Mounty>(Query(where: [Where('email', data['mounty_email'])], providerArgs: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null));
 }
 
 Future<Map<String, dynamic>> _$KitchenSinkToRest(KitchenSink instance,

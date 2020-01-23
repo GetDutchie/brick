@@ -188,12 +188,12 @@ void main() {
       });
     });
 
-    group("params", () {
-      test("params.collate", () async {
+    group("providerArgs", () {
+      test("providerArgs.collate", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {'collate': 'NOCASE'}),
+          query: Query(providerArgs: {'collate': 'NOCASE'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -201,11 +201,11 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("params.groupBy", () async {
+      test("providerArgs.groupBy", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {'groupBy': 'id'}),
+          query: Query(providerArgs: {'groupBy': 'id'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -213,11 +213,11 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("params.having", () async {
+      test("providerArgs.having", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {'having': 'id'}),
+          query: Query(providerArgs: {'having': 'id'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -225,11 +225,11 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("params.limit", () async {
+      test("providerArgs.limit", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {'limit': 1}),
+          query: Query(providerArgs: {'limit': 1}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -237,11 +237,11 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("params.offset", () async {
+      test("providerArgs.offset", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {
+          query: Query(providerArgs: {
             'limit': 1,
             'offset': 1,
           }),
@@ -252,11 +252,11 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("params.orderBy", () async {
+      test("providerArgs.orderBy", () async {
         final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC";
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {'orderBy': 'id DESC'}),
+          query: Query(providerArgs: {'orderBy': 'id DESC'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -264,12 +264,12 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("fields convert to column names in params values", () async {
+      test("fields convert to column names in providerArgs values", () async {
         final statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(params: {
+          query: Query(providerArgs: {
             'orderBy': 'complexFieldName ASC',
             'having': 'complexFieldName > 1000',
             'groupBy': 'complexFieldName',

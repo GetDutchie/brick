@@ -10,40 +10,40 @@ void main() {
         expect(q.action, QueryAction.delete);
       });
 
-      group('#params', () {
-        test('#params.page and #params.sort', () {
-          final q = Query(params: {'page': 1, 'sort': 'by_user_asc'});
+      group('#providerArgs', () {
+        test('#providerArgs.page and #providerArgs.sort', () {
+          final q = Query(providerArgs: {'page': 1, 'sort': 'by_user_asc'});
 
-          expect(q.params['page'], 1);
-          expect(q.params['sort'], 'by_user_asc');
+          expect(q.providerArgs['page'], 1);
+          expect(q.providerArgs['sort'], 'by_user_asc');
         });
 
-        test('#params.limit', () {
-          final q0 = Query(params: {'limit': 0});
-          expect(q0.params['limit'], 0);
+        test('#providerArgs.limit', () {
+          final q0 = Query(providerArgs: {'limit': 0});
+          expect(q0.providerArgs['limit'], 0);
 
-          final q10 = Query(params: {'limit': 10});
-          expect(q10.params['limit'], 10);
+          final q10 = Query(providerArgs: {'limit': 10});
+          expect(q10.providerArgs['limit'], 10);
 
-          final q18 = Query(params: {'limit': 18});
-          expect(q18.params['limit'], 18);
+          final q18 = Query(providerArgs: {'limit': 18});
+          expect(q18.providerArgs['limit'], 18);
 
-          expect(() => Query(params: {'limit': -1}), throwsA(TypeMatcher<AssertionError>()));
+          expect(() => Query(providerArgs: {'limit': -1}), throwsA(TypeMatcher<AssertionError>()));
         });
 
-        test('#params.offset', () {
-          final q0 = Query(params: {'limit': 10, 'offset': 0});
-          expect(q0.params['offset'], 0);
+        test('#providerArgs.offset', () {
+          final q0 = Query(providerArgs: {'limit': 10, 'offset': 0});
+          expect(q0.providerArgs['offset'], 0);
 
-          final q10 = Query(params: {'limit': 10, 'offset': 10});
-          expect(q10.params['offset'], 10);
+          final q10 = Query(providerArgs: {'limit': 10, 'offset': 10});
+          expect(q10.providerArgs['offset'], 10);
 
-          final q18 = Query(params: {'limit': 10, 'offset': 18});
-          expect(q18.params['offset'], 18);
+          final q18 = Query(providerArgs: {'limit': 10, 'offset': 18});
+          expect(q18.providerArgs['offset'], 18);
 
-          expect(() => Query(params: {'offset': -1}), throwsA(TypeMatcher<AssertionError>()));
+          expect(() => Query(providerArgs: {'offset': -1}), throwsA(TypeMatcher<AssertionError>()));
 
-          expect(() => Query(params: {'offset': 1}), throwsA(TypeMatcher<AssertionError>()));
+          expect(() => Query(providerArgs: {'offset': 1}), throwsA(TypeMatcher<AssertionError>()));
         });
       });
 
@@ -61,14 +61,14 @@ void main() {
       test('properties are the same', () {
         final q1 = Query(
           action: QueryAction.delete,
-          params: {
+          providerArgs: {
             'limit': 3,
             'offset': 3,
           },
         );
         final q2 = Query(
           action: QueryAction.delete,
-          params: {
+          providerArgs: {
             'limit': 3,
             'offset': 3,
           },
@@ -77,30 +77,30 @@ void main() {
         expect(q1, q2);
       });
 
-      test('params are the same', () {
-        final q1 = Query(params: {'name': 'Guy'});
-        final q2 = Query(params: {'name': 'Guy'});
+      test('providerArgs are the same', () {
+        final q1 = Query(providerArgs: {'name': 'Guy'});
+        final q2 = Query(providerArgs: {'name': 'Guy'});
 
         expect(q1, q2);
       });
 
-      test('params have different values', () {
-        final q1 = Query(params: {'name': 'Thomas'});
-        final q2 = Query(params: {'name': 'Guy'});
+      test('providerArgs have different values', () {
+        final q1 = Query(providerArgs: {'name': 'Thomas'});
+        final q2 = Query(providerArgs: {'name': 'Guy'});
 
         expect(q1, isNot(q2));
       });
 
-      test('params have different keys', () {
-        final q1 = Query(params: {'email': 'guy@guy.com'});
-        final q2 = Query(params: {'name': 'Guy'});
+      test('providerArgs have different keys', () {
+        final q1 = Query(providerArgs: {'email': 'guy@guy.com'});
+        final q2 = Query(providerArgs: {'name': 'Guy'});
 
         expect(q1, isNot(q2));
       });
 
-      test('params are null', () {
+      test('providerArgs are null', () {
         final q1 = Query();
-        final q2 = Query(params: {'name': 'Guy'});
+        final q2 = Query(providerArgs: {'name': 'Guy'});
         expect(q1, isNot(q2));
 
         final q3 = Query();
@@ -110,32 +110,32 @@ void main() {
 
     group('#copyWith', () {
       test('overrides', () {
-        final q1 = Query(action: QueryAction.insert, params: {'limit': 10, 'offset': 10});
-        final q2 = q1.copyWith(params: {'limit': 20});
+        final q1 = Query(action: QueryAction.insert, providerArgs: {'limit': 10, 'offset': 10});
+        final q2 = q1.copyWith(providerArgs: {'limit': 20});
         expect(q2.action, QueryAction.insert);
-        expect(q2.params['limit'], 20);
-        expect(q2.params['offset'], null);
+        expect(q2.providerArgs['limit'], 20);
+        expect(q2.providerArgs['offset'], null);
 
-        final q3 = q1.copyWith(params: {'limit': 50, 'offset': 20});
+        final q3 = q1.copyWith(providerArgs: {'limit': 50, 'offset': 20});
         expect(q3.action, QueryAction.insert);
-        expect(q3.params['limit'], 50);
-        expect(q3.params['offset'], 20);
+        expect(q3.providerArgs['limit'], 50);
+        expect(q3.providerArgs['offset'], 20);
       });
 
       test('appends', () {
         final q1 = Query(action: QueryAction.insert);
-        final q2 = q1.copyWith(params: {'limit': 20});
+        final q2 = q1.copyWith(providerArgs: {'limit': 20});
 
-        expect(q1.params['limit'], null);
+        expect(q1.providerArgs['limit'], null);
         expect(q2.action, QueryAction.insert);
-        expect(q2.params['limit'], 20);
+        expect(q2.providerArgs['limit'], 20);
       });
     });
 
     test('#toJson', () {
       final source = Query(
         action: QueryAction.update,
-        params: {
+        providerArgs: {
           'limit': 3,
           'offset': 3,
         },
@@ -145,7 +145,7 @@ void main() {
         source.toJson(),
         {
           'action': 2,
-          'params': {
+          'providerArgs': {
             'limit': 3,
             'offset': 3,
           },
@@ -157,7 +157,7 @@ void main() {
       test('.fromJson', () {
         final json = {
           'action': 2,
-          'params': {
+          'providerArgs': {
             'limit': 3,
             'offset': 3,
           },
@@ -168,7 +168,7 @@ void main() {
           result,
           Query(
             action: QueryAction.update,
-            params: {
+            providerArgs: {
               'limit': 3,
               'offset': 3,
             },
@@ -186,7 +186,7 @@ void main() {
         });
 
         test("limit1:true", () {
-          final expandedQuery = Query(where: [Where('id', value: 2)], params: {'limit': 1});
+          final expandedQuery = Query(where: [Where('id', value: 2)], providerArgs: {'limit': 1});
           final factoried = Query.where('id', 2, limit1: true);
           expect(factoried, expandedQuery);
           expect(factoried.unlimited, isFalse);
