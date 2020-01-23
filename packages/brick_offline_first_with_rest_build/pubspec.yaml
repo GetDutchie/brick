@@ -15,12 +15,15 @@ dependencies:
   brick_offline_first_abstract: ^0.0.3
   brick_rest: ^0.0.2
   brick_sqlite_abstract: ^0.0.4
-  brick_build:
-    path: ../brick_build
+  brick_build: ^0.0.4
   brick_sqlite_build:
-    path: ../brick_sqlite_build
+    git:
+      url: https://github.com/greenbits/brick.git
+      path: packages/brick_sqlite_build
   brick_rest_build:
-    path: ../brick_rest_build
+    git:
+      url: https://github.com/greenbits/brick.git
+      path: packages/brick_rest_build
   build: ^1.2.0
   build_config: ^0.4.0
   dart_style: ^1.2.4
