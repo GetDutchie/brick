@@ -50,7 +50,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
   return OfflineFirstWhere(
       assoc: repository
           ?.getAssociation<OtherAssoc>(Query(
-              where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
+              where: [Where.exact('id', data['id'])],
+              providerArgs: {'limit': 1}))
           ?.then((a) => a?.isNotEmpty == true ? a.first : null),
       assocs: (data['assocs'] ?? [])
           .map((s) => repository
