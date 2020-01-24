@@ -43,39 +43,39 @@ Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
 class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
-  String restEndpoint({query, instance}) => "";
+  String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     },
-    "name": {
-      "name": "name",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'name': {
+      'name': 'name',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "email": {
-      "name": "email",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'email': {
+      'name': 'email',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "hat": {
-      "name": "hat",
-      "type": Hat,
-      "iterable": false,
-      "association": false,
+    'hat': {
+      'name': 'hat',
+      'type': Hat,
+      'iterable': false,
+      'association': false,
     }
   };
   Future<int> primaryKeyByUniqueColumns(
           Mounty instance, DatabaseExecutor executor) async =>
       null;
-  final String tableName = "Mounty";
+  final String tableName = 'Mounty';
 
   Future<Mounty> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>

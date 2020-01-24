@@ -277,7 +277,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   bool _supportsArgs(Query query) {
     if (query?.providerArgs == null) return true;
 
-    final supportedParams = [
+    final supportedArgs = [
       'collate',
       'groupBy',
       'having',
@@ -287,7 +287,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     ];
 
     return query.providerArgs.keys.every((paramKey) {
-      return supportedParams.contains(paramKey);
+      return supportedArgs.contains(paramKey);
     });
   }
 }

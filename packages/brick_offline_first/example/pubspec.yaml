@@ -8,9 +8,13 @@ dependencies:
   flutter:
     sdk: flutter
   brick_core: any
-  brick_offline_first: any
+  brick_offline_first:
+    path: ../
 
 dev_dependencies:
   build_runner: any
   build_resolvers: ^1.2.1
-  brick_build: any
+  brick_offline_first_with_rest_build:
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_offline_first_with_rest_build
