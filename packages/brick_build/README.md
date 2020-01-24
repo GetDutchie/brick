@@ -464,7 +464,7 @@ test('simple', () {
 
 ### Why are all models hacked into a single file?
 
-Dart's build discovers one file at a time. Because Brick makes use of associations, it must be aware of all files, including similarly-annotated models that may not be in the same file. Therefore, one build step handles combining all files via a known directory (this is why folder organization is so important) and then combines them into a file. By writing that file, another build step listening for the extension kicks off _the next_ build step to interpret each annotation.
+Dart's build discovers annotations within one file at a time. Because Brick makes use of associations, it must be aware of all files, including similarly-annotated models that may not be in the same file. Therefore, one build step handles combining all files via a known directory (this is why folder organization is so important) and then combines them into a file. By writing that file, another build step listening for the extension kicks off _the next_ build step to interpret each annotation.
 
 ### Why doesn't this library use [JsonSerializable](https://pub.dartlang.org/packages/json_serializable)?
 

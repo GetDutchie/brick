@@ -18,9 +18,9 @@ class Query {
 
   /// Properties that interact with the provider's source. For example, `'limit'`.
   /// The value **must** be serializable by `jsonEncode`.
-  final Map<String, dynamic> params;
+  final Map<String, dynamic> providerArgs;
 
-  bool get unlimited => params['limit'] == null || params['limit'] < 1;
+  bool get unlimited => providerArgs['limit'] == null || providerArgs['limit'] < 1;
 
   /// Model properties to be interpreted by the [Provider].
   /// When creating [WhereCondition]s, the first positional `fieldName` argument
@@ -45,25 +45,25 @@ class Query {
 
   Query({
     this.action,
-    Map<String, dynamic> params,
+    Map<String, dynamic> providerArgs,
     this.where,
-  }) : this.params = params ?? {} {
+  }) : this.providerArgs = providerArgs ?? {} {
     /// Number of results first returned from query; `0` returns all. Must be greater than -1
-    if (this.params['limit'] != null) {
-      assert(this.params['limit'] > -1);
+    if (this.providerArgs['limit'] != null) {
+      assert(this.providerArgs['limit'] > -1);
     }
 
     /// Offset results returned from query. Must be greater than -1 and must be used with limit
-    if (this.params['offset'] != null) {
-      assert(this.params['offset'] > -1);
-      assert(this.params['limit'] != null);
+    if (this.providerArgs['offset'] != null) {
+      assert(this.providerArgs['offset'] > -1);
+      assert(this.providerArgs['limit'] != null);
     }
   }
 
   factory Query.fromJson(Map<String, dynamic> json) {
     return Query(
       action: json['action'] == null ? null : QueryAction.values[json['action']],
-      params: json['params'],
+      providerArgs: json['providerArgs'],
       where: json['where'] == null ? null : json['where'].map((w) => WhereCondition.fromJson(w)),
     );
   }
@@ -81,7 +81,7 @@ class Query {
     compare ??= Where.defaults.compare;
     return Query(
       where: [Where(evaluatedField, value: value, compare: compare)],
-      params: {
+      providerArgs: {
         if (limit1) 'limit': 1,
       },
     );
@@ -89,19 +89,19 @@ class Query {
 
   Query copyWith({
     QueryAction action,
-    Map<String, dynamic> params,
+    Map<String, dynamic> providerArgs,
     List<WhereCondition> where,
   }) =>
       Query(
         action: action ?? this.action,
-        params: params ?? this.params,
+        providerArgs: providerArgs ?? this.providerArgs,
         where: where ?? this.where,
       );
 
   Map<String, dynamic> toJson() {
     return {
       if (action != null) 'action': QueryAction.values.indexOf(action),
-      if (params != null) 'params': params,
+      if (providerArgs != null) 'providerArgs': providerArgs,
       if (where != null)
         'where': where.map((w) => w.toJson()).toList().cast<Map<String, dynamic>>(),
     };
@@ -115,11 +115,11 @@ class Query {
       identical(this, other) ||
       other is Query &&
           this?.action == other?.action &&
-          _mapEquality.equals(this?.params, other?.params) &&
+          _mapEquality.equals(this?.providerArgs, other?.providerArgs) &&
           _listEquality.equals(this?.where, other?.where);
 
   @override
-  int get hashCode => action.hashCode ^ params.hashCode ^ where.hashCode;
+  int get hashCode => action.hashCode ^ providerArgs.hashCode ^ where.hashCode;
 }
 
 /// How the query interacts with the provider

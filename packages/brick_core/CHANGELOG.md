@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.5
+
+* Rename `Query#params` to `Query#providerArgs`, reflecting the much narrower purpose of the member
+
 ## 0.0.4
 
 * `FieldSerializable#defaultValue` changes from `dynamic` to `String`. As this is injected directly into the adapter, it does not need to be dynamic and should better reflect its purpose.

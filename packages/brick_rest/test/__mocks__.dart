@@ -29,7 +29,7 @@ class DemoRestModelAdapter extends RestAdapter<DemoRestModel> {
       await _$DemoRestModelToRest(instance);
 
   restEndpoint({query, instance}) {
-    if (query != null && query?.params['limit'] != null && query.params['limit'] > 1) {
+    if (query != null && query?.providerArgs['limit'] != null && query.providerArgs['limit'] > 1) {
       return "/people";
     }
 

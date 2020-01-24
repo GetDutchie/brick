@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 0.0.5
+
+* Bump dependency versions
 * Remove placeholders from `OfflineFirst` annotation (moves to `FieldSerializable`)
 
 ## 0.0.3

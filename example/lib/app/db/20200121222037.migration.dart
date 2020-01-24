@@ -9,7 +9,7 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20200120200549_up = [
+const List<MigrationCommand> _migration_20200121222037_up = [
   InsertTable("Customer"),
   InsertTable("Pizza"),
   InsertColumn("id", Column.integer, onTable: "Customer", unique: true),
@@ -21,7 +21,7 @@ const List<MigrationCommand> _migration_20200120200549_up = [
   InsertColumn("frozen", Column.boolean, onTable: "Pizza"),
 ];
 
-const List<MigrationCommand> _migration_20200120200549_down = [
+const List<MigrationCommand> _migration_20200121222037_down = [
   DropTable("Customer"),
   DropTable("Pizza"),
   DropColumn("id", onTable: "Customer"),
@@ -38,15 +38,15 @@ const List<MigrationCommand> _migration_20200120200549_down = [
 //
 
 @Migratable(
-  version: '20200120200549',
-  up: _migration_20200120200549_up,
-  down: _migration_20200120200549_down,
+  version: '20200121222037',
+  up: _migration_20200121222037_up,
+  down: _migration_20200121222037_down,
 )
-class Migration20200120200549 extends Migration {
-  const Migration20200120200549()
+class Migration20200121222037 extends Migration {
+  const Migration20200121222037()
       : super(
-          version: 20200120200549,
-          up: _migration_20200120200549_up,
-          down: _migration_20200120200549_down,
+          version: 20200121222037,
+          up: _migration_20200121222037_up,
+          down: _migration_20200121222037_down,
         );
 }

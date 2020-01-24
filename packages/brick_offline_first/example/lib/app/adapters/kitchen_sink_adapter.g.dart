@@ -38,8 +38,8 @@ Future<KitchenSink> _$KitchenSinkFromRest(Map<String, dynamic> data,
           ?.cast<Future<Mounty>>(),
       futureSetOfflineFirstModel: (data['future_set_offline_first_model']?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository))?.toSet()?.cast<Future<Mounty>>())?.toSet(),
       offlineFirstSerdes: Hat.fromRest(data['offline_first_serdes']),
-      listOfflineFirstSerdes: data['list_offline_first_serdes'].map((c) => Hat.fromRest(c as Map))?.toList()?.cast<Hat>(),
-      setOfflineFirstSerdes: data['set_offline_first_serdes'].map((c) => Hat.fromRest(c as Map))?.toSet()?.cast<Hat>(),
+      listOfflineFirstSerdes: data['list_offline_first_serdes'].map((c) => Hat.fromRest(c as Map<String, dynamic>))?.toList()?.cast<Hat>(),
+      setOfflineFirstSerdes: data['set_offline_first_serdes'].map((c) => Hat.fromRest(c as Map<String, dynamic>))?.toSet()?.cast<Hat>(),
       restAnnotationName: data['restAnnotationOtherName'] as String,
       restAnnotationDefaultValue: data['rest_annotation_default_value'] as String ?? "a default value",
       restAnnotationNullable: data['rest_annotation_nullable'] == null ? null : data['rest_annotation_nullable'] as String,
@@ -54,7 +54,7 @@ Future<KitchenSink> _$KitchenSinkFromRest(Map<String, dynamic> data,
       sqliteAnnotationIgnore: data['sqlite_annotation_ignore'] as String,
       sqliteAnnotationUnique: data['sqlite_annotation_unique'] as String,
       sqliteAnnotationName: data['sqlite_annotation_name'] as String,
-      offlineFirstWhere: await repository?.getAssociation<Mounty>(Query(where: [Where('email', data['mounty_email'])], params: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null));
+      offlineFirstWhere: await repository?.getAssociation<Mounty>(Query(where: [Where.exact('email', data['mounty_email'])], providerArgs: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null));
 }
 
 Future<Map<String, dynamic>> _$KitchenSinkToRest(KitchenSink instance,
@@ -375,230 +375,230 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
   KitchenSinkAdapter();
 
   String restEndpoint({query, instance}) => "/my-path";
-  final String fromKey = "kitchen_sinks";
-  final String toKey = "kitchen_sink";
+  final String fromKey = 'kitchen_sinks';
+  final String toKey = 'kitchen_sink';
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
     },
-    "anyString": {
-      "name": "any_string",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'anyString': {
+      'name': 'any_string',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "anyInt": {
-      "name": "any_int",
-      "type": int,
-      "iterable": false,
-      "association": false,
+    'anyInt': {
+      'name': 'any_int',
+      'type': int,
+      'iterable': false,
+      'association': false,
     },
-    "anyDouble": {
-      "name": "any_double",
-      "type": double,
-      "iterable": false,
-      "association": false,
+    'anyDouble': {
+      'name': 'any_double',
+      'type': double,
+      'iterable': false,
+      'association': false,
     },
-    "anyNum": {
-      "name": "any_num",
-      "type": num,
-      "iterable": false,
-      "association": false,
+    'anyNum': {
+      'name': 'any_num',
+      'type': num,
+      'iterable': false,
+      'association': false,
     },
-    "anyDateTime": {
-      "name": "any_date_time",
-      "type": DateTime,
-      "iterable": false,
-      "association": false,
+    'anyDateTime': {
+      'name': 'any_date_time',
+      'type': DateTime,
+      'iterable': false,
+      'association': false,
     },
-    "anyBool": {
-      "name": "any_bool",
-      "type": bool,
-      "iterable": false,
-      "association": false,
+    'anyBool': {
+      'name': 'any_bool',
+      'type': bool,
+      'iterable': false,
+      'association': false,
     },
-    "anyMap": {
-      "name": "any_map",
-      "type": Map,
-      "iterable": false,
-      "association": false,
+    'anyMap': {
+      'name': 'any_map',
+      'type': Map,
+      'iterable': false,
+      'association': false,
     },
-    "enumFromIndex": {
-      "name": "enum_from_index",
-      "type": AnyEnum,
-      "iterable": false,
-      "association": false,
+    'enumFromIndex': {
+      'name': 'enum_from_index',
+      'type': AnyEnum,
+      'iterable': false,
+      'association': false,
     },
-    "anyList": {
-      "name": "any_list",
-      "type": int,
-      "iterable": true,
-      "association": false,
+    'anyList': {
+      'name': 'any_list',
+      'type': int,
+      'iterable': true,
+      'association': false,
     },
-    "anySet": {
-      "name": "any_set",
-      "type": int,
-      "iterable": true,
-      "association": false,
+    'anySet': {
+      'name': 'any_set',
+      'type': int,
+      'iterable': true,
+      'association': false,
     },
-    "offlineFirstModel": {
-      "name": "offline_first_model_Mounty_brick_id",
-      "type": Mounty,
-      "iterable": false,
-      "association": true,
+    'offlineFirstModel': {
+      'name': 'offline_first_model_Mounty_brick_id',
+      'type': Mounty,
+      'iterable': false,
+      'association': true,
     },
-    "listOfflineFirstModel": {
-      "name": "list_offline_first_model",
-      "type": Mounty,
-      "iterable": true,
-      "association": true,
+    'listOfflineFirstModel': {
+      'name': 'list_offline_first_model',
+      'type': Mounty,
+      'iterable': true,
+      'association': true,
     },
-    "setOfflineFirstModel": {
-      "name": "set_offline_first_model",
-      "type": Mounty,
-      "iterable": true,
-      "association": true,
+    'setOfflineFirstModel': {
+      'name': 'set_offline_first_model',
+      'type': Mounty,
+      'iterable': true,
+      'association': true,
     },
-    "futureOfflineFirstModel": {
-      "name": "future_offline_first_model_Mounty_brick_id",
-      "type": Mounty,
-      "iterable": false,
-      "association": true,
+    'futureOfflineFirstModel': {
+      'name': 'future_offline_first_model',
+      'type': Mounty,
+      'iterable': false,
+      'association': false,
     },
-    "futureListOfflineFirstModel": {
-      "name": "future_list_offline_first_model",
-      "type": Mounty,
-      "iterable": true,
-      "association": true,
+    'futureListOfflineFirstModel': {
+      'name': 'future_list_offline_first_model',
+      'type': Mounty,
+      'iterable': true,
+      'association': true,
     },
-    "futureSetOfflineFirstModel": {
-      "name": "future_set_offline_first_model",
-      "type": Mounty,
-      "iterable": true,
-      "association": true,
+    'futureSetOfflineFirstModel': {
+      'name': 'future_set_offline_first_model',
+      'type': Mounty,
+      'iterable': true,
+      'association': true,
     },
-    "offlineFirstSerdes": {
-      "name": "offline_first_serdes",
-      "type": Hat,
-      "iterable": false,
-      "association": false,
+    'offlineFirstSerdes': {
+      'name': 'offline_first_serdes',
+      'type': Hat,
+      'iterable': false,
+      'association': false,
     },
-    "listOfflineFirstSerdes": {
-      "name": "list_offline_first_serdes",
-      "type": Hat,
-      "iterable": true,
-      "association": false,
+    'listOfflineFirstSerdes': {
+      'name': 'list_offline_first_serdes',
+      'type': Hat,
+      'iterable': true,
+      'association': false,
     },
-    "setOfflineFirstSerdes": {
-      "name": "set_offline_first_serdes",
-      "type": Hat,
-      "iterable": true,
-      "association": false,
+    'setOfflineFirstSerdes': {
+      'name': 'set_offline_first_serdes',
+      'type': Hat,
+      'iterable': true,
+      'association': false,
     },
-    "restAnnotationName": {
-      "name": "rest_annotation_name",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationName': {
+      'name': 'rest_annotation_name',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationDefaultValue": {
-      "name": "rest_annotation_default_value",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationDefaultValue': {
+      'name': 'rest_annotation_default_value',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationNullable": {
-      "name": "rest_annotation_nullable",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationNullable': {
+      'name': 'rest_annotation_nullable',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationIgnore": {
-      "name": "rest_annotation_ignore",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationIgnore': {
+      'name': 'rest_annotation_ignore',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationIgnoreTo": {
-      "name": "rest_annotation_ignore_to",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationIgnoreTo': {
+      'name': 'rest_annotation_ignore_to',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationIgnoreFrom": {
-      "name": "rest_annotation_ignore_from",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationIgnoreFrom': {
+      'name': 'rest_annotation_ignore_from',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationFromGenerator": {
-      "name": "rest_annotation_from_generator",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationFromGenerator': {
+      'name': 'rest_annotation_from_generator',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "restAnnotationToGenerator": {
-      "name": "rest_annotation_to_generator",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'restAnnotationToGenerator': {
+      'name': 'rest_annotation_to_generator',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "enumFromString": {
-      "name": "enum_from_string",
-      "type": AnyEnum,
-      "iterable": false,
-      "association": false,
+    'enumFromString': {
+      'name': 'enum_from_string',
+      'type': AnyEnum,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationNullable": {
-      "name": "sqlite_annotation_nullable",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationNullable': {
+      'name': 'sqlite_annotation_nullable',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationDefaultValue": {
-      "name": "sqlite_annotation_default_value",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationDefaultValue': {
+      'name': 'sqlite_annotation_default_value',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationFromGenerator": {
-      "name": "sqlite_annotation_from_generator",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationFromGenerator': {
+      'name': 'sqlite_annotation_from_generator',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationToGenerator": {
-      "name": "sqlite_annotation_to_generator",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationToGenerator': {
+      'name': 'sqlite_annotation_to_generator',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationUnique": {
-      "name": "sqlite_annotation_unique",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationUnique': {
+      'name': 'sqlite_annotation_unique',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "sqliteAnnotationName": {
-      "name": "custom column name",
-      "type": String,
-      "iterable": false,
-      "association": false,
+    'sqliteAnnotationName': {
+      'name': 'custom column name',
+      'type': String,
+      'iterable': false,
+      'association': false,
     },
-    "offlineFirstWhere": {
-      "name": "offline_first_where_Mounty_brick_id",
-      "type": Mounty,
-      "iterable": false,
-      "association": true,
+    'offlineFirstWhere': {
+      'name': 'offline_first_where_Mounty_brick_id',
+      'type': Mounty,
+      'iterable': false,
+      'association': true,
     }
   };
   Future<int> primaryKeyByUniqueColumns(
       KitchenSink instance, DatabaseExecutor executor) async {
-    final results = await executor.rawQuery("""
-        SELECT * FROM `KitchenSink` WHERE sqlite_annotation_unique = ? LIMIT 1""",
+    final results = await executor.rawQuery('''
+        SELECT * FROM `KitchenSink` WHERE sqlite_annotation_unique = ? LIMIT 1''',
         [instance.sqliteAnnotationUnique]);
 
     // SQFlite returns [{}] when no results are found
@@ -608,7 +608,7 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
     return results.first['_brick_id'];
   }
 
-  final String tableName = "KitchenSink";
+  final String tableName = 'KitchenSink';
 
   Future<KitchenSink> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>

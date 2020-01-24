@@ -4,7 +4,7 @@ Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.
 
 ## Supported `Query` Configuration
 
-### `params:`
+### `providerArgs:`
 
 * `'headers'` (`Map<String, String>`) set HTTP headers
 * `'request'` (`String`) specifies HTTP method. Only available to `#upsert`. Defaults to `POST`
@@ -48,7 +48,7 @@ class User extends OfflineFirstModel {}
 
 :warning: If an endpoint's function returns `null`, it is skipped by the provider.
 
-#### With Query#params
+#### With Query#providerArgs
 
 ```dart
 @ConnectOfflineFirstWithRest(
@@ -57,9 +57,9 @@ class User extends OfflineFirstModel {}
       if (query?.action == QueryAction.delete) return "/users/${instance.id}";
 
       if (query?.action == QueryAction.get &&
-          query?.params.isNotEmpty &&
-          query?.params['limit'] != null) {
-            return "/users?limit=${query.params['limit']}";
+          query?.providerArgs.isNotEmpty &&
+          query?.providerArgs['limit'] != null) {
+            return "/users?limit=${query.providerArgs['limit']}";
       }
 
       return "/users";
@@ -146,7 +146,7 @@ class Hat extends OfflineFirstModel {}
 
 Data will be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
 
-1) A `topLevelKey` in `Query#params` with a non-empty value
+1) A `topLevelKey` in `Query#providerArgs` with a non-empty value
 1) `fromKey` if invoked from `provider#get` or `toKey` if invoked from `provider#upsert`
 1) The first discovered key. As a map is effectively an unordered list, relying on this fall through is not recommended.
 

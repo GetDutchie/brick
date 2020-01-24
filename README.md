@@ -120,7 +120,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
 - [Providers](#providers)
   * [Fetching and Mutating Data](#fetching-and-mutating-data)
   * [Query](#query-1)
-    - [params:](#params)
+    - [providerArgs:](#providerArgs)
     - [where:](#where-1)
   * [Translation and the Model Dictionary](#translation-and-the-model-dictionary)
   * [Class-level Configuration](#class-level-configuration)
@@ -351,7 +351,7 @@ Querying can be done with `Where` or `WherePhrase`:
 
 ### Associations
 
-Params are forwarded to the provider which chooses to accept or reject specific keys. For example, Rest accepts the `headers` key to control request headers. SQLite supports operators like `groupBy`, `orderBy`, `offset`, and others in its params.
+`providerArgs` are forwarded to the provider which chooses to accept or reject specific keys. For example, Rest accepts the `headers` key to control request headers. SQLite supports operators like `groupBy`, `orderBy`, `offset`, and others in its `providerArgs`.
 
 When querying associations, use a nested `Where`, again searching by field name on the association. For example:
 
@@ -478,18 +478,18 @@ Underscore prefixing of type declarations ensure that 1) they will likely not co
 
 Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
 
-### `params:`
+### `providerArgs:`
 
-`params` describe how to interact with a provider's source.
+`providerArgs` describe how to interact with a provider's source.
 
 ```dart
-params: {
+providerArgs: {
   // limit describes how many results the provider requires from the source
   'limit': 10,
 },
 ```
 
-As `params` can vary from provider to provider and IDE suggestions are unavailable to a string-key map, `params` should be clearly and accessibly documented within every new provider.
+As `providerArgs` can vary from provider to provider and IDE suggestions are unavailable to a string-key map, `providerArgs` should be clearly and accessibly documented within every new provider.
 
 ### `where:`
 

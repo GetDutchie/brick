@@ -22,7 +22,7 @@ class MyModel extends OfflineFirstModel {}
 
 Using unique identifiers, `where:` can connect multiple providers. It is declared using a map between a local provider (key) and a remote provider (value). This is useful when a remote provider only includes unique identifiers (such as `"id": 1`) of associations, the OfflineFirstRepository can lookup that instance from another source and deserialize into a complete model.
 
-:warning: This is another rare instance (like `Query#params` in the SQLite Provider) where the serializer property name is used instead of the field name, such as `last_name` instead of `lastName`.
+:warning: This is another rare instance (like `Query#providerArgs` in the SQLite Provider) where the serializer property name is used instead of the field name, such as `last_name` instead of `lastName`.
 
 For a concrete example, SQLite is the local data source and REST is the remote data source:
 

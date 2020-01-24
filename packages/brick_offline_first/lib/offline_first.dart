@@ -137,7 +137,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
   /// Load association from SQLite first; if the [_Model] hasn't been loaded previously,
   /// fetch it from [remoteProvider] and hydrate SQLite.
-  /// For available query params see [remoteProvider#get] [SqliteProvider.get].
+  /// For available query providerArgs see [remoteProvider#get] [SqliteProvider.get].
   ///
   /// [alwaysHydrate] ensures data is fetched from the [remoteProvider] for each invocation.
   /// This often **negatively affects performance** when enabled. Defaults to `false`.
@@ -196,7 +196,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// Useful for large queries or remote results.
   ///
   /// [batchSize] will map to the [query]'s `limit`, and the [query]'s pagination number will be
-  /// incremented in `query.params['offset']`. The endpoint for [_Model] should expect these
+  /// incremented in `query.providerArgs['offset']`. The endpoint for [_Model] should expect these
   /// arguments. The stream will recurse until the return size does not equal [batchSize].
   ///
   /// [requireRemote] ensures the data is fresh at the expense of increased execution time.
@@ -211,7 +211,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool requireRemote = false,
     bool seedOnly = false,
   }) async {
-    query = (query ?? Query()).copyWith(params: {'limit': batchSize});
+    query = (query ?? Query()).copyWith(providerArgs: {'limit': batchSize});
     final total = <_Model>[];
 
     /// Retrieve up to [batchSize] starting at [offset]. Recursively retrieves the next
@@ -219,7 +219,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Future<List<_Model>> getFrom(int offset) async {
       // add offset to the existing query
       final recursiveQuery = query.copyWith(
-        params: (query.params ?? {})..addAll({'offset': offset}),
+        providerArgs: (query.providerArgs ?? {})..addAll({'offset': offset}),
       );
 
       final results = await get<_Model>(
