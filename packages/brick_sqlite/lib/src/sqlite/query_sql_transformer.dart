@@ -74,7 +74,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     if (_where.isNotEmpty) _statement.add(whereClause);
 
     _statement.add(AllOtherClausesFragment(
-      query?.params ?? {},
+      query?.providerArgs ?? {},
       fieldsToColumns: adapter.fieldsToSqliteColumns,
     ).toString());
   }
@@ -292,7 +292,7 @@ class WhereColumnFragment {
 /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
 class AllOtherClausesFragment {
   final Map<String, Map<String, dynamic>> fieldsToColumns;
-  final Map<String, dynamic> params;
+  final Map<String, dynamic> providerArgs;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
   static const Map<String, String> _supportedOperators = {
@@ -304,20 +304,20 @@ class AllOtherClausesFragment {
     "offset": "OFFSET",
   };
 
-  /// These operators declare a column to compare against. The fields provided in [params]
+  /// These operators declare a column to compare against. The fields provided in [providerArgs]
   /// will have to be converted to their column name.
   /// For example, `'orderBy': 'createdAt ASC'` must become `ORDER BY created_at ASC`.
   static const List<String> _operatorsDeclaringFields = ['ORDER BY', 'GROUP BY', 'HAVING'];
 
   AllOtherClausesFragment(
-    Map<String, dynamic> params, {
+    Map<String, dynamic> providerArgs, {
     this.fieldsToColumns,
-  }) : params = params ?? {};
+  }) : providerArgs = providerArgs ?? {};
 
   toString() {
     return _supportedOperators.entries.fold(List<String>(), (acc, entry) {
       final op = entry.value;
-      var value = params[entry.key];
+      var value = providerArgs[entry.key];
 
       if (value == null) return acc;
 

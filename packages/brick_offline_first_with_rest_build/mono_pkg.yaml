@@ -1,0 +1,9 @@
+dart:
+  - stable
+  - dev
+
+stages:
+  - analyze:
+    - dartanalyzer: --fatal-warnings lib
+  - unit_test:
+    - test

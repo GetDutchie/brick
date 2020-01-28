@@ -1,30 +1,34 @@
-import 'package:path/path.dart' as p;
-import 'package:source_gen_test/source_gen_test.dart';
-import 'package:source_gen/source_gen.dart';
-import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
+export 'package:brick_build/testing.dart';
 
-/// In the test directory, filename prefix `test_`, suffix `.dart`
-Future<LibraryReader> _libraryForFolder(String folder, String filename) async {
-  return await initializeLibraryReaderForDirectory(
-    p.join('test', folder),
-    'test_$filename.dart',
-  );
+import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
+import 'package:brick_core/field_serializable.dart';
+
+class FieldAnnotation extends FieldSerializable {
+  get defaultValue => null;
+  String get fromGenerator => null;
+  String get toGenerator => null;
+  bool get ignore => false;
+  final String name;
+  bool get nullable => false;
+
+  FieldAnnotation(this.name);
 }
 
-typedef LibraryGenerator = Future<LibraryReader> Function(String filename);
+/// Find `@Rest` given a field
+class FieldAnnotationFinder extends AnnotationFinder<FieldAnnotation> {
+  FieldAnnotationFinder();
 
-/// Thunks a reader generator that assumes the filename is prefixed `test_`
-/// and suffixed `.dart` and nested in [folder] in the `test` folder.
-LibraryGenerator generateLibraryForFolder(String folder) {
-  return (String filename) async {
-    return _libraryForFolder(folder, filename);
-  };
+  @override
+  FieldAnnotation from(element) => FieldAnnotation(element.name);
 }
 
-/// The first annotation in a file
-Future<AnnotatedElement> annotationForFile(String folder, String filename) async {
-  final reader = await _libraryForFolder(folder, filename);
-  return reader.annotatedWith(offlineFirstChecker)?.first;
-}
+/// Converts all fields to [Rest]s for later consumption
+class TestFields extends FieldsForClass<FieldAnnotation> {
+  @override
+  final FieldAnnotationFinder finder;
 
-const offlineFirstChecker = TypeChecker.fromRuntime(ConnectOfflineFirstWithRest);
+  TestFields(ClassElement element)
+      : finder = FieldAnnotationFinder(),
+        super(element: element);
+}

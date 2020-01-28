@@ -69,7 +69,7 @@ void main() {
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test("params['headers']", () async {
+      test("providerArgs['headers']", () async {
         when(client.post(
           'http://localhost:3000/person',
           body: anyNamed("body"),
@@ -78,7 +78,7 @@ void main() {
         )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
         final instance = DemoRestModel("Guy");
-        final query = Query(params: {
+        final query = Query(providerArgs: {
           'headers': {'Authorization': 'Basic xyz'}
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
@@ -87,7 +87,7 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test("params['request']", () async {
+      test("providerArgs['request']", () async {
         when(client.put(
           'http://localhost:3000/person',
           body: anyNamed("body"),
@@ -96,14 +96,14 @@ void main() {
         )).thenAnswer((_) async => http.Response('{"name": "Guy"}', 200));
 
         final instance = DemoRestModel("Guy");
-        final query = Query(params: {"request": "PUT"});
+        final query = Query(providerArgs: {"request": "PUT"});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test("params['topLevelKey']", () async {
+      test("providerArgs['topLevelKey']", () async {
         when(client.post(
           'http://localhost:3000/person',
           body: '{"top":{"name":"Guy"}}',
@@ -112,7 +112,7 @@ void main() {
         )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
         final instance = DemoRestModel("Guy");
-        final query = Query(params: {"topLevelKey": "top"});
+        final query = Query(providerArgs: {"topLevelKey": "top"});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         verify(client.post(

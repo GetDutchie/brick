@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.4
+
+* `Sqlite#defaultValue` updated to reflect `FieldSerializable#defaultValue` change
+
 ## 0.0.2
 
 * Use single quotes when generating `Migration#version` to comply with default analyzer options

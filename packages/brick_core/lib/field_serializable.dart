@@ -1,9 +1,12 @@
 /// Interface for other field-level annotations.
 /// For example, `class Rest extends FieldSerializable {}`
 abstract class FieldSerializable {
-  /// The value to use if the source does not contain this key or if the
-  /// value is `null`. **Only applicable during deserialization.**
-  dynamic get defaultValue;
+  /// The value to use if the source's value is `null`.
+  /// This is often directly injected to the adapter, and wrapping is required for strings.
+  /// (e.g. `defaultValue: "'Missing Last Name'"`)
+  ///
+  /// This value is usually only applied during deserialization.
+  String get defaultValue;
 
   /// Manipulates output for the field in the deserialize generator.
   /// The instance's field name is automatically defined. While the build method is ultimately
@@ -34,4 +37,16 @@ abstract class FieldSerializable {
   ///
   /// Placeholders can be used in the value of this field.
   String get toGenerator;
+
+  /// Placeholder. Replaces with name (e.g. `@Rest(name:)` or `@Sqlite(name:)`).
+  /// Defaults to field name after any applicable renaming transforms.
+  static const ANNOTATED_NAME_VARIABLE = '%ANNOTATED_NAME%';
+
+  /// Placeholder. Replaces with `data['annotated_name']` per `@Rest(name:)` or `@Sqlite(name:)`.
+  /// Only valuable for `from` generators.
+  static const DATA_PROPERTY_VARIABLE = '%DATA_PROPERTY%';
+
+  /// Placeholder. Replaces with field name (`instance.myField` in `final String myField`).
+  /// Only valuable for `to` generators.
+  static const INSTANCE_PROPERTY_VARIABLE = '%INSTANCE_PROPERTY%';
 }

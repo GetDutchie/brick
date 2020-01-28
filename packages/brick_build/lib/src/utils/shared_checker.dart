@@ -1,3 +1,4 @@
+import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -11,11 +12,17 @@ const _numChecker = TypeChecker.fromRuntime(num);
 const _dateTimeChecker = TypeChecker.fromUrl('dart:core#DateTime');
 
 /// A utility to legibly assert a [DartType] against core types
-class SharedChecker {
+///
+/// Optionally declare a model to discover "sibling" models, or models that share
+/// the same domain or provider (e.g. `SqliteModel`).
+class SharedChecker<_SiblingModel extends Model> {
+  final _siblingClassChecker =
+      _SiblingModel != null ? TypeChecker.fromRuntime(_SiblingModel) : null;
+
   /// The checked type
   final DartType targetType;
 
-  const SharedChecker(this.targetType);
+  SharedChecker(this.targetType);
 
   /// Retrieves type argument, i.e. `Type` in `Future<Type>` or `List<Type>`
   DartType get argType {
@@ -32,12 +39,29 @@ class SharedChecker {
     return String;
   }
 
+  bool get canSerializeArgType {
+    final checker = SharedChecker<_SiblingModel>(argType);
+    return checker.isSerializable;
+  }
+
   bool get isArgTypeAFuture {
     if (argType == null) {
       return false;
     }
 
     return argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
+  }
+
+  /// If the sub type has super type [SqliteModel]
+  /// Returns `SqliteModel` in `Future<SqliteModel>`,
+  /// `List<Future<SqliteModel>>`, and `List<SqliteModel>`.
+  bool get isArgTypeASibling {
+    if (isArgTypeAFuture) {
+      final futuredType = SharedChecker.typeOfFuture<_SiblingModel>(argType);
+      return _siblingClassChecker?.isSuperTypeOf(futuredType) ?? false;
+    }
+
+    return _siblingClassChecker?.isSuperTypeOf(argType) ?? false;
   }
 
   bool get isBool => targetType.isDartCoreBool;
@@ -68,12 +92,30 @@ class SharedChecker {
 
   /// Not all [Type]s are parseable. For consistency, one catchall before smaller checks
   bool get isSerializable {
-    return isDartCoreType || isEnum || isIterable || isMap || isFuture;
+    if (targetType == null) {
+      return false;
+    }
+
+    if (isIterable) {
+      final argTypeChecker = SharedChecker<_SiblingModel>(argType);
+
+      return argTypeChecker.isSibling ||
+          argTypeChecker.isDartCoreType ||
+          argTypeChecker.isEnum ||
+          (argTypeChecker.isFuture && argTypeChecker.canSerializeArgType);
+    }
+
+    return isDartCoreType || isEnum || isMap || isSibling || (isFuture && canSerializeArgType);
   }
 
   bool get isNum => _numChecker.isExactlyType(targetType);
 
   bool get isSet => _setChecker.isExactlyType(targetType);
+
+  /// If this is a class similarly annotated by the current generator.
+  ///
+  /// Useful for verifying whether or not to generate Serialize/Deserializers methods.
+  bool get isSibling => _siblingClassChecker?.isSuperTypeOf(targetType) ?? false;
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
@@ -132,15 +174,15 @@ class SharedChecker {
   ///
   /// `Future`s of `Future` iterables (e.g. `Future<List<Future<String>>>`) are not supported,
   /// however, `Future`s in Iterables are supported (e.g. `List<Future<String>>`).
-  static DartType typeOfFuture(DartType type) {
-    final checker = SharedChecker(type);
+  static DartType typeOfFuture<_SiblingModel extends Model>(DartType type) {
+    final checker = SharedChecker<_SiblingModel>(type);
     // Future<?>
     if (checker.isFuture) {
       return checker.argType;
     } else {
       // Iterable<Future<?>>
       if (checker.isIterable) {
-        final iterableChecker = SharedChecker(checker.argType);
+        final iterableChecker = SharedChecker<_SiblingModel>(checker.argType);
 
         // Future<?>
         if (iterableChecker.isFuture) {

@@ -31,7 +31,7 @@ final Map<Type, RestAdapter<RestModel>> restMappings = {
 };
 final restModelDictionary = RestModelDictionary(restMappings);
 
-/// Sqlite mappings should only be used when initializizing a [SqliteProvider]
+/// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   KitchenSink: KitchenSinkAdapter(),
   Mounty: MountyAdapter()

@@ -1,10 +1,10 @@
 # Brick SQLite Provider
 
-Local storage for Flutter apps using [Brick](../../).
+Local storage for Flutter apps using [Brick](https://github.com/greenbits/brick).
 
 ## Supported `Query` Configuration
 
-### `params`
+### `providerArgs`
 
 The following map exactly to their SQLite keywords. The values will be inserted into a SQLite statement **without being prepared**.
 
@@ -15,17 +15,17 @@ The following map exactly to their SQLite keywords. The values will be inserted 
 * `offset`
 * `orderBy`
 
-As the values are directly inserted, this creates a rare exception where params uses the column name instead of the field name:
+As the values are directly inserted, this creates a rare exception where `providerArgs` uses the column name instead of the field name:
 
 ```dart
 //given this field in my model
 @Sqlite(name: 'last_name')
 final String lastName;
 
-// my query would use the column name in `params:` but not in `where:`
+// my query would use the column name in `providerArgs:` but not in `where:`
 Query(
-  where: [Where('lastName', 'Mustermann')],
-  params: {'orderBy': 'last_name ASC'},
+  where: [Where.exact('lastName', 'Mustermann')],
+  providerArgs: {'orderBy': 'last_name ASC'},
 )
 ```
 

@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.0.5
+
+* Bump dependency versions
+* Remove placeholders from `OfflineFirst` annotation (moves to `FieldSerializable`)
+
 ## 0.0.3
 
 * Rename `ConnectOfflineFirst` as `ConnectOfflineFirstWithRest` to reflect the narrow scope of the annotation

@@ -57,7 +57,7 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Rest(name: 'restAnnotationOtherName')
   final String restAnnotationName;
 
-  @Rest(defaultValue: 'a default value')
+  @Rest(defaultValue: '"a default value"')
   final String restAnnotationDefaultValue;
 
   @Rest(nullable: true)
@@ -84,7 +84,7 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Sqlite(nullable: true)
   final String sqliteAnnotationNullable;
 
-  @Sqlite(defaultValue: 'default value')
+  @Sqlite(defaultValue: '"default value"')
   final String sqliteAnnotationDefaultValue;
 
   @Sqlite(fromGenerator: '%DATA_PROPERTY%.toString()')

@@ -6,7 +6,7 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Writes [ModelDictionary] code to connect model and adapters. Outputs to app/brick.g.dart
-class ModelDictionaryBuilder extends BaseBuilder {
+class ModelDictionaryBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
   /// Import files to clean up from the final brick.g.dart file.
   /// For example, all annotations should be expanded into generated code, so their imports
   /// are no longer required by Brick.
@@ -20,10 +20,9 @@ class ModelDictionaryBuilder extends BaseBuilder {
   final outputExtension = '.model_dictionary_builder.dart';
 
   ModelDictionaryBuilder(
-    AnnotationSuperGenerator generator,
     this.modelDictionaryGenerator, {
     this.expectedImportRemovals = const <String>[],
-  }) : super(generator);
+  });
 
   @override
   Future<void> build(BuildStep buildStep) async {

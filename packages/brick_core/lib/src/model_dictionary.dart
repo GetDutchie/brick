@@ -1,5 +1,5 @@
-import 'adapter.dart';
-import 'model.dart';
+import 'package:brick_core/src/adapter.dart';
+import 'package:brick_core/src/model.dart';
 
 /// A modelDictionary points a [Provider] to the [Model]'s [Adapter]. The [Provider] uses it to construct
 /// app models from raw data.
