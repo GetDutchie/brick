@@ -150,24 +150,6 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
           path: packages/brick_offline_first_with_rest_build
       build_runner: any
     ```
-1. Ignore generated files in `.gitignore`. It is recommended to **not** commit files appended with `.g.dart` to version control. Instead, these files should be built on every `pull` as well as on every build in a CI/CD pipeline. This ensures your code is generated with the most recent version of Brick and remains untouchable by contributors.
-    ```
-    *.g.dart
-    # alternately, uncomment the lines below to only target brick files
-    # app/adapters/*.dart
-    # app/db/*.g.dart
-    # app/brick.g.dart
-    ```
-1. Generate files on every significant change. While not required, it is recommend to add the following to `.git/hooks/post-checkout`:
-    ```shell
-    # .git/post-checkout
-    #!/bin/sh
-
-    cd `dirname "$0"`
-    cd ../../
-    flutter pub get
-    flutter pub run build_runner build
-    ```
 1. Configure your app directory structure to match Brick's expectations:
     ```shell
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
@@ -180,6 +162,30 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
     // lib/app/repository.dart
     class MyRepository extends OfflineFirstWithRestRepository {}
     ```
+
+## Optional Setup
+
+**Ignore generated files in `.gitignore`**. It is recommended to **not** commit files appended with `.g.dart` to version control. Instead, these files should be built on every `pull` as well as on every build in a CI/CD pipeline. This ensures your code is generated with the most recent version of Brick and remains untouchable by contributors.
+
+```
+*.g.dart
+# alternately, uncomment the lines below to only target brick files
+# app/adapters/*.dart
+# app/db/*.g.dart
+# app/brick.g.dart
+```
+
+**Generate files on every significant change**. While not required, this is recommend especially for teams and open source projects. It's required when `*.g.dart` files are ignored. To automate the generation without using `build_runner watch`, the following can be added to `.git/hooks/post-checkout`:
+
+```shell
+# .git/post-checkout
+#!/bin/sh
+
+cd `dirname "$0"`
+cd ../../
+flutter pub get
+flutter pub run build_runner build
+```
 
 # Glossary
 
@@ -803,8 +809,6 @@ Repositories do not have model dictionaries because they do not interpret source
 ### Do I have to get rid of BLoC or Scoped Model or Redux in my app to use Brick?
 
 Nope. Those are _state_ managers. As a _store_ manager, Brick tracks and delivers persistent data across many sources, but it does not care about how you render that data. In fact, in its first app, Brick was integrated with BLoCs - the BLoC requested the data, Brick discovered the data, delivered the data back to the BLoC, and the BLoC delivered the data to the UI component for rendering.
-
-As Repositories can output streams in `#getBatched`, a state manager could be easily bypassed. However, after trial and error, the Brick team determined the maintainence benefits of separating presentation and logic outweighed forgoing a state manager.
 
 ### What's in the name?
 
