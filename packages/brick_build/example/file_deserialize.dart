@@ -3,7 +3,7 @@ import '../lib/generators.dart';
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
-/// Generate a function to produce a [ClassElement] from REST data
+/// Read from a file's contents to produce a model
 class FileDeserialize extends FileSerdesGenerator {
   FileDeserialize(
     ClassElement element,
