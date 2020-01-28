@@ -33,7 +33,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
-      return '$fieldValue';
+      return fieldValue;
 
       // Iterable
     } else if (checker.isIterable) {
@@ -59,11 +59,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         )''';
       }
 
-      return '$fieldValue';
+      return fieldValue;
 
       // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
-      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
       return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField ?? {})';
 

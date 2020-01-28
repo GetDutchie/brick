@@ -2,7 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
-/// Generate a function to produce a [ClassElement] to REST data
+/// Generate serialized code for each field to write to a file
 class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model> {
   FileSerialize(
     ClassElement element,
@@ -22,7 +22,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
-      return '$fieldValue';
+      return fieldValue;
 
       // Iterable
     } else if (checker.isIterable) {
@@ -44,7 +44,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
         )''';
       }
 
-      return '$fieldValue';
+      return fieldValue;
     } else if (checker.isEnum) {
       return '$fieldValue != null ? ${field.type}.values.indexOf($fieldValue) : null';
     }

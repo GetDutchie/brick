@@ -1,9 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:meta/meta.dart';
-import '../lib/src/serdes_generator.dart';
 import 'package:brick_core/core.dart' show Model;
+import 'package:meta/meta.dart';
+import '../lib/generators.dart';
 import 'file_fields.dart';
 
+/// This would be in a separate package
 abstract class FileModel extends Model {}
 
 abstract class FileSerdesGenerator<_Model extends FileModel> extends SerdesGenerator<File, _Model> {

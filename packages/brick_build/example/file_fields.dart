@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_core/field_serializable.dart';
-import '../lib/src/annotation_finder.dart';
-import '../lib/src/utils/fields_for_class.dart';
+import '../lib/generators.dart';
 
 // in a real-world equivalent, this is an annotation
 class File implements FieldSerializable {
