@@ -33,7 +33,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       if (checker.isArgTypeASibling && offlineFirstAnnotation.where != null) {
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where.entries.first;
-        final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+        final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
         return '$instanceWithField?.map((s) $awaited.${pair.key})';
       }
 
@@ -47,7 +47,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
     }
 
     if (checker.isSibling) {
-      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       if (offlineFirstAnnotation.where != null) {
         final pair = offlineFirstAnnotation.where.entries.first;
         return '$wrappedField?.${pair.key}';
