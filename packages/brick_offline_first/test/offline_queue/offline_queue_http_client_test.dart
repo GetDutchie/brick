@@ -135,6 +135,35 @@ void main() {
       await client.patch('http://localhost:3000', body: 'new record');
       expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
     });
+
+    test('request is not deleted after receiving a status code that should be reattempted',
+        () async {
+      final body = 'Too many requests';
+      final inner = stubResult(response: body, statusCode: 429);
+      final client = OfflineQueueHttpClient(inner, 'test_db', reattemptForStatusCodes: [429]);
+
+      final resp = await client.post('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+      expect(resp.statusCode, 429);
+      expect(resp.body, body);
+
+      await client.put('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+
+      await client.delete('http://localhost:3000');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+
+      await client.patch('http://localhost:3000', body: 'new record');
+      expect(sqliteLogs[sqliteLogs.length - 2], SQLITE_INSERT_STATEMENT);
+    });
+
+    test(".isATunnelNotFoundResponse", () async {
+      final body = 'Tunnel http://localhost:3000 not found';
+      final inner = stubResult(response: body, statusCode: 404);
+      final client = OfflineQueueHttpClient(inner, 'test_db');
+      final resp = await client.put('http://localhost:3000', body: 'new record');
+      expect(OfflineQueueHttpClient.isATunnelNotFoundResponse(resp), isTrue);
+    });
   });
 }
 
