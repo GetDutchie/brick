@@ -4,11 +4,24 @@ import '../lib/src/annotation_finder.dart';
 import '../lib/src/utils/fields_for_class.dart';
 
 // in a real-world equivalent, this is an annotation
-class File extends FieldSerializable {
+class File implements FieldSerializable {
   final String path;
+
+  final String name;
+  final String defaultValue;
+  final bool ignore;
+  final String fromGenerator;
+  final String toGenerator;
+  final bool nullable;
 
   const File({
     this.path,
+    this.name,
+    this.defaultValue,
+    this.ignore,
+    this.fromGenerator,
+    this.toGenerator,
+    this.nullable,
   });
 }
 
