@@ -6,7 +6,7 @@ import 'package:brick_rest_build/src/rest_fields.dart';
 import 'package:meta/meta.dart';
 
 abstract class RestSerdesGenerator<_Model extends RestModel> extends SerdesGenerator<Rest, _Model> {
-  static const REST_PROVIDER_NAME = 'Rest';
+  final providerName = 'Rest';
 
   final String repositoryName;
 

@@ -22,7 +22,7 @@ abstract class ProviderSerializable<_Config> {
   final String configKey;
 
   /// Deserialize a [_Config] from an annotation, such as `RestSerializable`.
-  _Config get config;
+  _Config get config => null;
 
   /// Produce serializer and deserializer generators
   List<SerdesGenerator> get generators;
