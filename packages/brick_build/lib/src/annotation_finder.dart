@@ -5,9 +5,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/constant/value.dart';
 
-/// Find annotation given field.
-///
-/// Caches previous lookups in an [Expando]
+/// Find an [_Annotation] per field.
 abstract class AnnotationFinder<_Annotation> {
   AnnotationFinder();
 

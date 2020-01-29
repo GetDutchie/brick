@@ -12,14 +12,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
-  final providerName = RestSerdesGenerator.REST_PROVIDER_NAME;
-
-  @override
   final doesDeserialize = false;
-
-  @override
-  String get adapterMethod =>
-      'await $serializingFunctionName(input, provider: provider, repository: repository)';
 
   @override
   List<String> get instanceFieldsAndMethods {
@@ -40,7 +33,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
-      return '$fieldValue';
+      return fieldValue;
 
       // Iterable
     } else if (checker.isIterable) {
@@ -55,7 +48,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         }
       }
 
-      // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
+      // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
@@ -66,11 +59,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         )''';
       }
 
-      return '$fieldValue';
+      return fieldValue;
 
-      // OfflineFirstModel, Future<OfflineFirstModel>
+      // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
-      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : '$fieldValue';
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
       return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField ?? {})';
 

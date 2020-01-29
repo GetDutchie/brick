@@ -15,17 +15,16 @@ The following map exactly to their SQLite keywords. The values will be inserted 
 * `offset`
 * `orderBy`
 
-As the values are directly inserted, this creates a rare exception where `providerArgs` uses the column name instead of the field name:
+As the values are directly inserted, use the field name:
 
 ```dart
-//given this field in my model
+//given this field
 @Sqlite(name: 'last_name')
 final String lastName;
 
-// my query would use the column name in `providerArgs:` but not in `where:`
 Query(
   where: [Where.exact('lastName', 'Mustermann')],
-  providerArgs: {'orderBy': 'last_name ASC'},
+  providerArgs: {'orderBy': 'lastName ASC'},
 )
 ```
 

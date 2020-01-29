@@ -12,6 +12,7 @@ final offlineFirstGenerator = const OfflineFirstGenerator(
   repositoryName: 'OfflineFirstWithRest',
 );
 
+/// These functions act as builder factories used by `build.yaml`
 Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
       "import 'package:brick_offline_first_abstract/annotations.dart';",
       "import 'package:brick_offline_first/offline_first.dart';",
