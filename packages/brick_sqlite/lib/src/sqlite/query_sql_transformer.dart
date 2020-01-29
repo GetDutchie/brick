@@ -2,7 +2,7 @@ import 'package:meta/meta.dart' show protected, required;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 
-import "../../sqlite.dart" show SqliteModel, SqliteModelDictionary, SqliteAdapter;
+import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapter;
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -24,7 +24,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   final Query query;
 
   /// An executable, prepared SQLite statement
-  String get statement => _statement.join(" ").trim();
+  String get statement => _statement.join(' ').trim();
 
   /// The values to be included in the execution of the prepared statement
   List<dynamic> get values => _values.map((v) {
@@ -37,13 +37,13 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// Prepared; includes preceeding `WHERE`
   String get whereClause {
     if (_where.isNotEmpty) {
-      return "WHERE " + _cleanWhereClause(_where.join(""));
+      return 'WHERE ' + _cleanWhereClause(_where.join(''));
     }
 
-    return "";
+    return '';
   }
 
-  String get innerJoins => _innerJoins.join(" ");
+  String get innerJoins => _innerJoins.join(' ');
 
   QuerySqlTransformer({
     @required this.modelDictionary,
@@ -85,9 +85,9 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// and should be refactored after experimental use in the wild.
   String _cleanWhereClause(String dirtyClause) {
     return dirtyClause
-        .replaceFirst(RegExp(r"^ (AND|OR)"), "")
-        .replaceAll(RegExp(r" \( (AND|OR)"), " (")
-        .replaceAll(RegExp(r"\(\s+"), "(")
+        .replaceFirst(RegExp(r'^ (AND|OR)'), '')
+        .replaceAll(RegExp(r' \( (AND|OR)'), ' (')
+        .replaceAll(RegExp(r'\(\s+'), '(')
         .trim();
   }
 
@@ -97,33 +97,33 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     // Begin a separate where phrase
     if (condition is WherePhrase) {
-      final phrase = condition.conditions.fold("", (acc, phraseCondition) {
+      final phrase = condition.conditions.fold('', (acc, phraseCondition) {
         return acc + _expandCondition(phraseCondition, _adapter);
       });
 
-      final matcher = condition.required ? "AND" : "OR";
-      return " $matcher ($phrase)";
+      final matcher = condition.required ? 'AND' : 'OR';
+      return ' $matcher ($phrase)';
     }
 
     if (!_adapter.fieldsToSqliteColumns.containsKey(condition.evaluatedField)) {
       throw ArgumentError(
-          "Field ${condition.evaluatedField} on $_Model is not serialized by SQLite");
+          'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite');
     }
 
     final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
 
     /// Add an INNER JOINS statement to the existing list
-    if (definition["association"]) {
+    if (definition['association']) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
-            "Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase");
+            'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
       }
 
-      final associationAdapter = modelDictionary.adapterFor[definition["type"] as Type];
+      final associationAdapter = modelDictionary.adapterFor[definition['type'] as Type];
       final association = AssociationFragment(
         adapter: associationAdapter,
-        localTableColumn: "`${adapter.tableName}`.${definition['name']}",
-        oneToOneAssociation: !definition["iterable"],
+        localTableColumn: '`${adapter.tableName}`.${definition['name']}',
+        oneToOneAssociation: !definition['iterable'],
       );
       _innerJoins.add(association.toString());
       return _expandCondition(condition.value, associationAdapter);
@@ -136,7 +136,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     /// Finally add the column to the complete phrase
     final String sqliteColumn = _adapter.tableName != adapter.tableName
-        ? "`${_adapter.tableName}`.${definition['name']}"
+        ? '`${_adapter.tableName}`.${definition['name']}'
         : definition['name'];
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
@@ -189,12 +189,12 @@ class WhereColumnFragment {
 
   final WhereCondition condition;
 
-  String get matcher => condition.required ? "AND" : "OR";
+  String get matcher => condition.required ? 'AND' : 'OR';
 
   String get sign {
     if (condition.value == null) {
-      if (condition.compare == Compare.exact) return "IS";
-      if (condition.compare == Compare.notEqual) return "IS NOT";
+      if (condition.compare == Compare.exact) return 'IS';
+      if (condition.compare == Compare.notEqual) return 'IS NOT';
     }
 
     return compareSign(condition.compare);
@@ -223,18 +223,18 @@ class WhereColumnFragment {
     }
 
     if (condition.value == null) {
-      return " $matcher $column $sign NULL";
+      return ' $matcher $column $sign NULL';
     } else {
       values.add(sqlifiedValue(condition.value, condition.compare));
     }
 
-    return " $matcher $column $sign ?";
+    return ' $matcher $column $sign ?';
   }
 
   @protected
   dynamic sqlifiedValue(dynamic _value, Compare compare) {
     if (compare == Compare.contains) {
-      return "%$_value%";
+      return '%$_value%';
     }
 
     if (_value == null) return 'NULL';
@@ -247,21 +247,21 @@ class WhereColumnFragment {
   static String compareSign(Compare compare) {
     switch (compare) {
       case Compare.exact:
-        return "=";
+        return '=';
       case Compare.contains:
-        return "LIKE";
+        return 'LIKE';
       case Compare.greaterThan:
-        return ">";
+        return '>';
       case Compare.greaterThanOrEqualTo:
-        return ">=";
+        return '>=';
       case Compare.lessThan:
-        return "<";
+        return '<';
       case Compare.lessThanOrEqualTo:
-        return "<=";
+        return '<=';
       case Compare.between:
-        return "BETWEEN";
+        return 'BETWEEN';
       case Compare.notEqual:
-        return "!=";
+        return '!=';
     }
     throw FallThroughError();
   }
@@ -269,23 +269,23 @@ class WhereColumnFragment {
   String _generateBetween() {
     if (condition.value.length != 2) {
       throw ArgumentError(
-          """${condition.evaluatedField} expects only two arguments with Compare.between.
-          Instead received ${condition.value}""");
+          '''${condition.evaluatedField} expects only two arguments with Compare.between.
+          Instead received ${condition.value}''');
     }
 
     values.addAll(condition.value);
-    return " $matcher $column $sign ? AND ?";
+    return ' $matcher $column $sign ? AND ?';
   }
 
   String _generateIterable() {
     final wherePrepared = [];
 
     condition.value.forEach((conditionValue) {
-      wherePrepared.add("$column $sign ?");
+      wherePrepared.add('$column $sign ?');
       values.add(sqlifiedValue(conditionValue, condition.compare));
     });
 
-    return " $matcher " + wherePrepared.join(" $matcher ");
+    return ' $matcher ' + wherePrepared.join(' $matcher ');
   }
 }
 
@@ -296,12 +296,12 @@ class AllOtherClausesFragment {
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
   static const Map<String, String> _supportedOperators = {
-    "collate": "COLLATE",
-    "orderBy": "ORDER BY",
-    "groupBy": "GROUP BY",
-    "having": "HAVING",
-    "limit": "LIMIT",
-    "offset": "OFFSET",
+    'collate': 'COLLATE',
+    'orderBy': 'ORDER BY',
+    'groupBy': 'GROUP BY',
+    'having': 'HAVING',
+    'limit': 'LIMIT',
+    'offset': 'OFFSET',
   };
 
   /// These operators declare a column to compare against. The fields provided in [providerArgs]
@@ -322,13 +322,15 @@ class AllOtherClausesFragment {
       if (value == null) return acc;
 
       if (_operatorsDeclaringFields.contains(op)) {
-        final field = value.split(' ').first;
-        final column = (fieldsToColumns[field] ?? {})['name'];
+        fieldsToColumns.keys.forEach((fieldName) {
+          final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
 
-        if (column != null) value = value.replaceFirst(field, column);
+          if (columnName != null && value.contains(fieldName))
+            value = value.replaceAll(fieldName, columnName);
+        });
       }
 
-      acc.add("$op $value");
+      acc.add('$op $value');
 
       return acc;
     }).join(' ');
