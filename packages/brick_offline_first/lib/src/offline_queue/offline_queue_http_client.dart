@@ -13,12 +13,22 @@ class OfflineQueueHttpClient extends http.BaseClient {
   /// the same client as the one sending analytics to a 3rd party.
   final String databaseName;
 
+  /// If the response returned from the client is one of these error codes, the request
+  /// **will not** be removed from the queue. For example, if the result of a request produces a
+  /// 404 status code response (such as in a Tunnel not found exception), the request will
+  /// be reattempted.
+  ///
+  /// Defaults to `[404, 502, 503, 504]`.
+  final List<int> reattemptForStatusCodes;
+
   final Logger _logger;
 
   OfflineQueueHttpClient(
     this._inner,
-    this.databaseName,
-  ) : _logger = Logger('OfflineQueueHttpClient#$databaseName');
+    this.databaseName, {
+    List<int> reattemptForStatusCodes,
+  })  : _logger = Logger('OfflineQueueHttpClient#$databaseName'),
+        reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 502, 503, 504];
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
@@ -42,10 +52,9 @@ class OfflineQueueHttpClient extends http.BaseClient {
       // Attempt to make HTTP Request
       final resp = await _inner.send(request);
 
-      // if a response was delivered back to the device and this is not a fetch request
-      final receivedResponseFromPushRequest = cacheItem.requestIsPush && resp != null;
-
-      if (receivedResponseFromPushRequest) {
+      if (cacheItem.requestIsPush &&
+          resp != null &&
+          !reattemptForStatusCodes.contains(resp.statusCode)) {
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete();
@@ -59,8 +68,13 @@ class OfflineQueueHttpClient extends http.BaseClient {
     return _genericErrorResponse;
   }
 
-  Future<void> reattemptUnprocessedJobs() async {
-    final requests = await RequestSqliteCache.unproccessedRequests(databaseName);
-    requests.forEach(send);
+  /// Parse the returned response and determine if it needs to be removed from the queue.
+  /// As a device with connectivity will still return a response if the endpoint is unreachable,
+  /// false positives need to be filtered after the [response] is available.
+  static bool isATunnelNotFoundResponse(http.Response response) {
+    return response?.body != null &&
+        response.statusCode == 404 &&
+        response.body.startsWith("Tunnel") &&
+        response.body.endsWith("not found");
   }
 }

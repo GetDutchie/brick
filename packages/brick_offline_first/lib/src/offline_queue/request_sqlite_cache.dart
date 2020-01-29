@@ -71,8 +71,10 @@ class RequestSqliteCache {
           serialized,
         );
       }
-
-      logger.warning('failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} $response');
+      final methodWithUrl =
+          [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
+      logger.warning(
+          'failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} in $methodWithUrl : $response');
       return await txn.update(
         HTTP_JOBS_TABLE_NAME,
         {
@@ -134,17 +136,13 @@ class RequestSqliteCache {
     return await db.execute(statement);
   }
 
-  /// Take all jobs in database.
-  ///
-  /// [maximumRequests] determines how many records will be returned. Defaults to `1`.
-  static Future<Iterable<http.Request>> unproccessedRequests(
-    String dbName, {
-    int maximumRequests = 1,
-  }) async {
+  /// Discover most recent unprocessed job in database. Lock the row and convert
+  /// it back to an HTTP request.
+  static Future<Iterable<http.Request>> unproccessedRequests(String dbName) async {
     final db = await _openDb(dbName);
     final unprocessedJobs = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, maximumRequests, HTTP_JOBS_LOCKED_COLUMN);
-      final whereLocked = _lockedQuery(true, maximumRequests);
+      final whereUnlocked = _lockedQuery(false, HTTP_JOBS_LOCKED_COLUMN);
+      final whereLocked = _lockedQuery(true);
 
       // lock the requests for idempotency
       await txn.rawUpdate(
@@ -199,13 +197,13 @@ Future<Database> _openDb(String dbName) async {
 }
 
 /// Generate SQLite query for [unprocessedRequests]
-String _lockedQuery(bool whereIsLocked, int limit, [String selectFields = '*']) {
+String _lockedQuery(bool whereIsLocked, [String selectFields = '*']) {
   return [
     'SELECT DISTINCT',
     selectFields,
     'FROM $HTTP_JOBS_TABLE_NAME',
     'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
     'ORDER BY $HTTP_JOBS_UPDATED_AT ASC',
-    'LIMIT $limit'
+    'LIMIT 1'
   ].join(' ');
 }

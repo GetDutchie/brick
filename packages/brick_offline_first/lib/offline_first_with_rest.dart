@@ -38,6 +38,14 @@ abstract class OfflineFirstWithRestRepository
   @override
   final RestProvider remoteProvider;
 
+  /// When the device is connected but the URL is unreachable, the response will
+  /// begin with "Tunnel" and ends with "not found".
+  ///
+  /// As this may be irrelevant to an offline first application, the end implementation may choose
+  /// to ignore the warning as the request will eventually be reattempted by the queue.
+  /// Defaults `false`.
+  final bool throwTunnelNotFoundExceptions;
+
   OfflineRequestQueue _offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
@@ -47,10 +55,18 @@ abstract class OfflineFirstWithRestRepository
     Set<Migration> migrations,
     bool autoHydrate,
     String loggerName,
+    this.throwTunnelNotFoundExceptions = false,
+
+    /// Forwarded to [OfflineQueueHttpClient#reattemptForStatusCodes]
+    List<int> reattemptForStatusCodes,
   })  : remoteProvider = RestProvider(
           restProvider.baseEndpoint,
           modelDictionary: restProvider.modelDictionary,
-          client: OfflineQueueHttpClient(restProvider.client, _QUEUE_DATABASE_NAME),
+          client: OfflineQueueHttpClient(
+            restProvider.client,
+            _QUEUE_DATABASE_NAME,
+            reattemptForStatusCodes: reattemptForStatusCodes,
+          ),
         ),
         super(
           autoHydrate: autoHydrate,
@@ -71,6 +87,36 @@ abstract class OfflineFirstWithRestRepository
       return await super.delete<_Model>(instance, query: query);
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
+      if (_ignoreTunnelException(e)) {
+        return false;
+      }
+
+      throw OfflineFirstException(e);
+    }
+  }
+
+  @override
+  Future<List<_Model>> get<_Model extends OfflineFirstWithRestModel>({
+    query,
+    bool alwaysHydrate = false,
+    bool hydrateUnexisting = true,
+    bool requireRemote = false,
+    bool seedOnly = false,
+  }) async {
+    try {
+      return await super.get(
+        query: query,
+        alwaysHydrate: alwaysHydrate,
+        hydrateUnexisting: hydrateUnexisting,
+        requireRemote: requireRemote,
+        seedOnly: seedOnly,
+      );
+    } on RestException catch (e) {
+      logger.warning('#get rest failure: $e');
+      if (_ignoreTunnelException(e)) {
+        return <_Model>[];
+      }
+
       throw OfflineFirstException(e);
     }
   }
@@ -98,6 +144,10 @@ abstract class OfflineFirstWithRestRepository
       return await super.upsert<_Model>(instance, query: query);
     } on RestException catch (e) {
       logger.warning('#upsert rest failure: $e');
+      if (_ignoreTunnelException(e)) {
+        return instance;
+      }
+
       throw OfflineFirstException(e);
     }
   }
@@ -116,6 +166,10 @@ abstract class OfflineFirstWithRestRepository
 
     return <_Model>[];
   }
+
+  bool _ignoreTunnelException(RestException exception) =>
+      OfflineQueueHttpClient.isATunnelNotFoundResponse(exception?.response) &&
+      !throwTunnelNotFoundExceptions;
 }
 
 const _QUEUE_DATABASE_NAME = 'brick_offline_queue.sqlite';

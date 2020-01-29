@@ -13,10 +13,6 @@ class OfflineRequestQueue {
   /// Time between running jobs. Defaults to 5 seconds.
   final Duration interval;
 
-  /// The number of requests returned per check. Ultimately determines how many queued jobs
-  /// to reprocess simultaneously. Defaults to `1`.
-  final int maximumRequests;
-
   final Logger _logger;
 
   /// If the queue is processing
@@ -27,7 +23,6 @@ class OfflineRequestQueue {
   OfflineRequestQueue({
     @required this.client,
     Duration interval,
-    this.maximumRequests = 1,
   })  : this.interval = interval ?? const Duration(seconds: 5),
         _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 
@@ -48,10 +43,7 @@ class OfflineRequestQueue {
 
   /// Resend unproccessed requests to the client.
   void _process(Timer _timer) async {
-    final requests = await RequestSqliteCache.unproccessedRequests(
-      client.databaseName,
-      maximumRequests: maximumRequests,
-    );
+    final requests = await RequestSqliteCache.unproccessedRequests(client.databaseName);
 
     final requeuedRequests = requests.map(client.send);
     if (requeuedRequests.isNotEmpty) {
