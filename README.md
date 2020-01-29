@@ -150,6 +150,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
           path: packages/brick_offline_first_with_rest_build
       build_runner: any
     ```
+
 1. Configure your app directory structure to match Brick's expectations:
     ```shell
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
@@ -187,6 +188,12 @@ flutter pub get
 flutter pub run build_runner build
 ```
 
+Ensure that the `post-checkout` file is executable:
+
+```shell
+chmod 755 .git/hooks/post-checkout
+```
+    
 # Glossary
 
 * **source** - external information warehouse that delivers unrefined data
