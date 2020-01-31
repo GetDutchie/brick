@@ -11,7 +11,9 @@ environment:
 
 dependencies:
   brick_build:
-    path: ../brick_build
+    git:
+      url: https://github.com/greenbits/brick.git
+      path: packages/brick_build
   brick_sqlite_abstract: ^0.0.4
 
 dev_dependencies:

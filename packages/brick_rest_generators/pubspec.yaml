@@ -12,7 +12,9 @@ environment:
 dependencies:
   brick_rest: ^0.0.5
   brick_build:
-    path: ../brick_build
+    git:
+      url: https://github.com/greenbits/brick.git
+      path: packages/brick_build
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"
