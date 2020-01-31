@@ -3,7 +3,7 @@ import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_generators/generators.dart';
-import 'package:brick_sqlite_generators/sqlite_class_generator.dart';
+import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestModel> {
@@ -95,8 +95,9 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
   }
 }
 
-class OfflineFirstSqliteClassGenerator extends SqliteClassGenerator {
-  OfflineFirstSqliteClassGenerator(Element element, ConstantReader reader, {String repositoryName})
+class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator {
+  OfflineFirstSqliteModelSerdesGenerator(Element element, ConstantReader reader,
+      {String repositoryName})
       : super(element, reader, repositoryName: repositoryName);
 
   @override

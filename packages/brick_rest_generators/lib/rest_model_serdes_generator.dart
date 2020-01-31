@@ -8,12 +8,12 @@ import 'package:brick_rest/rest.dart' show RestSerializable, FieldRename;
 
 /// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
 /// to and from a `RestProvider`.
-class RestClassGenerator extends ProviderSerializableGenerator<RestSerializable> {
+class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
   final String repositoryName;
 
-  RestClassGenerator(
+  RestModelSerdesGenerator(
     Element element,
     ConstantReader reader, {
     this.repositoryName,

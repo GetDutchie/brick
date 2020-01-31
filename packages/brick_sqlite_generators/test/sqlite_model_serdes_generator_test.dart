@@ -1,19 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
-import 'package:brick_sqlite_generators/sqlite_class_generator.dart';
+import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_build/testing.dart';
 
-import 'sqlite_class_generator/test_sqlite_unique.dart' as _$sqliteUnique;
+import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
 
 final _generator = TestGenerator();
-final folder = 'sqlite_class_generator';
+final folder = 'sqlite_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
-  group('SqliteClassGenerator', () {
+  group('SqliteModelSerdesGenerator', () {
     group('incorrect', () {
       test('IdField', () async {
         final reader = await generateReader('id_field');
@@ -54,7 +54,7 @@ class TestGenerator extends AnnotationSuperGenerator<SqliteSerializable> {
   /// Given an [element] and an [annotation], scaffold generators
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
-        SqliteClassGenerator(element, annotation, repositoryName: repositoryName);
+        SqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     return serializableGenerator.generators;
   }
 }

@@ -25,9 +25,9 @@ class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst
   /// Given an [element] and an [annotation], scaffold generators
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final rest =
-        OfflineFirstRestClassGenerator(element, annotation, repositoryName: repositoryName);
+        OfflineFirstRestModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     final sqlite =
-        OfflineFirstSqliteClassGenerator(element, annotation, repositoryName: repositoryName);
+        OfflineFirstSqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     final generators = <SerdesGenerator>[];
     generators.addAll(rest.generators);
     generators.addAll(sqlite.generators);
