@@ -1,41 +1,10 @@
-import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/builders.dart';
-import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 import 'package:brick_build/src/serdes_generator.dart';
 import '__helpers__.dart';
 
 final generateReader = generateLibraryForFolder('serdes_generator');
-
-class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
-  DefaultSerdes(ClassElement element, TestFields fields) : super(element, fields);
-
-  final providerName = 'DefaultSerdes';
-  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
-}
-
-class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
-  CustomSerdes(ClassElement element, TestFields fields) : super(element, fields);
-
-  final doesDeserialize = false;
-  final deserializeInputType = 'Foo';
-  final serializeOutputType = 'Bar';
-  final instanceFieldsAndMethods = ["final String forwardedField = 'value';"];
-  final serializingFunctionName = 'unspecificPublicMethod';
-  final serializingFunctionArguments = 'Map, {provider, SomeRepository repository}';
-  final generateSuffix = '..nullableField = true;';
-  final className = '_CustomSerdesName';
-  final adapterMethodInputType = 'String';
-  final adapterMethodOutputType = 'CustomSerdes';
-
-  final providerName = 'CustomSerdes';
-  final repositoryName = 'Some';
-  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
-    return "$fieldValue as ${field.type}";
-  }
-}
 
 void main() {
   group('SerdesGenerator', () {

@@ -12,7 +12,7 @@ class FileSerializable {
 }
 
 /// This class would be invoked and created for a build step or function
-class FileSerdes extends ProviderSerializable<FileSerializable> {
+class FileSerdes extends ProviderSerializableGenerator<FileSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
   final String repositoryName;
