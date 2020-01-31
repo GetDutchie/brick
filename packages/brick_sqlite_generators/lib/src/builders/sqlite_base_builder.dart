@@ -1,7 +1,7 @@
 import 'package:build/build.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/builders.dart' show BaseBuilder;
-import 'package:brick_sqlite_generators/sqlite_generator.dart';
+import 'package:brick_sqlite_generators/sqlite_class_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 
@@ -17,7 +17,7 @@ abstract class SqliteBaseBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnn
   Future<List<SqliteFields>> sqliteFieldsFromBuildStep(BuildStep buildStep) async {
     final annotatedElements = await getAnnotatedElements(buildStep);
     return annotatedElements.where((e) => e.element is ClassElement).map((e) {
-      final sqlite = SqliteGenerator(e.element, e.annotation);
+      final sqlite = SqliteClassGenerator(e.element, e.annotation);
       return SqliteFields(sqlite.element as ClassElement, sqlite.config);
     }).toList();
   }

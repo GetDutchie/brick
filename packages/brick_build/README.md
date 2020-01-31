@@ -398,8 +398,8 @@ Generators are invoked by builders and builders are invoked by `build.yaml` usin
 The primary build functions will be adapters and the model dictionary, as these are critical to the Brick system:
 
 ```dart
-// RestGenerator is our AnnotationSuperGenerator
-final restGenerator = RestGenerator();
+// RestClassGenerator is our AnnotationSuperGenerator
+final restGenerator = RestClassGenerator();
 Builder restAdaptersBuilder(options) => AdapterBuilder(restGenerator);
 Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
   restGenerator,

@@ -8,11 +8,11 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 
 /// Digest a `sqliteConfig` from [reader] and manage serdes generators
 /// to and from a `SqliteProvider`.
-class SqliteGenerator extends ProviderSerializableGenerator<SqliteSerializable> {
+class SqliteClassGenerator extends ProviderSerializableGenerator<SqliteSerializable> {
   /// Repository prefix passed to the generators. Does not include `Repository`.
   final String repositoryName;
 
-  SqliteGenerator(
+  SqliteClassGenerator(
     Element element,
     ConstantReader reader, {
     this.repositoryName,
