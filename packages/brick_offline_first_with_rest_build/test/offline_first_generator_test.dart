@@ -1,21 +1,17 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
-import 'package:source_gen/source_gen.dart';
 import '../lib/src/offline_first_generator.dart';
 import 'package:brick_build/testing.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;
-import 'offline_first_generator/test_sqlite_unique.dart' as _$sqliteUnique;
 import 'offline_first_generator/test_nullable_field.dart' as _$nullableField;
-import 'offline_first_generator/test_eager_load.dart' as _$eagerLoad;
+import 'offline_first_generator/test_futures.dart' as _$futures;
 import 'offline_first_generator/test_offline_first_where.dart' as _$offlineFirstWhere;
 import 'offline_first_generator/test_custom_offline_first_serdes.dart'
     as _$customOfflineFirstSerdes;
-import 'offline_first_generator/test_rest_enum_as_string.dart' as _$restEnumAsString;
 import 'offline_first_generator/test_default_value.dart' as _$defaultValue;
 import 'offline_first_generator/test_rest_config_endpoint.dart' as _$restConfigEndpoint;
 import 'offline_first_generator/test_rest_config_field_rename.dart' as _$restConfigFieldRename;
-import 'offline_first_generator/test_rest_ignore_from_to.dart' as _$restIgnoreFromTo;
 import 'offline_first_generator/test_rest_config_response_keys.dart' as _$restConfigResponseKeys;
 import 'offline_first_generator/test_custom_serdes.dart' as _$customSerdes;
 import 'offline_first_generator/test_ignore_field.dart' as _$ignoreField;
@@ -33,48 +29,6 @@ final generateReader = generateLibraryForFolder(folder);
 
 void main() {
   group('OfflineFirstGenerator', () {
-    group('incorrect', () {
-      test('annotatedMethod', () async {
-        final reader = await generateReader('annotated_method');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('annotatedTopLevelVariable', () async {
-        final reader = await generateReader('annotated_top_level_variable');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('IdField', () async {
-        final reader = await generateReader('id_field');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('PrimaryKeyField', () async {
-        final reader = await generateReader('primary_key_field');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('FutureIterableFuture', () async {
-        final reader = await generateReader('future_iterable_future');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-    });
-
     group('constructor arguments', () {
       test('repositoryName', () async {
         final generator = OfflineFirstGenerator(repositoryName: 'MyCustom');
@@ -123,6 +77,10 @@ void main() {
       test('UnrelatedAssociation', () async {
         await generateExpectation('unrelated_association', _$unrelatedAssociation.output);
       });
+
+      test('Futures', () async {
+        await generateExpectation('futures', _$futures.output);
+      });
     });
 
     group('@ConnectOfflineFirstWithRest', () {
@@ -161,28 +119,8 @@ void main() {
     });
 
     group('@OfflineFirst', () {
-      test('eager loading', () async {
-        await generateExpectation('eager_load', _$eagerLoad.output);
-      });
-
       test('offlineFirstWhere', () async {
         await generateExpectation('offline_first_where', _$offlineFirstWhere.output);
-      });
-    });
-
-    group('@Rest', () {
-      test('enumAsString', () async {
-        await generateExpectation('rest_enum_as_string', _$restEnumAsString.output);
-      });
-
-      test('ignoreFrom ignoreTo', () async {
-        await generateExpectation('rest_ignore_from_to', _$restIgnoreFromTo.output);
-      });
-    });
-
-    group('@Sqlite', () {
-      test('unique', () async {
-        await generateAdapterExpectation('sqlite_unique', _$sqliteUnique.output);
       });
     });
   });

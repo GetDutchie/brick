@@ -1,6 +1,6 @@
 name: brick_offline_first_with_rest_build
-description: Code generation library for the Brick Offline First Domain
-homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_first_build
+description: Code generation library for the Brick Offline First Domain using REST
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_first_with_rest_build
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
@@ -11,19 +11,15 @@ environment:
 
 dependencies:
   analyzer: ^0.39.0
-  brick_core: ^0.0.4
   brick_offline_first_abstract: ^0.0.3
-  brick_rest: ^0.0.2
-  brick_sqlite_abstract: ^0.0.4
-  brick_build: ^0.0.4
-  brick_sqlite_build:
+  brick_rest_generators:
     git:
       url: https://github.com/greenbits/brick.git
-      path: packages/brick_sqlite_build
-  brick_rest_build:
+      path: packages/brick_rest_generators
+  brick_sqlite_generators:
     git:
       url: https://github.com/greenbits/brick.git
-      path: packages/brick_rest_build
+      path: packages/brick_sqlite_generators
   build: ^1.2.0
   build_config: ^0.4.0
   dart_style: ^1.2.4

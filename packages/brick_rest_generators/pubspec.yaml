@@ -1,0 +1,20 @@
+name: brick_rest_generators
+description: Code generation library for the Rest system
+homepage: https://github.com/greenbits/brick/tree/master/packages/brick_rest_generators
+issue_tracker: https://github.com/greenbits/brick/issues
+repository: https://github.com/greenbits/brick
+
+version: 0.0.1
+
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+
+dependencies:
+  brick_rest: ^0.0.5
+  brick_build:
+    git:
+      url: https://github.com/greenbits/brick.git
+      path: packages/brick_build
+
+dev_dependencies:
+  test: ">=1.9.4 <2.0.0"

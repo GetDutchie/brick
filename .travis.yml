@@ -13,28 +13,28 @@ before_install:
 jobs:
   include:
     - stage: analyze
-      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_build, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_build; TASKS: `dartanalyzer --fatal-warnings lib`"
+      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; TASKS: `dartanalyzer --fatal-warnings lib`"
       dart: dev
       os: linux
-      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_build packages/brick_sqlite packages/brick_sqlite_abstract packages/brick_sqlite_build"
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_generators packages/brick_sqlite packages/brick_sqlite_abstract packages/brick_sqlite_generators"
       script: ./tool/travis.sh dartanalyzer
     - stage: analyze
-      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_build, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_build; TASKS: `dartanalyzer --fatal-warnings lib`"
+      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; TASKS: `dartanalyzer --fatal-warnings lib`"
       dart: stable
       os: linux
-      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_build packages/brick_sqlite packages/brick_sqlite_abstract packages/brick_sqlite_build"
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first packages/brick_offline_first_abstract packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_generators packages/brick_sqlite packages/brick_sqlite_abstract packages/brick_sqlite_generators"
       script: ./tool/travis.sh dartanalyzer
     - stage: unit_test
-      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_sqlite_abstract, packages/brick_sqlite_build; TASKS: `pub run test`"
+      name: "SDK: dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; TASKS: `pub run test`"
       dart: dev
       os: linux
-      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_sqlite_abstract packages/brick_sqlite_build"
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_generators packages/brick_sqlite_abstract packages/brick_sqlite_generators"
       script: ./tool/travis.sh test
     - stage: unit_test
-      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_sqlite_abstract, packages/brick_sqlite_build; TASKS: `pub run test`"
+      name: "SDK: stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; TASKS: `pub run test`"
       dart: stable
       os: linux
-      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_sqlite_abstract packages/brick_sqlite_build"
+      env: PKGS="packages/brick_build packages/brick_core packages/brick_offline_first_with_rest_build packages/brick_rest packages/brick_rest_generators packages/brick_sqlite_abstract packages/brick_sqlite_generators"
       script: ./tool/travis.sh test
     - stage: unit_test
       name: "SDK: dev; PKGS: packages/brick_offline_first, packages/brick_sqlite; TASKS: `flutter test`"

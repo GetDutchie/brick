@@ -119,7 +119,7 @@ Class-level annotations must be expanded from their constantized versions back t
 
 ```dart
 // RestSerializable is our previously-noted configuration class
-class RestSerdes extends ProviderSerializable<RestSerializable> {
+class RestSerdes extends ProviderSerializableGenerator<RestSerializable> {
   RestSerdes(Element element, ConstantReader reader)
       : super(element, reader, configKey: "restConfig");
 
@@ -295,7 +295,7 @@ It is recommended to use a repository method dedicated to association fetching i
 The two adapter serdes classes are associated in the original serdes:
 
 ```dart
-class RestSerdes extends ProviderSerializable<RestSerializable> {
+class RestSerdes extends ProviderSerializableGenerator<RestSerializable> {
   RestSerdes(Element element, ConstantReader reader)
       : super(element, reader, configKey: "restConfig");
 
@@ -398,8 +398,8 @@ Generators are invoked by builders and builders are invoked by `build.yaml` usin
 The primary build functions will be adapters and the model dictionary, as these are critical to the Brick system:
 
 ```dart
-// RestGenerator is our AnnotationSuperGenerator
-final restGenerator = RestGenerator();
+// RestModelSerdesGenerator is our AnnotationSuperGenerator
+final restGenerator = RestModelSerdesGenerator();
 Builder restAdaptersBuilder(options) => AdapterBuilder(restGenerator);
 Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
   restGenerator,

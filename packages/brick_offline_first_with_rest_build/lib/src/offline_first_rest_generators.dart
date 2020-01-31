@@ -3,8 +3,8 @@ import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_fields.dart';
-import 'package:brick_rest_build/generators.dart';
-import 'package:brick_rest_build/rest_serdes.dart';
+import 'package:brick_rest_generators/generators.dart';
+import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
@@ -174,8 +174,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
   }
 }
 
-class OfflineFirstRestSerdes extends RestSerdes {
-  OfflineFirstRestSerdes(Element element, ConstantReader reader, {String repositoryName})
+class OfflineFirstRestModelSerdesGenerator extends RestModelSerdesGenerator {
+  OfflineFirstRestModelSerdesGenerator(Element element, ConstantReader reader,
+      {String repositoryName})
       : super(element, reader, repositoryName: repositoryName);
 
   @override

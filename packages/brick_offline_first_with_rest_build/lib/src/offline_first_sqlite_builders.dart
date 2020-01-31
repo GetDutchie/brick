@@ -1,7 +1,7 @@
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite_build/builders.dart';
-import 'package:brick_sqlite_build/generators.dart';
+import 'package:brick_sqlite_generators/builders.dart';
+import 'package:brick_sqlite_generators/generators.dart';
 import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
 import 'package:meta/meta.dart';
 
