@@ -6,35 +6,22 @@ final output = r"""
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<SqliteUnique> _$SqliteUniqueFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return SqliteUnique(someField: data['some_field'] as int);
-}
-
-Future<Map<String, dynamic>> _$SqliteUniqueToRest(SqliteUnique instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return {'some_field': instance.someField};
-}
-
 Future<SqliteUnique> _$SqliteUniqueFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {SqliteProvider provider, SqliteFirstRepository repository}) async {
   return SqliteUnique(
       someField: data['some_field'] == null ? null : data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$SqliteUniqueToSqlite(SqliteUnique instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {SqliteProvider provider, SqliteFirstRepository repository}) async {
   return {'some_field': instance.someField};
 }
 
 /// Construct a [SqliteUnique]
-class SqliteUniqueAdapter extends OfflineFirstAdapter<SqliteUnique> {
+class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
   SqliteUniqueAdapter();
 
-  String restEndpoint({query, instance}) => '';
-  final String fromKey = null;
-  final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
     'primaryKey': {
       'name': '_brick_id',
@@ -64,14 +51,6 @@ class SqliteUniqueAdapter extends OfflineFirstAdapter<SqliteUnique> {
 
   final String tableName = 'SqliteUnique';
 
-  Future<SqliteUnique> fromRest(Map<String, dynamic> input,
-          {provider, repository}) async =>
-      await _$SqliteUniqueFromRest(input,
-          provider: provider, repository: repository);
-  Future<Map<String, dynamic>> toRest(SqliteUnique input,
-          {provider, repository}) async =>
-      await _$SqliteUniqueToRest(input,
-          provider: provider, repository: repository);
   Future<SqliteUnique> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$SqliteUniqueFromSqlite(input,

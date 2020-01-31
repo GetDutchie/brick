@@ -46,8 +46,8 @@ void main() {
 /// and [SqliteSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<SqliteSerializable> {
-  final superAdapterName = 'OfflineFirstWithCloudFirestore';
-  final repositoryName = 'OfflineFirstWithCloudFirestore';
+  final superAdapterName = 'Sqlite';
+  final repositoryName = 'SqliteFirst';
 
   TestGenerator();
 

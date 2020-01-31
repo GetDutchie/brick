@@ -21,7 +21,7 @@ class RestGenerator extends ProviderSerializableGenerator<RestSerializable> {
 
   @override
   RestSerializable get config {
-    if (reader.read(configKey).isNull) {
+    if (reader.peek(configKey) == null) {
       return RestSerializable.defaults;
     }
 

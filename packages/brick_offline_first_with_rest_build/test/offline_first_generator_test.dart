@@ -1,6 +1,5 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
-import 'package:source_gen/source_gen.dart';
 import '../lib/src/offline_first_generator.dart';
 import 'package:brick_build/testing.dart';
 
@@ -30,32 +29,6 @@ final generateReader = generateLibraryForFolder(folder);
 
 void main() {
   group('OfflineFirstGenerator', () {
-    group('incorrect', () {
-      test('annotatedMethod', () async {
-        final reader = await generateReader('annotated_method');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('annotatedTopLevelVariable', () async {
-        final reader = await generateReader('annotated_top_level_variable');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('FutureIterableFuture', () async {
-        final reader = await generateReader('future_iterable_future');
-        expect(
-          () async => await _generator.generate(reader, null),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-    });
-
     group('constructor arguments', () {
       test('repositoryName', () async {
         final generator = OfflineFirstGenerator(repositoryName: 'MyCustom');

@@ -42,7 +42,7 @@ abstract class ProviderSerializableGenerator<_Config> {
   /// `ConstantReader#read` does not return `null`, so we must safely navigate it
   @protected
   ConstantReader withinConfigKey(String property) {
-    if (reader.read(configKey).isNull) return null;
+    if (reader.peek(configKey) == null) return null;
 
     final nestedConstant = reader.read(configKey).read(property);
     if (nestedConstant.isNull) return null;

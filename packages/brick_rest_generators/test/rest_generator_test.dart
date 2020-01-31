@@ -10,18 +10,18 @@ import 'rest_generator/test_enum_as_string.dart' as _$enumAsString;
 import 'rest_generator/test_ignore_from_to.dart' as _$ignoreFromTo;
 
 final _generator = TestGenerator();
-final folder = 'sqlite_generator';
+final folder = 'rest_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
   group('RestGenerator', () {
     group('@Rest', () {
       test('enumAsString', () async {
-        await generateExpectation('rest_enum_as_string', _$enumAsString.output);
+        await generateExpectation('enum_as_string', _$enumAsString.output);
       });
 
       test('ignoreFrom ignoreTo', () async {
-        await generateExpectation('rest_ignore_from_to', _$ignoreFromTo.output);
+        await generateExpectation('ignore_from_to', _$ignoreFromTo.output);
       });
     });
   });
@@ -33,8 +33,8 @@ void main() {
 /// and [RestSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<RestSerializable> {
-  final superAdapterName = 'OfflineFirstWithCloudFirestore';
-  final repositoryName = 'OfflineFirstWithCloudFirestore';
+  final superAdapterName = 'RestFirst';
+  final repositoryName = 'RestFirst';
 
   TestGenerator();
 

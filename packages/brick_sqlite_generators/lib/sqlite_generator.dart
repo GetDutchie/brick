@@ -20,7 +20,7 @@ class SqliteGenerator extends ProviderSerializableGenerator<SqliteSerializable> 
 
   @override
   SqliteSerializable get config {
-    if (reader.read(configKey).isNull) {
+    if (reader.peek(configKey) == null) {
       return SqliteSerializable.defaults;
     }
 
