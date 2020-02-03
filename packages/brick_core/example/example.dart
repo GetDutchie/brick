@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:glob/glob.dart';
 
-import '../lib/core.dart';
+import 'package:brick_core/core.dart';
 
 abstract class FileModel extends Model {
   String get fileName;

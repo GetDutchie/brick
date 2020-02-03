@@ -8,7 +8,7 @@ An intuitive way to work with persistent data in Dart.
 
 ## What is Brick?
 
-Brick is an extensible query interface for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
+Brick is an extensible query interface for Dart applications. It's an [all-in-one solution](https://www.youtube.com/watch?v=2noLcro9iIw) responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without [concern for where the data lives](https://www.youtube.com/watch?v=jm5i7e_BQq0). Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
 
 Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries.
 
@@ -98,6 +98,8 @@ final usersWithBrownHats = repository.get<User>(query: query);
 
 Brick natively [serializes primitives, associations, and more](packages/brick_offline_first/example/lib/app/models/kitchen_sink.dart).
 
+If it's still murky, [check out Learn](#learn) for videos, blogs, and examples that break down Brick.
+
 # Table of Contents
 
 - [Setup](#setup)
@@ -135,6 +137,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
     - [Field-level Configuration](#field-level-configuration-1)
   * [FAQ](#faq-1)
 - [Providers and Repositories](#providers-and-repositories)
+- [Learn](#learn)
 - [General FAQ](#general-faq)
 
 # Setup
@@ -193,7 +196,7 @@ Ensure that the `post-checkout` file is executable:
 ```shell
 chmod 755 .git/hooks/post-checkout
 ```
-    
+
 # Glossary
 
 * **source** - external information warehouse that delivers unrefined data
@@ -810,6 +813,12 @@ Repositories do not have model dictionaries because they do not interpret source
 * [Memory Cache Provider](packages/brick_sqlite#memory-cache-provider) - Store models in memory for easy access. Requires [brick_sqlite](packages/brick_sqlite)
 * [Offline First Repository](packages/brick_offline_first) - Fetch results from a local storage (SQLite or Memory Cache). SQLite is hydrated by a remote provider.
 * [Offline First With Rest Repository](packages/brick_offline_first#offline-first-with-rest-repository) - Uses the REST Provider as Offline First Repository's remote provider.
+
+## Learn
+
+* Video: [Brick Architecture](https://www.youtube.com/watch?v=2noLcro9iIw). An explanation of Brick parlance with a supplemental analogy.
+* Video: [Brick Basics](https://www.youtube.com/watch?v=jm5i7e_BQq0). An overview of essential Brick mechanics.
+* Example: [Simple Associations using the OfflineFirstWithRest domain](example)
 
 ## General FAQ
 
