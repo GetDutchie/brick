@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
 import 'package:analyzer/dart/element/type.dart' show DartType;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
@@ -18,11 +19,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   @override
   final doesDeserialize = false;
 
+  String get tableName => element.name;
+
   @override
   List<String> get instanceFieldsAndMethods {
     final fieldsToColumns = <String>[];
     final uniqueFields = <String, String>{};
-    final tableName = element.name;
 
     fieldsToColumns.add('''
       '${InsertTable.PRIMARY_KEY_FIELD}': {
@@ -51,7 +53,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       }
     }
 
-    final primaryKeyByUniqueColumns = _generateUniqueSqliteFunction(uniqueFields, tableName);
+    final primaryKeyByUniqueColumns = generateUniqueSqliteFunction(uniqueFields);
 
     return [
       'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
@@ -150,7 +152,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   /// Generates the method `primaryKeyByUniqueColumns` for the adapter
-  String _generateUniqueSqliteFunction(Map<String, String> uniqueFields, String tableName) {
+  @protected
+  @mustCallSuper
+  String generateUniqueSqliteFunction(Map<String, String> uniqueFields) {
     final functionDeclaration =
         'Future<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
     final whereStatement = <String>[];
