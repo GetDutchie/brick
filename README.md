@@ -122,8 +122,6 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
   * [Query](#query-1)
     - [providerArgs:](#providerArgs)
     - [where:](#where-1)
-  * [Translation and the Model Dictionary](#translation-and-the-model-dictionary)
-  * [Class-level Configuration](#class-level-configuration)
   * [Field-level Configuration](#field-level-configuration)
 - [Repository](#repository)
   * [Setup](#setup-2)
@@ -131,8 +129,6 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
   * [Creating a Custom Repository](#creating-a-custom-repository)
     - [Methods](#methods)
       * [Applying Query#action](#applying-queryaction)
-    - [Class-level Configuration](#class-level-configuration-1)
-    - [Field-level Configuration](#field-level-configuration-1)
   * [FAQ](#faq-1)
 - [Providers and Repositories](#providers-and-repositories)
 - [General FAQ](#general-faq)
@@ -193,7 +189,7 @@ Ensure that the `post-checkout` file is executable:
 ```shell
 chmod 755 .git/hooks/post-checkout
 ```
-    
+
 # Glossary
 
 * **source** - external information warehouse that delivers unrefined data
@@ -381,7 +377,7 @@ Query(where: [
 Fields can be compared to their values beyond an exact match (the default).
 
 ```dart
-Where('name').contains('Thomas');
+Where('name', value: 'Thomas', compare: Compare.contains);
 ```
 
 * `between`
@@ -401,7 +397,7 @@ Conditions that are required must evaluate to true for the query to satisfy. The
 
 ```dart
 Query(where: [
-  And('name').isExactly('Thomas'),
+  Where('name', value: 'Thomas', required: true),
   And('age').isExactly(42),
 ])
 // => name == 'Thomas' && age == 42
@@ -466,6 +462,8 @@ Providers deliver data from a single source as a model. For example, a provider 
 
 A provider is **only accessed from the repository**. Invoking the provider from the application is strongly discouraged; if a custom method or extension is required, the repository should be customized instead of the provider.
 
+To generate code for a custom provider, please see [brick_build](https://github.com/greenbits/brick/tree/master/packages/brick_build#provider).
+
 ## Fetching and Mutating Data
 
 A provider fetches, inserts, updates, and deletes. Methods only handle one model or instance at a time. These methods should hold minimal amounts of logic and be narrowly focused. If providers require a substantial translation layer (for example, transforming a `WherePhrase` into SQL), the translation layer should be done by a separate class and delivered cleanly to the caller.
@@ -516,79 +514,15 @@ As `providerArgs` can vary from provider to provider and IDE suggestions are una
 
 The translation from model field name (e.g. `firstName`) to serializer field name (e.g. `first_name`) may occur in the adapter or in a class-level configuration (e.g. `RestSerializable#endpoint`). However, it should always be accessed by the provider from the adapter.
 
-## Translation and the Model Dictionary
-
-After the provider receives raw data from its source, it must be built into a model or a list of models. This translation occurs in the adapter. First, the adapter is discovered via the model dictionary, a simple hash table that connects models with adapters
-
-```dart
-Future<_Model> get<_Model extends RestModel>({Query query}) async {
-  // Connects to _ModelAdapter
-  final adapter = modelDictionary.forAdapter[_Model];
-  final resp = ... // fetch from HTTP
-
-  // Now the provider can (de)serialize
-  return response.map((r) => adapter.fromRest(r));
-}
-```
-
-The adapter can also facilitate deserialization in the provider with other information about the class:
-
-```dart
-class UserAdapter {
-  // class-level configurations can be copied to the adapter
-  final String fromKey = "users";
-
-  // translate field names (provided by Query#where) to their SQLite column names
-  final fieldsToSqliteColumns = {
-    "primaryKey": {
-      "name": "_brick_id",
-      "type": int,
-      // some information about the type is no longer available after build
-      // because this requires mirrors, however, it can be preserved in the adapter
-      "iterable": false,
-      "association": false,
-    },
-  };
-}
-```
-
-Adapters - made up of both serdes code and custom translation maps such as `fieldsToSqliteColumns` or `restEndpoint` - are generated in [brick_build](brick_build).
-
-## Class-level Configuration
-
-While models should never be aware of providers, a provider's configuration may be required by a repository. As this is accessed via an annotation, configurations **must be `const`**. Class-level configuration is useful for setting defaults, describing behavior that relies on an instance,
-
-```dart
-RestSerializable(
-  fieldName: FieldRename.pascal,
-  nullable: true,
-)
-```
-
-Configuration can also describe behavior that relies on an instance. Since functions cannot be passed in a `const` class, a stringified function body can be used:
-
-```dart
-RestSerializable(
-  // implied arguments are instance and query
-  endpoint: r"=> query.action == QueryAction.get ? '/users' : '/users/${instance.id}'",
-)
-```
-
-It is **not recommended** to require the end implemenation declare arguments for stringified functions. If the provider's arguments for the property changes, the Dart type system will not detect the error ahead of run time.
-
-:warning: If the provider conflicts with usage of `dart:mirrors`, the configuration should be hosted in an independent package. For example, `brick_sqlite` and `brick_sqlite_abstract`.
-
 ## Field-level Configuration
 
-A provider may choose to implement configuration at the field-level with annotations. These annotations should implement `FieldSerializable`:
+A provider may choose to implement configuration at the field-level with annotations. Double check your provider's documentation to review all options.
 
 ```dart
 @Rest(ignore: true, name: "e-mail")
 @Sqlite(unique: true)
 final String email;
 ```
-
-:bulb: Keep annotations as atomic as possible. A provider annotation is not reliable to another provider.
 
 # Repository
 
@@ -637,7 +571,7 @@ class MyRepository extends SingleProviderRepository<RestModel> {
 }
 ```
 
-However, the singleton is not required (for example, other means of access could be via an `InheritedWidget`). Multiple repositories can also manage different data streams. Each repository should have only one type of a provider (e.g. a repository cannot have two `RestProvider`s but it can have a `RestProvider`, a `SqliteProvider`, and a `MemoryCacheProvider`).
+However, the singleton is not required (such as via an `InheritedWidget`). Multiple repositories can also manage different data streams. Each repository should have only one type of a provider (e.g. a repository cannot have two `RestProvider`s but it can have a `RestProvider`, a `SqliteProvider`, and a `MemoryCacheProvider`).
 
 Once the app is initialized, it is recommended to immediately run `#initialize`. Repositories will execute setup functions (e.g. running SQL migrations) exactly once within this method:
 
@@ -663,7 +597,8 @@ There are several principles for repositories that should be considered beyond i
 * [ ] The repository does not preserve model states
 * [ ] Every method returns from the same provider
 * [ ] `Query#action` is applied when it does not exist on a `query` from arguments
-* [ ] Annotations created for the repository
+
+To generate code for a custom repository, please see [brick_build](https://github.com/greenbits/brick/tree/master/packages/brick_build#repository).
 
 ### Methods
 
@@ -738,63 +673,6 @@ class RestProvider {
     if (query.action.insert) headers['method'] = "POST";
   }
 }
-```
-
-### Class-level Configuration
-
-A model annotation should be named `Connect<DOMAIN>`, include provider configuration, and not manipulate configuration used by other providers. If configuration is required for the repository, it should only be relevant at the repository level:
-
-```dart
-// BAD
-@ConnectOfflineFirstWithRest(
-  fieldRename: FieldRename.snake,
-  restConfig: RestSerializable(
-    // two places to declare the same configuration
-    // with no clear logic for the selection hierarchy
-    fieldRename: FieldRename.pascal,
-  )
-)
-
-// GOOD
-@ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
-    fieldRename: FieldRename.pascal,
-  ),
-  sqliteConfig: SqliteSerializable(
-    ignore: true,
-  ),
-  // this property will affect all interactions with the model
-  alwaysHydrate: true,
-)
-```
-
-### Field-level Configuration
-
-Annotations should only reflect configuration relevant to the repository (e.g. directives on how to synthesize). They should not be shortcuts:
-
-```dart
-// BAD:
-@OfflineFirst(ignore: true)
-
-// GOOD:
-@Rest(ignore: true)
-@Sqlite(ignore: true)
-```
-
-Annotations are most useful when its explicit purpose combines multiple providers **and**:
-
-```dart
-@OfflineFirst(where: "{'email': data['email']}")
-```
-
-Unlike atomic provider annotations, repositories **can and should** access all relevant provider annotations:
-
-```dart
-// all three of these annotations are useful to the OfflineFirst domain
-// when generating adapter code
-@Rest(name: 'LastName')
-@Sqlite(name: 'last_name')
-@OfflineFirst(where: "{'last_name': data['LastName']}")
 ```
 
 ## FAQ

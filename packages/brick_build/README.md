@@ -1,17 +1,6 @@
 # Brick Build
 
-Code generator for [Brick](https://github.com/greenbits/brick) adapters, model dictionaries.
-
-## Install
-
-```yaml
-# pubspec.yaml
-dev_dependencies:
-  build_runner: any
-  brick_build: any
-```
-
-All annotated models **must** be in `lib/app/models`.
+Code generator utilities for [Brick](https://github.com/greenbits/brick) adapters, model dictionaries.
 
 ## Setup
 
@@ -21,63 +10,183 @@ It's recommended to use `watch` when editing models.
 (flutter) pub run build_runner watch
 ```
 
-If you're not using `watch`, be sure to run `build` twice for the schema to detect new migrations.
+If you're not using `watch`, be sure to run `build` twice for the schema to detect new migrations on the first run.
 
 ```shell
 (flutter) pub run build_runner build
 ```
 
-An application directory **must** resemble the following:
+An application directory **will/must** resemble the following:
 ```
 | my-app
 |--lib
 |--|--app
 |--|--|--adapters
-|--|--|--db
 |--|--|--models
 ```
 
 This ensures a consistent path to access child data, such as models, [by build generators](#why-are-all-models-hacked-into-a-single-file).
 
-## Glossary
+# Table of Contents
+
+- [Glossary](#glossary)
+- [API Considerations](#api-considerations)
+  * [Provider](#provider)
+    - [Class-level Configuration](#class-level-configuration)
+    - [Field-level Configuration](#field-level-configuration)
+  * [Query](#query)
+    - [providerArgs:](#providerargs)
+    - [where:](#where)
+  * [Adapters](#adapters)
+  * [Models](#models)
+  * [Repository](#repository)
+    - [Class-level Configuration](#class-level-configuration-1)
+    - [Field-level Configuration](#field-level-configuration-1)
+    - [Associations](#associations)
+- [Code Generation](#code-generation)
+  * [Package Setup](#package-setup)
+  * [Provider](#provider-1)
+    - [Class-level Configuration](#class-level-configuration-2)
+    - [Field-level Annotation](#discovering-and-interpreting-field-level-annotation)
+    - [Adapters](#adapters-1)
+    - [Invoking the Generators](#invoking-the-generators)
+  * [Domain]
+    - [Class-level Annotation](#the-class-level-annotation)
+    - [Model Dictionary (brick.g.dart)](#model-dictionary-brick-g-dart)
+    - [Builder](#builder)
+- [Testing](#testing)
+- [Advanced Techniques](#advanced-techniques)
+  * [Custom Type Checking](#custom-type-checking)
+- [FAQ](#faq)
+
+# Glossary
 
 * **generator** - code producer. The output of a generator is most often a function that converts input to normalized data. The output of a generator does not always constitute a complete file (e.g. one generator is a serializer, another generator is a deserializer, and both generators are combined in a super adapter generator).
 * **builder** - a class that interfaces between source files and generator(s) before writing generated code to file(s). They are invoked and configured by build.yaml. Builders are primarly concerned with annotations that exist in the source (e.g. a Flutter app).
 * **serdes** - shorthand for serialize/deserialize
 * **checker** - an accessible utility that type checks analyzed type from a source. For example, `isBool` for a source of `final bool isDeleted` would return `true`. With a source of `final String isDeleted`, `isBool` would return `false`.
-* **domain** - the encompassing system. For example, the `OfflineFirst` domain builds REST serdes and SQLite serdes as well as its own annotation.
+* **domain** - the encompassing system. For example, the `OfflineFirstWithRest` domain builds REST serdes and SQLite serdes within an adapter and is discovered via its own annotation.
 
-## Creating a Domain Builder
+# API Considerations
 
-A new provider will likely require expected data to be massaged before creating a model.
+## Provider
 
-### Configurations and Annotations
+### Class-level Configuration
 
-Before reading further, this process appears to require a lot of code. This is largely boilerplate required for type checking and Dart's analyzer. The majority of the custom code and logic will live in the adapter serdes.
-
-:warning: Annotation and configuration definitions must be declared outside of the build package if they depend on a package that conflicts with mirrors (Flutter conflicts with mirrors). As other packages may use these annotations (for example, `OfflineFirst` considers `@Rest` and `@Sqlite` annotations along with `@OfflineFirst`), it's safest to keep annotations and builders as independent packages.
-
-#### Declaring Class-level Configuration
-
-A provider will likely require high-level information about a class that would be inappropriate to define on every instance of a class. And, because Dart's Type system can't infer static methods, this must be declared outside the class in an annotation:
+While models should never be aware of providers, a provider's configuration may be required by a repository. As this is accessed via an annotation, configurations **must be `const`**. Class-level configuration is useful for setting defaults, describing behavior that relies on an instance:
 
 ```dart
-// in this example, @ConnectOfflineFirstWithRest is our super or class-level annotation
-@ConnectOfflineFirstWithRest(
-  // RestSerializable is our configuration body.
-  restConfig: RestSerializable(
-    // a REST endpoint is inappropriate to define as an instance-level definition
-    endpoint: '=> "/users";',
-    // super annotations are also useful for setting a default for subsequent field-level definitions in the class
-    fieldRename: FieldRename.snake,
-  )
+RestSerializable(
+  fieldName: FieldRename.pascal,
+  nullable: true,
 )
-class MyModel
 ```
 
-These configurations may be injected directly into the adapater (like `endpoint`) or may change behavior for generated code (like `fieldRename`).
+Configuration can also describe behavior that relies on an instance. Since functions cannot be passed in a `const` class, a stringified function body can be used:
 
-When creating a model that the provider relies on, only declare members if they're used by the provider. Using these members should be discouraged in the application.
+```dart
+RestSerializable(
+  // implied arguments are instance and query
+  endpoint: r"=> query.action == QueryAction.get ? '/users' : '/users/${instance.id}'",
+)
+```
+
+It is **not recommended** to require the end implemenation to declare arguments for stringified functions. If the provider's arguments for the property changes, the Dart type system will not detect the error ahead of run time.
+
+:warning: If the provider conflicts with usage of `dart:mirrors`, the configuration should be hosted in an independent package. For example, `brick_sqlite` and `brick_sqlite_abstract`.
+
+### Field-level Configuration
+
+A provider may choose to implement configuration at the field-level with annotations. Field-level annotations may be useful to override behavior at a finer level. These annotations should implement `FieldSerializable`:
+
+```dart
+@Rest(
+  // a property here may override previously-specified behavior at the class-level
+  name: "deleted"
+)
+final bool isDeleted;
+
+@Rest(ignore: true, name: "e-mail")
+@Sqlite(unique: true)
+final String email;
+```
+
+As the field-level annotations are the most often written, they have the most accessible names. Convention for field-level annotation names is simply the provider name minus "Provider."
+
+:bulb: Keep annotations as atomic as possible. A provider annotation is not reliable to another provider.
+
+## Query
+
+Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
+
+### `providerArgs:`
+
+`providerArgs` describe how to interact with a provider's source.
+
+```dart
+providerArgs: {
+  // limit describes how many results the provider requires from the source
+  'limit': 10,
+},
+```
+
+As `providerArgs` can vary from provider to provider and IDE suggestions are unavailable to a string-key map, `providerArgs` should be clearly and accessibly documented within every new provider.
+
+### `where:`
+
+`where` queries with a model's properties. A provider may optionally support `where` arguments. For example, while a SQLite provider will always support column querying, a RESTful API will likely be less consistent and may require massaging the field name:
+
+```dart
+[Where('firstName').isExactly('Thomas'), Where('age').isExactly(42)];
+// SQLite => SELECT * FROM Users WHERE first_name = "Thomas" AND age = 42;
+// REST => https://api.com/users?by_first_name=Thomas&age=42
+```
+
+The translation from model field name (e.g. `firstName`) to serializer field name (e.g. `first_name`) may occur in the adapter or in a class-level configuration (e.g. `RestSerializable#endpoint`). However, it should always be accessed by the provider from the adapter.
+
+## Adapters
+
+After the provider receives raw data from its source, it must be built into a model or a list of models. This translation occurs in the adapter. First, the adapter is discovered via the model dictionary, a simple hash table that connects models with adapters
+
+```dart
+Future<_Model> get<_Model extends RestModel>({Query query}) async {
+  // Connects to _ModelAdapter
+  final adapter = modelDictionary.forAdapter[_Model];
+  final resp = ... // fetch from HTTP
+
+  // Now the provider can (de)serialize
+  return response.map((r) => adapter.fromRest(r));
+}
+```
+
+The adapter can also facilitate deserialization in the provider with other information about the class:
+
+```dart
+class UserAdapter {
+  // class-level configurations can be copied to the adapter
+  final String fromKey = "users";
+
+  // translate field names (provided by Query#where) to their SQLite column names
+  final fieldsToSqliteColumns = {
+    "primaryKey": {
+      "name": "_brick_id",
+      "type": int,
+      // some information about the type is no longer available after build
+      // because this requires mirrors, however, it can be preserved in the adapter
+      "iterable": false,
+      "association": false,
+    },
+  };
+}
+```
+
+Adapters - made up of both serdes code and custom translation maps such as `fieldsToSqliteColumns` or `restEndpoint` - are generated using brick_build.
+
+:warning: A provider should not rely on adapter code generated by another provider library.
+
+## Models
+
+When creating a model that the provider relies on, only declare members if they're used by the provider. These members should be considered protected within the provider's ecosystem: their use should be discouraged in the end implementation.
 
 ```dart
 abstract class SqliteModel {
@@ -86,41 +195,140 @@ abstract class SqliteModel {
 }
 ```
 
-#### Declaring Field-level Configuration
+## Repository
 
-Field-level annotations may be useful to override behavior at a finer level.
+Please review best practice methods described in [Creating a Custom Repository](https://github.com/greenbits/brick#creating-a-custom-repository) before designing an interface. Build libraries should not generate repositories, however, sometimes a domain adds extra configuration that requires extending provider generators (for example, `OfflineFirstSerdes`).
+
+### Class-level Configuration
+
+A model annotation should be named `Connect<DOMAIN>`, include provider configuration, and not manipulate configuration used by other providers. If configuration is required for the repository, it should only be relevant at the repository level:
 
 ```dart
-class MyModel
-  @Rest(
-    // a property here may override previously-specified behavior at the class-level
-    name: "deleted"
+// BAD
+@ConnectOfflineFirstWithRest(
+  fieldRename: FieldRename.snake,
+  restConfig: RestSerializable(
+    // two places to declare the same configuration
+    // with no clear logic for the selection hierarchy
+    fieldRename: FieldRename.pascal,
   )
-  final bool isDeleted;
+)
+
+// GOOD
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    fieldRename: FieldRename.pascal,
+  ),
+  sqliteConfig: SqliteSerializable(
+    ignore: true,
+  ),
+  // this property will affect all interactions with the model
+  alwaysHydrate: true,
+)
 ```
 
-#### Advanced Type Checking
+### Field-level Configuration
 
-Most generators may not require an extension of basic type checking (e.g. is this a string, is this an int, is this a list). For advanced checking, say, for the discovery of a package-specific class, a new checker will have to be created:
+Annotations should only reflect configuration relevant to the repository (e.g. directives on how to synthesize). They should not be shortcuts:
 
 ```dart
-final _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
+// BAD:
+@OfflineFirst(ignore: true)
 
-class OfflineFirstChecker extends SharedChecker {
-  bool get isSerdes => _serdesClassChecker.isSuperTypeOf(targetType);
-}
+// GOOD:
+@Rest(ignore: true)
+@Sqlite(ignore: true)
 ```
 
-For every new or removed type check, always update `SharedChecker`'s computed getter `isSerializable`.
+Annotations are most useful when its explicit purpose combines multiple providers **and**:
 
-### Interpreting Class-level Annotations
+```dart
+@OfflineFirst(where: "{'email': data['email']}")
+```
 
-Class-level annotations must be expanded from their constantized versions back to an easily-digestible Dart form:
+Unlike atomic provider annotations, repositories **can and should** access all relevant provider annotations:
+
+```dart
+// all three of these annotations are useful to the OfflineFirst domain
+// when generating adapter code
+@Rest(name: 'LastName')
+@Sqlite(name: 'last_name')
+@OfflineFirst(where: "{'last_name': data['LastName']}")
+```
+
+### Associations
+
+Associations can require complex fetching. When a domain supports associations between providers, the class-level annotation should be used in a custom checker. For example, `isSibling` or `isAssociation`.
+
+It is recommended to use a repository method dedicated to association fetching instead of the provider, as the repository may route the lookup to a different provider. For example, a User may have 1 Hat, and the repository may already have that Hat in a memory provider. By requesting the repository, the `SqliteProvider` is spared a potentially expensive query.
+
+# Code Generation
+
+Before reading further, this process appears to require a lot of code. This is largely boilerplate required for type checking and Dart's analyzer. The majority of the custom code and logic will live in the adapter serdes.
+
+## Package Setup
+
+Annotation and configuration definitions must be declared outside of the build package if they depend on a package that conflicts with mirrors (Flutter conflicts with mirrors). As other packages may use these annotations (for example, `OfflineFirst` considers `@Rest` and `@Sqlite` annotations along with `@OfflineFirst`), it's safest to keep annotations and builders as independent packages.
+
+For example, the Cloud Firestore package:
+
+```
+brick_cloud_firestore
+|--example
+|--README.md
+|--packages
+
+// this package is the only imported into depedencies: in pubspec.yaml
+// it contains the importable provider and repositories
+// the repositories may also choose to export annotations from sister packages
+|--|--brick_cloud_firestore
+
+// since firestore depends on sqlite, an abstract package includes
+// annotations and class-level configuration classes that can be digested by brick_build
+// and the brick_cloud_firestore package
+|--|--brick_cloud_firestore_abstract
+
+// code generation unique to the provider. exports serialize, deserialize, fields, provider model serdes, and any additional builders
+|--|--brick_cloud_firestore_generators
+
+// outputs and saves generated code to disk. this is the only package that includes a build.yaml
+// there should only be one discovered annotation per build package
+|--|--brick_offline_first_with_cloud_firestore_build
+```
+
+* [ ] If my provider relies on Flutter, a separate package for annotations and configuration exists as a `_abstract` package
+* [ ] The `_generators` package **does not** include a `build.yaml` (multiple `build.yaml` files can cause race collisions)
+* [ ] `<Provider>Fields`, `<Provider>SerializeGenerator`, `<Provider>DeserializeGenerator`, and `<Provider>ModelSerdesGenerator` can be accessed outside the `_generators` package
+* [ ] Only one class-level annotation is discovered per `_build` package
+
+## Provider
+
+### Class-level Configuration
+
+A provider will likely require high-level information about a class that would be inappropriate to define on every instance of a class. For this, a provider can declare a class-level configuration:
+
+```dart
+RestSerializable(
+  // a REST endpoint is inappropriate to define as an instance-level definition
+  endpoint: '=> "/users";',
+  // class-level configs are also useful for setting a default for subsequent field-level definitions in the class
+  fieldRename: FieldRename.snake,
+)
+```
+
+These configurations may be injected directly into the adapater (like `endpoint`) or may change behavior for generated code (like `fieldRename`).
+
+This class **should not** be used as an annotation. Instead, it is received as a member of a class-level annotation discovered by the [domain](#domain).
+
+#### Interpreting Class-level Configurations
+Once a class is discovered by a builder, the configuration is pulled from the annotation and expanded into easily-digestible Dart form:
 
 ```dart
 // RestSerializable is our previously-noted configuration class
-class RestSerdes extends ProviderSerializableGenerator<RestSerializable> {
-  RestSerdes(Element element, ConstantReader reader)
+class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSerializable> {
+  RestModelSerdesGenerator(Element element, ConstantReader reader)
+        // subsequent consumers of this provider generator have to use this config key in their class-level domain annotation
+        // or whatever annotation is used to discover the model class
       : super(element, reader, configKey: "restConfig");
 
   get config {
@@ -134,9 +342,9 @@ class RestSerdes extends ProviderSerializableGenerator<RestSerializable> {
 }
 ```
 
-#### Discovering and Interpreting Field-level Annotations
+### Discovering and Interpreting the Field-level Annotation
 
-Field-level annotations must be expanded from their constantized versions back to an easily-digestible form. Brick provides a base class for this:
+Similarly, the field-level annotation must be expanded from their constantized versions back to an easily-digestible form. Brick provides a base class for this:
 
 ```dart
 // @Rest is our annotation AND field-level configuration class, declared via AnnotationFinder<Rest>
@@ -171,7 +379,7 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
 }
 ```
 
-This reinitializes at the field level. However, a class will require that all fields go through the same process, and so a `FieldsForClass` class must be made.
+This reinitializes at the field level. However, a class will require that all fields go through the same process, and so a `FieldsForClass` class must be made. These fields will be passed to our (de)serialize generators:
 
 ```dart
 // @Rest is still our annotation
@@ -186,7 +394,7 @@ class RestFields extends FieldsForClass<Rest> {
 }
 ```
 
-For providers that do not make use of a class-level config, the `Fields` interpreter can be adjusted:
+For providers that do not make use of a class-level config, the `Fields` implementation can be adjusted:
 
 ```dart
 class RestFields extends FieldsForClass<Rest> {
@@ -196,68 +404,38 @@ class RestFields extends FieldsForClass<Rest> {
 }
 ```
 
-#### Discovering Class-level Annotations
+### Adapters
 
-An AnnotationSuperGenerator manages sub generators. This generator is most likely the entrypoint for other builders. It should be simple, with most of its logic delegated to sub generators.
-
-```dart
-// @ConnectOfflineFirstWithRest is the annotation that decorates our models
-class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
-  final ConnectOfflineFirstWithRest config;
-
-  const OfflineFirstGenerator({
-    ConnectOfflineFirstWithRest argConfig,
-  }) : config = argConfig ?? ConnectOfflineFirstWithRest.defaults;
-
-  String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
-    final rest = RestSerdes(element, annotation);
-    // generated code is returned (and discussed next)
-  }
-}
-```
-
-### Adapter
-
-Adapter serdes generators should be as atomic as possible and not expect code from other adapter generators.
-
-An adapter always includes serialization and deserialization methods. It can also include useful information such as schema data for a SQLite provider or a function to generate an endpoint for a REST provider. The provider can and should access generic (i.e. not related to a specific model instance) model information via the adapter.
-
-Domains should subclass the `SerdesGenerator` to configure default generated code:
+Adapter serdes generators should be as atomic as possible and not expect code from other adapter generators. By subclassing `SerdesGenerator`, a `_generators` package can quickly produce (de)serializing functions for later consumption in a generator:
 
 ```dart
 // FieldSerializable is a protocol for field-level annotations defined in brick_core
-abstract class OfflineFirstSerdesGenerator extends SerdesGenerator<T extends FieldSerializable> {
-  final repositoryName = "OfflineFirst";
-}
-```
-
-Serializing and deserializing functions should live in separate classes for legibility:
-
-```dart
-// @Rest is our field-level annotation
-class RestSerialize extends OfflineFirstGenerator<Rest> {
+abstract class RestSerializeGenerator extends SerdesGenerator<Rest, RestModel> {
+  final providerName = 'Rest';
   final doesDeserialize = false;
-}
-class RestDeserialize extends OfflineFirstGenerator<Rest> {
-  final doesDeserialize = true;
+
+  RestSerialize(ClassElement element, RestFields fields) : super(element, fields);
 }
 ```
 
-Every field of a model will be interpreted by the SerdesGenerator via `addField`:
+Every unignored field of a model will pass through the end function of `coderForField`. This function provides field-level code generation given as much configuration as available:
 
 ```dart
 class RestSerialize extends OfflineFirstGenerator<Rest> {
   // All discovered fields of the class pass through this function for generator output
   // Private fields, methods, static members, and computed setters are automatically ignored
-  String addField(field, annotation) {
-    // interpret the field's type:
-    final checker = SharedChecker(field.type);
+  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+    // in serialize, the field value will be `instance.fieldName`
+    // in deserialize, the field value will be `data['field_name']`
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (checker.isString) {
-      // annotation is our already-expanded field-level config
-      final propertyName = annotation.name;
-      // field comes from the analyzer and has a lot of useful information
-      return "'$propertyName' : instance.${field.name}";
+      return fieldValue;
+    }
+
+    if (checker.isDateTime) {
+      return '$fieldValue?.toIso8601String()';
     }
 
     // falling through to an unsupported type, null won't add to the generated output
@@ -266,77 +444,108 @@ class RestSerialize extends OfflineFirstGenerator<Rest> {
 }
 ```
 
-At a minimum, all primitive types should be evaluated by the checker and returned to the generator with appropriate serializing or deserializing code. Serdes generators come out as code spaghetti and _that's OK_. Explicit, verbose declarations - even when duplicated across generators - are reliable and easy to debug.
+An adapter always includes serialization and deserialization methods for a provider. At a minimum, all primitive types should be evaluated by the checker and returned to the generator with appropriate serializing or deserializing code. Serdes generators come out as code spaghetti and _that's OK_. Explicit, verbose declarations - even when duplicated across generators - are reliable and easy to debug.
 
-Adapter members, like models, should only be declared if they are used by the provider.
+Adapters can also include useful information such as schema data for a SQLite provider or a function to generate an endpoint for a REST provider. The provider can and should access generic (i.e. not related to a specific model instance) model information via the adapter. Adapter members, like models, should only be declared if they are used by the provider.
 
 ```dart
-abstract class SqliteAdapter extends Adapter<SqliteModel> {
-  // the analyzer won't be available at run time, so the provider needs to be aware
-  // of relevant information to build a SQLite query
-  final fieldsToColumns = {
-    'firstName': {
-      'type': String,
-      'association': false,
-      'columnName': 'first_name',
-    },
-  };
+// adapter methods and fields are declared in the <PROVIDER>(De)serializeGenerators
+List<String> get instanceFieldsAndMethods {
+  var toKey = (fields as RestFields).config?.toKey?.trim();
+
+  // Strings should always be wrapped as this is generated code
+  // it won't look natural and the type system won't catch errors,
+  // so be sure to write comprehensive tests
+  if (toKey != null) toKey = "'$toKey'";
+
+  return ['final String toKey = $toKey;'];
 }
 ```
 
-#### Associations
-
-Associations can require complex fetching. When a domain supports associations between providers, the class-level annotation should be used in a custom checker. For example, `isSibling` or `isAssociation`.
-
-It is recommended to use a repository method dedicated to association fetching instead of the provider, as the repository may route the lookup to a different provider. For example, a User may have 1 Hat, and the repository may already have that Hat in a memory provider. By requesting the repository, the `SqliteProvider` is spared a potentially expensive query.
-
-### Generating Class-level Annotations
-
-The two adapter serdes classes are associated in the original serdes:
+Lastly, serializing and deserializing generators should live in separate classes for legibility:
 
 ```dart
-class RestSerdes extends ProviderSerializableGenerator<RestSerializable> {
-  RestSerdes(Element element, ConstantReader reader)
-      : super(element, reader, configKey: "restConfig");
+class RestSerializeGenerator extends SerdesGenerator<Rest, RestModel> {
+  final doesDeserialize = false;
+}
+class RestDeserialize extends SerdesGenerator<Rest, RestModel> {
+  final doesDeserialize = true;
+}
+```
 
+### Invoking the Generators
+
+The (De)serialize generators are accessed through the `<PROVIDER>ModelSerdesGenerator` from before:
+
+```dart
+class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSerializable> {
+  ...
+
+  @override
   get generators {
     final classElement = element as ClassElement;
-    // RestFields interprets all fields at the class level into our custom config (e.g. `name`, `ignore`)
-    //
-    // `config` comes from our expanded class-level annotation
+    // the config expanded previously is now passed to our Fields class
     final fields = RestFields(classElement, config);
-    return [RestDeserialize(classElement, fields), RestSerialize(classElement, fields)];
+    return [
+      // the output of these generators will be accessed via a builder in a later step
+      RestDeserialize(classElement, fields),
+      RestSerialize(classElement, fields),
+    ];
   }
 }
 ```
 
-Finally, the adapter code is ready to be sent to a builder.
+## Domain
+
+### The Class-level Annotation
+
+Domain annotations at the class-level are discovered by the domain builder. **There must only be one class-level annotation per `_build` package**. The annotation includes configuration options for each provider within the domain:
 
 ```dart
-class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
-  final ConnectOfflineFirstWithRest config;
-
-  const OfflineFirstGenerator({
-    ConnectOfflineFirstWithRest argConfig,
-  }) : config = argConfig ?? ConnectOfflineFirstWithRest.defaults;
-
-  String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
-    final rest = RestSerdes(element, annotation);
-
-    final adapterGenerator = AdapterGenerator(
-      superAdapterName: 'OfflineFirst',
-      className: element.name,
-      // other provider serializing functions can be passed to the adapter generator,
-      // allowing an adapter to interpret between providers
-      generators: [rest.generators],
-    );
-
-    return adapterGenerator.generate();
-  }
-}
+@ConnectOfflineFirstWithRest(
+  // RestSerializable is our configuration body.
+  restConfig: RestSerializable(
+    endpoint: '=> "/users";',
+    fieldRename: FieldRename.snake,
+  )
+)
+class MyModel
 ```
 
-### Model Dictionary
+#### Interpreting the Class-level Annotation
+
+As the interpretation of the provider's configuration is handled by the `<PROVIDER>ModelSerdesGenerator`, forwarding the annotation to the generator is sufficient.
+
+:warning: When declaring the annotation interface, be sure to name the annotation keys after the provider's `<PROVIDER>ModelSerdesGenerator#configKey`. Otherwise the build package will have to subclass the model generator to lock its config key.
+
+#### Discovering the Class-level Annotation
+
+An AnnotationSuperGenerator manages sub generators. This generator is the entrypoint for other builders. It should be simple, with most of its logic delegated to sub generators.
+
+```dart
+// @ConnectOfflineFirstWithRest is the annotation that decorates our domain models
+class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
+  // required for the adapter output
+  final String superAdapterName;
+
+  const OfflineFirstGenerator({
+    this.superAdapterName = 'OfflineFirst',
+  });
+
+    /// Given an [element] and an [annotation], scaffold generators
+  List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
+    // `RestModelSerdesGenerator gathers its configuration from the `ConnectOfflineFirstWithRest` annotation
+    final rest = RestModelSerdesGenerator(element, annotation);
+    final sqlite = SqliteModelSerdesGenerator(element, annotation);
+    return <SerdesGenerator>[]
+        ..addAll(rest.generators)
+        ..addAll(sqlite.generators);
+  }
+```
+
+This class will be used by other generators in the [build step](#builder).
+
+### Model Dictionary (brick.g.dart)
 
 The Model Dictionary generator must generate model dictionaries for **each** provider. Defining instructions - such as not committing generated code - and guiding code comments - such as the contents of a `mapping` - are important but not required.
 
@@ -393,27 +602,42 @@ import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
 ### Builder
 
-Generators are invoked by builders and builders are invoked by `build.yaml` using Dart's native task runner. As `build.yaml` can be opaque to the uninitiated and is not part of this repo, documentation about customization can be found on [the package page](https://pub.dartlang.org/packages/build_config). For basic, battle-tested usage, [the build.yaml in this repo](build.yaml) can be used as a base and modified appropriately for custom domains.
+At long last, the generated code is output to file(s) on disk using a `builder.dart` file.
 
 The primary build functions will be adapters and the model dictionary, as these are critical to the Brick system:
 
 ```dart
-// RestModelSerdesGenerator is our AnnotationSuperGenerator
-final restGenerator = RestModelSerdesGenerator();
-Builder restAdaptersBuilder(options) => AdapterBuilder(restGenerator);
-Builder restModelDictionaryBuilder(options) => ModelDictionaryBuilder(
-  restGenerator,
-  RestModelDictionaryGenerator(),
-  // these files were only imported for our source code to interpret annotations
-  // they're not required by adapters now that code has been generated
-  expectedImportRemovals: [
-    "import 'package:brick_rest/rest.dart';",
-    'import "package:brick_rest/rest.dart";',
-  ],
-);
+final offlineFirstGenerator = const OfflineFirstGenerator();
+
+// all models must be aggregated to one file to check associations
+Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
+      "import 'package:brick_offline_first_abstract/annotations.dart';",
+      "import 'package:brick_offline_first/offline_first.dart';",
+      "import 'package:brick_sqlite_abstract/db.dart';",
+    ]);
+
+// The Adapter builder uses the same annotation declared in OfflineFirstGenerator
+// it also relies on the `buildGenerators` function
+Builder offlineFirstAdaptersBuilder(options) =>
+    AdapterBuilder<ConnectOfflineFirstWithRest>(offlineFirstGenerator);
+
+// the model dictionary builder similarly requires the domain's class-level annotation.
+// this build will perform optional cleanup as well
+Builder offlineFirstModelDictionaryBuilder(options) =>
+    ModelDictionaryBuilder<ConnectOfflineFirstWithRest>(
+      const OfflineFirstModelDictionaryGenerator(),
+      expectedImportRemovals: [
+        "import 'package:brick_offline_first_abstract/annotations.dart';",
+        'import "package:brick_offline_first_abstract/annotations.dart";',
+        "import 'package:brick_offline_first/offline_first.dart';",
+        'import "package:brick_offline_first/offline_first.dart";',
+      ],
+    );
 ```
 
-## Testing
+Generators are invoked by builders [in `builders.dart`] and builders are invoked by `build.yaml` using Dart's native task runner. As `build.yaml` can be opaque to the uninitiated and is not part of this repo, documentation about customization can be found on [the package page](https://pub.dartlang.org/packages/build_config). For basic, battle-tested usage, [the build.yaml in this repo](build.yaml) can be used as a base and modified appropriately for custom domains.
+
+# Testing
 
 Generated code can be compared with expected output using the `lib/testing.dart` helper utilities.
 
@@ -460,18 +684,25 @@ test('simple', () {
 });
 ```
 
-## FAQ
+# Advanced Techniques
+
+## Custom Type Checking
+
+Most generators may not require an extension of basic type checking (is this a string, is this an int, is this a list). For advanced checking, (e.g. discovering a package-specific class like `OfflineFirstSerdes`), a new checker will have to be created:
+
+```dart
+final _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
+
+class OfflineFirstChecker extends SharedChecker {
+  bool get isSerdes => _serdesClassChecker.isSuperTypeOf(targetType);
+}
+```
+
+For every new or removed type check, always update `SharedChecker`'s computed getter `isSerializable`.
+
+
+# FAQ
 
 ### Why are all models hacked into a single file?
 
 Dart's build discovers annotations within one file at a time. Because Brick makes use of associations, it must be aware of all files, including similarly-annotated models that may not be in the same file. Therefore, one build step handles combining all files via a known directory (this is why folder organization is so important) and then combines them into a file. By writing that file, another build step listening for the extension kicks off _the next_ build step to interpret each annotation.
-
-### Why doesn't this library use [JsonSerializable](https://pub.dartlang.org/packages/json_serializable)?
-
-While `JsonSerializable` is an incredibly robust library, it is, in short, opinionated. Just like this library is opinionated. This prevents incorporation in a number of ways:
-
-* `@JsonSerializable` detects serializable models [via a class method check](https://github.com/dart-lang/json_serializable/blob/6a39a76ff8967de50db0f4b344181328269cf978/json_serializable/lib/src/type_helpers/json_helper.dart#L131-L133). Since `@ConnectOfflineFirstWithRest` uses an abstracted builder, checking the source class is not effective.
-* `@JsonSerializable` only supports enums as strings, not as indexes. While this is admittedly more resilient, it can’t be retrofitted to enums passed as integers from an API.
-* Lastly, dynamically applying a configuration is an uphill battle with `ConstantReader` (the annotation would have to be converted into a [digestable format](https://github.com/dart-lang/json_serializable/blob/5cbe2f9b3009cd78c7a55277f5278ea09952340d/json_serializable/lib/src/json_serializable_generator.dart#L103)). While ultimately this could be possible, the library is still unusable because of the aforementioned points.
-
-`JsonSerializable` is an incredibly robust library and should be used for all other scenarios.

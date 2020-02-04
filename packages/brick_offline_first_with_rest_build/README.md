@@ -44,3 +44,15 @@ cd my_app; (flutter) pub run build_runner build
 1. Now with the complete adapter code, the AdapterBuilder saves `adapters/MODELNAME.g.dart`.
 1. Now with all annotated classes having adapter counterparts, a model dictionary is generated and saved to `brick.g.dart` with the ModelDictionaryBuilder.
 1. Concurrently, the super generator may produce a new schema that reflects the new data structure. `SqliteSchemaGenerator` generates a new schema. Using `SchemaDifference`, a new migration is created (this will be saved to `db/migrations/VERSION_migration.dart`). The new migration is logged and prepended to the generated code. This will be saved to `db/schema.g.dart` with the SqliteSchemaBuilder. A new migration will be saved to `db/<INCREMENT_VERSION>.g.dart` with the NewMigrationBuilder.
+
+## FAQ
+
+### Why doesn't this library use [JsonSerializable](https://pub.dartlang.org/packages/json_serializable)?
+
+While `JsonSerializable` is an incredibly robust library, it is, in short, opinionated. Just like this library is opinionated. This prevents incorporation in a number of ways:
+
+* `@JsonSerializable` detects serializable models [via a class method check](https://github.com/dart-lang/json_serializable/blob/6a39a76ff8967de50db0f4b344181328269cf978/json_serializable/lib/src/type_helpers/json_helper.dart#L131-L133). Since `@ConnectOfflineFirstWithRest` uses an abstracted builder, checking the source class is not effective.
+* `@JsonSerializable` only supports enums as strings, not as indexes. While this is admittedly more resilient, it can’t be retrofitted to enums passed as integers from an API.
+* Lastly, dynamically applying a configuration is an uphill battle with `ConstantReader` (the annotation would have to be converted into a [digestable format](https://github.com/dart-lang/json_serializable/blob/5cbe2f9b3009cd78c7a55277f5278ea09952340d/json_serializable/lib/src/json_serializable_generator.dart#L103)). While ultimately this could be possible, the library is still unusable because of the aforementioned points.
+
+`JsonSerializable` is an incredibly robust library and should be used for all other scenarios.
