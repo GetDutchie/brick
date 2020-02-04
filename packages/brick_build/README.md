@@ -1,6 +1,6 @@
 # Brick Build
 
-Code generator utilities for [Brick](https://github.com/greenbits/brick) adapters, model dictionaries.
+Code generator utilities for [Brick](https://github.com/greenbits/brick) adapters and model dictionaries.
 
 ## Setup
 
@@ -50,9 +50,9 @@ This ensures a consistent path to access child data, such as models, [by build g
     - [Field-level Annotation](#discovering-and-interpreting-field-level-annotation)
     - [Adapters](#adapters-1)
     - [Invoking the Generators](#invoking-the-generators)
-  * [Domain]
+  * [Domain](#domain)
     - [Class-level Annotation](#the-class-level-annotation)
-    - [Model Dictionary (brick.g.dart)](#model-dictionary-brick-g-dart)
+    - [Model Dictionary (brick.g.dart)](#model-dictionary-brickgdart)
     - [Builder](#builder)
 - [Testing](#testing)
 - [Advanced Techniques](#advanced-techniques)
@@ -69,11 +69,13 @@ This ensures a consistent path to access child data, such as models, [by build g
 
 # API Considerations
 
+Brick is an opinionated library, and providing consistent, predictable interaction regardless of provider or domain is a major goal of the project. Implementing the following guidelines is not a requirement, but please strongly consider them when building custom providers and domains.
+
 ## Provider
 
 ### Class-level Configuration
 
-While models should never be aware of providers, a provider's configuration may be required by a repository. As this is accessed via an annotation, configurations **must be `const`**. Class-level configuration is useful for setting defaults, describing behavior that relies on an instance:
+While models should never be aware of providers, a provider's configuration may be used by a repository or supply necessary information to an adapter. As this is accessed via an annotation, configurations **must be `const`**. Class-level configuration is useful for setting defaults, describing behavior that relies on an instance:
 
 ```dart
 RestSerializable(
@@ -296,7 +298,7 @@ brick_cloud_firestore
 |--|--brick_offline_first_with_cloud_firestore_build
 ```
 
-* [ ] If my provider relies on Flutter, a separate package for annotations and configuration exists as a `_abstract` package
+* [ ] If the provider has a Flutter dependency, a separate package for annotations and configuration exists as a `_abstract` package
 * [ ] The `_generators` package **does not** include a `build.yaml` (multiple `build.yaml` files can cause race collisions)
 * [ ] `<Provider>Fields`, `<Provider>SerializeGenerator`, `<Provider>DeserializeGenerator`, and `<Provider>ModelSerdesGenerator` can be accessed outside the `_generators` package
 * [ ] Only one class-level annotation is discovered per `_build` package
