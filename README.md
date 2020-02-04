@@ -8,9 +8,11 @@ An intuitive way to work with persistent data in Dart.
 
 ## What is Brick?
 
-Brick is an extensible query interface for Dart applications. It's an all-in-one solution responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without concern for where the data lives. Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
+Brick is an extensible query interface for Dart applications. It's an [all-in-one solution](https://www.youtube.com/watch?v=2noLcro9iIw) responsible for representing business data in the application, regardless of where your data comes from. Using Brick, developers can focus on implementing the application, without [concern for where the data lives](https://www.youtube.com/watch?v=jm5i7e_BQq0). Brick was inspired by the need for applications to work offline first, even if an API represents your source of truth.
 
 Brick is inspired by [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html), [Ecto](https://hexdocs.pm/ecto/), and similar libraries.
+
+Brick does a lot at once. [Learn](#learn) includes videos, tutorials, and examples that break down Brick and is a great place to start.
 
 ## Why Brick?
 
@@ -98,6 +100,8 @@ final usersWithBrownHats = repository.get<User>(query: query);
 
 Brick natively [serializes primitives, associations, and more](packages/brick_offline_first/example/lib/app/models/kitchen_sink.dart).
 
+If it's still murky, [check out Learn](#learn) for videos, tutorials, and examples that break down Brick.
+
 # Table of Contents
 
 - [Setup](#setup)
@@ -131,6 +135,7 @@ Brick natively [serializes primitives, associations, and more](packages/brick_of
       * [Applying Query#action](#applying-queryaction)
   * [FAQ](#faq-1)
 - [Providers and Repositories](#providers-and-repositories)
+- [Learn](#learn)
 - [General FAQ](#general-faq)
 
 # Setup
@@ -686,8 +691,17 @@ Repositories do not have model dictionaries because they do not interpret source
 * [REST Provider](packages/brick_rest) - Connect a REST API to Brick
 * [SQLite Provider](packages/brick_sqlite) - Connect a SQLite database to Brick (requires Flutter)
 * [Memory Cache Provider](packages/brick_sqlite#memory-cache-provider) - Store models in memory for easy access. Requires [brick_sqlite](packages/brick_sqlite)
+* [Firestore Provider](https://github.com/jnhuynh/brick_cloud_firestore) - Connect to Firebase's Cloud Firestore
 * [Offline First Repository](packages/brick_offline_first) - Fetch results from a local storage (SQLite or Memory Cache). SQLite is hydrated by a remote provider.
-* [Offline First With Rest Repository](packages/brick_offline_first#offline-first-with-rest-repository) - Uses the REST Provider as Offline First Repository's remote provider.
+* [Offline First With Rest Repository](packages/brick_offline_first#offline-first-with-rest-repository) - Uses the REST Provider as Offline First Repository's remote provider
+* [Offline First with Firestore Repository](https://github.com/jnhuynh/brick_cloud_firestore/tree/master/brick_cloud_firestore) - Uses the Cloud Firestore as Offline First Repository's remote provider
+
+## Learn
+
+* Video: [Brick Architecture](https://www.youtube.com/watch?v=2noLcro9iIw). An explanation of Brick parlance with a supplemental analogy.
+* Video: [Brick Basics](https://www.youtube.com/watch?v=jm5i7e_BQq0). An overview of essential Brick mechanics.
+* Example: [Simple Associations using the OfflineFirstWithRest domain](example)
+* Tutorial: [Setting up a simple app with Brick](http://www.flutterbyexample.com/#/posts/2_adding_a_repository)
 
 ## General FAQ
 

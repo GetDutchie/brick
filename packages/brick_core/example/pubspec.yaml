@@ -7,3 +7,5 @@ environment:
 
 dependencies:
   glob: any
+  brick_core:
+    path: ../
