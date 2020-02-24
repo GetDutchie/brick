@@ -117,6 +117,28 @@ class RequestSqliteCache {
     return _db = await _openDb(databaseName);
   }
 
+  /// Discover most recent unprocessed job in database convert it back to an HTTP request.
+  /// This method also locks the row to make it idempotent to subsequent processing.
+  static Future<http.Request> latestUnprocessedRequest(String dbName) async {
+    final db = await _openDb(dbName);
+    final unprocessedJobs = await db.transaction<List<Map<String, dynamic>>>((txn) async {
+      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
+      final whereLocked = _lockedQuery(true, limit: 1);
+
+      // lock the requests for idempotency
+      await txn.rawUpdate(
+          'UPDATE $HTTP_JOBS_TABLE_NAME SET $HTTP_JOBS_LOCKED_COLUMN = 1 WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);');
+
+      return txn.rawQuery('$whereLocked;');
+    });
+
+    final jobs = unprocessedJobs.map(toRequest).cast<http.Request>();
+
+    if (jobs?.isEmpty == false) return jobs.first;
+
+    return null;
+  }
+
   /// Prepare schema.
   static Future<void> migrate(String dbName) async {
     final statement = '''
@@ -134,24 +156,6 @@ class RequestSqliteCache {
     ''';
     final db = await _openDb(dbName);
     return await db.execute(statement);
-  }
-
-  /// Discover most recent unprocessed job in database. Lock the row and convert
-  /// it back to an HTTP request.
-  static Future<Iterable<http.Request>> unproccessedRequests(String dbName) async {
-    final db = await _openDb(dbName);
-    final unprocessedJobs = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, HTTP_JOBS_LOCKED_COLUMN);
-      final whereLocked = _lockedQuery(true);
-
-      // lock the requests for idempotency
-      await txn.rawUpdate(
-          'UPDATE $HTTP_JOBS_TABLE_NAME SET $HTTP_JOBS_LOCKED_COLUMN = 1 WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);');
-
-      return txn.rawQuery('$whereLocked;');
-    });
-
-    return unprocessedJobs.map(toRequest);
   }
 
   /// Recreate a request from SQLite data
@@ -177,6 +181,18 @@ class RequestSqliteCache {
 
     return _request;
   }
+
+  /// Returns row data for all unprocessed job in database.
+  static Future<List<Map<String, dynamic>>> unprocessedJobs(String dbName) async {
+    final db = await _openDb(dbName);
+
+    return await db.query(
+      HTTP_JOBS_TABLE_NAME,
+      where: '$HTTP_JOBS_LOCKED_COLUMN = ?',
+      whereArgs: [true],
+      distinct: true,
+    );
+  }
 }
 
 const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
@@ -196,14 +212,15 @@ Future<Database> _openDb(String dbName) async {
   return await openDatabase(path);
 }
 
-/// Generate SQLite query for [unprocessedRequests]
-String _lockedQuery(bool whereIsLocked, [String selectFields = '*']) {
+/// Generate SQLite query for [latestUnprocessedRequest].
+/// When [limit] is `0`, all results are returned
+String _lockedQuery(bool whereIsLocked, {String selectFields = '*', int limit = 1}) {
   return [
     'SELECT DISTINCT',
     selectFields,
     'FROM $HTTP_JOBS_TABLE_NAME',
     'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
     'ORDER BY $HTTP_JOBS_UPDATED_AT ASC',
-    'LIMIT 1'
+    if (limit > 0) 'LIMIT $limit'
   ].join(' ');
 }

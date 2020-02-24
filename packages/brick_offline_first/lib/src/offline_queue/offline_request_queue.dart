@@ -13,10 +13,16 @@ class OfflineRequestQueue {
   /// Time between running jobs. Defaults to 5 seconds.
   final Duration interval;
 
-  final Logger _logger;
-
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
+
+  /// All requests to be retried, ordered most recent first
+  /// Accessing this list can be useful for deleting a job blocking the queue
+  /// or determining queue length.
+  Future<List<Map<String, dynamic>>> get unproccessedJobs async =>
+      await RequestSqliteCache.unprocessedJobs(client.databaseName);
+
+  final Logger _logger;
 
   Timer _timer;
 
@@ -31,7 +37,7 @@ class OfflineRequestQueue {
   void start() {
     stop();
     _logger.finer('Queue started');
-    _timer = Timer.periodic(interval, _process);
+    _timer = Timer.periodic(interval, process);
   }
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.
@@ -41,14 +47,14 @@ class OfflineRequestQueue {
     _logger.finer('Queue stopped');
   }
 
-  /// Resend unproccessed requests to the client.
-  void _process(Timer _timer) async {
-    final requests = await RequestSqliteCache.unproccessedRequests(client.databaseName);
+  /// Resend latest unproccessed request to the client.
+  @protected
+  void process(Timer _timer) async {
+    final request = await RequestSqliteCache.latestUnprocessedRequest(client.databaseName);
 
-    final requeuedRequests = requests.map(client.send);
-    if (requeuedRequests.isNotEmpty) {
-      _logger.finer('Processing ${requeuedRequests.length} requests');
-      await Future.wait(requeuedRequests);
+    if (request != null) {
+      _logger.finer('Processing request');
+      await client.send(request);
     }
   }
 }

@@ -127,16 +127,8 @@ void main() {
       });
     });
 
-    test('.migrate', () async {
-      await RequestSqliteCache.migrate('fake_db');
-
-      expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
-      expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
-      expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
-    });
-
-    test('.unprocessedRequests', () async {
-      final requests = await RequestSqliteCache.unproccessedRequests('fake_db');
+    test('.latestUnprocessedRequest', () async {
+      final request = await RequestSqliteCache.latestUnprocessedRequest('fake_db');
       expect(
         sqliteLogs,
         [
@@ -147,9 +139,16 @@ void main() {
         ],
       );
 
-      expect(requests, isNotEmpty);
-      expect(requests.first.method, 'PUT');
-      expect(requests.first.url.toString(), 'http://localhost:3000/stored-query');
+      expect(request.method, 'PUT');
+      expect(request.url.toString(), 'http://localhost:3000/stored-query');
+    });
+
+    test('.migrate', () async {
+      await RequestSqliteCache.migrate('fake_db');
+
+      expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
+      expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
+      expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
     });
 
     group('.toRequest', () {
@@ -189,6 +188,14 @@ void main() {
         expect(request.headers, {'Content-Type': 'application/json'});
         expect(request.body, '');
       });
+    });
+
+    test('.unprocessedJobs', () async {
+      await RequestSqliteCache.unprocessedJobs('fake_db');
+      expect(
+        sqliteLogs,
+        ['SELECT DISTINCT * FROM HttpJobs WHERE locked = ?'],
+      );
     });
   });
 }
