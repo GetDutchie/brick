@@ -1,5 +1,6 @@
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 import 'package:brick_sqlite/sqlite.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Used when you just want to stub SQLite method channel responses.
@@ -55,23 +56,25 @@ class StubSqlite {
     String tableName,
     MethodCall methodCall,
   }) {
-    responses = _addPrimaryKeysToResponses(responses);
+    responses = addPrimaryKeysToResponses(responses);
+    responses = convertBoolValuesToInt(responses);
 
     final query = methodCall.arguments['sql'] as String;
-    final queryAsMap = _queryToMap(methodCall.arguments);
+    final queryAsMap = queryToMap(methodCall.arguments);
 
     if (methodCall.method == 'insert') {
       return responses.length + 1;
     }
-    if (query.startsWith("SELECT COUNT(*)")) {
-      if (query.endsWith("`$tableName`")) {
+    if (query.startsWith('SELECT COUNT(*)')) {
+      if (query.endsWith('`$tableName`')) {
         return [
-          {"COUNT(*)": responses.length}
+          {'COUNT(*)': responses.length}
         ];
       }
     }
 
-    if (query.endsWith("`$tableName`")) {
+    // Delete all
+    if (query.endsWith('`$tableName`')) {
       return methodCall.method == 'delete' ? responses.length : responses;
     }
 
@@ -98,7 +101,7 @@ class StubSqlite {
     if (methodCall.method == 'update') {
       assert(
         response.containsKey(InsertTable.PRIMARY_KEY_COLUMN),
-        "Expected response must include ${InsertTable.PRIMARY_KEY_COLUMN} for update queries",
+        'Expected response must include ${InsertTable.PRIMARY_KEY_COLUMN} for update queries',
       );
       return response[InsertTable.PRIMARY_KEY_COLUMN];
     }
@@ -117,16 +120,18 @@ class StubSqlite {
   /// Determines whether the method call is requesting data from a specific table.
   static bool statementIncludesModel(String tableName, MethodCall methodCall) {
     final query = methodCall.arguments['sql'] as String;
-    // select
-    return query.contains("FROM `$tableName`") ||
+    // select and delete
+    return query.contains('FROM `$tableName`') ||
         // insert
-        query.contains("INTO `$tableName`") ||
+        query.contains('INTO `$tableName`') ||
         // count and delete
-        query.endsWith("`$tableName`");
+        query.endsWith('`$tableName`');
   }
 
   /// Assign an arbitrary id to the expected response
-  static List<Map<String, dynamic>> _addPrimaryKeysToResponses(
+  @visibleForTesting
+  @protected
+  static List<Map<String, dynamic>> addPrimaryKeysToResponses(
     List<Map<String, dynamic>> responses,
   ) {
     int index = 0;
@@ -140,7 +145,7 @@ class StubSqlite {
               index = resp[InsertTable.PRIMARY_KEY_COLUMN];
             } else {
               throw StateError(
-                "${resp[InsertTable.PRIMARY_KEY_COLUMN]} is less than previous iterables. Do not specify ${InsertTable.PRIMARY_KEY_COLUMN} or include this element - $resp - earlier in the list of expected responses.",
+                '${resp[InsertTable.PRIMARY_KEY_COLUMN]} is less than previous iterables. Do not specify ${InsertTable.PRIMARY_KEY_COLUMN} or include this element - $resp - earlier in the list of expected responses.',
               );
             }
             return resp;
@@ -153,14 +158,40 @@ class StubSqlite {
         .cast<Map<String, dynamic>>();
   }
 
+  /// Queries from Brick have boolean values converted to int because SQLite stores booleans as ints.
+  /// Responses must be similarly converted before they're used in comparison for result fetching.
+  @visibleForTesting
+  @protected
+  static List<Map<String, dynamic>> convertBoolValuesToInt(List<Map<String, dynamic>> responses) {
+    return responses
+        .map((response) {
+          final entriesWithBoolConvertedToInt =
+              response.entries.map<MapEntry<String, dynamic>>((e) {
+            var value = e.value;
+            if (e.value == true) value = 1;
+            if (e.value == false) value = 0;
+            return MapEntry(e.key, value);
+          });
+
+          return Map.fromEntries(entriesWithBoolConvertedToInt);
+        })
+        .toList()
+        .cast<Map<String, dynamic>>();
+  }
+
   /// Expands a SQL query with arguments into a digestible `Map`
-  static Map<String, dynamic> _queryToMap(dynamic methodArguments) {
+  @visibleForTesting
+  @protected
+  static Map<String, dynamic> queryToMap(dynamic methodArguments) {
     final query = methodArguments['sql'] as String;
     final arguments = methodArguments['arguments'] as List<dynamic>;
-    final queryMatches = RegExp(r"(\w+)\s=\s\?").allMatches(query).toList();
+    final queryMatches = RegExp(r'(\w+)\s=\s\?').allMatches(query).toList();
     return queryMatches.fold<Map<String, dynamic>>(Map<String, dynamic>(), (acc, match) {
+      final columnName = match.group(1);
+      final columnValueIndex = queryMatches.indexOf(match);
+
       if (match.groupCount > 0) {
-        acc[match.group(1)] = arguments[queryMatches.indexOf(match)];
+        acc[columnName] = arguments[columnValueIndex];
       }
 
       return acc;

@@ -43,7 +43,8 @@ class DemoModelAdapter with SqliteAdapter<DemoModel> {
       'type': String,
       'iterable': false,
       'association': false
-    }
+    },
+    'simpleBool': {'name': 'simple_bool', 'type': bool, 'iterable': false, 'association': false},
   };
 
   Future<Map<String, dynamic>> toSqlite(instance, {provider, repository}) {
