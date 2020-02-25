@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'offline_queue_http_client.dart';
-import 'request_sqlite_cache.dart';
 
 /// Repeatedly reattempts requests in an interval
 class OfflineRequestQueue {
@@ -13,14 +13,20 @@ class OfflineRequestQueue {
   /// Time between running jobs. Defaults to 5 seconds.
   final Duration interval;
 
+  final RequestSqliteCacheManager requestManager;
+
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
+  /// All requests not actively being processed.
+  /// /// Accessing this list can be useful for deleting a job blocking the queue.
+  Future<List<Map<String, dynamic>>> get nextJobs async =>
+      await requestManager.unprocessedJobs(whereLocked: true);
+
   /// All requests to be retried, ordered most recent first
-  /// Accessing this list can be useful for deleting a job blocking the queue
-  /// or determining queue length.
+  /// Accessing this list can be useful determining queue length.
   Future<List<Map<String, dynamic>>> get unproccessedJobs async =>
-      await RequestSqliteCache.unprocessedJobs(client.databaseName);
+      await requestManager.unprocessedJobs();
 
   final Logger _logger;
 
@@ -30,6 +36,7 @@ class OfflineRequestQueue {
     @required this.client,
     Duration interval,
   })  : this.interval = interval ?? const Duration(seconds: 5),
+        this.requestManager = RequestSqliteCacheManager(client.databaseName),
         _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
@@ -50,7 +57,7 @@ class OfflineRequestQueue {
   /// Resend latest unproccessed request to the client.
   @protected
   void process(Timer _timer) async {
-    final request = await RequestSqliteCache.latestUnprocessedRequest(client.databaseName);
+    final request = await requestManager.prepareNextRequestToProcess();
 
     if (request != null) {
       _logger.finer('Processing request');

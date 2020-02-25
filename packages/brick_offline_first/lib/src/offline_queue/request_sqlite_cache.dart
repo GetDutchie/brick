@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
 /// Serialize and Deserialize a [http.Request] from SQLite.
 class RequestSqliteCache {
@@ -46,8 +46,8 @@ class RequestSqliteCache {
       return await db.transaction((txn) async {
         return await txn.delete(
           HTTP_JOBS_TABLE_NAME,
-          where: 'id = ?',
-          whereArgs: [response['id']],
+          where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+          whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
         );
       });
     }
@@ -82,8 +82,8 @@ class RequestSqliteCache {
           HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
           HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
         },
-        where: 'id = ?',
-        whereArgs: [response['id']],
+        where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+        whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
       );
     });
   }
@@ -114,54 +114,13 @@ class RequestSqliteCache {
   Database _db;
   Future<Database> _getDb() async {
     if (_db?.isOpen == true) return _db;
-    return _db = await _openDb(databaseName);
-  }
-
-  /// Discover most recent unprocessed job in database convert it back to an HTTP request.
-  /// This method also locks the row to make it idempotent to subsequent processing.
-  static Future<http.Request> latestUnprocessedRequest(String dbName) async {
-    final db = await _openDb(dbName);
-    final unprocessedJobs = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
-      final whereLocked = _lockedQuery(true, limit: 1);
-
-      // lock the requests for idempotency
-      await txn.rawUpdate(
-          'UPDATE $HTTP_JOBS_TABLE_NAME SET $HTTP_JOBS_LOCKED_COLUMN = 1 WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);');
-
-      return txn.rawQuery('$whereLocked;');
-    });
-
-    final jobs = unprocessedJobs.map(toRequest).cast<http.Request>();
-
-    if (jobs?.isEmpty == false) return jobs.first;
-
-    return null;
-  }
-
-  /// Prepare schema.
-  static Future<void> migrate(String dbName) async {
-    final statement = '''
-      CREATE TABLE IF NOT EXISTS `$HTTP_JOBS_TABLE_NAME` (
-        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-        `$HTTP_JOBS_ATTEMPTS_COLUMN` INTEGER DEFAULT 1,
-        `$HTTP_JOBS_BODY_COLUMN` TEXT,
-        `$HTTP_JOBS_ENCODING_COLUMN` TEXT,
-        `$HTTP_JOBS_HEADERS_COLUMN` TEXT,
-        `$HTTP_JOBS_LOCKED_COLUMN` INTEGER DEFAULT 0,
-        `$HTTP_JOBS_REQUEST_METHOD_COLUMN` TEXT,
-        `$HTTP_JOBS_UPDATED_AT` INTEGER DEFAULT 0,
-        `$HTTP_JOBS_URL_COLUMN` TEXT
-      );
-    ''';
-    final db = await _openDb(dbName);
-    return await db.execute(statement);
+    final databasesPath = await getDatabasesPath();
+    final path = p.join(databasesPath, databaseName);
+    return _db = await openDatabase(path);
   }
 
   /// Recreate a request from SQLite data
-  @visibleForTesting
-  @protected
-  static http.Request toRequest(Map<String, dynamic> data) {
+  static http.Request sqliteToRequest(Map<String, dynamic> data) {
     var _request = http.Request(
       data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
       Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
@@ -181,46 +140,4 @@ class RequestSqliteCache {
 
     return _request;
   }
-
-  /// Returns row data for all unprocessed job in database.
-  static Future<List<Map<String, dynamic>>> unprocessedJobs(String dbName) async {
-    final db = await _openDb(dbName);
-
-    return await db.query(
-      HTTP_JOBS_TABLE_NAME,
-      where: '$HTTP_JOBS_LOCKED_COLUMN = ?',
-      whereArgs: [true],
-      distinct: true,
-    );
-  }
-}
-
-const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
-
-const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
-const HTTP_JOBS_BODY_COLUMN = 'body';
-const HTTP_JOBS_ENCODING_COLUMN = 'encoding';
-const HTTP_JOBS_HEADERS_COLUMN = 'headers';
-const HTTP_JOBS_LOCKED_COLUMN = 'locked';
-const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
-const HTTP_JOBS_UPDATED_AT = 'updated_at';
-const HTTP_JOBS_URL_COLUMN = 'url';
-
-Future<Database> _openDb(String dbName) async {
-  final databasesPath = await getDatabasesPath();
-  final path = p.join(databasesPath, dbName);
-  return await openDatabase(path);
-}
-
-/// Generate SQLite query for [latestUnprocessedRequest].
-/// When [limit] is `0`, all results are returned
-String _lockedQuery(bool whereIsLocked, {String selectFields = '*', int limit = 1}) {
-  return [
-    'SELECT DISTINCT',
-    selectFields,
-    'FROM $HTTP_JOBS_TABLE_NAME',
-    'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
-    'ORDER BY $HTTP_JOBS_UPDATED_AT ASC',
-    if (limit > 0) 'LIMIT $limit'
-  ].join(' ');
 }
