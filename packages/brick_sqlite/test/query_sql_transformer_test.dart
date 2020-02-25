@@ -13,7 +13,7 @@ import '__mocks__.dart';
 void main() {
   ft.TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("QuerySqlTransformer", () {
+  group('QuerySqlTransformer', () {
     Database db;
     final List<Map<String, dynamic>> responses = [
       {InsertTable.PRIMARY_KEY_COLUMN: 1, 'name': 'Thomas'},
@@ -26,20 +26,20 @@ void main() {
       StubSqlite(provider, responses: {
         DemoModel: responses,
       });
-      db = await openDatabase("db.sqlite");
+      db = await openDatabase('db.sqlite');
     });
 
     tearDown(StubSqlite.sqliteLogs.clear);
 
     void sqliteStatementExpectation(String statement, [List<dynamic> arguments]) {
-      final matcher = isMethodCall("query",
-          arguments: {"sql": statement, "arguments": arguments ?? [], "id": null});
+      final matcher = isMethodCall('query',
+          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
 
       return expect(StubSqlite.sqliteLogs, contains(matcher));
     }
 
-    test("empty", () async {
-      final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel`";
+    test('empty', () async {
+      final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel`';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(modelDictionary: dictionary);
       await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -47,7 +47,7 @@ void main() {
       sqliteStatementExpectation(statement);
     });
 
-    test("where unserialized field", () {
+    test('where unserialized field', () {
       expect(
         () => QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -57,7 +57,7 @@ void main() {
       );
     });
 
-    test("where non association field", () async {
+    test('where non association field', () async {
       final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE name = ?';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
@@ -69,7 +69,7 @@ void main() {
       sqliteStatementExpectation(statement, ['Thomas']);
     });
 
-    test("where association value is not map", () {
+    test('where association value is not map', () {
       expect(
         () => QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -79,7 +79,7 @@ void main() {
       );
     });
 
-    test("where association value is not map", () {
+    test('where association value is not map', () {
       expect(
         () => QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -89,7 +89,7 @@ void main() {
       );
     });
 
-    test("compound clause", () async {
+    test('compound clause', () async {
       final statement =
           '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR name = ?) AND (id = ? AND name = ?) OR (id = ? AND name = ?)''';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -115,7 +115,7 @@ void main() {
       sqliteStatementExpectation(statement, [1, 'Guy', 1, 'Guy', 1, 'Guy']);
     });
 
-    test("leading requirement with compound clauses", () async {
+    test('leading requirement with compound clauses', () async {
       final statement =
           'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE id = ? AND (name = ? OR name = ?)';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -134,8 +134,8 @@ void main() {
       sqliteStatementExpectation(statement, [1, 'Thomas', 'Guy']);
     });
 
-    group("associations", () {
-      test("simple", () async {
+    group('associations', () {
+      test('simple', () async {
         final statement =
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -150,7 +150,7 @@ void main() {
         sqliteStatementExpectation(statement, [1]);
       });
 
-      test("OR", () async {
+      test('OR', () async {
         final statement =
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.name = ?)''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -171,7 +171,7 @@ void main() {
         sqliteStatementExpectation(statement, [1, 'Guy']);
       });
 
-      test("one-to-many", () {
+      test('one-to-many', () {
         final statement =
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || ",%" OR `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || ",%" WHERE `DemoModelAssoc`.id = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -188,9 +188,9 @@ void main() {
       });
     });
 
-    group("providerArgs", () {
-      test("providerArgs.collate", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE";
+    group('providerArgs', () {
+      test('providerArgs.collate', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'collate': 'NOCASE'}),
@@ -201,8 +201,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.groupBy", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id";
+      test('providerArgs.groupBy', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'groupBy': 'id'}),
@@ -213,8 +213,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.having", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id";
+      test('providerArgs.having', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'having': 'id'}),
@@ -225,8 +225,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.limit", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1";
+      test('providerArgs.limit', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'limit': 1}),
@@ -237,8 +237,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.offset", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1";
+      test('providerArgs.offset', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {
@@ -252,8 +252,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.orderBy", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC";
+      test('providerArgs.orderBy', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'orderBy': 'id DESC'}),
@@ -264,8 +264,8 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("providerArgs.orderBy expands field names to column names", () async {
-        final statement = "SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC";
+      test('providerArgs.orderBy expands field names to column names', () async {
+        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'orderBy': 'manyAssoc DESC'}),
@@ -276,7 +276,7 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test("fields convert to column names in providerArgs values", () async {
+      test('fields convert to column names in providerArgs values', () async {
         final statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -295,8 +295,8 @@ void main() {
       });
     });
 
-    group("#values", () {
-      test("boolean queries are converted", () {
+    group('#values', () {
+      test('boolean queries are converted', () {
         final statement =
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE name = ? OR name = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
