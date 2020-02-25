@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Field names should always be used instead of column names in `Query#providerArgs:`
+* Boolean responses from `StubSqlite` are converted to 1 and 0. `QuerySqlTransformer` converts input boolean values in queries to 1 or 0 to ensure they're serialized and compared properly in SQLite; this change ensures the other end performs the same conversion
+* Add test coverage for `StubSqlite`
 
 ## 0.0.5
 
