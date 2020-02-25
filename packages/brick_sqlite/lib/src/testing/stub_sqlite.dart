@@ -1,6 +1,6 @@
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 import 'package:brick_sqlite/sqlite.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:flutter/services.dart';
 
 /// Used when you just want to stub SQLite method channel responses.

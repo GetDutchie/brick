@@ -34,9 +34,7 @@ void main() {
           methodCall: MethodCall('select', {'sql': 'SELECT COUNT(*) FROM `MyTable`'}),
         );
         expect(result, [
-          {
-            'COUNT(*)': 2,
-          }
+          {'COUNT(*)': 2}
         ]);
       });
 
