@@ -5,7 +5,6 @@ import 'package:meta/meta.dart';
 import 'package:brick_rest/rest.dart' show RestProvider, RestException, RestAdapter;
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstWithRestModel;
 import 'package:brick_sqlite_abstract/db.dart' show Migration;
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
@@ -46,7 +45,8 @@ abstract class OfflineFirstWithRestRepository
   /// Defaults `false`.
   final bool throwTunnelNotFoundExceptions;
 
-  OfflineRequestQueue _offlineRequestQueue;
+  @protected
+  OfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
     @required RestProvider restProvider,
@@ -75,7 +75,7 @@ abstract class OfflineFirstWithRestRepository
           migrations: migrations,
           sqliteProvider: sqliteProvider,
         ) {
-    _offlineRequestQueue = OfflineRequestQueue(
+    offlineRequestQueue = OfflineRequestQueue(
       client: remoteProvider.client as OfflineQueueHttpClient,
     );
   }
@@ -122,19 +122,21 @@ abstract class OfflineFirstWithRestRepository
   }
 
   @override
+  @mustCallSuper
   Future<void> initialize() async {
     await super.initialize();
 
     // Start queue processing
-    _offlineRequestQueue.start();
+    offlineRequestQueue.start();
   }
 
   @override
+  @mustCallSuper
   Future<void> migrate() async {
     await super.migrate();
 
     // Migrate cached jobs schema
-    await RequestSqliteCache.migrate(_QUEUE_DATABASE_NAME);
+    await offlineRequestQueue.requestManager.migrate();
   }
 
   @override
