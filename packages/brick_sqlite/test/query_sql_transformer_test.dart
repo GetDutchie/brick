@@ -58,7 +58,7 @@ void main() {
     });
 
     test('where non association field', () async {
-      final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE name = ?';
+      final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ?';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query.where('name', 'Thomas'),
@@ -91,7 +91,7 @@ void main() {
 
     test('compound clause', () async {
       final statement =
-          '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR name = ?) AND (id = ? AND name = ?) OR (id = ? AND name = ?)''';
+          '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)''';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query(where: [
@@ -117,7 +117,7 @@ void main() {
 
     test('leading requirement with compound clauses', () async {
       final statement =
-          'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE id = ? AND (name = ? OR name = ?)';
+          'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE id = ? AND (full_name = ? OR full_name = ?)';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query(where: [
@@ -152,7 +152,7 @@ void main() {
 
       test('OR', () async {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.name = ?)''';
+            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -252,16 +252,31 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
-      test('providerArgs.orderBy', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
-        final sqliteQuery = QuerySqlTransformer<DemoModel>(
-          modelDictionary: dictionary,
-          query: Query(providerArgs: {'orderBy': 'id DESC'}),
-        );
-        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+      group('providerArgs.orderBy', () {
+        test('simple', () async {
+          final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
+          final sqliteQuery = QuerySqlTransformer<DemoModel>(
+            modelDictionary: dictionary,
+            query: Query(providerArgs: {'orderBy': 'id DESC'}),
+          );
+          await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
-        expect(statement, sqliteQuery.statement);
-        sqliteStatementExpectation(statement);
+          expect(statement, sqliteQuery.statement);
+          sqliteStatementExpectation(statement);
+        });
+
+        test('discovered columns share similar names', () async {
+          final statement =
+              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY last_name DESC';
+          final sqliteQuery = QuerySqlTransformer<DemoModel>(
+            modelDictionary: dictionary,
+            query: Query(providerArgs: {'orderBy': 'lastName DESC'}),
+          );
+          await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+          expect(statement, sqliteQuery.statement);
+          sqliteStatementExpectation(statement);
+        });
       });
 
       test('providerArgs.orderBy expands field names to column names', () async {
@@ -298,7 +313,7 @@ void main() {
     group('#values', () {
       test('boolean queries are converted', () {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE name = ? OR name = ?''';
+            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ? OR full_name = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [

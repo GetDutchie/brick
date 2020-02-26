@@ -322,11 +322,14 @@ class AllOtherClausesFragment {
       if (value == null) return acc;
 
       if (_operatorsDeclaringFields.contains(op)) {
-        fieldsToColumns.keys.forEach((fieldName) {
-          final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
+        value = value.split(',').fold(value, (modValue, innerValueClause) {
+          final fragment = innerValueClause.split(' ');
+          if (fragment.isEmpty) return modValue;
 
-          if (columnName != null && value.contains(fieldName))
-            value = value.replaceAll(fieldName, columnName);
+          final fieldName = fragment.first;
+          final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
+          if (columnName != null && modValue.contains(fieldName))
+            return modValue.replaceAll(fieldName, columnName);
         });
       }
 
