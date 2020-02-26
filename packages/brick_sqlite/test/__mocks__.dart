@@ -25,7 +25,8 @@ class DemoModelAdapter with SqliteAdapter<DemoModel> {
   final fieldsToSqliteColumns = {
     InsertTable.PRIMARY_KEY_FIELD: {'name': InsertTable.PRIMARY_KEY_COLUMN, 'type': int},
     'id': {'name': 'id', 'type': int, 'iterable': false, 'association': false},
-    'name': {'name': 'name', 'type': String, 'iterable': false, 'association': false},
+    'lastName': {'name': 'last_name', 'type': String, 'iterable': false, 'association': false},
+    'name': {'name': 'full_name', 'type': String, 'iterable': false, 'association': false},
     'assoc': {
       'name': 'assoc_DemoModelAssoc_brick_id',
       'type': DemoModelAssoc,
