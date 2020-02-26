@@ -27,11 +27,11 @@ class OfflineRequestQueue {
     Duration interval,
 
     /// When `true`, jobs are processed one at a time in the order they were created.
-    bool processInSerial = true,
+    bool serialProcessing = true,
   })  : this.interval = interval ?? const Duration(seconds: 5),
         this.requestManager = RequestSqliteCacheManager(
           client.databaseName,
-          processInSerial: processInSerial,
+          serialProcessing: serialProcessing,
         ),
         _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 

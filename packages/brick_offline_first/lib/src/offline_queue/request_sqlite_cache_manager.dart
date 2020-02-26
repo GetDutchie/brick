@@ -8,7 +8,7 @@ class RequestSqliteCacheManager {
   final String databaseName;
 
   String get orderByStatement {
-    if (!processInSerial) {
+    if (!serialProcessing) {
       return '$HTTP_JOBS_UPDATED_AT ASC';
     }
 
@@ -17,13 +17,13 @@ class RequestSqliteCacheManager {
 
   /// When `true`, results are processed one at a time in the order in which they were created.
   /// Defaults `true`.
-  final bool processInSerial;
+  final bool serialProcessing;
 
   Database _db;
 
   RequestSqliteCacheManager(
     this.databaseName, {
-    this.processInSerial = true,
+    this.serialProcessing = true,
   });
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
