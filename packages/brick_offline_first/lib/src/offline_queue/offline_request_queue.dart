@@ -18,16 +18,6 @@ class OfflineRequestQueue {
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
-  /// All requests not actively being processed.
-  /// /// Accessing this list can be useful for deleting a job blocking the queue.
-  Future<List<Map<String, dynamic>>> get nextJobs async =>
-      await requestManager.unprocessedJobs(whereLocked: true);
-
-  /// All requests to be retried, ordered most recent first
-  /// Accessing this list can be useful determining queue length.
-  Future<List<Map<String, dynamic>>> get unproccessedJobs async =>
-      await requestManager.unprocessedJobs();
-
   final Logger _logger;
 
   Timer _timer;
@@ -35,8 +25,14 @@ class OfflineRequestQueue {
   OfflineRequestQueue({
     @required this.client,
     Duration interval,
+
+    /// When `true`, jobs are processed one at a time in the order they were created.
+    bool processInSerial = true,
   })  : this.interval = interval ?? const Duration(seconds: 5),
-        this.requestManager = RequestSqliteCacheManager(client.databaseName),
+        this.requestManager = RequestSqliteCacheManager(
+          client.databaseName,
+          processInSerial: processInSerial,
+        ),
         _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].

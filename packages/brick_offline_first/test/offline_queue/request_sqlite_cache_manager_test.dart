@@ -70,10 +70,10 @@ void main() {
       expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
     });
 
-    group('#unprocessedJobs', () {
+    group('#unprocessedRequests', () {
       test('default args', () async {
         final manager = RequestSqliteCacheManager('fake_db');
-        await manager.unprocessedJobs();
+        await manager.unprocessedRequests();
 
         expect(
           sqliteLogs,
@@ -83,7 +83,7 @@ void main() {
 
       test('whereLocked:true', () async {
         final manager = RequestSqliteCacheManager('fake_db');
-        await manager.unprocessedJobs(whereLocked: true);
+        await manager.unprocessedRequests(whereLocked: true);
 
         expect(
           sqliteLogs,
@@ -92,9 +92,9 @@ void main() {
       });
     });
 
-    test('#deleteNextUnprocessedRequest', () async {
+    test('#deleteUnprocessedRequest', () async {
       final manager = RequestSqliteCacheManager('fake_db');
-      final resp = await manager.deleteNextUnprocessedRequest();
+      final resp = await manager.deleteUnprocessedRequest(1);
 
       expect(
         sqliteLogs,
@@ -103,7 +103,7 @@ void main() {
           'DELETE FROM HttpJobs WHERE id = ?'
         ],
       );
-      expect(resp, 1);
+      expect(resp, isTrue);
     });
   });
 }
