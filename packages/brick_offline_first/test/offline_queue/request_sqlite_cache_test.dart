@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
 import '../../lib/src/offline_queue/request_sqlite_cache.dart';
+import '../../lib/src/offline_queue/request_sqlite_cache_manager.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -127,34 +128,9 @@ void main() {
       });
     });
 
-    test('.migrate', () async {
-      await RequestSqliteCache.migrate('fake_db');
-
-      expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
-      expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
-      expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
-    });
-
-    test('.unprocessedRequests', () async {
-      final requests = await RequestSqliteCache.unproccessedRequests('fake_db');
-      expect(
-        sqliteLogs,
-        [
-          'BEGIN IMMEDIATE',
-          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC LIMIT 1);',
-          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;',
-          'COMMIT'
-        ],
-      );
-
-      expect(requests, isNotEmpty);
-      expect(requests.first.method, 'PUT');
-      expect(requests.first.url.toString(), 'http://localhost:3000/stored-query');
-    });
-
     group('.toRequest', () {
       test('basic', () {
-        final request = RequestSqliteCache.toRequest({
+        final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
@@ -166,7 +142,7 @@ void main() {
       });
 
       test('missing headers', () {
-        final request = RequestSqliteCache.toRequest({
+        final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000'
         });
@@ -178,7 +154,7 @@ void main() {
       });
 
       test('with headers', () {
-        final request = RequestSqliteCache.toRequest({
+        final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'

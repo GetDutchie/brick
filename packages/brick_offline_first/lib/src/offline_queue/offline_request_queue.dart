@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'offline_queue_http_client.dart';
-import 'request_sqlite_cache.dart';
 
 /// Repeatedly reattempts requests in an interval
 class OfflineRequestQueue {
@@ -13,17 +13,26 @@ class OfflineRequestQueue {
   /// Time between running jobs. Defaults to 5 seconds.
   final Duration interval;
 
-  final Logger _logger;
+  final RequestSqliteCacheManager requestManager;
 
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
+
+  final Logger _logger;
 
   Timer _timer;
 
   OfflineRequestQueue({
     @required this.client,
     Duration interval,
+
+    /// When `true`, jobs are processed one at a time in the order they were created.
+    bool serialProcessing = true,
   })  : this.interval = interval ?? const Duration(seconds: 5),
+        this.requestManager = RequestSqliteCacheManager(
+          client.databaseName,
+          serialProcessing: serialProcessing,
+        ),
         _logger = Logger('OfflineRequestQueue#${client.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
@@ -31,7 +40,7 @@ class OfflineRequestQueue {
   void start() {
     stop();
     _logger.finer('Queue started');
-    _timer = Timer.periodic(interval, _process);
+    _timer = Timer.periodic(interval, process);
   }
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.
@@ -41,14 +50,14 @@ class OfflineRequestQueue {
     _logger.finer('Queue stopped');
   }
 
-  /// Resend unproccessed requests to the client.
-  void _process(Timer _timer) async {
-    final requests = await RequestSqliteCache.unproccessedRequests(client.databaseName);
+  /// Resend latest unproccessed request to the client.
+  @protected
+  void process(Timer _timer) async {
+    final request = await requestManager.prepareNextRequestToProcess();
 
-    final requeuedRequests = requests.map(client.send);
-    if (requeuedRequests.isNotEmpty) {
-      _logger.finer('Processing ${requeuedRequests.length} requests');
-      await Future.wait(requeuedRequests);
+    if (request != null) {
+      _logger.finer('Processing request');
+      await client.send(request);
     }
   }
 }
