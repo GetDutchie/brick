@@ -1,10 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:logging/logging.dart';
 import '../../lib/src/offline_queue/request_sqlite_cache_manager.dart';
-
-class MockLogger extends Mock implements Logger {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
