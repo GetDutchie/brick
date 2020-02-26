@@ -40,6 +40,20 @@ void main() {
 
     tearDown(sqliteLogs.clear);
 
+    test('#serialProcessing:false', () async {
+      final manager = RequestSqliteCacheManager('fake_db', serialProcessing: false);
+      await manager.prepareNextRequestToProcess();
+      expect(
+        sqliteLogs,
+        [
+          'BEGIN IMMEDIATE',
+          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC);',
+          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;',
+          'COMMIT'
+        ],
+      );
+    });
+
     test('#prepareNextRequestToProcess', () async {
       final manager = RequestSqliteCacheManager('fake_db');
       final request = await manager.prepareNextRequestToProcess();
@@ -47,8 +61,8 @@ void main() {
         sqliteLogs,
         [
           'BEGIN IMMEDIATE',
-          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC);',
-          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;',
+          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY attempts DESC, updated_at ASC);',
+          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY attempts DESC, updated_at ASC LIMIT 1;',
           'COMMIT'
         ],
       );
@@ -73,7 +87,7 @@ void main() {
 
         expect(
           sqliteLogs,
-          ['SELECT DISTINCT * FROM HttpJobs ORDER BY updated_at ASC'],
+          ['SELECT DISTINCT * FROM HttpJobs ORDER BY attempts DESC, updated_at ASC'],
         );
       });
 
@@ -83,7 +97,9 @@ void main() {
 
         expect(
           sqliteLogs,
-          ['SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY updated_at ASC'],
+          [
+            'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY attempts DESC, updated_at ASC'
+          ],
         );
       });
     });
@@ -94,10 +110,7 @@ void main() {
 
       expect(
         sqliteLogs,
-        [
-          'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY updated_at ASC',
-          'DELETE FROM HttpJobs WHERE id = ?'
-        ],
+        ['DELETE FROM HttpJobs WHERE id = ?'],
       );
       expect(resp, isTrue);
     });

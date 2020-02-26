@@ -8,6 +8,7 @@
 * Added `OfflineRequestQueue#requestManager` to access queue via a `RequestSqliteCacheManager` instance.
 * Renamed `RequestSqliteCache.unprocessedRequests` to `RequestSqliteCacheManager.prepareNextRequestToProcess` as the expected query only returns one locked row at a time.
 * `RequestSqliteCacheManager.prepareNextRequestToProcess` locks _all_ unprocessed rows, not just the first one
+* Add ability to toggle `serialProcessing` for `OfflineRequestQueue`
 * Private member `OfflineFirstWithRestRepository#offlineRequestQueue` is now protected
 
 ## 0.0.5+1
