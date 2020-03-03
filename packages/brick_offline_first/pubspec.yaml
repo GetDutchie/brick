@@ -17,7 +17,6 @@ dependencies:
   brick_rest: ^0.0.5
   brick_sqlite: ^0.0.5
   brick_sqlite_abstract: ^0.0.4
-  connectivity: ^0.4.8
   dart_style: ^1.2.4
   flutter:
     sdk: flutter

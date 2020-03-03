@@ -10,6 +10,7 @@
 * `RequestSqliteCacheManager.prepareNextRequestToProcess` locks _all_ unprocessed rows, not just the first one
 * Add ability to toggle `serialProcessing` for `OfflineRequestQueue`
 * Private member `OfflineFirstWithRestRepository#offlineRequestQueue` is now protected
+* Remove `isConnected` member from `OfflineFirstRepository` and associated Connectivity code. The connection should not matter to the subclass as it, or a supporting class, should track outbound requests.
 
 ## 0.0.5+1
 
