@@ -191,11 +191,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       return _finalTypeForField(checker.argType);
     }
 
-    if (checker.isMap) {
-      // remove arg types as they can't be declared in final fields
-      return "Map";
-    }
-
-    return type.getDisplayString();
+    // remove arg types as they can't be declared in final fields
+    return type.getDisplayString().replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
   }
 }

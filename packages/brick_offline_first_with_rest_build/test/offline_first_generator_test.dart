@@ -22,6 +22,8 @@ import 'offline_first_generator/test_only_static_members.dart' as _$onlyStaticMe
 import 'offline_first_generator/test_specify_field_name.dart' as _$specifyFieldName;
 import 'offline_first_generator/test_unrelated_association.dart' as _$unrelatedAssociation;
 import 'offline_first_generator/test_constructor_arguments.dart' as _$constructorArguments;
+import 'offline_first_generator/test_offlne_first_serdes_with_type_argument.dart'
+    as _$oflineFirstSerdesWithTypeArgument;
 
 final _generator = OfflineFirstGenerator();
 final folder = 'offline_first_generator';
@@ -80,6 +82,11 @@ void main() {
 
       test('Futures', () async {
         await generateExpectation('futures', _$futures.output);
+      });
+
+      test('OfflineFirstSerdesWithTypeArgument', () async {
+        await generateAdapterExpectation(
+            'offlne_first_serdes_with_type_argument', _$oflineFirstSerdesWithTypeArgument.output);
       });
     });
 

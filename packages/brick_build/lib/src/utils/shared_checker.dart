@@ -119,14 +119,13 @@ class SharedChecker<_SiblingModel extends Model> {
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
-  /// Returns the type arguments of `Map<Key, Value>` as `[Key, Value]`.
-  /// If the Map does not declare type arguments, return is `null`.
-  List<DartType> get mapArgs {
-    assert(isMap, '$targetType is not a Map');
-
+  /// Returns type arguments of [targetType]. For example, given `Map<Key, Value>`,
+  /// `[Key, Value]` is returned. If the [targetType] does not declare type arguments,
+  /// return is `null`.
+  List<DartType> get typeArguments {
     final type = targetType as InterfaceType;
     if (type.typeArguments.isNotEmpty && type.typeArguments.length > 1) {
-      return [type.typeArguments.first, type.typeArguments.last];
+      return type.typeArguments;
     }
 
     return null;
