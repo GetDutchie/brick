@@ -7,6 +7,8 @@ import 'package:source_gen/source_gen.dart';
 import 'package:brick_build/testing.dart';
 
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
+import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
+    as _$fieldWithTypeArgument;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -36,6 +38,10 @@ void main() {
       test('unique', () async {
         await generateAdapterExpectation('sqlite_unique', _$sqliteUnique.output);
       });
+    });
+
+    test('FieldWithTypeArgument', () async {
+      await generateAdapterExpectation('field_with_type_argument', _$fieldWithTypeArgument.output);
     });
   });
 }
