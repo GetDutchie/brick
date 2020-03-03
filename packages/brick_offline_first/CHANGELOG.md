@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.6
+
 * Remove maximumRequests configuration for the OfflineFirstQueue. One request should be processed at a time in serial
 * Optionally ignore Tunnel not found requests (these occur when connectivity exists but the queried endpoint is unreachable) when making repository requests
 * Adds argument to repository to reattempt requests based on the status code from the response
