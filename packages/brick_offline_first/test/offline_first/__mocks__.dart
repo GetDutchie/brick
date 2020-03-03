@@ -9,7 +9,6 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
 export 'package:brick_offline_first/offline_first.dart';
-export '../__helpers__.dart';
 
 class MockClient extends Mock implements http.Client {}
 

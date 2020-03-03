@@ -5,7 +5,7 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.5+1
+version: 0.0.6
 
 environment:
   sdk: '>=2.4.0 <3.0.0'
@@ -15,9 +15,8 @@ dependencies:
   brick_core: ^0.0.5
   brick_offline_first_abstract: ^0.0.5
   brick_rest: ^0.0.5
-  brick_sqlite: ^0.0.5
+  brick_sqlite: ^0.0.6
   brick_sqlite_abstract: ^0.0.4
-  connectivity: ^0.4.8
   dart_style: ^1.2.4
   flutter:
     sdk: flutter
