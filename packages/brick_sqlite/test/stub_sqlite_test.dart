@@ -211,12 +211,26 @@ void main() {
 
     test('with compound clauses', () {
       final sql =
-          'SELECT * FROM atable WHERE name = ? AND simple_bool = ? OR (another_column = ? AND other_column = ?) LIMIT 1 ORDER BY name ASC';
+          'SELECT * FROM atable WHERE name = ? AND simple_bool = ? AND (another_column = ? OR another_column = ?)';
+      final arguments = ['Thomas', 1, 30, 15];
+      final successResponse = {'name': 'Thomas', 'simple_bool': 1, 'another_column': 15};
+      final failResponse = {'name': 'Thomas', 'simple_bool': 1, 'another_column': 20};
+      final doesMatch = StubSqlite.queryMatchesResponse(successResponse, sql, arguments);
+      expect(doesMatch, isTrue);
+      final doesntMatch = StubSqlite.queryMatchesResponse(failResponse, sql, arguments);
+      expect(doesntMatch, isFalse);
     });
 
-    test('with LIMIT and ORDER BY', () {
+    test('with operators', () {
       final sql =
-          'SELECT * FROM atable WHERE name = ? AND simple_bool = ? OR (another_column = ? AND other_column = ?) LIMIT 1 ORDER BY name ASC';
+          'SELECT * FROM atable WHERE name = ? AND simple_bool = ? AND (another_column = ? OR another_column = ?) LIMIT 1 ORDER BY name ASC';
+      final arguments = ['Thomas', 1, 30, 15];
+      final successResponse = {'name': 'Thomas', 'simple_bool': 1, 'another_column': 15};
+      final failResponse = {'name': 'Thomas', 'simple_bool': 1, 'another_column': 20};
+      final doesMatch = StubSqlite.queryMatchesResponse(successResponse, sql, arguments);
+      expect(doesMatch, isTrue);
+      final doesntMatch = StubSqlite.queryMatchesResponse(failResponse, sql, arguments);
+      expect(doesntMatch, isFalse);
     });
   });
 }

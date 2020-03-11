@@ -198,36 +198,67 @@ class StubSqlite {
   }
 
   /// Expands a WHERE query into a true/false match.
+  @protected
+  @visibleForTesting
   static bool queryMatchesResponse(Map<String, dynamic> response, String query, List arguments) {
-    final whereStatement = RegExp(r'WHERE\s?(.*)$').allMatches(query);
-    if (whereStatement.isEmpty) {
-      return true;
-    }
+    // optionally starts with AND or OR
+    // optional (
+    // capture: one or more characters that match word, numer, space, or ?
+    // optional )
+    final clauseRegex = RegExp(r'\(?([\w=\?\d\s]+)\)?\s?(?:AND|OR)?');
+    // optionally starts with AND or OR
+    // capture: {word characters} = ?
+    final columnRegex = RegExp(r'(\w+)\s=\s\?\s?(?:AND|OR)?');
+    // start with WHERE
+    // optional blank space
+    // capture: everything
+    final whereRegex = RegExp(r'WHERE\s(.*)');
+    // Anything after LIMIT, HAVING< ORDER, GROUP, or OFFSET operators
+    final withoutOperatorsRegex = RegExp(r'(GROUP|HAVING|LIMIT|OFFSET|ORDER).*');
 
-    final clauseMatches = RegExp(r'\(?([\w=\?\d\s]+)\)?\s?(AND|OR)?')
-        .allMatches(whereStatement.first.group(1))
-        .toList();
-    return clauseMatches.fold<bool>(false, (acc, match) {
-      final clause = match.group(0).trim().replaceAll('(', '').replaceAll(')', '');
-      final columnMatches = RegExp(r'(\w+)\s=\s\?(AND|OR)?').allMatches(clause).toList();
-      final clauseDoesMatch = columnMatches.fold<bool>(acc, (columnAcc, columnMatch) {
+    final whereStatement = whereRegex.allMatches(query);
+    if (whereStatement.isEmpty) return false;
+
+    final wherePhrases = whereStatement.first.group(1).replaceAll(withoutOperatorsRegex, '');
+    final phrases = clauseRegex.allMatches(wherePhrases).toList();
+    var argumentsPosition = 0;
+    var previousPhraseWasAnd = false;
+
+    return phrases.fold<bool>(false, (acc, match) {
+      final clause = match.group(0).trim();
+      final columnMatches = columnRegex.allMatches(clause).toList();
+      final clauseIsAnd = clause.contains('AND');
+
+      final expressionsDoMatch = columnMatches.fold<bool>(false, (columnAcc, columnMatch) {
         final columnName = columnMatch.group(1);
-        final columnValueIndex = clauseMatches.indexOf(match) + columnMatches.indexOf(columnMatch);
-        final columnValue = arguments[columnValueIndex];
+        final columnValue = arguments[argumentsPosition];
         final columnDoesMatch = response[columnName] != null && response[columnName] == columnValue;
+        argumentsPosition++;
 
-        if (columnMatch.group(0).endsWith('AND')) {
+        if (clauseIsAnd) {
+          // on the first pass, ensure that we're not && on the original `false` acc
+          if (columnMatches.indexOf(columnMatch) == 0) {
+            return columnDoesMatch;
+          }
+
           return columnAcc && columnDoesMatch;
         }
 
-        return columnAcc || columnDoesMatch;
+        return columnDoesMatch || columnAcc;
       });
 
-      if (clause.endsWith('AND')) {
-        return acc && clauseDoesMatch;
+      if (previousPhraseWasAnd) {
+        previousPhraseWasAnd = clauseIsAnd;
+        // on the first pass, ensure that we're not && on the original `false` acc
+        if (phrases.indexOf(match) == 0) {
+          return expressionsDoMatch;
+        }
+
+        return acc && expressionsDoMatch;
       }
 
-      return acc || clauseDoesMatch;
+      previousPhraseWasAnd = clauseIsAnd;
+      return expressionsDoMatch || acc;
     });
   }
 }
