@@ -249,10 +249,6 @@ class StubSqlite {
 
       if (previousPhraseWasAnd) {
         previousPhraseWasAnd = clauseIsAnd;
-        // on the first pass, ensure that we're not && on the original `false` acc
-        if (phrases.indexOf(match) == 0) {
-          return expressionsDoMatch;
-        }
 
         return acc && expressionsDoMatch;
       }
