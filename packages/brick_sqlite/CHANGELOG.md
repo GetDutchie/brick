@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Add `StubSqlite.queryValueForColumn` to discover the passed argument for a specific column
+* Support OR clauses in `StubSqlite`. This publicly exposes `StubSqlite.queryMatchesResponse`.
+
 ## 0.0.6
 
 * Field names should always be used instead of column names in `Query#providerArgs:`

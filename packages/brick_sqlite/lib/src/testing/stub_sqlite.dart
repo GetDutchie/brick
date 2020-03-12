@@ -60,7 +60,7 @@ class StubSqlite {
     responses = convertBoolValuesToInt(responses);
 
     final query = methodCall.arguments['sql'] as String;
-    final queryAsMap = queryToMap(methodCall.arguments);
+    final arguments = methodCall.arguments['arguments'] as List<dynamic>;
 
     if (methodCall.method == 'insert') {
       return responses.length + 1;
@@ -79,7 +79,9 @@ class StubSqlite {
     }
 
     final response = responses.firstWhere(
-      (r) => r[InsertTable.PRIMARY_KEY_COLUMN] == queryAsMap[InsertTable.PRIMARY_KEY_COLUMN],
+      (r) =>
+          r[InsertTable.PRIMARY_KEY_COLUMN] ==
+          queryValueForColumn(InsertTable.PRIMARY_KEY_COLUMN, query, arguments),
       orElse: () => responses.lastWhere(
         (r) => !r.containsKey(InsertTable.PRIMARY_KEY_COLUMN),
         orElse: () => responses.first,
@@ -90,9 +92,7 @@ class StubSqlite {
       return [{}];
     }
 
-    final queryMatchesStub = queryAsMap.entries.every((entry) {
-      return response[entry.key] == queryAsMap[entry.key];
-    });
+    final queryMatchesStub = queryMatchesResponse(response, query, arguments);
 
     if (!queryMatchesStub) {
       return methodCall.method == 'delete' ? 0 : [{}];
@@ -179,22 +179,82 @@ class StubSqlite {
         .cast<Map<String, dynamic>>();
   }
 
-  /// Expands a SQL query with arguments into a digestible `Map`
-  @visibleForTesting
-  @protected
-  static Map<String, dynamic> queryToMap(dynamic methodArguments) {
-    final query = methodArguments['sql'] as String;
-    final arguments = methodArguments['arguments'] as List<dynamic>;
+  /// Discovers value within a query for a single column.
+  /// For example, in the query `WHERE first_name = ?` and arguments `['Thomas']`,
+  /// `'Thomas'` would be returned
+  static dynamic queryValueForColumn(String columnName, String query, List arguments) {
     final queryMatches = RegExp(r'(\w+)\s=\s\?').allMatches(query).toList();
-    return queryMatches.fold<Map<String, dynamic>>(Map<String, dynamic>(), (acc, match) {
-      final columnName = match.group(1);
-      final columnValueIndex = queryMatches.indexOf(match);
+    final queryMatch = queryMatches.firstWhere((match) {
+      final matchedColumnName = match.group(1);
 
-      if (match.groupCount > 0) {
-        acc[columnName] = arguments[columnValueIndex];
+      if (matchedColumnName == columnName) {
+        return true;
       }
 
-      return acc;
+      return false;
+    }, orElse: () => null);
+
+    return queryMatch == null ? null : arguments[queryMatches.indexOf(queryMatch)];
+  }
+
+  /// Expands a WHERE query into a true/false match.
+  @protected
+  @visibleForTesting
+  static bool queryMatchesResponse(Map<String, dynamic> response, String query, List arguments) {
+    // optionally starts with AND or OR
+    // optional (
+    // capture: one or more characters that match word, numer, space, or ?
+    // optional )
+    final clauseRegex = RegExp(r'\(?([\w=\?\d\s]+)\)?\s?(?:AND|OR)?');
+    // optionally starts with AND or OR
+    // capture: {word characters} = ?
+    final columnRegex = RegExp(r'(\w+)\s=\s\?\s?(?:AND|OR)?');
+    // start with WHERE
+    // optional blank space
+    // capture: everything
+    final whereRegex = RegExp(r'WHERE\s(.*)');
+    // Anything after LIMIT, HAVING< ORDER, GROUP, or OFFSET operators
+    final withoutOperatorsRegex = RegExp(r'(GROUP|HAVING|LIMIT|OFFSET|ORDER).*');
+
+    final whereStatement = whereRegex.allMatches(query);
+    if (whereStatement.isEmpty) return false;
+
+    final wherePhrases = whereStatement.first.group(1).replaceAll(withoutOperatorsRegex, '');
+    final phrases = clauseRegex.allMatches(wherePhrases).toList();
+    var argumentsPosition = 0;
+    var previousPhraseWasAnd = false;
+
+    return phrases.fold<bool>(false, (acc, match) {
+      final clause = match.group(0).trim();
+      final columnMatches = columnRegex.allMatches(clause).toList();
+      final clauseIsAnd = clause.contains('AND');
+
+      final expressionsDoMatch = columnMatches.fold<bool>(false, (columnAcc, columnMatch) {
+        final columnName = columnMatch.group(1);
+        final columnValue = arguments[argumentsPosition];
+        final columnDoesMatch = response[columnName] != null && response[columnName] == columnValue;
+        argumentsPosition++;
+
+        if (clauseIsAnd) {
+          // on the first pass, ensure that we're not && on the original `false` acc
+          if (columnMatches.indexOf(columnMatch) == 0) {
+            return columnDoesMatch;
+          }
+
+          return columnAcc && columnDoesMatch;
+        }
+
+        return columnDoesMatch || columnAcc;
+      });
+
+      if (previousPhraseWasAnd) {
+        previousPhraseWasAnd = clauseIsAnd;
+
+        return acc && expressionsDoMatch;
+      }
+
+      previousPhraseWasAnd = clauseIsAnd;
+      return expressionsDoMatch || acc;
     });
   }
 }
