@@ -59,15 +59,7 @@ abstract class OfflineFirstWithRestRepository
 
     /// Forwarded to [OfflineQueueHttpClient#reattemptForStatusCodes]
     List<int> reattemptForStatusCodes,
-  })  : remoteProvider = RestProvider(
-          restProvider.baseEndpoint,
-          modelDictionary: restProvider.modelDictionary,
-          client: OfflineQueueHttpClient(
-            restProvider.client,
-            _QUEUE_DATABASE_NAME,
-            reattemptForStatusCodes: reattemptForStatusCodes,
-          ),
-        ),
+  })  : remoteProvider = restProvider,
         super(
           autoHydrate: autoHydrate,
           loggerName: loggerName,
@@ -75,6 +67,11 @@ abstract class OfflineFirstWithRestRepository
           migrations: migrations,
           sqliteProvider: sqliteProvider,
         ) {
+    remoteProvider.client = OfflineQueueHttpClient(
+      restProvider.client,
+      _QUEUE_DATABASE_NAME,
+      reattemptForStatusCodes: reattemptForStatusCodes,
+    );
     offlineRequestQueue = OfflineRequestQueue(
       client: remoteProvider.client as OfflineQueueHttpClient,
     );
