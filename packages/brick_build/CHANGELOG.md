@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.6
+
 * Rename `ProviderSerializable` to `ProviderSerializableGenerator` to be more explicit
 * Rename `SharedChecker#mapArgs` to `SharedChecker#typeArguments`
 
