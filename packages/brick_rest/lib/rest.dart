@@ -43,8 +43,8 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<http.Response> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final url = urlForModel<_Model>(query, instance);
-    _logger.fine('DELETE $url');
     if (url == null) return null;
+    _logger.fine('DELETE $url');
 
     final resp = await client.delete(url, headers: headersForQuery(query));
 
