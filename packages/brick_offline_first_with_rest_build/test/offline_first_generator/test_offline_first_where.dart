@@ -74,7 +74,7 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
   return {
     'assoc': (await instance.assoc)?.id,
     'loaded_assoc': "Going to REST",
-    'loaded_assocs': instance.loadedAssocs?.map((s) => s.id),
+    'loaded_assocs': instance.loadedAssocs?.map((s) => s.id)?.toList(),
     'multi_lookup_custom_generator': "As REST"
   };
 }
