@@ -44,6 +44,8 @@ class RestProvider implements Provider<RestModel> {
   Future<http.Response> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final url = urlForModel<_Model>(query, instance);
     _logger.fine('DELETE $url');
+    if (url == null) return null;
+
     final resp = await client.delete(url, headers: headersForQuery(query));
 
     _logger.finest('caller=delete url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
@@ -105,6 +107,8 @@ class RestProvider implements Provider<RestModel> {
     final body = await adapter.toRest(instance, provider: this, repository: repository);
 
     final url = urlForModel<_Model>(query, instance);
+    if (url == null) return null;
+
     final resp = await _sendUpsertResponse(url, body, query, adapter.toKey);
 
     _logger.finest('caller=upsert url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
