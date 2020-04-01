@@ -19,7 +19,7 @@ Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
     {RestProvider provider, RestFirstRepository repository}) async {
   return {
     'hat': instance.hat?.toString()?.split('.')?.last,
-    'hats': instance.hats?.map((e) => e.toString().split('.').last)
+    'hats': instance.hats?.map((e) => e.toString().split('.').last)?.toList()
   };
 }
 ''';

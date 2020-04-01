@@ -34,14 +34,14 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where.entries.first;
         final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-        return '$instanceWithField?.map((s) $awaited.${pair.key})';
+        return '$instanceWithField?.map((s) $awaited.${pair.key})?.toList()';
       }
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return '$fieldValue?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())';
+          return '$fieldValue?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())?.toList()';
         }
       }
     }
