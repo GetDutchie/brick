@@ -1,6 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
-import '../migration.dart' show Migration;
+import '../migration.dart' show Migration, Column;
 import '../migration_commands.dart';
 import 'schema_base.dart';
 
@@ -11,6 +11,7 @@ class SchemaColumn extends BaseSchemaObject {
   String name;
   final Type type;
   final bool autoincrement;
+  final Column columnType;
   final dynamic defaultValue;
   final bool nullable;
   final bool isPrimaryKey;
@@ -24,6 +25,7 @@ class SchemaColumn extends BaseSchemaObject {
     this.name,
     this.type, {
     bool autoincrement,
+    this.columnType,
     this.defaultValue,
     bool nullable,
     this.isPrimaryKey = false,
@@ -33,7 +35,8 @@ class SchemaColumn extends BaseSchemaObject {
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
-        assert(Migration.fromDartPrimitive(type) != null, 'Type must serializable'),
+        assert(columnType != null || Migration.fromDartPrimitive(type) != null,
+            'Type must serializable'),
         assert(!isPrimaryKey || type == int, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
@@ -43,6 +46,10 @@ class SchemaColumn extends BaseSchemaObject {
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
       parts.add('autoincrement: $autoincrement');
+    }
+
+    if (columnType != null) {
+      parts.add('columnType: $columnType');
     }
 
     if (defaultValue != null) {
@@ -81,7 +88,7 @@ class SchemaColumn extends BaseSchemaObject {
 
     return InsertColumn(
       name,
-      Migration.fromDartPrimitive(type),
+      columnType ?? Migration.fromDartPrimitive(type),
       onTable: tableName,
       defaultValue: defaultValue,
       autoincrement: autoincrement,
@@ -96,10 +103,11 @@ class SchemaColumn extends BaseSchemaObject {
       other is SchemaColumn &&
           name == other?.name &&
           type == other?.type &&
+          columnType == other?.columnType &&
           // tableNames don't compare nicely since they're non-final
           (tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
           forGenerator == other?.forGenerator;
 
   @override
-  int get hashCode => name.hashCode ^ type.hashCode ^ forGenerator.hashCode;
+  int get hashCode => name.hashCode ^ type.hashCode ^ columnType.hashCode ^ forGenerator.hashCode;
 }

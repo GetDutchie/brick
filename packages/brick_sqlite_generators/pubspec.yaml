@@ -14,7 +14,8 @@ dependencies:
     git:
       url: https://github.com/greenbits/brick.git
       path: packages/brick_build
-  brick_sqlite_abstract: ^0.0.4
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"

@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_build/testing.dart';
 
+import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as _$sqliteColumnType;
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
     as _$fieldWithTypeArgument;
@@ -35,6 +36,10 @@ void main() {
     });
 
     group('@Sqlite', () {
+      test('columnType', () async {
+        await generateAdapterExpectation('sqlite_column_type', _$sqliteColumnType.output);
+      });
+
       test('unique', () async {
         await generateAdapterExpectation('sqlite_unique', _$sqliteUnique.output);
       });
@@ -78,5 +83,6 @@ Future<void> generateAdapterExpectation(String filename, String output) async {
     annotation?.annotation,
     null,
   );
+  print(generated);
   expect(generated.trim(), output.trim());
 }

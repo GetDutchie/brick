@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Declare a `columnType` with `@Sqlite`
+
 ## 0.0.4
 
 * `Sqlite#defaultValue` updated to reflect `FieldSerializable#defaultValue` change

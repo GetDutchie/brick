@@ -2,6 +2,7 @@
 
 * Add `StubSqlite.queryValueForColumn` to discover the passed argument for a specific column
 * Support OR clauses in `StubSqlite`. This publicly exposes `StubSqlite.queryMatchesResponse`.
+* Support `columnType` from SQLite annotations
 
 ## 0.0.6
 

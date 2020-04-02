@@ -94,9 +94,11 @@ class SqliteSchemaGenerator {
       }
       final column = fields.finder.annotationForField(field);
 
-      if (column.ignore || !checker.isSerializable) return null;
+      if (!column.ignore || (column.columnType != null || checker.isSerializable)) {
+        return schemaColumn(column, checker: checker);
+      }
 
-      return schemaColumn(column, checker: checker);
+      return null;
     });
   }
 
@@ -106,6 +108,16 @@ class SqliteSchemaGenerator {
   @visibleForOverriding
   @mustCallSuper
   SchemaColumn schemaColumn(Sqlite column, {SharedChecker checker}) {
+    if (column.columnType != null) {
+      return SchemaColumn(
+        column.name,
+        null,
+        columnType: column.columnType,
+        nullable: column?.nullable,
+        unique: column?.unique,
+      );
+    }
+
     if (checker.isDartCoreType) {
       return SchemaColumn(
         column.name,
