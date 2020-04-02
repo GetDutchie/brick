@@ -94,7 +94,7 @@ class SqliteSchemaGenerator {
       }
       final column = fields.finder.annotationForField(field);
 
-      if (!column.ignore || (column.columnType != null || checker.isSerializable)) {
+      if (!column.ignore && (column.columnType != null || checker.isSerializable)) {
         return schemaColumn(column, checker: checker);
       }
 
