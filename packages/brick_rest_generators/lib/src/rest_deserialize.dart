@@ -83,7 +83,7 @@ class RestDeserialize extends RestSerdesGenerator {
             )$castIterable$defaultValue
           ''';
         } else {
-          return "$fieldValue.map((e) => $argType.values.indexOf(e))$castIterable$defaultValue";
+          return "$fieldValue.map((e) => $argType.values[e])$castIterable$defaultValue";
         }
       }
 
