@@ -9,6 +9,7 @@ Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.
 * `'headers'` (`Map<String, String>`) set HTTP headers
 * `'request'` (`String`) specifies HTTP method. Only available to `#upsert`. Defaults to `POST`
 * `'topLevelKey'` (`String`) the payload is sent or received beneath a JSON key (For example, `{"user": {"id"...}}`)
+* `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload. For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`
 
 ### `where:`
 

@@ -99,6 +99,9 @@ class RestProvider implements Provider<RestModel> {
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
   /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
+  /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
+  /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`
+  ///
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
   @override
@@ -176,7 +179,15 @@ class RestProvider implements Provider<RestModel> {
   ]) async {
     final encodedBody = jsonEncode(body);
     final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? toKey;
-    final wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
+    var wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
+
+    // if supplementalTopLevelData is specified it, insert alongside normal payload
+    if (query.providerArgs['supplementalTopLevelData'] != null) {
+      final decodedPayload = jsonDecode(wrappedBody);
+      final mergedPayload = decodedPayload..addAll(query.providerArgs['supplementalTopLevelData']);
+      wrappedBody = jsonEncode(mergedPayload);
+    }
+
     final headers = headersForQuery(query);
 
     if ((query?.providerArgs ?? {})['request'] == 'PUT') {
