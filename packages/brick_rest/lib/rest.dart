@@ -100,7 +100,7 @@ class RestProvider implements Provider<RestModel> {
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
   /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
   /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
-  /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`
+  /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
   ///
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
