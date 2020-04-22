@@ -182,7 +182,7 @@ class RestProvider implements Provider<RestModel> {
     var wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
 
     // if supplementalTopLevelData is specified it, insert alongside normal payload
-    if (query.providerArgs['supplementalTopLevelData'] != null) {
+    if ((query?.providerArgs ?? {})['supplementalTopLevelData'] != null) {
       final decodedPayload = jsonDecode(wrappedBody);
       final mergedPayload = decodedPayload..addAll(query.providerArgs['supplementalTopLevelData']);
       wrappedBody = jsonEncode(mergedPayload);
