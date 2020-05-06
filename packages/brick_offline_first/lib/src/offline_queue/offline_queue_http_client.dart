@@ -18,7 +18,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
   /// 404 status code response (such as in a Tunnel not found exception), the request will
   /// be reattempted.
   ///
-  /// Defaults to `[404, 502, 503, 504]`.
+  /// Defaults to `[404, 501, 502, 503, 504]`.
   final List<int> reattemptForStatusCodes;
 
   final Logger _logger;
@@ -28,7 +28,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
     this.databaseName, {
     List<int> reattemptForStatusCodes,
   })  : _logger = Logger('OfflineQueueHttpClient#$databaseName'),
-        reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 502, 503, 504];
+        reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 501, 502, 503, 504];
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {

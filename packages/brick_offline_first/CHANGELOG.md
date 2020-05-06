@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Add `reattemptForStatusCode` for `OfflineFirstWithRestRepository#upsert` requests. When the response matches a reattempt code, an exception is not thrown and the instance is returned instead.
+* Add `501` to `OfflineQueueHttpClient#reattemptForStatusCode` defaults
+
 ## 0.0.6
 
 * Remove maximumRequests configuration for the OfflineFirstQueue. One request should be processed at a time in serial

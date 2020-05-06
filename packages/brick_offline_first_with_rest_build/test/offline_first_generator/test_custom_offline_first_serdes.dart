@@ -20,7 +20,7 @@ Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToRest(
     OfflineFirstRepository repository}) async {
   return {
     'string': instance.string?.toRest(),
-    'strings': instance.strings?.map((Serializable c) => c?.toRest())
+    'strings': instance.strings?.map((Serializable c) => c?.toRest())?.toList()
   };
 }
 

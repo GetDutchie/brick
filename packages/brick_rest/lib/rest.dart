@@ -43,7 +43,9 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<http.Response> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final url = urlForModel<_Model>(query, instance);
+    if (url == null) return null;
     _logger.fine('DELETE $url');
+
     final resp = await client.delete(url, headers: headersForQuery(query));
 
     _logger.finest('caller=delete url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
@@ -97,6 +99,9 @@ class RestProvider implements Provider<RestModel> {
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
   /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
+  /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
+  /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
+  ///
   /// It is recommended to use `RestSerializable#toKey` instead to simplify queries
   /// (however, when defined, `topLevelKey` is prioritized).
   @override
@@ -105,6 +110,8 @@ class RestProvider implements Provider<RestModel> {
     final body = await adapter.toRest(instance, provider: this, repository: repository);
 
     final url = urlForModel<_Model>(query, instance);
+    if (url == null) return null;
+
     final resp = await _sendUpsertResponse(url, body, query, adapter.toKey);
 
     _logger.finest('caller=upsert url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
@@ -172,7 +179,15 @@ class RestProvider implements Provider<RestModel> {
   ]) async {
     final encodedBody = jsonEncode(body);
     final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? toKey;
-    final wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
+    var wrappedBody = topLevelKey != null ? '{"$topLevelKey":$encodedBody}' : encodedBody;
+
+    // if supplementalTopLevelData is specified it, insert alongside normal payload
+    if ((query?.providerArgs ?? {})['supplementalTopLevelData'] != null) {
+      final decodedPayload = jsonDecode(wrappedBody);
+      final mergedPayload = decodedPayload..addAll(query.providerArgs['supplementalTopLevelData']);
+      wrappedBody = jsonEncode(mergedPayload);
+    }
+
     final headers = headersForQuery(query);
 
     if ((query?.providerArgs ?? {})['request'] == 'PUT') {
