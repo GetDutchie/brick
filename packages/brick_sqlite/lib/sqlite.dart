@@ -36,7 +36,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   SqliteProvider(
     this.dbName, {
     this.modelDictionary,
-  })  : _lock = Lock(),
+  })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
 
   Database _openDb;

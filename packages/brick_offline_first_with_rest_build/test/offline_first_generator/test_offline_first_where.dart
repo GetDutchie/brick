@@ -143,7 +143,9 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
     {SqliteProvider provider,
     OfflineFirstRepository repository}) async {
   return {
-    'assoc_OtherAssoc_brick_id': (await instance.assoc)?.primaryKey,
+    'assoc_OtherAssoc_brick_id': (await instance.assoc)?.primaryKey ??
+        await provider?.upsert<OtherAssoc>((await instance.assoc),
+            repository: repository),
     'assocs': jsonEncode((await Future.wait<int>(instance.assocs
                 ?.map((s) async =>
                     (await s)?.primaryKey ??
@@ -155,7 +157,9 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
         .where((s) => s != null)
         .toList()
         .cast<int>()),
-    'loaded_assoc_Assoc_brick_id': instance.loadedAssoc?.primaryKey,
+    'loaded_assoc_Assoc_brick_id': instance.loadedAssoc?.primaryKey ??
+        await provider?.upsert<Assoc>(instance.loadedAssoc,
+            repository: repository),
     'loaded_assocs': jsonEncode((await Future.wait<int>(instance.loadedAssocs
                 ?.map((s) async {
                   return s?.primaryKey ??

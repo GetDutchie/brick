@@ -115,7 +115,9 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
     'strings': jsonEncode(instance.strings ?? []),
     'future_strings':
         jsonEncode(await Future.wait<String>(instance.futureStrings) ?? []),
-    'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey,
+    'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey ??
+        await provider?.upsert<Assoc>((await instance.assoc),
+            repository: repository),
     'assocs': jsonEncode((await Future.wait<int>((await instance.assocs)
                 ?.map((s) async {
                   return s?.primaryKey ??

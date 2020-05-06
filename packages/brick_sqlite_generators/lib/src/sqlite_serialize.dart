@@ -130,6 +130,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         }
       }
 
+      // Set<any>
+      // jsonEncode can't convert LinkedHashSet
+      if (checker.isSet) {
+        return 'jsonEncode($fieldValue?.toList() ?? [])';
+      }
+
       // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
         return 'jsonEncode($fieldValue ?? [])';
@@ -137,7 +143,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD}';
+      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedType}>($instance, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {
