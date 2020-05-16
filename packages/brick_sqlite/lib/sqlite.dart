@@ -22,6 +22,16 @@ class SqliteModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<S
 class SqliteProvider implements Provider<SqliteModel> {
   static const String MIGRATION_VERSIONS_TABLE_NAME = "MigrationVersions";
 
+  /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
+  /// instance agnostically across platforms. If [databaseFactory] is null, the default
+  /// Flutter SQFlite will be used.
+  final DatabaseFactory databaseFactory;
+
+  /// The file name for the database used.
+  ///
+  /// When [databaseFactory] is present, this is the **entire** path name.
+  /// With [databaseFactory], this is most commonly the
+  /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String dbName;
 
   /// The glue between app models and generated adapters
@@ -35,17 +45,23 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   SqliteProvider(
     this.dbName, {
+    this.databaseFactory,
     this.modelDictionary,
-  })  : _lock = Lock(reentrant: true),
+  })  : _lock = Lock(),
         _logger = Logger('SqliteProvider');
 
   Database _openDb;
   Future<Database> get _db async {
     if (_openDb?.isOpen == true) return _openDb;
 
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, dbName);
-    _openDb = await openDatabase(path);
+    if (databaseFactory != null) {
+      _openDb = await databaseFactory.openDatabase(dbName);
+    } else {
+      final databasesPath = await getDatabasesPath();
+      final path = p.join(databasesPath, dbName);
+
+      _openDb = await openDatabase(path);
+    }
 
     return _openDb;
   }
