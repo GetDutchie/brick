@@ -52,7 +52,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final pair = offlineFirstAnnotation.where.entries.first;
         return '$wrappedField?.${pair.key}';
       } else {
-        return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField ?? {})';
+        return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField)';
       }
     }
 
