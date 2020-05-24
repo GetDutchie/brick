@@ -3,6 +3,7 @@
 * Add `StubSqlite.queryValueForColumn` to discover the passed argument for a specific column
 * Support OR clauses in `StubSqlite`. This publicly exposes `StubSqlite.queryMatchesResponse`.
 * Bump `synchronized` and `sqflite` packages to support `reentrant` locks
+* #52 Support multiplatform with `sqlite_ffi`
 
 ## 0.0.6
 
