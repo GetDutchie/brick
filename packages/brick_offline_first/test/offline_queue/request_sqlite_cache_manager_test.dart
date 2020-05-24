@@ -63,10 +63,11 @@ void main() {
           sqliteLogs[1],
           startsWith(
               'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 AND created_at <'));
-      expect(sqliteLogs[1], endsWith('ORDER BY created_at ASC);'));
+      expect(sqliteLogs[1], endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC);'));
       expect(sqliteLogs[2],
           startsWith('SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 AND created_at <'));
-      expect(sqliteLogs[2], endsWith('ORDER BY created_at ASC LIMIT 1;'));
+      expect(sqliteLogs[2],
+          endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC LIMIT 1;'));
       expect(sqliteLogs[3], 'COMMIT');
 
       expect(request.method, 'PUT');
@@ -90,7 +91,9 @@ void main() {
 
         expect(
           sqliteLogs,
-          ['SELECT DISTINCT * FROM HttpJobs ORDER BY created_at ASC'],
+          [
+            'SELECT DISTINCT * FROM HttpJobs ORDER BY created_at ASC, attempts DESC, updated_at ASC'
+          ],
         );
       });
 
@@ -100,7 +103,9 @@ void main() {
 
         expect(
           sqliteLogs,
-          ['SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY created_at ASC'],
+          [
+            'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY created_at ASC, attempts DESC, updated_at ASC'
+          ],
         );
       });
     });
