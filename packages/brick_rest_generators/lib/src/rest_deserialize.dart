@@ -89,12 +89,12 @@ class RestDeserialize extends RestSerdesGenerator {
 
       // List
       if (checker.isList) {
-        final addon = fieldAnnotation.defaultValue ?? 'List<${checker.argType}>()';
+        final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>[]';
         return "$fieldValue$castIterable ?? $addon";
 
         // Set
       } else if (checker.isSet) {
-        final addon = fieldAnnotation.defaultValue ?? 'Set<${checker.argType}>()';
+        final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>{}';
         return "$fieldValue$castIterable ?? $addon";
 
         // other Iterable

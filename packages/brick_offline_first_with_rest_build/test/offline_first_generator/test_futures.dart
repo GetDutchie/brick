@@ -27,7 +27,7 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
   return Futures(
       string: data['string'] as Future<String>,
       strings:
-          data['strings']?.toList()?.cast<Future<String>>() ?? List<String>(),
+          data['strings']?.toList()?.cast<Future<String>>() ?? <String>[],
       futureStrings: data['future_strings']?.toList()?.cast<String>() ??
           List<Future<String>>(),
       assoc: AssocAdapter()
@@ -51,7 +51,7 @@ Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,
     'string': instance.string,
     'strings': instance.strings,
     'future_strings': instance.futureStrings,
-    'assoc': await AssocAdapter().toRest((await instance.assoc) ?? {}),
+    'assoc': await AssocAdapter().toRest((await instance.assoc)),
     'assocs': await Future.wait<Map<String, dynamic>>(
         instance.assocs?.map((s) => AssocAdapter().toRest(s))?.toList() ?? []),
     'future_assocs': await Future.wait<Map<String, dynamic>>(instance
