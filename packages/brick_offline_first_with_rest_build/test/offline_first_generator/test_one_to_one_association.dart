@@ -46,8 +46,8 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToRest(
     {RestProvider provider,
     OfflineFirstRepository repository}) async {
   return {
-    'assoc': await SqliteAssocAdapter().toRest(instance.assoc ?? {}),
-    'assoc2': await SqliteAssocAdapter().toRest(instance.assoc2 ?? {})
+    'assoc': await SqliteAssocAdapter().toRest(instance.assoc),
+    'assoc2': await SqliteAssocAdapter().toRest(instance.assoc2)
   };
 }
 

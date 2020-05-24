@@ -65,7 +65,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
-      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField ?? {})';
+      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField)';
 
       // enum
     } else if (checker.isEnum) {

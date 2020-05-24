@@ -85,7 +85,7 @@ Future<Map<String, dynamic>> _$KitchenSinkToRest(KitchenSink instance,
             ?.toList() ??
         []),
     'future_offline_first_model': await MountyAdapter()
-        .toRest((await instance.futureOfflineFirstModel) ?? {}),
+        .toRest((await instance.futureOfflineFirstModel)),
     'future_list_offline_first_model': await Future.wait<Map<String, dynamic>>(
         instance.futureListOfflineFirstModel
                 ?.map((s) async => MountyAdapter().toRest((await s)))
