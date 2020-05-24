@@ -64,6 +64,33 @@ The following are not serialized to SQLite. However, unsupported types can still
 * Nested `List<>` e.g. `<List<List<int>>>`
 * Many-to-many associations
 
+## Multiplatform Support
+
+Brick SQLite can be used when developing for Windows, MacOS, and Linux platforms. **The following is not required for iOS and Android development. If your app only supports those platforms, please ignore this section**.
+
+First, use the [SQLite FFI](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi) database factory when initializing your provider:
+
+```dart
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+MyRepository(
+  sqliteProvider: SqliteProvider(
+    inMemoryDatabase,
+    databaseFactory: databaseFactoryFfi,
+  ),
+);
+```
+
+And when starting your app, make sure FFI is initialized:
+
+```dart
+void main() {
+  sqfliteFfiInit();
+  runApp(MyApp())
+}
+```
+
 ## Testing
 
 Responses can be stubbed from a SqliteProvider with actual data using `StubSqlite`:
