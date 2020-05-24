@@ -29,6 +29,7 @@ class RequestSqliteCache {
     return {
       HTTP_JOBS_ATTEMPTS_COLUMN: 1,
       HTTP_JOBS_BODY_COLUMN: request.body,
+      HTTP_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
       HTTP_JOBS_ENCODING_COLUMN: request.encoding.name,
       HTTP_JOBS_HEADERS_COLUMN: jsonEncode(request.headers),
       HTTP_JOBS_REQUEST_METHOD_COLUMN: request.method,
