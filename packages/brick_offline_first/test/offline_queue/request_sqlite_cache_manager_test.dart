@@ -1,124 +1,85 @@
-import 'package:flutter/services.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../lib/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import '__helpers__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   group('RequestSqliteCacheManager', () {
-    var sqliteLogs = <String>[];
+    final requestManager = RequestSqliteCacheManager(
+      inMemoryDatabasePath,
+      databaseFactory: databaseFactoryFfi,
+      processingInterval: Duration(seconds: 0),
+    );
 
-    setUpAll(() {
-      const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
-        if (methodCall.method == 'getDatabasesPath') {
-          return Future.value('db');
-        }
-
-        if (methodCall.method == 'openDatabase') {
-          return Future.value(null);
-        }
-
-        sqliteLogs.add(methodCall.arguments['sql']);
-        if (methodCall.method == 'query') {
-          return Future.value([
-            {
-              HTTP_JOBS_REQUEST_METHOD_COLUMN: 'PUT',
-              HTTP_JOBS_URL_COLUMN: 'http://localhost:3000/stored-query',
-              HTTP_JOBS_ATTEMPTS_COLUMN: 1,
-              HTTP_JOBS_PRIMARY_KEY_COLUMN: 1,
-            }
-          ]);
-        }
-
-        if (methodCall.method == 'update' && methodCall.arguments['sql'].startsWith('DELETE')) {
-          return 1;
-        }
-
-        return Future.value(null);
-      });
+    setUpAll(() async {
+      await requestManager.migrate();
     });
 
-    tearDown(sqliteLogs.clear);
+    tearDown(() async {
+      final requests = await requestManager.unprocessedRequests();
+      final requestsToDelete = requests.map((request) {
+        return requestManager.deleteUnprocessedRequest(request[HTTP_JOBS_PRIMARY_KEY_COLUMN]);
+      });
+
+      await Future.wait(requestsToDelete);
+    });
 
     test('#serialProcessing:false', () async {
-      final manager = RequestSqliteCacheManager('fake_db', serialProcessing: false);
-      await manager.prepareNextRequestToProcess();
-      expect(sqliteLogs[0], 'BEGIN IMMEDIATE');
-      expect(
-          sqliteLogs[1],
-          startsWith(
-              'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 AND created_at <'));
-      expect(sqliteLogs[1], endsWith('ORDER BY updated_at ASC);'));
-      expect(sqliteLogs[2],
-          startsWith('SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 AND created_at <'));
-      expect(sqliteLogs[2], endsWith('ORDER BY updated_at ASC LIMIT 1;'));
-      expect(sqliteLogs[3], 'COMMIT');
+      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final _requestManager = RequestSqliteCacheManager(
+        inMemoryDatabasePath,
+        databaseFactory: databaseFactoryFfi,
+        serialProcessing: false,
+        processingInterval: Duration(seconds: 0),
+      );
+      final client = OfflineQueueHttpClient(inner, _requestManager);
+
+      await client.post('http://localhost:3000', body: 'existing record');
+      await client.put('http://localhost:3000', body: 'existing record');
+
+      final request = await _requestManager.prepareNextRequestToProcess();
+      expect(request.method, 'POST');
+
+      final asCacheItem = RequestSqliteCache(request);
+      await asCacheItem.insertOrUpdate(await _requestManager.getDb());
+      final req = await _requestManager.prepareNextRequestToProcess();
+      expect(req.method, 'PUT');
     });
 
     test('#prepareNextRequestToProcess', () async {
-      final manager = RequestSqliteCacheManager('fake_db');
-      final request = await manager.prepareNextRequestToProcess();
-      expect(sqliteLogs[0], 'BEGIN IMMEDIATE');
-      expect(
-          sqliteLogs[1],
-          startsWith(
-              'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 AND created_at <'));
-      expect(sqliteLogs[1], endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC);'));
-      expect(sqliteLogs[2],
-          startsWith('SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 AND created_at <'));
-      expect(sqliteLogs[2],
-          endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC LIMIT 1;'));
-      expect(sqliteLogs[3], 'COMMIT');
+      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final client = OfflineQueueHttpClient(inner, requestManager);
 
-      expect(request.method, 'PUT');
-      expect(request.url.toString(), 'http://localhost:3000/stored-query');
-    });
+      await client.post('http://localhost:3000', body: 'existing record');
+      await client.put('http://localhost:3000', body: 'existing record');
 
-    test('#migrate', () async {
-      final manager = RequestSqliteCacheManager('fake_db');
-      await manager.migrate();
+      final request = await requestManager.prepareNextRequestToProcess();
+      expect(request.method, 'POST');
 
-      expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
-      expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
-      expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
-      expect(sqliteLogs.last, 'ALTER TABLE `HttpJobs` ADD `created_at` INTEGER DEFAULT 0');
-    });
-
-    group('#unprocessedRequests', () {
-      test('default args', () async {
-        final manager = RequestSqliteCacheManager('fake_db');
-        await manager.unprocessedRequests();
-
-        expect(
-          sqliteLogs,
-          [
-            'SELECT DISTINCT * FROM HttpJobs ORDER BY created_at ASC, attempts DESC, updated_at ASC'
-          ],
-        );
-      });
-
-      test('whereLocked:true', () async {
-        final manager = RequestSqliteCacheManager('fake_db');
-        await manager.unprocessedRequests(whereLocked: true);
-
-        expect(
-          sqliteLogs,
-          [
-            'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY created_at ASC, attempts DESC, updated_at ASC'
-          ],
-        );
-      });
+      final asCacheItem = RequestSqliteCache(request);
+      await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      final req = await requestManager.prepareNextRequestToProcess();
+      expect(req.method, 'POST');
     });
 
     test('#deleteUnprocessedRequest', () async {
-      final manager = RequestSqliteCacheManager('fake_db');
-      final resp = await manager.deleteUnprocessedRequest(1);
+      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final client = OfflineQueueHttpClient(inner, requestManager);
+      expect(await requestManager.unprocessedRequests(), isEmpty);
 
-      expect(
-        sqliteLogs,
-        ['DELETE FROM HttpJobs WHERE id = ?'],
-      );
-      expect(resp, isTrue);
+      await client.put('http://localhost:3000/stored-query', body: 'existing record');
+      final unprocessedRequests = await requestManager.unprocessedRequests();
+      expect(unprocessedRequests, hasLength(1));
+
+      await requestManager
+          .deleteUnprocessedRequest(unprocessedRequests[0][HTTP_JOBS_PRIMARY_KEY_COLUMN]);
+      expect(await requestManager.unprocessedRequests(), isEmpty);
     });
   });
 }

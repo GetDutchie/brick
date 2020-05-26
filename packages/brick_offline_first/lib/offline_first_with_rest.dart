@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:meta/meta.dart';
@@ -65,6 +66,7 @@ abstract class OfflineFirstWithRestRepository
     Set<Migration> migrations,
     bool autoHydrate,
     String loggerName,
+    RequestSqliteCacheManager offlineQueueHttpClientRequestSqliteCacheManager,
     this.throwTunnelNotFoundExceptions = false,
     this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
   })  : remoteProvider = restProvider,
@@ -77,7 +79,8 @@ abstract class OfflineFirstWithRestRepository
         ) {
     remoteProvider.client = OfflineQueueHttpClient(
       restProvider.client,
-      _QUEUE_DATABASE_NAME,
+      offlineQueueHttpClientRequestSqliteCacheManager ??
+          RequestSqliteCacheManager(_QUEUE_DATABASE_NAME),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = OfflineRequestQueue(
@@ -141,7 +144,7 @@ abstract class OfflineFirstWithRestRepository
     await super.migrate();
 
     // Migrate cached jobs schema
-    await offlineRequestQueue.requestManager.migrate();
+    await offlineRequestQueue.client.requestManager.migrate();
   }
 
   @override

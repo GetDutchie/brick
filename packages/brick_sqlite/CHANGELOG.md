@@ -3,6 +3,8 @@
 * Add `StubSqlite.queryValueForColumn` to discover the passed argument for a specific column
 * Support OR clauses in `StubSqlite`. This publicly exposes `StubSqlite.queryMatchesResponse`.
 * Bump `synchronized` and `sqflite` packages to support `reentrant` locks
+* #52 Support multiplatform with `sqlite_ffi`
+* **BREAKING CHANGE** Remove `StubSqlite`. `sqlite_ffi` is an in-memory instance of SQLite that can be used in unit test environments. `StubSqlite` can introduce edge cases not consistent with a real-world SQLite instance.
 
 ## 0.0.6
 

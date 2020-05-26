@@ -1,19 +1,12 @@
 import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'offline_queue_http_client.dart';
 
 /// Repeatedly reattempts requests in an interval
 class OfflineRequestQueue {
   /// The client responsible for resending requests
   final OfflineQueueHttpClient client;
-
-  /// Time between running jobs. Defaults to 5 seconds.
-  final Duration interval;
-
-  final RequestSqliteCacheManager requestManager;
 
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
@@ -24,24 +17,14 @@ class OfflineRequestQueue {
 
   OfflineRequestQueue({
     @required this.client,
-    Duration interval,
-
-    /// When `true`, jobs are processed one at a time in the order they were created.
-    bool serialProcessing = true,
-  })  : this.interval = interval ?? DEFAUT_PROCESSING_INTERVAL,
-        this.requestManager = RequestSqliteCacheManager(
-          client.databaseName,
-          processingInterval: interval ?? DEFAUT_PROCESSING_INTERVAL,
-          serialProcessing: serialProcessing,
-        ),
-        _logger = Logger('OfflineRequestQueue#${client.databaseName}');
+  }) : _logger = Logger('OfflineRequestQueue#${client.requestManager.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();
     _logger.finer('Queue started');
-    _timer = Timer.periodic(interval, process);
+    _timer = Timer.periodic(client.requestManager.processingInterval, process);
   }
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.
@@ -54,7 +37,7 @@ class OfflineRequestQueue {
   /// Resend latest unproccessed request to the client.
   @protected
   void process(Timer _timer) async {
-    final request = await requestManager.prepareNextRequestToProcess();
+    final request = await client.requestManager.prepareNextRequestToProcess();
 
     if (request != null) {
       _logger.finer('Processing request');

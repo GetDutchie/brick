@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
@@ -7,6 +8,8 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 export 'package:brick_offline_first/offline_first.dart';
 
@@ -55,10 +58,23 @@ class DemoModelAdapter extends OfflineFirstWithRestAdapter<DemoModel> {
   }
 }
 
+class DemoModelMigration extends Migration {
+  const DemoModelMigration()
+      : super(
+          version: 1,
+          up: const <MigrationCommand>[
+            InsertTable('Demo'),
+            InsertColumn('name', Column.varchar, onTable: 'Demo'),
+          ],
+          down: const <MigrationCommand>[
+            InsertTable('Demo'),
+            InsertColumn('Demo', Column.varchar, onTable: 'Demo'),
+          ],
+        );
+}
+
 class TestRepository extends OfflineFirstWithRestRepository {
   static TestRepository _singleton;
-  final migrationManager = null;
-  final isConnected = true;
 
   TestRepository._(
     RestProvider _restProvider,
@@ -67,32 +83,38 @@ class TestRepository extends OfflineFirstWithRestRepository {
           restProvider: _restProvider,
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
+          migrations: {const DemoModelMigration()},
+          offlineQueueHttpClientRequestSqliteCacheManager: RequestSqliteCacheManager(
+            inMemoryDatabasePath,
+            databaseFactory: databaseFactoryFfi,
+          ),
         );
   factory TestRepository() => _singleton;
 
   factory TestRepository.createInstance({
     String baseUrl,
-    String dbName,
     RestModelDictionary restDictionary,
     SqliteModelDictionary sqliteDictionary,
     http.Client client,
   }) {
     return TestRepository._(
       RestProvider(baseUrl, modelDictionary: restDictionary, client: client),
-      SqliteProvider(dbName, modelDictionary: sqliteDictionary),
+      SqliteProvider(
+        inMemoryDatabasePath,
+        databaseFactory: databaseFactoryFfi,
+        modelDictionary: sqliteDictionary,
+      ),
     );
   }
 
   static TestRepository configure({
     String baseUrl,
-    String dbName,
     RestModelDictionary restDictionary,
     SqliteModelDictionary sqliteDictionary,
     http.Client client,
   }) {
     _singleton = TestRepository.createInstance(
       baseUrl: baseUrl,
-      dbName: dbName,
       restDictionary: restDictionary,
       sqliteDictionary: sqliteDictionary,
       client: client,

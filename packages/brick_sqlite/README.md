@@ -64,51 +64,62 @@ The following are not serialized to SQLite. However, unsupported types can still
 * Nested `List<>` e.g. `<List<List<int>>>`
 * Many-to-many associations
 
+## Multiplatform Support
+
+Brick SQLite can be used when developing for Windows, MacOS, and Linux platforms. **The following is not required for iOS and Android development except in a test environment.**.
+
+1. Add sqflite_common packages to your pubspec. If you're stubbing SQLite responses for testing, the packages only need to be added under `dev_dependencies:`.
+    ```yaml
+    sqflite_common: any
+    sqflite_common_ffi: any
+    ```
+
+1. Use the [SQLite FFI](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi) database factory when initializing your provider:
+    ```dart
+    import 'package:sqflite_common/sqlite_api.dart';
+    import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+    MyRepository(
+      sqliteProvider: SqliteProvider(
+        inMemoryDatabase,
+        databaseFactory: databaseFactoryFfi,
+      ),
+    );
+    ```
+
+1. Make sure FFI is initialized when starting your app or running unit tests:
+    ```dart
+    void main() {
+      sqfliteFfiInit();
+      runApp(MyApp())
+    }
+    ```
+
 ## Testing
 
-Responses can be stubbed from a SqliteProvider with actual data using `StubSqlite`:
+SQLite providers should use sqlite_ffi as described in [multiplatform support](#multiplatform-support):
 
 ```dart
-import 'package:brick_sqlite/testing.dart';
-import 'package:my_app/app/repository.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
-  group("MySqliteProvider", () {
-    setUpAll(() {
-      StubSqlite(MyRepository().sqliteProvider, responses: {
-        MyModel: [
-          {'name': 'Thomas' }
-          {'name': 'John' }
-        ],
-      });
-    });
+  ft.TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
+
+  final provider = SqliteProvider(
+    inMemoryDatabasePath,
+    databaseFactory: databaseFactoryFfi,
+    modelDictionary: dictionary,
+  );
+
+  setUpAll(() async {
+    await provider.migrate(myMigrations);
+    // upsert any expected data
+    await provider.upsert<DemoModel>(DemoModel('Guy'));
   });
 }
 ```
-
-If a model has an association via a primary key, the association must be manually made with the responses:
-
-```dart
-StubSqlite(MyRepository().sqliteProvider, responses: {
-  User: [
-    {
-      'name': 'Thomas',
-      // for clarity's sake, the table names are directly used here, but
-      // they should always be accessed via adapters:
-      // MyRepository().sqliteProvider.modelDictionary.adapterFor[User]
-      InsertForeignKey.foreignKeyColumnName('User', 'Hat', foreignKeyColumn: 'hat'): 8
-    },
-  ],
-  Hat: [
-    {
-      InsertTable.PRIMARY_KEY_COLUMN: 8,
-      'color': Color.brown.index,
-    }
-  ],
-});
-```
-
-:warning: Stubbed data does not support `Query#where` or `Query#param` like native Sqlite. Stubbing should be employed in simple use cases such as simple association lookups or generating models (e.g. for testing a computed getter).
 
 ## FAQ
 

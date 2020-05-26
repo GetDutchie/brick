@@ -129,7 +129,7 @@ final client = OfflineQueueHttpClient(
 
 ## Testing
 
-Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For convenience, the same data can stub for both the API and SQLite:
+Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For convenience, file data can be used to stub JSON responses from an API:
 
 ```dart
 // test/models/api/user.json
@@ -143,11 +143,11 @@ import 'package:my_app/app/repository.dart';
 
 void main() {
   group("MySqliteProvider", () {
-    setUpAll(() {
-      StubOfflineFirstWithRestModel<User>(
+    setUpAll(() async {
+      await StubOfflineFirstWithRestModel<User>(
         filePath: "api/user.json",
         repository: MyRepository()
-      );
+      ).initialize();
     });
   });
 }
@@ -170,7 +170,7 @@ StubOfflineFirstWithRestModel<User>(
 Rarely will only one model need to be stubbed. All classes in an app can be stubbed efficiently using `StubOfflineFirstWithRest`:
 
 ```dart
-setUpAll() {
+setUpAll() async {
   final config = {
     User: ["user", "users"],
     // Even individual member endpoints must be declared for association fetching
@@ -184,10 +184,10 @@ setUpAll() {
       endpoints: modelConfig.value,
     );
   });
-  StubOfflineFirstWithRest(
+  await StubOfflineFirstWithRest(
     modelStubs: models,
     repository: MyRepository(),
-  );
+  ).initialize();
 }
 ```
 

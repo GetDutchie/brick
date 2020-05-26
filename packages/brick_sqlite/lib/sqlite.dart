@@ -12,6 +12,7 @@ import 'package:brick_sqlite/src/sqlite/alter_column_helper.dart';
 import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
 
 import 'package:synchronized/synchronized.dart';
+import 'package:meta/meta.dart';
 
 /// Associates app models with their [SqliteAdapter]
 class SqliteModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<SqliteModel>> {
@@ -22,6 +23,17 @@ class SqliteModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<S
 class SqliteProvider implements Provider<SqliteModel> {
   static const String MIGRATION_VERSIONS_TABLE_NAME = "MigrationVersions";
 
+  /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
+  /// instance agnostically across platforms. If [databaseFactory] is null, the default
+  /// Flutter SQFlite will be used.
+  @protected
+  final DatabaseFactory databaseFactory;
+
+  /// The file name for the database used.
+  ///
+  /// When [databaseFactory] is present, this is the **entire** path name.
+  /// With [databaseFactory], this is most commonly the
+  /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String dbName;
 
   /// The glue between app models and generated adapters
@@ -35,6 +47,7 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   SqliteProvider(
     this.dbName, {
+    this.databaseFactory,
     this.modelDictionary,
   })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
@@ -43,11 +56,14 @@ class SqliteProvider implements Provider<SqliteModel> {
   Future<Database> get _db async {
     if (_openDb?.isOpen == true) return _openDb;
 
+    if (databaseFactory != null) {
+      return _openDb = await databaseFactory.openDatabase(dbName);
+    }
+
     final databasesPath = await getDatabasesPath();
     final path = p.join(databasesPath, dbName);
-    _openDb = await openDatabase(path);
 
-    return _openDb;
+    return _openDb = await openDatabase(path);
   }
 
   /// Remove record from SQLite. [query] is ignored.
@@ -215,13 +231,19 @@ class SqliteProvider implements Provider<SqliteModel> {
   ///
   /// **WARNING:** This is a destructive, irrevisible action.
   Future<void> resetDb() async {
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, dbName);
-    final db = File(path);
-
     try {
       await (await _db).close();
-      await db.delete();
+
+      if (databaseFactory == null) {
+        final databasesPath = await getDatabasesPath();
+        final path = p.join(databasesPath, dbName);
+
+        final db = File(path);
+        await db.delete();
+      } else {
+        await databaseFactory.deleteDatabase(dbName);
+      }
+
       // recreate
       await _db;
     } on FileSystemException {
