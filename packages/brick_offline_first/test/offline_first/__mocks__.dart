@@ -63,12 +63,12 @@ class DemoModelMigration extends Migration {
       : super(
           version: 1,
           up: const <MigrationCommand>[
-            InsertTable('DemoModel'),
-            InsertColumn('name', Column.varchar, onTable: 'DemoModel'),
+            InsertTable('Demo'),
+            InsertColumn('name', Column.varchar, onTable: 'Demo'),
           ],
           down: const <MigrationCommand>[
-            InsertTable('DemoModel'),
-            InsertColumn('name', Column.varchar, onTable: 'DemoModel'),
+            InsertTable('Demo'),
+            InsertColumn('Demo', Column.varchar, onTable: 'Demo'),
           ],
         );
 }

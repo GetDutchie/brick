@@ -20,12 +20,11 @@ class StubOfflineFirstWithRest {
   StubOfflineFirstWithRest({
     @required this.modelStubs,
     @required this.repository,
-  }) {
-    initialize();
-  }
+  });
 
   /// Invoked immediately after instantiation
-  void initialize() {
+  Future<void> initialize() async {
+    await repository.migrate();
     repository?.remoteProvider?.client = StubOfflineFirstWithRest.client;
     forRest();
   }

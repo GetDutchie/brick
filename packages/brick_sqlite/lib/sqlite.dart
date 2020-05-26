@@ -231,13 +231,19 @@ class SqliteProvider implements Provider<SqliteModel> {
   ///
   /// **WARNING:** This is a destructive, irrevisible action.
   Future<void> resetDb() async {
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, dbName);
-    final db = File(path);
-
     try {
       await (await _db).close();
-      await db.delete();
+
+      if (databaseFactory == null) {
+        final databasesPath = await getDatabasesPath();
+        final path = p.join(databasesPath, dbName);
+
+        final db = File(path);
+        await db.delete();
+      } else {
+        await databaseFactory.deleteDatabase(dbName);
+      }
+
       // recreate
       await _db;
     } on FileSystemException {

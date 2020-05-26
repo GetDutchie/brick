@@ -37,8 +37,7 @@ void main() {
     );
 
     setUpAll(() async {
-      await TestRepository().migrate();
-      StubOfflineFirstWithRest(
+      await StubOfflineFirstWithRest(
         repository: TestRepository(),
         modelStubs: [
           StubOfflineFirstWithRestModel<DemoModel>(
@@ -47,7 +46,7 @@ void main() {
             endpoints: ['people'],
           ),
         ],
-      );
+      ).initialize();
     });
 
     test('instantiates', () {
@@ -83,21 +82,12 @@ void main() {
           .get('http://localhost:3000/people', headers: anyNamed('headers')));
     });
 
-    test('#reset', () async {
-      final instance = MemoryDemoModel('SqliteName');
-      await TestRepository().upsert<MemoryDemoModel>(instance);
-
-      expect(TestRepository().memoryCacheProvider.managedObjects, isNotEmpty);
-      await TestRepository().reset();
-      expect(TestRepository().memoryCacheProvider.managedObjects, isEmpty);
-    });
-
     test('#storeRestResults', () async {
       final instance = DemoModel('SqliteName');
       final results = await TestRepository().storeRemoteResults([instance]);
 
       expect(results, hasLength(1));
-      expect(results.first.primaryKey, 2);
+      expect(results.first.primaryKey, greaterThanOrEqualTo(1));
     });
 
     test('#upsert', () async {
@@ -105,7 +95,16 @@ void main() {
       final results = await TestRepository().upsert<DemoModel>(instance);
 
       expect(results.name, 'SqliteName');
-      expect(results.primaryKey, 2);
+      expect(results.primaryKey, greaterThanOrEqualTo(1));
+    });
+
+    test('#reset', () async {
+      final instance = MemoryDemoModel('SqliteName');
+      await TestRepository().upsert<MemoryDemoModel>(instance);
+
+      expect(TestRepository().memoryCacheProvider.managedObjects, isNotEmpty);
+      await TestRepository().reset();
+      expect(TestRepository().memoryCacheProvider.managedObjects, isEmpty);
     });
   });
 }
