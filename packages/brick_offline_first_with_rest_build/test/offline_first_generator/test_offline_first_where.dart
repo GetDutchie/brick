@@ -97,7 +97,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
               : null),
       assocs: data['assocs'] == null
           ? null
-          : jsonDecode(data['assocs'] ?? [])
+          : jsonDecode(data['assocs'] ?? '[]')
               .map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
@@ -117,7 +117,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
               : null),
       loadedAssocs: data['loaded_assocs'] == null
           ? null
-          : await Future.wait<Assoc>(jsonDecode(data['loaded_assocs'] ?? [])
+          : await Future.wait<Assoc>(jsonDecode(data['loaded_assocs'] ?? '[]')
               .map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
