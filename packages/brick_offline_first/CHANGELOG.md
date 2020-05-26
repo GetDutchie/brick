@@ -7,6 +7,7 @@
 * Bump sqflite to 1.3.0
 * **BREAKING CHANGE** Remove StubSqlite from StubOfflineFirst. SQLite should be migrated by the repository and data upserted as it would be within the app. `StubOfflineFirst` is now only concerned with REST responses.
 * **BREAKING CHANGE** Remove interval from `OfflineRequestQueue` in favor of declaring it once on `RequestSqliteCacheManager`. To migrate, pass a custom `RequestSqliteCacheManager` with the interval time to the `OfflineFirstWithRestRepository` constructor.
+* **BREAKING CHANGE** `StubOfflineFirstWithRest` must be invoked synchronously (in order to run migrations). When setting up stub in testing, call `await StubOfflineFirstWithRest(...).initialize()` or, in a cleaner syntax, `final stub = StubOfflineFirstWithRest(...); await stub.initialize()`. `initialize` will no longer be automatically invoked.
 
 ## 0.0.6
 
