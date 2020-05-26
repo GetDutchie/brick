@@ -127,7 +127,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
               ?.cast<Future<Assoc>>()),
       multiLookupCustomGenerator: data['multi_lookup_custom_generator'] == null
           ? null
-          : jsonDecode(data['multi_lookup_custom_generator'] ?? [])
+          : jsonDecode(data['multi_lookup_custom_generator'] ?? '[]')
               .map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
