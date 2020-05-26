@@ -2,6 +2,8 @@
 
 * Add `reattemptForStatusCode` for `OfflineFirstWithRestRepository#upsert` requests. When the response matches a reattempt code, an exception is not thrown and the instance is returned instead.
 * Add `501` to `OfflineQueueHttpClient#reattemptForStatusCode` defaults
+* Insert a `created_at` column for the OfflineRequestQueue.
+* Fix a bug where an HTTP request would be immediately duplicated. In some race conditions, the interval timer would immediately recreate the request after it was inserted and before the HTTP response was received.
 
 ## 0.0.6
 
