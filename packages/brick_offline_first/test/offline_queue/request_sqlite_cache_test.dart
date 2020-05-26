@@ -1,62 +1,48 @@
-import 'package:flutter/services.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
 import '../../lib/src/offline_queue/request_sqlite_cache.dart';
-import '../../lib/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class MockLogger extends Mock implements Logger {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   group('RequestSqliteCache', () {
     final getReq = http.Request('GET', Uri.parse('http://example.com'));
-    final getResp = RequestSqliteCache(getReq, 'db');
+    final getResp = RequestSqliteCache(
+      getReq,
+      inMemoryDatabasePath,
+      databaseFactory: databaseFactoryFfi,
+    );
 
     final postReq = http.Request('POST', Uri.parse('http://example.com'));
-    final postResp = RequestSqliteCache(postReq, 'db');
+    final postResp = RequestSqliteCache(
+      postReq,
+      inMemoryDatabasePath,
+      databaseFactory: databaseFactoryFfi,
+    );
 
     final putReq = http.Request('PUT', Uri.parse('http://example.com'));
-    final putResp = RequestSqliteCache(putReq, 'db');
-    var sqliteLogs = <String>[];
+    final putResp = RequestSqliteCache(
+      putReq,
+      inMemoryDatabasePath,
+      databaseFactory: databaseFactoryFfi,
+    );
 
-    setUpAll(() {
-      const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
-        if (methodCall.method == 'getDatabasesPath') {
-          return Future.value('db');
-        }
+    setUpAll(() async {
+      final manager = RequestSqliteCacheManager(
+        inMemoryDatabasePath,
+        databaseFactory: databaseFactoryFfi,
+      );
 
-        if (methodCall.method == 'openDatabase') {
-          return Future.value(null);
-        }
-
-        sqliteLogs.add(methodCall.arguments['sql']);
-        if (methodCall.method == 'query') {
-          if (methodCall.arguments['arguments'] != null &&
-              methodCall.arguments['arguments'].contains('http://uninserted.com')) {
-            return Future.value([]);
-          }
-
-          return Future.value([
-            {
-              HTTP_JOBS_REQUEST_METHOD_COLUMN: 'PUT',
-              HTTP_JOBS_URL_COLUMN: 'http://localhost:3000/stored-query',
-              HTTP_JOBS_ATTEMPTS_COLUMN: 1,
-            }
-          ]);
-        }
-
-        if (methodCall.method == 'insert' || methodCall.method == 'update') {
-          return 1;
-        }
-
-        return Future.value(null);
-      });
+      await manager.migrate();
     });
-
-    tearDown(sqliteLogs.clear);
 
     test('#requestIsPush', () {
       expect(getResp.requestIsPush, isFalse);
@@ -67,7 +53,11 @@ void main() {
     test('#toSqlite', () {
       final request = http.Request('GET', Uri.parse('http://example.com'));
       request.headers.addAll({'Content-Type': 'application/json'});
-      final instance = RequestSqliteCache(request, 'db');
+      final instance = RequestSqliteCache(
+        request,
+        inMemoryDatabasePath,
+        databaseFactory: databaseFactoryFfi,
+      );
       final asSqlite = instance.toSqlite();
 
       expect(asSqlite, containsPair(HTTP_JOBS_ATTEMPTS_COLUMN, 1));
@@ -78,6 +68,7 @@ void main() {
     });
 
     test('#delete', () async {
+      await getResp.insertOrUpdate();
       await getResp.delete();
 
       expect(
@@ -96,7 +87,11 @@ void main() {
 
       test('insert', () async {
         final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-        final uninserted = RequestSqliteCache(uninsertedRequest, 'db');
+        final uninserted = RequestSqliteCache(
+          uninsertedRequest,
+          inMemoryDatabasePath,
+          databaseFactory: databaseFactoryFfi,
+        );
 
         await uninserted.insertOrUpdate(logger);
 

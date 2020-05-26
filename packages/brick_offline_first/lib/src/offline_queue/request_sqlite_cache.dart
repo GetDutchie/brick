@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_db_interactor.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
 /// Serialize and Deserialize a [http.Request] from SQLite.
-class RequestSqliteCache extends RequestSqliteDbInteractor {
+class RequestSqliteCache {
   final http.Request request;
 
   /// Matches any HTTP requests that send data (or 'push'). 'Pull' requests most often have an
@@ -15,14 +14,7 @@ class RequestSqliteCache extends RequestSqliteDbInteractor {
   /// disposal or a crash has since occurred), 'pull' requests will be ignored.
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
 
-  RequestSqliteCache(
-    this.request,
-    String databaseName, {
-    DatabaseFactory databaseFactory,
-  }) : super(
-          databaseFactory: databaseFactory,
-          databaseName: databaseName,
-        );
+  RequestSqliteCache(this.request);
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]
@@ -41,9 +33,8 @@ class RequestSqliteCache extends RequestSqliteDbInteractor {
   }
 
   /// Removes the request from the database and thus the queue
-  Future<int> delete() async {
-    final db = await getDb();
-    final response = await _findRequestInDatabase();
+  Future<int> delete(Database db) async {
+    final response = await _findRequestInDatabase(db);
 
     if (response != null && response.isNotEmpty) {
       return await db.transaction((txn) async {
@@ -60,15 +51,14 @@ class RequestSqliteCache extends RequestSqliteDbInteractor {
 
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
-  Future<int> insertOrUpdate(Logger logger) async {
-    final db = await getDb();
-    final response = await _findRequestInDatabase();
+  Future<int> insertOrUpdate(Database db, {Logger logger}) async {
+    final response = await _findRequestInDatabase(db);
 
     return db.transaction((txn) async {
       if (response == null || response.isEmpty) {
         final serialized = toSqlite();
 
-        logger.fine('adding to queue: $serialized');
+        logger?.fine('adding to queue: $serialized');
         return await txn.insert(
           HTTP_JOBS_TABLE_NAME,
           serialized,
@@ -76,7 +66,7 @@ class RequestSqliteCache extends RequestSqliteDbInteractor {
       }
       final methodWithUrl =
           [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
-      logger.warning(
+      logger?.warning(
           'failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} in $methodWithUrl : $response');
       return await txn.update(
         HTTP_JOBS_TABLE_NAME,
@@ -91,9 +81,7 @@ class RequestSqliteCache extends RequestSqliteDbInteractor {
     });
   }
 
-  Future<Map<String, dynamic>> _findRequestInDatabase() async {
-    final db = await getDb();
-
+  Future<Map<String, dynamic>> _findRequestInDatabase(Database db) async {
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
       HTTP_JOBS_ENCODING_COLUMN,

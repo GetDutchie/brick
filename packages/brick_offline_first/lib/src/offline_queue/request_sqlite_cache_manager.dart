@@ -1,10 +1,26 @@
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_db_interactor.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:path/path.dart' as p;
+import 'package:meta/meta.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
-class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
+class RequestSqliteCacheManager {
+  /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
+  /// instance agnostically across platforms. If [databaseFactory] is null, the default
+  /// Flutter SQFlite will be used.
+  @protected
+  final DatabaseFactory databaseFactory;
+
+  /// The file name for the database used.
+  ///
+  /// When [databaseFactory] is present, this is the **entire** path name.
+  /// With [databaseFactory], this is most commonly the
+  /// `sqlite_common` constant `inMemoryDatabasePath`.
+  final String databaseName;
+
+  Database _db;
+
   String get orderByStatement {
     if (!serialProcessing) {
       return '$HTTP_JOBS_UPDATED_AT ASC';
@@ -18,13 +34,10 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
   final bool serialProcessing;
 
   RequestSqliteCacheManager(
-    String databaseName, {
-    DatabaseFactory databaseFactory,
+    this.databaseName, {
+    this.databaseFactory,
     this.serialProcessing = true,
-  }) : super(
-          databaseName: databaseName,
-          databaseFactory: databaseFactory,
-        );
+  });
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
   /// [id] is retrieved from the [HTTP_JOBS_PRIMARY_KEY_COLUMN].
@@ -128,6 +141,19 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
       'ORDER BY $orderByStatement',
       if (limit > 0) 'LIMIT $limit'
     ].join(' ');
+  }
+
+  Future<Database> getDb() async {
+    if (_db?.isOpen == true) return _db;
+
+    if (databaseFactory != null) {
+      return _db = await databaseFactory.openDatabase(databaseName);
+    }
+
+    final databasesPath = await getDatabasesPath();
+    final path = p.join(databasesPath, databaseName);
+
+    return _db = await openDatabase(path);
   }
 }
 
