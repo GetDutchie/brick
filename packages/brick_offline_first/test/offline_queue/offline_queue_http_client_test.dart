@@ -13,11 +13,16 @@ class MockClient extends Mock implements http.Client {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
+
   group('OfflineQueueHttpClient', () {
     final requestManager = RequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
     );
+
+    setUpAll(() async {
+      await requestManager.migrate();
+    });
 
     tearDown(() async {
       final requests = await requestManager.unprocessedRequests();
@@ -37,7 +42,7 @@ void main() {
     });
 
     test('GET requests are not tracked', () async {
-      final inner = stubResult();
+      final inner = stubResult(statusCode: 404);
       final client = OfflineQueueHttpClient(inner, requestManager);
       await client.get('http://localhost:3000');
 
@@ -45,21 +50,36 @@ void main() {
     });
 
     test('request is stored in SQLite', () async {
-      final inner = stubResult();
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post('http://localhost:3000', body: 'new record');
 
-      expect(resp.statusCode, 200);
+      expect(resp.statusCode, 501);
       expect(await requestManager.unprocessedRequests(), hasLength(1));
     });
 
-    test('request increments and deletes after a successful response', () async {
+    test('request deletes after a successful response', () async {
       final inner = stubResult(requestBody: 'existing record');
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post('http://localhost:3000', body: 'existing record');
 
       expect(await requestManager.unprocessedRequests(), isEmpty);
       expect(resp.statusCode, 200);
+    });
+
+    test('request increments after a unsuccessful response', () async {
+      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final client = OfflineQueueHttpClient(inner, requestManager);
+      await client.post('http://localhost:3000', body: 'existing record');
+      var requests = await requestManager.unprocessedRequests();
+
+      expect(requests.first[HTTP_JOBS_ATTEMPTS_COLUMN], 1);
+
+      final resp = await client.post('http://localhost:3000', body: 'existing record');
+      requests = await requestManager.unprocessedRequests();
+      expect(requests.first[HTTP_JOBS_ATTEMPTS_COLUMN], 2);
+
+      expect(resp.statusCode, 501);
     });
 
     test('request creates and does not delete after an unsuccessful response', () async {
@@ -94,13 +114,13 @@ void main() {
       expect(resp.body, body);
 
       await client.put('http://localhost:3000', body: 'new record');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(2));
 
       await client.delete('http://localhost:3000');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(3));
 
       await client.patch('http://localhost:3000', body: 'new record');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(4));
     });
 
     test('request is not deleted after receiving a status code that should be reattempted',
@@ -115,13 +135,13 @@ void main() {
       expect(resp.body, body);
 
       await client.put('http://localhost:3000', body: 'new record');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(2));
 
       await client.delete('http://localhost:3000');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(3));
 
       await client.patch('http://localhost:3000', body: 'new record');
-      expect(await requestManager.unprocessedRequests(), hasLength(1));
+      expect(await requestManager.unprocessedRequests(), hasLength(4));
     });
 
     test(".isATunnelNotFoundResponse", () async {
