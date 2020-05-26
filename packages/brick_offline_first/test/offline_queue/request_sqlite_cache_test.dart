@@ -4,45 +4,42 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
 import '../../lib/src/offline_queue/request_sqlite_cache.dart';
-import 'package:sqflite_common/sqlite_api.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart' show Database, openDatabase;
+import 'package:flutter/services.dart';
 
 class MockLogger extends Mock implements Logger {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  sqfliteFfiInit();
 
   group('RequestSqliteCache', () {
     final getReq = http.Request('GET', Uri.parse('http://example.com'));
-    final getResp = RequestSqliteCache(
-      getReq,
-      inMemoryDatabasePath,
-      databaseFactory: databaseFactoryFfi,
-    );
+    final getResp = RequestSqliteCache(getReq);
 
     final postReq = http.Request('POST', Uri.parse('http://example.com'));
-    final postResp = RequestSqliteCache(
-      postReq,
-      inMemoryDatabasePath,
-      databaseFactory: databaseFactoryFfi,
-    );
+    final postResp = RequestSqliteCache(postReq);
 
     final putReq = http.Request('PUT', Uri.parse('http://example.com'));
-    final putResp = RequestSqliteCache(
-      putReq,
-      inMemoryDatabasePath,
-      databaseFactory: databaseFactoryFfi,
-    );
+    final putResp = RequestSqliteCache(putReq);
+
+    var sqliteLogs = <MethodCall>[];
+    Database db;
+
+    MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
+      sqliteLogs.add(methodCall);
+
+      if (methodCall.method == 'getDatabasesPath') {
+        return Future.value('db');
+      }
+
+      return Future.value(null);
+    });
 
     setUpAll(() async {
-      final manager = RequestSqliteCacheManager(
-        inMemoryDatabasePath,
-        databaseFactory: databaseFactoryFfi,
-      );
-
-      await manager.migrate();
+      db = await openDatabase('db.sqlite');
     });
+
+    tearDown(sqliteLogs.clear);
 
     test('#requestIsPush', () {
       expect(getResp.requestIsPush, isFalse);
@@ -53,11 +50,7 @@ void main() {
     test('#toSqlite', () {
       final request = http.Request('GET', Uri.parse('http://example.com'));
       request.headers.addAll({'Content-Type': 'application/json'});
-      final instance = RequestSqliteCache(
-        request,
-        inMemoryDatabasePath,
-        databaseFactory: databaseFactoryFfi,
-      );
+      final instance = RequestSqliteCache(request);
       final asSqlite = instance.toSqlite();
 
       expect(asSqlite, containsPair(HTTP_JOBS_ATTEMPTS_COLUMN, 1));
@@ -68,8 +61,8 @@ void main() {
     });
 
     test('#delete', () async {
-      await getResp.insertOrUpdate();
-      await getResp.delete();
+      await getResp.insertOrUpdate(db);
+      await getResp.delete(db);
 
       expect(
         sqliteLogs,
@@ -87,13 +80,9 @@ void main() {
 
       test('insert', () async {
         final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-        final uninserted = RequestSqliteCache(
-          uninsertedRequest,
-          inMemoryDatabasePath,
-          databaseFactory: databaseFactoryFfi,
-        );
+        final uninserted = RequestSqliteCache(uninsertedRequest);
 
-        await uninserted.insertOrUpdate(logger);
+        await uninserted.insertOrUpdate(db, logger: logger);
 
         verify(logger.fine(any));
         expect(
@@ -108,7 +97,7 @@ void main() {
       });
 
       test('update', () async {
-        await getResp.insertOrUpdate(logger);
+        await getResp.insertOrUpdate(db, logger: logger);
 
         verify(logger.warning(any));
         expect(
