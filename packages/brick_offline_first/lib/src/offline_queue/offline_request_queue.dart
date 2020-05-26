@@ -8,9 +8,6 @@ class OfflineRequestQueue {
   /// The client responsible for resending requests
   final OfflineQueueHttpClient client;
 
-  /// Time between running jobs. Defaults to 5 seconds.
-  final Duration interval;
-
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
@@ -20,16 +17,14 @@ class OfflineRequestQueue {
 
   OfflineRequestQueue({
     @required this.client,
-    Duration interval,
-  })  : this.interval = interval ?? const Duration(seconds: 5),
-        _logger = Logger('OfflineRequestQueue#${client.requestManager.databaseName}');
+  }) : _logger = Logger('OfflineRequestQueue#${client.requestManager.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();
     _logger.finer('Queue started');
-    _timer = Timer.periodic(interval, process);
+    _timer = Timer.periodic(client.requestManager.processingInterval, process);
   }
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.

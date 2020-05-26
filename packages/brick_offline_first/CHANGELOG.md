@@ -5,7 +5,8 @@
 * Insert a `created_at` column for the OfflineRequestQueue.
 * Fix a bug where an HTTP request would be immediately duplicated. In some race conditions, the interval timer would immediately recreate the request after it was inserted and before the HTTP response was received.
 * Bump sqflite to 1.3.0
-* Remove StubSqlite from StubOfflineFirst
+* **BREAKING CHANGE** Remove StubSqlite from StubOfflineFirst. SQLite should be migrated by the repository and data upserted as it would be within the app. `StubOfflineFirst` is now only concerned with REST responses.
+* **BREAKING CHANGE** Remove interval from `OfflineRequestQueue` in favor of declaring it once on `RequestSqliteCacheManager`. To migrate, pass a custom `RequestSqliteCacheManager` with the interval time to the `OfflineFirstWithRestRepository` constructor.
 
 ## 0.0.6
 

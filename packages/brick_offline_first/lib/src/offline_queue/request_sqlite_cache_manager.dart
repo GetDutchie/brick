@@ -40,7 +40,7 @@ class RequestSqliteCacheManager {
   RequestSqliteCacheManager(
     this.databaseName, {
     this.databaseFactory,
-    this.processingInterval = DEFAUT_PROCESSING_INTERVAL,
+    this.processingInterval = const Duration(seconds: 5),
     this.serialProcessing = true,
   });
 
@@ -155,7 +155,7 @@ class RequestSqliteCacheManager {
       selectFields,
       'FROM $HTTP_JOBS_TABLE_NAME',
       'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
-      'AND $HTTP_JOBS_CREATED_AT_COLUMN < $nowMinusNextPoll',
+      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $nowMinusNextPoll',
       'ORDER BY $orderByStatement',
       if (limit > 0) 'LIMIT $limit'
     ].join(' ');
@@ -187,5 +187,3 @@ const HTTP_JOBS_LOCKED_COLUMN = 'locked';
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
 const HTTP_JOBS_URL_COLUMN = 'url';
-
-const DEFAUT_PROCESSING_INTERVAL = Duration(seconds: 5);

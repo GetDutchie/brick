@@ -1,13 +1,12 @@
 import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
+import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
-import '../../lib/src/offline_queue/offline_request_queue.dart';
-import '../../lib/src/offline_queue/offline_queue_http_client.dart';
-
-class MockOfflineClient extends Mock implements OfflineQueueHttpClient {}
+import '__helpers__.dart';
 
 void main() {
-  final offlineClient = MockOfflineClient();
+  final offlineClient = OfflineQueueHttpClient(MockClient(), RequestSqliteCacheManager('db'));
 
   group("OfflineRequestQueue", () {
     test("#start", () {

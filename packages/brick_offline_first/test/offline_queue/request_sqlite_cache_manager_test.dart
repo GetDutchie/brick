@@ -1,8 +1,9 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import '__helpers__.dart';
 
 void main() {
@@ -13,6 +14,7 @@ void main() {
     final requestManager = RequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
+      processingInterval: Duration(seconds: 0),
     );
 
     setUpAll(() async {
@@ -34,29 +36,36 @@ void main() {
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
+        processingInterval: Duration(seconds: 0),
       );
       final client = OfflineQueueHttpClient(inner, _requestManager);
-      await client.post('http://localhost:3000', body: 'existing record');
-      await client.post('http://localhost:3000', body: 'existing record');
 
-      await _requestManager.prepareNextRequestToProcess();
+      await client.post('http://localhost:3000', body: 'existing record');
       await client.put('http://localhost:3000', body: 'existing record');
+
       final request = await _requestManager.prepareNextRequestToProcess();
-      expect(request.method, 'PUT');
+      expect(request.method, 'POST');
+
+      final asCacheItem = RequestSqliteCache(request);
+      await asCacheItem.insertOrUpdate(await _requestManager.getDb());
+      final req = await _requestManager.prepareNextRequestToProcess();
+      expect(req.method, 'PUT');
     });
 
     test('#prepareNextRequestToProcess', () async {
       final inner = stubResult(requestBody: 'existing record', statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
-      await client.put('http://localhost:3000/stored-query', body: 'existing record');
-      await client.put('http://localhost:3000/stored-query', body: 'existing record');
 
-      await requestManager.prepareNextRequestToProcess();
       await client.post('http://localhost:3000', body: 'existing record');
-      final request = await requestManager.prepareNextRequestToProcess();
+      await client.put('http://localhost:3000', body: 'existing record');
 
-      expect(request.method, 'PUT');
-      expect(request.url.toString(), 'http://localhost:3000/stored-query');
+      final request = await requestManager.prepareNextRequestToProcess();
+      expect(request.method, 'POST');
+
+      final asCacheItem = RequestSqliteCache(request);
+      await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      final req = await requestManager.prepareNextRequestToProcess();
+      expect(req.method, 'POST');
     });
 
     test('#deleteUnprocessedRequest', () async {
