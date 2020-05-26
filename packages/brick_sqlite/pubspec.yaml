@@ -4,7 +4,7 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.6
+version: 0.0.7
 
 environment:
   sdk: '>=2.5.0 <3.0.0'
@@ -24,5 +24,7 @@ dev_dependencies:
   mockito: ^4.0.0
   sqflite_common: ^1.0.1
   sqflite_common_ffi: ^1.0.0
+  flutter:
+    sdk: flutter
   flutter_test:
     sdk: flutter
