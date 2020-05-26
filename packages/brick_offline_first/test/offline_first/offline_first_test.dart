@@ -28,19 +28,16 @@ void main() {
   group('OfflineFirstRepository', () {
     final baseUrl = 'http://localhost:3000';
     final client = MockClient();
-    final List<Map<String, dynamic>> responses = [
-      {'name': 'SqliteName'},
-    ];
 
     TestRepository.configure(
       baseUrl: baseUrl,
-      dbName: 'db.sqlite',
       restDictionary: restDictiontary,
       sqliteDictionary: sqliteDictionary,
       client: client,
     );
 
-    setUpAll(() {
+    setUpAll(() async {
+      await TestRepository().migrate();
       StubOfflineFirstWithRest(
         repository: TestRepository(),
         modelStubs: [
@@ -100,7 +97,7 @@ void main() {
       final results = await TestRepository().storeRemoteResults([instance]);
 
       expect(results, hasLength(1));
-      expect(results.first.primaryKey, responses.length + 1);
+      expect(results.first.primaryKey, 2);
     });
 
     test('#upsert', () async {

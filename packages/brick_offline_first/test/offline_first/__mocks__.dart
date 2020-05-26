@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
@@ -57,6 +58,21 @@ class DemoModelAdapter extends OfflineFirstWithRestAdapter<DemoModel> {
   }
 }
 
+class DemoModelMigration extends Migration {
+  const DemoModelMigration()
+      : super(
+          version: 1,
+          up: const <MigrationCommand>[
+            InsertTable('DemoModel'),
+            InsertColumn('name', Column.varchar, onTable: 'DemoModel'),
+          ],
+          down: const <MigrationCommand>[
+            InsertTable('DemoModel'),
+            InsertColumn('name', Column.varchar, onTable: 'DemoModel'),
+          ],
+        );
+}
+
 class TestRepository extends OfflineFirstWithRestRepository {
   static TestRepository _singleton;
 
@@ -67,6 +83,11 @@ class TestRepository extends OfflineFirstWithRestRepository {
           restProvider: _restProvider,
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
+          migrations: {const DemoModelMigration()},
+          offlineQueueHttpClientRequestSqliteCacheManager: RequestSqliteCacheManager(
+            inMemoryDatabasePath,
+            databaseFactory: databaseFactoryFfi,
+          ),
         );
   factory TestRepository() => _singleton;
 
@@ -88,7 +109,6 @@ class TestRepository extends OfflineFirstWithRestRepository {
 
   static TestRepository configure({
     String baseUrl,
-    String dbName,
     RestModelDictionary restDictionary,
     SqliteModelDictionary sqliteDictionary,
     http.Client client,

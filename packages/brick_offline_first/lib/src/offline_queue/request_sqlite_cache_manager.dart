@@ -98,15 +98,15 @@ class RequestSqliteCacheManager {
         `$HTTP_JOBS_LOCKED_COLUMN` INTEGER DEFAULT 0,
         `$HTTP_JOBS_REQUEST_METHOD_COLUMN` TEXT,
         `$HTTP_JOBS_UPDATED_AT` INTEGER DEFAULT 0,
-        `$HTTP_JOBS_URL_COLUMN` TEXT
+        `$HTTP_JOBS_URL_COLUMN` TEXT,
+        `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0
       );
     ''';
     final db = await getDb();
     await db.execute(statement);
 
     final tableInfo = await db.rawQuery('PRAGMA table_info("$HTTP_JOBS_TABLE_NAME");');
-    final createdAtHasBeenMigrated =
-        tableInfo.contains((c) => c['name'] == HTTP_JOBS_CREATED_AT_COLUMN);
+    final createdAtHasBeenMigrated = tableInfo.any((c) => c['name'] == HTTP_JOBS_CREATED_AT_COLUMN);
     if (!createdAtHasBeenMigrated) {
       await db.execute(
           'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
