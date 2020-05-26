@@ -26,8 +26,7 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
     {RestProvider provider, OfflineFirstRepository repository}) async {
   return Futures(
       string: data['string'] as Future<String>,
-      strings:
-          data['strings']?.toList()?.cast<Future<String>>() ?? <String>[],
+      strings: data['strings']?.toList()?.cast<Future<String>>() ?? <String>[],
       futureStrings: data['future_strings']?.toList()?.cast<String>() ??
           List<Future<String>>(),
       assoc: AssocAdapter()

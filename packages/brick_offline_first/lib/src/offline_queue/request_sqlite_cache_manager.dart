@@ -10,8 +10,12 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
       return '$HTTP_JOBS_UPDATED_AT ASC';
     }
 
-    return '$HTTP_JOBS_ATTEMPTS_COLUMN DESC, $HTTP_JOBS_UPDATED_AT ASC';
+    // TODO: change to '$HTTP_JOBS_CREATED_AT_COLUMN ASC' for first major release
+    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC, $HTTP_JOBS_ATTEMPTS_COLUMN DESC, $HTTP_JOBS_UPDATED_AT ASC';
   }
+
+  /// Time between attempts to resubmit a request. Defaults to 5 seconds.
+  final Duration processingInterval;
 
   /// When `true`, results are processed one at a time in the order in which they were created.
   /// Defaults `true`.
@@ -19,7 +23,9 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
 
   RequestSqliteCacheManager(
     String databaseName, {
+    this.databaseName, {
     DatabaseFactory databaseFactory,
+    this.processingInterval = DEFAUT_PROCESSING_INTERVAL,
     this.serialProcessing = true,
   }) : super(
           databaseName: databaseName,
@@ -85,6 +91,14 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
     ''';
     final db = await getDb();
     await db.execute(statement);
+
+    final tableInfo = await db.rawQuery('PRAGMA table_info("$HTTP_JOBS_TABLE_NAME");');
+    final createdAtHasBeenMigrated =
+        tableInfo.contains((c) => c['name'] == HTTP_JOBS_CREATED_AT_COLUMN);
+    if (!createdAtHasBeenMigrated) {
+      await db.execute(
+          'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
+    }
   }
 
   /// Returns row data for all unprocessed job in database.
@@ -120,11 +134,16 @@ class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
     int limit = 1,
     String selectFields = '*',
   }) {
+    // Ensure that a request that's immediately attempted and stored is not immediately
+    // reattempted by the queue interval before an HTTP response is received.
+    final nowMinusNextPoll =
+        DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
     return [
       'SELECT DISTINCT',
       selectFields,
       'FROM $HTTP_JOBS_TABLE_NAME',
       'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
+      'AND $HTTP_JOBS_CREATED_AT_COLUMN < $nowMinusNextPoll',
       'ORDER BY $orderByStatement',
       if (limit > 0) 'LIMIT $limit'
     ].join(' ');
@@ -136,9 +155,12 @@ const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
 const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
 const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
 const HTTP_JOBS_BODY_COLUMN = 'body';
+const HTTP_JOBS_CREATED_AT_COLUMN = 'created_at';
 const HTTP_JOBS_ENCODING_COLUMN = 'encoding';
 const HTTP_JOBS_HEADERS_COLUMN = 'headers';
 const HTTP_JOBS_LOCKED_COLUMN = 'locked';
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
 const HTTP_JOBS_URL_COLUMN = 'url';
+
+const DEFAUT_PROCESSING_INTERVAL = Duration(seconds: 5);

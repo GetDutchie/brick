@@ -43,29 +43,32 @@ void main() {
     test('#serialProcessing:false', () async {
       final manager = RequestSqliteCacheManager('fake_db', serialProcessing: false);
       await manager.prepareNextRequestToProcess();
+      expect(sqliteLogs[0], 'BEGIN IMMEDIATE');
       expect(
-        sqliteLogs,
-        [
-          'BEGIN IMMEDIATE',
-          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY updated_at ASC);',
-          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY updated_at ASC LIMIT 1;',
-          'COMMIT'
-        ],
-      );
+          sqliteLogs[1],
+          startsWith(
+              'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 AND created_at <'));
+      expect(sqliteLogs[1], endsWith('ORDER BY updated_at ASC);'));
+      expect(sqliteLogs[2],
+          startsWith('SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 AND created_at <'));
+      expect(sqliteLogs[2], endsWith('ORDER BY updated_at ASC LIMIT 1;'));
+      expect(sqliteLogs[3], 'COMMIT');
     });
 
     test('#prepareNextRequestToProcess', () async {
       final manager = RequestSqliteCacheManager('fake_db');
       final request = await manager.prepareNextRequestToProcess();
+      expect(sqliteLogs[0], 'BEGIN IMMEDIATE');
       expect(
-        sqliteLogs,
-        [
-          'BEGIN IMMEDIATE',
-          'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 ORDER BY attempts DESC, updated_at ASC);',
-          'SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 ORDER BY attempts DESC, updated_at ASC LIMIT 1;',
-          'COMMIT'
-        ],
-      );
+          sqliteLogs[1],
+          startsWith(
+              'UPDATE HttpJobs SET locked = 1 WHERE locked IN (SELECT DISTINCT locked FROM HttpJobs WHERE locked = 0 AND created_at <'));
+      expect(sqliteLogs[1], endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC);'));
+      expect(sqliteLogs[2],
+          startsWith('SELECT DISTINCT * FROM HttpJobs WHERE locked = 1 AND created_at <'));
+      expect(sqliteLogs[2],
+          endsWith('ORDER BY created_at ASC, attempts DESC, updated_at ASC LIMIT 1;'));
+      expect(sqliteLogs[3], 'COMMIT');
 
       expect(request.method, 'PUT');
       expect(request.url.toString(), 'http://localhost:3000/stored-query');
@@ -78,6 +81,7 @@ void main() {
       expect(sqliteLogs.first, contains('CREATE TABLE IF NOT EXISTS `HttpJobs`'));
       expect(sqliteLogs.first, contains('`id` INTEGER PRIMARY KEY AUTOINCREMENT,'));
       expect(sqliteLogs.first, contains('`updated_at` INTEGER DEFAULT 0,'));
+      expect(sqliteLogs.last, 'ALTER TABLE `HttpJobs` ADD `created_at` INTEGER DEFAULT 0');
     });
 
     group('#unprocessedRequests', () {
@@ -87,7 +91,9 @@ void main() {
 
         expect(
           sqliteLogs,
-          ['SELECT DISTINCT * FROM HttpJobs ORDER BY attempts DESC, updated_at ASC'],
+          [
+            'SELECT DISTINCT * FROM HttpJobs ORDER BY created_at ASC, attempts DESC, updated_at ASC'
+          ],
         );
       });
 
@@ -98,7 +104,7 @@ void main() {
         expect(
           sqliteLogs,
           [
-            'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY attempts DESC, updated_at ASC'
+            'SELECT DISTINCT * FROM HttpJobs WHERE locked = ? ORDER BY created_at ASC, attempts DESC, updated_at ASC'
           ],
         );
       });
