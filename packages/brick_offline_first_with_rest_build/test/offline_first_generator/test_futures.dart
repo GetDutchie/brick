@@ -86,7 +86,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
               : null),
       assocs: data['assocs'] == null
           ? null
-          : Future.wait<Assoc>(jsonDecode(data['assocs'] ?? [])
+          : Future.wait<Assoc>(jsonDecode(data['assocs'] ?? '[]')
               .map((primaryKey) async => await repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
@@ -96,7 +96,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
               ?.cast<Future<Assoc>>()),
       futureAssocs: data['future_assocs'] == null
           ? null
-          : jsonDecode(data['future_assocs'] ?? [])
+          : jsonDecode(data['future_assocs'] ?? '[]')
               .map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
