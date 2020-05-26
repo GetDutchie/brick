@@ -61,7 +61,7 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
   return OneToManyAssociation(
       assoc: data['assoc'] == null
           ? null
-          : await Future.wait<SqliteAssoc>(jsonDecode(data['assoc'] ?? [])
+          : await Future.wait<SqliteAssoc>(jsonDecode(data['assoc'] ?? '[]')
               .map((primaryKey) => repository
                   ?.getAssociation<SqliteAssoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),

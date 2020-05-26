@@ -54,6 +54,7 @@ void main() {
       final asSqlite = instance.toSqlite();
 
       expect(asSqlite, containsPair(HTTP_JOBS_ATTEMPTS_COLUMN, 1));
+      expect(asSqlite, containsPair(HTTP_JOBS_CREATED_AT_COLUMN, isA<int>()));
       expect(asSqlite, containsPair(HTTP_JOBS_URL_COLUMN, 'http://example.com'));
       expect(
           asSqlite, containsPair(HTTP_JOBS_HEADERS_COLUMN, '{"Content-Type":"application/json"}'));
