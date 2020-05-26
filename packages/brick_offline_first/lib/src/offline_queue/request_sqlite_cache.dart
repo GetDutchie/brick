@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'package:path/path.dart' as p;
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_db_interactor.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
 /// Serialize and Deserialize a [http.Request] from SQLite.
-class RequestSqliteCache {
+class RequestSqliteCache extends RequestSqliteDbInteractor {
   final http.Request request;
-  final String databaseName;
 
   /// Matches any HTTP requests that send data (or 'push'). 'Pull' requests most often have an
   /// outcome that exists in memory (e.g. deserializing to a model). Since callbacks cannot
@@ -18,8 +17,12 @@ class RequestSqliteCache {
 
   RequestSqliteCache(
     this.request,
-    this.databaseName,
-  );
+    String databaseName, {
+    DatabaseFactory databaseFactory,
+  }) : super(
+          databaseFactory: databaseFactory,
+          databaseName: databaseName,
+        );
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]
@@ -39,7 +42,7 @@ class RequestSqliteCache {
 
   /// Removes the request from the database and thus the queue
   Future<int> delete() async {
-    final db = await _getDb();
+    final db = await getDb();
     final response = await _findRequestInDatabase();
 
     if (response != null && response.isNotEmpty) {
@@ -58,7 +61,7 @@ class RequestSqliteCache {
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
   Future<int> insertOrUpdate(Logger logger) async {
-    final db = await _getDb();
+    final db = await getDb();
     final response = await _findRequestInDatabase();
 
     return db.transaction((txn) async {
@@ -89,7 +92,7 @@ class RequestSqliteCache {
   }
 
   Future<Map<String, dynamic>> _findRequestInDatabase() async {
-    final db = await _getDb();
+    final db = await getDb();
 
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
@@ -109,14 +112,6 @@ class RequestSqliteCache {
     );
 
     return response?.isNotEmpty == true ? response.first : null;
-  }
-
-  Database _db;
-  Future<Database> _getDb() async {
-    if (_db?.isOpen == true) return _db;
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, databaseName);
-    return _db = await openDatabase(path);
   }
 
   /// Recreate a request from SQLite data

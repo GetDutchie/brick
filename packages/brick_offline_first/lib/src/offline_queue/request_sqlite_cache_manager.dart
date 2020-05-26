@@ -1,12 +1,10 @@
-import 'package:path/path.dart' as p;
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_db_interactor.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
-class RequestSqliteCacheManager {
-  final String databaseName;
-
+class RequestSqliteCacheManager extends RequestSqliteDbInteractor {
   String get orderByStatement {
     if (!serialProcessing) {
       return '$HTTP_JOBS_UPDATED_AT ASC';
@@ -19,12 +17,14 @@ class RequestSqliteCacheManager {
   /// Defaults `true`.
   final bool serialProcessing;
 
-  Database _db;
-
   RequestSqliteCacheManager(
-    this.databaseName, {
+    String databaseName, {
+    DatabaseFactory databaseFactory,
     this.serialProcessing = true,
-  });
+  }) : super(
+          databaseName: databaseName,
+          databaseFactory: databaseFactory,
+        );
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
   /// [id] is retrieved from the [HTTP_JOBS_PRIMARY_KEY_COLUMN].
@@ -32,7 +32,7 @@ class RequestSqliteCacheManager {
   /// Returns `false` if [id] could not be found;
   /// returns `true` if the request was deleted.
   Future<bool> deleteUnprocessedRequest(int id) async {
-    final db = await _getDb();
+    final db = await getDb();
 
     final result = await db.delete(
       HTTP_JOBS_TABLE_NAME,
@@ -46,7 +46,7 @@ class RequestSqliteCacheManager {
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
   Future<http.Request> prepareNextRequestToProcess() async {
-    final db = await _getDb();
+    final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
       final whereLocked = _lockedQuery(true, limit: 1);
@@ -83,7 +83,7 @@ class RequestSqliteCacheManager {
         `$HTTP_JOBS_URL_COLUMN` TEXT
       );
     ''';
-    final db = await _getDb();
+    final db = await getDb();
     await db.execute(statement);
   }
 
@@ -94,7 +94,7 @@ class RequestSqliteCacheManager {
   /// Accessing this sublist can be useful for deleting a job blocking the queue.
   /// Defaults `false`.
   Future<List<Map<String, dynamic>>> unprocessedRequests({bool whereLocked = false}) async {
-    final db = await _getDb();
+    final db = await getDb();
 
     if (whereLocked) {
       return await db.query(
@@ -111,13 +111,6 @@ class RequestSqliteCacheManager {
       distinct: true,
       orderBy: orderByStatement,
     );
-  }
-
-  Future<Database> _getDb() async {
-    if (_db?.isOpen == true) return _db;
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, databaseName);
-    return _db = await openDatabase(path);
   }
 
   /// Generate SQLite query for [prepareNextRequestToProcess].

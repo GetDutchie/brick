@@ -2,6 +2,8 @@
 
 * Add `reattemptForStatusCode` for `OfflineFirstWithRestRepository#upsert` requests. When the response matches a reattempt code, an exception is not thrown and the instance is returned instead.
 * Add `501` to `OfflineQueueHttpClient#reattemptForStatusCode` defaults
+* Bump sqflite to 1.3.0
+* Remove StubSqlite from StubOfflineFirst
 
 ## 0.0.6
 
