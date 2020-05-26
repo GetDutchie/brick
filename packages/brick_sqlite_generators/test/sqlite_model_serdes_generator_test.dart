@@ -9,6 +9,7 @@ import 'package:brick_build/testing.dart';
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
     as _$fieldWithTypeArgument;
+import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as _$booleanFields;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -42,6 +43,10 @@ void main() {
 
     test('FieldWithTypeArgument', () async {
       await generateAdapterExpectation('field_with_type_argument', _$fieldWithTypeArgument.output);
+    });
+
+    test('BooleanFields', () async {
+      await generateAdapterExpectation('boolean_fields', _$booleanFields.output);
     });
   });
 }
@@ -78,5 +83,6 @@ Future<void> generateAdapterExpectation(String filename, String output) async {
     annotation?.annotation,
     null,
   );
+  print(generated);
   expect(generated.trim(), output.trim());
 }
