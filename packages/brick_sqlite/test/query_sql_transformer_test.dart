@@ -1,10 +1,8 @@
 import 'package:brick_core/query.dart';
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' show isMethodCall;
 import 'package:sqflite/sqflite.dart' show Database, openDatabase;
 import 'package:test/test.dart';
-import 'package:brick_sqlite/testing.dart';
 import 'package:flutter_test/flutter_test.dart' as ft;
 
 import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
@@ -15,27 +13,29 @@ void main() {
 
   group('QuerySqlTransformer', () {
     Database db;
-    final List<Map<String, dynamic>> responses = [
-      {InsertTable.PRIMARY_KEY_COLUMN: 1, 'name': 'Thomas'},
-      {InsertTable.PRIMARY_KEY_COLUMN: 2, 'name': 'Guy'},
-      {'name': 'John'}
-    ];
+    var sqliteLogs = <MethodCall>[];
+
+    MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
+      sqliteLogs.add(methodCall);
+
+      if (methodCall.method == 'getDatabasesPath') {
+        return Future.value('db');
+      }
+
+      return Future.value(null);
+    });
 
     setUpAll(() async {
-      final provider = SqliteProvider('db.sqlite', modelDictionary: dictionary);
-      StubSqlite(provider, responses: {
-        DemoModel: responses,
-      });
       db = await openDatabase('db.sqlite');
     });
 
-    tearDown(StubSqlite.sqliteLogs.clear);
+    tearDown(sqliteLogs.clear);
 
     void sqliteStatementExpectation(String statement, [List<dynamic> arguments]) {
       final matcher = isMethodCall('query',
           arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
 
-      return expect(StubSqlite.sqliteLogs, contains(matcher));
+      return expect(sqliteLogs, contains(matcher));
     }
 
     test('empty', () async {

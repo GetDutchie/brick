@@ -7,6 +7,8 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 export 'package:brick_offline_first/offline_first.dart';
 
@@ -57,8 +59,6 @@ class DemoModelAdapter extends OfflineFirstWithRestAdapter<DemoModel> {
 
 class TestRepository extends OfflineFirstWithRestRepository {
   static TestRepository _singleton;
-  final migrationManager = null;
-  final isConnected = true;
 
   TestRepository._(
     RestProvider _restProvider,
@@ -72,14 +72,17 @@ class TestRepository extends OfflineFirstWithRestRepository {
 
   factory TestRepository.createInstance({
     String baseUrl,
-    String dbName,
     RestModelDictionary restDictionary,
     SqliteModelDictionary sqliteDictionary,
     http.Client client,
   }) {
     return TestRepository._(
       RestProvider(baseUrl, modelDictionary: restDictionary, client: client),
-      SqliteProvider(dbName, modelDictionary: sqliteDictionary),
+      SqliteProvider(
+        inMemoryDatabasePath,
+        databaseFactory: databaseFactoryFfi,
+        modelDictionary: sqliteDictionary,
+      ),
     );
   }
 
@@ -92,7 +95,6 @@ class TestRepository extends OfflineFirstWithRestRepository {
   }) {
     _singleton = TestRepository.createInstance(
       baseUrl: baseUrl,
-      dbName: dbName,
       restDictionary: restDictionary,
       sqliteDictionary: sqliteDictionary,
       client: client,

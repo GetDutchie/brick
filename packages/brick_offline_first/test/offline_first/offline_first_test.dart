@@ -2,11 +2,13 @@ import 'package:brick_offline_first/testing.dart' hide MockClient;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart' show TypeMatcher;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__mocks__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   group('OfflineFirstModel', () {
     test('instantiates', () {
@@ -54,7 +56,6 @@ void main() {
     test('instantiates', () {
       final repository = TestRepository.createInstance(
         baseUrl: baseUrl,
-        dbName: 'db.sqlite',
         restDictionary: restDictiontary,
         sqliteDictionary: sqliteDictionary,
       );
@@ -78,19 +79,11 @@ void main() {
 
     test('#hydrateSqlite / #get requireRest:true', () async {
       await TestRepository().get<DemoModel>(requireRemote: true);
-      final logs = StubOfflineFirstWithRest.sqliteLogs.map((l) => (l.arguments ?? {})['sql']);
 
       verify(TestRepository()
           .remoteProvider
           .client
           .get('http://localhost:3000/people', headers: anyNamed('headers')));
-      expect(
-        logs,
-        containsAllInOrder([
-          'INSERT INTO `Demo` (name) VALUES (?)',
-          'SELECT DISTINCT `Demo`.* FROM `Demo`',
-        ]),
-      );
     });
 
     test('#reset', () async {

@@ -12,6 +12,7 @@ import 'package:brick_sqlite/src/sqlite/alter_column_helper.dart';
 import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
 
 import 'package:synchronized/synchronized.dart';
+import 'package:meta/meta.dart';
 
 /// Associates app models with their [SqliteAdapter]
 class SqliteModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<SqliteModel>> {
@@ -25,6 +26,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
+  @protected
   final DatabaseFactory databaseFactory;
 
   /// The file name for the database used.
@@ -55,15 +57,13 @@ class SqliteProvider implements Provider<SqliteModel> {
     if (_openDb?.isOpen == true) return _openDb;
 
     if (databaseFactory != null) {
-      _openDb = await databaseFactory.openDatabase(dbName);
-    } else {
-      final databasesPath = await getDatabasesPath();
-      final path = p.join(databasesPath, dbName);
-
-      _openDb = await openDatabase(path);
+      return _openDb = await databaseFactory.openDatabase(dbName);
     }
 
-    return _openDb;
+    final databasesPath = await getDatabasesPath();
+    final path = p.join(databasesPath, dbName);
+
+    return _openDb = await openDatabase(path);
   }
 
   /// Remove record from SQLite. [query] is ignored.
