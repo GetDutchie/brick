@@ -61,7 +61,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
         final method = '''
-          jsonDecode($fieldValue ?? []).map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
+          jsonDecode($fieldValue ?? '[]').map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
               $query
             )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
           )$castIterable
