@@ -78,7 +78,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     if (checker.isDateTime) {
       return '$fieldValue?.toIso8601String()';
 
-      // bool, double, int, num, String
+      // bool
+    } else if (checker.isBool) {
+      return _boolForField(fieldValue, fieldAnnotation.nullable);
+
+      // double, int, num, String
     } else if (checker.isDartCoreType) {
       return fieldValue;
 
@@ -126,7 +130,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
       if (checker.isArgTypeAFuture) {
         if (checker.isSerializable) {
-          return 'jsonEncode(await Future.wait<${argTypeChecker.unFuturedArgType}>($fieldValue) ?? [])';
+          // Iterable<Future<bool>>
+          final wrappedValue =
+              checker.isBool ? _boolForField(fieldValue, fieldAnnotation.nullable) : fieldValue;
+
+          return 'jsonEncode(await Future.wait<${argTypeChecker.unFuturedArgType}>($wrappedValue) ?? [])';
         }
       }
 
@@ -136,7 +144,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         return 'jsonEncode($fieldValue?.toList() ?? [])';
       }
 
-      // Iterable<bool>, Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
+      // Iterable<bool>
+      if (argTypeChecker.isBool) {
+        return 'jsonEncode($fieldValue.map((b) => ${_boolForField('b', fieldAnnotation.nullable)}).toList())';
+      }
+
+      // Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
         return 'jsonEncode($fieldValue ?? [])';
       }
@@ -199,5 +212,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // remove arg types as they can't be declared in final fields
     return type.getDisplayString().replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
+  }
+
+  String _boolForField(String fieldValue, bool nullable) {
+    final convertToInt = '$fieldValue ? 1 : 0';
+    if (nullable) {
+      return '$fieldValue == null ? null : ($convertToInt)';
+    }
+
+    return convertToInt;
   }
 }

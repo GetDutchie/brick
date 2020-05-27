@@ -4,3 +4,4 @@
 * Fixes a bug where sets were not serialized by SQLite
 * Single siblings are upserted to SQLite as they're received; previously only iterable siblings were upserted
 * Fix deserializing for null sibling arrays
+* Booleans are serialized as 1s or 0s
