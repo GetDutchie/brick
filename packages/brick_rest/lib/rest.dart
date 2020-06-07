@@ -78,7 +78,7 @@ class RestProvider implements Provider<RestModel> {
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
-      final parsed = _convertJson(resp.body, topLevelKey);
+      final parsed = convertJsonFromGet(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
           .where((msg) => msg != null)
@@ -157,7 +157,8 @@ class RestProvider implements Provider<RestModel> {
   /// If a [key] is defined from the adapter and it is not null in the response, use it to narrow the response.
   /// Otherwise, if there is only one top level key, use it to narrow the response.
   /// Otherwise, return the payload.
-  dynamic _convertJson(String json, String key) {
+  @protected
+  dynamic convertJsonFromGet(String json, String key) {
     final decoded = jsonDecode(json);
     if (key != null && decoded[key] != null) {
       return decoded[key];
