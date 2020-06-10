@@ -30,7 +30,8 @@ Future<Map<String, dynamic>> _$NoFinalNoConstToSqlite(NoFinalNoConst instance,
     {SqliteProvider provider, OfflineFirstRepository repository}) async {
   return {
     'declared_var': instance.declaredVar,
-    'regular_var': instance.regularVar,
+    'regular_var':
+        instance.regularVar == null ? null : (instance.regularVar ? 1 : 0),
     'computed_field': instance.computedField
   };
 }
