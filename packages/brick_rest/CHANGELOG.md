@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Change `_convertJson` to protected method `convertJsonFromGet` (#57)
+
 ## 0.0.7
 
 * When `url` is `null` in `RestProvider#upsert` and `RestProvider#delete`, return `null` and do not attempt to perform the action

@@ -70,7 +70,7 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
     {SqliteProvider provider, OfflineFirstRepository repository}) async {
   return {
     'integer': instance.integer,
-    'boolean': instance.boolean,
+    'boolean': instance.boolean == null ? null : (instance.boolean ? 1 : 0),
     'dub': instance.dub,
     'string': instance.string,
     'list': jsonEncode(instance.list ?? []),
