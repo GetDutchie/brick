@@ -387,6 +387,7 @@ Where('name', value: 'Thomas', compare: Compare.contains);
 
 * `between`
 * `contains`
+* `doesNotContain`
 * `exact`
 * `greaterThan`
 * `greaterThanOrEqualTo`

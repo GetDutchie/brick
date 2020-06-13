@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.6
+
+* Add a `doesNotContain` enum to `Compare` for `Where` queries
+
 ## 0.0.5
 
 * Rename `Query#params` to `Query#providerArgs`, reflecting the much narrower purpose of the member

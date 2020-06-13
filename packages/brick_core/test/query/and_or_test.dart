@@ -23,6 +23,13 @@ void main() {
           Or('id').contains(1), Where('id', value: 1, compare: Compare.contains, required: false));
     });
 
+    test("#doesNotContain", () {
+      expect(And('id').doesNotContain(1),
+          Where('id', value: 1, compare: Compare.doesNotContain, required: true));
+      expect(Or('id').doesNotContain(1),
+          Where('id', value: 1, compare: Compare.doesNotContain, required: false));
+    });
+
     test("#isLessThan", () {
       expect(And('id').isLessThan(1),
           Where('id', value: 1, compare: Compare.lessThan, required: true));

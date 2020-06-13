@@ -250,6 +250,8 @@ class WhereColumnFragment {
         return '=';
       case Compare.contains:
         return 'LIKE';
+      case Compare.doesNotContain:
+        return 'NOT LIKE';
       case Compare.greaterThan:
         return '>';
       case Compare.greaterThanOrEqualTo:
