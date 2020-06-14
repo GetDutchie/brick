@@ -94,6 +94,13 @@ void main() {
 
     group('InsertForeignKey', () {
       const m = InsertForeignKey('demo', 'demo2');
+
+      test('defaults', () {
+        // These expectations can never be removed, otherwise all migrations must be regenerated
+        // And some migrations are modified by hand, making regeneration not possible
+        expect(m.onDeleteCascade, isFalse);
+      });
+
       test('#statement', () {
         expect(m.statement,
             'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)');
