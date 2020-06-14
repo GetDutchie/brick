@@ -97,11 +97,18 @@ void main() {
       test('#statement', () {
         expect(m.statement,
             'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)');
+
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.statement,
+            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE');
       });
 
       test('#forGenerator', () {
         expect(m.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id')");
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false)");
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.forGenerator,
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true)");
       });
 
       test('.foreignKeyColumnName', () {

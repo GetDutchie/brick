@@ -31,9 +31,9 @@ final schema = Schema(0,
             SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
             SchemaColumn('assoc_SqliteAssoc_brick_id', int,
-                isForeignKey: true, foreignTableName: 'SqliteAssoc'),
+                isForeignKey: true, foreignTableName: 'SqliteAssoc', onCascadeDelete: false),
             SchemaColumn('assoc2_SqliteAssoc_brick_id', int,
-                isForeignKey: true, foreignTableName: 'SqliteAssoc')
+                isForeignKey: true, foreignTableName: 'SqliteAssoc', onCascadeDelete: false)
           ]))
     ]));
 ''';

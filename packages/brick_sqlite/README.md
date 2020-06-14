@@ -42,7 +42,7 @@ Whenever a new field(s) is added or removed from a connected model, Brick can au
 flutter pub run build_runner watch
 ```
 
-:bulb: While Brick guesses right most of the time, the migration should still be reviewed after it's created (for example, a `DropTable` might just be a `RenameTable`).
+:bulb: While Brick guesses right most of the time, the migration should still be reviewed after it's created (for example, a `DropTable` might just be a `RenameTable` or maybe `onDeleteCascade` needs to be set for a `InsertForeignKey`).
 
 ## Fields
 

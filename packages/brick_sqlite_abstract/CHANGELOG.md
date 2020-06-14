@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When defining the migration for `InsertForeignKey`, `onDeleteCascade` can be set to determine whether the deletion of the record will delete all referencing children records. Defaults `false`.
+
 ## 0.0.4
 
 * `Sqlite#defaultValue` updated to reflect `FieldSerializable#defaultValue` change
