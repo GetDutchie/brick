@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Use assignable instead of super type comparison when checking for siblings to account for inherited classes (#55)
+
 ## 0.0.6
 
 * Rename `ProviderSerializable` to `ProviderSerializableGenerator` to be more explicit
