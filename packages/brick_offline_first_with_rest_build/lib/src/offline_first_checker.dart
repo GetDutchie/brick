@@ -28,5 +28,5 @@ class OfflineFirstChecker extends SharedChecker<OfflineFirstModel> {
   /// This class has serialize methods and deserialize factories.
   /// Useful for non-primitive types that are not associations but should still be
   /// serialized and deserialized as a field.
-  bool get hasSerdes => _serdesClassChecker.isSuperTypeOf(targetType);
+  bool get hasSerdes => _serdesClassChecker.isAssignableFromType(targetType);
 }
