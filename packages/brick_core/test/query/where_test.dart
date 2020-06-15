@@ -18,6 +18,11 @@ void main() {
           Where('id', value: 1, compare: Compare.contains, required: true));
     });
 
+    test('#doesNotContain', () {
+      expect(Where('id').doesNotContain(1),
+          Where('id', value: 1, compare: Compare.doesNotContain, required: true));
+    });
+
     test('#isLessThan', () {
       expect(Where('id').isLessThan(1),
           Where('id', value: 1, compare: Compare.lessThan, required: true));
