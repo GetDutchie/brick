@@ -125,6 +125,14 @@ void main() {
         final prefixedName = InsertForeignKey.foreignKeyColumnName('BigHat', 'casual');
         expect(prefixedName, 'casual_BigHat_brick_id');
       });
+
+      test('.joinsTableName', () {
+        var tableName = InsertForeignKey.joinsTableName('Hat', 'User');
+        expect(tableName, '_brick_Hat_User');
+
+        tableName = InsertForeignKey.joinsTableName('Person', 'Address');
+        expect(tableName, '_brick_Address_Person');
+      });
     });
 
     group('InsertTable', () {

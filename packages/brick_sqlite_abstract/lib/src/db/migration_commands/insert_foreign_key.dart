@@ -56,4 +56,12 @@ class InsertForeignKey extends MigrationCommand {
 
     return defaultName;
   }
+
+  /// Compose the name for a joins table between two associations, for example
+  /// `_brick_Hat_User`.
+  static String joinsTableName(String localTableName, String foreignTableName) {
+    final alphabetized = [localTableName, foreignTableName]..sort();
+    alphabetized.insert(0, '_brick');
+    return alphabetized.join('_');
+  }
 }
