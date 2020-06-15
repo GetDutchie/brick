@@ -157,7 +157,7 @@ class RestProvider implements Provider<RestModel> {
   /// If a [key] is defined from the adapter and it is not null in the response, use it to narrow the response.
   /// Otherwise, if there is only one top level key, use it to narrow the response.
   /// Otherwise, return the payload.
-  @protected
+  @visibleForOverriding
   dynamic convertJsonFromGet(String json, String key) {
     final decoded = jsonDecode(json);
     if (key != null && decoded[key] != null) {

@@ -10,10 +10,15 @@ class InsertForeignKey extends MigrationCommand {
   /// Defaults to lowercase `${foreignTableName}_brick_id`
   final String foreignKeyColumn;
 
+  /// When true, deletion of a row within this model's table will delete all
+  /// referencing children records. Defaults `false`.
+  final bool onDeleteCascade;
+
   const InsertForeignKey(
     this.localTableName,
     this.foreignTableName, {
     this.foreignKeyColumn,
+    this.onDeleteCascade = false,
   });
 
   String get _foreignKeyColumn {
@@ -24,13 +29,15 @@ class InsertForeignKey extends MigrationCommand {
     return foreignKeyColumnName(foreignTableName);
   }
 
+  String get _cascadeStatement => onDeleteCascade ? ' ON DELETE CASCADE' : '';
+
   @override
   String get statement =>
-      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)';
+      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_cascadeStatement';
 
   @override
   String get forGenerator =>
-      "InsertForeignKey('$localTableName', '$foreignTableName', foreignKeyColumn: '$_foreignKeyColumn')";
+      "InsertForeignKey('$localTableName', '$foreignTableName', foreignKeyColumn: '$_foreignKeyColumn', onDeleteCascade: $onDeleteCascade)";
 
   @override
   MigrationCommand get down => DropColumn(_foreignKeyColumn, onTable: localTableName);
@@ -48,5 +55,13 @@ class InsertForeignKey extends MigrationCommand {
     }
 
     return defaultName;
+  }
+
+  /// Compose the name for a joins table between two associations, for example
+  /// `_brick_Hat_User`.
+  static String joinsTableName(String localTableName, String foreignTableName) {
+    final alphabetized = [localTableName, foreignTableName]..sort();
+    alphabetized.insert(0, '_brick');
+    return alphabetized.join('_');
   }
 }

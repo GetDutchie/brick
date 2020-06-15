@@ -94,14 +94,28 @@ void main() {
 
     group('InsertForeignKey', () {
       const m = InsertForeignKey('demo', 'demo2');
+
+      test('defaults', () {
+        // These expectations can never be removed, otherwise all migrations must be regenerated
+        // And some migrations are modified by hand, making regeneration not possible
+        expect(m.onDeleteCascade, isFalse);
+      });
+
       test('#statement', () {
         expect(m.statement,
             'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)');
+
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.statement,
+            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE');
       });
 
       test('#forGenerator', () {
         expect(m.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id')");
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false)");
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.forGenerator,
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true)");
       });
 
       test('.foreignKeyColumnName', () {
@@ -110,6 +124,14 @@ void main() {
 
         final prefixedName = InsertForeignKey.foreignKeyColumnName('BigHat', 'casual');
         expect(prefixedName, 'casual_BigHat_brick_id');
+      });
+
+      test('.joinsTableName', () {
+        var tableName = InsertForeignKey.joinsTableName('Hat', 'User');
+        expect(tableName, '_brick_Hat_User');
+
+        tableName = InsertForeignKey.joinsTableName('Person', 'Address');
+        expect(tableName, '_brick_Address_Person');
       });
     });
 

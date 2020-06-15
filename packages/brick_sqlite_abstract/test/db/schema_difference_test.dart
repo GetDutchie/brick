@@ -117,6 +117,39 @@ void main() {
       expect(diff.hasDifference, isTrue);
     });
 
+    test('#addedForeignKeys:onDeleteCascade', () {
+      final foreignKeyColumn = SchemaColumn(
+        'user_id',
+        int,
+        isForeignKey: true,
+        foreignTableName: 'user',
+      );
+      table.columns.add(foreignKeyColumn);
+      final newTable = SchemaTable(
+        'demo',
+        columns: Set<SchemaColumn>.from([
+          SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+          column
+        ]),
+      );
+      final foreignKeyColumnWithOnCascadeDelete = SchemaColumn(
+        'user_id',
+        int,
+        isForeignKey: true,
+        foreignTableName: 'user',
+        onDeleteCascade: true,
+      );
+      newTable.columns.add(foreignKeyColumnWithOnCascadeDelete);
+
+      final oldSchema = Schema(0, tables: Set.from([table]));
+      final newSchema = Schema(1, tables: Set.from([newTable]));
+
+      final diff = SchemaDifference(oldSchema, newSchema);
+      expect(diff.insertedColumns, contains(foreignKeyColumnWithOnCascadeDelete));
+      expect(diff.droppedColumns, contains(foreignKeyColumn));
+      expect(diff.hasDifference, isTrue);
+    });
+
     group('#toMigrationCommands', () {
       test('#insertedTables', () {
         final oldSchema = Schema(0, tables: Set.from([]));
