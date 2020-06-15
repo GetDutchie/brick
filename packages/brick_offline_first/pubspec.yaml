@@ -12,7 +12,7 @@ environment:
   flutter: '>=1.8.0 <2.0.0'
 
 dependencies:
-  brick_core: ^0.0.5
+  brick_core: ^0.0.6
   brick_offline_first_abstract: ^0.0.5
   brick_rest: ^0.0.7
   brick_sqlite: ^0.0.7
