@@ -145,8 +145,8 @@ void main() {
       final newSchema = Schema(1, tables: Set.from([newTable]));
 
       final diff = SchemaDifference(oldSchema, newSchema);
-      expect(diff.insertedColumns, contains(foreignKeyColumn));
-      expect(diff.droppedColumns, isEmpty);
+      expect(diff.insertedColumns, contains(foreignKeyColumnWithOnCascadeDelete));
+      expect(diff.droppedColumns, contains(foreignKeyColumn));
       expect(diff.hasDifference, isTrue);
     });
 
