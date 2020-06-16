@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_build/generators.dart' show SerdesGenerator, SharedChecker;
 
@@ -60,8 +60,17 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
+        final rawResults = '''
+          provider
+            ?.rawQuery('SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(field.name, localTableName: fields.element.name)}`')
+            ?.then((results) => 
+              results.map((r) => 
+                (r ?? {})['${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}']
+              )
+            )
+        ''';
         final method = '''
-          jsonDecode($fieldValue ?? '[]').map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
+          $rawResults?.then((ids) => ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
               $query
             )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
           )$castIterable

@@ -58,10 +58,17 @@ class InsertForeignKey extends MigrationCommand {
   }
 
   /// Compose the name for a joins table between two associations, for example
-  /// `_brick_Hat_User`.
-  static String joinsTableName(String localTableName, String foreignTableName) {
-    final alphabetized = [localTableName, foreignTableName]..sort();
-    alphabetized.insert(0, '_brick');
+  ///
+  /// Every joins table includes _brick to signify it is a generated table and
+  /// the field and table name.
+  /// This is intentional to avoid collisions as Brick manages the migrations, and generates
+  /// the adapter class. Adapter files are only concerned with their own adapters; therefore
+  /// a shared adapter class (i.e. a many-to-many) will never exist.
+  /// The downside of this pattern is the inevitable data duplication for such many-to-many
+  /// relationships and the inability to query relationships without declaring them on
+  /// parent/child models.
+  static String joinsTableName(String fieldName, {String localTableName}) {
+    final alphabetized = ['_brick', fieldName, localTableName]..sort();
     return alphabetized.join('_');
   }
 }

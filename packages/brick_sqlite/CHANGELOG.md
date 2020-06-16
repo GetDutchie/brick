@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add `beforeSave` and `afterSave` hooks to the `SqliteAdapter`
+
 ## 0.0.7
 
 * Add `StubSqlite.queryValueForColumn` to discover the passed argument for a specific column
