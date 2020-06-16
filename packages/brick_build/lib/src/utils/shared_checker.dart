@@ -167,7 +167,7 @@ class SharedChecker<_SiblingModel extends Model> {
     return targetType;
   }
 
-  /// Destructures a type to determine the bottom type after going through Futures and Iterables.
+  /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///
   /// For example, `int` in `Future<int>` or `List<String>` in `Future<List<String>>`.
   ///

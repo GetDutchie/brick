@@ -104,7 +104,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
       if (checker.isArgTypeAFuture) {
-        if (checker.isSerializable) {
+        if (checker.isSerializable && !checker.isArgTypeASibling) {
           // Iterable<Future<bool>>
           final wrappedValue =
               checker.isBool ? _boolForField(fieldValue, fieldAnnotation.nullable) : fieldValue;

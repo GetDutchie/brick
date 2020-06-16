@@ -2,25 +2,9 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 
 final output = r'''
-Future<Assoc> _$AssocFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return Assoc();
-}
-
-Future<Map<String, dynamic>> _$AssocToRest(Assoc instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return {};
-}
-
-Future<Assoc> _$AssocFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
-  return Assoc()..primaryKey = data['_brick_id'] as int;
-}
-
-Future<Map<String, dynamic>> _$AssocToSqlite(Assoc instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
-  return {};
-}
+// GENERATED CODE DO NOT EDIT
+// This file should NOT be version controlled and should not be manually edited.
+part of '../brick.g.dart';
 
 Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
     {RestProvider provider, OfflineFirstRepository repository}) async {
@@ -123,15 +107,93 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
         jsonEncode(await Future.wait<String>(instance.futureStrings) ?? []),
     'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey ??
         await provider?.upsert<Assoc>((await instance.assoc),
-            repository: repository),
-    'future_assocs':
-        jsonEncode(await Future.wait<Assoc>(instance.futureAssocs) ?? [])
+            repository: repository)
   };
 }
-''';
 
-@ConnectOfflineFirstWithRest()
-class Assoc extends OfflineFirstModel {}
+/// Construct a [Futures]
+class FuturesAdapter extends OfflineFirstAdapter<Futures> {
+  FuturesAdapter();
+
+  String restEndpoint({query, instance}) => '';
+  final String fromKey = null;
+  final String toKey = null;
+  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
+    },
+    'string': {
+      'name': 'string',
+      'type': String,
+      'iterable': false,
+      'association': false,
+    },
+    'strings': {
+      'name': 'strings',
+      'type': String,
+      'iterable': false,
+      'association': false,
+    },
+    'futureStrings': {
+      'name': 'future_strings',
+      'type': String,
+      'iterable': true,
+      'association': false,
+    },
+    'assoc': {
+      'name': 'assoc',
+      'type': Assoc,
+      'iterable': false,
+      'association': false,
+    },
+    'assocs': {
+      'name': 'assocs',
+      'type': Assoc,
+      'iterable': false,
+      'association': false,
+    },
+    'futureAssocs': {
+      'name': 'future_assocs',
+      'type': Assoc,
+      'iterable': true,
+      'association': true,
+    }
+  };
+  Future<int> primaryKeyByUniqueColumns(
+          Futures instance, DatabaseExecutor executor) async =>
+      null;
+  final String tableName = 'Futures';
+  Future<void> afterSave(instance, {provider, repository}) async {
+    await Future.wait<int>(instance.futureAssocs?.map((s) async => ((await s)
+                ?.primaryKey ??
+            await provider?.upsert<Assoc>((await s), repository: repository))
+        ?.then((id) => primaryKey != null
+            ? provider?.rawInsert(
+                'INSERT OR REPLACE INTO `_brick_Futures_future_assocs` (`Futures_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+                [primaryKey, id])
+            : null)));
+  }
+
+  Future<Futures> fromRest(Map<String, dynamic> input,
+          {provider, repository}) async =>
+      await _$FuturesFromRest(input,
+          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toRest(Futures input,
+          {provider, repository}) async =>
+      await _$FuturesToRest(input, provider: provider, repository: repository);
+  Future<Futures> fromSqlite(Map<String, dynamic> input,
+          {provider, repository}) async =>
+      await _$FuturesFromSqlite(input,
+          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(Futures input,
+          {provider, repository}) async =>
+      await _$FuturesToSqlite(input,
+          provider: provider, repository: repository);
+}
+''';
 
 @ConnectOfflineFirstWithRest()
 class Futures extends OfflineFirstModel {
@@ -156,3 +218,6 @@ class Futures extends OfflineFirstModel {
 
   final List<Future<Assoc>> futureAssocs;
 }
+
+@ConnectOfflineFirstWithRest()
+class Assoc extends OfflineFirstModel {}
