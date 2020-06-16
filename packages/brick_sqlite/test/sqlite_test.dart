@@ -100,14 +100,6 @@ void main() {
         // only two becuase the third foreign key does not exist and therefore wasn't inserted
         expect(joinsResults, hasLength(2));
       });
-
-      test('ignores deleted columns', () async {
-        final localTableInfo = await provider.rawQuery('PRAGMA table_info(`$localTableName`)');
-        expect(localTableInfo.map((r) => r['name']), isNot(contains(columnName)));
-
-        await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
-        // if this test doesn't throw then it passes
-      });
     });
   });
 

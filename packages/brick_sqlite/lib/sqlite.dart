@@ -312,12 +312,6 @@ class SqliteProvider implements Provider<SqliteModel> {
     String foreignTableName,
   ) async {
     final db = await _db;
-    final tableInfo = await db.rawQuery('PRAGMA table_info(`$localTableName`)');
-    final containsColumnName =
-        tableInfo?.map((r) => (r ?? {})['name'])?.contains(columnName) ?? false;
-    if (!containsColumnName) {
-      return;
-    }
 
     final rawIds = await db
         .rawQuery('SELECT $columnName, ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
@@ -335,10 +329,6 @@ class SqliteProvider implements Provider<SqliteModel> {
         }
       }
     }
-
-    // Cleanup and drop the table
-    final alterCommand = AlterColumnHelper(DropColumn(columnName, onTable: localTableName));
-    await alterCommand.execute(db);
   }
 
   /// Ensure that the provided `providerArgs` are support by this provider.
