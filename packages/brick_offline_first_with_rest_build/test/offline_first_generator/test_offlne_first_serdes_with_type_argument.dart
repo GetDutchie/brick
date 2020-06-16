@@ -60,7 +60,6 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
           DatabaseExecutor executor) async =>
       null;
   final String tableName = 'OfflineFirstSerdesWithTypeArgument';
-  Future<void> afterSave(instance, {provider, repository}) async {}
 
   Future<OfflineFirstSerdesWithTypeArgument> fromRest(
           Map<String, dynamic> input,

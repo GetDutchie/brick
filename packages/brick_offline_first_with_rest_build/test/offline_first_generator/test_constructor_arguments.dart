@@ -57,7 +57,6 @@ class OfflineFirstGeneratorArgumentsAdapter
           DatabaseExecutor executor) async =>
       null;
   final String tableName = 'OfflineFirstGeneratorArguments';
-  Future<void> afterSave(instance, {provider, repository}) async {}
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
@@ -131,7 +130,6 @@ class OfflineFirstGeneratorArgumentsAdapter
           DatabaseExecutor executor) async =>
       null;
   final String tableName = 'OfflineFirstGeneratorArguments';
-  Future<void> afterSave(instance, {provider, repository}) async {}
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
