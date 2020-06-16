@@ -3,6 +3,13 @@ import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
 @ConnectOfflineFirstWithRest()
+class OneToManyAssociation extends OfflineFirstModel {
+  OneToManyAssociation({this.assoc});
+
+  final List<SqliteAssoc> assoc;
+}
+
+@ConnectOfflineFirstWithRest()
 class SqliteAssoc extends OfflineFirstModel {
   @Rest(ignore: true)
   @Sqlite(ignore: true)
@@ -10,25 +17,9 @@ class SqliteAssoc extends OfflineFirstModel {
 }
 
 final output = r'''
-Future<SqliteAssoc> _$SqliteAssocFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return SqliteAssoc();
-}
-
-Future<Map<String, dynamic>> _$SqliteAssocToRest(SqliteAssoc instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
-  return {};
-}
-
-Future<SqliteAssoc> _$SqliteAssocFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
-  return SqliteAssoc()..primaryKey = data['_brick_id'] as int;
-}
-
-Future<Map<String, dynamic>> _$SqliteAssocToSqlite(SqliteAssoc instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
-  return {};
-}
+// GENERATED CODE DO NOT EDIT
+// This file should NOT be version controlled and should not be manually edited.
+part of '../brick.g.dart';
 
 Future<OneToManyAssociation> _$OneToManyAssociationFromRest(
     Map<String, dynamic> data,
@@ -82,11 +73,58 @@ Future<Map<String, dynamic>> _$OneToManyAssociationToSqlite(
     OfflineFirstRepository repository}) async {
   return {};
 }
-''';
 
-@ConnectOfflineFirstWithRest()
-class OneToManyAssociation extends OfflineFirstModel {
-  OneToManyAssociation({this.assoc});
+/// Construct a [OneToManyAssociation]
+class OneToManyAssociationAdapter
+    extends OfflineFirstAdapter<OneToManyAssociation> {
+  OneToManyAssociationAdapter();
 
-  final List<SqliteAssoc> assoc;
+  String restEndpoint({query, instance}) => '';
+  final String fromKey = null;
+  final String toKey = null;
+  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
+    'primaryKey': {
+      'name': '_brick_id',
+      'type': int,
+      'iterable': false,
+      'association': false,
+    },
+    'assoc': {
+      'name': 'assoc',
+      'type': SqliteAssoc,
+      'iterable': true,
+      'association': true,
+    }
+  };
+  Future<int> primaryKeyByUniqueColumns(
+          OneToManyAssociation instance, DatabaseExecutor executor) async =>
+      null;
+  final String tableName = 'OneToManyAssociation';
+  Future<void> afterSave(instance, {provider, repository}) async {
+    await Future.wait<int>(instance.assoc?.map((s) async => (s?.primaryKey ??
+            await provider?.upsert<SqliteAssoc>(s, repository: repository))
+        ?.then((id) => primaryKey != null
+            ? provider?.rawExecute(
+                'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`)',
+                [primaryKey, id])
+            : null)));
+  }
+
+  Future<OneToManyAssociation> fromRest(Map<String, dynamic> input,
+          {provider, repository}) async =>
+      await _$OneToManyAssociationFromRest(input,
+          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toRest(OneToManyAssociation input,
+          {provider, repository}) async =>
+      await _$OneToManyAssociationToRest(input,
+          provider: provider, repository: repository);
+  Future<OneToManyAssociation> fromSqlite(Map<String, dynamic> input,
+          {provider, repository}) async =>
+      await _$OneToManyAssociationFromSqlite(input,
+          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(OneToManyAssociation input,
+          {provider, repository}) async =>
+      await _$OneToManyAssociationToSqlite(input,
+          provider: provider, repository: repository);
 }
+''';

@@ -61,7 +61,7 @@ void main() {
       });
 
       test('OneToManyAssociation', () async {
-        await generateExpectation('one_to_many_association', _$oneToManyAssociation.output);
+        await generateAdapterExpectation('one_to_many_association', _$oneToManyAssociation.output);
       });
 
       test('OneToOneAssociation', () async {
@@ -148,5 +148,6 @@ Future<void> generateAdapterExpectation(String filename, String output,
     annotation?.annotation,
     null,
   );
+  print(generated);
   expect(generated.trim(), output.trim());
 }
