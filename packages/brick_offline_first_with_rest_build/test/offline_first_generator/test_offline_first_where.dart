@@ -179,29 +179,29 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
     await Future.wait<int>(instance.assocs?.map((s) async => ((await s)
                 ?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository))
-        ?.then((id) => primaryKey != null
+        ?.then((id) => instance.primaryKey != null
             ? provider?.rawInsert(
                 'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [primaryKey, id])
+                [instance.primaryKey, id])
             : null)));
 
     await Future.wait<int>(instance.loadedAssocs?.map((s) async => (s
                 ?.primaryKey ??
             await provider?.upsert<Assoc>(s, repository: repository))
-        ?.then((id) => primaryKey != null
+        ?.then((id) => instance.primaryKey != null
             ? provider?.rawInsert(
                 'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [primaryKey, id])
+                [instance.primaryKey, id])
             : null)));
 
     await Future.wait<
         int>(instance.multiLookupCustomGenerator?.map((s) async => ((await s)
                 ?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository))
-        ?.then((id) => primaryKey != null
+        ?.then((id) => instance.primaryKey != null
             ? provider?.rawInsert(
                 'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [primaryKey, id])
+                [instance.primaryKey, id])
             : null)));
   }
 

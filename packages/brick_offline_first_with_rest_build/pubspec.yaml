@@ -7,11 +7,12 @@ repository: https://github.com/greenbits/brick
 version: 0.0.1
 
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   analyzer: ^0.39.0
-  brick_offline_first_abstract: ^0.0.3
+  brick_offline_first_abstract: 
+    path: ../brick_offline_first_abstract
   brick_rest_generators:
     git:
       url: https://github.com/greenbits/brick.git

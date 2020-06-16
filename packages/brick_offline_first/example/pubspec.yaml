@@ -1,7 +1,7 @@
 name: brick_offline_first_example
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
   flutter: '>=1.8.0 <2.0.0'
 
 dependencies:
@@ -15,3 +15,13 @@ dev_dependencies:
   build_resolvers: ^1.2.1
   brick_offline_first_with_rest_build:
     path: ../../brick_offline_first_with_rest_build
+    
+dependency_overrides:
+  brick_sqlite_generators:
+    path: ../../brick_sqlite_generators
+  brick_sqlite_abstract:
+    path: ../../brick_sqlite_abstract
+  brick_offline_first_abstract:
+    path: ../../brick_offline_first_abstract
+
+    
