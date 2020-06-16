@@ -97,12 +97,16 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
               : null),
       assocs: data['assocs'] == null
           ? null
-          : jsonDecode(data['assocs'] ?? '[]')
-              .map((primaryKey) => repository
+          : provider
+              ?.rawQuery(
+                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs`')
+              ?.then(
+                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<Assoc>>(),
       loadedAssoc: data['loaded_assoc_Assoc_brick_id'] == null
@@ -117,22 +121,30 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
               : null),
       loadedAssocs: data['loaded_assocs'] == null
           ? null
-          : await Future.wait<Assoc>(jsonDecode(data['loaded_assocs'] ?? '[]')
-              .map((primaryKey) => repository
+          : await Future.wait<Assoc>(provider
+              ?.rawQuery(
+                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs`')
+              ?.then(
+                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<Assoc>>()),
       multiLookupCustomGenerator: data['multi_lookup_custom_generator'] == null
           ? null
-          : jsonDecode(data['multi_lookup_custom_generator'] ?? '[]')
-              .map((primaryKey) => repository
+          : provider
+              ?.rawQuery(
+                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator`')
+              ?.then(
+                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<Assoc>>())
     ..primaryKey = data['_brick_id'] as int;
@@ -146,43 +158,12 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
     'assoc_OtherAssoc_brick_id': (await instance.assoc)?.primaryKey ??
         await provider?.upsert<OtherAssoc>((await instance.assoc),
             repository: repository),
-    'assocs': jsonEncode((await Future.wait<int>(instance.assocs
-                ?.map((s) async =>
-                    (await s)?.primaryKey ??
-                    await provider?.upsert<Assoc>((await s),
-                        repository: repository))
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>()),
+    'assocs': jsonEncode(await Future.wait<Assoc>(instance.assocs) ?? []),
     'loaded_assoc_Assoc_brick_id': instance.loadedAssoc?.primaryKey ??
         await provider?.upsert<Assoc>(instance.loadedAssoc,
             repository: repository),
-    'loaded_assocs': jsonEncode((await Future.wait<int>(instance.loadedAssocs
-                ?.map((s) async {
-                  return s?.primaryKey ??
-                      await provider?.upsert<Assoc>(s, repository: repository);
-                })
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>()),
-    'multi_lookup_custom_generator': jsonEncode((await Future.wait<int>(instance
-                .multiLookupCustomGenerator
-                ?.map((s) async =>
-                    (await s)?.primaryKey ??
-                    await provider?.upsert<Assoc>((await s),
-                        repository: repository))
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>())
+    'multi_lookup_custom_generator': jsonEncode(
+        await Future.wait<Assoc>(instance.multiLookupCustomGenerator) ?? [])
   };
 }
 ''';

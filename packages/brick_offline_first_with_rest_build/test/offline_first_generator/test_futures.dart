@@ -86,22 +86,29 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
               : null),
       assocs: data['assocs'] == null
           ? null
-          : Future.wait<Assoc>(jsonDecode(data['assocs'] ?? '[]')
-              .map((primaryKey) async => await repository
+          : Future.wait<Assoc>(provider
+              ?.rawQuery('SELECT `Assoc_brick_id` FROM `_brick_Futures_assocs`')
+              ?.then(
+                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) async => await repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<Assoc>>()),
       futureAssocs: data['future_assocs'] == null
           ? null
-          : jsonDecode(data['future_assocs'] ?? '[]')
-              .map((primaryKey) => repository
+          : provider
+              ?.rawQuery(
+                  'SELECT `Assoc_brick_id` FROM `_brick_Futures_future_assocs`')
+              ?.then(
+                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) => repository
                   ?.getAssociation<Assoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<Assoc>>())
     ..primaryKey = data['_brick_id'] as int;
@@ -117,28 +124,8 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
     'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey ??
         await provider?.upsert<Assoc>((await instance.assoc),
             repository: repository),
-    'assocs': jsonEncode((await Future.wait<int>((await instance.assocs)
-                ?.map((s) async {
-                  return s?.primaryKey ??
-                      await provider?.upsert<Assoc>(s, repository: repository);
-                })
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>()),
-    'future_assocs': jsonEncode((await Future.wait<int>(instance.futureAssocs
-                ?.map((s) async =>
-                    (await s)?.primaryKey ??
-                    await provider?.upsert<Assoc>((await s),
-                        repository: repository))
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>())
+    'future_assocs':
+        jsonEncode(await Future.wait<Assoc>(instance.futureAssocs) ?? [])
   };
 }
 ''';

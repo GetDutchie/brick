@@ -73,7 +73,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           $rawResults?.then((ids) => ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
               $query
             )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
-          )$castIterable
+          ))$castIterable
         ''';
 
         // Future<Iterable<SqliteModel>>

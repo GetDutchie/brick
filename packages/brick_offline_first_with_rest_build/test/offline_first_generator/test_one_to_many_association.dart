@@ -61,12 +61,16 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
   return OneToManyAssociation(
       assoc: data['assoc'] == null
           ? null
-          : await Future.wait<SqliteAssoc>(jsonDecode(data['assoc'] ?? '[]')
-              .map((primaryKey) => repository
+          : await Future.wait<SqliteAssoc>(provider
+              ?.rawQuery(
+                  'SELECT `SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc`')
+              ?.then((results) =>
+                  results.map((r) => (r ?? {})['SqliteAssoc_brick_id']))
+              ?.then((ids) => ids.map((primaryKey) => repository
                   ?.getAssociation<SqliteAssoc>(
                     Query.where('primaryKey', primaryKey, limit1: true),
                   )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<SqliteAssoc>>()))
     ..primaryKey = data['_brick_id'] as int;
@@ -76,20 +80,7 @@ Future<Map<String, dynamic>> _$OneToManyAssociationToSqlite(
     OneToManyAssociation instance,
     {SqliteProvider provider,
     OfflineFirstRepository repository}) async {
-  return {
-    'assoc': jsonEncode((await Future.wait<int>(instance.assoc
-                ?.map((s) async {
-                  return s?.primaryKey ??
-                      await provider?.upsert<SqliteAssoc>(s,
-                          repository: repository);
-                })
-                ?.toList()
-                ?.cast<Future<int>>() ??
-            []))
-        .where((s) => s != null)
-        .toList()
-        .cast<int>())
-  };
+  return {};
 }
 ''';
 
