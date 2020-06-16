@@ -173,7 +173,7 @@ void main() {
 
       test('one-to-many', () {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || ",%" OR `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || ",%" WHERE `DemoModelAssoc`.id = ?''';
+            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.DemoModel_brick_id WHERE `DemoModelAssoc`.id = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -183,6 +183,8 @@ void main() {
             ),
           ]),
         );
+
+        print(sqliteQuery.statement);
 
         expect(sqliteQuery.statement, statement);
       });

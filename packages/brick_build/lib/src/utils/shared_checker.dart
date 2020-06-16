@@ -53,7 +53,7 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   /// If the sub type has super type [SqliteModel]
-  /// Returns `SqliteModel` in `Future<SqliteModel>`,
+  /// Returns true for `Future<SqliteModel>`,
   /// `List<Future<SqliteModel>>`, and `List<SqliteModel>`.
   bool get isArgTypeASibling {
     if (isArgTypeAFuture) {

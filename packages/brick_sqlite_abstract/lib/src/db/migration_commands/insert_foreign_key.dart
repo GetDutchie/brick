@@ -68,7 +68,6 @@ class InsertForeignKey extends MigrationCommand {
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
   static String joinsTableName(String columnName, {String localTableName}) {
-    final alphabetized = ['_brick', columnName, localTableName]..sort();
-    return alphabetized.join('_');
+    return ['_brick', localTableName, columnName].join('_');
   }
 }
