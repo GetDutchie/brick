@@ -228,6 +228,11 @@ class SqliteProvider implements Provider<SqliteModel> {
     return await (await _db).execute(sql, arguments);
   }
 
+  /// Insert with a raw SQL statement. **Advanced use only**.
+  Future<void> rawInsert(String sql, [List arguments]) async {
+    return await (await _db).rawInsert(sql, arguments);
+  }
+
   /// Query with a raw SQL statement. **Advanced use only**.
   Future<List<Map>> rawQuery(String sql, [List arguments]) async {
     return await (await _db).rawQuery(sql, arguments);
@@ -308,27 +313,32 @@ class SqliteProvider implements Provider<SqliteModel> {
   ) async {
     final db = await _db;
     final tableInfo = await db.rawQuery('PRAGMA table_info(`$localTableName`)');
-    if (!tableInfo.contains(columnName)) {
+    final containsColumnName =
+        tableInfo?.map((r) => (r ?? {})['name'])?.contains(columnName) ?? false;
+    if (!containsColumnName) {
       return;
     }
 
     final rawIds = await db
-        .rawQuery('SELECT $columnName,${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
+        .rawQuery('SELECT $columnName, ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
     for (var result in rawIds) {
       final ids = jsonDecode(result[columnName] ?? '[]');
       for (var id in ids) {
-        // Cleanup and drop the table
-        final alterCommand = AlterColumnHelper(DropColumn(columnName, onTable: localTableName));
-        await _lock.synchronized(() async {
+        // ignore deleted associations as they'll throw contraint exceptions
+        final hasAssociation = await db.rawQuery(
+            'SELECT DISTINCT ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$foreignTableName` WHERE ${InsertTable.PRIMARY_KEY_COLUMN} = $id LIMIT 1');
+        if (hasAssociation.isNotEmpty) {
           await db.rawInsert(
-            'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.foreignKeyColumnName(localTableName)}`, `${InsertForeignKey.foreignKeyColumnName(foreignTableName)}`)',
+            'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.foreignKeyColumnName(localTableName)}`, `${InsertForeignKey.foreignKeyColumnName(foreignTableName)}`) VALUES (?, ?)',
             [result[InsertTable.PRIMARY_KEY_COLUMN], id],
           );
-
-          await alterCommand.execute(db);
-        });
+        }
       }
     }
+
+    // Cleanup and drop the table
+    final alterCommand = AlterColumnHelper(DropColumn(columnName, onTable: localTableName));
+    await alterCommand.execute(db);
   }
 
   /// Ensure that the provided `providerArgs` are support by this provider.

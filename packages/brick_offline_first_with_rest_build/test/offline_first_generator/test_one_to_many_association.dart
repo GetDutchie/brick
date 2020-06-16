@@ -104,8 +104,8 @@ class OneToManyAssociationAdapter
     await Future.wait<int>(instance.assoc?.map((s) async => (s?.primaryKey ??
             await provider?.upsert<SqliteAssoc>(s, repository: repository))
         ?.then((id) => primaryKey != null
-            ? provider?.rawExecute(
-                'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`)',
+            ? provider?.rawInsert(
+                'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`) VALUES (?, ?)',
                 [primaryKey, id])
             : null)));
   }

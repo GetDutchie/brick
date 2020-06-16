@@ -1,4 +1,5 @@
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:test/test.dart';
 import 'package:flutter_test/flutter_test.dart' as ft;
@@ -51,6 +52,63 @@ void main() {
     test('#migrate', () {}, skip: 'Write test');
 
     test('#exists', () {}, skip: 'Write test');
+
+    group('#migrateFromStringToJoinsTable', () {
+      final localTableName = 'User';
+      final foreignTableName = 'Hat';
+      final columnName = 'hats';
+      final oldTable = [
+        InsertTable(localTableName),
+        InsertColumn(columnName, Column.varchar, onTable: localTableName),
+        InsertTable(foreignTableName),
+        InsertColumn('name', Column.varchar, onTable: foreignTableName),
+      ];
+      final joinsTableName =
+          InsertForeignKey.joinsTableName(columnName, localTableName: localTableName);
+      final joinsColumnLocal = SchemaColumn(
+        InsertForeignKey.foreignKeyColumnName(localTableName),
+        int,
+        foreignTableName: localTableName,
+        isForeignKey: true,
+        onDeleteCascade: true,
+      )..tableName = joinsTableName;
+      final joinsColumnForeign = SchemaColumn(
+        InsertForeignKey.foreignKeyColumnName(foreignTableName),
+        int,
+        isForeignKey: true,
+        foreignTableName: foreignTableName,
+        onDeleteCascade: true,
+      )..tableName = joinsTableName;
+      final table = [
+        InsertTable(joinsTableName),
+        joinsColumnLocal.toCommand(),
+        joinsColumnForeign.toCommand(),
+      ];
+
+      test('migrates', () async {
+        // setup
+        for (var command in oldTable) await provider.rawExecute(command.statement);
+        await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Bowler")');
+        await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Big")');
+        await provider.rawInsert(
+            'INSERT OR REPLACE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
+        for (var command in table) await provider.rawExecute(command.statement);
+
+        await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
+
+        final joinsResults = await provider.rawQuery('SELECT * FROM `$joinsTableName`');
+        // only two becuase the third foreign key does not exist and therefore wasn't inserted
+        expect(joinsResults, hasLength(2));
+      });
+
+      test('ignores deleted columns', () async {
+        final localTableInfo = await provider.rawQuery('PRAGMA table_info(`$localTableName`)');
+        expect(localTableInfo.map((r) => r['name']), isNot(contains(columnName)));
+
+        await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
+        // if this test doesn't throw then it passes
+      });
+    });
   });
 
   group('SqliteModel', () {
