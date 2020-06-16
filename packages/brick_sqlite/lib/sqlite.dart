@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
@@ -293,6 +294,41 @@ class SqliteProvider implements Provider<SqliteModel> {
     await adapter.afterSave(instance, provider: this, repository: repository);
     await instance.afterSave(provider: this, repository: repository);
     return id;
+  }
+
+  /// brick_sqlite 0.1.0 changed the storage of iterable siblings from a JSON-encoded string to
+  /// a proper joins table entity. This method migrates from pre-0.1.0 to the new API.
+  /// It should be run after `migrate`. For more, see the [CHANGELOG notes](https://github.com/greenbits/brick/blob/master/packages/brick_sqlite/CHANGELOG.md#010).
+  ///
+  /// This method will be eventually deprecated and removed.
+  Future<void> migrateFromStringToJoinsTable(
+    String columnName,
+    String localTableName,
+    String foreignTableName,
+  ) async {
+    final db = await _db;
+    final tableInfo = await db.rawQuery('PRAGMA table_info(`$localTableName`)');
+    if (!tableInfo.contains(columnName)) {
+      return;
+    }
+
+    final rawIds = await db
+        .rawQuery('SELECT $columnName,${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
+    for (var result in rawIds) {
+      final ids = jsonDecode(result[columnName] ?? '[]');
+      for (var id in ids) {
+        // Cleanup and drop the table
+        final alterCommand = AlterColumnHelper(DropColumn(columnName, onTable: localTableName));
+        await _lock.synchronized(() async {
+          await db.rawInsert(
+            'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.foreignKeyColumnName(localTableName)}`, `${InsertForeignKey.foreignKeyColumnName(foreignTableName)}`)',
+            [result[InsertTable.PRIMARY_KEY_COLUMN], id],
+          );
+
+          await alterCommand.execute(db);
+        });
+      }
+    }
   }
 
   /// Ensure that the provided `providerArgs` are support by this provider.
