@@ -63,6 +63,7 @@ class RestConfigResponseKeysAdapter
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>
       null;
   final String tableName = 'RestConfigResponseKeys';
+  Future<void> afterSave(instance, {provider, repository}) async {}
 
   Future<RestConfigResponseKeys> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>

@@ -1,8 +1,12 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
-import 'package:brick_offline_first_abstract/abstract.dart';
+import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
-@ConnectOfflineFirstWithRest()
-class SqliteAssoc extends OfflineFirstWithRestModel {
+/// [SqliteSerializable] **does not** produce code.
+/// A `const` class is required from an non-relative import,
+/// and [SqliteSerializable] was arbitrarily chosen for this test.
+/// This will do nothing outside of this exact test suite.
+@SqliteSerializable()
+class SqliteAssoc extends SqliteModel {
   @Sqlite(ignore: true)
   final int key = -1;
 }
@@ -26,35 +30,34 @@ final schema = Schema(0,
             SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true)
           ])),
-      SchemaTable('_brick_OneToOneAssocation_assocs',
+      SchemaTable('_brick_OneToManyAssocation_assoc',
           columns: Set.from([
             SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn('OneToOneAssocation_brick_id', int,
+            SchemaColumn('OneToManyAssocation_brick_id', int,
                 isForeignKey: true,
-                foreignTableName: 'OneToOneAssocation',
+                foreignTableName: 'OneToManyAssocation',
                 onDeleteCascade: true),
             SchemaColumn('SqliteAssoc_brick_id', int,
                 isForeignKey: true,
                 foreignTableName: 'SqliteAssoc',
                 onDeleteCascade: true)
           ])),
-      SchemaTable('OneToOneAssocation',
+      SchemaTable('OneToManyAssocation',
           columns: Set.from([
             SchemaColumn('_brick_id', int,
-                autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn('assoc_SqliteAssoc_brick_id', int,
-                isForeignKey: true,
-                foreignTableName: 'SqliteAssoc',
-                onDeleteCascade: false)
+                autoincrement: true, nullable: false, isPrimaryKey: true)
           ]))
     ]));
 ''';
 
-@ConnectOfflineFirstWithRest()
-class OneToOneAssocation extends OfflineFirstWithRestModel {
-  final SqliteAssoc assoc;
-  final List<SqliteAssoc> assocs;
+/// [SqliteSerializable] **does not** produce code.
+/// A `const` class is required from an non-relative import,
+/// and [SqliteSerializable] was arbitrarily chosen for this test.
+/// This will do nothing outside of this exact test suite.
+@SqliteSerializable()
+class OneToManyAssocation extends SqliteModel {
+  final List<SqliteAssoc> assoc;
 
-  OneToOneAssocation({this.assoc, this.assocs});
+  OneToManyAssocation({this.assoc});
 }

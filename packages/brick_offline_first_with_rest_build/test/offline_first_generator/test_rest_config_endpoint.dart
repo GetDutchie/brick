@@ -66,6 +66,7 @@ class RestConfigEndpointAdapter
           RestConfigEndpoint instance, DatabaseExecutor executor) async =>
       null;
   final String tableName = 'RestConfigEndpoint';
+  Future<void> afterSave(instance, {provider, repository}) async {}
 
   Future<RestConfigEndpoint> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>

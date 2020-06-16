@@ -30,7 +30,7 @@ class SchemaDifference {
       return item.toCommand(shouldDrop: true);
     }).cast<DropTable>();
 
-    // TODO detect if dropped column is a foreign key joins association
+    // TODO detect if dropped column is a foreign key joins association AND WRITE TEST
 
     // Only drop column if the table isn't being dropped too
     final removedColumns = droppedColumns

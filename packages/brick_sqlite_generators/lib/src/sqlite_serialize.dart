@@ -63,7 +63,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
       "final String tableName = '$tableName';",
-      "Future<void> afterSave(instance, {provider, repository}) async {$afterSaveCallbacks.join('\n')}"
+      "Future<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
     ];
   }
 
