@@ -148,6 +148,5 @@ Future<void> generateAdapterExpectation(String filename, String output,
     annotation?.annotation,
     null,
   );
-  print(generated);
   expect(generated.trim(), output.trim());
 }
