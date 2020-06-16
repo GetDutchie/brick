@@ -127,8 +127,8 @@ void main() {
       });
 
       test('.joinsTableName', () {
-        var tableName = InsertForeignKey.joinsTableName('sundayHat', localTableName: 'User');
-        expect(tableName, '_brick_sundayHat_User');
+        var tableName = InsertForeignKey.joinsTableName('sunday_hat', localTableName: 'User');
+        expect(tableName, '_brick_sunday_hat_User');
 
         tableName = InsertForeignKey.joinsTableName('address', localTableName: 'People');
         expect(tableName, '_brick_address_People');

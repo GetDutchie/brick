@@ -5,3 +5,4 @@
 * Single siblings are upserted to SQLite as they're received; previously only iterable siblings were upserted
 * Fix deserializing for null sibling arrays
 * Booleans are serialized as 1s or 0s
+* Foreign keys are no longer serialized in a JSON array and stored as a string

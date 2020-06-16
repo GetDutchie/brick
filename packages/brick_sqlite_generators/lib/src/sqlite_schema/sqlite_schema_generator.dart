@@ -70,7 +70,6 @@ class SqliteSchemaGenerator {
       if (iterableAssociations.isNotEmpty) {
         iterableAssociations.forEach((iterableSibling) {
           acc.add(_createJoinsTable(
-            iterableSibling.name,
             localTableName: fields.element.name,
             foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
             checker: checkerForField(iterableSibling),
@@ -88,8 +87,7 @@ class SqliteSchemaGenerator {
     return Schema(version, tables: tables);
   }
 
-  SchemaTable _createJoinsTable(
-    String fieldName, {
+  SchemaTable _createJoinsTable({
     String localTableName,
     Sqlite foreignTableColumnDefinition,
     SharedChecker checker,
@@ -97,7 +95,8 @@ class SqliteSchemaGenerator {
     final foreignTableName = checker.unFuturedArgType.getDisplayString();
 
     return SchemaTable(
-      InsertForeignKey.joinsTableName(fieldName, localTableName: localTableName),
+      InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
+          localTableName: localTableName),
       columns: {
         SchemaColumn(
           InsertTable.PRIMARY_KEY_COLUMN,

@@ -12,7 +12,8 @@ environment:
 
 dependencies:
   brick_core: ^0.0.6
-  brick_sqlite_abstract: ^0.0.2
+  brick_sqlite_abstract: 
+    path: ../brick_sqlite_abstract
   logging: ^0.11.3+2
   meta: ^1.1.6
   path: ^1.6.3

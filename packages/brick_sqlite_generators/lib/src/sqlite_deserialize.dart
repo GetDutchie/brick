@@ -62,7 +62,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         ''';
         final rawResults = '''
           provider
-            ?.rawQuery('SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(field.name, localTableName: fields.element.name)}`')
+            ?.rawQuery('SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}`')
             ?.then((results) => 
               results.map((r) => 
                 (r ?? {})['${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}']

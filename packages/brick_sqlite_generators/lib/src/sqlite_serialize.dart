@@ -189,7 +189,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // Iterable<Future<SqliteModel>>
     final insertStatement =
-        'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(field.name, localTableName: fields.element.name)}` (`${InsertForeignKey.foreignKeyColumnName(fields.element.name)}`, `${InsertForeignKey.foreignKeyColumnName(checker.unFuturedArgType.getDisplayString())}`)';
+        'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name)}` (`${InsertForeignKey.foreignKeyColumnName(fields.element.name)}`, `${InsertForeignKey.foreignKeyColumnName(checker.unFuturedArgType.getDisplayString())}`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
         '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
@@ -202,14 +202,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     return '''
-          await Future.wait<int>($siblingAssociations
-            ?.map((s) async => ($upsertMethod)?.then((id) => 
-              ${InsertTable.PRIMARY_KEY_FIELD} != null 
-                ? provider?.rawExecute('${insertStatement}', [${InsertTable.PRIMARY_KEY_FIELD}, id]) 
-                : null
-            ))
-          );
-        ''';
+      await Future.wait<int>($siblingAssociations
+        ?.map((s) async => ($upsertMethod)?.then((id) => 
+          ${InsertTable.PRIMARY_KEY_FIELD} != null 
+            ? provider?.rawExecute('${insertStatement}', [${InsertTable.PRIMARY_KEY_FIELD}, id]) 
+            : null
+        ))
+      );
+    ''';
   }
 
   String _finalTypeForField(DartType type) {
