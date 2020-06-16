@@ -167,9 +167,11 @@ class AssociationFragment {
     final oneToOneAssociation = !definition['iterable'];
     final localColumnName = definition['name'];
     final localTableColumn = '`$localTableName`.${definition['name']}';
+    final joinsTableName =
+        InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
 
     final many =
-        'INNER JOIN `${InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName)}` ON `${InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName)}`.${InsertForeignKey.foreignKeyColumnName(localTableName)} = `$localTableName`.$primaryKeyColumn';
+        'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(localTableName)}';
     final one = '$localTableColumn = `$associationTableName`.$primaryKeyColumn';
     final joinCondition = oneToOneAssociation ? one : many;
     return 'INNER JOIN `$associationTableName` ON $joinCondition';
