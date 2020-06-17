@@ -13,4 +13,4 @@ dependencies:
   meta: ^1.1.6
   brick_core: ^0.0.6
   brick_rest: ^0.0.5
-  brick_sqlite_abstract: ^0.0.7
+  brick_sqlite_abstract: ^0.0.7+1

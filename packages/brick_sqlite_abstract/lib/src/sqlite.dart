@@ -27,6 +27,13 @@ class Sqlite implements FieldSerializable {
   @override
   final bool nullable;
 
+  /// When true, deletion of a row within this model's table will delete all
+  /// referencing children records. Defaults `false`.
+  ///
+  /// This value is only applicable when decorating fields that are **single associations**
+  /// (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
+  final bool onDeleteCascade;
+
   /// Manipulates output for the field in the SqliteSerializeGenerator
   /// The serializing key is defined from [Sqlite] or the default naming of the field.
   ///
@@ -50,6 +57,7 @@ class Sqlite implements FieldSerializable {
     this.ignore,
     this.name,
     this.nullable,
+    this.onDeleteCascade,
     this.toGenerator,
     this.unique,
   });
@@ -59,6 +67,7 @@ class Sqlite implements FieldSerializable {
   static const defaults = Sqlite(
     ignore: false,
     nullable: true,
+    onDeleteCascade: false,
     unique: false,
   );
 }

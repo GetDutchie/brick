@@ -190,6 +190,7 @@ class SqliteSchemaGenerator {
         isForeignKey: true,
         foreignTableName: checker.unFuturedType.getDisplayString(),
         nullable: column?.nullable,
+        onDeleteCascade: column?.onDeleteCascade,
       );
     } else if (checker.isMap || checker.isIterable) {
       // Iterables and Maps are stored as JSON
