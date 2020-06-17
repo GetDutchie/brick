@@ -36,11 +36,15 @@ class InsertForeignKey extends MigrationCommand {
     return foreignKeyColumnName(foreignTableName);
   }
 
-  String get _cascadeStatement => onDeleteCascade ? ' ON DELETE CASCADE' : '';
+  String get _onDeleteStatement {
+    if (onDeleteSetDefault) return ' ON DELETE SET DEFAULT';
+    if (onDeleteCascade) return ' ON DELETE CASCADE';
+    return '';
+  }
 
   @override
   String get statement =>
-      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_cascadeStatement';
+      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
 
   @override
   String get forGenerator =>
