@@ -110,16 +110,18 @@ class SqliteSchemaGenerator {
           int,
           isForeignKey: true,
           foreignTableName: localTableName,
-          onDeleteCascade: true,
           nullable: foreignTableColumnDefinition?.nullable,
+          onDeleteCascade: true,
+          onDeleteSetDefault: false,
         ),
         SchemaColumn(
           InsertForeignKey.foreignKeyColumnName(foreignTableName),
           int,
           isForeignKey: true,
           foreignTableName: foreignTableName,
-          onDeleteCascade: true,
           nullable: foreignTableColumnDefinition?.nullable,
+          onDeleteCascade: true,
+          onDeleteSetDefault: false,
         ),
       },
     );
@@ -191,6 +193,7 @@ class SqliteSchemaGenerator {
         foreignTableName: checker.unFuturedType.getDisplayString(),
         nullable: column?.nullable,
         onDeleteCascade: column?.onDeleteCascade,
+        onDeleteSetDefault: column?.onDeleteSetDefault,
       );
     } else if (checker.isMap || checker.isIterable) {
       // Iterables and Maps are stored as JSON

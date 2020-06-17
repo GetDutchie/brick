@@ -118,6 +118,7 @@ class Schema {
         isForeignKey: true,
         foreignTableName: command.foreignTableName,
         onDeleteCascade: command.onDeleteCascade,
+        onDeleteSetDefault: command.onDeleteSetDefault,
       ));
     } else {
       throw FallThroughError();

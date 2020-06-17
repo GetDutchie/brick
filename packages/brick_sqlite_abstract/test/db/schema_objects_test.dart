@@ -91,6 +91,7 @@ void main() {
       expect(column.isPrimaryKey, isFalse);
       expect(column.isForeignKey, isFalse);
       expect(column.onDeleteCascade, isFalse);
+      expect(column.onDeleteSetDefault, isFalse);
     });
 
     test('#forGenerator', () {
@@ -158,6 +159,14 @@ void main() {
       column.tableName = 'demo';
       expect(column.toCommand(),
           const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id', onDeleteCascade: true));
+
+      column = SchemaColumn('Hat_id', int,
+          isForeignKey: true, foreignTableName: 'hat', onDeleteSetDefault: true);
+      column.tableName = 'demo';
+      expect(
+          column.toCommand(),
+          const InsertForeignKey('demo', 'hat',
+              foreignKeyColumn: 'Hat_id', onDeleteSetDefault: true));
     });
 
     test('==', () {

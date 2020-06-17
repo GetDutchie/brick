@@ -37,11 +37,13 @@ final schema = Schema(0,
             SchemaColumn('OneToManyAssocation_brick_id', int,
                 isForeignKey: true,
                 foreignTableName: 'OneToManyAssocation',
-                onDeleteCascade: true),
+                onDeleteCascade: true,
+                onDeleteSetDefault: false),
             SchemaColumn('SqliteAssoc_brick_id', int,
                 isForeignKey: true,
                 foreignTableName: 'SqliteAssoc',
-                onDeleteCascade: true)
+                onDeleteCascade: true,
+                onDeleteSetDefault: false)
           ])),
       SchemaTable('OneToManyAssocation',
           columns: Set.from([

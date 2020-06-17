@@ -17,6 +17,7 @@ class SchemaColumn extends BaseSchemaObject {
   final bool isForeignKey;
   final String foreignTableName;
   final bool onDeleteCascade;
+  final bool onDeleteSetDefault;
   final bool unique;
 
   String tableName;
@@ -31,6 +32,7 @@ class SchemaColumn extends BaseSchemaObject {
     this.foreignTableName,
     bool nullable,
     this.onDeleteCascade = false,
+    this.onDeleteSetDefault = false,
     bool unique,
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
@@ -63,6 +65,7 @@ class SchemaColumn extends BaseSchemaObject {
       parts.add('isForeignKey: $isForeignKey');
       parts.add("foreignTableName: '$foreignTableName'");
       parts.add('onDeleteCascade: $onDeleteCascade');
+      parts.add('onDeleteSetDefault: $onDeleteSetDefault');
     }
 
     if (unique != InsertColumn.defaults.unique) {
@@ -84,6 +87,7 @@ class SchemaColumn extends BaseSchemaObject {
         foreignTableName,
         foreignKeyColumn: name,
         onDeleteCascade: onDeleteCascade,
+        onDeleteSetDefault: onDeleteSetDefault,
       );
     }
 
