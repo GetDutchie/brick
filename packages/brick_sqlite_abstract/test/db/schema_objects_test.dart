@@ -113,14 +113,14 @@ void main() {
       column = SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false)",
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false, onDeleteSetDefault: false)",
       );
 
       column = SchemaColumn('hat_id', int,
           isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true)",
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
       );
     });
 
