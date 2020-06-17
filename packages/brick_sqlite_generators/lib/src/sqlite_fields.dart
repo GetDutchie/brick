@@ -21,6 +21,7 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
         ignore: Sqlite.defaults.ignore,
         name: StringHelpers.snakeCase(element.name),
         nullable: config?.nullable ?? Sqlite.defaults.nullable,
+        onDeleteCascade: Sqlite.defaults.onDeleteCascade,
         unique: Sqlite.defaults.unique,
       );
     }
