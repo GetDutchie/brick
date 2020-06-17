@@ -10,12 +10,8 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  brick_build:
-    git:
-      url: https://github.com/greenbits/brick.git
-      path: packages/brick_build
-  brick_sqlite_abstract: 
-    path: ../brick_sqlite_abstract
+  brick_build: ^0.0.7
+  brick_sqlite_abstract: ^0.0.7
 
 dev_dependencies:
   test: ">=1.11.0 <2.0.0"

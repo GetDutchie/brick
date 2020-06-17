@@ -229,7 +229,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Insert with a raw SQL statement. **Advanced use only**.
-  Future<void> rawInsert(String sql, [List arguments]) async {
+  Future<int> rawInsert(String sql, [List arguments]) async {
     return await (await _db).rawInsert(sql, arguments);
   }
 
@@ -368,12 +368,20 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// Hook invoked before the model is successfully entered in the SQLite database.
   /// Useful to update or save associations. This is invoked **before**
   /// `SqliteModel#beforeSave`.
-  Future<void> beforeSave(_Model instance, {Provider provider, ModelRepository repository}) async {}
+  Future<void> beforeSave(
+    _Model instance, {
+    SqliteProvider provider,
+    ModelRepository<SqliteModel> repository,
+  }) async {}
 
   /// Hook invoked after the model is successfully entered in the SQLite database.
   /// Useful to update or save associations. This is invoked **before**
   /// `SqliteModel#afterSave`.
-  Future<void> afterSave(_Model instance, {Provider provider, ModelRepository repository}) async {}
+  Future<void> afterSave(
+    _Model instance, {
+    SqliteProvider provider,
+    ModelRepository<SqliteModel> repository,
+  }) async {}
 
   Future<_Model> fromSqlite(
     Map<String, dynamic> data, {

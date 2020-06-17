@@ -3,21 +3,42 @@
 import 'package:brick_sqlite_abstract/db.dart';
 // ignore: unused_import
 import 'package:brick_sqlite_abstract/db.dart' show Migratable;
+part '20200616220821.migration.dart';
 part '20200106215014.migration.dart';
 part '20200124174431.migration.dart';
 part '20200616215211.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final Set<Migration> migrations = Set.from([
+  Migration20200616220821(),
   Migration20200106215014(),
   Migration20200124174431(),
   Migration20200616215211()
 ]);
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(20200616215211,
+final schema = Schema(20200616220821,
     generatorVersion: 1,
     tables: Set<SchemaTable>.from([
+      SchemaTable('_brick_Horse_mounties',
+          columns: Set.from([
+            SchemaColumn('_brick_id', int,
+                autoincrement: true, nullable: false, isPrimaryKey: true),
+            SchemaColumn('Horse_brick_id', int,
+                isForeignKey: true,
+                foreignTableName: 'Horse',
+                onDeleteCascade: true),
+            SchemaColumn('Mounty_brick_id', int,
+                isForeignKey: true,
+                foreignTableName: 'Mounty',
+                onDeleteCascade: true)
+          ])),
+      SchemaTable('Horse',
+          columns: Set.from([
+            SchemaColumn('_brick_id', int,
+                autoincrement: true, nullable: false, isPrimaryKey: true),
+            SchemaColumn('name', String)
+          ])),
       SchemaTable('_brick_KitchenSink_list_offline_first_model',
           columns: Set.from([
             SchemaColumn('_brick_id', int,

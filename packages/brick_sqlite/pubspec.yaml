@@ -4,7 +4,7 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.7
+version: 0.1.0
 
 environment:
   sdk: '>=2.5.0 <3.0.0'
@@ -12,8 +12,7 @@ environment:
 
 dependencies:
   brick_core: ^0.0.6
-  brick_sqlite_abstract: 
-    path: ../brick_sqlite_abstract
+  brick_sqlite_abstract: ^0.0.7
   logging: ^0.11.3+2
   meta: ^1.1.6
   path: ^1.6.3

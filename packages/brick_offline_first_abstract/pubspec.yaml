@@ -4,14 +4,13 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.5
+version: 0.0.7
 
 environment:
-  sdk: ">=2.4.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   meta: ^1.1.6
   brick_core: ^0.0.6
   brick_rest: ^0.0.5
-  brick_sqlite_abstract:
-    path: ../brick_sqlite_abstract
+  brick_sqlite_abstract: ^0.0.7

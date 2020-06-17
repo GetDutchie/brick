@@ -167,9 +167,9 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
       null;
   final String tableName = 'Futures';
   Future<void> afterSave(instance, {provider, repository}) async {
-    await Future.wait<int>(instance.futureAssocs?.map((s) async => ((await s)
+    await Future.wait<int>(instance.futureAssocs?.map((s) async => (await s)
                 ?.primaryKey ??
-            await provider?.upsert<Assoc>((await s), repository: repository))
+            await provider?.upsert<Assoc>((await s), repository: repository)
         ?.then((id) => instance.primaryKey != null
             ? provider?.rawInsert(
                 'INSERT OR REPLACE INTO `_brick_Futures_future_assocs` (`Futures_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',

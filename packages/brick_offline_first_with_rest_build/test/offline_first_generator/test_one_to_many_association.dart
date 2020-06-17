@@ -56,12 +56,12 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
               ?.rawQuery(
                   'SELECT `SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc`')
               ?.then((results) =>
-                  results.map((r) => (r ?? {})['SqliteAssoc_brick_id']))
-              ?.then((ids) => ids.map((primaryKey) => repository
-                  ?.getAssociation<SqliteAssoc>(
-                    Query.where('primaryKey', primaryKey, limit1: true),
-                  )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
+                  results
+                    ?.map((r) => (r ?? {})['SqliteAssoc_brick_id'])
+                    ?.map((primaryKey) => repository?.getAssociation<SqliteAssoc>(
+                      Query.where('primaryKey', primaryKey, limit1: true),
+                    )
+                    ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
               ?.toList()
               ?.cast<Future<SqliteAssoc>>()))
     ..primaryKey = data['_brick_id'] as int;

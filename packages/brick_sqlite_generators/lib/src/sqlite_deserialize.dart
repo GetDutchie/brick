@@ -23,6 +23,20 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
+  String deserializerNullableClause({field, fieldAnnotation, name}) {
+    final checker = checkerForType(field.type);
+    if (checker.isIterable && checker.isArgTypeASibling) {
+      return '';
+    }
+
+    return super.deserializerNullableClause(
+      field: field,
+      fieldAnnotation: fieldAnnotation,
+      name: name,
+    );
+  }
+
+  @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
@@ -51,47 +65,43 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       final argTypeChecker = SharedChecker<SqliteModel>(checker.argType);
       final argType = checker.unFuturedArgType;
       final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet,
-          isList: checker.isList,
-          isFuture: checker.isArgTypeASibling || checker.isArgTypeAFuture);
+          isSet: checker.isSet, isList: checker.isList, isFuture: checker.isArgTypeAFuture);
 
       if (checker.isArgTypeASibling) {
         final awaited = wrappedInFuture ? 'async => await' : '=>';
         final query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
-        final rawResults = '''
-          provider
-            ?.rawQuery('SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}`')
-            ?.then((results) => 
-              results.map((r) => 
-                (r ?? {})['${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}']
-              )
-            )
-        ''';
+        final sqlStatement =
+            'SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.foreignKeyColumnName(fields.element.name)} = ?';
         final method = '''
-          $rawResults?.then((ids) => ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
-              $query
-            )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
-          ))$castIterable
+          provider
+            ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
+            ?.then((results) {
+              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}']);
+              return Future.wait<$argType>(
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
+                ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+              );
+            })
         ''';
 
         // Future<Iterable<SqliteModel>>
         if (wrappedInFuture) {
-          return 'Future.wait<$argType>($method)';
+          return method;
         }
 
         // Iterable<Future<SqliteModel>>
         if (checker.isArgTypeAFuture) {
-          return method;
+          return 'await $method';
 
           // Iterable<SqliteModel>
         } else {
           if (checker.isSet) {
-            return '(await Future.wait<$argType>($method)).toSet().cast<$argType>()';
+            return '(await $method).toSet().cast<$argType>()';
           }
 
-          return 'await Future.wait<$argType>($method)';
+          return '(await $method)$castIterable';
         }
       }
 

@@ -4,10 +4,10 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite_a
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.4
+version: 0.0.7
 
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   brick_core: ^0.0.6

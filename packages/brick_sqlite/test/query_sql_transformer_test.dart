@@ -184,8 +184,6 @@ void main() {
           ]),
         );
 
-        print(sqliteQuery.statement);
-
         expect(sqliteQuery.statement, statement);
       });
     });
