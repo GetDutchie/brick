@@ -302,10 +302,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     try {
       logger.finest('#hydrate: $_Model $query');
       final modelsFromRemote = await remoteProvider.get<_Model>(query: query, repository: this);
-      final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
-      final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
 
-      if (!deserializeSqlite) return modelsIntoMemory;
+      if (modelsFromRemote != null) {
+        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+        final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
+
+        if (!deserializeSqlite) return modelsIntoMemory;
+      }
 
       return await sqliteProvider
           .get<_Model>(query: query, repository: this)
