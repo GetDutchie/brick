@@ -99,6 +99,7 @@ void main() {
         // These expectations can never be removed, otherwise all migrations must be regenerated
         // And some migrations are modified by hand, making regeneration not possible
         expect(m.onDeleteCascade, isFalse);
+        expect(m.onDeleteSetDefault, isFalse);
       });
 
       test('#statement', () {
@@ -108,14 +109,22 @@ void main() {
         const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
         expect(withOnDeleteCascade.statement,
             'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE');
+
+        const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
+        expect(withOnDeleteSetDefault.statement,
+            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE SET DEFAULT');
       });
 
       test('#forGenerator', () {
         expect(m.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false)");
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: false)");
         const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
         expect(withOnDeleteCascade.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true)");
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true, onDeleteSetDefault: false)");
+
+        const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
+        expect(withOnDeleteSetDefault.forGenerator,
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: true)");
       });
 
       test('.foreignKeyColumnName', () {

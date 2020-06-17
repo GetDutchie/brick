@@ -83,6 +83,9 @@ class MigrationGenerator extends Generator {
           onDeleteCascade: reader.read('onDeleteCascade').isNull
               ? false
               : reader.read('onDeleteCascade').boolValue,
+          onDeleteSetDefault: reader.read('onDeleteSetDefault').isNull
+              ? false
+              : reader.read('onDeleteSetDefault').boolValue,
         );
       } else if (_insertTableChecker.isExactlyType(object.type)) {
         return InsertTable(

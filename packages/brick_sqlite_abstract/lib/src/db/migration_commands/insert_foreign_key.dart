@@ -10,15 +10,22 @@ class InsertForeignKey extends MigrationCommand {
   /// Defaults to lowercase `${foreignTableName}_brick_id`
   final String foreignKeyColumn;
 
-  /// When true, deletion of a row within this model's table will delete all
-  /// referencing children records. Defaults `false`.
+  /// When true, deletion of the referenced record by [foreignKeyColumn] on the [foreignTableName]
+  /// this record. For example, if the foreign table is "departments" and the local table
+  /// is "employees," whenever that department is deleted, "employee"
+  /// will be deleted. Defaults `false`.
   final bool onDeleteCascade;
+
+  /// When true, deletion of a parent will set this table's referencing column to the default,
+  /// usually `NULL` unless otherwise declared. Defaults `false`.
+  final bool onDeleteSetDefault;
 
   const InsertForeignKey(
     this.localTableName,
     this.foreignTableName, {
     this.foreignKeyColumn,
     this.onDeleteCascade = false,
+    this.onDeleteSetDefault = false,
   });
 
   String get _foreignKeyColumn {
@@ -29,15 +36,19 @@ class InsertForeignKey extends MigrationCommand {
     return foreignKeyColumnName(foreignTableName);
   }
 
-  String get _cascadeStatement => onDeleteCascade ? ' ON DELETE CASCADE' : '';
+  String get _onDeleteStatement {
+    if (onDeleteSetDefault) return ' ON DELETE SET DEFAULT';
+    if (onDeleteCascade) return ' ON DELETE CASCADE';
+    return '';
+  }
 
   @override
   String get statement =>
-      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_cascadeStatement';
+      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
 
   @override
   String get forGenerator =>
-      "InsertForeignKey('$localTableName', '$foreignTableName', foreignKeyColumn: '$_foreignKeyColumn', onDeleteCascade: $onDeleteCascade)";
+      "InsertForeignKey('$localTableName', '$foreignTableName', foreignKeyColumn: '$_foreignKeyColumn', onDeleteCascade: $onDeleteCascade, onDeleteSetDefault: $onDeleteSetDefault)";
 
   @override
   MigrationCommand get down => DropColumn(_foreignKeyColumn, onTable: localTableName);

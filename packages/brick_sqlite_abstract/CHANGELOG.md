@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.7+2, 0.0.7+3
+
+* Define `onDeleteSetDefault` on the field annotation. This 1) generates a new migration and 2) allows the schema to regenerate from user preferences instead of strictly historic migrations.
+
 ## 0.0.7+1
 
 * Define `onDeleteCascade` on the field annotation. This 1) generates a new migration and 2) allows the schema to regenerate from user preferences instead of strictly historic migrations.
