@@ -120,7 +120,7 @@ void main() {
           isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true)",
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
       );
     });
 
