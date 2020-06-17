@@ -137,7 +137,7 @@ void main() {
     group('associations', () {
       test('simple', () async {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -152,7 +152,7 @@ void main() {
 
       test('OR', () async {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -173,7 +173,7 @@ void main() {
 
       test('one-to-many', () {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.DemoModel_brick_id WHERE `DemoModelAssoc`.id = ?''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [

@@ -28,8 +28,8 @@ class DemoModelMigration extends Migration {
       : super(
           version: 1,
           up: const <MigrationCommand>[
-            InsertTable("Mounty"),
-            InsertColumn("name", Column.varchar, onTable: "Mounty"),
+            InsertTable('Mounty'),
+            InsertColumn('name', Column.varchar, onTable: 'Mounty'),
             InsertTable('_brick_Horse_mounties'),
             InsertTable('Horse'),
             InsertForeignKey('_brick_Horse_mounties', 'Horse',

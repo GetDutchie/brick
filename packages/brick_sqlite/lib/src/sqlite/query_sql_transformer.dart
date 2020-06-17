@@ -121,11 +121,11 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition['type'] as Type];
       final association = AssociationFragment(
-        adapter: associationAdapter,
-        localTableName: adapter.tableName,
         definition: definition,
+        foreignTableName: associationAdapter.tableName,
+        localTableName: adapter.tableName,
       );
-      _innerJoins.add(association.toString());
+      _innerJoins.addAll(association.toJoinFragment());
       return _expandCondition(condition.value, associationAdapter);
     }
 
@@ -146,35 +146,36 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
 /// Inner joins
 class AssociationFragment {
-  final SqliteAdapter adapter;
+  final String foreignTableName;
 
   final Map<String, dynamic> definition;
-
-  final String localTableColumn;
 
   final String localTableName;
 
   AssociationFragment({
-    this.adapter,
     this.definition,
-    this.localTableColumn,
+    this.foreignTableName,
     this.localTableName,
   });
 
-  toString() {
-    final associationTableName = adapter.tableName;
+  List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
     final oneToOneAssociation = !definition['iterable'];
     final localColumnName = definition['name'];
     final localTableColumn = '`$localTableName`.${definition['name']}';
+
+    if (oneToOneAssociation) {
+      return [
+        'INNER JOIN `$foreignTableName` ON $localTableColumn = `$foreignTableName`.$primaryKeyColumn'
+      ];
+    }
+
     final joinsTableName =
         InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
-
-    final many =
-        'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(localTableName)}';
-    final one = '$localTableColumn = `$associationTableName`.$primaryKeyColumn';
-    final joinCondition = oneToOneAssociation ? one : many;
-    return 'INNER JOIN `$associationTableName` ON $joinCondition';
+    return [
+      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(localTableName)}',
+      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(foreignTableName)}'
+    ];
   }
 }
 

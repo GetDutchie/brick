@@ -21,7 +21,7 @@ void main() {
     test('instantiates', () {
       final m = MountyAdapter();
       expect(m, const TypeMatcher<MountyAdapter>());
-      expect(m.tableName, 'Demo');
+      expect(m.tableName, 'Mounty');
     });
   });
 
@@ -80,6 +80,14 @@ void main() {
         expect(results.first.mounties, hasLength(2));
         expect(results.first.mounties.first.primaryKey, greaterThan(0));
         expect(results.first.mounties.last.primaryKey, greaterThan(0));
+        final findByName = await TestRepository().sqliteProvider.get<Horse>(
+              repository: TestRepository(),
+              query: Query(where: [
+                Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+              ]),
+            );
+
+        expect(findByName.first.name, horse.name);
       });
     });
 

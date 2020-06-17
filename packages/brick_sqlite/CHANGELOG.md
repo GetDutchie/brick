@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.1.0+1
+
+* Fix SQL query for joins
+
 ## 0.1.0
 
 * Add `beforeSave` and `afterSave` hooks to the `SqliteAdapter`
@@ -26,6 +30,7 @@
           }
         }
         ```
+    1. Continue to remove `DropColumn` from generated migrations until you've safely distributed the update.
 
 ## 0.0.7
 

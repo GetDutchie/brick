@@ -57,20 +57,18 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                   )
                   ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
               : null),
-      assocs: data['assocs'] == null
-          ? null
-          : provider
-              ?.rawQuery(
-                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs`')
-              ?.then(
-                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
-              ?.then((ids) => ids.map((primaryKey) => repository
-                  ?.getAssociation<Assoc>(
-                    Query.where('primaryKey', primaryKey, limit1: true),
-                  )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
-              ?.toList()
-              ?.cast<Future<Assoc>>(),
+      assocs: await provider?.rawQuery(
+          'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE OfflineFirstWhere_brick_id = ?',
+          [
+            data['_brick_id'] as int
+          ])?.then((results) {
+        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+      }),
       loadedAssoc: data['loaded_assoc_Assoc_brick_id'] == null
           ? null
           : (data['loaded_assoc_Assoc_brick_id'] > -1
@@ -81,34 +79,30 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                 ))
                   ?.first
               : null),
-      loadedAssocs: data['loaded_assocs'] == null
-          ? null
-          : await Future.wait<Assoc>(provider
-              ?.rawQuery(
-                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs`')
-              ?.then(
-                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
-              ?.then((ids) => ids.map((primaryKey) => repository
-                  ?.getAssociation<Assoc>(
-                    Query.where('primaryKey', primaryKey, limit1: true),
-                  )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
-              ?.toList()
-              ?.cast<Future<Assoc>>()),
-      multiLookupCustomGenerator: data['multi_lookup_custom_generator'] == null
-          ? null
-          : provider
-              ?.rawQuery(
-                  'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator`')
-              ?.then(
-                  (results) => results.map((r) => (r ?? {})['Assoc_brick_id']))
-              ?.then((ids) => ids.map((primaryKey) => repository
-                  ?.getAssociation<Assoc>(
-                    Query.where('primaryKey', primaryKey, limit1: true),
-                  )
-                  ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
-              ?.toList()
-              ?.cast<Future<Assoc>>())
+      loadedAssocs: (await provider?.rawQuery(
+              'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE OfflineFirstWhere_brick_id = ?',
+              [
+            data['_brick_id'] as int
+          ])?.then((results) {
+        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+      }))
+          ?.toList()
+          ?.cast<Assoc>(),
+      multiLookupCustomGenerator: await provider?.rawQuery(
+          'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE OfflineFirstWhere_brick_id = ?',
+          [data['_brick_id'] as int])?.then((results) {
+        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+      }))
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -176,33 +170,36 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       null;
   final String tableName = 'OfflineFirstWhere';
   Future<void> afterSave(instance, {provider, repository}) async {
-    await Future.wait<int>(instance.assocs?.map((s) async => ((await s)
-                ?.primaryKey ??
-            await provider?.upsert<Assoc>((await s), repository: repository))
-        ?.then((id) => instance.primaryKey != null
-            ? provider?.rawInsert(
-                'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id])
-            : null)));
+    if (instance.primaryKey != null) {
+      await Future.wait<int>(instance.assocs?.map((s) async {
+        final id = (await s)?.primaryKey ??
+            await provider?.upsert<Assoc>((await s), repository: repository);
+        return await provider?.rawInsert(
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
+    }
 
-    await Future.wait<int>(instance.loadedAssocs?.map((s) async => s
-                ?.primaryKey ??
-            await provider?.upsert<Assoc>(s, repository: repository)
-        ?.then((id) => instance.primaryKey != null
-            ? provider?.rawInsert(
-                'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id])
-            : null)));
+    if (instance.primaryKey != null) {
+      await Future.wait<int>(instance.loadedAssocs?.map((s) async {
+        final id = s?.primaryKey ??
+            await provider?.upsert<Assoc>(s, repository: repository);
+        return await provider?.rawInsert(
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
+    }
 
-    await Future.wait<
-        int>(instance.multiLookupCustomGenerator?.map((s) async => (await s)
-                ?.primaryKey ??
-            await provider?.upsert<Assoc>((await s), repository: repository)
-        ?.then((id) => instance.primaryKey != null
-            ? provider?.rawInsert(
-                'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id])
-            : null)));
+    if (instance.primaryKey != null) {
+      await Future.wait<int>(
+          instance.multiLookupCustomGenerator?.map((s) async {
+        final id = (await s)?.primaryKey ??
+            await provider?.upsert<Assoc>((await s), repository: repository);
+        return await provider?.rawInsert(
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
+    }
   }
 
   Future<OfflineFirstWhere> fromRest(Map<String, dynamic> input,

@@ -50,20 +50,18 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
     {SqliteProvider provider,
     OfflineFirstRepository repository}) async {
   return OneToManyAssociation(
-      assoc: data['assoc'] == null
-          ? null
-          : await Future.wait<SqliteAssoc>(provider
-              ?.rawQuery(
-                  'SELECT `SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc`')
-              ?.then((results) =>
-                  results
-                    ?.map((r) => (r ?? {})['SqliteAssoc_brick_id'])
-                    ?.map((primaryKey) => repository?.getAssociation<SqliteAssoc>(
-                      Query.where('primaryKey', primaryKey, limit1: true),
-                    )
-                    ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)))
-              ?.toList()
-              ?.cast<Future<SqliteAssoc>>()))
+      assoc: (await provider?.rawQuery(
+              'SELECT `SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE OneToManyAssociation_brick_id = ?',
+              [data['_brick_id'] as int])?.then((results) {
+    final ids = results.map((r) => (r ?? {})['SqliteAssoc_brick_id']);
+    return Future.wait<SqliteAssoc>(ids.map((primaryKey) => repository
+        ?.getAssociation<SqliteAssoc>(
+          Query.where('primaryKey', primaryKey, limit1: true),
+        )
+        ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+  }))
+          ?.toList()
+          ?.cast<SqliteAssoc>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -101,13 +99,15 @@ class OneToManyAssociationAdapter
       null;
   final String tableName = 'OneToManyAssociation';
   Future<void> afterSave(instance, {provider, repository}) async {
-    await Future.wait<int>(instance.assoc?.map((s) async => (s?.primaryKey ??
-            await provider?.upsert<SqliteAssoc>(s, repository: repository))
-        ?.then((id) => instance.primaryKey != null
-            ? provider?.rawInsert(
-                'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id])
-            : null)));
+    if (instance.primaryKey != null) {
+      await Future.wait<int>(instance.assoc?.map((s) async {
+        final id = s?.primaryKey ??
+            await provider?.upsert<SqliteAssoc>(s, repository: repository);
+        return await provider?.rawInsert(
+            'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
+    }
   }
 
   Future<OneToManyAssociation> fromRest(Map<String, dynamic> input,
