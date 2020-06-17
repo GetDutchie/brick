@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
-import 'package:analyzer/dart/element/element.dart' show ClassElement;
-import 'package:analyzer/dart/element/type.dart' show DartType;
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
@@ -54,11 +54,17 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     final primaryKeyByUniqueColumns = generateUniqueSqliteFunction(uniqueFields);
+    final afterSaveCallbacks = unignoredFields.where((f) {
+      final checker = checkerForType(f.type);
+      return checker.isIterable && checker.isArgTypeASibling;
+    }).map(_saveIterableAssociationFieldToJoins);
 
     return [
       'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
-      "final String tableName = '$tableName';"
+      "final String tableName = '$tableName';",
+      if (afterSaveCallbacks.isNotEmpty)
+        "Future<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
     ];
   }
 
@@ -90,37 +96,6 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     } else if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
 
-      if (checker.isArgTypeASibling) {
-        // Iterable<Future<SqliteModel>>
-        if (checker.isArgTypeAFuture) {
-          return '''jsonEncode(
-            (await Future.wait<int>($fieldValue
-              ?.map(
-                (s) async => (await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)
-              )
-              ?.toList()
-              ?.cast<Future<int>>()
-              ?? []
-            )).where((s) => s != null).toList().cast<int>()
-          )''';
-
-          // Iterable<SqliteModel>
-        } else {
-          final instanceAndField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-
-          return '''jsonEncode(
-            (await Future.wait<int>($instanceAndField
-              ?.map((s) async {
-                return s?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository);
-              })
-              ?.toList()
-              ?.cast<Future<int>>()
-              ?? []
-            )).where((s) => s != null).toList().cast<int>()
-          )''';
-        }
-      }
-
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         return 'jsonEncode($fieldValue?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
@@ -129,7 +104,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
       // Iterable<Future<int>>, Iterable<Future<num>>, Iterable<Future<String>>, Iterable<Future<Map>>
       if (checker.isArgTypeAFuture) {
-        if (checker.isSerializable) {
+        if (checker.isSerializable && !checker.isArgTypeASibling) {
           // Iterable<Future<bool>>
           final wrappedValue =
               checker.isBool ? _boolForField(fieldValue, fieldAnnotation.nullable) : fieldValue;
@@ -201,6 +176,40 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'];
     }""";
+  }
+
+  String _saveIterableAssociationFieldToJoins(FieldElement field) {
+    final annotation = fields.annotationForField(field);
+    var checker = checkerForType(field.type);
+    final fieldValue = serdesValueForField(field, annotation.name, checker: checker);
+
+    final wrappedInFuture = checker.isFuture;
+    if (wrappedInFuture) {
+      checker = checkerForType(checker.argType);
+    }
+
+    // Iterable<Future<SqliteModel>>
+    final insertStatement =
+        'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name)}` (`${InsertForeignKey.foreignKeyColumnName(fields.element.name)}`, `${InsertForeignKey.foreignKeyColumnName(checker.unFuturedArgType.getDisplayString())}`)';
+    var siblingAssociations = fieldValue;
+    var upsertMethod =
+        '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
+
+    // Iterable<SqliteModel>
+    if (!checker.isArgTypeAFuture) {
+      siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
+      upsertMethod =
+          's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
+    }
+
+    return '''
+      if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
+        await Future.wait<int>($siblingAssociations?.map((s) async { 
+          final id = $upsertMethod;
+          return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
+        }));
+      }
+    ''';
   }
 
   String _finalTypeForField(DartType type) {

@@ -80,6 +80,9 @@ class MigrationGenerator extends Generator {
           foreignKeyColumn: reader.read('foreignKeyColumn').isNull
               ? null
               : reader.read('foreignKeyColumn').stringValue,
+          onDeleteCascade: reader.read('onDeleteCascade').isNull
+              ? false
+              : reader.read('onDeleteCascade').boolValue,
         );
       } else if (_insertTableChecker.isExactlyType(object.type)) {
         return InsertTable(

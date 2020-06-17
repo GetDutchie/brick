@@ -163,8 +163,11 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     if (contents != null) {
       final name = providerNameForField(fieldAnnotation.name, checker: checker);
       if (doesDeserialize) {
-        final deserializerNullability =
-            fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
+        final deserializerNullability = deserializerNullableClause(
+          field: field,
+          fieldAnnotation: fieldAnnotation,
+          name: name,
+        );
         return '${field.name}: $deserializerNullability $contents';
       }
 
@@ -203,6 +206,16 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
         .replaceAll(FieldSerializable.DATA_PROPERTY_VARIABLE, "data['$annotatedName']")
         .replaceAll(FieldSerializable.INSTANCE_PROPERTY_VARIABLE, 'instance.$fieldName');
     return SerdesGenerator.digestCustomGeneratorPlaceholders(input);
+  }
+
+  /// Injected between the field member in the constructor and the contents
+  @visibleForOverriding
+  String deserializerNullableClause({
+    FieldElement field,
+    _FieldAnnotation fieldAnnotation,
+    String name,
+  }) {
+    return fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
   }
 
   String expandGenerator(

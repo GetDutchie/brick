@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart' show protected, required;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:brick_sqlite_abstract/db.dart';
 
 import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapter;
 
@@ -121,11 +121,11 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition['type'] as Type];
       final association = AssociationFragment(
-        adapter: associationAdapter,
-        localTableColumn: '`${adapter.tableName}`.${definition['name']}',
-        oneToOneAssociation: !definition['iterable'],
+        definition: definition,
+        foreignTableName: associationAdapter.tableName,
+        localTableName: adapter.tableName,
       );
-      _innerJoins.add(association.toString());
+      _innerJoins.addAll(association.toJoinFragment());
       return _expandCondition(condition.value, associationAdapter);
     }
 
@@ -146,40 +146,36 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
 /// Inner joins
 class AssociationFragment {
-  final SqliteAdapter adapter;
-  final String localTableColumn;
+  final String foreignTableName;
 
-  /// When false, the query is a one to many association.
-  /// Defaults to [true].
-  final bool oneToOneAssociation;
+  final Map<String, dynamic> definition;
+
+  final String localTableName;
 
   AssociationFragment({
-    this.adapter,
-    this.localTableColumn,
-    this.oneToOneAssociation = true,
+    this.definition,
+    this.foreignTableName,
+    this.localTableName,
   });
 
-  toString() {
-    final associationTableName = adapter.tableName;
+  List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
+    final oneToOneAssociation = !definition['iterable'];
+    final localColumnName = definition['name'];
+    final localTableColumn = '`$localTableName`.${definition['name']}';
 
-    // 1) SQLite doesn't support a CONCAT function. It has these weird double pipes instead.
-    // 2) For one-to-many queries, the primary key of the parent element is not stored on the child,
-    // as the parent is the one who wants to know about the child. Therefore, the query is based on
-    // a string array stored in a single parent column. This query is wildly unoptimized and is not
-    // recommended. However, until the JSON1 extension enjoys wide support on platforms Brick
-    // supports, this hack is necessary.
-    // 3) The OR statements prevent queries from returning a row with the id of 10
-    // when the id of 1 was specified
-    final many = [
-      '$localTableColumn LIKE "%," || `$associationTableName`.$primaryKeyColumn || ",%"',
-      'OR $localTableColumn LIKE "%," || `$associationTableName`.$primaryKeyColumn || "]"',
-      'OR $localTableColumn LIKE "[" || `$associationTableName`.$primaryKeyColumn || "]"',
-      'OR $localTableColumn LIKE "[" || `$associationTableName`.$primaryKeyColumn || ",%"',
-    ].join(' ');
-    final one = '$localTableColumn = `$associationTableName`.$primaryKeyColumn';
-    final joinCondition = oneToOneAssociation ? one : many;
-    return 'INNER JOIN `$associationTableName` ON $joinCondition';
+    if (oneToOneAssociation) {
+      return [
+        'INNER JOIN `$foreignTableName` ON $localTableColumn = `$foreignTableName`.$primaryKeyColumn'
+      ];
+    }
+
+    final joinsTableName =
+        InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
+    return [
+      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(localTableName)}',
+      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(foreignTableName)}'
+    ];
   }
 }
 

@@ -127,11 +127,11 @@ void main() {
       });
 
       test('.joinsTableName', () {
-        var tableName = InsertForeignKey.joinsTableName('Hat', 'User');
-        expect(tableName, '_brick_Hat_User');
+        var tableName = InsertForeignKey.joinsTableName('sunday_hat', localTableName: 'User');
+        expect(tableName, '_brick_User_sunday_hat');
 
-        tableName = InsertForeignKey.joinsTableName('Person', 'Address');
-        expect(tableName, '_brick_Address_Person');
+        tableName = InsertForeignKey.joinsTableName('address', localTableName: 'People');
+        expect(tableName, '_brick_People_address');
       });
     });
 

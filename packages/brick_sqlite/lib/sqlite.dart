@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
@@ -21,7 +22,7 @@ class SqliteModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<S
 
 /// Retrieves from a Sqlite database
 class SqliteProvider implements Provider<SqliteModel> {
-  static const String MIGRATION_VERSIONS_TABLE_NAME = "MigrationVersions";
+  static const String MIGRATION_VERSIONS_TABLE_NAME = 'MigrationVersions';
 
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
@@ -74,15 +75,15 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     if (instance.isNewRecord || existingPrimaryKey == null) {
       throw ArgumentError(
-        "$instance cannot be deleted because it does not exist in the SQLite database.",
+        '$instance cannot be deleted because it does not exist in the SQLite database.',
       );
     }
 
     final primaryKey = existingPrimaryKey ?? instance.primaryKey;
 
     return await db.delete(
-      "`${adapter.tableName}`",
-      where: "${InsertTable.PRIMARY_KEY_COLUMN} = ?",
+      '`${adapter.tableName}`',
+      where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
       whereArgs: [primaryKey],
     );
   }
@@ -103,7 +104,7 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     final adapter = modelDictionary.adapterFor[_Model];
 
-    final countQuery = await (await _db).rawQuery("SELECT COUNT(*) FROM `${adapter.tableName}`");
+    final countQuery = await (await _db).rawQuery('SELECT COUNT(*) FROM `${adapter.tableName}`');
     final count = Sqflite.firstIntValue(countQuery ?? []) ?? 0;
     return count > 0;
   }
@@ -144,12 +145,12 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     // ensure migrations table exists
     await db.execute(
-        "CREATE TABLE IF NOT EXISTS $MIGRATION_VERSIONS_TABLE_NAME(version INTEGER PRIMARY KEY)");
+        'CREATE TABLE IF NOT EXISTS $MIGRATION_VERSIONS_TABLE_NAME(version INTEGER PRIMARY KEY)');
 
     final sqliteVersions = await db.query(
       MIGRATION_VERSIONS_TABLE_NAME,
       distinct: true,
-      orderBy: "version DESC",
+      orderBy: 'version DESC',
       limit: 1,
     );
 
@@ -166,7 +167,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     final db = await _db;
 
     // Ensure foreign keys are enabled
-    await db.execute("PRAGMA foreign_keys=on;");
+    await db.execute('PRAGMA foreign_keys=on;');
 
     final latestMigrationVersion = MigrationManager.latestMigrationVersion(migrations);
     final latestSqliteMigrationVersion = await lastMigrationVersion();
@@ -193,7 +194,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       }
 
       await db.rawInsert(
-        "INSERT INTO $MIGRATION_VERSIONS_TABLE_NAME(version) VALUES(?)",
+        'INSERT INTO $MIGRATION_VERSIONS_TABLE_NAME(version) VALUES(?)',
         [migration.version],
       );
     }
@@ -227,6 +228,16 @@ class SqliteProvider implements Provider<SqliteModel> {
     return await (await _db).execute(sql, arguments);
   }
 
+  /// Insert with a raw SQL statement. **Advanced use only**.
+  Future<int> rawInsert(String sql, [List arguments]) async {
+    return await (await _db).rawInsert(sql, arguments);
+  }
+
+  /// Query with a raw SQL statement. **Advanced use only**.
+  Future<List<Map>> rawQuery(String sql, [List arguments]) async {
+    return await (await _db).rawQuery(sql, arguments);
+  }
+
   /// Reset the DB by deleting and recreating it.
   ///
   /// **WARNING:** This is a destructive, irrevisible action.
@@ -258,6 +269,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     final adapter = modelDictionary.adapterFor[_Model];
     final db = await _db;
 
+    await adapter.beforeSave(instance, provider: this, repository: repository);
     await instance.beforeSave(provider: this, repository: repository);
     final data = await adapter.toSqlite(instance, provider: this, repository: repository);
 
@@ -267,24 +279,56 @@ class SqliteProvider implements Provider<SqliteModel> {
 
         if (instance.isNewRecord && existingPrimaryKey == null) {
           return await txn.insert(
-            "`${adapter.tableName}`",
+            '`${adapter.tableName}`',
             data,
           );
         }
 
         final primaryKey = existingPrimaryKey ?? instance.primaryKey;
         await txn.update(
-          "`${adapter.tableName}`",
+          '`${adapter.tableName}`',
           data,
-          where: "${InsertTable.PRIMARY_KEY_COLUMN} = ?",
+          where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
           whereArgs: [primaryKey],
         );
         return primaryKey;
       });
     });
 
+    instance.primaryKey = id;
+    await adapter.afterSave(instance, provider: this, repository: repository);
     await instance.afterSave(provider: this, repository: repository);
     return id;
+  }
+
+  /// brick_sqlite 0.1.0 changed the storage of iterable siblings from a JSON-encoded string to
+  /// a proper joins table entity. This method migrates from pre-0.1.0 to the new API.
+  /// It should be run after `migrate`. For more, see the [CHANGELOG notes](https://github.com/greenbits/brick/blob/master/packages/brick_sqlite/CHANGELOG.md#010).
+  ///
+  /// This method will be eventually deprecated and removed.
+  Future<void> migrateFromStringToJoinsTable(
+    String columnName,
+    String localTableName,
+    String foreignTableName,
+  ) async {
+    final db = await _db;
+
+    final rawIds = await db
+        .rawQuery('SELECT $columnName, ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
+    for (var result in rawIds) {
+      final ids = jsonDecode(result[columnName] ?? '[]');
+      for (var id in ids) {
+        // ignore deleted associations as they'll throw contraint exceptions
+        final hasAssociation = await db.rawQuery(
+            'SELECT DISTINCT ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$foreignTableName` WHERE ${InsertTable.PRIMARY_KEY_COLUMN} = $id LIMIT 1');
+        if (hasAssociation.isNotEmpty) {
+          await db.rawInsert(
+            'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.foreignKeyColumnName(localTableName)}`, `${InsertForeignKey.foreignKeyColumnName(foreignTableName)}`) VALUES (?, ?)',
+            [result[InsertTable.PRIMARY_KEY_COLUMN], id],
+          );
+        }
+      }
+    }
   }
 
   /// Ensure that the provided `providerArgs` are support by this provider.
@@ -320,6 +364,25 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// If this property is changed after the table has been inserted,
   /// a [RenameTable] [MigrationCommand] must be included in the next [Migration].
   String get tableName;
+
+  /// Hook invoked before the model is successfully entered in the SQLite database.
+  /// Useful to update or save associations. This is invoked **before**
+  /// `SqliteModel#beforeSave`.
+  Future<void> beforeSave(
+    _Model instance, {
+    SqliteProvider provider,
+    ModelRepository<SqliteModel> repository,
+  }) async {}
+
+  /// Hook invoked after the model is successfully entered in the SQLite database.
+  /// Useful to update or save associations. This is invoked **before**
+  /// `SqliteModel#afterSave`.
+  Future<void> afterSave(
+    _Model instance, {
+    SqliteProvider provider,
+    ModelRepository<SqliteModel> repository,
+  }) async {}
+
   Future<_Model> fromSqlite(
     Map<String, dynamic> data, {
     SqliteProvider provider,

@@ -43,7 +43,7 @@ Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
 class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
-  String restEndpoint({query, instance}) => '';
+  String restEndpoint({query, instance}) => "/mounties";
   final String fromKey = null;
   final String toKey = null;
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
