@@ -135,6 +135,16 @@ void main() {
         expect(prefixedName, 'casual_BigHat_brick_id');
       });
 
+      test('.joinsTableLocalColumnName', () {
+        final columnName = InsertForeignKey.joinsTableLocalColumnName('BigHat');
+        expect(columnName, 'l_BigHat_brick_id');
+      });
+
+      test('.joinsTableForeignColumnName', () {
+        final columnName = InsertForeignKey.joinsTableForeignColumnName('BigHat');
+        expect(columnName, 'f_BigHat_brick_id');
+      });
+
       test('.joinsTableName', () {
         var tableName = InsertForeignKey.joinsTableName('sunday_hat', localTableName: 'User');
         expect(tableName, '_brick_User_sunday_hat');

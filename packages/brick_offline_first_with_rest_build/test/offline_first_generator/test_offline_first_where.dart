@@ -58,11 +58,11 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                   ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
               : null),
       assocs: await provider?.rawQuery(
-          'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE OfflineFirstWhere_brick_id = ?',
+          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
           [
             data['_brick_id'] as int
           ])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
             ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
@@ -80,11 +80,11 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                   ?.first
               : null),
       loadedAssocs: (await provider?.rawQuery(
-              'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE OfflineFirstWhere_brick_id = ?',
+              'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
               [
             data['_brick_id'] as int
           ])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
             ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
@@ -94,9 +94,9 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
           ?.toList()
           ?.cast<Assoc>(),
       multiLookupCustomGenerator: await provider?.rawQuery(
-          'SELECT `Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE OfflineFirstWhere_brick_id = ?',
+          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
             ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
@@ -175,7 +175,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }
@@ -185,7 +185,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = s?.primaryKey ??
             await provider?.upsert<Assoc>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }
@@ -196,7 +196,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`OfflineFirstWhere_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

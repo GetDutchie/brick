@@ -173,8 +173,8 @@ class AssociationFragment {
     final joinsTableName =
         InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
     return [
-      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(localTableName)}',
-      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.foreignKeyColumnName(foreignTableName)}'
+      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableLocalColumnName(localTableName)}',
+      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}'
     ];
   }
 }

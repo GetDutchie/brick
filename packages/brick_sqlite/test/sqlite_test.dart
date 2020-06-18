@@ -66,14 +66,14 @@ void main() {
       final joinsTableName =
           InsertForeignKey.joinsTableName(columnName, localTableName: localTableName);
       final joinsColumnLocal = SchemaColumn(
-        InsertForeignKey.foreignKeyColumnName(localTableName),
+        InsertForeignKey.joinsTableLocalColumnName(localTableName),
         int,
         foreignTableName: localTableName,
         isForeignKey: true,
         onDeleteCascade: true,
       )..tableName = joinsTableName;
       final joinsColumnForeign = SchemaColumn(
-        InsertForeignKey.foreignKeyColumnName(foreignTableName),
+        InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
         int,
         isForeignKey: true,
         foreignTableName: foreignTableName,
