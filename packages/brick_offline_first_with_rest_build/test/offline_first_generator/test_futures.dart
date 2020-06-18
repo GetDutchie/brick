@@ -71,11 +71,11 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
       assocs: data['assocs'] == null
           ? null
           : provider?.rawQuery(
-              'SELECT `Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE Futures_brick_id = ?',
+              'SELECT `f_Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
               [
                   data['_brick_id'] as int
                 ])?.then((results) {
-              final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+              final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
               return Future.wait<Assoc>(
                   ids.map((primaryKey) async => await repository
                       ?.getAssociation<Assoc>(
@@ -84,9 +84,9 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
                       ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
             }),
       futureAssocs: await provider?.rawQuery(
-          'SELECT `Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE Futures_brick_id = ?',
+          'SELECT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
           [data['_brick_id'] as int])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['Assoc_brick_id']);
+        final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
             ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
@@ -170,7 +170,7 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_Futures_future_assocs` (`Futures_brick_id`, `Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_Futures_future_assocs` (`l_Futures_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

@@ -73,12 +73,12 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
         final sqlStatement =
-            'SELECT `${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.foreignKeyColumnName(fields.element.name)} = ?';
+            'SELECT `${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
         final method = '''
           provider
             ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
             ?.then((results) {
-              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.foreignKeyColumnName(argType.getDisplayString())}']);
+              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}']);
               return Future.wait<$argType>(
                 ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
                 ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))

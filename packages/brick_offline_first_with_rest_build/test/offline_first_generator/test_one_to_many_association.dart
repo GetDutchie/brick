@@ -51,9 +51,9 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
     OfflineFirstRepository repository}) async {
   return OneToManyAssociation(
       assoc: (await provider?.rawQuery(
-              'SELECT `SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE OneToManyAssociation_brick_id = ?',
+              'SELECT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
               [data['_brick_id'] as int])?.then((results) {
-    final ids = results.map((r) => (r ?? {})['SqliteAssoc_brick_id']);
+    final ids = results.map((r) => (r ?? {})['f_SqliteAssoc_brick_id']);
     return Future.wait<SqliteAssoc>(ids.map((primaryKey) => repository
         ?.getAssociation<SqliteAssoc>(
           Query.where('primaryKey', primaryKey, limit1: true),
@@ -104,7 +104,7 @@ class OneToManyAssociationAdapter
         final id = s?.primaryKey ??
             await provider?.upsert<SqliteAssoc>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`OneToManyAssociation_brick_id`, `SqliteAssoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`l_OneToManyAssociation_brick_id`, `f_SqliteAssoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

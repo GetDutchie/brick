@@ -106,7 +106,7 @@ class SqliteSchemaGenerator {
           nullable: false,
         ),
         SchemaColumn(
-          InsertForeignKey.foreignKeyColumnName(localTableName),
+          InsertForeignKey.joinsTableLocalColumnName(localTableName),
           int,
           isForeignKey: true,
           foreignTableName: localTableName,
@@ -115,7 +115,7 @@ class SqliteSchemaGenerator {
           onDeleteSetDefault: false,
         ),
         SchemaColumn(
-          InsertForeignKey.foreignKeyColumnName(foreignTableName),
+          InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
           int,
           isForeignKey: true,
           foreignTableName: foreignTableName,

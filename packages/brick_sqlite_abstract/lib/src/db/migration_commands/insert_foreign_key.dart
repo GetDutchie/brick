@@ -81,4 +81,22 @@ class InsertForeignKey extends MigrationCommand {
   static String joinsTableName(String columnName, {String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
+
+  /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
+  /// For example, `final List<Friend> friends` on class `Friend`.
+  ///
+  /// This and [joinsTableForeignColumnName] are created for the legibility and constraint of a
+  /// single, universal method across packages. The prefix of `l` should not be changed without an
+  /// available migration path.
+  static String joinsTableLocalColumnName(String localTableName) =>
+      foreignKeyColumnName(localTableName, 'l');
+
+  /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
+  /// For example, `final List<Friend> friends` on class `Friend`.
+  ///
+  /// This and [joinsTableLocalColumnName] are created for the legibility and constraint of a
+  /// single, universal method across packages. The prefix of `l` should not be changed without an
+  /// available migration path.
+  static String joinsTableForeignColumnName(String localTableName) =>
+      foreignKeyColumnName(localTableName, 'f');
 }

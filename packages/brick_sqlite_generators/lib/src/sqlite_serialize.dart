@@ -190,7 +190,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // Iterable<Future<SqliteModel>>
     final insertStatement =
-        'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name)}` (`${InsertForeignKey.foreignKeyColumnName(fields.element.name)}`, `${InsertForeignKey.foreignKeyColumnName(checker.unFuturedArgType.getDisplayString())}`)';
+        'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name)}` (`${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)}`, `${InsertForeignKey.joinsTableForeignColumnName(checker.unFuturedArgType.getDisplayString())}`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
         '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
