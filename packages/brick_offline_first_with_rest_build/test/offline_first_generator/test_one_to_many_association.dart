@@ -51,7 +51,7 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
     OfflineFirstRepository repository}) async {
   return OneToManyAssociation(
       assoc: (await provider?.rawQuery(
-              'SELECT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
+              'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
               [data['_brick_id'] as int])?.then((results) {
     final ids = results.map((r) => (r ?? {})['f_SqliteAssoc_brick_id']);
     return Future.wait<SqliteAssoc>(ids.map((primaryKey) => repository
