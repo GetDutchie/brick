@@ -71,7 +71,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
       assocs: data['assocs'] == null
           ? null
           : provider?.rawQuery(
-              'SELECT `Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
+              'SELECT `f_Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
               [
                   data['_brick_id'] as int
                 ])?.then((results) {
@@ -84,7 +84,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
                       ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
             }),
       futureAssocs: await provider?.rawQuery(
-          'SELECT `Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
+          'SELECT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
           [data['_brick_id'] as int])?.then((results) {
         final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
