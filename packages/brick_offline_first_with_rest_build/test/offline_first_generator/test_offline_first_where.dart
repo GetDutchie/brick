@@ -58,7 +58,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                   ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
               : null),
       assocs: await provider?.rawQuery(
-          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
+          'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
           [
             data['_brick_id'] as int
           ])?.then((results) {
@@ -80,7 +80,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
                   ?.first
               : null),
       loadedAssocs: (await provider?.rawQuery(
-              'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
+              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
               [
             data['_brick_id'] as int
           ])?.then((results) {
@@ -94,7 +94,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
           ?.toList()
           ?.cast<Assoc>(),
       multiLookupCustomGenerator: await provider?.rawQuery(
-          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
+          'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int])?.then((results) {
         final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
         return Future.wait<Assoc>(ids.map((primaryKey) => repository
