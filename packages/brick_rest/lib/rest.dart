@@ -30,30 +30,31 @@ class RestProvider implements Provider<RestModel> {
   /// All requests pass through this client.
   http.Client client;
 
-  final Logger _logger;
+  @protected
+  final Logger logger;
 
   RestProvider(
     this.baseEndpoint, {
     this.modelDictionary,
     http.Client client,
   })  : this.client = client ?? http.Client(),
-        _logger = Logger('RestProvider');
+        logger = Logger('RestProvider');
 
   /// Sends a DELETE request method to the endpoint
   @override
   Future<http.Response> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final url = urlForModel<_Model>(query, instance);
     if (url == null) return null;
-    _logger.fine('DELETE $url');
+    logger.fine('DELETE $url');
 
     final resp = await client.delete(url, headers: headersForQuery(query));
 
-    _logger.finest('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    logger.finest('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
     } else {
-      _logger.warning('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+      logger.warning('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
@@ -69,12 +70,12 @@ class RestProvider implements Provider<RestModel> {
     final url = urlForModel<_Model>(query);
     if (url == null) return <_Model>[];
 
-    _logger.fine('GET $url');
+    logger.fine('GET $url');
 
     final adapter = modelDictionary.adapterFor[_Model];
     final resp = await client.get(url, headers: headersForQuery(query));
 
-    _logger.finest('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    logger.finest('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
@@ -90,7 +91,7 @@ class RestProvider implements Provider<RestModel> {
 
       return await Future.wait<_Model>(results);
     } else {
-      _logger.warning('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+      logger.warning('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
@@ -114,12 +115,12 @@ class RestProvider implements Provider<RestModel> {
 
     final resp = await _sendUpsertResponse(url, body, query, adapter.toKey);
 
-    _logger.finest('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    logger.finest('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
     } else {
-      _logger.warning('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+      logger.warning('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
@@ -192,13 +193,13 @@ class RestProvider implements Provider<RestModel> {
     final headers = headersForQuery(query);
 
     if ((query?.providerArgs ?? {})['request'] == 'PUT') {
-      _logger.fine('PUT $url');
-      _logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
+      logger.fine('PUT $url');
+      logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
       return await client.put(url, body: wrappedBody, headers: headers);
     }
 
-    _logger.fine('POST $url');
-    _logger.finer('method=POST url=$url headers=$headers body=$wrappedBody');
+    logger.fine('POST $url');
+    logger.finer('method=POST url=$url headers=$headers body=$wrappedBody');
     return await client.post(url, body: wrappedBody, headers: headers);
   }
 }
