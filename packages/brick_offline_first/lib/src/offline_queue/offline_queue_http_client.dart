@@ -63,7 +63,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
 
       return resp ?? _genericErrorResponse;
     } catch (e) {
-      _logger.warning(e);
+      _logger.warning('#send: $e');
     }
 
     return _genericErrorResponse;

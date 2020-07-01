@@ -48,12 +48,12 @@ class RestProvider implements Provider<RestModel> {
 
     final resp = await client.delete(url, headers: headersForQuery(query));
 
-    _logger.finest('caller=delete url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    _logger.finest('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
     } else {
-      _logger.warning(resp?.statusCode, resp?.body);
+      _logger.warning('#delete: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
@@ -74,7 +74,7 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[_Model];
     final resp = await client.get(url, headers: headersForQuery(query));
 
-    _logger.finest('caller=get url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    _logger.finest('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
@@ -90,7 +90,7 @@ class RestProvider implements Provider<RestModel> {
 
       return await Future.wait<_Model>(results);
     } else {
-      _logger.warning(resp?.statusCode, resp?.body);
+      _logger.warning('#get: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
@@ -114,12 +114,12 @@ class RestProvider implements Provider<RestModel> {
 
     final resp = await _sendUpsertResponse(url, body, query, adapter.toKey);
 
-    _logger.finest('caller=upsert url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
+    _logger.finest('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
 
     if (statusCodeIsSuccessful(resp?.statusCode)) {
       return resp;
     } else {
-      _logger.warning(resp?.statusCode, resp?.body);
+      _logger.warning('#upsert: url=$url statusCode=${resp?.statusCode} body=${resp?.body}');
       throw RestException(resp);
     }
   }
