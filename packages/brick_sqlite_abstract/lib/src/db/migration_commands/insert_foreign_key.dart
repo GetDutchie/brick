@@ -42,9 +42,24 @@ class InsertForeignKey extends MigrationCommand {
     return '';
   }
 
+  /// When the last foreign key column is created on a joins table, an index is created to ensure that duplicate
+  /// entries are not inserted
   @override
-  String get statement =>
-      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
+  String get statement {
+    final alterTableStatement =
+        'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
+
+    // Only add the index when it's the second column. The foreign table column is always inserted last.
+    if (localTableName.startsWith('_brick') && _foreignKeyColumn.startsWith('f_')) {
+      final joinsLocalTableName = localTableName.split('_')[2];
+      final localTableColumn = joinsTableLocalColumnName(joinsLocalTableName);
+      final indexStatement =
+          'CREATE UNIQUE INDEX IF NOT EXISTS ${localTableName}_index on $localTableName(`$localTableColumn`, `$_foreignKeyColumn`)';
+      return [alterTableStatement, indexStatement].join(';');
+    }
+
+    return alterTableStatement;
+  }
 
   @override
   String get forGenerator =>
@@ -78,6 +93,9 @@ class InsertForeignKey extends MigrationCommand {
   /// The downside of this pattern is the inevitable data duplication for such many-to-many
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
+  //
+  // If this method is changed, the index creation in [statement] needs to be updated, as it
+  // inverts this functionality to derive the [localTableName]
   static String joinsTableName(String columnName, {String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
@@ -97,6 +115,6 @@ class InsertForeignKey extends MigrationCommand {
   /// This and [joinsTableLocalColumnName] are created for the legibility and constraint of a
   /// single, universal method across packages. The prefix of `l` should not be changed without an
   /// available migration path.
-  static String joinsTableForeignColumnName(String localTableName) =>
-      foreignKeyColumnName(localTableName, 'f');
+  static String joinsTableForeignColumnName(String foreignTableName) =>
+      foreignKeyColumnName(foreignTableName, 'f');
 }

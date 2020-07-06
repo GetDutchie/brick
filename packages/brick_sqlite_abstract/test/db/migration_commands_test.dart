@@ -152,6 +152,25 @@ void main() {
         tableName = InsertForeignKey.joinsTableName('address', localTableName: 'People');
         expect(tableName, '_brick_People_address');
       });
+
+      test('joins table index', () {
+        final localTable = 'People';
+        final foreignTable = 'Friend';
+
+        final tableName = InsertForeignKey.joinsTableName('friend', localTableName: localTable);
+        expect(tableName, '_brick_People_friend');
+
+        final localCommand = InsertForeignKey(tableName, localTable,
+            foreignKeyColumn: InsertForeignKey.joinsTableLocalColumnName(localTable));
+        expect(localCommand.statement,
+            'ALTER TABLE `_brick_People_friend` ADD COLUMN `l_People_brick_id` INTEGER REFERENCES `People`(`_brick_id`)');
+        final foreignColumn = InsertForeignKey.joinsTableForeignColumnName(foreignTable);
+        final foreignCommand =
+            InsertForeignKey(tableName, foreignTable, foreignKeyColumn: foreignColumn);
+
+        expect(foreignCommand.statement,
+            'ALTER TABLE `_brick_People_friend` ADD COLUMN `f_Friend_brick_id` INTEGER REFERENCES `Friend`(`_brick_id`);CREATE UNIQUE INDEX IF NOT EXISTS _brick_People_friend_index on _brick_People_friend(`l_People_brick_id`, `f_Friend_brick_id`)');
+      });
     });
 
     group('InsertTable', () {
