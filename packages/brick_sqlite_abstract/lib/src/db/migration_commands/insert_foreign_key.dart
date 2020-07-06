@@ -45,22 +45,8 @@ class InsertForeignKey extends MigrationCommand {
   /// When the last foreign key column is created on a joins table, an index is created to ensure that duplicate
   /// entries are not inserted
   @override
-  String get statement {
-    final alterTableStatement =
-        'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
-
-    // For joins tables, an index is added to ensure duplicates are not inserted
-    // Only add the index when it's the second column. The foreign table column is always inserted last.
-    if (localTableName.startsWith('_brick') && _foreignKeyColumn.startsWith('f_')) {
-      final joinsLocalTableName = localTableName.split('_')[2];
-      final localTableColumn = joinsTableLocalColumnName(joinsLocalTableName);
-      final indexStatement =
-          'CREATE UNIQUE INDEX IF NOT EXISTS ${localTableName}_index on $localTableName(`$localTableColumn`, `$_foreignKeyColumn`)';
-      return [alterTableStatement, indexStatement].join(';');
-    }
-
-    return alterTableStatement;
-  }
+  String get statement =>
+      'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
 
   @override
   String get forGenerator =>
@@ -95,11 +81,13 @@ class InsertForeignKey extends MigrationCommand {
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
   //
-  // If this method is changed, the index creation in [statement] needs to be updated, as it
-  // inverts this functionality to derive the [localTableName]
+  // If this method is changed, the index creation in [isAJoinsTable] needs to be updated
   static String joinsTableName(String columnName, {String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
+
+  /// Determine if a tableName is a joins table
+  static bool isAJoinsTable(String tableName) => tableName.startsWith('_brick');
 
   /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
   /// For example, `final List<Friend> friends` on class `Friend`.

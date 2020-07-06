@@ -4,6 +4,36 @@ import '__mocks__.dart';
 
 void main() {
   group('MigrationCommand', () {
+    group('CreateIndex', () {
+      const m = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+      );
+      const mUnique = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+        unique: true,
+      );
+
+      test('defaults', () {
+        expect(m.unique, isFalse);
+      });
+
+      test('#statement', () {
+        expect(m.statement,
+            'CREATE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+        expect(mUnique.statement,
+            'CREATE UNIQUE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)");
+        expect(mUnique.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
+      });
+    });
+
     group('DropColumn', () {
       const m = DropColumn('name', onTable: 'demo');
 
@@ -151,25 +181,6 @@ void main() {
 
         tableName = InsertForeignKey.joinsTableName('address', localTableName: 'People');
         expect(tableName, '_brick_People_address');
-      });
-
-      test('joins table index', () {
-        final localTable = 'People';
-        final foreignTable = 'Friend';
-
-        final tableName = InsertForeignKey.joinsTableName('friend', localTableName: localTable);
-        expect(tableName, '_brick_People_friend');
-
-        final localCommand = InsertForeignKey(tableName, localTable,
-            foreignKeyColumn: InsertForeignKey.joinsTableLocalColumnName(localTable));
-        expect(localCommand.statement,
-            'ALTER TABLE `_brick_People_friend` ADD COLUMN `l_People_brick_id` INTEGER REFERENCES `People`(`_brick_id`)');
-        final foreignColumn = InsertForeignKey.joinsTableForeignColumnName(foreignTable);
-        final foreignCommand =
-            InsertForeignKey(tableName, foreignTable, foreignKeyColumn: foreignColumn);
-
-        expect(foreignCommand.statement,
-            'ALTER TABLE `_brick_People_friend` ADD COLUMN `f_Friend_brick_id` INTEGER REFERENCES `Friend`(`_brick_id`);CREATE UNIQUE INDEX IF NOT EXISTS _brick_People_friend_index on _brick_People_friend(`l_People_brick_id`, `f_Friend_brick_id`)');
       });
     });
 

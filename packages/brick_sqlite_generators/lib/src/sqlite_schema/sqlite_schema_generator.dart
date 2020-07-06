@@ -64,7 +64,8 @@ class SqliteSchemaGenerator {
     final tables = fieldses.fold<Set<SchemaTable>>(<SchemaTable>{}, (acc, fields) {
       final iterableAssociations = fields.stableInstanceFields.where((f) {
         final checker = checkerForField(f);
-        return checker.isIterable && checker.isArgTypeASibling;
+        final annotation = fields.finder.annotationForField(f);
+        return checker.isIterable && checker.isArgTypeASibling && !annotation.ignore;
       });
 
       if (iterableAssociations.isNotEmpty) {

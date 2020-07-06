@@ -234,6 +234,53 @@ void main() {
         expect(diff.droppedTables, hasLength(1));
         expect(diff.insertedTables, isEmpty);
       });
+
+      test('joins table indexes', () {
+        final oldSchema = Schema(0, tables: Set.from([]));
+        final newSchema = Schema(
+          1,
+          tables: {
+            SchemaTable(
+              '_brick_People_friend',
+              columns: Set<SchemaColumn>.from([
+                SchemaColumn('_brick_id', int,
+                    autoincrement: true, nullable: false, isPrimaryKey: true),
+                SchemaColumn(
+                  'l_People_brick_id',
+                  int,
+                  isForeignKey: true,
+                  foreignTableName: 'People',
+                  onDeleteSetDefault: true,
+                ),
+                SchemaColumn(
+                  'f_Friend_brick_id',
+                  int,
+                  isForeignKey: true,
+                  foreignTableName: 'Friend',
+                  onDeleteSetDefault: true,
+                ),
+              ]),
+            ),
+          },
+        );
+
+        final diff = SchemaDifference(oldSchema, newSchema);
+        expect(diff.toMigrationCommands(), [
+          InsertTable('_brick_People_friend'),
+          InsertForeignKey('_brick_People_friend', 'People',
+              foreignKeyColumn: 'l_People_brick_id',
+              onDeleteCascade: false,
+              onDeleteSetDefault: true),
+          InsertForeignKey('_brick_People_friend', 'Friend',
+              foreignKeyColumn: 'f_Friend_brick_id',
+              onDeleteCascade: false,
+              onDeleteSetDefault: true),
+          CreateIndex(
+              columns: ['l_People_brick_id', 'f_Friend_brick_id'],
+              onTable: '_brick_People_friend',
+              unique: true)
+        ]);
+      });
     });
 
     test('#forGenerator', () {
