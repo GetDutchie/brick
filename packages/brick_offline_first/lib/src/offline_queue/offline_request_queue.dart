@@ -40,7 +40,7 @@ class OfflineRequestQueue {
     final request = await client.requestManager.prepareNextRequestToProcess();
 
     if (request != null) {
-      _logger.finer('Processing request');
+      _logger.finest('Processing request ${request.method} ${request.url}');
       await client.send(request);
     }
   }
