@@ -49,6 +49,7 @@ class InsertForeignKey extends MigrationCommand {
     final alterTableStatement =
         'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
 
+    // For joins tables, an index is added to ensure duplicates are not inserted
     // Only add the index when it's the second column. The foreign table column is always inserted last.
     if (localTableName.startsWith('_brick') && _foreignKeyColumn.startsWith('f_')) {
       final joinsLocalTableName = localTableName.split('_')[2];
