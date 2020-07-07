@@ -80,14 +80,9 @@ class InsertForeignKey extends MigrationCommand {
   /// The downside of this pattern is the inevitable data duplication for such many-to-many
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
-  //
-  // If this method is changed, the index creation in [isAJoinsTable] needs to be updated
   static String joinsTableName(String columnName, {String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
-
-  /// Determine if a tableName is a joins table
-  static bool isAJoinsTable(String tableName) => tableName.startsWith('_brick');
 
   /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
   /// For example, `final List<Friend> friends` on class `Friend`.
