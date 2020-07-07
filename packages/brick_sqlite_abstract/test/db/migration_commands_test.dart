@@ -4,6 +4,36 @@ import '__mocks__.dart';
 
 void main() {
   group('MigrationCommand', () {
+    group('CreateIndex', () {
+      const m = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+      );
+      const mUnique = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+        unique: true,
+      );
+
+      test('defaults', () {
+        expect(m.unique, isFalse);
+      });
+
+      test('#statement', () {
+        expect(m.statement,
+            'CREATE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+        expect(mUnique.statement,
+            'CREATE UNIQUE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)");
+        expect(mUnique.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
+      });
+    });
+
     group('DropColumn', () {
       const m = DropColumn('name', onTable: 'demo');
 

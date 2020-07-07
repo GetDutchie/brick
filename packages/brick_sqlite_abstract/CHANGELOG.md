@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When joins tables are created, add a unique index by both columns to ensure no duplicates are inserted
+
 ## 0.0.7+4
 
 * Fix a bug where a many-to-many association shared the same class name

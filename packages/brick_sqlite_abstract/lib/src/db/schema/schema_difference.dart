@@ -1,3 +1,5 @@
+import 'package:brick_sqlite_abstract/src/db/migration_commands/create_index.dart';
+
 import '../migration_commands.dart';
 import '../schema.dart';
 import 'schema_column.dart';
@@ -50,7 +52,17 @@ class SchemaDifference {
         .expand((s) => s)
         .cast<MigrationCommand>();
 
-    return [removedTables, removedColumns, added]
+    final indexes =
+        insertedTables.where((table) => InsertForeignKey.isAJoinsTable(table.name)).map((table) {
+      final columns = addedColumns
+          .where((column) => column.tableName == table.name)
+          .map((column) => column.name)
+          .toList()
+          .cast<String>();
+      return CreateIndex(columns: columns, onTable: table.name, unique: true);
+    });
+
+    return [removedTables, removedColumns, added, indexes]
         .expand((l) => l)
         .toList()
         .cast<MigrationCommand>();

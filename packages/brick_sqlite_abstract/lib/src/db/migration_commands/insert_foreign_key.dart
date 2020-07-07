@@ -42,6 +42,8 @@ class InsertForeignKey extends MigrationCommand {
     return '';
   }
 
+  /// When the last foreign key column is created on a joins table, an index is created to ensure that duplicate
+  /// entries are not inserted
   @override
   String get statement =>
       'ALTER TABLE `$localTableName` ADD COLUMN `$_foreignKeyColumn` INTEGER REFERENCES `$foreignTableName`(`${InsertTable.PRIMARY_KEY_COLUMN}`)$_onDeleteStatement';
@@ -78,9 +80,14 @@ class InsertForeignKey extends MigrationCommand {
   /// The downside of this pattern is the inevitable data duplication for such many-to-many
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
+  //
+  // If this method is changed, the index creation in [isAJoinsTable] needs to be updated
   static String joinsTableName(String columnName, {String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
+
+  /// Determine if a tableName is a joins table
+  static bool isAJoinsTable(String tableName) => tableName.startsWith('_brick');
 
   /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
   /// For example, `final List<Friend> friends` on class `Friend`.
@@ -97,6 +104,6 @@ class InsertForeignKey extends MigrationCommand {
   /// This and [joinsTableLocalColumnName] are created for the legibility and constraint of a
   /// single, universal method across packages. The prefix of `l` should not be changed without an
   /// available migration path.
-  static String joinsTableForeignColumnName(String localTableName) =>
-      foreignKeyColumnName(localTableName, 'f');
+  static String joinsTableForeignColumnName(String foreignTableName) =>
+      foreignKeyColumnName(foreignTableName, 'f');
 }
