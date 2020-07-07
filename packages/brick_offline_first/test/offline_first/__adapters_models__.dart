@@ -161,7 +161,7 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       await Future.wait<int>(instance.mounties?.map((s) async {
         final id = s?.primaryKey ?? await provider?.upsert<Mounty>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_Horse_mounties` (`Horse_brick_id`, `Mounty_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`Horse_brick_id`, `Mounty_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

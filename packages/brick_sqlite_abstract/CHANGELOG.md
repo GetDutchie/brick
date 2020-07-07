@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 0.0.8+1
+
 * Add a `DropIndex` command to revert `CreateIndex` changes
+* Detect `CreateIndex` changes and generate a migration
 
 ## 0.0.8
 

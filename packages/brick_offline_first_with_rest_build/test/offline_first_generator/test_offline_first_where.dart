@@ -175,7 +175,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }
@@ -185,7 +185,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = s?.primaryKey ??
             await provider?.upsert<Assoc>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }
@@ -196,7 +196,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

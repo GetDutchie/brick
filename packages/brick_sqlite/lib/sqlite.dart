@@ -323,7 +323,7 @@ class SqliteProvider implements Provider<SqliteModel> {
             'SELECT DISTINCT ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$foreignTableName` WHERE ${InsertTable.PRIMARY_KEY_COLUMN} = $id LIMIT 1');
         if (hasAssociation.isNotEmpty) {
           await db.rawInsert(
-            'INSERT OR REPLACE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.joinsTableLocalColumnName(localTableName)}`, `${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.joinsTableLocalColumnName(localTableName)}`, `${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}`) VALUES (?, ?)',
             [result[InsertTable.PRIMARY_KEY_COLUMN], id],
           );
         }
