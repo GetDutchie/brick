@@ -13,23 +13,19 @@ import 'package:brick_sqlite_abstract/db.dart' show Migratable;
 final Set<Migration> migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(0,
-    generatorVersion: 1,
-    tables: <SchemaTable>{
-      SchemaTable('AllFieldTypes',
-          columns: <SchemaColumn>{
-            SchemaColumn('_brick_id', int,
-                autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn('integer', int),
-            SchemaColumn('boolean', bool),
-            SchemaColumn('dub', double),
-            SchemaColumn('string', String),
-            SchemaColumn('list', String),
-            SchemaColumn('longer_camelized_variable', String),
-            SchemaColumn('casing', int)
-          },
-          indices: <SchemaIndex>{})
-    });
+final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
+  SchemaTable('AllFieldTypes', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', int,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('integer', int),
+    SchemaColumn('boolean', bool),
+    SchemaColumn('dub', double),
+    SchemaColumn('string', String),
+    SchemaColumn('list', String),
+    SchemaColumn('longer_camelized_variable', String),
+    SchemaColumn('casing', int)
+  }, indices: <SchemaIndex>{})
+});
 ''';
 
 /// [SqliteSerializable] **does not** produce code.
