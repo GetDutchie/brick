@@ -29,17 +29,25 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final stopwatch = Stopwatch();
     stopwatch.start();
 
+    // TODO Set.from([ format is deprecated. Remove both of these on the next major release
+    await replaceWithinFile(
+      'db/schema.g.dart',
+      'final Set<Migration> migrations = Set.from([',
+      'final Set<Migration> migrations = <Migration>{',
+    );
+    await replaceWithinFile('db/schema.g.dart', '])', '}');
+
     // in a perfect world, the schema would not be edited in such a brittle way
     // however, reruning the schema generator here doesn't pick up the new migration
     // because it uses the LibraryReader from before the migration is created.
     // this should be revisited in a few build versions to make this flow less brittle
     // and more predictable by using the same schema generator to do all the heavy lifting
+    final newSetPiece = 'final Set<Migration> migrations = <Migration>{\n  Migration$version(),';
     final newPart = "show Migratable;\npart '$version.migration.dart';";
-    final newSetPiece = 'final Set<Migration> migrations = Set.from([\n  Migration$version(),';
 
     await replaceWithinFile(
       'db/schema.g.dart',
-      'final Set<Migration> migrations = Set.from([',
+      'final Set<Migration> migrations = <Migration>{',
       newSetPiece,
     );
     await replaceWithinFile(

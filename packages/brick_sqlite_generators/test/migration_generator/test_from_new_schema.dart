@@ -16,17 +16,17 @@ class Migration1 extends Migration {
   const Migration1() : super(version: version, up: up, down: down);
 }
 
-final schema = Schema(2,
-    generatorVersion: 1,
-    tables: Set<SchemaTable>.from([
-      SchemaTable('User',
-          columns: Set.from([
-            SchemaColumn('_brick_id', int,
-                autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn('address', String),
-            SchemaColumn('email', String),
-          ]))
-    ]));
+final schema = Schema(
+  2,
+  generatorVersion: 1,
+  tables: <SchemaTable>{
+    SchemaTable('User', columns: <SchemaColumn>{
+      SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+      SchemaColumn('address', String),
+      SchemaColumn('email', String),
+    })
+  },
+);
 
 final output = r'''
 // GENERATED CODE EDIT WITH CAUTION

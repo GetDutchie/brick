@@ -14,7 +14,7 @@ void main() {
         test('calls', () {
           final schema = Schema(
             1,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -22,7 +22,7 @@ void main() {
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable].toSet());
@@ -42,7 +42,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             2,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo1',
                 columns: Set<SchemaColumn>.from([
@@ -50,7 +50,7 @@ void main() {
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, renameTable].toSet());
@@ -88,7 +88,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             4,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -97,7 +97,7 @@ void main() {
                   SchemaColumn('name', String)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, insertColumn].toSet());
@@ -122,7 +122,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             5,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -131,7 +131,7 @@ void main() {
                   SchemaColumn('first_name', String)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema =
@@ -152,7 +152,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             6,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -161,7 +161,7 @@ void main() {
                   SchemaColumn('demo2_id', int, isForeignKey: true, foreignTableName: 'demo2')
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, insertForeignKey].toSet());
@@ -173,7 +173,7 @@ void main() {
       test('multiple tables', () {
         final schema = Schema(
           2,
-          tables: Set.from([
+          tables: <SchemaTable>{
             SchemaTable(
               'demo',
               columns: Set<SchemaColumn>.from([
@@ -188,7 +188,7 @@ void main() {
                     autoincrement: true, nullable: false, isPrimaryKey: true)
               ]),
             ),
-          ]),
+          },
         );
 
         final newSchema = Schema.fromMigrations([insertTable, Migration2()].toSet());
@@ -221,20 +221,20 @@ void main() {
 Schema(
   2,
   generatorVersion: 1,
-  tables: Set<SchemaTable>.from([
+  tables: <SchemaTable>{
     SchemaTable(
       'demo',
-      columns: Set.from([
+      columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
-      ])
+      }
     ),
     SchemaTable(
       'demo2',
-      columns: Set.from([
+      columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
-      ])
+      }
     )
-  ])
+  }
 )''');
     });
   });

@@ -23,8 +23,8 @@ void main() {
     });
 
     test('#droppedTables', () {
-      final oldSchema = Schema(0, tables: Set.from([table]));
-      final newSchema = Schema(1, tables: Set.from([]));
+      final oldSchema = Schema(0, tables: {table});
+      final newSchema = Schema(1, tables: {});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.droppedTables, contains(table));
@@ -33,8 +33,8 @@ void main() {
     });
 
     test('#insertedTables', () {
-      final oldSchema = Schema(0, tables: Set.from([]));
-      final newSchema = Schema(1, tables: Set.from([table]));
+      final oldSchema = Schema(0, tables: {});
+      final newSchema = Schema(1, tables: {table});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.insertedTables, hasLength(1));
@@ -46,8 +46,8 @@ void main() {
     group('columns', () {
       test('#droppedColumns', () {
         table.columns.add(column);
-        final oldSchema = Schema(0, tables: Set.from([table]));
-        final newSchema = Schema(1, tables: Set.from([tableNoColumn]));
+        final oldSchema = Schema(0, tables: {table});
+        final newSchema = Schema(1, tables: {tableNoColumn});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.droppedColumns, contains(column));
@@ -57,8 +57,8 @@ void main() {
 
       test('#insertedColumns', () {
         table.columns.add(column);
-        final oldSchema = Schema(0, tables: Set.from([tableNoColumn]));
-        final newSchema = Schema(1, tables: Set.from([table]));
+        final oldSchema = Schema(0, tables: {tableNoColumn});
+        final newSchema = Schema(1, tables: {table});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.insertedColumns, contains(column));
@@ -69,7 +69,7 @@ void main() {
       test('#insertedColumns across multiple tables', () {
         final schema = Schema(
           2,
-          tables: Set<SchemaTable>.from([
+          tables: <SchemaTable>{
             SchemaTable(
               'demo',
               columns: Set<SchemaColumn>.from([
@@ -86,7 +86,7 @@ void main() {
                 SchemaColumn('email', String)
               ]),
             ),
-          ]),
+          },
         );
 
         expect(
@@ -108,8 +108,8 @@ void main() {
       );
       table.columns.add(foreignKeyColumn);
 
-      final oldSchema = Schema(0, tables: Set.from([tableNoColumn]));
-      final newSchema = Schema(1, tables: Set.from([table]));
+      final oldSchema = Schema(0, tables: {tableNoColumn});
+      final newSchema = Schema(1, tables: {table});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.insertedColumns, contains(foreignKeyColumn));
@@ -141,8 +141,8 @@ void main() {
       );
       newTable.columns.add(foreignKeyColumnWithOnDeleteCascade);
 
-      final oldSchema = Schema(0, tables: Set.from([table]));
-      final newSchema = Schema(1, tables: Set.from([newTable]));
+      final oldSchema = Schema(0, tables: {table});
+      final newSchema = Schema(1, tables: {newTable});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.insertedColumns, contains(foreignKeyColumnWithOnDeleteCascade));
@@ -174,8 +174,8 @@ void main() {
       );
       newTable.columns.add(foreignKeyColumnWithOnDeleteSetDefault);
 
-      final oldSchema = Schema(0, tables: Set.from([table]));
-      final newSchema = Schema(1, tables: Set.from([newTable]));
+      final oldSchema = Schema(0, tables: {table});
+      final newSchema = Schema(1, tables: {newTable});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.insertedColumns, contains(foreignKeyColumnWithOnDeleteSetDefault));
@@ -185,8 +185,8 @@ void main() {
 
     group('#toMigrationCommands', () {
       test('#insertedTables', () {
-        final oldSchema = Schema(0, tables: Set.from([]));
-        final newSchema = Schema(1, tables: Set.from([table]));
+        final oldSchema = Schema(0, tables: {});
+        final newSchema = Schema(1, tables: {table});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(
@@ -201,8 +201,8 @@ void main() {
 
       test('#insertedColumns', () {
         table.columns.add(column);
-        final oldSchema = Schema(0, tables: Set.from([]));
-        final newSchema = Schema(1, tables: Set.from([table]));
+        final oldSchema = Schema(0, tables: {});
+        final newSchema = Schema(1, tables: {table});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(
@@ -216,8 +216,8 @@ void main() {
       });
 
       test('#droppedColumns', () {
-        final oldSchema = Schema(0, tables: Set.from([table]));
-        final newSchema = Schema(1, tables: Set.from([tableNoColumn]));
+        final oldSchema = Schema(0, tables: {table});
+        final newSchema = Schema(1, tables: {tableNoColumn});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.toMigrationCommands(), [DropColumn(column.name, onTable: column.tableName)]);
@@ -226,8 +226,8 @@ void main() {
       });
 
       test('#droppedTables', () {
-        final oldSchema = Schema(0, tables: Set.from([table]));
-        final newSchema = Schema(1, tables: Set.from([]));
+        final oldSchema = Schema(0, tables: {table});
+        final newSchema = Schema(1, tables: {});
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.toMigrationCommands(), [DropTable('demo')]);
@@ -236,7 +236,7 @@ void main() {
       });
 
       test('joins table indexes', () {
-        final oldSchema = Schema(0, tables: Set.from([]));
+        final oldSchema = Schema(0, tables: {});
         final newSchema = Schema(
           1,
           tables: {
@@ -284,8 +284,8 @@ void main() {
     });
 
     test('#forGenerator', () {
-      final oldSchema = Schema(0, tables: Set.from([]));
-      final newSchema = Schema(1, tables: Set.from([table]));
+      final oldSchema = Schema(0, tables: {});
+      final newSchema = Schema(1, tables: {table});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(
@@ -296,8 +296,8 @@ void main() {
     });
 
     test('#hasDifference between equal schemas', () {
-      final oldSchema = Schema(0, tables: Set.from([table]));
-      final newSchema = Schema(1, tables: Set.from([table]));
+      final oldSchema = Schema(0, tables: {table});
+      final newSchema = Schema(1, tables: {table});
 
       final diff = SchemaDifference(oldSchema, newSchema);
       expect(diff.hasDifference, isFalse);

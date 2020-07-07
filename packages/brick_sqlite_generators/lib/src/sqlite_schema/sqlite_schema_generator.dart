@@ -38,7 +38,7 @@ class SqliteSchemaGenerator {
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk
-      final Set<Migration> migrations = Set.from([ ${migrationClasses.join(",\n")} ]);
+      final Set<Migration> migrations = <Migration>{ ${migrationClasses.join(",\n")} };
 
       /// A consumable database structure including the latest generated migration.
       final schema = ${newSchema.forGenerator};

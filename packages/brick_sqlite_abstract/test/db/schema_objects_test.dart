@@ -6,27 +6,27 @@ void main() {
     test('#forGenerator', () {
       final table = SchemaTable(
         'users',
-        columns: Set.from([
+        columns: <SchemaColumn>{
           SchemaColumn('first_name', String),
           SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
           SchemaColumn('amount', int, defaultValue: 0),
           SchemaColumn('last_name', String, nullable: false),
-        ]),
+        },
       );
 
       expect(table.forGenerator, '''SchemaTable(
 \t'users',
-\tcolumns: Set.from([
+\tcolumns: <SchemaColumn>{
 \t\tSchemaColumn('first_name', String),
 \t\tSchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
 \t\tSchemaColumn('amount', int, defaultValue: 0),
 \t\tSchemaColumn('last_name', String, nullable: false)
-\t])
+\t}
 )''');
     });
 
     group('#toCommand', () {
-      final table = SchemaTable('users', columns: Set.from([]));
+      final table = SchemaTable('users', columns: <SchemaColumn>{});
 
       test('shouldDrop:false', () {
         expect(table.toCommand(shouldDrop: false), const InsertTable('users'));
@@ -41,15 +41,15 @@ void main() {
       test('same name, different columns', () {
         final table1 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
         final table2 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('last_name', String),
-          ]),
+          },
         );
 
         expect(table1, equals(table2));
@@ -58,15 +58,15 @@ void main() {
       test('different name, same columns', () {
         final table1 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
         final table2 = SchemaTable(
           'people',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
 
         expect(table1, isNot(table2));
