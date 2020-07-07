@@ -1,5 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
+import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
 import 'package:meta/meta.dart' show required, visibleForTesting;
 
 import 'migration.dart';
@@ -11,6 +12,7 @@ import 'schema/schema_table.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_table.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_column.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_difference.dart';
+export 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
 
 class Schema {
   /// The last version successfully migrated to SQLite.
@@ -120,6 +122,29 @@ class Schema {
         onDeleteCascade: command.onDeleteCascade,
         onDeleteSetDefault: command.onDeleteSetDefault,
       ));
+    } else if (command is CreateIndex) {
+      final table = findTable(command.onTable);
+      final tableColumnNames = table.columns.map((c) => c.name);
+      command.columns.forEach((c) {
+        if (!tableColumnNames.contains(c)) {
+          throw StateError(
+              '${command.onTable} does not contain column $c specified by CreateIndex');
+        }
+      });
+      table.indices.add(SchemaIndex(
+        columns: command.columns,
+        tableName: command.onTable,
+        unique: command.unique,
+      ));
+    } else if (command is DropIndex) {
+      tables.forEach((t) => t.indices.forEach((i) => i.tableName == t.name));
+      final table = tables.firstWhere(
+        (s) => s.indices
+            .map((i) => CreateIndex.generateName(i.columns, i.tableName))
+            .contains(command.name),
+        orElse: () => throw StateError('Index ${command.name} must be inserted first'),
+      );
+      table.indices.removeWhere((i) => i.name == command.name);
     } else {
       throw FallThroughError();
     }
@@ -136,9 +161,9 @@ class Schema {
     return '''Schema(
 \t$version,
 \tgeneratorVersion: $generatorVersion,
-\ttables: Set<SchemaTable>.from([
+\ttables: <SchemaTable>{
 \t\t$tableString
-\t])
+\t}
 )'''
         .replaceAll('\t', '  ');
   }

@@ -21,9 +21,9 @@ void main() {
 
       test('#statement', () {
         expect(m.statement,
-            'CREATE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+            'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
         expect(mUnique.statement,
-            'CREATE UNIQUE INDEX IF NOT EXISTS f_Local_brick_id_l_Field_brick_id_index on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+            'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
       });
 
       test('#forGenerator', () {
@@ -31,6 +31,11 @@ void main() {
             "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)");
         expect(mUnique.forGenerator,
             "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
+      });
+
+      test('.generateName', () {
+        expect(CreateIndex.generateName(['user_id', 'friend_id', 'account_id'], 'Person'),
+            'index_Person_on_user_id_friend_id_account_id');
       });
     });
 
@@ -43,6 +48,18 @@ void main() {
 
       test('#forGenerator', () {
         expect(m.forGenerator, "DropColumn('name', onTable: 'demo')");
+      });
+    });
+
+    group('DropIndex', () {
+      const m = DropIndex('name');
+
+      test('#statement', () {
+        expect(m.statement, 'DROP INDEX IF EXISTS name');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator, "DropIndex('name')");
       });
     });
 

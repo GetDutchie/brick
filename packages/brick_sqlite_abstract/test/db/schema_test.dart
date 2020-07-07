@@ -9,12 +9,14 @@ void main() {
       const insertColumn = MigrationInsertColumn();
       const renameColumn = MigrationRenameColumn();
       const insertForeignKey = MigrationInsertForeignKey();
+      const createIndex = MigrationCreateIndex();
+      const dropIndex = MigrationDropIndex();
 
       group('InsertTable', () {
         test('calls', () {
           final schema = Schema(
             1,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -22,7 +24,7 @@ void main() {
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable].toSet());
@@ -42,7 +44,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             2,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo1',
                 columns: Set<SchemaColumn>.from([
@@ -50,7 +52,7 @@ void main() {
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, renameTable].toSet());
@@ -88,7 +90,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             4,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -97,7 +99,7 @@ void main() {
                   SchemaColumn('name', String)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, insertColumn].toSet());
@@ -122,7 +124,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             5,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -131,7 +133,7 @@ void main() {
                   SchemaColumn('first_name', String)
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema =
@@ -152,7 +154,7 @@ void main() {
         test('runs', () {
           final schema = Schema(
             6,
-            tables: Set.from([
+            tables: <SchemaTable>{
               SchemaTable(
                 'demo',
                 columns: Set<SchemaColumn>.from([
@@ -161,7 +163,7 @@ void main() {
                   SchemaColumn('demo2_id', int, isForeignKey: true, foreignTableName: 'demo2')
                 ]),
               )
-            ]),
+            },
           );
 
           final newSchema = Schema.fromMigrations([insertTable, insertForeignKey].toSet());
@@ -170,10 +172,56 @@ void main() {
         });
       });
 
+      group('CreateIndex', () {
+        test('runs', () {
+          final schema = Schema(
+            7,
+            tables: <SchemaTable>{
+              SchemaTable(
+                'demo',
+                columns: <SchemaColumn>{
+                  SchemaColumn('_brick_id', int,
+                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                },
+                indices: <SchemaIndex>{
+                  SchemaIndex(columns: ['_brick_id'], unique: true),
+                },
+              )
+            },
+          );
+
+          final newSchema = Schema.fromMigrations([insertTable, createIndex].toSet());
+          expect(newSchema.tables, schema.tables);
+          expect(newSchema.version, schema.version);
+        });
+      });
+
+      group('DropIndex', () {
+        test('runs', () {
+          final schema = Schema(
+            8,
+            tables: <SchemaTable>{
+              SchemaTable(
+                'demo',
+                columns: <SchemaColumn>{
+                  SchemaColumn('_brick_id', int,
+                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                },
+                indices: <SchemaIndex>{},
+              )
+            },
+          );
+
+          final newSchema = Schema.fromMigrations([insertTable, createIndex, dropIndex].toSet());
+          expect(newSchema.tables, schema.tables);
+          expect(newSchema.version, schema.version);
+        });
+      });
+
       test('multiple tables', () {
         final schema = Schema(
           2,
-          tables: Set.from([
+          tables: <SchemaTable>{
             SchemaTable(
               'demo',
               columns: Set<SchemaColumn>.from([
@@ -188,7 +236,7 @@ void main() {
                     autoincrement: true, nullable: false, isPrimaryKey: true)
               ]),
             ),
-          ]),
+          },
         );
 
         final newSchema = Schema.fromMigrations([insertTable, Migration2()].toSet());
@@ -221,20 +269,26 @@ void main() {
 Schema(
   2,
   generatorVersion: 1,
-  tables: Set<SchemaTable>.from([
+  tables: <SchemaTable>{
     SchemaTable(
       'demo',
-      columns: Set.from([
+      columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
-      ])
+      },
+      indices: <SchemaIndex>{
+          
+      }
     ),
     SchemaTable(
       'demo2',
-      columns: Set.from([
+      columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
-      ])
+      },
+      indices: <SchemaIndex>{
+          
+      }
     )
-  ])
+  }
 )''');
     });
   });

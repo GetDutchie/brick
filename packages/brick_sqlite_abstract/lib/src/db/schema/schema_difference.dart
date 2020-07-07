@@ -1,4 +1,4 @@
-import 'package:brick_sqlite_abstract/src/db/migration_commands/create_index.dart';
+import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
 
 import '../migration_commands.dart';
 import '../schema.dart';
@@ -16,6 +16,10 @@ class SchemaDifference {
 
   Set<SchemaTable> get insertedTables => newSchema.tables.difference(oldSchema.tables);
 
+  Set<SchemaIndex> get droppedIndices => _compareIndices(oldSchema, newSchema);
+
+  Set<SchemaIndex> get createdIndices => _compareIndices(newSchema, oldSchema);
+
   Set<SchemaColumn> get droppedColumns => _compareColumns(oldSchema, newSchema);
 
   Set<SchemaColumn> get insertedColumns => _compareColumns(newSchema, oldSchema);
@@ -23,6 +27,8 @@ class SchemaDifference {
   bool get hasDifference =>
       droppedTables.isNotEmpty ||
       insertedTables.isNotEmpty ||
+      droppedIndices.isNotEmpty ||
+      createdIndices.isNotEmpty ||
       droppedColumns.isNotEmpty ||
       insertedColumns.isNotEmpty;
 
@@ -52,17 +58,10 @@ class SchemaDifference {
         .expand((s) => s)
         .cast<MigrationCommand>();
 
-    final indexes =
-        insertedTables.where((table) => InsertForeignKey.isAJoinsTable(table.name)).map((table) {
-      final columns = addedColumns
-          .where((column) => column.tableName == table.name)
-          .map((column) => column.name)
-          .toList()
-          .cast<String>();
-      return CreateIndex(columns: columns, onTable: table.name, unique: true);
-    });
+    final addedIndices = createdIndices.map((c) => c.toCommand());
+    final removedIndices = droppedIndices.map((c) => c.toCommand());
 
-    return [removedTables, removedColumns, added, indexes]
+    return [removedTables, removedColumns, added, addedIndices, removedIndices]
         .expand((l) => l)
         .toList()
         .cast<MigrationCommand>();
@@ -90,6 +89,23 @@ class SchemaDifference {
       fromColumns.forEach((c) => c.tableName = fromTable.name);
       toColumns.forEach((c) => c.tableName = fromTable.name);
       return fromColumns.difference(toColumns);
+    }
+
+    return from.tables.map(differenceFromTable).expand((t) => t).toSet();
+  }
+
+  Set<SchemaIndex> _compareIndices(Schema from, Schema to) {
+    Set<SchemaIndex> differenceFromTable(SchemaTable fromTable) {
+      final toIndices =
+          to.tables.firstWhere((t) => t.name == fromTable.name, orElse: () => null)?.indices ??
+              <SchemaIndex>{};
+
+      final fromIndices = <SchemaIndex>{}..addAll(fromTable.indices);
+
+      // From and to tables should have identical names via `lookup`
+      fromIndices.forEach((c) => c.tableName = fromTable.name);
+      toIndices.forEach((c) => c.tableName = fromTable.name);
+      return fromIndices.difference(toIndices);
     }
 
     return from.tables.map(differenceFromTable).expand((t) => t).toSet();

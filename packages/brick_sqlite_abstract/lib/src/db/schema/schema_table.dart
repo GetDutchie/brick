@@ -4,6 +4,7 @@
 import '../migration_commands.dart';
 import 'schema_base.dart';
 import 'schema_column.dart';
+import 'schema_index.dart';
 
 /// Describes a table object managed by SQLite
 class SchemaTable extends BaseSchemaObject {
@@ -12,19 +13,27 @@ class SchemaTable extends BaseSchemaObject {
 
   Set<SchemaColumn> columns;
 
+  Set<SchemaIndex> indices;
+
   SchemaTable(
     this.name, {
     Set<SchemaColumn> columns,
-  }) : columns = columns ?? <SchemaColumn>{};
+    Set<SchemaIndex> indices,
+  })  : columns = columns ?? <SchemaColumn>{},
+        indices = indices ?? <SchemaIndex>{};
 
   @override
   String get forGenerator {
     final columnsStringified = columns.map((c) => c.forGenerator).join(',\n\t\t');
+    final indicesStringified = indices.map((c) => c.forGenerator).join(',\n\t\t');
     return '''SchemaTable(
 \t'$name',
-\tcolumns: Set.from([
+\tcolumns: <SchemaColumn>{
 \t\t$columnsStringified
-\t])
+\t},
+\tindices: <SchemaIndex>{
+\t\t$indicesStringified  
+\t}
 )''';
   }
 

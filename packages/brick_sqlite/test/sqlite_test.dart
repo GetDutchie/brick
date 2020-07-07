@@ -91,7 +91,7 @@ void main() {
         await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Bowler")');
         await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Big")');
         await provider.rawInsert(
-            'INSERT OR REPLACE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
+            'INSERT OR IGNORE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
         for (var command in table) await provider.rawExecute(command.statement);
 
         await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);

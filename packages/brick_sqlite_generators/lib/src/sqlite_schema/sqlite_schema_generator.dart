@@ -8,8 +8,7 @@ import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:dart_style/dart_style.dart' as dart_style;
-import 'package:brick_sqlite_abstract/db.dart'
-    show MigrationManager, Schema, SchemaTable, SchemaColumn, InsertForeignKey, InsertTable;
+import 'package:brick_sqlite_abstract/db.dart';
 import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
@@ -38,7 +37,7 @@ class SqliteSchemaGenerator {
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk
-      final Set<Migration> migrations = Set.from([ ${migrationClasses.join(",\n")} ]);
+      final Set<Migration> migrations = <Migration>{ ${migrationClasses.join(",\n")} };
 
       /// A consumable database structure including the latest generated migration.
       final schema = ${newSchema.forGenerator};
@@ -96,36 +95,46 @@ class SqliteSchemaGenerator {
     final foreignTableName = checker.unFuturedArgType.getDisplayString();
 
     return SchemaTable(
-      InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
-          localTableName: localTableName),
-      columns: {
-        SchemaColumn(
-          InsertTable.PRIMARY_KEY_COLUMN,
-          int,
-          autoincrement: true,
-          isPrimaryKey: true,
-          nullable: false,
-        ),
-        SchemaColumn(
-          InsertForeignKey.joinsTableLocalColumnName(localTableName),
-          int,
-          isForeignKey: true,
-          foreignTableName: localTableName,
-          nullable: foreignTableColumnDefinition?.nullable,
-          onDeleteCascade: true,
-          onDeleteSetDefault: false,
-        ),
-        SchemaColumn(
-          InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-          int,
-          isForeignKey: true,
-          foreignTableName: foreignTableName,
-          nullable: foreignTableColumnDefinition?.nullable,
-          onDeleteCascade: true,
-          onDeleteSetDefault: false,
-        ),
-      },
-    );
+        InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
+            localTableName: localTableName),
+        columns: {
+          SchemaColumn(
+            InsertTable.PRIMARY_KEY_COLUMN,
+            int,
+            autoincrement: true,
+            isPrimaryKey: true,
+            nullable: false,
+          ),
+          SchemaColumn(
+            InsertForeignKey.joinsTableLocalColumnName(localTableName),
+            int,
+            isForeignKey: true,
+            foreignTableName: localTableName,
+            nullable: foreignTableColumnDefinition?.nullable,
+            onDeleteCascade: true,
+            onDeleteSetDefault: false,
+          ),
+          SchemaColumn(
+            InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
+            int,
+            isForeignKey: true,
+            foreignTableName: foreignTableName,
+            nullable: foreignTableColumnDefinition?.nullable,
+            onDeleteCascade: true,
+            onDeleteSetDefault: false,
+          ),
+        },
+        indices: {
+          SchemaIndex(
+            columns: [
+              InsertForeignKey.joinsTableLocalColumnName(localTableName),
+              InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
+            ],
+            tableName: InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
+                localTableName: localTableName),
+            unique: true,
+          )
+        });
   }
 
   SchemaTable _createTable(String tableName, SqliteFields fields) {

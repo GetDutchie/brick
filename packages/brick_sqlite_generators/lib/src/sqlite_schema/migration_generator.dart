@@ -3,6 +3,8 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 
 const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
+const _createIndexChecker = TypeChecker.fromRuntime(CreateIndex);
+const _dropIndexChecker = TypeChecker.fromRuntime(DropIndex);
 const _dropColumnChecker = TypeChecker.fromRuntime(DropColumn);
 const _dropTableChecker = TypeChecker.fromRuntime(DropTable);
 const _insertColumnChecker = TypeChecker.fromRuntime(InsertColumn);
@@ -46,11 +48,25 @@ class MigrationGenerator extends Generator {
   List<MigrationCommand> _migrationCommandsFromReader(List<DartObject> rawCommands) {
     return rawCommands.map((object) {
       final reader = ConstantReader(object);
-      if (_dropColumnChecker.isExactlyType(object.type)) {
+      if (_createIndexChecker.isExactlyType(object.type)) {
+        if (!reader.read('columns').isList) {
+          throw ArgumentError(
+              'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns');
+        }
+        final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
+
+        return CreateIndex(
+          columns: columns?.toList()?.cast<String>() ?? <String>[],
+          onTable: reader.read('onTable').stringValue,
+          unique: reader.read('unique').boolValue,
+        );
+      } else if (_dropColumnChecker.isExactlyType(object.type)) {
         return DropColumn(
           reader.read('name').stringValue,
           onTable: reader.read('onTable').stringValue,
         );
+      } else if (_dropIndexChecker.isExactlyType(object.type)) {
+        return DropIndex(reader.read('name').stringValue);
       } else if (_dropTableChecker.isExactlyType(object.type)) {
         return DropTable(
           reader.read('name').stringValue,
