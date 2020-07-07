@@ -17,9 +17,10 @@ class SchemaTable extends BaseSchemaObject {
 
   SchemaTable(
     this.name, {
-    this.columns = const <SchemaColumn>{},
-    this.indices = const <SchemaIndex>{},
-  });
+    Set<SchemaColumn> columns,
+    Set<SchemaIndex> indices,
+  })  : columns = columns ?? <SchemaColumn>{},
+        indices = indices ?? <SchemaIndex>{};
 
   @override
   String get forGenerator {

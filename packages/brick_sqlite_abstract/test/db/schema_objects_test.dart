@@ -22,7 +22,9 @@ void main() {
 \t\tSchemaColumn('amount', int, defaultValue: 0),
 \t\tSchemaColumn('last_name', String, nullable: false)
 \t},
-\tindices: <SchemaIndex>{}
+\tindices: <SchemaIndex>{
+\t\t
+\t}
 )''');
     });
 
