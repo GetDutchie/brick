@@ -16,10 +16,7 @@ class CreateIndex extends MigrationCommand {
     this.unique = false,
   });
 
-  String get name {
-    final columnNames = columns.join('_');
-    return '${columnNames}_index';
-  }
+  String get name => generateName(columns, onTable);
 
   @override
   String get statement {
@@ -37,4 +34,9 @@ class CreateIndex extends MigrationCommand {
 
   @override
   MigrationCommand get down => DropIndex(name);
+
+  static String generateName(List<String> columns, String onTable) {
+    final columnNames = columns.join('_');
+    return ['index', onTable, 'on', columnNames].join('_');
+  }
 }

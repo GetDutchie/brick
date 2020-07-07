@@ -130,8 +130,11 @@ class Schema {
         unique: command.unique,
       ));
     } else if (command is DropIndex) {
+      tables.forEach((t) => t.indices.forEach((i) => i.tableName == t.name));
       final table = tables.firstWhere(
-        (s) => s.indices.map((i) => i.name).contains(command.name),
+        (s) => s.indices
+            .map((i) => CreateIndex.generateName(i.columns, i.tableName))
+            .contains(command.name),
         orElse: () => throw StateError('Index ${command.name} must be inserted first'),
       );
       table.indices.removeWhere((i) => i.name == command.name);

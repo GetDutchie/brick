@@ -32,6 +32,11 @@ void main() {
         expect(mUnique.forGenerator,
             "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
       });
+
+      test('.generateName', () {
+        expect(CreateIndex.generateName(['user_id', 'friend_id', 'account_id'], 'Person'),
+            'index_Person_on_user_id_friend_id_account_id');
+      });
     });
 
     group('DropColumn', () {

@@ -9,6 +9,8 @@ void main() {
       const insertColumn = MigrationInsertColumn();
       const renameColumn = MigrationRenameColumn();
       const insertForeignKey = MigrationInsertForeignKey();
+      const createIndex = MigrationCreateIndex();
+      const dropIndex = MigrationDropIndex();
 
       group('InsertTable', () {
         test('calls', () {
@@ -170,6 +172,52 @@ void main() {
         });
       });
 
+      group('CreateIndex', () {
+        test('runs', () {
+          final schema = Schema(
+            7,
+            tables: <SchemaTable>{
+              SchemaTable(
+                'demo',
+                columns: <SchemaColumn>{
+                  SchemaColumn('_brick_id', int,
+                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                },
+                indices: <SchemaIndex>{
+                  SchemaIndex(columns: ['_brick_id'], unique: true),
+                },
+              )
+            },
+          );
+
+          final newSchema = Schema.fromMigrations([insertTable, createIndex].toSet());
+          expect(newSchema.tables, schema.tables);
+          expect(newSchema.version, schema.version);
+        });
+      });
+
+      group('DropIndex', () {
+        test('runs', () {
+          final schema = Schema(
+            8,
+            tables: <SchemaTable>{
+              SchemaTable(
+                'demo',
+                columns: <SchemaColumn>{
+                  SchemaColumn('_brick_id', int,
+                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                },
+                indices: <SchemaIndex>{},
+              )
+            },
+          );
+
+          final newSchema = Schema.fromMigrations([insertTable, createIndex, dropIndex].toSet());
+          expect(newSchema.tables, schema.tables);
+          expect(newSchema.version, schema.version);
+        });
+      });
+
       test('multiple tables', () {
         final schema = Schema(
           2,
@@ -227,14 +275,18 @@ Schema(
       columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
-      indices: <SchemaIndex>{}
+      indices: <SchemaIndex>{
+        
+      }
     ),
     SchemaTable(
       'demo2',
       columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
-      indices: <SchemaIndex>{}
+      indices: <SchemaIndex>{
+        
+      }
     )
   }
 )''');
