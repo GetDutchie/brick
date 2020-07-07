@@ -49,8 +49,14 @@ class MigrationGenerator extends Generator {
     return rawCommands.map((object) {
       final reader = ConstantReader(object);
       if (_createIndexChecker.isExactlyType(object.type)) {
+        if (!reader.read('columns').isList) {
+          throw ArgumentError(
+              'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns');
+        }
+        final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
+
         return CreateIndex(
-          columns: reader.read('columns').listValue.map((o) => o.toStringValue()),
+          columns: columns?.toList()?.cast<String>() ?? <String>[],
           onTable: reader.read('onTable').stringValue,
           unique: reader.read('unique').boolValue,
         );

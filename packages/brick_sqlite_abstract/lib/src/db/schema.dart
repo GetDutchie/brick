@@ -12,6 +12,7 @@ import 'schema/schema_table.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_table.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_column.dart';
 export 'package:brick_sqlite_abstract/src/db/schema/schema_difference.dart';
+export 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
 
 class Schema {
   /// The last version successfully migrated to SQLite.
