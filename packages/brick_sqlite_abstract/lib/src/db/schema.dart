@@ -124,6 +124,13 @@ class Schema {
       ));
     } else if (command is CreateIndex) {
       final table = findTable(command.onTable);
+      final tableColumnNames = table.columns.map((c) => c.name);
+      command.columns.forEach((c) {
+        if (!tableColumnNames.contains(c)) {
+          throw StateError(
+              '${command.onTable} does not contain column $c specified by CreateIndex');
+        }
+      });
       table.indices.add(SchemaIndex(
         columns: command.columns,
         tableName: command.onTable,

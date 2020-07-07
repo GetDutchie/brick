@@ -40,7 +40,11 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
         foreignTableName: 'SqliteAssoc',
         onDeleteCascade: true,
         onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{SchemaIndex(columns: ['l_OneToManyAssocation_brick_id', 'f_SqliteAssoc_brick_id'], unique: true)}),
+  }, indices: <SchemaIndex>{
+    SchemaIndex(
+        columns: ['l_OneToManyAssocation_brick_id', 'f_SqliteAssoc_brick_id'],
+        unique: true)
+  }),
   SchemaTable('OneToManyAssocation', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', int,
         autoincrement: true, nullable: false, isPrimaryKey: true)

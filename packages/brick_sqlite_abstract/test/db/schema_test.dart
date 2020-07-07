@@ -191,6 +191,7 @@ void main() {
           );
 
           final newSchema = Schema.fromMigrations([insertTable, createIndex].toSet());
+          print(newSchema.forGenerator);
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -276,7 +277,7 @@ Schema(
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
-        
+          
       }
     ),
     SchemaTable(
@@ -285,7 +286,7 @@ Schema(
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
-        
+          
       }
     )
   }
