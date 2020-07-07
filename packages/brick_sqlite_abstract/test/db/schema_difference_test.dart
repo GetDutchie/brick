@@ -260,6 +260,9 @@ void main() {
                   onDeleteSetDefault: true,
                 ),
               ]),
+              indices: <SchemaIndex>{
+                SchemaIndex(columns: ['l_People_brick_id', 'f_Friend_brick_id'], unique: true)
+              },
             ),
           },
         );

@@ -191,7 +191,6 @@ void main() {
           );
 
           final newSchema = Schema.fromMigrations([insertTable, createIndex].toSet());
-          print(newSchema.forGenerator);
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
