@@ -25,7 +25,8 @@ final schema = Schema(0,
           columns: <SchemaColumn>{
             SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true)
-          }),
+          },
+          indices: <SchemaIndex>{}),
       SchemaTable('OneToOneAssocation',
           columns: <SchemaColumn>{
             SchemaColumn('_brick_id', int,
@@ -40,7 +41,8 @@ final schema = Schema(0,
                 foreignTableName: 'SqliteAssoc',
                 onDeleteCascade: false,
                 onDeleteSetDefault: false)
-          })
+          },
+          indices: <SchemaIndex>{})
     });
 ''';
 

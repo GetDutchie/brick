@@ -128,6 +128,12 @@ class Schema {
         tableName: command.onTable,
         unique: command.unique,
       ));
+    } else if (command is DropIndex) {
+      final table = tables.firstWhere(
+        (s) => s.indices.map((i) => i.name).contains(command.name),
+        orElse: () => throw StateError('Index ${command.name} must be inserted first'),
+      );
+      table.indices.removeWhere((i) => i.name == command.name);
     } else {
       throw FallThroughError();
     }

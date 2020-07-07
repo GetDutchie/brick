@@ -16,7 +16,7 @@ class SchemaIndex extends BaseSchemaObject {
 
   @override
   String get forGenerator =>
-      "SchemaIndex(columns: [${columns.map((c) => "'$c'").join(', ')}], tableName: '$tableName', unique: $unique)";
+      "SchemaIndex(columns: [${columns.map((c) => "'$c'").join(', ')}], unique: $unique)";
 
   @override
   MigrationCommand toCommand() => CreateIndex(columns: columns, onTable: tableName, unique: unique);

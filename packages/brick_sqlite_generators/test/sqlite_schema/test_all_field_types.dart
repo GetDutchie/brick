@@ -27,7 +27,8 @@ final schema = Schema(0,
             SchemaColumn('list', String),
             SchemaColumn('longer_camelized_variable', String),
             SchemaColumn('casing', int)
-          })
+          },
+          indices: <SchemaIndex>{})
     });
 ''';
 

@@ -21,7 +21,8 @@ void main() {
 \t\tSchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
 \t\tSchemaColumn('amount', int, defaultValue: 0),
 \t\tSchemaColumn('last_name', String, nullable: false)
-\t}
+\t},
+\tindices: <SchemaIndex>{}
 )''');
     });
 

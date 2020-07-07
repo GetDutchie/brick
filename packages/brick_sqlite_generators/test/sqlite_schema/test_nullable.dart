@@ -19,7 +19,8 @@ final schema = Schema(0,
             SchemaColumn('_brick_id', int,
                 autoincrement: true, nullable: false, isPrimaryKey: true),
             SchemaColumn('name', String, nullable: false)
-          })
+          },
+          indices: <SchemaIndex>{})
     });
 ''';
 

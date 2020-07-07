@@ -1,7 +1,8 @@
+import 'package:brick_sqlite_abstract/src/db/migration_commands/drop_index.dart';
 import 'package:meta/meta.dart';
 import 'migration_command.dart';
 
-/// Drop table from DB if it exists
+/// Create an index on a table if it doesn't already exists
 class CreateIndex extends MigrationCommand {
   final List<String> columns;
 
@@ -33,4 +34,7 @@ class CreateIndex extends MigrationCommand {
   @override
   String get forGenerator =>
       "CreateIndex(columns: [${columns.map((c) => "'$c'").join(', ')}], onTable: '$onTable', unique: $unique)";
+
+  @override
+  MigrationCommand get down => DropIndex(name);
 }

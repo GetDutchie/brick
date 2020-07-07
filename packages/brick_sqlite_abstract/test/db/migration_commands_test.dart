@@ -46,6 +46,18 @@ void main() {
       });
     });
 
+    group('DropIndex', () {
+      const m = DropIndex('name');
+
+      test('#statement', () {
+        expect(m.statement, 'DROP INDEX IF EXISTS name');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator, "DropIndex('name')");
+      });
+    });
+
     group('DropTable', () {
       const m = DropTable('demo');
 

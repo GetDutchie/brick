@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add a `DropIndex` command to revert `CreateIndex` changes
+
 ## 0.0.8
 
 * When joins tables are created, add a unique index by both columns to ensure no duplicates are inserted. Prior applications will need to manually specify `CreateIndex` in a custom migration for existing joins tables. When new joins tables are generated in migrations, `CreateIndex` will also be generated.

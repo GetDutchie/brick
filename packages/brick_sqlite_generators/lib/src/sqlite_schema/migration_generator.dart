@@ -4,6 +4,7 @@ import 'package:brick_sqlite_abstract/db.dart';
 
 const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
 const _createIndexChecker = TypeChecker.fromRuntime(CreateIndex);
+const _dropIndexChecker = TypeChecker.fromRuntime(DropIndex);
 const _dropColumnChecker = TypeChecker.fromRuntime(DropColumn);
 const _dropTableChecker = TypeChecker.fromRuntime(DropTable);
 const _insertColumnChecker = TypeChecker.fromRuntime(InsertColumn);
@@ -58,6 +59,8 @@ class MigrationGenerator extends Generator {
           reader.read('name').stringValue,
           onTable: reader.read('onTable').stringValue,
         );
+      } else if (_dropIndexChecker.isExactlyType(object.type)) {
+        return DropIndex(reader.read('name').stringValue);
       } else if (_dropTableChecker.isExactlyType(object.type)) {
         return DropTable(
           reader.read('name').stringValue,
