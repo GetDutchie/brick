@@ -19,11 +19,10 @@ final Set<Migration> migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
-  SchemaTable('SqliteAssoc',
-    columns: <SchemaColumn>{
-      SchemaColumn('_brick_id', int,
-          autoincrement: true, nullable: false, isPrimaryKey: true)
-    }, indices: <SchemaIndex>{}),
+  SchemaTable('SqliteAssoc', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', int,
+        autoincrement: true, nullable: false, isPrimaryKey: true)
+  }, indices: <SchemaIndex>{}),
   SchemaTable('_brick_OneToOneAssocation_assocs', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', int,
         autoincrement: true, nullable: false, isPrimaryKey: true),
