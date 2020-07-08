@@ -24,31 +24,33 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
       SchemaColumn('_brick_id', int,
           autoincrement: true, nullable: false, isPrimaryKey: true)
     }, indices: <SchemaIndex>{}),
-  SchemaTable('_brick_OneToOneAssocation_assocs',
-    columns: <SchemaColumn>{
-      SchemaColumn('_brick_id', int,
-          autoincrement: true, nullable: false, isPrimaryKey: true),
-      SchemaColumn('l_OneToOneAssocation_brick_id', int,
-          isForeignKey: true,
-          foreignTableName: 'OneToOneAssocation',
-          onDeleteCascade: true,
-          onDeleteSetDefault: false),
-      SchemaColumn('f_SqliteAssoc_brick_id', int,
-          isForeignKey: true,
-          foreignTableName: 'SqliteAssoc',
-          onDeleteCascade: true,
-          onDeleteSetDefault: false)
+  SchemaTable('_brick_OneToOneAssocation_assocs', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', int,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('l_OneToOneAssocation_brick_id', int,
+        isForeignKey: true,
+        foreignTableName: 'OneToOneAssocation',
+        onDeleteCascade: true,
+        onDeleteSetDefault: false),
+    SchemaColumn('f_SqliteAssoc_brick_id', int,
+        isForeignKey: true,
+        foreignTableName: 'SqliteAssoc',
+        onDeleteCascade: true,
+        onDeleteSetDefault: false)
+  }, indices: <SchemaIndex>{
+    SchemaIndex(
+        columns: ['l_OneToOneAssocation_brick_id', 'f_SqliteAssoc_brick_id'],
+        unique: true)
   }),
-  SchemaTable('OneToOneAssocation',
-    columns: <SchemaColumn>{
-      SchemaColumn('_brick_id', int,
-          autoincrement: true, nullable: false, isPrimaryKey: true),
-      SchemaColumn('assoc_SqliteAssoc_brick_id', int,
-          isForeignKey: true,
-          foreignTableName: 'SqliteAssoc',
-          onDeleteCascade: false,
-          onDeleteSetDefault: false)
-    }, indices: <SchemaIndex>{})
+  SchemaTable('OneToOneAssocation', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', int,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('assoc_SqliteAssoc_brick_id', int,
+        isForeignKey: true,
+        foreignTableName: 'SqliteAssoc',
+        onDeleteCascade: false,
+        onDeleteSetDefault: false)
+  }, indices: <SchemaIndex>{})
 });
 ''';
 
