@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.1.0+2
+
+* Ignore when inserting associations
+
 ## 0.1.0+1
 
 * Fix SQL query for joins
