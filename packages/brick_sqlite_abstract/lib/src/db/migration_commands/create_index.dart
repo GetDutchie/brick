@@ -10,6 +10,9 @@ class CreateIndex extends MigrationCommand {
 
   final bool unique;
 
+  /// As a migration, this may fail if existing data is in conflict with the index.
+  /// Before running this migration command, ensure that its table is either clean
+  /// or does not contain data that conflicts with the columns specified by the index.
   const CreateIndex({
     @required this.onTable,
     @required this.columns,

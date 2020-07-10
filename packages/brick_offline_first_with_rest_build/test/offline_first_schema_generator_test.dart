@@ -31,12 +31,12 @@ void main() {
       expect(output, _$withSerdes.output);
     });
 
-    test('adds association', () async {
+    test('with association', () async {
       final output = await generateOutputForFile('with_association');
       expect(output, _$withAssociation.output);
     });
 
-    test('adds associations', () async {
+    test('with associations', () async {
       final output = await generateOutputForFile('with_associations');
       expect(output, _$withAssociations.output);
     });
