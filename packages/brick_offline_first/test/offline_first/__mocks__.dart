@@ -33,9 +33,9 @@ class DemoModelMigration extends Migration {
             InsertTable('_brick_Horse_mounties'),
             InsertTable('Horse'),
             InsertForeignKey('_brick_Horse_mounties', 'Horse',
-                foreignKeyColumn: 'Horse_brick_id', onDeleteCascade: true),
+                foreignKeyColumn: 'l_Horse_brick_id', onDeleteCascade: true),
             InsertForeignKey('_brick_Horse_mounties', 'Mounty',
-                foreignKeyColumn: 'Mounty_brick_id', onDeleteCascade: true),
+                foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true),
             InsertColumn('name', Column.varchar, onTable: 'Horse')
           ],
           down: const <MigrationCommand>[],

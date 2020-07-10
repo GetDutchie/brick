@@ -39,9 +39,11 @@ Future<Map<String, dynamic>> _$OneToManyAssociationToRest(
     {RestProvider provider,
     OfflineFirstRepository repository}) async {
   return {
-    'assoc': await Future.wait<Map<String, dynamic>>(
-        instance.assoc?.map((s) => SqliteAssocAdapter().toRest(s))?.toList() ??
-            [])
+    'assoc': await Future.wait<Map<String, dynamic>>(instance.assoc
+            ?.map((s) => SqliteAssocAdapter()
+                .toRest(s, provider: provider, repository: repository))
+            ?.toList() ??
+        [])
   };
 }
 
@@ -104,7 +106,7 @@ class OneToManyAssociationAdapter
         final id = s?.primaryKey ??
             await provider?.upsert<SqliteAssoc>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_OneToManyAssociation_assoc` (`l_OneToManyAssociation_brick_id`, `f_SqliteAssoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR REPLACE INTO `_brick_OneToManyAssociation_assoc` (`l_OneToManyAssociation_brick_id`, `f_SqliteAssoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

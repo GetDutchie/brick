@@ -54,7 +54,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
         return '''await Future.wait<Map<String, dynamic>>(
           $fieldValue?.map((s) $awaited =>
-            ${checker.unFuturedArgType}Adapter().toRest($awaitedValue)
+            ${checker.unFuturedArgType}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
           )?.toList() ?? []
         )''';
       }
@@ -65,7 +65,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
-      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField)';
+      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {

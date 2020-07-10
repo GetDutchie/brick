@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.7+1
+
 * Change `_convertJson` to protected method `convertJsonFromGet` (#57)
 
 ## 0.0.7
