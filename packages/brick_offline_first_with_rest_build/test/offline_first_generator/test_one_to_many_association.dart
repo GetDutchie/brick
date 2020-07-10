@@ -40,7 +40,7 @@ Future<Map<String, dynamic>> _$OneToManyAssociationToRest(
     OfflineFirstRepository repository}) async {
   return {
     'assoc': await Future.wait<Map<String, dynamic>>(
-        instance.assoc?.map((s) => SqliteAssocAdapter().toRest(s))?.toList() ??
+        instance.assoc?.map((s) => SqliteAssocAdapter().toRest(s, provider: provider, repository: repository))?.toList() ??
             [])
   };
 }
