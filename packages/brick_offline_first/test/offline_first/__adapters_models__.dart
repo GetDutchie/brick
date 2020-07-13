@@ -108,9 +108,9 @@ Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
   return Horse(
       name: data['name'] == null ? null : data['name'] as String,
       mounties: (await provider?.rawQuery(
-              'SELECT `Mounty_brick_id` FROM `_brick_Horse_mounties` WHERE Horse_brick_id = ?',
+              'SELECT `f_Mounty_brick_id` FROM `_brick_Horse_mounties` WHERE l_Horse_brick_id = ?',
               [data['_brick_id'] as int])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['Mounty_brick_id']);
+        final ids = results.map((r) => (r ?? {})['f_Mounty_brick_id']);
         return Future.wait<Mounty>(ids.map((primaryKey) => repository
             ?.getAssociation<Mounty>(
               Query.where('primaryKey', primaryKey, limit1: true),
@@ -161,7 +161,7 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       await Future.wait<int>(instance.mounties?.map((s) async {
         final id = s?.primaryKey ?? await provider?.upsert<Mounty>(s, repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`Horse_brick_id`, `Mounty_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }
