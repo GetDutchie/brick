@@ -4,7 +4,7 @@
 
 An intuitive way to work with persistent data in Dart.
 
-**Brick is still in a pre-alpha release**. Bugs and API changes will occur frequently; these will be recorded in package CHANGELOGs.
+**Brick is still in alpha release**. Bugs and API changes will occur frequently; these will be recorded in package CHANGELOGs.
 
 ## What is Brick?
 

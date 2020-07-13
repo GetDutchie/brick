@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Remove `Migration.wrapInTransaction` static method. This was a misleading and unused method.
+
 ## 0.0.8+1
 
 * Add a `DropIndex` command to revert `CreateIndex` changes

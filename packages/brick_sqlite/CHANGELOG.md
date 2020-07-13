@@ -1,5 +1,14 @@
 ## Unreleased
 
+* Bump SQFlite
+* Remove `path` as a dependency and rely on SQFlite's default accessors when opening a database
+* Mark `SqliteProvider#migrateFromStringToJoinsTable` as deprecated to signal that it should be removed from implementations as soon as possible.
+* Support migrations in SQLite >=3.26. 3.26 introduced a [better way to update foreign key associations](https://www.sqlite.org/lang_altertable.html#alter_table_rename) that is accessible in iOS's FMDB. However, since versions prior to [3.26 are used by Android](https://developer.android.com/reference/android/database/sqlite/package-summary), the foreign_keys hack is still necessary to maintain backwards compatibility. Hat tip to this [SO answer](https://stackoverflow.com/questions/4897867/update-foreign-key-references-when-doing-the-sqlite-alter-table-trick#comment98105840_4897867).
+
+## 0.1.0+2
+
+* Ignore when inserting associations
+
 ## 0.1.0+1
 
 * Fix SQL query for joins
