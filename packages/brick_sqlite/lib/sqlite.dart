@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
 import 'package:brick_core/core.dart';
@@ -61,10 +60,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       return _openDb = await databaseFactory.openDatabase(dbName);
     }
 
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, dbName);
-
-    return _openDb = await openDatabase(path);
+    return _openDb = await openDatabase(dbName);
   }
 
   /// Remove record from SQLite. [query] is ignored.
@@ -167,7 +163,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     final db = await _db;
 
     // Ensure foreign keys are enabled
-    await db.execute('PRAGMA foreign_keys=on;');
+    await db.execute('PRAGMA foreign_keys = ON');
 
     final latestMigrationVersion = MigrationManager.latestMigrationVersion(migrations);
     final latestSqliteMigrationVersion = await lastMigrationVersion();
@@ -246,11 +242,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       await (await _db).close();
 
       if (databaseFactory == null) {
-        final databasesPath = await getDatabasesPath();
-        final path = p.join(databasesPath, dbName);
-
-        final db = File(path);
-        await db.delete();
+        await deleteDatabase(dbName);
       } else {
         await databaseFactory.deleteDatabase(dbName);
       }
@@ -306,6 +298,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// It should be run after `migrate`. For more, see the [CHANGELOG notes](https://github.com/greenbits/brick/blob/master/packages/brick_sqlite/CHANGELOG.md#010).
   ///
   /// This method will be eventually deprecated and removed.
+  @deprecated
   Future<void> migrateFromStringToJoinsTable(
     String columnName,
     String localTableName,

@@ -108,19 +108,23 @@ class AlterColumnHelper {
     final newColumnNames = _newColumns.map((c) => c['name']).join(', ');
     final selectExpression = isDrop ? newColumnNames : oldColumnNames;
 
-    await db.execute("PRAGMA foreign_keys=off");
+    await db.execute('PRAGMA foreign_keys = OFF');
+    await db.execute('PRAGMA legacy_alter_table = ON');
     await db.transaction((txn) async {
       // Rename existing table
       await txn.execute('ALTER TABLE `$tableName` RENAME TO `temp_$tableName`');
 
       // Setup new table
       await txn.execute('CREATE TABLE `$tableName` ($_newColumnsExpression)');
+
       // Copy data
       await txn.execute(
-          'INSERT INTO `$tableName`($newColumnNames) SELECT $selectExpression FROM `temp_$tableName`;');
+          'INSERT INTO `$tableName`($newColumnNames) SELECT $selectExpression FROM `temp_$tableName`');
+
       // Drop old table
-      await txn.execute('DROP TABLE `temp_$tableName`;');
+      await txn.execute('DROP TABLE `temp_$tableName`');
     });
-    await db.execute("PRAGMA foreign_keys=on");
+    await db.execute('PRAGMA legacy_alter_table = OFF');
+    await db.execute('PRAGMA foreign_keys = ON');
   }
 }

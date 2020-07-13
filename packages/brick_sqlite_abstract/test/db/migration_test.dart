@@ -65,13 +65,6 @@ void main() {
       );
     });
 
-    test('.wrapInTransaction', () {
-      const statement = 'oh boy here I go doing SQL stuff again';
-      expect(Migration.wrapInTransaction(statement), contains('BEGIN IMMEDIATE;'));
-      expect(Migration.wrapInTransaction(statement), contains('COMMIT;'));
-      expect(Migration.wrapInTransaction(statement), contains(statement));
-    });
-
     group('.generate', () {
       test('one command', () {
         final output = Migration.generate([const InsertTable('demo')], 1);

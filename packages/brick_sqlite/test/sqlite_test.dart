@@ -94,6 +94,7 @@ void main() {
             'INSERT OR IGNORE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
         for (var command in table) await provider.rawExecute(command.statement);
 
+        // ignore: deprecated_member_use_from_same_package
         await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
 
         final joinsResults = await provider.rawQuery('SELECT * FROM `$joinsTableName`');
