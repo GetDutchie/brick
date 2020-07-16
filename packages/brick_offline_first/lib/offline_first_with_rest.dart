@@ -147,9 +147,12 @@ abstract class OfflineFirstWithRestRepository
     await offlineRequestQueue.client.requestManager.migrate();
   }
 
+  /// [throwOnReattemptStatusCodes] - when `true`, the repository will throw an
+  /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
+  /// Defaults `false`.
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query query}) async {
+      {Query query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
     } on RestException catch (e) {
@@ -159,7 +162,8 @@ abstract class OfflineFirstWithRestRepository
       }
 
       // since we know we'll reattempt this request, an exception does not need to be reported
-      if (reattemptForStatusCodes.contains(e.response?.statusCode)) {
+      if (reattemptForStatusCodes.contains(e.response?.statusCode) &&
+          !throwOnReattemptStatusCodes) {
         return instance;
       }
 
