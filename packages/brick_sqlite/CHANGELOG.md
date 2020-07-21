@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.1.1
+
 * Bump SQFlite
 * Remove `path` as a dependency and rely on SQFlite's default accessors when opening a database
 * Mark `SqliteProvider#migrateFromStringToJoinsTable` as deprecated to signal that it should be removed from implementations as soon as possible.
@@ -25,7 +27,7 @@
           @override
           Future<void> migrate() async {
             await super.migrate();
-            // TODO update this table with information from the deleted `DropColumn` commands in step 2. 
+            // TODO update this table with information from the deleted `DropColumn` commands in step 2.
             final joinsTableColumnMigrations = [
               {
                 'localTableName': 'User'

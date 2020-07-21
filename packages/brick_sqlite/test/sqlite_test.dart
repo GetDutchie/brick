@@ -87,12 +87,16 @@ void main() {
 
       test('migrates', () async {
         // setup
-        for (var command in oldTable) await provider.rawExecute(command.statement);
+        for (var command in oldTable) {
+          await provider.rawExecute(command.statement);
+        }
         await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Bowler")');
         await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Big")');
         await provider.rawInsert(
             'INSERT OR IGNORE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
-        for (var command in table) await provider.rawExecute(command.statement);
+        for (var command in table) {
+          await provider.rawExecute(command.statement);
+        }
 
         // ignore: deprecated_member_use_from_same_package
         await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
