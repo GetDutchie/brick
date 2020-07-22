@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Fix sibling set serialization
 * Do not create joins tables for ignored fields
 * Type arguments are stripped from fields when building the `fieldsToSqliteColumns` definition (#31)
 * Fixes a bug where sets were not serialized by SQLite

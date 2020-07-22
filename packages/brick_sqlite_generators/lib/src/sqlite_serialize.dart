@@ -115,7 +115,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Set<any>
       // jsonEncode can't convert LinkedHashSet
-      if (checker.isSet) {
+      if (checker.isSet && !checker.isArgTypeASibling) {
         return 'jsonEncode($fieldValue?.toList() ?? [])';
       }
 
@@ -204,7 +204,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
-        await Future.wait<int>($siblingAssociations?.map((s) async { 
+        await Future.wait<int>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
           return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
         }));

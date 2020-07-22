@@ -174,7 +174,7 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
         final id = (await s)?.primaryKey ??
             await provider?.upsert<Assoc>((await s), repository: repository);
         return await provider?.rawInsert(
-            'INSERT OR REPLACE INTO `_brick_Futures_future_assocs` (`l_Futures_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_Futures_future_assocs` (`l_Futures_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
     }

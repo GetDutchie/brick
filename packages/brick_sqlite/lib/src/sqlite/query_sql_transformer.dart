@@ -327,8 +327,9 @@ class AllOtherClausesFragment {
 
           final fieldName = fragment.first;
           final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
-          if (columnName != null && modValue.contains(fieldName))
+          if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
+          }
         });
       }
 

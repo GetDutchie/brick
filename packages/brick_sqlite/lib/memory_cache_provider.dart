@@ -45,7 +45,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
 
   bool delete<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
-    logger.finest("#delete: $_Model, $instance, $query");
+    logger.finest('#delete: $_Model, $instance, $query');
 
     managedObjects[_Model] ??= {};
     managedObjects[_Model].remove(instance.primaryKey);
@@ -56,7 +56,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     if (!manages(_Model)) return null;
     managedObjects[_Model] ??= {};
 
-    logger.finest("#get: $_Model, $query");
+    logger.finest('#get: $_Model, $query');
 
     // If this query is searching for a unique identifier, return that specific record
     final byId = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
@@ -95,7 +95,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
 
   _Model upsert<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
-    logger.finest("#upsert: $_Model, $instance, $query");
+    logger.finest('#upsert: $_Model, $instance, $query');
     hydrate<_Model>([instance]);
     return managedObjects[_Model][instance.primaryKey];
   }
