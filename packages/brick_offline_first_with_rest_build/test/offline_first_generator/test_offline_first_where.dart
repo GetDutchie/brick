@@ -177,7 +177,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         return await provider?.rawInsert(
             'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
-      }));
+      }) ?? []);
     }
 
     if (instance.primaryKey != null) {
@@ -187,7 +187,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         return await provider?.rawInsert(
             'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
-      }));
+      }) ?? []);
     }
 
     if (instance.primaryKey != null) {
@@ -198,7 +198,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
         return await provider?.rawInsert(
             'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
-      }));
+      }) ?? []);
     }
   }
 
