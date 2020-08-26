@@ -35,7 +35,7 @@ abstract class FieldsForClass<_FieldAnnotation> {
     final inheritedFields = <String, FieldElement>{};
     final manager = InheritanceManager3();
 
-    for (final v in manager.getInheritedConcreteMap(element.thisType).values) {
+    for (final v in manager.getInheritedConcreteMap2(element).values) {
       assert(v is! FieldElement);
       if (_dartCoreObjectChecker.isExactly(v.enclosingElement)) {
         continue;

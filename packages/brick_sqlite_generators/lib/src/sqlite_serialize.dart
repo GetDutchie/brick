@@ -207,7 +207,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         await Future.wait<int>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
           return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
-        }));
+        }) ?? []);
       }
     ''';
   }
