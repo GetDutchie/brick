@@ -23,7 +23,7 @@ void main() {
 \t\tSchemaColumn('last_name', String, nullable: false)
 \t},
 \tindices: <SchemaIndex>{
-\t\t
+
 \t}
 )''');
     });
