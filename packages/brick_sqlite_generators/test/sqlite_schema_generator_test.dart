@@ -40,7 +40,6 @@ void main() {
 
       test('IndexAnnotation', () async {
         final input = await generateInput('index_annotation');
-        print(input);
         expect(input, _$indexAnnotation.output);
       });
 
