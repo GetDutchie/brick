@@ -32,7 +32,7 @@ class SchemaTable extends BaseSchemaObject {
 \t\t$columnsStringified
 \t},
 \tindices: <SchemaIndex>{
-\t\t$indicesStringified  
+\t\t$indicesStringified
 \t}
 )''';
   }
@@ -43,7 +43,7 @@ class SchemaTable extends BaseSchemaObject {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SchemaTable && name == other?.name;
+      identical(this, other) || other is SchemaTable && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

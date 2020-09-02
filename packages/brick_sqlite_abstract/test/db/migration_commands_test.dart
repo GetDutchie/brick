@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 import '__mocks__.dart';
 
 void main() {

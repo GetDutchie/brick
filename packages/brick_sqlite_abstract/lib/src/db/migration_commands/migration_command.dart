@@ -19,8 +19,8 @@ abstract class MigrationCommand {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MigrationCommand &&
-          statement == other?.statement &&
-          forGenerator == other?.forGenerator;
+          statement == other.statement &&
+          forGenerator == other.forGenerator;
 
   @override
   int get hashCode => statement.hashCode ^ forGenerator.hashCode;

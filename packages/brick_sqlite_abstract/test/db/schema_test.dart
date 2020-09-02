@@ -19,15 +19,15 @@ void main() {
             tables: <SchemaTable>{
               SchemaTable(
                 'demo',
-                columns: Set<SchemaColumn>.from([
+                columns: <SchemaColumn>{
                   SchemaColumn('_brick_id', int,
                       autoincrement: true, nullable: false, isPrimaryKey: true)
-                ]),
+                },
               )
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable].toSet());
+          final newSchema = Schema.fromMigrations({insertTable});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -36,7 +36,7 @@ void main() {
       group('RenameTable', () {
         test('without a prior, relevant insert migration', () {
           expect(
-            () => Schema.fromMigrations([Migration0None(), renameTable].toSet()),
+            () => Schema.fromMigrations({Migration0None(), renameTable}),
             throwsA(TypeMatcher<StateError>()),
           );
         });
@@ -47,15 +47,15 @@ void main() {
             tables: <SchemaTable>{
               SchemaTable(
                 'demo1',
-                columns: Set<SchemaColumn>.from([
+                columns: <SchemaColumn>{
                   SchemaColumn('_brick_id', int,
                       autoincrement: true, nullable: false, isPrimaryKey: true)
-                ]),
+                },
               )
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, renameTable].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, renameTable});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -64,7 +64,7 @@ void main() {
       group('DropTable', () {
         test('without a prior, relevant insert migration', () {
           expect(
-            () => Schema.fromMigrations([Migration0None(), dropTable].toSet()),
+            () => Schema.fromMigrations({Migration0None(), dropTable}),
             throwsA(TypeMatcher<StateError>()),
           );
         });
@@ -72,10 +72,10 @@ void main() {
         test('runs', () {
           final schema = Schema(
             3,
-            tables: Set<SchemaTable>(),
+            tables: <SchemaTable>{},
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, dropTable].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, dropTable});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -83,7 +83,7 @@ void main() {
 
       group('InsertColumn', () {
         test('without a prior, relevant InsertTable migration', () {
-          expect(() => Schema.fromMigrations([Migration0None(), insertColumn].toSet()),
+          expect(() => Schema.fromMigrations({Migration0None(), insertColumn}),
               throwsA(TypeMatcher<StateError>()));
         });
 
@@ -93,16 +93,16 @@ void main() {
             tables: <SchemaTable>{
               SchemaTable(
                 'demo',
-                columns: Set<SchemaColumn>.from([
+                columns: <SchemaColumn>{
                   SchemaColumn('_brick_id', int,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
                   SchemaColumn('name', String)
-                ]),
+                },
               )
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, insertColumn].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, insertColumn});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -111,13 +111,13 @@ void main() {
       group('RenameColumn', () {
         test('without a prior, relevant InsertTable migration', () {
           expect(
-            () => Schema.fromMigrations([Migration0None(), renameColumn].toSet()),
+            () => Schema.fromMigrations({Migration0None(), renameColumn}),
             throwsA(TypeMatcher<StateError>()),
           );
         });
 
         test('without a prior, relevant InsertColumn migration', () {
-          expect(() => Schema.fromMigrations([insertTable, renameColumn].toSet()),
+          expect(() => Schema.fromMigrations({insertTable, renameColumn}),
               throwsA(TypeMatcher<StateError>()));
         });
 
@@ -127,17 +127,16 @@ void main() {
             tables: <SchemaTable>{
               SchemaTable(
                 'demo',
-                columns: Set<SchemaColumn>.from([
+                columns: <SchemaColumn>{
                   SchemaColumn('_brick_id', int,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
                   SchemaColumn('first_name', String)
-                ]),
+                },
               )
             },
           );
 
-          final newSchema =
-              Schema.fromMigrations([insertTable, insertColumn, renameColumn].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, insertColumn, renameColumn});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -146,7 +145,7 @@ void main() {
       group('InsertForeignKey', () {
         test('without a prior, relevant InsertTable migration', () {
           expect(
-            () => Schema.fromMigrations([Migration0None(), insertForeignKey].toSet()),
+            () => Schema.fromMigrations({Migration0None(), insertForeignKey}),
             throwsA(TypeMatcher<StateError>()),
           );
         });
@@ -157,16 +156,16 @@ void main() {
             tables: <SchemaTable>{
               SchemaTable(
                 'demo',
-                columns: Set<SchemaColumn>.from([
+                columns: <SchemaColumn>{
                   SchemaColumn('_brick_id', int,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
                   SchemaColumn('demo2_id', int, isForeignKey: true, foreignTableName: 'demo2')
-                ]),
+                },
               )
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, insertForeignKey].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, insertForeignKey});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -190,7 +189,7 @@ void main() {
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, createIndex].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, createIndex});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -212,7 +211,7 @@ void main() {
             },
           );
 
-          final newSchema = Schema.fromMigrations([insertTable, createIndex, dropIndex].toSet());
+          final newSchema = Schema.fromMigrations({insertTable, createIndex, dropIndex});
           expect(newSchema.tables, schema.tables);
           expect(newSchema.version, schema.version);
         });
@@ -224,22 +223,22 @@ void main() {
           tables: <SchemaTable>{
             SchemaTable(
               'demo',
-              columns: Set<SchemaColumn>.from([
+              columns: <SchemaColumn>{
                 SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true)
-              ]),
+              },
             ),
             SchemaTable(
               'demo2',
-              columns: Set<SchemaColumn>.from([
+              columns: <SchemaColumn>{
                 SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true)
-              ]),
+              },
             ),
           },
         );
 
-        final newSchema = Schema.fromMigrations([insertTable, Migration2()].toSet());
+        final newSchema = Schema.fromMigrations({insertTable, Migration2()});
         expect(newSchema.tables, schema.tables);
         expect(newSchema.version, schema.version);
       });
@@ -250,12 +249,12 @@ void main() {
       });
 
       test("version uses the migrations' largest version if not provided", () {
-        expect(Schema.fromMigrations([Migration2(), Migration1()].toSet()).version, 2);
+        expect(Schema.fromMigrations({Migration2(), Migration1()}).version, 2);
       });
     });
 
     test('.expandMigrations', () {
-      final migrations = [MigrationInsertTable(), MigrationRenameColumn()].toSet();
+      final migrations = {MigrationInsertTable(), MigrationRenameColumn()};
 
       final commands = Schema.expandMigrations(migrations);
       // Maintains sort order
@@ -263,7 +262,7 @@ void main() {
     });
 
     test('#forGenerator', () {
-      final schema = Schema.fromMigrations([MigrationInsertTable(), Migration2()].toSet());
+      final schema = Schema.fromMigrations({MigrationInsertTable(), Migration2()});
 
       expect(schema.forGenerator, '''
 Schema(
@@ -276,7 +275,7 @@ Schema(
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
-          
+
       }
     ),
     SchemaTable(
@@ -285,7 +284,7 @@ Schema(
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
-          
+
       }
     )
   }

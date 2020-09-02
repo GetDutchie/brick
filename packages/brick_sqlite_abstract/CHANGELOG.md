@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 0.0.9
+
 * Remove `Migration.wrapInTransaction` static method. This was a misleading and unused method.
+* Add `index:` option in `@Sqlite` for creating an index on a column.
 
 ## 0.0.8+1
 

@@ -171,7 +171,7 @@ class Schema {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Schema && version == other?.version && tables == other?.tables;
+      other is Schema && version == other.version && tables == other.tables;
 
   @override
   int get hashCode => version.hashCode ^ tables.hashCode;

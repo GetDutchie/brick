@@ -188,7 +188,7 @@ class Migration$version extends Migration {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Migration && version == other?.version;
+      identical(this, other) || other is Migration && version == other.version;
 
   @override
   int get hashCode => version.hashCode;
