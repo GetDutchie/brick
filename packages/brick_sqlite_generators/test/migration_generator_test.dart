@@ -31,7 +31,7 @@ void main() {
         expect(migrations.first.up, hasLength(3));
         expect(migrations.first.up.last, isA<CreateIndex>());
         expect(migrations.first.up.last.statement,
-            'CREATE INDEX IF NOT EXISTS index_demo_on_name on demo(`name`)');
+            'CREATE INDEX IF NOT EXISTS index_demo_on_name on `demo`(`name`)');
       });
 
       test('DropTable', () async {
