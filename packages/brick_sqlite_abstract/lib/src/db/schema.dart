@@ -155,7 +155,12 @@ class Schema {
   /// Output for generator
   String get forGenerator {
     final tableString = tables
-        .map((t) => t.forGenerator.replaceAll('\n\t', '\n\t\t\t').replaceAll('\n)', '\n\t\t)'))
+        .map((t) => t.forGenerator
+            // Add indentation
+            .replaceAll('\n\t', '\n\t\t\t')
+            .replaceAll('\n)', '\n\t\t)')
+            // Remove blank lines
+            .replaceAll(RegExp(r'^[\s\\n]+$'), ''))
         .join(',\n\t\t');
 
     return '''Schema(
