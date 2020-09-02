@@ -57,12 +57,14 @@ void main() {
 /// and [SqliteSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<SqliteSerializable> {
+  @override
   final superAdapterName = 'Sqlite';
   final repositoryName = 'SqliteFirst';
 
   TestGenerator();
 
   /// Given an [element] and an [annotation], scaffold generators
+  @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
         SqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);

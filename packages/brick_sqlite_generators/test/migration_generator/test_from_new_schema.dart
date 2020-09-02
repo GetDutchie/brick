@@ -3,12 +3,12 @@ import 'package:brick_sqlite_abstract/db.dart';
 const version = 1;
 
 const up = [
-  const InsertTable('User'),
-  const InsertColumn('address', Column.varchar, onTable: 'User'),
+  InsertTable('User'),
+  InsertColumn('address', Column.varchar, onTable: 'User'),
 ];
 
 const down = [
-  const DropColumn('address', onTable: 'User'),
+  DropColumn('address', onTable: 'User'),
 ];
 
 @Migratable(version: '$version', up: up, down: down)
