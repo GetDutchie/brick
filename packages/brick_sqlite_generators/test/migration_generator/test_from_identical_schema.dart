@@ -3,8 +3,8 @@ import 'package:brick_sqlite_abstract/db.dart';
 const version = 1;
 
 const up = [
-  const InsertTable('User'),
-  const InsertColumn('name', Column.varchar, onTable: 'User'),
+  InsertTable('User'),
+  InsertColumn('name', Column.varchar, onTable: 'User'),
 ];
 
 const down = <MigrationCommand>[];

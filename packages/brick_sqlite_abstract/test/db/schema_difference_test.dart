@@ -7,18 +7,18 @@ void main() {
 
     final tableNoColumn = SchemaTable(
       'demo',
-      columns: Set<SchemaColumn>.from([
+      columns: <SchemaColumn>{
         SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
-      ]),
+      },
     );
 
     setUp(() {
       table = SchemaTable(
         'demo',
-        columns: Set<SchemaColumn>.from([
+        columns: <SchemaColumn>{
           SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
           column
-        ]),
+        },
       );
     });
 
@@ -72,19 +72,19 @@ void main() {
           tables: <SchemaTable>{
             SchemaTable(
               'demo',
-              columns: Set<SchemaColumn>.from([
+              columns: <SchemaColumn>{
                 SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 column,
-              ]),
+              },
             ),
             SchemaTable(
               'users',
-              columns: Set<SchemaColumn>.from([
+              columns: <SchemaColumn>{
                 SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 SchemaColumn('email', String)
-              ]),
+              },
             ),
           },
         );
@@ -127,10 +127,10 @@ void main() {
       table.columns.add(foreignKeyColumn);
       final newTable = SchemaTable(
         'demo',
-        columns: Set<SchemaColumn>.from([
+        columns: <SchemaColumn>{
           SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
           column
-        ]),
+        },
       );
       final foreignKeyColumnWithOnDeleteCascade = SchemaColumn(
         'user_id',
@@ -160,10 +160,10 @@ void main() {
       table.columns.add(foreignKeyColumn);
       final newTable = SchemaTable(
         'demo',
-        columns: Set<SchemaColumn>.from([
+        columns: <SchemaColumn>{
           SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
           column
-        ]),
+        },
       );
       final foreignKeyColumnWithOnDeleteSetDefault = SchemaColumn(
         'user_id',
@@ -242,7 +242,7 @@ void main() {
           tables: {
             SchemaTable(
               '_brick_People_friend',
-              columns: Set<SchemaColumn>.from([
+              columns: <SchemaColumn>{
                 SchemaColumn('_brick_id', int,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 SchemaColumn(
@@ -259,7 +259,7 @@ void main() {
                   foreignTableName: 'Friend',
                   onDeleteSetDefault: true,
                 ),
-              ]),
+              },
               indices: <SchemaIndex>{
                 SchemaIndex(columns: ['l_People_brick_id', 'f_Friend_brick_id'], unique: true)
               },
@@ -307,8 +307,8 @@ void main() {
     });
 
     test('oldSchema is less than newSchema', () {
-      final old = Schema(2, tables: Set<SchemaTable>());
-      final fresh = Schema(1, tables: Set<SchemaTable>());
+      final old = Schema(2, tables: <SchemaTable>{});
+      final fresh = Schema(1, tables: <SchemaTable>{});
 
       expect(() => SchemaDifference(old, fresh), throwsA(TypeMatcher<AssertionError>()));
     });

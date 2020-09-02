@@ -10,8 +10,10 @@ import 'sqlite_fields.dart';
 
 abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
     extends SerdesGenerator<Sqlite, _Model> {
+  @override
   final providerName = 'Sqlite';
 
+  @override
   final String repositoryName;
 
   SqliteSerdesGenerator(

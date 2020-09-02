@@ -103,12 +103,13 @@ class OneToManyAssociationAdapter
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assoc?.map((s) async {
-        final id = s?.primaryKey ??
-            await provider?.upsert<SqliteAssoc>(s, repository: repository);
-        return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_OneToManyAssociation_assoc` (`l_OneToManyAssociation_brick_id`, `f_SqliteAssoc_brick_id`) VALUES (?, ?)',
-            [instance.primaryKey, id]);
-      }) ?? []);
+            final id = s?.primaryKey ??
+                await provider?.upsert<SqliteAssoc>(s, repository: repository);
+            return await provider?.rawInsert(
+                'INSERT OR IGNORE INTO `_brick_OneToManyAssociation_assoc` (`l_OneToManyAssociation_brick_id`, `f_SqliteAssoc_brick_id`) VALUES (?, ?)',
+                [instance.primaryKey, id]);
+          }) ??
+          []);
     }
   }
 

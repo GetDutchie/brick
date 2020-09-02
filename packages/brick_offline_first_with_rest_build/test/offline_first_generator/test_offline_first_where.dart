@@ -172,33 +172,38 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assocs?.map((s) async {
-        final id = (await s)?.primaryKey ??
-            await provider?.upsert<Assoc>((await s), repository: repository);
-        return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
-            [instance.primaryKey, id]);
-      }) ?? []);
+            final id = (await s)?.primaryKey ??
+                await provider?.upsert<Assoc>((await s),
+                    repository: repository);
+            return await provider?.rawInsert(
+                'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+                [instance.primaryKey, id]);
+          }) ??
+          []);
     }
 
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.loadedAssocs?.map((s) async {
-        final id = s?.primaryKey ??
-            await provider?.upsert<Assoc>(s, repository: repository);
-        return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
-            [instance.primaryKey, id]);
-      }) ?? []);
+            final id = s?.primaryKey ??
+                await provider?.upsert<Assoc>(s, repository: repository);
+            return await provider?.rawInsert(
+                'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+                [instance.primaryKey, id]);
+          }) ??
+          []);
     }
 
     if (instance.primaryKey != null) {
       await Future.wait<int>(
           instance.multiLookupCustomGenerator?.map((s) async {
-        final id = (await s)?.primaryKey ??
-            await provider?.upsert<Assoc>((await s), repository: repository);
-        return await provider?.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
-            [instance.primaryKey, id]);
-      }) ?? []);
+                final id = (await s)?.primaryKey ??
+                    await provider?.upsert<Assoc>((await s),
+                        repository: repository);
+                return await provider?.rawInsert(
+                    'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+                    [instance.primaryKey, id]);
+              }) ??
+              []);
     }
   }
 

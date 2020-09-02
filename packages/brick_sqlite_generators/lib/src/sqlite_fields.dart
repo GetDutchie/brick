@@ -19,6 +19,7 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
     if (obj == null) {
       return Sqlite(
         ignore: Sqlite.defaults.ignore,
+        index: Sqlite.defaults.index,
         name: StringHelpers.snakeCase(element.name),
         nullable: config?.nullable ?? Sqlite.defaults.nullable,
         onDeleteCascade: Sqlite.defaults.onDeleteCascade,
@@ -31,6 +32,7 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
       defaultValue: obj.getField('defaultValue').toStringValue(),
       fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,
+      index: obj.getField('index').toBoolValue() ?? Sqlite.defaults.index,
       name: obj.getField('name').toStringValue() ?? StringHelpers.snakeCase(element.name),
       nullable:
           obj.getField('nullable').toBoolValue() ?? config?.nullable ?? Sqlite.defaults.nullable,

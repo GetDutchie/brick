@@ -155,7 +155,10 @@ class Schema {
   /// Output for generator
   String get forGenerator {
     final tableString = tables
-        .map((t) => t.forGenerator.replaceAll('\n\t', '\n\t\t\t').replaceAll('\n)', '\n\t\t)'))
+        .map((t) => t.forGenerator
+            // Add indentation
+            .replaceAll('\n\t', '\n\t\t\t')
+            .replaceAll('\n)', '\n\t\t)'))
         .join(',\n\t\t');
 
     return '''Schema(
@@ -171,7 +174,7 @@ class Schema {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Schema && version == other?.version && tables == other?.tables;
+      other is Schema && version == other.version && tables == other.tables;
 
   @override
   int get hashCode => version.hashCode ^ tables.hashCode;

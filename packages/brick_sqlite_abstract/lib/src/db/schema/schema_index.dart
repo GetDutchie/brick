@@ -25,10 +25,10 @@ class SchemaIndex extends BaseSchemaObject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SchemaIndex &&
-          name == other?.name &&
+          name == other.name &&
           // tableNames don't compare nicely since they're non-final
-          (tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
-          forGenerator == other?.forGenerator;
+          (tableName ?? '').compareTo(other.tableName ?? '') == 0 &&
+          forGenerator == other.forGenerator;
 
   @override
   int get hashCode => name.hashCode ^ forGenerator.hashCode;

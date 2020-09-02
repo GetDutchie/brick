@@ -27,7 +27,7 @@ class CreateIndex extends MigrationCommand {
     if (unique) statement.add('UNIQUE');
 
     final columnNames = columns.map((c) => '`$c`').join(', ');
-    statement.add('INDEX IF NOT EXISTS $name on $onTable($columnNames)');
+    statement.add('INDEX IF NOT EXISTS $name on `$onTable`($columnNames)');
     return statement.join(' ');
   }
 

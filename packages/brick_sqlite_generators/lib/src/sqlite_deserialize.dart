@@ -50,15 +50,15 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     // DateTime
     if (checker.isDateTime) {
-      return "$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)";
+      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool
     } else if (checker.isBool) {
-      return "$fieldValue == 1";
+      return '$fieldValue == 1';
 
       // double, int, String
     } else if (checker.isDartCoreType) {
-      return "$fieldValue as ${field.type}$defaultValue";
+      return '$fieldValue as ${field.type}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -112,16 +112,16 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return "jsonDecode($fieldValue).map((d) => d as int > -1 ? $argType.values[d as int] : null)$castIterable";
+        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? $argType.values[d as int] : null)$castIterable';
       }
 
       // Iterable<bool>
       if (argTypeChecker.isBool) {
-        return "jsonDecode($fieldValue).map((d) => d == 1)$castIterable";
+        return 'jsonDecode($fieldValue).map((d) => d == 1)$castIterable';
       }
 
       // Iterable<double>, Iterable<int>, Iterable<num>, Iterable<Map>, Iterable<String>
-      return "jsonDecode($fieldValue)$castIterable";
+      return 'jsonDecode($fieldValue)$castIterable';
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
@@ -141,11 +141,11 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
-      return "($fieldValue > -1 ? ${field.type}.values[$fieldValue as int] : null)$defaultValue";
+      return '($fieldValue > -1 ? ${field.type}.values[$fieldValue as int] : null)$defaultValue';
 
       // Map
     } else if (checker.isMap) {
-      return "jsonDecode($fieldValue)";
+      return 'jsonDecode($fieldValue)';
     }
 
     return null;

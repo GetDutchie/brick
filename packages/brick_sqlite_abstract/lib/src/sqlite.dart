@@ -12,6 +12,16 @@ class Sqlite implements FieldSerializable {
   @override
   final bool ignore;
 
+  /// Create an `INDEX` on a single column. A `UNIQUE` index will be created when
+  /// [unique] is `true`. When [unique] is `true` and [index] is absent or `false`, an
+  /// index is not created.
+  ///
+  /// Iterable associations are automatically indexed through a generated joins table.
+  /// [index] declared on these fields will be ignored.
+  ///
+  /// Defaults `false`.
+  final bool index;
+
   /// The column name to use when reading and writing values corresponding
   /// to the annotated fields.
   ///
@@ -55,6 +65,9 @@ class Sqlite implements FieldSerializable {
   /// When `true`, the column will be inserted with a `UNIQUE` constraint. Unique columns will
   /// also be listed in the adapter for querying if implemented by the invoking provider.
   /// Defaults to `false`. Does not apply to associations.
+  ///
+  /// To index this column, [index] needs to be `true`. Indices **are not** automatically
+  /// created for [unique] columns.
   final bool unique;
 
   /// Creates a new [Sqlite] instance.
@@ -64,6 +77,7 @@ class Sqlite implements FieldSerializable {
     this.defaultValue,
     this.fromGenerator,
     this.ignore,
+    this.index,
     this.name,
     this.nullable,
     this.onDeleteCascade,
@@ -76,6 +90,7 @@ class Sqlite implements FieldSerializable {
   /// values.
   static const defaults = Sqlite(
     ignore: false,
+    index: false,
     nullable: true,
     onDeleteCascade: false,
     onDeleteSetDefault: false,

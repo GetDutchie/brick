@@ -106,11 +106,11 @@ class SchemaColumn extends BaseSchemaObject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SchemaColumn &&
-          name == other?.name &&
-          type == other?.type &&
+          name == other.name &&
+          type == other.type &&
           // tableNames don't compare nicely since they're non-final
-          (tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
-          forGenerator == other?.forGenerator;
+          (tableName ?? '').compareTo(other.tableName ?? '') == 0 &&
+          forGenerator == other.forGenerator;
 
   @override
   int get hashCode => name.hashCode ^ type.hashCode ^ forGenerator.hashCode;

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 
 void main() {
   group('SchemaTable', () {
@@ -23,7 +23,7 @@ void main() {
 \t\tSchemaColumn('last_name', String, nullable: false)
 \t},
 \tindices: <SchemaIndex>{
-\t\t  
+
 \t}
 )''');
     });

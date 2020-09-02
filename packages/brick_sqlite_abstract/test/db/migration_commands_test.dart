@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 import '__mocks__.dart';
 
 void main() {
@@ -21,9 +21,9 @@ void main() {
 
       test('#statement', () {
         expect(m.statement,
-            'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+            'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
         expect(mUnique.statement,
-            'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on _brick_Local_field(`f_Local_brick_id`, `l_Field_brick_id`)');
+            'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
       });
 
       test('#forGenerator', () {

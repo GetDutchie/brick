@@ -1,4 +1,4 @@
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 export 'package:test/test.dart';
 export '../../lib/db.dart';
 

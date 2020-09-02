@@ -9,6 +9,7 @@ import 'sqlite_schema/test_simple.dart' as _$simple;
 import 'sqlite_schema/test_nullable.dart' as _$nullable;
 import 'sqlite_schema/test_one_to_one_association.dart' as _$oneToOneAssociation;
 import 'sqlite_schema/test_one_to_many_association.dart' as _$oneToManyAssociation;
+import 'sqlite_schema/test_index_annotation.dart' as _$indexAnnotation;
 import 'sqlite_schema/test_all_field_types.dart' as _$allFieldTypes;
 
 const generator = SqliteSchemaGenerator();
@@ -35,6 +36,11 @@ void main() {
       test('OneToManyAssociation', () async {
         final input = await generateInput('one_to_many_association');
         expect(input, _$oneToManyAssociation.output);
+      });
+
+      test('IndexAnnotation', () async {
+        final input = await generateInput('index_annotation');
+        expect(input, _$indexAnnotation.output);
       });
 
       test('Simple', () async {
