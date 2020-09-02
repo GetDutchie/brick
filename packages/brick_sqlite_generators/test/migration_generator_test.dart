@@ -22,6 +22,18 @@ void main() {
         expect(migrations.first.up.last.statement, null);
       });
 
+      test('CreateIndex', () async {
+        final reader = await generateLibrary('create_index');
+
+        final migrations = generator.expandAllMigrations(reader);
+        expect(migrations, hasLength(1));
+        expect(migrations.first, isA<Migration>());
+        expect(migrations.first.up, hasLength(3));
+        expect(migrations.first.up.last, isA<CreateIndex>());
+        expect(migrations.first.up.last.statement,
+            'CREATE INDEX IF NOT EXISTS index_demo_on_name on demo(`name`)');
+      });
+
       test('DropTable', () async {
         final reader = await generateLibrary('drop_table');
 

@@ -149,7 +149,10 @@ class SqliteSchemaGenerator {
         nullable: false,
       ),
     );
-    return SchemaTable(tableName, columns: Set.from(columns));
+
+    final indices = _createIndices(tableName, fields);
+
+    return SchemaTable(tableName, columns: columns.toSet(), indices: indices);
   }
 
   @visibleForOverriding
@@ -171,6 +174,19 @@ class SqliteSchemaGenerator {
           (checker.isIterable && checker.isArgTypeASibling)) return null;
 
       return schemaColumn(column, checker: checker);
+    });
+  }
+
+  Set<SchemaIndex> _createIndices(String tableName, SqliteFields fields) {
+    return fields.stableInstanceFields.fold<Set<SchemaIndex>>({}, (acc, field) {
+      final checker = checkerForField(field);
+      final column = fields.finder.annotationForField(field);
+      final index = schemaIndex(column, checker: checker);
+      if (index != null) {
+        index.tableName = tableName;
+        acc.add(index);
+      }
+      return acc;
     });
   }
 
@@ -212,6 +228,24 @@ class SqliteSchemaGenerator {
         String,
         nullable: column?.nullable,
         unique: column?.unique,
+      );
+    }
+
+    return null;
+  }
+
+  @visibleForOverriding
+  SchemaIndex schemaIndex(Sqlite column, {SharedChecker checker}) {
+    final isIterableAssociation = (checker.isIterable && checker.isArgTypeASibling);
+
+    if (!column.ignore && column.index && !isIterableAssociation) {
+      final name = checker.isSibling
+          ? InsertForeignKey.foreignKeyColumnName(
+              checker.unFuturedType.getDisplayString(), column.name)
+          : column.name;
+      return SchemaIndex(
+        columns: [name],
+        unique: column.unique,
       );
     }
 
