@@ -26,13 +26,14 @@ class SchemaTable extends BaseSchemaObject {
   String get forGenerator {
     final columnsStringified = columns.map((c) => c.forGenerator).join(',\n\t\t');
     final indicesStringified = indices.map((c) => c.forGenerator).join(',\n\t\t');
+    final printedIndices = indices?.isNotEmpty ?? false ? '\t\t$indicesStringified' : '';
     return '''SchemaTable(
 \t'$name',
 \tcolumns: <SchemaColumn>{
 \t\t$columnsStringified
 \t},
 \tindices: <SchemaIndex>{
-\t\t$indicesStringified
+$printedIndices
 \t}
 )''';
   }

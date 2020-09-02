@@ -158,9 +158,7 @@ class Schema {
         .map((t) => t.forGenerator
             // Add indentation
             .replaceAll('\n\t', '\n\t\t\t')
-            .replaceAll('\n)', '\n\t\t)')
-            // Remove blank lines
-            .replaceAll(RegExp(r'^[\s\\n]+$'), ''))
+            .replaceAll('\n)', '\n\t\t)'))
         .join(',\n\t\t');
 
     return '''Schema(
