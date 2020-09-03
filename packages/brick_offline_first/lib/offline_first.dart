@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:logging/logging.dart';
@@ -109,6 +110,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       await remoteProvider.delete<_Model>(instance, query: query, repository: this);
     } on ClientException catch (e) {
       logger.warning('#delete client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#delete socket failure: $e');
     }
 
     if (autoHydrate) hydrate<_Model>(query: query);
@@ -282,6 +285,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
     } on ClientException catch (e) {
       logger.warning('#upsert client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#upsert socket failure: $e');
     }
 
     if (autoHydrate) hydrate<_Model>(query: query);
@@ -315,6 +320,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
           .then((d) => memoryCacheProvider.hydrate<_Model>(d));
     } on ClientException catch (e) {
       logger.warning('#hydrate client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#hydrate socket failure: $e');
     }
 
     return <_Model>[];
