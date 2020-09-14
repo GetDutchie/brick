@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When searching with `doesNotContain` apply same fuzzy search `%` that `Compare.contains` enjoys
+
 ## 0.1.1
 
 * Bump SQFlite

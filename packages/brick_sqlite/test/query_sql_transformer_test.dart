@@ -134,6 +134,23 @@ void main() {
       sqliteStatementExpectation(statement, [1, 'Thomas', 'Guy']);
     });
 
+    group('Compare', () {
+      test('.doesNotContain', () async {
+        final statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name NOT LIKE ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            Where('name').doesNotContain('Thomas'),
+          ]),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, ['%Thomas%']);
+      });
+    });
+
     group('associations', () {
       test('simple', () async {
         final statement =
