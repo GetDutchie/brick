@@ -230,7 +230,7 @@ class WhereColumnFragment {
 
   @protected
   dynamic sqlifiedValue(dynamic _value, Compare compare) {
-    if (compare == Compare.contains) {
+    if (compare == Compare.contains || compare == Compare.doesNotContain) {
       return '%$_value%';
     }
 
