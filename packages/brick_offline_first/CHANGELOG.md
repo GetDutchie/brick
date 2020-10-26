@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Gracefully handle `SocketException` errors when the application is offline
+* Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
 
 ## 0.1.0
 

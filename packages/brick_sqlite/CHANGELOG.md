@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.1.2
+
 * When searching with `doesNotContain` apply same fuzzy search `%` that `Compare.contains` enjoys
 
 ## 0.1.1
