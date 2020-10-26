@@ -37,6 +37,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   final String dbName;
 
   /// The glue between app models and generated adapters
+  @override
   final SqliteModelDictionary modelDictionary;
 
   /// Ensure commands are run synchronously. This significantly benefits stability while
@@ -64,6 +65,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Remove record from SQLite. [query] is ignored.
+  @override
   Future<int> delete<_Model extends SqliteModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model];
     final db = await _db;
@@ -121,6 +123,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// to produce `SELECT * FROM "TableName" ORDER BY created_at ASC, name ASC;`, `providerArgs` would
   /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
+  @override
   Future<List<_Model>> get<_Model extends SqliteModel>({
     query,
     repository,
@@ -211,7 +214,7 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     if (results.isEmpty || results.first.isEmpty) {
       // otherwise an empty sql result will generate a blank model
-      return List<_Model>();
+      return <_Model>[];
     }
 
     return await Future.wait<_Model>(
@@ -255,6 +258,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
+  @override
   Future<int> upsert<_Model extends SqliteModel>(instance, {query, repository}) async {
     if (instance == null) return NEW_RECORD_ID;
 
