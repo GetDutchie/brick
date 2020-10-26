@@ -38,7 +38,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
     if (cacheItem.requestIsPush) {
       final db = await requestManager.getDb();
       // Log immediately before we make the request
-      await cacheItem.insertOrUpdate(db, logger: _logger);
+      await cacheItem.insert(db, logger: _logger);
     }
 
     /// When the request is null or an error has occurred, an error-like
@@ -51,14 +51,18 @@ class OfflineQueueHttpClient extends http.BaseClient {
     try {
       // Attempt to make HTTP Request
       final resp = await _inner.send(request);
+      final db = await requestManager.getDb();
 
-      if (cacheItem.requestIsPush &&
-          resp != null &&
-          !reattemptForStatusCodes.contains(resp.statusCode)) {
-        // request was successfully sent and can be removed
-        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-        final db = await requestManager.getDb();
-        await cacheItem.delete(db);
+      if (cacheItem.requestIsPush) {
+        if (resp != null && !reattemptForStatusCodes.contains(resp.statusCode)) {
+          // request was successfully sent and can be removed
+          _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
+          await cacheItem.delete(db);
+        } else {
+          // Unlock the row and increment attempts
+          final db = await requestManager.getDb();
+          await cacheItem.update(db, logger: _logger);
+        }
       }
 
       return resp ?? _genericErrorResponse;

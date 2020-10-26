@@ -47,7 +47,7 @@ void main() {
       expect(request.method, 'POST');
 
       final asCacheItem = RequestSqliteCache(request);
-      await asCacheItem.insertOrUpdate(await _requestManager.getDb());
+      await asCacheItem.update(await _requestManager.getDb());
       final req = await _requestManager.prepareNextRequestToProcess();
       expect(req.method, 'PUT');
     });
@@ -63,7 +63,7 @@ void main() {
       expect(request.method, 'POST');
 
       final asCacheItem = RequestSqliteCache(request);
-      await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      await asCacheItem.insert(await requestManager.getDb());
       final req = await requestManager.prepareNextRequestToProcess();
       expect(req.method, 'POST');
     });

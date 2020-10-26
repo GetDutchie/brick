@@ -176,6 +176,7 @@ abstract class OfflineFirstWithRestRepository
   Future<List<_Model>> hydrate<_Model extends OfflineFirstWithRestModel>({
     bool deserializeSqlite = true,
     Query query,
+    bool requireRemote = false,
   }) async {
     try {
       return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
