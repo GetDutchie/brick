@@ -95,6 +95,18 @@ void main() {
       });
     });
 
+    test('#unlock', () async {
+      final logger = MockLogger();
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+      await uninserted.insertOrUpdate(db, logger: logger);
+      await uninserted.unlock(db);
+      final request = await requestManager.unprocessedRequests();
+      expect(request.first[HTTP_JOBS_LOCKED_COLUMN], 0);
+    });
+
     group('.toRequest', () {
       test('basic', () {
         final request = RequestSqliteCache.sqliteToRequest({

@@ -74,6 +74,22 @@ class RequestSqliteCache {
         {
           HTTP_JOBS_ATTEMPTS_COLUMN: response[HTTP_JOBS_ATTEMPTS_COLUMN] + 1,
           HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+        },
+        where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+        whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+      );
+    });
+  }
+
+  /// If the request did not succeed, unlock for subsequent processing
+  Future<int> unlock(Database db) async {
+    final response = await _findRequestInDatabase(db);
+
+    return db.transaction((txn) async {
+      if (response == null) return null;
+      return await txn.update(
+        HTTP_JOBS_TABLE_NAME,
+        {
           HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
         },
         where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',

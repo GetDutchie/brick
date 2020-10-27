@@ -66,22 +66,27 @@ class RequestSqliteCacheManager {
   Future<http.Request> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
+      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 1);
       final whereLocked = _lockedQuery(true, limit: 1);
 
-      // lock all unlocked requests for idempotency
+      final anyLocked = await txn.rawQuery('$whereLocked;');
+      final atLeastOneRequestIsLocked = anyLocked?.isNotEmpty ?? false;
+      // if some locked rows exist and serialProcessing is true, wait for the locked request to finish
+      if (serialProcessing && atLeastOneRequestIsLocked) return [];
+
+      // lock the next request
       await txn.rawUpdate([
         'UPDATE $HTTP_JOBS_TABLE_NAME',
         'SET $HTTP_JOBS_LOCKED_COLUMN = 1',
         'WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);',
       ].join(' '));
 
+      // rerun and return the next locked request
       return txn.rawQuery('$whereLocked;');
     });
 
     final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
-
-    if (jobs?.isEmpty == false) return jobs.first;
+    if (jobs?.isNotEmpty ?? false) return jobs.first;
 
     return null;
   }
