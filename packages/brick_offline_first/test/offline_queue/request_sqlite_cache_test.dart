@@ -65,32 +65,34 @@ void main() {
     test('#delete', () async {
       final db = await requestManager.getDb();
       expect(await requestManager.unprocessedRequests(), isEmpty);
-      await getResp.insert(db);
+      await getResp.insertOrUpdate(db);
       expect(await requestManager.unprocessedRequests(), isNotEmpty);
       await getResp.delete(db);
       expect(await requestManager.unprocessedRequests(), isEmpty);
     });
 
-    test('#insert', () async {
+    group('#insertOrUpdate', () {
       final logger = MockLogger();
-      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-      final uninserted = RequestSqliteCache(uninsertedRequest);
-      final db = await requestManager.getDb();
-      expect(await requestManager.unprocessedRequests(), isEmpty);
-      await uninserted.insert(db, logger: logger);
-      expect(await requestManager.unprocessedRequests(), isNotEmpty);
-      verify(logger.fine(any));
-    });
 
-    test('#update', () async {
-      final logger = MockLogger();
-      final db = await requestManager.getDb();
-      await getResp.insert(db);
-      await getResp.update(db, logger: logger);
-      final request = await requestManager.unprocessedRequests();
-      verify(logger.warning(any));
+      test('insert', () async {
+        final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+        final uninserted = RequestSqliteCache(uninsertedRequest);
+        final db = await requestManager.getDb();
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+        await uninserted.insertOrUpdate(db, logger: logger);
+        expect(await requestManager.unprocessedRequests(), isNotEmpty);
+        verify(logger.fine(any));
+      });
 
-      expect(request.first[HTTP_JOBS_ATTEMPTS_COLUMN], 2);
+      test('update', () async {
+        final db = await requestManager.getDb();
+        await getResp.insertOrUpdate(db);
+        await getResp.insertOrUpdate(db, logger: logger);
+        final request = await requestManager.unprocessedRequests();
+        verify(logger.warning(any));
+
+        expect(request.first[HTTP_JOBS_ATTEMPTS_COLUMN], 2);
+      });
     });
 
     group('.toRequest', () {

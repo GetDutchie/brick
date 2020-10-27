@@ -50,8 +50,9 @@ class RequestSqliteCache {
     return 0;
   }
 
-  /// Add new requests to the database
-  Future<int> insert(Database db, {Logger logger}) async {
+  /// If the request already exists in the database, increment attemps and
+  /// set `updated_at` to current time.
+  Future<int> insertOrUpdate(Database db, {Logger logger}) async {
     final response = await _findRequestInDatabase(db);
 
     return db.transaction((txn) async {
@@ -64,17 +65,6 @@ class RequestSqliteCache {
           serialized,
         );
       }
-
-      return null;
-    });
-  }
-
-  /// If the request already exists in the database, increment attemps and
-  /// set `updated_at` to current time.
-  Future<int> update(Database db, {Logger logger}) async {
-    final response = await _findRequestInDatabase(db);
-
-    return db.transaction((txn) async {
       final methodWithUrl =
           [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
       logger?.warning(
