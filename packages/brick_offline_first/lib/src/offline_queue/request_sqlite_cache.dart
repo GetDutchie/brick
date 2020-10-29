@@ -87,14 +87,7 @@ class RequestSqliteCache {
 
     return db.transaction((txn) async {
       if (response == null) return null;
-      return await txn.update(
-        HTTP_JOBS_TABLE_NAME,
-        {
-          HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
-        },
-        where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
-        whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
-      );
+      return await unlockRequest(response, txn);
     });
   }
 
@@ -139,5 +132,16 @@ class RequestSqliteCache {
     }
 
     return _request;
+  }
+
+  static Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async {
+    return await db.update(
+      HTTP_JOBS_TABLE_NAME,
+      {
+        HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
+      },
+      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+      whereArgs: [data[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+    );
   }
 }

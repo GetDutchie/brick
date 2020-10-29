@@ -71,6 +71,14 @@ class RequestSqliteCacheManager {
 
       final anyLocked = await txn.rawQuery('$whereLocked;');
       final atLeastOneRequestIsLocked = anyLocked?.isNotEmpty ?? false;
+      if (atLeastOneRequestIsLocked) {
+        final lastUpdated = DateTime.parse(anyLocked.first[HTTP_JOBS_UPDATED_AT]);
+        if (lastUpdated.isBefore(DateTime.now().subtract(Duration(minutes: 2)))) {
+          RequestSqliteCache.unlockRequest(anyLocked.first, txn);
+        } else {
+          return [];
+        }
+      }
       // if some locked rows exist and serialProcessing is true, wait for the locked request to finish
       if (serialProcessing && atLeastOneRequestIsLocked) return [];
 
