@@ -44,7 +44,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// preventing database lockups (has a very, very minor performance expense).
   final Lock _lock;
 
-  Logger _logger;
+  final Logger _logger;
 
   SqliteProvider(
     this.dbName, {
