@@ -94,15 +94,13 @@ class SqliteProvider implements Provider<SqliteModel> {
     ModelRepository<SqliteModel> repository,
   }) async {
     if (!_supportsArgs(query)) return false;
+    final sqlQuery = QuerySqlTransformer<_Model>(
+      modelDictionary: modelDictionary,
+      query: query,
+      selectStatement: false,
+    );
+    final countQuery = await (await _db).rawQuery(sqlQuery.statement, sqlQuery.values);
 
-    if (query?.where != null) {
-      final results = await get<_Model>(query: query, repository: repository);
-      return results?.isNotEmpty == true;
-    }
-
-    final adapter = modelDictionary.adapterFor[_Model];
-
-    final countQuery = await (await _db).rawQuery('SELECT COUNT(*) FROM `${adapter.tableName}`');
     final count = Sqflite.firstIntValue(countQuery ?? []) ?? 0;
     return count > 0;
   }

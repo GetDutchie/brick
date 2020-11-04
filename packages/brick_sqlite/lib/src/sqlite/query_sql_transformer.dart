@@ -45,16 +45,19 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
   String get innerJoins => _innerJoins.join(' ');
 
+  /// [selectStatement] will output [statement] as a `SELECT FROM`. When false, the [statement]
+  /// output will be a `SELECT COUNT(*)`. Defaults `true`.
   QuerySqlTransformer({
     @required this.modelDictionary,
     this.query,
+    bool selectStatement = true,
   }) : adapter = modelDictionary.adapterFor[_Model] {
-    generate();
+    generate(selectStatement);
   }
 
   /// Compute [statement] and [values]
   @protected
-  void generate() {
+  void generate(bool outputAsSelect) {
     // reset to clean instance
     _statement.clear();
     _values.clear();
@@ -64,7 +67,9 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     // Why not SELECT * FROM ?
     // Statements including INNER JOIN will merge the results, and results are only required from the queried table
     // DISTINCT included here for the INNER JOIN hack with one-to-many associations
-    _statement.add('SELECT DISTINCT `${adapter.tableName}`.* FROM `${adapter.tableName}`');
+    final execute = outputAsSelect ? 'SELECT DISTINCT `${adapter.tableName}`.*' : 'SELECT COUNT(*)';
+
+    _statement.add('$execute FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
       var whereStatement = _expandCondition(condition);
       _where.add(whereStatement);
@@ -113,7 +118,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
 
     /// Add an INNER JOINS statement to the existing list
-    if (definition['association']) {
+    if (definition['association'] ?? false) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
             'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');

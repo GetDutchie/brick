@@ -1,3 +1,4 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -51,7 +52,28 @@ void main() {
 
     test('#migrate', () {}, skip: 'Write test');
 
-    test('#exists', () {}, skip: 'Write test');
+    group('#exists', () {
+      test('specific', () async {
+        final newModel = DemoModel('John');
+
+        await provider.upsert<DemoModel>(newModel);
+        final doesExist = await provider.exists<DemoModel>(query: Query.where('name', 'John'));
+        expect(doesExist, isTrue);
+      });
+
+      test('general', () async {
+        final newModel = DemoModel('John');
+
+        await provider.upsert<DemoModel>(newModel);
+        final doesExist = await provider.exists<DemoModel>();
+        expect(doesExist, isTrue);
+      });
+
+      test('does not exist', () async {
+        final doesExist = await provider.exists<DemoModel>(query: Query.where('name', 'Alice'));
+        expect(doesExist, isFalse);
+      });
+    });
 
     group('#migrateFromStringToJoinsTable', () {
       final localTableName = 'User';
