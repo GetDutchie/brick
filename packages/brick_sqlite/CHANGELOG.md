@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.1.3
+
 * Revise `exists` in SqliteProvider to query with a SQL statement instead of hydrating whole models and associations
 * Add `selectStatement` to `QuerySqlTransformer`'s default constructor. When `true,` `statement` will begin `SELECT FROM`; when `false`, `statement` will begin `SELECT COUNT(*)`. Defaults `true`.
 
