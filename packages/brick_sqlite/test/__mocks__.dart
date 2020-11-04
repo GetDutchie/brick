@@ -15,14 +15,17 @@ class DemoModel extends SqliteModel {
 
 class DemoModelAdapter with SqliteAdapter<DemoModel> {
   DemoModelAdapter();
+  @override
   final tableName = sqliteTableName;
 
+  @override
   Future<DemoModel> fromSqlite(map, {provider, repository}) {
     final composedModel = DemoModel(map['full_name'])
       ..primaryKey = map[InsertTable.PRIMARY_KEY_COLUMN];
     return Future.value(composedModel);
   }
 
+  @override
   final fieldsToSqliteColumns = {
     InsertTable.PRIMARY_KEY_FIELD: {'name': InsertTable.PRIMARY_KEY_COLUMN, 'type': int},
     'id': {'name': 'id', 'type': int, 'iterable': false, 'association': false},
@@ -49,11 +52,13 @@ class DemoModelAdapter with SqliteAdapter<DemoModel> {
     'simpleBool': {'name': 'simple_bool', 'type': bool, 'iterable': false, 'association': false},
   };
 
+  @override
   Future<Map<String, dynamic>> toSqlite(instance, {provider, repository}) {
     return Future.value({'full_name': instance.name});
   }
 
-  primaryKeyByUniqueColumns(instance, db, {provider, repository}) => null;
+  @override
+  Future<int> primaryKeyByUniqueColumns(instance, db, {provider, repository}) => null;
 }
 
 const _demoModelMigrationCommands = [
@@ -80,6 +85,7 @@ class DemoModelMigration extends Migration {
 
 class DemoModelAssocAdapter extends DemoModelAdapter {
   DemoModelAssocAdapter();
+  @override
   final tableName = sqliteTableName + 'Assoc';
 }
 

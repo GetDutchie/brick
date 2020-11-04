@@ -15,10 +15,10 @@ import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapte
 class QuerySqlTransformer<_Model extends SqliteModel> {
   final SqliteAdapter adapter;
   final SqliteModelDictionary modelDictionary;
-  final List<String> _statement = List<String>();
-  final List<String> _where = List<String>();
-  final Set<String> _innerJoins = Set<String>();
-  final List<dynamic> _values = List<dynamic>();
+  final List<String> _statement = <String>[];
+  final List<String> _where = <String>[];
+  final Set<String> _innerJoins = <String>{};
+  final List<dynamic> _values = <dynamic>[];
 
   /// Must-haves for the [statement], mainly used to build clauses
   final Query query;
@@ -66,7 +66,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     // DISTINCT included here for the INNER JOIN hack with one-to-many associations
     _statement.add('SELECT DISTINCT `${adapter.tableName}`.* FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
-      String whereStatement = _expandCondition(condition);
+      var whereStatement = _expandCondition(condition);
       _where.add(whereStatement);
     });
 
@@ -239,7 +239,8 @@ class WhereColumnFragment {
     return _value;
   }
 
-  toString() => _statement;
+  @override
+  String toString() => _statement;
 
   static String compareSign(Compare compare) {
     switch (compare) {
@@ -313,8 +314,9 @@ class AllOtherClausesFragment {
     this.fieldsToColumns,
   }) : providerArgs = providerArgs ?? {};
 
-  toString() {
-    return _supportedOperators.entries.fold(List<String>(), (acc, entry) {
+  @override
+  String toString() {
+    return _supportedOperators.entries.fold(<String>[], (acc, entry) {
       final op = entry.value;
       var value = providerArgs[entry.key];
 

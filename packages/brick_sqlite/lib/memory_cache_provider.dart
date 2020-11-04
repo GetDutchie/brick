@@ -18,6 +18,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
   final List<Type> managedModelTypes;
 
   /// Only present to conform to the [Provider] spec.
+  @override
   final modelDictionary = null;
 
   /// A complete hash table of the
@@ -43,6 +44,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     return manages(_Model) && byPrimaryKey?.value != null;
   }
 
+  @override
   bool delete<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
     logger.finest('#delete: $_Model, $instance, $query');
@@ -52,6 +54,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     return true;
   }
 
+  @override
   List<_Model> get<_Model extends SqliteModel>({query, repository}) {
     if (!manages(_Model)) return null;
     managedObjects[_Model] ??= {};
@@ -93,6 +96,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     managedObjects = {};
   }
 
+  @override
   _Model upsert<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
     logger.finest('#upsert: $_Model, $instance, $query');
