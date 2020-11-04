@@ -151,6 +151,63 @@ void main() {
       });
     });
 
+    group('SELECT COUNT', () {
+      test('basic', () async {
+        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('simple', () async {
+        final statement =
+            'SELECT COUNT(*) FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            WherePhrase([
+              Where.exact('id', 1),
+              Or('name').isExactly('Guy'),
+            ]),
+            WherePhrase([
+              Where.exact('id', 1),
+              Where.exact('name', 'Guy'),
+            ], required: true),
+            WherePhrase([
+              Where.exact('id', 1),
+              Where.exact('name', 'Guy'),
+            ]),
+          ]),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1, 'Guy', 1, 'Guy', 1, 'Guy']);
+      });
+
+      test('associations', () async {
+        final statement =
+            'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            Where.exact('assoc', Where.exact('id', 1)),
+          ]),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1]);
+      });
+    });
+
     group('associations', () {
       test('simple', () async {
         final statement =

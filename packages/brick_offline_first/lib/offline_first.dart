@@ -161,13 +161,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     query = (query ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $_Model $query');
 
-    final modelExists = await exists<_Model>(query: query);
     if (memoryCacheProvider.canFind<_Model>(query)) {
       final memoryCacheResults = memoryCacheProvider.get<_Model>(query: query, repository: this);
 
       if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults;
     }
 
+    final modelExists = await exists<_Model>(query: query);
     if (requireRemote || (hydrateUnexisting && !modelExists)) {
       return await hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
     } else if (alwaysHydrate) {
