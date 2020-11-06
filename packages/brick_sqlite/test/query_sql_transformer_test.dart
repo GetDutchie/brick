@@ -214,7 +214,6 @@ void main() {
           modelDictionary: dictionary,
           query: Query(
             where: [
-              // Only match if name exactly matches scanned data
               WherePhrase([
                 if (nilValue != null) And('name').isExactly('John'),
               ], required: false),
