@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.1.4
+
+* Handle empty conditions when constructing a statement from a `WherePhrase`
+* SQL `COUNT(*)` does not work with `OFFSET` clauses; run an inexpensive SELECT query instead in `.exists` to accomodate `OFFSET`
+
 ## 0.1.3
 
 * Revise `exists` in SqliteProvider to query with a SQL statement instead of hydrating whole models and associations

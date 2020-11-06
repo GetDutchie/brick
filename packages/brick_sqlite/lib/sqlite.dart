@@ -99,10 +99,22 @@ class SqliteProvider implements Provider<SqliteModel> {
       query: query,
       selectStatement: false,
     );
-    final countQuery = await (await _db).rawQuery(sqlQuery.statement, sqlQuery.values);
 
-    final count = Sqflite.firstIntValue(countQuery ?? []) ?? 0;
-    return count > 0;
+    final offsetRegex = RegExp(r'OFFSET \d+');
+    final offsetIsPresent = offsetRegex.firstMatch(sqlQuery.statement) != null;
+    var statement = sqlQuery.statement;
+
+    /// COUNT(*) does not function with OFFSET.
+    /// Instead, when an OFFSET is defined, a single column managed by is queried
+    /// and that result is counted via Dart
+    if (offsetIsPresent) {
+      statement = statement.replaceAll('COUNT(*)', InsertTable.PRIMARY_KEY_COLUMN);
+    }
+
+    final countQuery = await (await _db).rawQuery(statement, sqlQuery.values);
+    final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
+
+    return (count ?? 0) > 0;
   }
 
   /// Fetch one time from the SQLite database
