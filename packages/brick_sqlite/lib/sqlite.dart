@@ -100,8 +100,8 @@ class SqliteProvider implements Provider<SqliteModel> {
       selectStatement: false,
     );
 
-    final offsetRegex = RegExp(r'OFFSET (\d+)');
-    final offsetValue = offsetRegex.firstMatch(sqlQuery.statement)?.group(1);
+    final offsetRegex = RegExp(r'OFFSET \d+');
+    final offsetValue = offsetRegex.firstMatch(sqlQuery.statement);
     var statement = sqlQuery.statement;
 
     /// COUNT(*) does not function with OFFSET.
