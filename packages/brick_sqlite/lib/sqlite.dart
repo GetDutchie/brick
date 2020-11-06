@@ -101,19 +101,18 @@ class SqliteProvider implements Provider<SqliteModel> {
     );
 
     final offsetRegex = RegExp(r'OFFSET \d+');
-    final offsetValue = offsetRegex.firstMatch(sqlQuery.statement);
+    final offsetIsPresent = offsetRegex.firstMatch(sqlQuery.statement) != null;
     var statement = sqlQuery.statement;
 
     /// COUNT(*) does not function with OFFSET.
     /// Instead, when an OFFSET is defined, a single column managed by is queried
     /// and that result is counted via Dart
-    if (offsetValue != null) {
+    if (offsetIsPresent) {
       statement = statement.replaceAll('COUNT(*)', InsertTable.PRIMARY_KEY_COLUMN);
     }
 
     final countQuery = await (await _db).rawQuery(statement, sqlQuery.values);
-    final count =
-        offsetValue != null ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
+    final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
 
     return (count ?? 0) > 0;
   }
