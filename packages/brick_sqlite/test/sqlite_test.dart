@@ -73,6 +73,19 @@ void main() {
         final doesExist = await provider.exists<DemoModel>(query: Query.where('name', 'Alice'));
         expect(doesExist, isFalse);
       });
+
+      test('with an offset', () async {
+        await provider.upsert<DemoModel>(DemoModel('John'));
+        final existingModels = await provider.get<DemoModel>();
+        final query = Query(providerArgs: {'limit': 1, 'offset': existingModels.length});
+
+        final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);
+        expect(doesExistWithoutModel, isFalse);
+
+        await provider.upsert<DemoModel>(DemoModel('John'));
+        final doesExistWithModel = await provider.exists<DemoModel>(query: query);
+        expect(doesExistWithModel, isTrue);
+      });
     });
 
     group('#migrateFromStringToJoinsTable', () {

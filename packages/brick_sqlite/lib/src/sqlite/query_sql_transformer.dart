@@ -37,7 +37,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// Prepared; includes preceeding `WHERE`
   String get whereClause {
     if (_where.isNotEmpty) {
-      return 'WHERE ' + _cleanWhereClause(_where.join(''));
+      final cleanedClause = _cleanWhereClause(_where.join(''));
+      return 'WHERE $cleanedClause';
     }
 
     return '';
@@ -71,8 +72,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     _statement.add('$execute FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
-      var whereStatement = _expandCondition(condition);
-      _where.add(whereStatement);
+      final whereStatement = _expandCondition(condition);
+      if (whereStatement?.isNotEmpty ?? false) _where.add(whereStatement);
     });
 
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);
@@ -105,6 +106,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       final phrase = condition.conditions.fold('', (acc, phraseCondition) {
         return acc + _expandCondition(phraseCondition, _adapter);
       });
+      if (phrase.isEmpty) return '';
 
       final matcher = condition.required ? 'AND' : 'OR';
       return ' $matcher ($phrase)';

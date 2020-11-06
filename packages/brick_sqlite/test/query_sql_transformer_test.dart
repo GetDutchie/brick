@@ -206,6 +206,27 @@ void main() {
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
         sqliteStatementExpectation(statement, [1]);
       });
+
+      test('without any where arguments', () async {
+        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        var nilValue;
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(
+            where: [
+              // Only match if name exactly matches scanned data
+              WherePhrase([
+                if (nilValue != null) And('name').isExactly('John'),
+              ], required: false),
+            ],
+          ),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, []);
+      });
     });
 
     group('associations', () {
