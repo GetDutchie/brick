@@ -103,7 +103,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     // Begin a separate where phrase
     if (condition is WherePhrase) {
-      final phrase = condition.conditions.fold('', (acc, phraseCondition) {
+      final phrase = condition.conditions.fold<String>('', (acc, phraseCondition) {
         return acc + _expandCondition(phraseCondition, _adapter);
       });
       if (phrase.isEmpty) return '';
@@ -120,7 +120,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
 
     /// Add an INNER JOINS statement to the existing list
-    if (definition['association'] ?? false) {
+    if (definition['association'] as bool ?? false) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
             'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
@@ -133,18 +133,18 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
         localTableName: adapter.tableName,
       );
       _innerJoins.addAll(association.toJoinFragment());
-      return _expandCondition(condition.value, associationAdapter);
+      return _expandCondition(condition.value as WhereCondition, associationAdapter);
     }
 
     /// The value is still not at the column level, so the process must restart
     if (condition.value is WhereCondition) {
-      return _expandCondition(condition.value, _adapter);
+      return _expandCondition(condition.value as WhereCondition, _adapter);
     }
 
     /// Finally add the column to the complete phrase
-    final String sqliteColumn = _adapter.tableName != adapter.tableName
+    final sqliteColumn = _adapter.tableName != adapter.tableName
         ? '`${_adapter.tableName}`.${definition['name']}'
-        : definition['name'];
+        : definition['name'] as String;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
@@ -167,8 +167,8 @@ class AssociationFragment {
 
   List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
-    final oneToOneAssociation = !definition['iterable'];
-    final localColumnName = definition['name'];
+    final oneToOneAssociation = !(definition['iterable'] as bool);
+    final localColumnName = definition['name'] as String;
     final localTableColumn = '`$localTableName`.${definition['name']}';
 
     if (oneToOneAssociation) {
@@ -323,22 +323,25 @@ class AllOtherClausesFragment {
 
   @override
   String toString() {
-    return _supportedOperators.entries.fold(<String>[], (acc, entry) {
+    return _supportedOperators.entries.fold<List<String>>(<String>[], (acc, entry) {
       final op = entry.value;
       var value = providerArgs[entry.key];
 
       if (value == null) return acc;
 
       if (_operatorsDeclaringFields.contains(op)) {
-        value = value.split(',').fold(value, (modValue, innerValueClause) {
+        value = value.toString().split(',').fold<String>(value.toString(),
+            (modValue, innerValueClause) {
           final fragment = innerValueClause.split(' ');
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
+          final columnName = (fieldsToColumns[fieldName] ?? {})['name'] as String;
           if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
           }
+
+          return modValue;
         });
       }
 
