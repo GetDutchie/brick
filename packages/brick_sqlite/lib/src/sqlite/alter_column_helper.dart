@@ -72,7 +72,7 @@ class AlterColumnHelper {
   /// Given new columns, create the SQLite statement
   String newColumnsExpression(List<Map<String, dynamic>> columns) {
     return columns.map((Map<String, dynamic> column) {
-      final List<String> definition = [column['name'], column['type']];
+      final definition = [column['name'] as String, column['type'] as String];
 
       if (column['notnull'] == 1) {
         definition.add('NOT NULL');

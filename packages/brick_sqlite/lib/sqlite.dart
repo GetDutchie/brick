@@ -53,22 +53,29 @@ class SqliteProvider implements Provider<SqliteModel> {
   })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
 
-  Database _openDb;
-  Future<Database> get _db async {
-    if (_openDb?.isOpen == true) return _openDb;
+  Future<Database> _openDb;
 
+  @protected
+  Future<Database> getDb() {
+    _openDb ??= _initDb();
+    return _openDb;
+  }
+
+  Future<Database> _initDb() async {
     if (databaseFactory != null) {
-      return _openDb = await databaseFactory.openDatabase(dbName);
+      final db = await databaseFactory.openDatabase(dbName);
+      return db;
     }
 
-    return _openDb = await openDatabase(dbName);
+    final db = await openDatabase(dbName);
+    return db;
   }
 
   /// Remove record from SQLite. [query] is ignored.
   @override
   Future<int> delete<_Model extends SqliteModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model];
-    final db = await _db;
+    final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
 
     if (instance.isNewRecord || existingPrimaryKey == null) {
@@ -111,7 +118,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       statement = statement.replaceAll('COUNT(*)', InsertTable.PRIMARY_KEY_COLUMN);
     }
 
-    final countQuery = await (await _db).rawQuery(statement, sqlQuery.values);
+    final countQuery = await (await getDb()).rawQuery(statement, sqlQuery.values);
     final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
 
     return (count ?? 0) > 0;
@@ -150,7 +157,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   Future<int> lastMigrationVersion() async {
-    final db = await _db;
+    final db = await getDb();
 
     // ensure migrations table exists
     await db.execute(
@@ -167,13 +174,13 @@ class SqliteProvider implements Provider<SqliteModel> {
       return -1;
     }
 
-    return sqliteVersions.first['version'];
+    return sqliteVersions.first['version'] as int;
   }
 
   /// Update database structure with latest migrations. Note that this will run
   /// the [migrations] in the order provided.
   Future<void> migrate(List<Migration> migrations) async {
-    final db = await _db;
+    final db = await getDb();
 
     // Ensure foreign keys are enabled
     await db.execute('PRAGMA foreign_keys = ON');
@@ -219,7 +226,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     final adapter = modelDictionary.adapterFor[_Model];
 
     final results = await _lock.synchronized(() async {
-      return (await _db).rawQuery(sql, arguments);
+      return (await getDb()).rawQuery(sql, arguments);
     });
 
     if (results.isEmpty || results.first.isEmpty) {
@@ -228,23 +235,25 @@ class SqliteProvider implements Provider<SqliteModel> {
     }
 
     return await Future.wait<_Model>(
-      results.map((row) => adapter.fromSqlite(row, provider: this, repository: repository)),
+      results.map(
+        (row) => adapter.fromSqlite(row, provider: this, repository: repository) as Future<_Model>,
+      ),
     );
   }
 
   /// Execute a raw SQL statement. **Advanced use only**.
   Future<void> rawExecute(String sql, [List arguments]) async {
-    return await (await _db).execute(sql, arguments);
+    return await (await getDb()).execute(sql, arguments);
   }
 
   /// Insert with a raw SQL statement. **Advanced use only**.
   Future<int> rawInsert(String sql, [List arguments]) async {
-    return await (await _db).rawInsert(sql, arguments);
+    return await (await getDb()).rawInsert(sql, arguments);
   }
 
   /// Query with a raw SQL statement. **Advanced use only**.
   Future<List<Map>> rawQuery(String sql, [List arguments]) async {
-    return await (await _db).rawQuery(sql, arguments);
+    return await (await getDb()).rawQuery(sql, arguments);
   }
 
   /// Reset the DB by deleting and recreating it.
@@ -252,7 +261,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// **WARNING:** This is a destructive, irrevisible action.
   Future<void> resetDb() async {
     try {
-      await (await _db).close();
+      await (await getDb()).close();
 
       if (databaseFactory == null) {
         await deleteDatabase(dbName);
@@ -261,7 +270,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       }
 
       // recreate
-      await _db;
+      await getDb();
     } on FileSystemException {
       // noop
     }
@@ -273,7 +282,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     if (instance == null) return NEW_RECORD_ID;
 
     final adapter = modelDictionary.adapterFor[_Model];
-    final db = await _db;
+    final db = await getDb();
 
     await adapter.beforeSave(instance, provider: this, repository: repository);
     await instance.beforeSave(provider: this, repository: repository);
@@ -318,12 +327,12 @@ class SqliteProvider implements Provider<SqliteModel> {
     String localTableName,
     String foreignTableName,
   ) async {
-    final db = await _db;
+    final db = await getDb();
 
     final rawIds = await db
         .rawQuery('SELECT $columnName, ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
     for (var result in rawIds) {
-      final ids = jsonDecode(result[columnName] ?? '[]');
+      final ids = jsonDecode(result[columnName] as String ?? '[]');
       for (var id in ids) {
         // ignore deleted associations as they'll throw contraint exceptions
         final hasAssociation = await db.rawQuery(
