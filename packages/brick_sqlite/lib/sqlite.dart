@@ -46,30 +46,14 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   final Logger _logger;
 
+  Future<Database> _openDb;
+
   SqliteProvider(
     this.dbName, {
     this.databaseFactory,
     this.modelDictionary,
   })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
-
-  Future<Database> _openDb;
-
-  @protected
-  Future<Database> getDb() {
-    _openDb ??= _initDb();
-    return _openDb;
-  }
-
-  Future<Database> _initDb() async {
-    if (databaseFactory != null) {
-      final db = await databaseFactory.openDatabase(dbName);
-      return db;
-    }
-
-    final db = await openDatabase(dbName);
-    return db;
-  }
 
   /// Remove record from SQLite. [query] is ignored.
   @override
@@ -154,6 +138,20 @@ class SqliteProvider implements Provider<SqliteModel> {
       sqlQuery.values,
       repository: repository,
     );
+  }
+
+  /// Access the latest instantiation of the database [safely](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue).
+  ///
+  @protected
+  Future<Database> getDb() {
+    if (_openDb == null) {
+      if (databaseFactory != null) {
+        _openDb = databaseFactory.openDatabase(dbName);
+      } else {
+        _openDb = openDatabase(dbName);
+      }
+    }
+    return _openDb;
   }
 
   Future<int> lastMigrationVersion() async {

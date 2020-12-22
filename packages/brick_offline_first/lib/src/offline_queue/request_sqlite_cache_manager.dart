@@ -19,7 +19,7 @@ class RequestSqliteCacheManager {
   /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String databaseName;
 
-  Database _db;
+  Future<Database> _db;
 
   String get orderByStatement {
     if (!serialProcessing) {
@@ -161,17 +161,19 @@ class RequestSqliteCacheManager {
     ].join(' ');
   }
 
-  Future<Database> getDb() async {
-    if (_db?.isOpen == true) return _db;
-
-    if (databaseFactory != null) {
-      return _db = await databaseFactory.openDatabase(databaseName);
+  Future<Database> getDb() {
+    if (_db == null) {
+      if (databaseFactory != null) {
+        _db = databaseFactory.openDatabase(databaseName);
+      } else {
+        _db = getDatabasesPath().then((databasesPath) {
+          final path = p.join(databasesPath, databaseName);
+          return openDatabase(path);
+        });
+      }
     }
 
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, databaseName);
-
-    return _db = await openDatabase(path);
+    return _db;
   }
 }
 
