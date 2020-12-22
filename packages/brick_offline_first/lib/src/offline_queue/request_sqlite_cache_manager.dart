@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
-import 'package:path/path.dart' as p;
 import 'package:meta/meta.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
@@ -166,10 +165,7 @@ class RequestSqliteCacheManager {
       if (databaseFactory != null) {
         _db = databaseFactory.openDatabase(databaseName);
       } else {
-        _db = getDatabasesPath().then((databasesPath) {
-          final path = p.join(databasesPath, databaseName);
-          return openDatabase(path);
-        });
+        _db = openDatabase(databaseName);
       }
     }
 
