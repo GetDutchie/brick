@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.1.5
+
+* Access SQLite db safely to [avoid race conditions](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue)
+* Lint: do not use implicit types
+
 ## 0.1.4
 
 * Handle empty conditions when constructing a statement from a `WherePhrase`

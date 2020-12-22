@@ -141,7 +141,6 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Access the latest instantiation of the database [safely](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue).
-  ///
   @protected
   Future<Database> getDb() {
     if (_openDb == null) {
