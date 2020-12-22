@@ -6,10 +6,12 @@ import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOffli
 import 'package:meta/meta.dart';
 
 class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithRest> {
+  @override
   final schemaGenerator = _schemaGenerator;
 }
 
 class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithRest> {
+  @override
   final schemaGenerator = _schemaGenerator;
 }
 

@@ -1,10 +1,10 @@
 import 'package:test/test.dart';
-import '../lib/src/offline_first_model_dictionary_generator.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_model_dictionary_generator.dart';
 
 void main() {
-  group("OfflineFirstModelDictionaryGenerator", () {
-    group("#generate", () {
-      test("basic", () {
+  group('OfflineFirstModelDictionaryGenerator', () {
+    group('#generate', () {
+      test('basic', () {
         final generated = OfflineFirstModelDictionaryGenerator()
             .generate({'Person': 'person.dart', 'User': 'path/user.dart'});
         final output = r'''

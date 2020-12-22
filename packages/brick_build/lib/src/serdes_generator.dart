@@ -279,7 +279,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       return "data['$name']";
     }
 
-    return "instance.${field.name}";
+    return 'instance.${field.name}';
   }
 
   /// If the annotation includes a [defaultValue], use it when the received value is null

@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
-import '../lib/src/offline_first_generator.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
 import 'package:brick_build/testing.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;

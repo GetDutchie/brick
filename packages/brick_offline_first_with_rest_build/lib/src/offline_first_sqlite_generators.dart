@@ -86,7 +86,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
         final serializableType = checker.superClassTypeArgs.last.getDisplayString();
-        return "${field.type}.$constructorName($fieldValue as $serializableType)";
+        return '${field.type}.$constructorName($fieldValue as $serializableType)';
       }
     }
 
@@ -101,7 +101,7 @@ class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator 
       : super(element, reader, repositoryName: repositoryName);
 
   @override
-  get generators {
+  List<SerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);
     return [
