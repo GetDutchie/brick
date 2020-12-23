@@ -3,6 +3,7 @@
 ## 0.1.5+1
 
 * Fix: recreate SQLite DB after reset instead of attempting to open a closed DB
+
 ## 0.1.5
 
 * Access SQLite db safely to [avoid race conditions](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue)
