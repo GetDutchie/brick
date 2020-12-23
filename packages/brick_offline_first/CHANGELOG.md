@@ -1,7 +1,11 @@
 ## Unreleased
 
+## 0.1.1
+
 * Gracefully handle `SocketException` errors when the application is offline
 * Call `exists` in `OfflineFirstRepository#get` after the memory provider has already been queried. This method can query the SqliteProvider which is an unnecessary database call when the model exists in the memory provider.
+* RequestSqliteCacheManager: access SQLite db safely to [avoid race conditions](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue)
+* RequestSqliteCacheManager: refactor database path. This does not change the database's existing path as the use of `getDatabasesPath()` in the implementation was duplicating [default functionality](https://github.com/tekartik/sqflite/tree/master/sqflite#opening-a-database)
 
 ## 0.1.0
 

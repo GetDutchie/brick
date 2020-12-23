@@ -20,8 +20,8 @@ class DemoModelAdapter with SqliteAdapter<DemoModel> {
 
   @override
   Future<DemoModel> fromSqlite(map, {provider, repository}) {
-    final composedModel = DemoModel(map['full_name'])
-      ..primaryKey = map[InsertTable.PRIMARY_KEY_COLUMN];
+    final composedModel = DemoModel(map['full_name'] as String)
+      ..primaryKey = map[InsertTable.PRIMARY_KEY_COLUMN] as int;
     return Future.value(composedModel);
   }
 

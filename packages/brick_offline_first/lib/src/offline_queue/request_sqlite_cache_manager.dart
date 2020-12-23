@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
-import 'package:path/path.dart' as p;
 import 'package:meta/meta.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
@@ -19,7 +18,7 @@ class RequestSqliteCacheManager {
   /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String databaseName;
 
-  Database _db;
+  Future<Database> _db;
 
   String get orderByStatement {
     if (!serialProcessing) {
@@ -161,17 +160,16 @@ class RequestSqliteCacheManager {
     ].join(' ');
   }
 
-  Future<Database> getDb() async {
-    if (_db?.isOpen == true) return _db;
-
-    if (databaseFactory != null) {
-      return _db = await databaseFactory.openDatabase(databaseName);
+  Future<Database> getDb() {
+    if (_db == null) {
+      if (databaseFactory != null) {
+        _db = databaseFactory.openDatabase(databaseName);
+      } else {
+        _db = openDatabase(databaseName);
+      }
     }
 
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, databaseName);
-
-    return _db = await openDatabase(path);
+    return _db;
   }
 }
 
