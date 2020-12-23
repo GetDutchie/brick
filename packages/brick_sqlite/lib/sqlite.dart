@@ -266,9 +266,8 @@ class SqliteProvider implements Provider<SqliteModel> {
         await databaseFactory.deleteDatabase(dbName);
       }
 
-      _openDb = null;
-
       // recreate
+      _openDb = null;
       await getDb();
     } on FileSystemException {
       // noop
