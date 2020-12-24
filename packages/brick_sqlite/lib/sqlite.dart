@@ -267,6 +267,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       }
 
       // recreate
+      _openDb = null;
       await getDb();
     } on FileSystemException {
       // noop
