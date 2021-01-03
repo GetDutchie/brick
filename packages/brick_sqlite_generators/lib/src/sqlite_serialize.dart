@@ -188,9 +188,15 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       checker = checkerForType(checker.argType);
     }
 
+    final joinsTable =
+        InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name);
+    final joinsForeignColumn =
+        InsertForeignKey.joinsTableForeignColumnName(checker.unFuturedArgType.getDisplayString());
+    final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
+
     // Iterable<Future<SqliteModel>>
     final insertStatement =
-        'INSERT OR IGNORE INTO `${InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name)}` (`${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)}`, `${InsertForeignKey.joinsTableForeignColumnName(checker.unFuturedArgType.getDisplayString())}`)';
+        'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
         '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
@@ -204,9 +210,19 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
+        final oldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE $joinsLocalColumn = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
+        final oldIds = oldColumns?.map((a) => a[$joinsForeignColumn]) ?? [];
+        final newIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
+        final toDeleteIds = oldIds.where((id) => !newIds.contains(id));
+
         await Future.wait<int>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
-          return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
+          final shouldDelete = toDeleteIds.contains(id);
+          if (shouldDelete) {
+            return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE $joinsLocalColumn = ? AND $joinsForeignColumn = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]).catchError((e) => null);
+          } else {
+            return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
+          }
         }) ?? []);
       }
     ''';
