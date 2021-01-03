@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When deleting many associations from a parent, remove the association in the joins table but do not delete the instance (resolves #112)
+
 ## 0.1.5+1
 
 * Fix: recreate SQLite DB after reset instead of attempting to open a closed DB

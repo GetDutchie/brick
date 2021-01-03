@@ -68,20 +68,17 @@ void main() {
       });
     });
 
-    group('#delete', () {
-      test('simple', () async {
-        final newModel = DemoModel(name: 'GuyDelete');
+    test('#delete', () async {
+      final newModel = DemoModel(name: 'GuyDelete');
 
-        final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
-        final doesExist =
-            await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
-        expect(doesExist, isTrue);
-        final result = await provider.delete<DemoModel>(model);
-        expect(result, 1);
-        final existsAfterDelete =
-            await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
-        expect(existsAfterDelete, isFalse);
-      });
+      final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
+      final doesExist = await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
+      expect(doesExist, isTrue);
+      final result = await provider.delete<DemoModel>(model);
+      expect(result, 1);
+      final existsAfterDelete =
+          await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
+      expect(existsAfterDelete, isFalse);
     });
 
     test('#migrate', () {}, skip: 'Write test');
