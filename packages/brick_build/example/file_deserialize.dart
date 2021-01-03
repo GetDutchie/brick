@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import '../lib/generators.dart';
+import 'package:brick_build/generators.dart';
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
@@ -21,11 +21,11 @@ class FileDeserialize extends FileSerdesGenerator {
 
     // DateTime
     if (checker.isDateTime) {
-      return "$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)";
+      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return "$fieldValue as ${field.type}$defaultValue";
+      return '$fieldValue as ${field.type}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -62,29 +62,29 @@ class FileDeserialize extends FileSerdesGenerator {
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return "$fieldValue.map((e) => $argType.values.indexOf(e))$castIterable$defaultValue";
+        return '$fieldValue.map((e) => $argType.values.indexOf(e))$castIterable$defaultValue';
       }
 
       // List
       if (checker.isList) {
         final addon = fieldAnnotation.defaultValue ?? 'List<${checker.argType}>()';
-        return "$fieldValue$castIterable ?? $addon";
+        return '$fieldValue$castIterable ?? $addon';
 
         // Set
       } else if (checker.isSet) {
         final addon = fieldAnnotation.defaultValue ?? 'Set<${checker.argType}>()';
-        return "$fieldValue$castIterable ?? $addon";
+        return '$fieldValue$castIterable ?? $addon';
 
         // other Iterable
       } else {
-        return "$fieldValue$castIterable$defaultValue";
+        return '$fieldValue$castIterable$defaultValue';
       }
     } else if (checker.isEnum) {
-      return "$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue";
+      return '$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue';
 
       // Map
     } else if (checker.isMap) {
-      return "$fieldValue$defaultValue";
+      return '$fieldValue$defaultValue';
     }
 
     return null;

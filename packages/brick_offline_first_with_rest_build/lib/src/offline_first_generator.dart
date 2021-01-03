@@ -10,6 +10,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirstWithRest> {
   /// The prefix to the adapter name; useful if extending `OfflineFirstRepository`.
   /// Defaults to `OfflineFirst`.
+  @override
   final String superAdapterName;
 
   /// The prefix to the repository name, specified when declaring the repository type in
@@ -23,6 +24,7 @@ class OfflineFirstGenerator extends AnnotationSuperGenerator<ConnectOfflineFirst
   });
 
   /// Given an [element] and an [annotation], scaffold generators
+  @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final rest =
         OfflineFirstRestModelSerdesGenerator(element, annotation, repositoryName: repositoryName);

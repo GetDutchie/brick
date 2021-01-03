@@ -5,6 +5,7 @@ import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.da
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 
 class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestModel> {
   _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields, {String repositoryName})
@@ -86,7 +87,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
         final serializableType = checker.superClassTypeArgs.last.getDisplayString();
-        return "${field.type}.$constructorName($fieldValue as $serializableType)";
+        return '${field.type}.$constructorName($fieldValue as $serializableType)';
       }
     }
 
@@ -101,7 +102,7 @@ class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator 
       : super(element, reader, repositoryName: repositoryName);
 
   @override
-  get generators {
+  List<SqliteSerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);
     return [

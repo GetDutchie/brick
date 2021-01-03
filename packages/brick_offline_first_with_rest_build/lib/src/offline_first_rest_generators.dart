@@ -10,7 +10,7 @@ import 'package:source_gen/source_gen.dart';
 class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
   final OfflineFirstFields offlineFirstFields;
   _OfflineFirstRestSerialize(ClassElement element, RestFields fields, {String repositoryName})
-      : this.offlineFirstFields = OfflineFirstFields(element),
+      : offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -71,7 +71,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
 class _OfflineFirstRestDeserialize extends RestDeserialize {
   final OfflineFirstFields offlineFirstFields;
   _OfflineFirstRestDeserialize(ClassElement element, RestFields fields, {String repositoryName})
-      : this.offlineFirstFields = OfflineFirstFields(element),
+      : offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -134,7 +134,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
           final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
-          return "$fieldValue.map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue";
+          return '$fieldValue.map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
       }
     }
@@ -155,7 +155,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
-        return "${field.type}.$constructorName($fieldValue)";
+        return '${field.type}.$constructorName($fieldValue)';
       }
     }
 
@@ -180,7 +180,7 @@ class OfflineFirstRestModelSerdesGenerator extends RestModelSerdesGenerator {
       : super(element, reader, repositoryName: repositoryName);
 
   @override
-  get generators {
+  List<SerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);
     return [

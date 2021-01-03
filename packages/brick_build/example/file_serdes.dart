@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
-import '../lib/generators.dart';
+import 'package:brick_build/generators.dart';
 import 'file_fields.dart';
 import 'file_deserialize.dart';
 import 'file_serialize.dart';
@@ -24,7 +24,7 @@ class FileSerdes extends ProviderSerializableGenerator<FileSerializable> {
   }) : super(element, reader, configKey: 'fileConfig');
 
   @override
-  get generators {
+  List<SerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = FileFields(classElement);
     return [

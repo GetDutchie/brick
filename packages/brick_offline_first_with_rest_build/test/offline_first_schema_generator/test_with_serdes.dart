@@ -36,13 +36,15 @@ class Serdes extends OfflineFirstSerdes<Map<String, dynamic>, String> {
 
   factory Serdes.fromSqlite(String data) => Serdes.fromRest(jsonDecode(data));
 
-  toRest() {
+  @override
+  Map<String, dynamic> toRest() {
     return {
       'name': name,
     };
   }
 
-  toSqlite() => jsonEncode(toRest());
+  @override
+  String toSqlite() => jsonEncode(toRest());
 }
 
 // model to receive new migration
