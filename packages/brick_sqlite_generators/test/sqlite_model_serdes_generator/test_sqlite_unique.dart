@@ -23,18 +23,18 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
   SqliteUniqueAdapter();
 
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    }
+    'primaryKey': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: '_brick_id',
+      type: int,
+    ),
+    'someField': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: 'some_field',
+      type: int,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(
       SqliteUnique instance, DatabaseExecutor executor) async {

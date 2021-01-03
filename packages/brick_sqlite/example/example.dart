@@ -9,21 +9,12 @@ class UserAdapter extends SqliteAdapter<User> {
   final tableName = "User";
 
   final fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'name': {
-      'name': 'name',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    }
+    'primaryKey':
+        SqliteColumnDefinition(association: false, iterable: false, name: '_brick_id', type: int),
+    'name': SqliteColumnDefinition(association: false, iterable: false, name: 'name', type: String),
   };
 
-  primaryKeyByUniqueColumns(instance, executor) async => null;
+  primaryKeyByUniqueColumns(instance, executor) async => instance?.primaryKey;
 
   fromSqlite(data, {provider, repository}) async {
     return User(

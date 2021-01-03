@@ -58,7 +58,7 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstSerdesWithTypeArgument instance,
           DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'OfflineFirstSerdesWithTypeArgument';
 
   Future<OfflineFirstSerdesWithTypeArgument> fromRest(

@@ -2,7 +2,8 @@ import 'package:meta/meta.dart' show protected, required;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite_abstract/db.dart';
 
-import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapter;
+import '../../sqlite.dart'
+    show SqliteModel, SqliteModelDictionary, SqliteAdapter, SqliteColumnDefinition;
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -120,13 +121,13 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
 
     /// Add an INNER JOINS statement to the existing list
-    if (definition['association'] as bool ?? false) {
+    if (definition.association) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
             'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
       }
 
-      final associationAdapter = modelDictionary.adapterFor[definition['type'] as Type];
+      final associationAdapter = modelDictionary.adapterFor[definition.type];
       final association = AssociationFragment(
         definition: definition,
         foreignTableName: associationAdapter.tableName,
@@ -143,8 +144,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     /// Finally add the column to the complete phrase
     final sqliteColumn = _adapter.tableName != adapter.tableName
-        ? '`${_adapter.tableName}`.${definition['name']}'
-        : definition['name'] as String;
+        ? '`${_adapter.tableName}`.${definition.name}'
+        : definition.name;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
@@ -155,7 +156,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 class AssociationFragment {
   final String foreignTableName;
 
-  final Map<String, dynamic> definition;
+  final SqliteColumnDefinition definition;
 
   final String localTableName;
 
@@ -167,9 +168,9 @@ class AssociationFragment {
 
   List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
-    final oneToOneAssociation = !(definition['iterable'] as bool);
-    final localColumnName = definition['name'] as String;
-    final localTableColumn = '`$localTableName`.${definition['name']}';
+    final oneToOneAssociation = !definition.iterable;
+    final localColumnName = definition.name;
+    final localTableColumn = '`$localTableName`.${definition.name}';
 
     if (oneToOneAssociation) {
       return [
@@ -298,7 +299,7 @@ class WhereColumnFragment {
 
 /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
 class AllOtherClausesFragment {
-  final Map<String, Map<String, dynamic>> fieldsToColumns;
+  final Map<String, SqliteColumnDefinition> fieldsToColumns;
   final Map<String, dynamic> providerArgs;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
@@ -336,7 +337,7 @@ class AllOtherClausesFragment {
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = (fieldsToColumns[fieldName] ?? {})['name'] as String;
+          final columnName = fieldsToColumns[fieldName]?.name;
           if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
           }

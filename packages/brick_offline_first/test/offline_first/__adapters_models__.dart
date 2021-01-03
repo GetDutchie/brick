@@ -69,7 +69,8 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
       'association': false,
     },
   };
-  Future<int> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async => null;
+  Future<int> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>
+      instance.primaryKey;
   final String tableName = 'Mounty';
   String restEndpoint({query, instance}) => '/mounties';
 
@@ -154,7 +155,8 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       'association': true,
     }
   };
-  Future<int> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async => null;
+  Future<int> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>
+      instance.primaryKey;
   final String tableName = 'Horse';
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {

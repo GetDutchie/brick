@@ -29,22 +29,22 @@ class FieldWithTypeArgumentAdapter
   FieldWithTypeArgumentAdapter();
 
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': Map,
-      'iterable': false,
-      'association': false,
-    }
+        'primaryKey': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: '_brick_id',
+      type: int,
+    ),
+    'someField': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: 'some_field',
+      type: Map,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(
           FieldWithTypeArgument instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'FieldWithTypeArgument';
 
   Future<FieldWithTypeArgument> fromSqlite(Map<String, dynamic> input,

@@ -1,77 +1,34 @@
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite/sqlite.dart';
+import '__mocks__/demo_model.dart';
+import '__mocks__/demo_model_adapter.dart';
+import '__mocks__/demo_model_assoc_adapter.dart';
 
-const sqliteTableName = 'DemoModel';
-
-class DemoModelAssoc extends SqliteModel {
-  DemoModelAssoc(this.name);
-  final String name;
-}
-
-class DemoModel extends SqliteModel {
-  DemoModel(this.name);
-  final String name;
-}
-
-class DemoModelAdapter with SqliteAdapter<DemoModel> {
-  DemoModelAdapter();
-  @override
-  final tableName = sqliteTableName;
-
-  @override
-  Future<DemoModel> fromSqlite(map, {provider, repository}) {
-    final composedModel = DemoModel(map['full_name'] as String)
-      ..primaryKey = map[InsertTable.PRIMARY_KEY_COLUMN] as int;
-    return Future.value(composedModel);
-  }
-
-  @override
-  final fieldsToSqliteColumns = {
-    InsertTable.PRIMARY_KEY_FIELD: {'name': InsertTable.PRIMARY_KEY_COLUMN, 'type': int},
-    'id': {'name': 'id', 'type': int, 'iterable': false, 'association': false},
-    'lastName': {'name': 'last_name', 'type': String, 'iterable': false, 'association': false},
-    'name': {'name': 'full_name', 'type': String, 'iterable': false, 'association': false},
-    'assoc': {
-      'name': 'assoc_DemoModelAssoc_brick_id',
-      'type': DemoModelAssoc,
-      'iterable': false,
-      'association': true
-    },
-    'manyAssoc': {
-      'name': 'many_assoc',
-      'type': DemoModelAssoc,
-      'iterable': true,
-      'association': true
-    },
-    'complexFieldName': {
-      'name': 'complex_field_name',
-      'type': String,
-      'iterable': false,
-      'association': false
-    },
-    'simpleBool': {'name': 'simple_bool', 'type': bool, 'iterable': false, 'association': false},
-  };
-
-  @override
-  Future<Map<String, dynamic>> toSqlite(instance, {provider, repository}) {
-    return Future.value({'full_name': instance.name});
-  }
-
-  @override
-  Future<int> primaryKeyByUniqueColumns(instance, db, {provider, repository}) => null;
-}
+export '__mocks__/demo_model.dart';
 
 const _demoModelMigrationCommands = [
-  InsertTable('DemoModel'),
   InsertTable('DemoModelAssoc'),
-  InsertColumn('id', Column.integer, onTable: 'DemoModel', unique: true),
-  InsertColumn('simple_bool', Column.boolean, onTable: 'DemoModel'),
-  InsertColumn('last_name', Column.varchar, onTable: 'DemoModel'),
-  InsertColumn('full_name', Column.varchar, onTable: 'DemoModel'),
-  InsertColumn('many_assoc', Column.varchar, onTable: 'DemoModel'),
+  InsertTable('_brick_DemoModel_many_assoc'),
+  InsertTable('DemoModel'),
+  InsertColumn('name', Column.varchar, onTable: 'DemoModelAssoc'),
+  InsertForeignKey('_brick_DemoModel_many_assoc', 'DemoModel',
+      foreignKeyColumn: 'l_DemoModel_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_DemoModel_many_assoc', 'DemoModelAssoc',
+      foreignKeyColumn: 'f_DemoModelAssoc_brick_id',
+      onDeleteCascade: true,
+      onDeleteSetDefault: false),
   InsertForeignKey('DemoModel', 'DemoModelAssoc',
-      foreignKeyColumn: 'assoc_DemoModelAssoc_brick_id'),
+      foreignKeyColumn: 'assoc_DemoModelAssoc_brick_id',
+      onDeleteCascade: false,
+      onDeleteSetDefault: false),
   InsertColumn('complex_field_name', Column.varchar, onTable: 'DemoModel'),
+  InsertColumn('last_name', Column.varchar, onTable: 'DemoModel'),
+  InsertColumn('name', Column.varchar, onTable: 'DemoModel'),
+  InsertColumn('simple_bool', Column.boolean, onTable: 'DemoModel'),
+  CreateIndex(
+      columns: ['l_DemoModel_brick_id', 'f_DemoModelAssoc_brick_id'],
+      onTable: '_brick_DemoModel_many_assoc',
+      unique: true),
 ];
 
 class DemoModelMigration extends Migration {
@@ -81,12 +38,6 @@ class DemoModelMigration extends Migration {
           up: _demoModelMigrationCommands,
           down: _demoModelMigrationCommands,
         );
-}
-
-class DemoModelAssocAdapter extends DemoModelAdapter {
-  DemoModelAssocAdapter();
-  @override
-  final tableName = sqliteTableName + 'Assoc';
 }
 
 final Map<Type, SqliteAdapter<SqliteModel>> _mappings = {

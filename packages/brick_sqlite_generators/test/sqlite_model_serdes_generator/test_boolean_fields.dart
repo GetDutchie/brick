@@ -56,46 +56,46 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
   BooleanFieldsAdapter();
 
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': bool,
-      'iterable': false,
-      'association': false,
-    },
-    'nullableField': {
-      'name': 'nullable_field',
-      'type': bool,
-      'iterable': false,
-      'association': false,
-    },
-    'multipleFields': {
-      'name': 'multiple_fields',
-      'type': bool,
-      'iterable': true,
-      'association': false,
-    },
-    'multipleNullableFields': {
-      'name': 'multiple_nullable_fields',
-      'type': bool,
-      'iterable': true,
-      'association': false,
-    },
-    'multipleFutureFields': {
-      'name': 'multiple_future_fields',
-      'type': bool,
-      'iterable': true,
-      'association': false,
-    }
+    'primaryKey': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: '_brick_id',
+      type: int,
+    ),
+    'someField': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: 'some_field',
+      type: bool,
+    ),
+    'nullableField': SqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: 'nullable_field',
+      type: bool,
+    ),
+    'multipleFields': SqliteColumnDefinition(
+      association: false,
+      iterable: true,
+      name: 'multiple_fields',
+      type: bool,
+    ),
+    'multipleNullableFields': SqliteColumnDefinition(
+      association: false,
+      iterable: true,
+      name: 'multiple_nullable_fields',
+      type: bool,
+    ),
+    'multipleFutureFields': SqliteColumnDefinition(
+      association: false,
+      iterable: true,
+      name: 'multiple_future_fields',
+      type: bool,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(
           BooleanFields instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'BooleanFields';
 
   Future<BooleanFields> fromSqlite(Map<String, dynamic> input,

@@ -409,7 +409,7 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   });
 
   /// A dictionary that connects field names to SQLite column names.
-  Map<String, Map<String, dynamic>> fieldsToSqliteColumns;
+  Map<String, SqliteColumnDefinition> fieldsToSqliteColumns;
 
   /// Find a record based on the existence of all contained fields annotated with
   /// `@Sqlite(unique: true)`. The Brick-defined primary key of the table is not included
@@ -417,4 +417,21 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   ///
   /// [executor] accepts a `Database` or `Transaction`.
   Future<int> primaryKeyByUniqueColumns(_Model instance, DatabaseExecutor executor);
+}
+
+class SqliteColumnDefinition {
+  final bool association;
+
+  final bool iterable;
+
+  final String name;
+
+  final Type type;
+
+  SqliteColumnDefinition({
+    this.association = false,
+    this.iterable = false,
+    this.name,
+    this.type,
+  });
 }
