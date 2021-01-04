@@ -30,15 +30,57 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   final Map<String, SqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': SqliteColumnDefinition(
       association: false,
+      columnName: '_brick_id',
       iterable: false,
-      name: '_brick_id',
       type: int,
+    ),
+    'id': SqliteColumnDefinition(
+      association: false,
+      columnName: 'id',
+      iterable: false,
+      type: int,
+    ),
+    'someField': SqliteColumnDefinition(
+      association: false,
+      columnName: 'some_field',
+      iterable: false,
+      type: bool,
+    ),
+    'assoc': SqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc_DemoModelAssoc_brick_id',
+      iterable: false,
+      type: DemoModelAssoc,
+    ),
+    'complexFieldName': SqliteColumnDefinition(
+      association: false,
+      columnName: 'complex_field_name',
+      iterable: false,
+      type: String,
+    ),
+    'lastName': SqliteColumnDefinition(
+      association: false,
+      columnName: 'last_name',
+      iterable: false,
+      type: String,
+    ),
+    'manyAssoc': SqliteColumnDefinition(
+      association: true,
+      columnName: 'many_assoc',
+      iterable: true,
+      type: DemoModelAssoc,
     ),
     'name': SqliteColumnDefinition(
       association: false,
+      columnName: 'full_name',
       iterable: false,
-      name: 'name',
       type: String,
+    ),
+    'simpleBool': SqliteColumnDefinition(
+      association: false,
+      columnName: 'simple_bool',
+      iterable: false,
+      type: bool,
     ),
   };
 

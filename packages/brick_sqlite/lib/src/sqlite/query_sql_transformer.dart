@@ -144,8 +144,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     /// Finally add the column to the complete phrase
     final sqliteColumn = _adapter.tableName != adapter.tableName
-        ? '`${_adapter.tableName}`.${definition.name}'
-        : definition.name;
+        ? '`${_adapter.tableName}`.${definition.columnName}'
+        : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
@@ -169,8 +169,8 @@ class AssociationFragment {
   List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
     final oneToOneAssociation = !definition.iterable;
-    final localColumnName = definition.name;
-    final localTableColumn = '`$localTableName`.${definition.name}';
+    final localColumnName = definition.columnName;
+    final localTableColumn = '`$localTableName`.${definition.columnName}';
 
     if (oneToOneAssociation) {
       return [
@@ -337,7 +337,7 @@ class AllOtherClausesFragment {
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = fieldsToColumns[fieldName]?.name;
+          final columnName = fieldsToColumns[fieldName]?.columnName;
           if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
           }

@@ -55,57 +55,65 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
 
   final String fromKey = null;
   final String toKey = null;
+
   @override
   final Map<String, SqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': SqliteColumnDefinition(
       association: false,
+      columnName: '_brick_id',
       iterable: false,
-      name: '_brick_id',
+      type: int,
+    ),
+    'id': SqliteColumnDefinition(
+      association: false,
+      columnName: 'id',
+      iterable: false,
       type: int,
     ),
     'someField': SqliteColumnDefinition(
       association: false,
+      columnName: 'some_field',
       iterable: false,
-      name: 'some_field',
       type: bool,
     ),
     'assoc': SqliteColumnDefinition(
       association: true,
+      columnName: 'assoc_DemoModelAssoc_brick_id',
       iterable: false,
-      name: 'assoc_DemoModelAssoc_brick_id',
       type: DemoModelAssoc,
     ),
     'complexFieldName': SqliteColumnDefinition(
       association: false,
+      columnName: 'complex_field_name',
       iterable: false,
-      name: 'complex_field_name',
       type: String,
     ),
     'lastName': SqliteColumnDefinition(
       association: false,
+      columnName: 'last_name',
       iterable: false,
-      name: 'last_name',
       type: String,
     ),
     'manyAssoc': SqliteColumnDefinition(
       association: true,
+      columnName: 'many_assoc',
       iterable: true,
-      name: 'many_assoc',
       type: DemoModelAssoc,
     ),
     'name': SqliteColumnDefinition(
       association: false,
+      columnName: 'full_name',
       iterable: false,
-      name: 'name',
       type: String,
     ),
     'simpleBool': SqliteColumnDefinition(
       association: false,
+      columnName: 'simple_bool',
       iterable: false,
-      name: 'simple_bool',
       type: bool,
     ),
   };
+
   @override
   Future<int> primaryKeyByUniqueColumns(DemoModel instance, DatabaseExecutor executor) async =>
       instance.primaryKey;

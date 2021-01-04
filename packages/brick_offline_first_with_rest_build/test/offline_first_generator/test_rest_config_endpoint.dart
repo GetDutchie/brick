@@ -51,14 +51,14 @@ class RestConfigEndpointAdapter
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
     'primaryKey': SqliteColumnDefinition(
       association: false,
+      columnName: '_brick_id',
       iterable: false,
-      name: '_brick_id',
       type: int,
     ),
     'someField': SqliteColumnDefinition(
       association: false,
+      columnName: 'some_field',
       iterable: false,
-      name: 'some_field',
       type: int,
     ),
   };

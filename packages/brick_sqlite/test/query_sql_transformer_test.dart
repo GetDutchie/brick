@@ -79,16 +79,6 @@ void main() {
       );
     });
 
-    test('where association value is not map', () {
-      expect(
-        () => QuerySqlTransformer<DemoModel>(
-          modelDictionary: dictionary,
-          query: Query.where('assoc', 1),
-        ),
-        throwsA(TypeMatcher<ArgumentError>()),
-      );
-    });
-
     test('compound clause', () async {
       final statement =
           '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)''';

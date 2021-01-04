@@ -58,38 +58,38 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
     'primaryKey': SqliteColumnDefinition(
       association: false,
+      columnName: '_brick_id',
       iterable: false,
-      name: '_brick_id',
       type: int,
     ),
     'someField': SqliteColumnDefinition(
       association: false,
+      columnName: 'some_field',
       iterable: false,
-      name: 'some_field',
       type: bool,
     ),
     'nullableField': SqliteColumnDefinition(
       association: false,
+      columnName: 'nullable_field',
       iterable: false,
-      name: 'nullable_field',
       type: bool,
     ),
     'multipleFields': SqliteColumnDefinition(
       association: false,
+      columnName: 'multiple_fields',
       iterable: true,
-      name: 'multiple_fields',
       type: bool,
     ),
     'multipleNullableFields': SqliteColumnDefinition(
       association: false,
+      columnName: 'multiple_nullable_fields',
       iterable: true,
-      name: 'multiple_nullable_fields',
       type: bool,
     ),
     'multipleFutureFields': SqliteColumnDefinition(
       association: false,
+      columnName: 'multiple_future_fields',
       iterable: true,
-      name: 'multiple_future_fields',
       type: bool,
     ),
   };

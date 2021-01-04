@@ -29,8 +29,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     fieldsToColumns.add('''
       '${InsertTable.PRIMARY_KEY_FIELD}': SqliteColumnDefinition(
         association: false,
+        columnName: '${InsertTable.PRIMARY_KEY_COLUMN}',
         iterable: false,
-        name: '${InsertTable.PRIMARY_KEY_COLUMN}',
         type: int,
       )''');
 
@@ -44,8 +44,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       fieldsToColumns.add('''
           '${field.name}': SqliteColumnDefinition(
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
+            columnName: '$columnName',
             iterable: ${checker.isIterable},
-            name: '$columnName',
             type: $columnInsertionType,
           )''');
       if (annotation.unique) {
