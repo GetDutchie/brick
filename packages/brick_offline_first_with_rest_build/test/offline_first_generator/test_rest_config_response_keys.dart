@@ -46,13 +46,13 @@ class RestConfigResponseKeysAdapter
   final String fromKey = 'users';
   final String toKey = 'user';
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': SqliteColumnDefinition(
+    'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'someField': SqliteColumnDefinition(
+    'someField': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'some_field',
       iterable: false,

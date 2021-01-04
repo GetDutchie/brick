@@ -27,56 +27,56 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   final String toKey = null;
 
   @override
-  final Map<String, SqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': SqliteColumnDefinition(
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'id': SqliteColumnDefinition(
+    'id': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'id',
       iterable: false,
       type: int,
     ),
-    'someField': SqliteColumnDefinition(
+    'someField': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'some_field',
       iterable: false,
       type: bool,
     ),
-    'assoc': SqliteColumnDefinition(
+    'assoc': RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_DemoModelAssoc_brick_id',
       iterable: false,
       type: DemoModelAssoc,
     ),
-    'complexFieldName': SqliteColumnDefinition(
+    'complexFieldName': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'complex_field_name',
       iterable: false,
       type: String,
     ),
-    'lastName': SqliteColumnDefinition(
+    'lastName': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'last_name',
       iterable: false,
       type: String,
     ),
-    'manyAssoc': SqliteColumnDefinition(
+    'manyAssoc': RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'many_assoc',
       iterable: true,
       type: DemoModelAssoc,
     ),
-    'name': SqliteColumnDefinition(
+    'name': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'full_name',
       iterable: false,
       type: String,
     ),
-    'simpleBool': SqliteColumnDefinition(
+    'simpleBool': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'simple_bool',
       iterable: false,

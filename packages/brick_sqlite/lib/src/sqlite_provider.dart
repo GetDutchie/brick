@@ -8,9 +8,9 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 export 'package:brick_sqlite_abstract/sqlite_model.dart';
 
-import 'package:brick_sqlite/src/sqlite/alter_column_helper.dart';
-import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
-import 'package:brick_sqlite/src/sqlite/sqlite_model_dictionary.dart';
+import 'package:brick_sqlite/src/helpers/alter_column_helper.dart';
+import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
+import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
 
 import 'package:synchronized/synchronized.dart';
 import 'package:meta/meta.dart';

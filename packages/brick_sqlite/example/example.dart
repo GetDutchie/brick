@@ -9,13 +9,13 @@ class UserAdapter extends SqliteAdapter<User> {
   final tableName = "User";
 
   final fieldsToSqliteColumns = {
-    'primaryKey': SqliteColumnDefinition(
+    'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'name': SqliteColumnDefinition(
+    'name': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'name',
       iterable: false,

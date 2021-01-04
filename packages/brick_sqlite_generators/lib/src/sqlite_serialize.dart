@@ -27,7 +27,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final uniqueFields = <String, String>{};
 
     fieldsToColumns.add('''
-      '${InsertTable.PRIMARY_KEY_FIELD}': SqliteColumnDefinition(
+      '${InsertTable.PRIMARY_KEY_FIELD}': RuntimeSqliteColumnDefinition(
         association: false,
         columnName: '${InsertTable.PRIMARY_KEY_COLUMN}',
         iterable: false,
@@ -42,7 +42,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
-          '${field.name}': SqliteColumnDefinition(
+          '${field.name}': RuntimeSqliteColumnDefinition(
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
             columnName: '$columnName',
             iterable: ${checker.isIterable},
@@ -60,7 +60,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }).map(_saveIterableAssociationFieldToJoins);
 
     return [
-      'final Map<String, SqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
+      'final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
       "final String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)

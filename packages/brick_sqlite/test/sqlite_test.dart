@@ -129,8 +129,8 @@ void main() {
         for (var command in oldTable) {
           await provider.rawExecute(command.statement);
         }
-        await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Bowler")');
-        await provider.rawInsert('INSERT INTO `$foreignTableName` (name) VALUES ("Big")');
+        await provider.rawInsert('INSERT INTO `$foreignTableName` (full_name) VALUES ("Bowler")');
+        await provider.rawInsert('INSERT INTO `$foreignTableName` (full_name) VALUES ("Big")');
         await provider.rawInsert(
             'INSERT OR IGNORE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
         for (var command in table) {

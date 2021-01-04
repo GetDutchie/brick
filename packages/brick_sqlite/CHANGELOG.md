@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Change `SqliteAdpater#fieldsToSqliteColumns` type from `Map<String, Map<String, dynamic>>` to `Map<String, SqliteColumnDefinition>`. Using such a dynamic type option will lead to inconsistency when accessing the values.
+* Change `SqliteAdpater#fieldsToSqliteColumns` type from `Map<String, Map<String, dynamic>>` to `Map<String, RuntimeSqliteColumnDefinition>`. Using such a dynamic type option will lead to inconsistency when accessing the values.
 
 ## 0.1.5+1
 

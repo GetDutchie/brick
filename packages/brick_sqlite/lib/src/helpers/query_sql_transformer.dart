@@ -2,8 +2,10 @@ import 'package:meta/meta.dart' show protected, required;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite_abstract/db.dart';
 
-import '../../sqlite.dart'
-    show SqliteModel, SqliteModelDictionary, SqliteAdapter, SqliteColumnDefinition;
+import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
+import 'package:brick_sqlite/src/sqlite_adapter.dart';
+import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -156,7 +158,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 class AssociationFragment {
   final String foreignTableName;
 
-  final SqliteColumnDefinition definition;
+  final RuntimeSqliteColumnDefinition definition;
 
   final String localTableName;
 
@@ -299,7 +301,7 @@ class WhereColumnFragment {
 
 /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
 class AllOtherClausesFragment {
-  final Map<String, SqliteColumnDefinition> fieldsToColumns;
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToColumns;
   final Map<String, dynamic> providerArgs;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.

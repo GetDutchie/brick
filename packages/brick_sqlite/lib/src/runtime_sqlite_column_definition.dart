@@ -1,6 +1,6 @@
 /// Used to define types in [sqliteFieldsToColumns]. THe build runner package
 /// extracts types and associations that are inaccessible at runtime.
-class SqliteColumnDefinition {
+class RuntimeSqliteColumnDefinition {
   /// Whether this column relates to another SqliteModel
   /// This is true for `List<SqliteModel>`, `SqliteModel`. Defaults to `false`.
   final bool association;
@@ -15,7 +15,7 @@ class SqliteColumnDefinition {
   /// In other words, the runtime type.
   final Type type;
 
-  SqliteColumnDefinition({
+  RuntimeSqliteColumnDefinition({
     this.association = false,
     this.columnName,
     this.iterable = false,

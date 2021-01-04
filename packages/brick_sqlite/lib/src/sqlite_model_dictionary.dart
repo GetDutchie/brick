@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_sqlite/src/sqlite/sqlite_adapter.dart';
+import 'package:brick_sqlite/src/sqlite_adapter.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 export 'package:brick_sqlite_abstract/sqlite_model.dart';
 

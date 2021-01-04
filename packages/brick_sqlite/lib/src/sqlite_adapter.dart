@@ -3,8 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
-import 'package:brick_sqlite/src/sqlite/sqlite_provider.dart';
-import 'package:brick_sqlite/src/sqlite/sqlite_column_definition.dart';
+import 'package:brick_sqlite/src/sqlite_provider.dart';
+import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 
 /// Constructors that convert app models to and from Sqlite
 abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
@@ -43,7 +43,7 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   });
 
   /// A dictionary that connects field names to SQLite column names.
-  Map<String, SqliteColumnDefinition> fieldsToSqliteColumns;
+  Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns;
 
   /// Find a record based on the existence of all contained fields annotated with
   /// `@Sqlite(unique: true)`. The Brick-defined primary key of the table is not included

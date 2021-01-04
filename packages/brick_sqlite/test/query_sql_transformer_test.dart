@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart' show Database, openDatabase;
 import 'package:test/test.dart';
 import 'package:flutter_test/flutter_test.dart' as ft;
 
-import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
+import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
 import '__mocks__.dart';
 
 void main() {
