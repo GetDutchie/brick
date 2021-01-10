@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import '../lib/sqlite.dart';
+import 'package:brick_sqlite/sqlite.dart';
 
 /// This class and code is always generated.
 /// It is included here as an illustration.
@@ -9,21 +9,21 @@ class UserAdapter extends SqliteAdapter<User> {
   final tableName = "User";
 
   final fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'name': {
-      'name': 'name',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    }
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'name': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'name',
+      iterable: false,
+      type: String,
+    ),
   };
 
-  primaryKeyByUniqueColumns(instance, executor) async => null;
+  primaryKeyByUniqueColumns(instance, executor) async => instance?.primaryKey;
 
   fromSqlite(data, {provider, repository}) async {
     return User(

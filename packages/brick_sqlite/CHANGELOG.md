@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Internal: Change `SqliteAdpater#fieldsToSqliteColumns` type from `Map<String, Map<String, dynamic>>` to `Map<String, RuntimeSqliteColumnDefinition>`. Using such a dynamic type option will lead to inconsistency when accessing the values.
+* `SqliteAdapter#primaryKeyByUniqueColumn` will return `instance?.primaryKey` instead of null when no `@Sqlite(unique: true)` fields exist.
+* Internal: Refactor organization of files: `SqliteProvider`, `SqliteAdapter`, `SqliteModelDictionary` are separated. `lib/sqlite.dart` is now a barrel file with the same exports.
 * When deleting many associations from a parent, remove the association in the joins table but do not delete the instance (resolves #112)
 
 ## 0.1.5+1

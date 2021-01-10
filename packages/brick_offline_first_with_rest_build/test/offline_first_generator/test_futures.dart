@@ -166,7 +166,7 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   };
   Future<int> primaryKeyByUniqueColumns(
           Futures instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'Futures';
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
