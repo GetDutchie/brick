@@ -13,6 +13,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
   @override
   final doesDeserialize = false;
 
+  @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 

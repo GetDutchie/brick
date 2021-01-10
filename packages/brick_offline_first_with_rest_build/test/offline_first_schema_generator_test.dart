@@ -3,7 +3,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import '../lib/src/offline_first_sqlite_builders.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_sqlite_builders.dart';
 
 import 'offline_first_schema_generator/test_with_serdes.dart' as _$withSerdes;
 import 'offline_first_schema_generator/test_with_association.dart' as _$withAssociation;

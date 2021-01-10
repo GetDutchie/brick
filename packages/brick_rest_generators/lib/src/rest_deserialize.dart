@@ -36,11 +36,11 @@ class RestDeserialize extends RestSerdesGenerator {
 
     // DateTime
     if (checker.isDateTime) {
-      return "$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)";
+      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return "$fieldValue as ${field.type}$defaultValue";
+      return '$fieldValue as ${field.type}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
@@ -83,23 +83,23 @@ class RestDeserialize extends RestSerdesGenerator {
             )$castIterable$defaultValue
           ''';
         } else {
-          return "$fieldValue.map((e) => $argType.values[e])$castIterable$defaultValue";
+          return '$fieldValue.map((e) => $argType.values[e])$castIterable$defaultValue';
         }
       }
 
       // List
       if (checker.isList) {
         final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>[]';
-        return "$fieldValue$castIterable ?? $addon";
+        return '$fieldValue$castIterable ?? $addon';
 
         // Set
       } else if (checker.isSet) {
         final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>{}';
-        return "$fieldValue$castIterable ?? $addon";
+        return '$fieldValue$castIterable ?? $addon';
 
         // other Iterable
       } else {
-        return "$fieldValue$castIterable$defaultValue";
+        return '$fieldValue$castIterable$defaultValue';
       }
 
       // RestModel
@@ -115,12 +115,12 @@ class RestDeserialize extends RestSerdesGenerator {
       if (fieldAnnotation.enumAsString) {
         return "${field.type}.values.firstWhere((h) => h.toString().split('.').last == $fieldValue, orElse: () => null)$defaultValue";
       } else {
-        return "$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue";
+        return '$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue';
       }
 
       // Map
     } else if (checker.isMap) {
-      return "$fieldValue$defaultValue";
+      return '$fieldValue$defaultValue';
     }
 
     return null;

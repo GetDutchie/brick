@@ -130,6 +130,7 @@ If it's still murky, [check out Learn](#learn) for videos, tutorials, and exampl
 - [Repository](#repository)
   * [Setup](#setup-2)
     - [Access](#access)
+  * [Syncing Changes Between Providers](#syncing-changes-between-providers)
   * [Creating a Custom Repository](#creating-a-custom-repository)
     - [Methods](#methods)
       * [Applying Query#action](#applying-queryaction)
@@ -593,6 +594,16 @@ class BootScreenState extends State<BootScreen> {
   }
 }
 ```
+
+## Syncing Changes Between Providers
+
+While a repository manages different providers and consolidates requests to a single entrypoint, **Brick does not automatically sync changes between providers**. For example, while Client A may invoke `upsert<Pizza>(pepperoniPizza)` and notify REST, SQLite, and MemoryCache providers of a new `pepperoniPizza`, Client B will not receive this `pepperoniPizza` automatically. This synchronization is up to the implementation as remote providers vary in how they transmit data. Some examples of how to sync data:
+
+* Set up a push notification system that notifies the client every time a change occurs in the API, triggering a resync to hydrate the results in the background
+* Short poll the remote provider for new responses every x seconds and hydrate the results in the background
+* Subscribe to a websockets channel and stream responses and hydrate the results in the background
+
+It is strongly recommended to use a [string-based identifier for models created on the client](https://pub.dev/packages/uuid) and to index this value in the remote provider. Relying on a primary key generated within a remote table is not recommended, as instances created on the client can cause collisions.
 
 ## Creating a Custom Repository
 

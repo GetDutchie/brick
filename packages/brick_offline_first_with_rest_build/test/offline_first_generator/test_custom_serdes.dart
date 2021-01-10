@@ -33,6 +33,6 @@ class CustomSerdes {
   });
 
   @Rest(fromGenerator: r"data['string'].split('').map((s) => '$s.1').join('')")
-  @Sqlite(toGenerator: r"instance.string.substring(0, 1)")
+  @Sqlite(toGenerator: r'instance.string.substring(0, 1)')
   final String string;
 }

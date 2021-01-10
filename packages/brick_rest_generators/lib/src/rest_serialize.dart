@@ -23,6 +23,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
     return ['final String toKey = $toKey;'];
   }
 
+  @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;

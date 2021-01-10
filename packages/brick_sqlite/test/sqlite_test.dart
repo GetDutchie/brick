@@ -85,7 +85,7 @@ void main() {
           await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
       expect(existsAfterDelete, isFalse);
     });
-
+    
     test('#migrate', () {}, skip: 'Write test');
 
     group('#exists', () {

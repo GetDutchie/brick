@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/provider_serializable_generator.dart';
+import 'package:brick_build/src/serdes_generator.dart';
 import 'package:brick_rest_generators/src/rest_deserialize.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serialize.dart';
@@ -41,7 +42,7 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
   }
 
   @override
-  get generators {
+  List<SerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);
     return [

@@ -6,8 +6,10 @@ import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:meta/meta.dart';
 
 abstract class RestSerdesGenerator<_Model extends RestModel> extends SerdesGenerator<Rest, _Model> {
+  @override
   final providerName = 'Rest';
 
+  @override
   final String repositoryName;
 
   RestSerdesGenerator(

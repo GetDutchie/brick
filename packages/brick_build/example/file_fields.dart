@@ -1,16 +1,27 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_core/field_serializable.dart';
-import '../lib/generators.dart';
+import 'package:brick_build/generators.dart';
 
 // in a real-world equivalent, this is an annotation
 class File implements FieldSerializable {
   final String path;
 
+  @override
   final String name;
+
+  @override
   final String defaultValue;
+
+  @override
   final bool ignore;
+
+  @override
   final String fromGenerator;
+
+  @override
   final String toGenerator;
+
+  @override
   final bool nullable;
 
   const File({
