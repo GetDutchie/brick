@@ -10,7 +10,6 @@ const _demoModelMigrationCommands = [
   InsertTable('DemoModelAssoc'),
   InsertTable('_brick_DemoModel_many_assoc'),
   InsertTable('DemoModel'),
-  InsertColumn('name', Column.varchar, onTable: 'DemoModelAssoc'),
   InsertForeignKey('_brick_DemoModel_many_assoc', 'DemoModel',
       foreignKeyColumn: 'l_DemoModel_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
   InsertForeignKey('_brick_DemoModel_many_assoc', 'DemoModelAssoc',

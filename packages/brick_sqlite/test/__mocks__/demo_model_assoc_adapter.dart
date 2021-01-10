@@ -6,13 +6,13 @@ import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
 Future<DemoModelAssoc> _$DemoModelAssocFromSqlite(Map<String, dynamic> data,
     {SqliteProvider provider, repository}) async {
-  return DemoModelAssoc(name: data['name'] == null ? null : data['name'] as String)
+  return DemoModelAssoc(name: data['full_name'] == null ? null : data['full_name'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$DemoModelAssocToSqlite(DemoModelAssoc instance,
     {SqliteProvider provider, repository}) async {
-  return {'name': instance.name};
+  return {'full_name': instance.name};
 }
 
 /// Construct a [DemoModelAssoc]

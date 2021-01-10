@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
     {SqliteProvider provider, repository}) async {
   return DemoModel(
-      name: data['name'] == null ? null : data['name'] as String,
+      name: data['full_name'] == null ? null : data['full_name'] as String,
       assoc: data['assoc_DemoModelAssoc_brick_id'] == null
           ? null
           : (data['assoc_DemoModelAssoc_brick_id'] > -1
@@ -44,7 +44,7 @@ Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
         await provider?.upsert<DemoModelAssoc>(instance.assoc, repository: repository),
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
-    'name': instance.name,
+    'full_name': instance.name,
     'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool ? 1 : 0)
   };
 }

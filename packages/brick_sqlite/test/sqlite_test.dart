@@ -100,7 +100,7 @@ void main() {
         InsertTable(localTableName),
         InsertColumn(columnName, Column.varchar, onTable: localTableName),
         InsertTable(foreignTableName),
-        InsertColumn('name', Column.varchar, onTable: foreignTableName),
+        InsertColumn('full_name', Column.varchar, onTable: foreignTableName),
       ];
       final joinsTableName =
           InsertForeignKey.joinsTableName(columnName, localTableName: localTableName);
