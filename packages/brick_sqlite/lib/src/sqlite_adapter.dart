@@ -42,7 +42,7 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
     ModelRepository<SqliteModel> repository,
   });
 
-  /// A dictionary that connects field names to SQLite column names.
+  /// A dictionary that connects field names to SQLite column properties.
   Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns;
 
   /// Find a record based on the existence of all contained fields annotated with

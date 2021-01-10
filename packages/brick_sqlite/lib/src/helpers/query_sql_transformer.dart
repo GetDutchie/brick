@@ -339,7 +339,7 @@ class AllOtherClausesFragment {
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = fieldsToColumns[fieldName]?.columnName;
+          final columnName = (fieldsToColumns ?? {})[fieldName]?.columnName;
           if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
           }
