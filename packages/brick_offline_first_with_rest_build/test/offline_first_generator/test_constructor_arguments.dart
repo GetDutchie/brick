@@ -55,7 +55,7 @@ class OfflineFirstGeneratorArgumentsAdapter
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
@@ -128,7 +128,7 @@ class OfflineFirstGeneratorArgumentsAdapter
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
-      null;
+      instance.primaryKey;
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,

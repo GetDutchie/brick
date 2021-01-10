@@ -46,22 +46,22 @@ class RestConfigResponseKeysAdapter
   final String fromKey = 'users';
   final String toKey = 'user';
   final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    }
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'someField': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'some_field',
+      iterable: false,
+      type: int,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'RestConfigResponseKeys';
 
   Future<RestConfigResponseKeys> fromRest(Map<String, dynamic> input,

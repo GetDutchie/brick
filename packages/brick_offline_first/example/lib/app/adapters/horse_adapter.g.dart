@@ -73,7 +73,8 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       'association': true,
     }
   };
-  Future<int> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async => null;
+  Future<int> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>
+      instance.primaryKey;
   final String tableName = 'Horse';
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {

@@ -27,12 +27,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final uniqueFields = <String, String>{};
 
     fieldsToColumns.add('''
-      '${InsertTable.PRIMARY_KEY_FIELD}': {
-        'name': '${InsertTable.PRIMARY_KEY_COLUMN}',
-        'type': int,
-        'iterable': false,
-        'association': false,
-      }''');
+      '${InsertTable.PRIMARY_KEY_FIELD}': RuntimeSqliteColumnDefinition(
+        association: false,
+        columnName: '${InsertTable.PRIMARY_KEY_COLUMN}',
+        iterable: false,
+        type: int,
+      )''');
 
     for (var field in unignoredFields) {
       final annotation = fields.annotationForField(field);
@@ -42,12 +42,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
-          '${field.name}': {
-            'name': '$columnName',
-            'type': $columnInsertionType,
-            'iterable': ${checker.isIterable},
-            'association': ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
-          }''');
+          '${field.name}': RuntimeSqliteColumnDefinition(
+            association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
+            columnName: '$columnName',
+            iterable: ${checker.isIterable},
+            type: $columnInsertionType,
+          )''');
       if (annotation.unique) {
         uniqueFields[field.name] = providerNameForField(annotation.name, checker: checker);
       }
@@ -60,7 +60,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }).map(_saveIterableAssociationFieldToJoins);
 
     return [
-      'final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
+      'final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
       "final String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)
@@ -162,7 +162,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     if (selectStatement.isEmpty && whereStatement.isEmpty) {
-      return '$functionDeclaration => null;';
+      return '$functionDeclaration => instance?.primaryKey;';
     }
 
     return """$functionDeclaration {
