@@ -28,7 +28,7 @@ class FieldWithTypeArgumentAdapter
     extends SqliteAdapter<FieldWithTypeArgument> {
   FieldWithTypeArgumentAdapter();
 
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',

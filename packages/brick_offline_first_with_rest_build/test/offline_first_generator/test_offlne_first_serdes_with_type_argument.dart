@@ -41,19 +41,19 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': SerdesWithTypeArgument,
-      'iterable': false,
-      'association': false,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'someField': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'some_field',
+      iterable: false,
+      type: SerdesWithTypeArgument,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstSerdesWithTypeArgument instance,
