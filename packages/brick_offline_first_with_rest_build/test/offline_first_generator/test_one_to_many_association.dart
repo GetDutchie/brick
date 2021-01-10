@@ -91,10 +91,10 @@ class OneToManyAssociationAdapter
     ),
     'assoc': RuntimeSqliteColumnDefinition(
       association: true,
-      columnName: '_brick_id',
-      iterable: SqliteAssoc,
-      type: int,
-    ),
+      columnName: 'assoc',
+      iterable: false,
+      type: SqliteAssoc,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           OneToManyAssociation instance, DatabaseExecutor executor) async =>

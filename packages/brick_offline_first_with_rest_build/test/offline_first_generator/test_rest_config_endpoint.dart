@@ -60,7 +60,7 @@ class RestConfigEndpointAdapter
       columnName: 'some_field',
       iterable: false,
       type: int,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigEndpoint instance, DatabaseExecutor executor) async =>

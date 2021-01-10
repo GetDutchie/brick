@@ -127,43 +127,43 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'assoc': {
-      'name': 'assoc',
-      'type': OtherAssoc,
-      'iterable': false,
-      'association': false,
-    },
-    'assocs': {
-      'name': 'assocs',
-      'type': Assoc,
-      'iterable': true,
-      'association': true,
-    },
-    'loadedAssoc': {
-      'name': 'loaded_assoc_Assoc_brick_id',
-      'type': Assoc,
-      'iterable': false,
-      'association': true,
-    },
-    'loadedAssocs': {
-      'name': 'loaded_assocs',
-      'type': Assoc,
-      'iterable': true,
-      'association': true,
-    },
-    'multiLookupCustomGenerator': {
-      'name': 'multi_lookup_custom_generator',
-      'type': Assoc,
-      'iterable': true,
-      'association': true,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'assoc': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc',
+      iterable: false,
+      type: OtherAssoc,
+    ),
+    'assocs': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assocs',
+      iterable: true,
+      type: Assoc,
+    ),
+    'loadedAssoc': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'loaded_assoc_Assoc_brick_id',
+      iterable: false,
+      type: Assoc,
+    ),
+    'loadedAssocs': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'loaded_assocs',
+      iterable: true,
+      type: Assoc,
+    ),
+    'multiLookupCustomGenerator': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'multi_lookup_custom_generator',
+      iterable: true,
+      type: Assoc,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstWhere instance, DatabaseExecutor executor) async =>
