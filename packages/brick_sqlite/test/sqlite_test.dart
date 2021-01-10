@@ -59,7 +59,7 @@ void main() {
         );
         final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
         final associationCount = await provider.get<DemoModelAssoc>();
-        expect(associationCount.length, 2);
+        expect(associationCount, hasLength(2));
         model.manyAssoc.clear();
         await provider.upsert<DemoModel>(model);
         final withClearedAssociations = await provider.get<DemoModel>(
@@ -69,7 +69,7 @@ void main() {
             limit1: true,
           ),
         );
-        expect(withClearedAssociations.first.manyAssoc.length, 0);
+        expect(withClearedAssociations.first.manyAssoc, isEmpty);
       });
     });
 
