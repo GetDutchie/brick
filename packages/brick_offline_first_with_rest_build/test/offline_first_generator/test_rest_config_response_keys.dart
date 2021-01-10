@@ -57,7 +57,7 @@ class RestConfigResponseKeysAdapter
       columnName: 'some_field',
       iterable: false,
       type: int,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>
