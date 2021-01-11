@@ -82,19 +82,19 @@ class OneToManyAssociationAdapter
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'assoc': {
-      'name': 'assoc',
-      'type': SqliteAssoc,
-      'iterable': true,
-      'association': true,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'assoc': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc',
+      iterable: true,
+      type: SqliteAssoc,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           OneToManyAssociation instance, DatabaseExecutor executor) async =>
