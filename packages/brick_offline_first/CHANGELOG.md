@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Expose `RequestSqliteCache#findRequestInDatabase` for subclass methods. (#111)
+
 ## 0.1.1
 
 * Gracefully handle `SocketException` errors when the application is offline
