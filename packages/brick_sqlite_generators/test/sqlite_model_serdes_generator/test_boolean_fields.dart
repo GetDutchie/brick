@@ -91,7 +91,7 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
       columnName: 'multiple_future_fields',
       iterable: true,
       type: bool,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           BooleanFields instance, DatabaseExecutor executor) async =>

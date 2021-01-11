@@ -92,7 +92,7 @@ class OneToManyAssociationAdapter
     'assoc': RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc',
-      iterable: false,
+      iterable: true,
       type: SqliteAssoc,
     )
   };
