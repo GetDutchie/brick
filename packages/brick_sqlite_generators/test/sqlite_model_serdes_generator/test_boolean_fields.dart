@@ -55,7 +55,7 @@ Future<Map<String, dynamic>> _$BooleanFieldsToSqlite(BooleanFields instance,
 class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
   BooleanFieldsAdapter();
 
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
@@ -91,7 +91,7 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
       columnName: 'multiple_future_fields',
       iterable: true,
       type: bool,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           BooleanFields instance, DatabaseExecutor executor) async =>
