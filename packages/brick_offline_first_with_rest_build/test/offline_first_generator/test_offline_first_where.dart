@@ -135,7 +135,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       type: int,
     ),
     'assoc': RuntimeSqliteColumnDefinition(
-      association: true,
+      association: false,
       columnName: 'assoc',
       iterable: false,
       type: OtherAssoc,

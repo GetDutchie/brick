@@ -40,7 +40,7 @@ class FieldWithTypeArgumentAdapter
       columnName: 'some_field',
       iterable: false,
       type: Map,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           FieldWithTypeArgument instance, DatabaseExecutor executor) async =>
