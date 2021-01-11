@@ -45,7 +45,7 @@ class RestConfigResponseKeysAdapter
   String restEndpoint({query, instance}) => '';
   final String fromKey = 'users';
   final String toKey = 'user';
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
@@ -57,7 +57,7 @@ class RestConfigResponseKeysAdapter
       columnName: 'some_field',
       iterable: false,
       type: int,
-    ),
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>

@@ -120,49 +120,49 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'string': {
-      'name': 'string',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    },
-    'strings': {
-      'name': 'strings',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    },
-    'futureStrings': {
-      'name': 'future_strings',
-      'type': String,
-      'iterable': true,
-      'association': false,
-    },
-    'assoc': {
-      'name': 'assoc',
-      'type': Assoc,
-      'iterable': false,
-      'association': false,
-    },
-    'assocs': {
-      'name': 'assocs',
-      'type': Assoc,
-      'iterable': false,
-      'association': false,
-    },
-    'futureAssocs': {
-      'name': 'future_assocs',
-      'type': Assoc,
-      'iterable': true,
-      'association': true,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'string': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'string',
+      iterable: false,
+      type: String,
+    ),
+    'strings': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'strings',
+      iterable: false,
+      type: String,
+    ),
+    'futureStrings': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'future_strings',
+      iterable: true,
+      type: String,
+    ),
+    'assoc': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assoc',
+      iterable: false,
+      type: Assoc,
+    ),
+    'assocs': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assocs',
+      iterable: false,
+      type: Assoc,
+    ),
+    'futureAssocs': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'future_assocs',
+      iterable: true,
+      type: Assoc,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           Futures instance, DatabaseExecutor executor) async =>
