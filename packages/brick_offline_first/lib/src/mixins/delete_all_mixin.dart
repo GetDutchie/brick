@@ -15,8 +15,8 @@ mixin DeleteAllMixin on OfflineFirstRepository {
     return allDeletesSuccessful;
   }
 
-  /// The convenient inverse of [deleteAll]. [query] defines the instances that
-  /// **should not** be deleted.
+  /// The convenient inverse of [deleteAll]. [query] defines the instances that **should not**
+  /// be deleted. Return value reflects if the operation completed without any failures.
   Future<bool> deleteAllExcept<_Model extends OfflineFirstModel>({Query query}) async {
     final allModels = await get<_Model>();
     final modelsToKeep = await get<_Model>(query: query);
