@@ -1,6 +1,9 @@
 import 'package:brick_offline_first/offline_first.dart';
 
+/// Adds functions [deleteAll] and [deleteAllExcept]
 mixin DeleteAllMixin on OfflineFirstRepository {
+  /// Delete every instance that matches [query] in all providers. Return value reflects if
+  /// the operation completed without any failures.
   Future<bool> deleteAll<_Model extends OfflineFirstModel>({Query query}) async {
     final modelsToDelete = await get<_Model>(query: query);
     var allDeletesSuccessful = true;
@@ -12,6 +15,8 @@ mixin DeleteAllMixin on OfflineFirstRepository {
     return allDeletesSuccessful;
   }
 
+  /// The convenient inverse of [deleteAll]. [query] defines the instances that
+  /// **should not** be deleted.
   Future<bool> deleteAllExcept<_Model extends OfflineFirstModel>({Query query}) async {
     final allModels = await get<_Model>();
     final modelsToKeep = await get<_Model>(query: query);

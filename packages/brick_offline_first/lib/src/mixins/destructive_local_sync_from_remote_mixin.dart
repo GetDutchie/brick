@@ -1,13 +1,20 @@
 import 'package:brick_offline_first/offline_first.dart';
 
-/// Provides an extended `get` method to support
+/// Provides an extended `get` method to support remote syncs that override local data.
+/// For example, if two models exist in the `remoteProvider` but three exist in `sqliteProvider`
+/// and `memoryCacheProvider`, the extra model is removed from the local providers when
+/// `#get:forceLocalSyncFromRemote` is true or when [destructiveLocalSyncFromRemote] is invoked.
+///
+/// Using this mixin and its methods requires that the data from the [remoteProvider]
+/// should not be paginated and complete from a single request.
 mixin DestructiveLocalSyncFromRemoteMixin on OfflineFirstRepository {
   @override
   Future<List<_Model>> get<_Model extends OfflineFirstModel>({
     bool alwaysHydrate = false,
     bool hydrateUnexisting = true,
 
-    /// When [forceLocalSyncFromRemote] is `true`, `requireRemote`, `alwaysHydrate`, and `hydrateUnexisting` will be `true`.
+    /// When [forceLocalSyncFromRemote] is `true`, local instances that do not exist in the [remoteProvider]
+    /// are destroyed. Further, when `true`, all values from other parameters except [query] are ignored.
     bool forceLocalSyncFromRemote = false,
     Query query,
     bool requireRemote = false,
@@ -26,6 +33,9 @@ mixin DestructiveLocalSyncFromRemoteMixin on OfflineFirstRepository {
     return await destructiveLocalSyncFromRemote<_Model>(query: query);
   }
 
+  /// When invoked, local instances that exist in [sqliteProvider] and [memoryCacheProvider] but
+  /// do not exist in the [remoteProvider] are destroyed. The data from the [remoteProvider]
+  /// should not be paginated and must be complete from a single request.
   Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends OfflineFirstModel>(
       {Query query}) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
