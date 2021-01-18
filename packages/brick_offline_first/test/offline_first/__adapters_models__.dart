@@ -55,19 +55,19 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
 
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'name': {
-      'name': 'name',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    },
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      columnName: '_brick_id',
+      type: int,
+      iterable: false,
+      association: false,
+    ),
+    'name': RuntimeSqliteColumnDefinition(
+      columnName: 'name',
+      type: String,
+      iterable: false,
+      association: false,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
@@ -135,25 +135,25 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'name': {
-      'name': 'name',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    },
-    'mounties': {
-      'name': 'mounties',
-      'type': Mounty,
-      'iterable': true,
-      'association': true,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      columnName: '_brick_id',
+      type: int,
+      iterable: false,
+      association: false,
+    ),
+    'name': RuntimeSqliteColumnDefinition(
+      columnName: 'name',
+      type: String,
+      iterable: false,
+      association: false,
+    ),
+    'mounties': RuntimeSqliteColumnDefinition(
+      columnName: 'mounties',
+      type: Mounty,
+      iterable: true,
+      association: true,
+    ),
   };
   Future<int> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
