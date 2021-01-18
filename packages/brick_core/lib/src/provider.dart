@@ -13,6 +13,11 @@ abstract class Provider<_Model extends Model> {
   /// Remove a model instance
   delete<T extends _Model>(T instance, {Query query, ModelRepository<_Model> repository});
 
+  /// Whether a model instance is present. `null` is returned when existence is unknown.
+  /// The model instance is not hydrated in the function output; a `bool` variant
+  /// (e.g. `List<bool>`, `Map<_Model, bool>`) should be returned.
+  exists<T extends _Model>({Query query, ModelRepository<_Model> repository}) => null;
+
   /// Query for raw data and construct it with an [Adapter]
   get<T extends _Model>({Query query, ModelRepository<_Model> repository});
 
