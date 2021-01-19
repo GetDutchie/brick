@@ -59,29 +59,29 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'name': {
-      'name': 'name',
-      'type': String,
-      'iterable': false,
-      'association': false,
-    },
-    'mounties': {
-      'name': 'mounties',
-      'type': Mounty,
-      'iterable': true,
-      'association': true,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'name': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'name',
+      iterable: false,
+      type: String,
+    ),
+    'mounties': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'mounties',
+      iterable: true,
+      type: Mounty,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           Horse instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'Horse';
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {

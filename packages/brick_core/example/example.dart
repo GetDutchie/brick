@@ -35,6 +35,9 @@ class FileProvider implements Provider<FileModel> {
   delete<T extends FileModel>(instance, {query, repository}) async =>
       await instance.asFile.delete();
 
+  @override
+  exists<T extends FileModel>({Query query, ModelRepository<FileModel> repository}) => null;
+
   /// Query.where must always include `filePath`
   @override
   Future<List<T>> get<T extends FileModel>({query, repository}) async {
