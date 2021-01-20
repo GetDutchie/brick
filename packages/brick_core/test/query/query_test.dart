@@ -153,7 +153,7 @@ void main() {
       );
     });
 
-    group("factories", () {
+    group('factories', () {
       test('.fromJson', () {
         final json = {
           'action': 2,
@@ -177,7 +177,7 @@ void main() {
       });
 
       group('.where', () {
-        test("required arguments", () {
+        test('required arguments', () {
           final expandedQuery = Query(where: [Where('id', value: 2)]);
           final factoried = Query.where('id', 2);
           expect(factoried, expandedQuery);
@@ -185,7 +185,7 @@ void main() {
           expect(factoried.unlimited, isTrue);
         });
 
-        test("limit1:true", () {
+        test('limit1:true', () {
           final expandedQuery = Query(where: [Where('id', value: 2)], providerArgs: {'limit': 1});
           final factoried = Query.where('id', 2, limit1: true);
           expect(factoried, expandedQuery);

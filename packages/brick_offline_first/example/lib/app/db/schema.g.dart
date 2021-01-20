@@ -4,18 +4,18 @@ import 'package:brick_sqlite_abstract/db.dart';
 // ignore: unused_import
 import 'package:brick_sqlite_abstract/db.dart' show Migratable;
 part '20200616220821.migration.dart';
+part '20210111041540.migration.dart';
 part '20200106215014.migration.dart';
 part '20200124174431.migration.dart';
 part '20200616215211.migration.dart';
-part '20210111041540.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final Set<Migration> migrations = <Migration>{
   Migration20200616220821(),
+  Migration20210111041540(),
   Migration20200106215014(),
   Migration20200124174431(),
-  Migration20200616215211(),
-  Migration20210111041540()
+  Migration20200616215211()
 };
 
 /// A consumable database structure including the latest generated migration.

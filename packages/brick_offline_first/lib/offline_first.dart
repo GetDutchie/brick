@@ -145,7 +145,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// If an empty response can be expected (such as a search page), set to `false`. Defaults to `true`.
   ///
   /// [requireRemote] ensures data must be updated from the [remoteProvider] before returning if the app is online.
-  /// Cached SQLite data will be returned if the app is offline. Defaults to `false`.
+  /// An empty array will be returned if the app is offline. Defaults to `false`.
   ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
