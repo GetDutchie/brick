@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:brick_rest/src/gzip_http_client.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -38,11 +37,7 @@ class RestProvider implements Provider<RestModel> {
     this.baseEndpoint, {
     this.modelDictionary,
     http.Client client,
-
-    /// Once the RestProvider is instantiated, gzipping **cannot** be disabled or configured on a per-request basis
-    bool gzipAllRequests = false,
-  })  : this.client =
-            gzipAllRequests ? GzipHttpClient(client ?? http.Client()) : client ?? http.Client(),
+  })  : client = client ?? http.Client(),
         logger = Logger('RestProvider');
 
   /// Sends a DELETE request method to the endpoint

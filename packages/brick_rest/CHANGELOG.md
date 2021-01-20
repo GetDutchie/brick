@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Add `GzipHttpClient`. When instantiating the `RestProvider`, `gzipAllRequests` defines whether requests will be gzipped by default. Once the RestProvider is instantiated, gzipping **cannot** be disabled or configured on a per-request basis. Defaults to `false`.
+* Add `GzipHttpClient`. When instantiating the `RestProvider`, optionally compose `client` with a `GzipHttpClient` to [gzip all requests](README.md#gzipping-requests).
 
 ## 0.0.7+1
 

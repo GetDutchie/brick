@@ -215,6 +215,18 @@ final String lastName;
 
 When true, the field will be ignored by the (de)serializing function in the adapter.
 
+## GZipping Requests
+
+All requests to the API endpoint can be compressed with Dart's standard [GZip library](https://api.dart.dev/stable/2.10.4/dart-io/GZipCodec-class.html). All requests will (over)write the `Content-Encoding` header to `{'Content-Encoding': 'gzip'}` as well as `{'Accept-Encoding': 'gzip'}`.
+
+```dart
+import 'package:brick_rest/gzip_http_client.dart';
+
+final restProvider = RestProvider(client: GZipHttpClient(level: 9));
+```
+
+:warning: Your API must be able to accept and decode GZipped requests.
+
 ## Unsupported Field Types
 
 The following are not serialized to REST. However, unsupported types can still be accessed in the model as non-final fields.
