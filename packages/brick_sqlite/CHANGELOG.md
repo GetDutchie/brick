@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix: when non-SQLite providerArgs are provided in a query, false is no longer returned from SqliteProvider#exists
+
 ## 0.1.6
 
 * Internal: Change `SqliteAdpater#fieldsToSqliteColumns` type from `Map<String, Map<String, dynamic>>` to `Map<String, RuntimeSqliteColumnDefinition>`. Using such a dynamic type option will lead to inconsistency when accessing the values.
