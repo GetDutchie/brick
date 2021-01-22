@@ -1,6 +1,8 @@
 ## Unreleased
 
-* Fix: when non-SQLite providerArgs are provided in a query, false is no longer returned from SqliteProvider#exists
+## 0.1.6+1
+
+* Fix: when non-SQLite providerArgs are provided in a query, false is no longer returned from `SqliteProvider#exists`
 
 ## 0.1.6
 
