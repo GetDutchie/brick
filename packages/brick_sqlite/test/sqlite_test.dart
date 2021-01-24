@@ -59,9 +59,6 @@ void main() {
         );
         final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
         final associationCount = await provider.get<DemoModelAssoc>();
-        final beforeResults =
-            await provider.rawQuery('SELECT * FROM _brick_DemoModel_many_assoc', []);
-        print(beforeResults);
         expect(associationCount, hasLength(2));
         model.manyAssoc.clear();
         await provider.upsert<DemoModel>(model);
@@ -72,8 +69,6 @@ void main() {
             limit1: true,
           ),
         );
-        final results = await provider.rawQuery('SELECT * FROM _brick_DemoModel_many_assoc', []);
-        print(results);
         expect(withClearedAssociations.first.manyAssoc, isEmpty);
       });
     });
