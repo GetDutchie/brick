@@ -210,12 +210,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
-        final oldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
-        final oldIds = oldColumns?.map((a) => a[$joinsForeignColumn]) ?? [];
-        final newIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
-        final idsToDelete = oldIds.where((id) => !newIds.contains(id));
+        final ${field.name}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
+        final ${field.name}OldIds = ${field.name}OldColumns?.map((a) => a[$joinsForeignColumn]) ?? [];
+        final ${field.name}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
+        final ${field.name}IdsToDelete = ${field.name}OldIds.where((id) => !${field.name}NewIds.contains(id));
 
-        await Future.wait<void>(idsToDelete?.map((id) async {
+        await Future.wait<void>(${field.name}IdsToDelete?.map((id) async {
           return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
         }));
 
