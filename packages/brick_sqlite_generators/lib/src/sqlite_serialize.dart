@@ -211,7 +211,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
         final ${field.name}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
-        final ${field.name}OldIds = ${field.name}OldColumns?.map((a) => a[$joinsForeignColumn]) ?? [];
+        final ${field.name}OldIds = ${field.name}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
         final ${field.name}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
         final ${field.name}IdsToDelete = ${field.name}OldIds.where((id) => !${field.name}NewIds.contains(id));
 
