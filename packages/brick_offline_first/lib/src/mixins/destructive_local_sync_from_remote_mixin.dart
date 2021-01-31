@@ -7,9 +7,10 @@ import 'package:brick_offline_first/offline_first.dart';
 ///
 /// Using this mixin and its methods requires that the data from the [remoteProvider]
 /// should not be paginated and complete from a single request.
-mixin DestructiveLocalSyncFromRemoteMixin on OfflineFirstRepository {
+mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
+    on OfflineFirstRepository<T> {
   @override
-  Future<List<_Model>> get<_Model extends OfflineFirstModel>({
+  Future<List<_Model>> get<_Model extends T>({
     bool alwaysHydrate = false,
     bool hydrateUnexisting = true,
 
@@ -36,8 +37,7 @@ mixin DestructiveLocalSyncFromRemoteMixin on OfflineFirstRepository {
   /// When invoked, local instances that exist in [sqliteProvider] and [memoryCacheProvider] but
   /// do not exist in the [remoteProvider] are destroyed. The data from the [remoteProvider]
   /// should not be paginated and must be complete from a single request.
-  Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends OfflineFirstModel>(
-      {Query query}) async {
+  Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends T>({Query query}) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $_Model $query');
 
