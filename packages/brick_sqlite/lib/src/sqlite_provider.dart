@@ -80,7 +80,6 @@ class SqliteProvider implements Provider<SqliteModel> {
     Query query,
     ModelRepository<SqliteModel> repository,
   }) async {
-    if (!_supportsArgs(query)) return false;
     final sqlQuery = QuerySqlTransformer<_Model>(
       modelDictionary: modelDictionary,
       query: query,
@@ -339,31 +338,5 @@ class SqliteProvider implements Provider<SqliteModel> {
         }
       }
     }
-  }
-
-  /// Ensure that the provided `providerArgs` are support by this provider.
-  ///
-  /// Available query `providerArgs`:
-  /// * `collate` - a SQL `COLLATE` clause
-  /// * `groupBy` - a SQL `GROUP BY` clause
-  /// * `having` - a SQL `HAVING` clause
-  /// * `offset` - a SQL `OFFSET` clause
-  /// * `limit` - a SQL `LIMIT` clause
-  /// * `orderBy` - a SQL `ORDER BY` clause
-  bool _supportsArgs(Query query) {
-    if (query?.providerArgs == null) return true;
-
-    final supportedArgs = [
-      'collate',
-      'groupBy',
-      'having',
-      'limit',
-      'offset',
-      'orderBy',
-    ];
-
-    return query.providerArgs.keys.every((paramKey) {
-      return supportedArgs.contains(paramKey);
-    });
   }
 }

@@ -16,7 +16,7 @@ class RuntimeSqliteColumnDefinition {
   /// In other words, the runtime type.
   final Type type;
 
-  RuntimeSqliteColumnDefinition({
+  const RuntimeSqliteColumnDefinition({
     this.association = false,
     this.columnName,
     this.iterable = false,
