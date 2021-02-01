@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Add [`mixins.dart`](README.md#mixins) for non essential but still regularly requested features that depend on a specific format of remote data or are useful variations of existing features. `DeleteAllMixin` and `DestructiveLocalSyncFromRemoteMixin` are the first two such mixins.
 * Expose `RequestSqliteCache#findRequestInDatabase` for subclass methods. (#111)
 
 ## 0.1.1
