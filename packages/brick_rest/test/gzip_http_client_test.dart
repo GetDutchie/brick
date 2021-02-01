@@ -20,8 +20,7 @@ void main() {
   group('GZipHttpClient', () {
     test('headers include Content-Encoding: gzip', () async {
       final provider = withClient((request) async {
-        if (request.headers['Content-Encoding'] == 'gzip' &&
-            request.headers['Accept-Encoding'] == 'gzip') {
+        if (request.headers['Content-Encoding'] == 'gzip') {
           return http.Response('[{"name": "Guy"}]', 200);
         }
 
