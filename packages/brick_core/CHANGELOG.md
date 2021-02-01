@@ -1,5 +1,11 @@
 ## Unreleased
 
+* Add optional method `Provider#exists`. Whether a model instance is present. `null` is returned when existence is unknown. The model instance is not hydrated in the function output; a `bool` variant (e.g. `List<bool>`, `Map<_Model, bool>`) should be returned.
+
+## 0.0.6
+
+* Add a `doesNotContain` enum to `Compare` for `Where` queries
+
 ## 0.0.5
 
 * Rename `Query#params` to `Query#providerArgs`, reflecting the much narrower purpose of the member

@@ -46,8 +46,8 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToRest(
     {RestProvider provider,
     OfflineFirstRepository repository}) async {
   return {
-    'assoc': await SqliteAssocAdapter().toRest(instance.assoc ?? {}),
-    'assoc2': await SqliteAssocAdapter().toRest(instance.assoc2 ?? {})
+    'assoc': await SqliteAssocAdapter().toRest(instance.assoc),
+    'assoc2': await SqliteAssocAdapter().toRest(instance.assoc2)
   };
 }
 
@@ -84,8 +84,12 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToSqlite(
     {SqliteProvider provider,
     OfflineFirstRepository repository}) async {
   return {
-    'assoc_SqliteAssoc_brick_id': instance.assoc?.primaryKey,
-    'assoc2_SqliteAssoc_brick_id': instance.assoc2?.primaryKey
+    'assoc_SqliteAssoc_brick_id': instance.assoc?.primaryKey ??
+        await provider?.upsert<SqliteAssoc>(instance.assoc,
+            repository: repository),
+    'assoc2_SqliteAssoc_brick_id': instance.assoc2?.primaryKey ??
+        await provider?.upsert<SqliteAssoc>(instance.assoc2,
+            repository: repository)
   };
 }
 ''';

@@ -1,4 +1,4 @@
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 export 'package:test/test.dart';
 export '../../lib/db.dart';
 
@@ -78,6 +78,26 @@ class MigrationInsertForeignKey extends Migration {
       : super(
           version: 6,
           up: const [InsertForeignKey('demo', 'demo2')],
+          down: const [],
+        );
+}
+
+class MigrationCreateIndex extends Migration {
+  const MigrationCreateIndex()
+      : super(
+          version: 7,
+          up: const [
+            CreateIndex(columns: ['_brick_id'], onTable: 'demo', unique: true)
+          ],
+          down: const [DropIndex('index_demo_on__brick_id')],
+        );
+}
+
+class MigrationDropIndex extends Migration {
+  const MigrationDropIndex()
+      : super(
+          version: 8,
+          up: const [DropIndex('index_demo_on__brick_id')],
           down: const [],
         );
 }

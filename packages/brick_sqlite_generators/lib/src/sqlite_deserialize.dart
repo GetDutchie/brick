@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_build/generators.dart' show SerdesGenerator, SharedChecker;
 
@@ -23,6 +23,20 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
+  String deserializerNullableClause({field, fieldAnnotation, name}) {
+    final checker = checkerForType(field.type);
+    if (checker.isIterable && checker.isArgTypeASibling) {
+      return '';
+    }
+
+    return super.deserializerNullableClause(
+      field: field,
+      fieldAnnotation: fieldAnnotation,
+      name: name,
+    );
+  }
+
+  @override
   String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
@@ -36,53 +50,58 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     // DateTime
     if (checker.isDateTime) {
-      return "$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)";
+      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool
     } else if (checker.isBool) {
-      return "$fieldValue == 1";
+      return '$fieldValue == 1';
 
       // double, int, String
     } else if (checker.isDartCoreType) {
-      return "$fieldValue as ${field.type}$defaultValue";
+      return '$fieldValue as ${field.type}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
       final argTypeChecker = SharedChecker<SqliteModel>(checker.argType);
       final argType = checker.unFuturedArgType;
       final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet,
-          isList: checker.isList,
-          isFuture: checker.isArgTypeASibling || checker.isArgTypeAFuture);
+          isSet: checker.isSet, isList: checker.isList, isFuture: checker.isArgTypeAFuture);
 
       if (checker.isArgTypeASibling) {
         final awaited = wrappedInFuture ? 'async => await' : '=>';
         final query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
+        final sqlStatement =
+            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
         final method = '''
-          jsonDecode($fieldValue ?? []).map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>(
-              $query
-            )?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
-          )$castIterable
+          provider
+            ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
+            ?.then((results) {
+              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}']);
+              return Future.wait<$argType>(
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
+                ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+              );
+            })
         ''';
 
         // Future<Iterable<SqliteModel>>
         if (wrappedInFuture) {
-          return 'Future.wait<$argType>($method)';
+          return method;
         }
 
         // Iterable<Future<SqliteModel>>
         if (checker.isArgTypeAFuture) {
-          return method;
+          return 'await $method';
 
           // Iterable<SqliteModel>
         } else {
           if (checker.isSet) {
-            return '(await Future.wait<$argType>($method)).toSet().cast<$argType>()';
+            return '(await $method).toSet().cast<$argType>()';
           }
 
-          return 'await Future.wait<$argType>($method)';
+          return '(await $method)$castIterable';
         }
       }
 
@@ -93,16 +112,16 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return "jsonDecode($fieldValue).map((d) => d as int > -1 ? $argType.values[d as int] : null)$castIterable";
+        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? $argType.values[d as int] : null)$castIterable';
       }
 
       // Iterable<bool>
       if (argTypeChecker.isBool) {
-        return "jsonDecode($fieldValue).map((d) => d == 1)$castIterable";
+        return 'jsonDecode($fieldValue).map((d) => d == 1)$castIterable';
       }
 
       // Iterable<double>, Iterable<int>, Iterable<num>, Iterable<Map>, Iterable<String>
-      return "jsonDecode($fieldValue)$castIterable";
+      return 'jsonDecode($fieldValue)$castIterable';
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
@@ -122,11 +141,11 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
-      return "($fieldValue > -1 ? ${field.type}.values[$fieldValue as int] : null)$defaultValue";
+      return '($fieldValue > -1 ? ${field.type}.values[$fieldValue as int] : null)$defaultValue';
 
       // Map
     } else if (checker.isMap) {
-      return "jsonDecode($fieldValue)";
+      return 'jsonDecode($fieldValue)';
     }
 
     return null;

@@ -3,8 +3,8 @@ import 'package:test/test.dart';
 // import 'package:build_test/build_test.dart';
 
 void main() {
-  group("OfflineFirstBuilder", () {
+  group('OfflineFirstBuilder', () {
     // final builder = const AdaptersBuilder();
-    test("creates <model>_adapter.g.dart file", () {});
+    test('creates <model>_adapter.g.dart file', () {});
   }, skip: 'Write builder tests');
 }

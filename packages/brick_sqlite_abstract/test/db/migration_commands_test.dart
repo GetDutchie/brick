@@ -1,9 +1,44 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 import '__mocks__.dart';
 
 void main() {
   group('MigrationCommand', () {
+    group('CreateIndex', () {
+      const m = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+      );
+      const mUnique = CreateIndex(
+        columns: ['f_Local_brick_id', 'l_Field_brick_id'],
+        onTable: '_brick_Local_field',
+        unique: true,
+      );
+
+      test('defaults', () {
+        expect(m.unique, isFalse);
+      });
+
+      test('#statement', () {
+        expect(m.statement,
+            'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
+        expect(mUnique.statement,
+            'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)");
+        expect(mUnique.forGenerator,
+            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
+      });
+
+      test('.generateName', () {
+        expect(CreateIndex.generateName(['user_id', 'friend_id', 'account_id'], 'Person'),
+            'index_Person_on_user_id_friend_id_account_id');
+      });
+    });
+
     group('DropColumn', () {
       const m = DropColumn('name', onTable: 'demo');
 
@@ -13,6 +48,18 @@ void main() {
 
       test('#forGenerator', () {
         expect(m.forGenerator, "DropColumn('name', onTable: 'demo')");
+      });
+    });
+
+    group('DropIndex', () {
+      const m = DropIndex('name');
+
+      test('#statement', () {
+        expect(m.statement, 'DROP INDEX IF EXISTS name');
+      });
+
+      test('#forGenerator', () {
+        expect(m.forGenerator, "DropIndex('name')");
       });
     });
 
@@ -94,14 +141,37 @@ void main() {
 
     group('InsertForeignKey', () {
       const m = InsertForeignKey('demo', 'demo2');
+
+      test('defaults', () {
+        // These expectations can never be removed, otherwise all migrations must be regenerated
+        // And some migrations are modified by hand, making regeneration not possible
+        expect(m.onDeleteCascade, isFalse);
+        expect(m.onDeleteSetDefault, isFalse);
+      });
+
       test('#statement', () {
         expect(m.statement,
             'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)');
+
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.statement,
+            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE');
+
+        const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
+        expect(withOnDeleteSetDefault.statement,
+            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE SET DEFAULT');
       });
 
       test('#forGenerator', () {
         expect(m.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id')");
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: false)");
+        const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
+        expect(withOnDeleteCascade.forGenerator,
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true, onDeleteSetDefault: false)");
+
+        const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
+        expect(withOnDeleteSetDefault.forGenerator,
+            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: true)");
       });
 
       test('.foreignKeyColumnName', () {
@@ -110,6 +180,24 @@ void main() {
 
         final prefixedName = InsertForeignKey.foreignKeyColumnName('BigHat', 'casual');
         expect(prefixedName, 'casual_BigHat_brick_id');
+      });
+
+      test('.joinsTableLocalColumnName', () {
+        final columnName = InsertForeignKey.joinsTableLocalColumnName('BigHat');
+        expect(columnName, 'l_BigHat_brick_id');
+      });
+
+      test('.joinsTableForeignColumnName', () {
+        final columnName = InsertForeignKey.joinsTableForeignColumnName('BigHat');
+        expect(columnName, 'f_BigHat_brick_id');
+      });
+
+      test('.joinsTableName', () {
+        var tableName = InsertForeignKey.joinsTableName('sunday_hat', localTableName: 'User');
+        expect(tableName, '_brick_User_sunday_hat');
+
+        tableName = InsertForeignKey.joinsTableName('address', localTableName: 'People');
+        expect(tableName, '_brick_People_address');
       });
     });
 

@@ -10,6 +10,7 @@ import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as _$sqliteC
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
     as _$fieldWithTypeArgument;
+import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as _$booleanFields;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -48,6 +49,10 @@ void main() {
     test('FieldWithTypeArgument', () async {
       await generateAdapterExpectation('field_with_type_argument', _$fieldWithTypeArgument.output);
     });
+
+    test('BooleanFields', () async {
+      await generateAdapterExpectation('boolean_fields', _$booleanFields.output);
+    });
   });
 }
 
@@ -57,12 +62,14 @@ void main() {
 /// and [SqliteSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<SqliteSerializable> {
+  @override
   final superAdapterName = 'Sqlite';
   final repositoryName = 'SqliteFirst';
 
   TestGenerator();
 
   /// Given an [element] and an [annotation], scaffold generators
+  @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
         SqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);

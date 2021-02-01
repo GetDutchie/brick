@@ -7,14 +7,11 @@ repository: https://github.com/greenbits/brick
 version: 0.0.1
 
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  brick_rest: ^0.0.5
-  brick_build:
-    git:
-      url: https://github.com/greenbits/brick.git
-      path: packages/brick_build
+  brick_rest: ^0.0.7+1
+  brick_build: ^0.0.7
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"

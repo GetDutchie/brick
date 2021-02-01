@@ -53,15 +53,15 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   /// If the sub type has super type [SqliteModel]
-  /// Returns `SqliteModel` in `Future<SqliteModel>`,
+  /// Returns true for `Future<SqliteModel>`,
   /// `List<Future<SqliteModel>>`, and `List<SqliteModel>`.
   bool get isArgTypeASibling {
     if (isArgTypeAFuture) {
       final futuredType = SharedChecker.typeOfFuture<_SiblingModel>(argType);
-      return _siblingClassChecker?.isSuperTypeOf(futuredType) ?? false;
+      return _siblingClassChecker?.isAssignableFromType(futuredType) ?? false;
     }
 
-    return _siblingClassChecker?.isSuperTypeOf(argType) ?? false;
+    return _siblingClassChecker?.isAssignableFromType(argType) ?? false;
   }
 
   bool get isBool => targetType.isDartCoreBool;
@@ -115,7 +115,7 @@ class SharedChecker<_SiblingModel extends Model> {
   /// If this is a class similarly annotated by the current generator.
   ///
   /// Useful for verifying whether or not to generate Serialize/Deserializers methods.
-  bool get isSibling => _siblingClassChecker?.isSuperTypeOf(targetType) ?? false;
+  bool get isSibling => _siblingClassChecker?.isAssignableFromType(targetType) ?? false;
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
@@ -167,7 +167,7 @@ class SharedChecker<_SiblingModel extends Model> {
     return targetType;
   }
 
-  /// Destructures a type to determine the bottom type after going through Futures and Iterables.
+  /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///
   /// For example, `int` in `Future<int>` or `List<String>` in `Future<List<String>>`.
   ///

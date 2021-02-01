@@ -1,13 +1,11 @@
 import 'package:brick_core/query.dart';
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' show isMethodCall;
 import 'package:sqflite/sqflite.dart' show Database, openDatabase;
 import 'package:test/test.dart';
-import 'package:brick_sqlite/testing.dart';
 import 'package:flutter_test/flutter_test.dart' as ft;
 
-import 'package:brick_sqlite/src/sqlite/query_sql_transformer.dart';
+import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
 import '__mocks__.dart';
 
 void main() {
@@ -15,27 +13,29 @@ void main() {
 
   group('QuerySqlTransformer', () {
     Database db;
-    final List<Map<String, dynamic>> responses = [
-      {InsertTable.PRIMARY_KEY_COLUMN: 1, 'name': 'Thomas'},
-      {InsertTable.PRIMARY_KEY_COLUMN: 2, 'name': 'Guy'},
-      {'name': 'John'}
-    ];
+    var sqliteLogs = <MethodCall>[];
+
+    MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
+      sqliteLogs.add(methodCall);
+
+      if (methodCall.method == 'getDatabasesPath') {
+        return Future.value('db');
+      }
+
+      return Future.value(null);
+    });
 
     setUpAll(() async {
-      final provider = SqliteProvider('db.sqlite', modelDictionary: dictionary);
-      StubSqlite(provider, responses: {
-        DemoModel: responses,
-      });
       db = await openDatabase('db.sqlite');
     });
 
-    tearDown(StubSqlite.sqliteLogs.clear);
+    tearDown(sqliteLogs.clear);
 
     void sqliteStatementExpectation(String statement, [List<dynamic> arguments]) {
       final matcher = isMethodCall('query',
           arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
 
-      return expect(StubSqlite.sqliteLogs, contains(matcher));
+      return expect(sqliteLogs, contains(matcher));
     }
 
     test('empty', () async {
@@ -67,16 +67,6 @@ void main() {
 
       expect(statement, sqliteQuery.statement);
       sqliteStatementExpectation(statement, ['Thomas']);
-    });
-
-    test('where association value is not map', () {
-      expect(
-        () => QuerySqlTransformer<DemoModel>(
-          modelDictionary: dictionary,
-          query: Query.where('assoc', 1),
-        ),
-        throwsA(TypeMatcher<ArgumentError>()),
-      );
     });
 
     test('where association value is not map', () {
@@ -134,10 +124,104 @@ void main() {
       sqliteStatementExpectation(statement, [1, 'Thomas', 'Guy']);
     });
 
+    group('Compare', () {
+      test('.doesNotContain', () async {
+        final statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name NOT LIKE ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            Where('name').doesNotContain('Thomas'),
+          ]),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, ['%Thomas%']);
+      });
+    });
+
+    group('SELECT COUNT', () {
+      test('basic', () async {
+        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('simple', () async {
+        final statement =
+            'SELECT COUNT(*) FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            WherePhrase([
+              Where.exact('id', 1),
+              Or('name').isExactly('Guy'),
+            ]),
+            WherePhrase([
+              Where.exact('id', 1),
+              Where.exact('name', 'Guy'),
+            ], required: true),
+            WherePhrase([
+              Where.exact('id', 1),
+              Where.exact('name', 'Guy'),
+            ]),
+          ]),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1, 'Guy', 1, 'Guy', 1, 'Guy']);
+      });
+
+      test('associations', () async {
+        final statement =
+            'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            Where.exact('assoc', Where.exact('id', 1)),
+          ]),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1]);
+      });
+
+      test('without any where arguments', () async {
+        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        var nilValue;
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(
+            where: [
+              WherePhrase([
+                if (nilValue != null) And('name').isExactly('John'),
+              ], required: false),
+            ],
+          ),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, []);
+      });
+    });
+
     group('associations', () {
       test('simple', () async {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -152,7 +236,7 @@ void main() {
 
       test('OR', () async {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
@@ -173,7 +257,7 @@ void main() {
 
       test('one-to-many', () {
         final statement =
-            '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || ",%" OR `DemoModel`.many_assoc LIKE "%," || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || "]" OR `DemoModel`.many_assoc LIKE "[" || `DemoModelAssoc`._brick_id || ",%" WHERE `DemoModelAssoc`.id = ?''';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [

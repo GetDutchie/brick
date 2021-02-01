@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
 /// Serialize and Deserialize a [http.Request] from SQLite.
 class RequestSqliteCache {
   final http.Request request;
-  final String databaseName;
 
   /// Matches any HTTP requests that send data (or 'push'). 'Pull' requests most often have an
   /// outcome that exists in memory (e.g. deserializing to a model). Since callbacks cannot
@@ -16,31 +15,11 @@ class RequestSqliteCache {
   /// disposal or a crash has since occurred), 'pull' requests will be ignored.
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
 
-  RequestSqliteCache(
-    this.request,
-    this.databaseName,
-  );
-
-  /// Builds request into a new SQLite-insertable row
-  /// Only available if [request] was initialized from [fromRequest]
-  ///
-  /// This is a function to ensure `DateTime.now()` is invoked predictably.
-  Map<String, dynamic> toSqlite() {
-    return {
-      HTTP_JOBS_ATTEMPTS_COLUMN: 1,
-      HTTP_JOBS_BODY_COLUMN: request.body,
-      HTTP_JOBS_ENCODING_COLUMN: request.encoding.name,
-      HTTP_JOBS_HEADERS_COLUMN: jsonEncode(request.headers),
-      HTTP_JOBS_REQUEST_METHOD_COLUMN: request.method,
-      HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
-      HTTP_JOBS_URL_COLUMN: request.url.toString(),
-    };
-  }
+  RequestSqliteCache(this.request);
 
   /// Removes the request from the database and thus the queue
-  Future<int> delete() async {
-    final db = await _getDb();
-    final response = await _findRequestInDatabase();
+  Future<int> delete(Database db) async {
+    final response = await findRequestInDatabase(db);
 
     if (response != null && response.isNotEmpty) {
       return await db.transaction((txn) async {
@@ -55,42 +34,8 @@ class RequestSqliteCache {
     return 0;
   }
 
-  /// If the request already exists in the database, increment attemps and
-  /// set `updated_at` to current time.
-  Future<int> insertOrUpdate(Logger logger) async {
-    final db = await _getDb();
-    final response = await _findRequestInDatabase();
-
-    return db.transaction((txn) async {
-      if (response == null || response.isEmpty) {
-        final serialized = toSqlite();
-
-        logger.fine('adding to queue: $serialized');
-        return await txn.insert(
-          HTTP_JOBS_TABLE_NAME,
-          serialized,
-        );
-      }
-      final methodWithUrl =
-          [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
-      logger.warning(
-          'failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} in $methodWithUrl : $response');
-      return await txn.update(
-        HTTP_JOBS_TABLE_NAME,
-        {
-          HTTP_JOBS_ATTEMPTS_COLUMN: response[HTTP_JOBS_ATTEMPTS_COLUMN] + 1,
-          HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
-          HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
-        },
-        where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
-        whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
-      );
-    });
-  }
-
-  Future<Map<String, dynamic>> _findRequestInDatabase() async {
-    final db = await _getDb();
-
+  @protected
+  Future<Map<String, dynamic>> findRequestInDatabase(Database db) async {
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
       HTTP_JOBS_ENCODING_COLUMN,
@@ -111,12 +56,53 @@ class RequestSqliteCache {
     return response?.isNotEmpty == true ? response.first : null;
   }
 
-  Database _db;
-  Future<Database> _getDb() async {
-    if (_db?.isOpen == true) return _db;
-    final databasesPath = await getDatabasesPath();
-    final path = p.join(databasesPath, databaseName);
-    return _db = await openDatabase(path);
+  /// If the request already exists in the database, increment attemps and
+  /// set `updated_at` to current time.
+  Future<int> insertOrUpdate(Database db, {Logger logger}) async {
+    final response = await findRequestInDatabase(db);
+
+    return db.transaction((txn) async {
+      if (response == null || response.isEmpty) {
+        final serialized = toSqlite();
+
+        logger?.fine('adding to queue: $serialized');
+        return await txn.insert(
+          HTTP_JOBS_TABLE_NAME,
+          serialized,
+        );
+      }
+      final methodWithUrl =
+          [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
+      logger?.warning(
+          'failed, attempt #${response[HTTP_JOBS_ATTEMPTS_COLUMN]} in $methodWithUrl : $response');
+      return await txn.update(
+        HTTP_JOBS_TABLE_NAME,
+        {
+          HTTP_JOBS_ATTEMPTS_COLUMN: response[HTTP_JOBS_ATTEMPTS_COLUMN] + 1,
+          HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+          HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
+        },
+        where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+        whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+      );
+    });
+  }
+
+  /// Builds request into a new SQLite-insertable row
+  /// Only available if [request] was initialized from [fromRequest]
+  ///
+  /// This is a function to ensure `DateTime.now()` is invoked predictably.
+  Map<String, dynamic> toSqlite() {
+    return {
+      HTTP_JOBS_ATTEMPTS_COLUMN: 1,
+      HTTP_JOBS_BODY_COLUMN: request.body,
+      HTTP_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
+      HTTP_JOBS_ENCODING_COLUMN: request.encoding.name,
+      HTTP_JOBS_HEADERS_COLUMN: jsonEncode(request.headers),
+      HTTP_JOBS_REQUEST_METHOD_COLUMN: request.method,
+      HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+      HTTP_JOBS_URL_COLUMN: request.url.toString(),
+    };
   }
 
   /// Recreate a request from SQLite data

@@ -2,6 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/provider_serializable_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_deserialize.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
+import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serialize.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
@@ -31,7 +32,7 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
   }
 
   @override
-  get generators {
+  List<SqliteSerdesGenerator> get generators {
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);
     return [

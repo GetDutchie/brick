@@ -4,14 +4,14 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_build
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 0.0.6
+version: 0.0.7
 
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   analyzer: ^0.39.0
-  brick_core: ^0.0.4
+  brick_core: ^0.0.6
   build: ^1.2.0
   build_config: ^0.4.0
   dart_style: ^1.2.4

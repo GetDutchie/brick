@@ -9,23 +9,23 @@ class Person extends SqliteModel {}
 class PersonGroup extends SqliteModel {}
 
 void main() {
-  group("MemoryCacheProvider", () {
+  group('MemoryCacheProvider', () {
     MemoryCacheProvider provider;
 
     setUp(() {
       provider = MemoryCacheProvider([Person]);
     });
 
-    test("#managedModelTypes", () {
+    test('#managedModelTypes', () {
       expect(provider.managedModelTypes, [Person]);
     });
 
-    test("#manages", () {
+    test('#manages', () {
       expect(provider.manages(Person), isTrue);
       expect(provider.manages(PersonGroup), isFalse);
     });
 
-    test("#canFind", () {
+    test('#canFind', () {
       final byPrimaryKey = Query.where(InsertTable.PRIMARY_KEY_FIELD, 1);
 
       expect(provider.manages(Person), isTrue);
@@ -35,7 +35,7 @@ void main() {
       expect(provider.canFind<PersonGroup>(byPrimaryKey), isFalse);
     });
 
-    test("#delete", () {
+    test('#delete', () {
       final instance = Person();
       instance.primaryKey = 1;
       provider.hydrate<Person>([instance]);
@@ -47,12 +47,12 @@ void main() {
       expect(provider.managedObjects[Person], {});
     });
 
-    group("#get", () {
-      test("unmanaged types", () {
+    group('#get', () {
+      test('unmanaged types', () {
         expect(provider.get<PersonGroup>(), isNull);
       });
 
-      test(".id queries", () {
+      test('.id queries', () {
         final instance = Person();
         instance.primaryKey = 1;
         provider.hydrate<Person>([instance]);
@@ -66,7 +66,7 @@ void main() {
         expect(results, contains(instance));
       });
 
-      test("unlimited queries", () {
+      test('unlimited queries', () {
         final instance = Person();
         instance.primaryKey = 1;
         provider.hydrate<Person>([instance]);
@@ -76,7 +76,7 @@ void main() {
       });
     });
 
-    test("#hydrate<Person>", () {
+    test('#hydrate<Person>', () {
       expect(provider.managedObjects, isEmpty);
 
       final instance = Person();
@@ -94,7 +94,7 @@ void main() {
       expect(provider.managedObjects[Person].values, hasLength(1));
     });
 
-    test("#reset", () {
+    test('#reset', () {
       final instance = Person();
       instance.primaryKey = 1;
       provider.hydrate<Person>([instance]);

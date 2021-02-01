@@ -8,19 +8,16 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite_abstract/db.dart' show Migratable;
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final Set<Migration> migrations = Set.from([]);
+final Set<Migration> migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(0,
-    generatorVersion: 1,
-    tables: Set<SchemaTable>.from([
-      SchemaTable('Nullable',
-          columns: Set.from([
-            SchemaColumn('_brick_id', int,
-                autoincrement: true, nullable: false, isPrimaryKey: true),
-            SchemaColumn('name', String, nullable: false)
-          ]))
-    ]));
+final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
+  SchemaTable('Nullable', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', int,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('name', String, nullable: false)
+  }, indices: <SchemaIndex>{})
+});
 ''';
 
 /// [SqliteSerializable] **does not** produce code.

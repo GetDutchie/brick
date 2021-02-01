@@ -6,8 +6,8 @@ import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_build/testing.dart';
 
-import 'rest_model_serdes_generator/test_enum_as_string.dart' as _$enumAsString;
-import 'rest_model_serdes_generator/test_ignore_from_to.dart' as _$ignoreFromTo;
+import 'rest_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
+import 'rest_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 
 final _generator = TestGenerator();
 final folder = 'rest_model_serdes_generator';
@@ -16,12 +16,12 @@ final generateReader = generateLibraryForFolder(folder);
 void main() {
   group('RestModelSerdesGenerator', () {
     group('@Rest', () {
-      test('enumAsString', () async {
-        await generateExpectation('enum_as_string', _$enumAsString.output);
+      test('enum_as_string', () async {
+        await generateExpectation('enum_as_string', enum_as_string.output);
       });
 
       test('ignoreFrom ignoreTo', () async {
-        await generateExpectation('ignore_from_to', _$ignoreFromTo.output);
+        await generateExpectation('ignore_from_to', ignore_from_to.output);
       });
     });
   });
@@ -33,12 +33,14 @@ void main() {
 /// and [RestSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<RestSerializable> {
+  @override
   final superAdapterName = 'RestFirst';
   final repositoryName = 'RestFirst';
 
   TestGenerator();
 
   /// Given an [element] and an [annotation], scaffold generators
+  @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
         RestModelSerdesGenerator(element, annotation, repositoryName: repositoryName);

@@ -1,5 +1,5 @@
-import '../lib/core.dart';
-export '../lib/core.dart';
+import 'package:brick_core/core.dart';
+export 'package:brick_core/core.dart';
 
 class DemoModelDictionary extends ModelDictionary<DemoModel, DemoAdapter> {
   const DemoModelDictionary(Map<Type, DemoAdapter> mappings) : super(mappings);
@@ -10,17 +10,21 @@ class DemoProvider extends Provider<DemoModel> {
 
   final DemoModelDictionary modelDictionary;
 
-  get<T extends DemoModel>({query, repository}) {
+  delete<_Model extends DemoModel>(instance, {query, repository}) {
+    return true;
+  }
+
+  exists<_Model extends DemoModel>({query, repository}) {
+    return true;
+  }
+
+  get<_Model extends DemoModel>({query, repository}) {
     final list = List<DemoModel>();
-    list.add(DemoModel("Thomas"));
+    list.add(DemoModel('Thomas'));
     return Future.value(list);
   }
 
   upsert<_Model extends DemoModel>(instance, {query, repository}) {
-    return true;
-  }
-
-  delete<_Model extends DemoModel>(instance, {query, repository}) {
     return true;
   }
 }

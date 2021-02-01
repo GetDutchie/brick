@@ -6,7 +6,7 @@ import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
-/// Generate mocks for an [OfflineFirstWithRestModel]. Instantiation automatically stubs REST and SQLite.
+/// Generate mocks for an [OfflineFirstWithRestModel]. Instantiation automatically stubs REST responses.
 ///
 /// For convenience, your data structure only needs to be defined once. Include a sample API
 /// response in a sibling `/api/` directory (`api` can be changed by overwriting `apiResponse`).
@@ -79,25 +79,5 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     dictionary.addAll(repository?.remoteProvider?.modelDictionary?.adapterFor ?? {});
     dictionary.addAll(repository?.sqliteProvider?.modelDictionary?.adapterFor ?? {});
     modelDictionary = dictionary.cast<Type, OfflineFirstWithRestAdapter>();
-  }
-
-  Future<Map<String, dynamic>> buildSqliteResponseObject(Map<String, dynamic> apiObject) async {
-    final fromRest = await adapter.fromRest(apiObject,
-        provider: repository?.remoteProvider, repository: repository);
-    return await adapter.toSqlite(fromRest,
-        provider: repository?.sqliteProvider, repository: repository);
-  }
-
-  /// Generate a response equivalent to the one expected from SQFlite
-  /// `Iterable`s and `Map`s are serialized as they would be by the Adapter producing the
-  /// persisted data.
-  Future<List<Map<String, dynamic>>> sqliteResponse() async {
-    final response = decodedApiResponse;
-    if (response is Map) {
-      return [await buildSqliteResponseObject(response)];
-    }
-
-    final mapped = (response as List<dynamic>).map((a) => buildSqliteResponseObject(a));
-    return await Future.wait(mapped);
   }
 }

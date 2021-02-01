@@ -17,6 +17,8 @@ class SchemaColumn extends BaseSchemaObject {
   final bool isPrimaryKey;
   final bool isForeignKey;
   final String foreignTableName;
+  final bool onDeleteCascade;
+  final bool onDeleteSetDefault;
   final bool unique;
 
   String tableName;
@@ -27,10 +29,12 @@ class SchemaColumn extends BaseSchemaObject {
     bool autoincrement,
     this.columnType,
     this.defaultValue,
-    bool nullable,
     this.isPrimaryKey = false,
     this.isForeignKey = false,
     this.foreignTableName,
+    bool nullable,
+    this.onDeleteCascade = false,
+    this.onDeleteSetDefault = false,
     bool unique,
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
@@ -67,6 +71,8 @@ class SchemaColumn extends BaseSchemaObject {
     if (isForeignKey != false) {
       parts.add('isForeignKey: $isForeignKey');
       parts.add("foreignTableName: '$foreignTableName'");
+      parts.add('onDeleteCascade: $onDeleteCascade');
+      parts.add('onDeleteSetDefault: $onDeleteSetDefault');
     }
 
     if (unique != InsertColumn.defaults.unique) {
@@ -83,7 +89,13 @@ class SchemaColumn extends BaseSchemaObject {
     }
 
     if (isForeignKey) {
-      return InsertForeignKey(tableName, foreignTableName, foreignKeyColumn: name);
+      return InsertForeignKey(
+        tableName,
+        foreignTableName,
+        foreignKeyColumn: name,
+        onDeleteCascade: onDeleteCascade,
+        onDeleteSetDefault: onDeleteSetDefault,
+      );
     }
 
     return InsertColumn(
@@ -101,12 +113,12 @@ class SchemaColumn extends BaseSchemaObject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SchemaColumn &&
-          name == other?.name &&
-          type == other?.type &&
-          columnType == other?.columnType &&
+          name == other.name &&
+          type == other.type &&
+          columnType == other.columnType &&
           // tableNames don't compare nicely since they're non-final
-          (tableName ?? '').compareTo(other?.tableName ?? '') == 0 &&
-          forGenerator == other?.forGenerator;
+          (tableName ?? '').compareTo(other.tableName ?? '') == 0 &&
+          forGenerator == other.forGenerator;
 
   @override
   int get hashCode => name.hashCode ^ type.hashCode ^ columnType.hashCode ^ forGenerator.hashCode;

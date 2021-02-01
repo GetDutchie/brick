@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
@@ -7,8 +8,7 @@ import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:dart_style/dart_style.dart' as dart_style;
-import 'package:brick_sqlite_abstract/db.dart'
-    show MigrationManager, Schema, SchemaTable, SchemaColumn, InsertForeignKey, InsertTable;
+import 'package:brick_sqlite_abstract/db.dart';
 import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
@@ -37,7 +37,7 @@ class SqliteSchemaGenerator {
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk
-      final Set<Migration> migrations = Set.from([ ${migrationClasses.join(",\n")} ]);
+      final Set<Migration> migrations = <Migration>{ ${migrationClasses.join(",\n")} };
 
       /// A consumable database structure including the latest generated migration.
       final schema = ${newSchema.forGenerator};
@@ -61,6 +61,22 @@ class SqliteSchemaGenerator {
   /// The schema version is incremented from the largest version of all annotated migrations.
   Schema _createNewSchema(LibraryReader library, List<SqliteFields> fieldses, {int version}) {
     final tables = fieldses.fold<Set<SchemaTable>>(<SchemaTable>{}, (acc, fields) {
+      final iterableAssociations = fields.stableInstanceFields.where((f) {
+        final checker = checkerForField(f);
+        final annotation = fields.finder.annotationForField(f);
+        return checker.isIterable && checker.isArgTypeASibling && !annotation.ignore;
+      });
+
+      if (iterableAssociations.isNotEmpty) {
+        iterableAssociations.forEach((iterableSibling) {
+          acc.add(_createJoinsTable(
+            localTableName: fields.element.name,
+            foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
+            checker: checkerForField(iterableSibling),
+          ));
+        });
+      }
+
       acc.add(_createTable(fields.element.name, fields));
       return acc;
     });
@@ -69,6 +85,56 @@ class SqliteSchemaGenerator {
     version ??= MigrationManager.latestMigrationVersion(existingMigrations);
 
     return Schema(version, tables: tables);
+  }
+
+  SchemaTable _createJoinsTable({
+    String localTableName,
+    Sqlite foreignTableColumnDefinition,
+    SharedChecker checker,
+  }) {
+    final foreignTableName = checker.unFuturedArgType.getDisplayString();
+
+    return SchemaTable(
+        InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
+            localTableName: localTableName),
+        columns: {
+          SchemaColumn(
+            InsertTable.PRIMARY_KEY_COLUMN,
+            int,
+            autoincrement: true,
+            isPrimaryKey: true,
+            nullable: false,
+          ),
+          SchemaColumn(
+            InsertForeignKey.joinsTableLocalColumnName(localTableName),
+            int,
+            isForeignKey: true,
+            foreignTableName: localTableName,
+            nullable: foreignTableColumnDefinition?.nullable,
+            onDeleteCascade: true,
+            onDeleteSetDefault: false,
+          ),
+          SchemaColumn(
+            InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
+            int,
+            isForeignKey: true,
+            foreignTableName: foreignTableName,
+            nullable: foreignTableColumnDefinition?.nullable,
+            onDeleteCascade: true,
+            onDeleteSetDefault: false,
+          ),
+        },
+        indices: {
+          SchemaIndex(
+            columns: [
+              InsertForeignKey.joinsTableLocalColumnName(localTableName),
+              InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
+            ],
+            tableName: InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name,
+                localTableName: localTableName),
+            unique: true,
+          )
+        });
   }
 
   SchemaTable _createTable(String tableName, SqliteFields fields) {
@@ -83,22 +149,45 @@ class SqliteSchemaGenerator {
         nullable: false,
       ),
     );
-    return SchemaTable(tableName, columns: Set.from(columns));
+
+    final indices = _createIndices(tableName, fields);
+
+    return SchemaTable(tableName, columns: columns.toSet(), indices: indices);
+  }
+
+  @visibleForOverriding
+  SharedChecker checkerForField(FieldElement field) {
+    var checker = checkerForType(field.type);
+    if (checker.isFuture) {
+      checker = checkerForType(checker.argType);
+    }
+    return checker;
   }
 
   Iterable<SchemaColumn> _createColumns(SqliteFields fields) {
     return fields.stableInstanceFields.map((field) {
-      var checker = checkerForType(field.type);
-      if (checker.isFuture) {
-        checker = checkerForType(checker.argType);
-      }
+      final checker = checkerForField(field);
       final column = fields.finder.annotationForField(field);
 
-      if (!column.ignore && (column.columnType != null || checker.isSerializable)) {
-        return schemaColumn(column, checker: checker);
-      }
+      if (column.ignore ||
+          column.columnType != null ||
+          !checker.isSerializable ||
+          (checker.isIterable && checker.isArgTypeASibling)) return null;
 
       return null;
+    });
+  }
+
+  Set<SchemaIndex> _createIndices(String tableName, SqliteFields fields) {
+    return fields.stableInstanceFields.fold<Set<SchemaIndex>>({}, (acc, field) {
+      final checker = checkerForField(field);
+      final column = fields.finder.annotationForField(field);
+      final index = schemaIndex(column, checker: checker);
+      if (index != null) {
+        index.tableName = tableName;
+        acc.add(index);
+      }
+      return acc;
     });
   }
 
@@ -140,6 +229,8 @@ class SqliteSchemaGenerator {
         isForeignKey: true,
         foreignTableName: checker.unFuturedType.getDisplayString(),
         nullable: column?.nullable,
+        onDeleteCascade: column?.onDeleteCascade,
+        onDeleteSetDefault: column?.onDeleteSetDefault,
       );
     } else if (checker.isMap || checker.isIterable) {
       // Iterables and Maps are stored as JSON
@@ -148,6 +239,24 @@ class SqliteSchemaGenerator {
         String,
         nullable: column?.nullable,
         unique: column?.unique,
+      );
+    }
+
+    return null;
+  }
+
+  @visibleForOverriding
+  SchemaIndex schemaIndex(Sqlite column, {SharedChecker checker}) {
+    final isIterableAssociation = (checker.isIterable && checker.isArgTypeASibling);
+
+    if (!column.ignore && column.index && !isIterableAssociation) {
+      final name = checker.isSibling
+          ? InsertForeignKey.foreignKeyColumnName(
+              checker.unFuturedType.getDisplayString(), column.name)
+          : column.name;
+      return SchemaIndex(
+        columns: [name],
+        unique: column.unique,
       );
     }
 

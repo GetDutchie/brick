@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 
 class Migration1 extends Migration {
   const Migration1() : super(version: 1, up: const [InsertTable('demo1')], down: const []);
@@ -19,10 +19,10 @@ void main() {
     const m2 = Migration2();
     const m3 = Migration3();
     MigrationManager manager;
-    final emptyManager = MigrationManager(Set<Migration>());
+    final emptyManager = MigrationManager(<Migration>{});
 
     setUp(() {
-      manager = MigrationManager([m1, m2, m3].toSet());
+      manager = MigrationManager({m1, m2, m3});
     });
 
     tearDown(() {
@@ -55,7 +55,7 @@ void main() {
 
       expect(emptyManager.version, 0);
 
-      manager = MigrationManager([Migration2(), Migration1()].toSet());
+      manager = MigrationManager({Migration2(), Migration1()});
       // Should sort migrations inserted out of order
       expect(manager.version, 2);
     });

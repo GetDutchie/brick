@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
-import '../lib/src/offline_first_generator.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
 import 'package:brick_build/testing.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;
@@ -61,7 +61,7 @@ void main() {
       });
 
       test('OneToManyAssociation', () async {
-        await generateExpectation('one_to_many_association', _$oneToManyAssociation.output);
+        await generateAdapterExpectation('one_to_many_association', _$oneToManyAssociation.output);
       });
 
       test('OneToOneAssociation', () async {
@@ -81,7 +81,7 @@ void main() {
       });
 
       test('Futures', () async {
-        await generateExpectation('futures', _$futures.output);
+        await generateAdapterExpectation('futures', _$futures.output);
       });
 
       test('OfflineFirstSerdesWithTypeArgument', () async {
@@ -127,7 +127,7 @@ void main() {
 
     group('@OfflineFirst', () {
       test('offlineFirstWhere', () async {
-        await generateExpectation('offline_first_where', _$offlineFirstWhere.output);
+        await generateAdapterExpectation('offline_first_where', _$offlineFirstWhere.output);
       });
     });
   });

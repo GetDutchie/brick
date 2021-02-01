@@ -141,17 +141,6 @@ abstract class Migration {
     }
   }
 
-  /// Since SQLite doesn't have a DROP COLUMN syntax, the ALTER TABLE hack is employed
-  /// which renames tables. Some versions of SQLite attempt to rename the constraint which
-  /// can cause unforeseen race conditions with other migrations. Therefore, foreign keys
-  /// are disabled before the transaction and enabled immediately afterward.
-  static String wrapInTransaction(String statement) => '''
-PRAGMA foreign_keys=off;
-BEGIN IMMEDIATE;
-$statement
-COMMIT;
-PRAGMA foreign_keys=on;''';
-
   static String generate(List<MigrationCommand> commands, int version) {
     final upCommands = commands.map((m) => m.forGenerator).join(',\n  ');
     final downCommands = commands.map((m) => m.down?.forGenerator).toList();
@@ -199,7 +188,7 @@ class Migration$version extends Migration {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Migration && version == other?.version;
+      identical(this, other) || other is Migration && version == other.version;
 
   @override
   int get hashCode => version.hashCode;

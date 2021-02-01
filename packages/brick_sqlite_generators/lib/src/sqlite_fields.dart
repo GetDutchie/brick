@@ -20,8 +20,11 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
     if (obj == null) {
       return Sqlite(
         ignore: Sqlite.defaults.ignore,
+        index: Sqlite.defaults.index,
         name: StringHelpers.snakeCase(element.name),
         nullable: config?.nullable ?? Sqlite.defaults.nullable,
+        onDeleteCascade: Sqlite.defaults.onDeleteCascade,
+        onDeleteSetDefault: Sqlite.defaults.onDeleteSetDefault,
         unique: Sqlite.defaults.unique,
       );
     }
@@ -39,9 +42,14 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
       defaultValue: obj.getField('defaultValue').toStringValue(),
       fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,
+      index: obj.getField('index').toBoolValue() ?? Sqlite.defaults.index,
       name: obj.getField('name').toStringValue() ?? StringHelpers.snakeCase(element.name),
       nullable:
           obj.getField('nullable').toBoolValue() ?? config?.nullable ?? Sqlite.defaults.nullable,
+      onDeleteCascade:
+          obj.getField('onDeleteCascade').toBoolValue() ?? Sqlite.defaults.onDeleteCascade,
+      onDeleteSetDefault:
+          obj.getField('onDeleteSetDefault').toBoolValue() ?? Sqlite.defaults.onDeleteSetDefault,
       toGenerator: obj.getField('toGenerator').toStringValue(),
       unique: obj.getField('unique').toBoolValue() ?? Sqlite.defaults.unique,
     );

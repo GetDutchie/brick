@@ -18,6 +18,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
   final List<Type> managedModelTypes;
 
   /// Only present to conform to the [Provider] spec.
+  @override
   final modelDictionary = null;
 
   /// A complete hash table of the
@@ -43,25 +44,27 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     return manages(_Model) && byPrimaryKey?.value != null;
   }
 
+  @override
   bool delete<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
-    logger.finest("#delete: $_Model, $instance, $query");
+    logger.finest('#delete: $_Model, $instance, $query');
 
     managedObjects[_Model] ??= {};
     managedObjects[_Model].remove(instance.primaryKey);
     return true;
   }
 
+  @override
   List<_Model> get<_Model extends SqliteModel>({query, repository}) {
     if (!manages(_Model)) return null;
     managedObjects[_Model] ??= {};
 
-    logger.finest("#get: $_Model, $query");
+    logger.finest('#get: $_Model, $query');
 
     // If this query is searching for a unique identifier, return that specific record
     final byId = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
     if (byId?.value != null) {
-      final object = managedObjects[_Model][byId.value];
+      final object = managedObjects[_Model][byId.value] as _Model;
       if (object != null) return [object];
     }
 
@@ -93,10 +96,11 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     managedObjects = {};
   }
 
+  @override
   _Model upsert<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
-    logger.finest("#upsert: $_Model, $instance, $query");
+    logger.finest('#upsert: $_Model, $instance, $query');
     hydrate<_Model>([instance]);
-    return managedObjects[_Model][instance.primaryKey];
+    return managedObjects[_Model][instance.primaryKey] as _Model;
   }
 }

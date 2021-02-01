@@ -696,7 +696,7 @@ Most generators may not require an extension of basic type checking (is this a s
 final _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
 
 class OfflineFirstChecker extends SharedChecker {
-  bool get isSerdes => _serdesClassChecker.isSuperTypeOf(targetType);
+  bool get isSerdes => _serdesClassChecker.isAssignableFromType(targetType);
 }
 ```
 

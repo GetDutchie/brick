@@ -129,6 +129,9 @@ class Where extends WhereCondition {
   Where contains(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.contains, required: required);
 
+  Where doesNotContain(dynamic value) =>
+      Where(evaluatedField, value: value, compare: Compare.doesNotContain, required: required);
+
   Where isLessThan(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.lessThan, required: required);
 
@@ -238,6 +241,9 @@ enum Compare {
 
   /// The query value exists within the field value.
   contains,
+
+  /// The query value does not exist within the field value.
+  doesNotContain,
 
   /// The query value is less than the field value.
   lessThan,

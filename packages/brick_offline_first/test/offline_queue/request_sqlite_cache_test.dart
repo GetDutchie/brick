@@ -1,62 +1,45 @@
-import 'package:flutter/services.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
 import '../../lib/src/offline_queue/request_sqlite_cache.dart';
-import '../../lib/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class MockLogger extends Mock implements Logger {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   group('RequestSqliteCache', () {
     final getReq = http.Request('GET', Uri.parse('http://example.com'));
-    final getResp = RequestSqliteCache(getReq, 'db');
+    final getResp = RequestSqliteCache(getReq);
 
     final postReq = http.Request('POST', Uri.parse('http://example.com'));
-    final postResp = RequestSqliteCache(postReq, 'db');
+    final postResp = RequestSqliteCache(postReq);
 
     final putReq = http.Request('PUT', Uri.parse('http://example.com'));
-    final putResp = RequestSqliteCache(putReq, 'db');
-    var sqliteLogs = <String>[];
+    final putResp = RequestSqliteCache(putReq);
 
-    setUpAll(() {
-      const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) async {
-        if (methodCall.method == 'getDatabasesPath') {
-          return Future.value('db');
-        }
+    final requestManager = RequestSqliteCacheManager(
+      inMemoryDatabasePath,
+      databaseFactory: databaseFactoryFfi,
+    );
 
-        if (methodCall.method == 'openDatabase') {
-          return Future.value(null);
-        }
-
-        sqliteLogs.add(methodCall.arguments['sql']);
-        if (methodCall.method == 'query') {
-          if (methodCall.arguments['arguments'] != null &&
-              methodCall.arguments['arguments'].contains('http://uninserted.com')) {
-            return Future.value([]);
-          }
-
-          return Future.value([
-            {
-              HTTP_JOBS_REQUEST_METHOD_COLUMN: 'PUT',
-              HTTP_JOBS_URL_COLUMN: 'http://localhost:3000/stored-query',
-              HTTP_JOBS_ATTEMPTS_COLUMN: 1,
-            }
-          ]);
-        }
-
-        if (methodCall.method == 'insert' || methodCall.method == 'update') {
-          return 1;
-        }
-
-        return Future.value(null);
-      });
+    setUpAll(() async {
+      await requestManager.migrate();
     });
 
-    tearDown(sqliteLogs.clear);
+    tearDown(() async {
+      final requests = await requestManager.unprocessedRequests();
+      final requestsToDelete = requests.map((request) {
+        return requestManager.deleteUnprocessedRequest(request[HTTP_JOBS_PRIMARY_KEY_COLUMN]);
+      });
+
+      await Future.wait(requestsToDelete);
+    });
 
     test('#requestIsPush', () {
       expect(getResp.requestIsPush, isFalse);
@@ -67,28 +50,25 @@ void main() {
     test('#toSqlite', () {
       final request = http.Request('GET', Uri.parse('http://example.com'));
       request.headers.addAll({'Content-Type': 'application/json'});
-      final instance = RequestSqliteCache(request, 'db');
+      final instance = RequestSqliteCache(request);
       final asSqlite = instance.toSqlite();
 
       expect(asSqlite, containsPair(HTTP_JOBS_ATTEMPTS_COLUMN, 1));
+      expect(asSqlite, containsPair(HTTP_JOBS_CREATED_AT_COLUMN, isA<int>()));
       expect(asSqlite, containsPair(HTTP_JOBS_URL_COLUMN, 'http://example.com'));
       expect(
           asSqlite, containsPair(HTTP_JOBS_HEADERS_COLUMN, '{"Content-Type":"application/json"}'));
       expect(asSqlite, containsPair(HTTP_JOBS_UPDATED_AT, isA<int>()));
+      expect(asSqlite, containsPair(HTTP_JOBS_CREATED_AT_COLUMN, isA<int>()));
     });
 
     test('#delete', () async {
-      await getResp.delete();
-
-      expect(
-        sqliteLogs,
-        [
-          'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
-          'BEGIN IMMEDIATE',
-          'DELETE FROM HttpJobs WHERE id = ?',
-          'COMMIT',
-        ],
-      );
+      final db = await requestManager.getDb();
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+      await getResp.insertOrUpdate(db);
+      expect(await requestManager.unprocessedRequests(), isNotEmpty);
+      await getResp.delete(db);
+      expect(await requestManager.unprocessedRequests(), isEmpty);
     });
 
     group('#insertOrUpdate', () {
@@ -96,35 +76,22 @@ void main() {
 
       test('insert', () async {
         final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-        final uninserted = RequestSqliteCache(uninsertedRequest, 'db');
-
-        await uninserted.insertOrUpdate(logger);
-
+        final uninserted = RequestSqliteCache(uninsertedRequest);
+        final db = await requestManager.getDb();
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+        await uninserted.insertOrUpdate(db, logger: logger);
+        expect(await requestManager.unprocessedRequests(), isNotEmpty);
         verify(logger.fine(any));
-        expect(
-          sqliteLogs,
-          [
-            'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
-            'BEGIN IMMEDIATE',
-            'INSERT INTO HttpJobs (attempts, body, encoding, headers, request_method, updated_at, url) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            'COMMIT',
-          ],
-        );
       });
 
       test('update', () async {
-        await getResp.insertOrUpdate(logger);
-
+        final db = await requestManager.getDb();
+        await getResp.insertOrUpdate(db);
+        await getResp.insertOrUpdate(db, logger: logger);
+        final request = await requestManager.unprocessedRequests();
         verify(logger.warning(any));
-        expect(
-          sqliteLogs,
-          [
-            'SELECT * FROM HttpJobs WHERE body = ? AND encoding = ? AND headers = ? AND request_method = ? AND url = ?',
-            'BEGIN IMMEDIATE',
-            'UPDATE HttpJobs SET attempts = ?, updated_at = ?, locked = ? WHERE id = ?',
-            'COMMIT',
-          ],
-        );
+
+        expect(request.first[HTTP_JOBS_ATTEMPTS_COLUMN], 2);
       });
     });
 

@@ -45,17 +45,17 @@ class OfflineFirstGeneratorArgumentsAdapter
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
@@ -118,17 +118,17 @@ class OfflineFirstGeneratorArgumentsAdapter
   String restEndpoint({query, instance}) => '';
   final String fromKey = null;
   final String toKey = null;
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: '_brick_id',
+      iterable: false,
+      type: int,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,

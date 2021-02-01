@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:logging/logging.dart';
@@ -109,6 +110,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       await remoteProvider.delete<_Model>(instance, query: query, repository: this);
     } on ClientException catch (e) {
       logger.warning('#delete client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#delete socket failure: $e');
     }
 
     if (autoHydrate) hydrate<_Model>(query: query);
@@ -142,7 +145,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// If an empty response can be expected (such as a search page), set to `false`. Defaults to `true`.
   ///
   /// [requireRemote] ensures data must be updated from the [remoteProvider] before returning if the app is online.
-  /// Cached SQLite data will be returned if the app is offline. Defaults to `false`.
+  /// An empty array will be returned if the app is offline. Defaults to `false`.
   ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
@@ -158,13 +161,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     query = (query ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $_Model $query');
 
-    final modelExists = await exists<_Model>(query: query);
     if (memoryCacheProvider.canFind<_Model>(query)) {
       final memoryCacheResults = memoryCacheProvider.get<_Model>(query: query, repository: this);
 
       if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults;
     }
 
+    final modelExists = await exists<_Model>(query: query);
     if (requireRemote || (hydrateUnexisting && !modelExists)) {
       return await hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
     } else if (alwaysHydrate) {
@@ -282,6 +285,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
     } on ClientException catch (e) {
       logger.warning('#upsert client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#upsert socket failure: $e');
     }
 
     if (autoHydrate) hydrate<_Model>(query: query);
@@ -302,16 +307,21 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     try {
       logger.finest('#hydrate: $_Model $query');
       final modelsFromRemote = await remoteProvider.get<_Model>(query: query, repository: this);
-      final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
-      final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
 
-      if (!deserializeSqlite) return modelsIntoMemory;
+      if (modelsFromRemote != null) {
+        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+        final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
+
+        if (!deserializeSqlite) return modelsIntoMemory;
+      }
 
       return await sqliteProvider
           .get<_Model>(query: query, repository: this)
           .then((d) => memoryCacheProvider.hydrate<_Model>(d));
     } on ClientException catch (e) {
       logger.warning('#hydrate client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#hydrate socket failure: $e');
     }
 
     return <_Model>[];

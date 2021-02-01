@@ -9,41 +9,53 @@ import 'sqlite_schema/test_simple.dart' as _$simple;
 import 'sqlite_schema/test_nullable.dart' as _$nullable;
 import 'sqlite_schema/test_sqlite_column_type.dart' as _$sqliteColumnType;
 import 'sqlite_schema/test_one_to_one_association.dart' as _$oneToOneAssociation;
+import 'sqlite_schema/test_one_to_many_association.dart' as _$oneToManyAssociation;
+import 'sqlite_schema/test_index_annotation.dart' as _$indexAnnotation;
 import 'sqlite_schema/test_all_field_types.dart' as _$allFieldTypes;
 
 const generator = SqliteSchemaGenerator();
 final generateReader = generateLibraryForFolder('sqlite_schema');
 
 void main() {
-  group("SqliteSchemaGenerator", () {
-    group("#generate", () {
-      test("AllFieldTypes", () async {
+  group('SqliteSchemaGenerator', () {
+    group('#generate', () {
+      test('AllFieldTypes', () async {
         final input = await generateInput('all_field_types');
         expect(input, _$allFieldTypes.output);
       });
 
-      test("ColumnType", () async {
+      test('ColumnType', () async {
         final input = await generateInput('sqlite_column_type');
         expect(input, _$sqliteColumnType.output);
       });
 
-      test("Nullable", () async {
+      test('Nullable', () async {
         final input = await generateInput('nullable');
         expect(input, _$nullable.output);
       });
 
-      test("OneToOneAssociation", () async {
+      test('OneToOneAssociation', () async {
         final input = await generateInput('one_to_one_association');
         expect(input, _$oneToOneAssociation.output);
       });
 
-      test("Simple", () async {
+      test('OneToManyAssociation', () async {
+        final input = await generateInput('one_to_many_association');
+        expect(input, _$oneToManyAssociation.output);
+      });
+
+      test('IndexAnnotation', () async {
+        final input = await generateInput('index_annotation');
+        expect(input, _$indexAnnotation.output);
+      });
+
+      test('Simple', () async {
         final input = await generateInput('simple');
         expect(input, _$simple.output);
       });
     });
 
-    test("#createMigration", () async {
+    test('#createMigration', () async {
       final map = await generateSchemaMap('simple');
       final reader = map.keys.first;
       final fieldses = map.values.first;

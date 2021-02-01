@@ -23,6 +23,16 @@ class Sqlite implements FieldSerializable {
   @override
   final bool ignore;
 
+  /// Create an `INDEX` on a single column. A `UNIQUE` index will be created when
+  /// [unique] is `true`. When [unique] is `true` and [index] is absent or `false`, an
+  /// index is not created.
+  ///
+  /// Iterable associations are automatically indexed through a generated joins table.
+  /// [index] declared on these fields will be ignored.
+  ///
+  /// Defaults `false`.
+  final bool index;
+
   /// The column name to use when reading and writing values corresponding
   /// to the annotated fields.
   ///
@@ -38,6 +48,22 @@ class Sqlite implements FieldSerializable {
   @override
   final bool nullable;
 
+  /// When true, deletion of the referenced record by [foreignKeyColumn] on the [foreignTableName]
+  /// this record. For example, if the foreign table is "departments" and the local table
+  /// is "employees," whenever that department is deleted, "employee"
+  /// will be deleted. Defaults `false`.
+  ///
+  /// This value is only applicable when decorating fields that are **single associations**
+  /// (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
+  final bool onDeleteCascade;
+
+  /// When true, deletion of a parent will set this table's referencing column to the default,
+  /// usually `NULL` unless otherwise declared. Defaults `false`.
+  ///
+  /// This value is only applicable when decorating fields that are **single associations**
+  /// (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
+  final bool onDeleteSetDefault;
+
   /// Manipulates output for the field in the SqliteSerializeGenerator
   /// The serializing key is defined from [Sqlite] or the default naming of the field.
   ///
@@ -50,6 +76,9 @@ class Sqlite implements FieldSerializable {
   /// When `true`, the column will be inserted with a `UNIQUE` constraint. Unique columns will
   /// also be listed in the adapter for querying if implemented by the invoking provider.
   /// Defaults to `false`. Does not apply to associations.
+  ///
+  /// To index this column, [index] needs to be `true`. Indices **are not** automatically
+  /// created for [unique] columns.
   final bool unique;
 
   /// Creates a new [Sqlite] instance.
@@ -60,8 +89,11 @@ class Sqlite implements FieldSerializable {
     this.defaultValue,
     this.fromGenerator,
     this.ignore,
+    this.index,
     this.name,
     this.nullable,
+    this.onDeleteCascade,
+    this.onDeleteSetDefault,
     this.toGenerator,
     this.unique,
   });
@@ -70,7 +102,10 @@ class Sqlite implements FieldSerializable {
   /// values.
   static const defaults = Sqlite(
     ignore: false,
+    index: false,
     nullable: true,
+    onDeleteCascade: false,
+    onDeleteSetDefault: false,
     unique: false,
   );
 }

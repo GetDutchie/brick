@@ -1,8 +1,11 @@
 import 'package:meta/meta.dart' show protected, required;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
+import 'package:brick_sqlite_abstract/db.dart';
 
-import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapter;
+import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
+import 'package:brick_sqlite/src/sqlite_adapter.dart';
+import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
+import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -15,10 +18,10 @@ import '../../sqlite.dart' show SqliteModel, SqliteModelDictionary, SqliteAdapte
 class QuerySqlTransformer<_Model extends SqliteModel> {
   final SqliteAdapter adapter;
   final SqliteModelDictionary modelDictionary;
-  final List<String> _statement = List<String>();
-  final List<String> _where = List<String>();
-  final Set<String> _innerJoins = Set<String>();
-  final List<dynamic> _values = List<dynamic>();
+  final List<String> _statement = <String>[];
+  final List<String> _where = <String>[];
+  final Set<String> _innerJoins = <String>{};
+  final List<dynamic> _values = <dynamic>[];
 
   /// Must-haves for the [statement], mainly used to build clauses
   final Query query;
@@ -37,7 +40,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// Prepared; includes preceeding `WHERE`
   String get whereClause {
     if (_where.isNotEmpty) {
-      return 'WHERE ' + _cleanWhereClause(_where.join(''));
+      final cleanedClause = _cleanWhereClause(_where.join(''));
+      return 'WHERE $cleanedClause';
     }
 
     return '';
@@ -45,16 +49,19 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
   String get innerJoins => _innerJoins.join(' ');
 
+  /// [selectStatement] will output [statement] as a `SELECT FROM`. When false, the [statement]
+  /// output will be a `SELECT COUNT(*)`. Defaults `true`.
   QuerySqlTransformer({
     @required this.modelDictionary,
     this.query,
+    bool selectStatement = true,
   }) : adapter = modelDictionary.adapterFor[_Model] {
-    generate();
+    generate(selectStatement);
   }
 
   /// Compute [statement] and [values]
   @protected
-  void generate() {
+  void generate(bool outputAsSelect) {
     // reset to clean instance
     _statement.clear();
     _values.clear();
@@ -64,10 +71,12 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     // Why not SELECT * FROM ?
     // Statements including INNER JOIN will merge the results, and results are only required from the queried table
     // DISTINCT included here for the INNER JOIN hack with one-to-many associations
-    _statement.add('SELECT DISTINCT `${adapter.tableName}`.* FROM `${adapter.tableName}`');
+    final execute = outputAsSelect ? 'SELECT DISTINCT `${adapter.tableName}`.*' : 'SELECT COUNT(*)';
+
+    _statement.add('$execute FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
-      String whereStatement = _expandCondition(condition);
-      _where.add(whereStatement);
+      final whereStatement = _expandCondition(condition);
+      if (whereStatement?.isNotEmpty ?? false) _where.add(whereStatement);
     });
 
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);
@@ -97,9 +106,10 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     // Begin a separate where phrase
     if (condition is WherePhrase) {
-      final phrase = condition.conditions.fold('', (acc, phraseCondition) {
+      final phrase = condition.conditions.fold<String>('', (acc, phraseCondition) {
         return acc + _expandCondition(phraseCondition, _adapter);
       });
+      if (phrase.isEmpty) return '';
 
       final matcher = condition.required ? 'AND' : 'OR';
       return ' $matcher ($phrase)';
@@ -113,31 +123,31 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
 
     /// Add an INNER JOINS statement to the existing list
-    if (definition['association']) {
+    if (definition.association) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
             'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
       }
 
-      final associationAdapter = modelDictionary.adapterFor[definition['type'] as Type];
+      final associationAdapter = modelDictionary.adapterFor[definition.type];
       final association = AssociationFragment(
-        adapter: associationAdapter,
-        localTableColumn: '`${adapter.tableName}`.${definition['name']}',
-        oneToOneAssociation: !definition['iterable'],
+        definition: definition,
+        foreignTableName: associationAdapter.tableName,
+        localTableName: adapter.tableName,
       );
-      _innerJoins.add(association.toString());
-      return _expandCondition(condition.value, associationAdapter);
+      _innerJoins.addAll(association.toJoinFragment());
+      return _expandCondition(condition.value as WhereCondition, associationAdapter);
     }
 
     /// The value is still not at the column level, so the process must restart
     if (condition.value is WhereCondition) {
-      return _expandCondition(condition.value, _adapter);
+      return _expandCondition(condition.value as WhereCondition, _adapter);
     }
 
     /// Finally add the column to the complete phrase
-    final String sqliteColumn = _adapter.tableName != adapter.tableName
-        ? '`${_adapter.tableName}`.${definition['name']}'
-        : definition['name'];
+    final sqliteColumn = _adapter.tableName != adapter.tableName
+        ? '`${_adapter.tableName}`.${definition.columnName}'
+        : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
@@ -146,40 +156,37 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
 /// Inner joins
 class AssociationFragment {
-  final SqliteAdapter adapter;
-  final String localTableColumn;
+  final String foreignTableName;
 
-  /// When false, the query is a one to many association.
-  /// Defaults to [true].
-  final bool oneToOneAssociation;
+  final RuntimeSqliteColumnDefinition definition;
+
+  final String localTableName;
 
   AssociationFragment({
-    this.adapter,
-    this.localTableColumn,
-    this.oneToOneAssociation = true,
+    this.definition,
+    this.foreignTableName,
+    this.localTableName,
   });
 
-  toString() {
-    final associationTableName = adapter.tableName;
+  List<String> toJoinFragment() {
     final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
+    final oneToOneAssociation = !definition.iterable;
+    final localColumnName = definition.columnName;
+    final localTableColumn = '`$localTableName`.${definition.columnName}';
 
-    // 1) SQLite doesn't support a CONCAT function. It has these weird double pipes instead.
-    // 2) For one-to-many queries, the primary key of the parent element is not stored on the child,
-    // as the parent is the one who wants to know about the child. Therefore, the query is based on
-    // a string array stored in a single parent column. This query is wildly unoptimized and is not
-    // recommended. However, until the JSON1 extension enjoys wide support on platforms Brick
-    // supports, this hack is necessary.
-    // 3) The OR statements prevent queries from returning a row with the id of 10
-    // when the id of 1 was specified
-    final many = [
-      '$localTableColumn LIKE "%," || `$associationTableName`.$primaryKeyColumn || ",%"',
-      'OR $localTableColumn LIKE "%," || `$associationTableName`.$primaryKeyColumn || "]"',
-      'OR $localTableColumn LIKE "[" || `$associationTableName`.$primaryKeyColumn || "]"',
-      'OR $localTableColumn LIKE "[" || `$associationTableName`.$primaryKeyColumn || ",%"',
-    ].join(' ');
-    final one = '$localTableColumn = `$associationTableName`.$primaryKeyColumn';
-    final joinCondition = oneToOneAssociation ? one : many;
-    return 'INNER JOIN `$associationTableName` ON $joinCondition';
+    if (oneToOneAssociation) {
+      return [
+        'INNER JOIN `$foreignTableName` ON $localTableColumn = `$foreignTableName`.$primaryKeyColumn'
+      ];
+    }
+
+    final joinsTableName =
+        InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
+    // ['1','2','3','4']
+    return [
+      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableLocalColumnName(localTableName)}',
+      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}'
+    ];
   }
 }
 
@@ -233,7 +240,7 @@ class WhereColumnFragment {
 
   @protected
   dynamic sqlifiedValue(dynamic _value, Compare compare) {
-    if (compare == Compare.contains) {
+    if (compare == Compare.contains || compare == Compare.doesNotContain) {
       return '%$_value%';
     }
 
@@ -242,7 +249,8 @@ class WhereColumnFragment {
     return _value;
   }
 
-  toString() => _statement;
+  @override
+  String toString() => _statement;
 
   static String compareSign(Compare compare) {
     switch (compare) {
@@ -250,6 +258,8 @@ class WhereColumnFragment {
         return '=';
       case Compare.contains:
         return 'LIKE';
+      case Compare.doesNotContain:
+        return 'NOT LIKE';
       case Compare.greaterThan:
         return '>';
       case Compare.greaterThanOrEqualTo:
@@ -291,7 +301,7 @@ class WhereColumnFragment {
 
 /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
 class AllOtherClausesFragment {
-  final Map<String, Map<String, dynamic>> fieldsToColumns;
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToColumns;
   final Map<String, dynamic> providerArgs;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
@@ -314,22 +324,27 @@ class AllOtherClausesFragment {
     this.fieldsToColumns,
   }) : providerArgs = providerArgs ?? {};
 
-  toString() {
-    return _supportedOperators.entries.fold(List<String>(), (acc, entry) {
+  @override
+  String toString() {
+    return _supportedOperators.entries.fold<List<String>>(<String>[], (acc, entry) {
       final op = entry.value;
       var value = providerArgs[entry.key];
 
       if (value == null) return acc;
 
       if (_operatorsDeclaringFields.contains(op)) {
-        value = value.split(',').fold(value, (modValue, innerValueClause) {
+        value = value.toString().split(',').fold<String>(value.toString(),
+            (modValue, innerValueClause) {
           final fragment = innerValueClause.split(' ');
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = (fieldsToColumns[fieldName] ?? {})['name'];
-          if (columnName != null && modValue.contains(fieldName))
+          final columnName = (fieldsToColumns ?? {})[fieldName]?.columnName;
+          if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
+          }
+
+          return modValue;
         });
       }
 

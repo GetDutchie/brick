@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:meta/meta.dart';
@@ -32,6 +33,16 @@ abstract class OfflineFirstWithRestAdapter<_Model extends OfflineFirstWithRestMo
 /// compiler/analyzer.
 abstract class OfflineFirstWithRestRepository
     extends OfflineFirstRepository<OfflineFirstWithRestModel> {
+  /// If the response returned from the client is one of these error codes, the request
+  /// **will not** be removed from the queue. For example, if the result of a request produces a
+  /// 404 status code response (such as in a Tunnel not found exception), the request will
+  /// be reattempted. If [upsert] response matches this status code, it **will not** throw
+  /// an exception.
+  ///
+  /// Defaults to `[404, 501, 502, 503, 504]`.
+  @protected
+  final List<int> reattemptForStatusCodes;
+
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
   @override
@@ -55,10 +66,9 @@ abstract class OfflineFirstWithRestRepository
     Set<Migration> migrations,
     bool autoHydrate,
     String loggerName,
+    RequestSqliteCacheManager offlineQueueHttpClientRequestSqliteCacheManager,
     this.throwTunnelNotFoundExceptions = false,
-
-    /// Forwarded to [OfflineQueueHttpClient#reattemptForStatusCodes]
-    List<int> reattemptForStatusCodes,
+    this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
   })  : remoteProvider = restProvider,
         super(
           autoHydrate: autoHydrate,
@@ -69,7 +79,8 @@ abstract class OfflineFirstWithRestRepository
         ) {
     remoteProvider.client = OfflineQueueHttpClient(
       restProvider.client,
-      _QUEUE_DATABASE_NAME,
+      offlineQueueHttpClientRequestSqliteCacheManager ??
+          RequestSqliteCacheManager(_QUEUE_DATABASE_NAME),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = OfflineRequestQueue(
@@ -133,17 +144,26 @@ abstract class OfflineFirstWithRestRepository
     await super.migrate();
 
     // Migrate cached jobs schema
-    await offlineRequestQueue.requestManager.migrate();
+    await offlineRequestQueue.client.requestManager.migrate();
   }
 
+  /// [throwOnReattemptStatusCodes] - when `true`, the repository will throw an
+  /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
+  /// Defaults `false`.
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query query}) async {
+      {Query query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
     } on RestException catch (e) {
       logger.warning('#upsert rest failure: $e');
       if (_ignoreTunnelException(e)) {
+        return instance;
+      }
+
+      // since we know we'll reattempt this request, an exception does not need to be reported
+      if (reattemptForStatusCodes.contains(e.response?.statusCode) &&
+          !throwOnReattemptStatusCodes) {
         return instance;
       }
 

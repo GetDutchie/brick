@@ -125,6 +125,34 @@ void main() {
         expect(resp.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
+
+      test("providerArgs['supplementalTopLevelData']", () async {
+        when(client.post(
+          'http://localhost:3000/person',
+          body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
+          headers: anyNamed("headers"),
+          encoding: anyNamed("encoding"),
+        )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
+
+        final instance = DemoRestModel("Guy");
+        final query = Query(providerArgs: {
+          "topLevelKey": "top",
+          "supplementalTopLevelData": {
+            "other_name": {"first_name": "Thomas"},
+          }
+        });
+        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
+
+        verify(client.post(
+          any,
+          body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
+          headers: anyNamed("headers"),
+          encoding: anyNamed("encoding"),
+        ));
+
+        expect(resp.statusCode, 200);
+        expect(resp.body, '{"name": "Thomas"}');
+      });
     });
 
     test("#delete", () async {

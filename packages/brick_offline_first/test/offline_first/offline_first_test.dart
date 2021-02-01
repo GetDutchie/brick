@@ -2,61 +2,58 @@ import 'package:brick_offline_first/testing.dart' hide MockClient;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart' show TypeMatcher;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__mocks__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   group('OfflineFirstModel', () {
     test('instantiates', () {
-      final m = DemoModel('Thomas');
-      expect(m, const TypeMatcher<DemoModel>());
+      final m = Mounty(name: 'Thomas');
+      expect(m, const TypeMatcher<Mounty>());
     });
   });
 
   group('OfflineFirstAdapter', () {
     test('instantiates', () {
-      final m = DemoModelAdapter();
-      expect(m, const TypeMatcher<DemoModelAdapter>());
-      expect(m.tableName, 'Demo');
+      final m = MountyAdapter();
+      expect(m, const TypeMatcher<MountyAdapter>());
+      expect(m.tableName, 'Mounty');
     });
   });
 
   group('OfflineFirstRepository', () {
     final baseUrl = 'http://localhost:3000';
     final client = MockClient();
-    final List<Map<String, dynamic>> responses = [
-      {'name': 'SqliteName'},
-    ];
 
     TestRepository.configure(
       baseUrl: baseUrl,
-      dbName: 'db.sqlite',
-      restDictionary: restDictiontary,
-      sqliteDictionary: sqliteDictionary,
+      restDictionary: restModelDictionary,
+      sqliteDictionary: sqliteModelDictionary,
       client: client,
     );
 
-    setUpAll(() {
-      StubOfflineFirstWithRest(
+    setUpAll(() async {
+      await StubOfflineFirstWithRest(
         repository: TestRepository(),
         modelStubs: [
-          StubOfflineFirstWithRestModel<DemoModel>(
+          StubOfflineFirstWithRestModel<Mounty>(
             repository: TestRepository(),
-            filePath: 'offline_first/api/people.json',
-            endpoints: ['people'],
+            filePath: 'offline_first/api/mounties.json',
+            endpoints: ['mounties'],
           ),
         ],
-      );
+      ).initialize();
     });
 
     test('instantiates', () {
       final repository = TestRepository.createInstance(
         baseUrl: baseUrl,
-        dbName: 'db.sqlite',
-        restDictionary: restDictiontary,
-        sqliteDictionary: sqliteDictionary,
+        restDictionary: restModelDictionary,
+        sqliteDictionary: sqliteModelDictionary,
       );
 
       // isA matcher didn't work
@@ -65,32 +62,64 @@ void main() {
 
     test('#delete', () {}, skip: 'Is this worth testing because of all the stubbing?');
 
-    test('#get', () async {
-      final results = await TestRepository().get<DemoModel>();
-      expect(results, hasLength(1));
-      expect(results.first.name, 'SqliteName');
+    group('#get', () {
+      test('simple', () async {
+        final results = await TestRepository().get<Mounty>();
+        expect(results, hasLength(1));
+        expect(results.first.name, 'SqliteName');
+      });
+
+      test('one-to-many, many-to-many', () async {
+        final mounties = [Mounty(name: 'Thomas'), Mounty(name: 'Guy')];
+        final horse = Horse(name: 'Not Thomas', mounties: mounties);
+
+        await TestRepository().sqliteProvider.upsert<Horse>(horse);
+        final results =
+            await TestRepository().sqliteProvider.get<Horse>(repository: TestRepository());
+
+        expect(results.first.mounties, hasLength(2));
+        expect(results.first.mounties.first.primaryKey, greaterThan(0));
+        expect(results.first.mounties.last.primaryKey, greaterThan(0));
+        final findByName = await TestRepository().sqliteProvider.get<Horse>(
+              repository: TestRepository(),
+              query: Query(where: [
+                Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+              ]),
+            );
+
+        expect(findByName.first.name, horse.name);
+      });
     });
 
     test('#getBatched', () async {
-      final results = await TestRepository().getBatched<DemoModel>(requireRemote: false);
-      expect(results, [DemoModel('SqliteName')]);
+      final results = await TestRepository().getBatched<Mounty>(requireRemote: false);
+      expect(results.first, isA<Mounty>());
+      expect(results.first.name, 'SqliteName');
     });
 
     test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<DemoModel>(requireRemote: true);
-      final logs = StubOfflineFirstWithRest.sqliteLogs.map((l) => (l.arguments ?? {})['sql']);
+      await TestRepository().get<Mounty>(requireRemote: true);
 
       verify(TestRepository()
           .remoteProvider
           .client
-          .get('http://localhost:3000/people', headers: anyNamed('headers')));
-      expect(
-        logs,
-        containsAllInOrder([
-          'INSERT INTO `Demo` (name) VALUES (?)',
-          'SELECT DISTINCT `Demo`.* FROM `Demo`',
-        ]),
-      );
+          .get('http://localhost:3000/mounties', headers: anyNamed('headers')));
+    });
+
+    test('#storeRestResults', () async {
+      final instance = Mounty(name: 'SqliteName');
+      final results = await TestRepository().storeRemoteResults([instance]);
+
+      expect(results, hasLength(1));
+      expect(results.first.primaryKey, greaterThanOrEqualTo(1));
+    });
+
+    test('#upsert', () async {
+      final instance = Mounty(name: 'SqliteName');
+      final results = await TestRepository().upsert<Mounty>(instance);
+
+      expect(results.name, 'SqliteName');
+      expect(results.primaryKey, greaterThanOrEqualTo(1));
     });
 
     test('#reset', () async {
@@ -100,22 +129,6 @@ void main() {
       expect(TestRepository().memoryCacheProvider.managedObjects, isNotEmpty);
       await TestRepository().reset();
       expect(TestRepository().memoryCacheProvider.managedObjects, isEmpty);
-    });
-
-    test('#storeRestResults', () async {
-      final instance = DemoModel('SqliteName');
-      final results = await TestRepository().storeRemoteResults([instance]);
-
-      expect(results, hasLength(1));
-      expect(results.first.primaryKey, responses.length + 1);
-    });
-
-    test('#upsert', () async {
-      final instance = DemoModel('SqliteName');
-      final results = await TestRepository().upsert<DemoModel>(instance);
-
-      expect(results.name, 'SqliteName');
-      expect(results.primaryKey, 2);
     });
   });
 }

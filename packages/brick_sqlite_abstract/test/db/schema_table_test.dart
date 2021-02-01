@@ -1,32 +1,35 @@
 import 'package:test/test.dart';
-import '../../lib/db.dart';
+import 'package:brick_sqlite_abstract/db.dart';
 
 void main() {
   group('SchemaTable', () {
     test('#forGenerator', () {
       final table = SchemaTable(
         'users',
-        columns: Set.from([
+        columns: <SchemaColumn>{
           SchemaColumn('first_name', String),
           SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
           SchemaColumn('amount', int, defaultValue: 0),
           SchemaColumn('last_name', String, nullable: false),
-        ]),
+        },
       );
 
       expect(table.forGenerator, '''SchemaTable(
 \t'users',
-\tcolumns: Set.from([
+\tcolumns: <SchemaColumn>{
 \t\tSchemaColumn('first_name', String),
 \t\tSchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
 \t\tSchemaColumn('amount', int, defaultValue: 0),
 \t\tSchemaColumn('last_name', String, nullable: false)
-\t])
+\t},
+\tindices: <SchemaIndex>{
+
+\t}
 )''');
     });
 
     group('#toCommand', () {
-      final table = SchemaTable('users', columns: Set.from([]));
+      final table = SchemaTable('users', columns: <SchemaColumn>{});
 
       test('shouldDrop:false', () {
         expect(table.toCommand(shouldDrop: false), const InsertTable('users'));
@@ -41,15 +44,15 @@ void main() {
       test('same name, different columns', () {
         final table1 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
         final table2 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('last_name', String),
-          ]),
+          },
         );
 
         expect(table1, equals(table2));
@@ -58,15 +61,15 @@ void main() {
       test('different name, same columns', () {
         final table1 = SchemaTable(
           'users',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
         final table2 = SchemaTable(
           'people',
-          columns: Set.from([
+          columns: <SchemaColumn>{
             SchemaColumn('first_name', String),
-          ]),
+          },
         );
 
         expect(table1, isNot(table2));
@@ -90,6 +93,8 @@ void main() {
       expect(column.nullable, isTrue);
       expect(column.isPrimaryKey, isFalse);
       expect(column.isForeignKey, isFalse);
+      expect(column.onDeleteCascade, isFalse);
+      expect(column.onDeleteSetDefault, isFalse);
     });
 
     test('#forGenerator', () {
@@ -111,7 +116,14 @@ void main() {
       column = SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat')",
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false, onDeleteSetDefault: false)",
+      );
+
+      column = SchemaColumn('hat_id', int,
+          isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
+      expect(
+        column.forGenerator,
+        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
       );
     });
 
@@ -144,6 +156,20 @@ void main() {
       column = SchemaColumn('Hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       column.tableName = 'demo';
       expect(column.toCommand(), const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
+
+      column = SchemaColumn('Hat_id', int,
+          isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
+      column.tableName = 'demo';
+      expect(column.toCommand(),
+          const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id', onDeleteCascade: true));
+
+      column = SchemaColumn('Hat_id', int,
+          isForeignKey: true, foreignTableName: 'hat', onDeleteSetDefault: true);
+      column.tableName = 'demo';
+      expect(
+          column.toCommand(),
+          const InsertForeignKey('demo', 'hat',
+              foreignKeyColumn: 'Hat_id', onDeleteSetDefault: true));
     });
 
     test('==', () {

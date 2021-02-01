@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.0.7
+
+* Use assignable instead of super type comparison when checking for siblings to account for inherited classes (#55)
+* Add ability to overwrite the nullable check for deserializing members
+
 ## 0.0.6
 
 * Rename `ProviderSerializable` to `ProviderSerializableGenerator` to be more explicit
