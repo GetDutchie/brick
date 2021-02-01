@@ -4,7 +4,7 @@
 
 An intuitive way to work with persistent data in Dart.
 
-## [Skip to the documentation](https://brick.github.io)
+## [Full documentation](https://brick.github.io)
 
 ## Why Brick?
 
