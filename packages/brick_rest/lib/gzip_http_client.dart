@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 /// Gzip all incoming requests and mutate them so that the payload is encoded.
 /// Additionally, (over)writes the header `{'Content-Encoding': 'gzip'}` and
 /// `{'Accept-Encoding': 'gzip'}` to all requests.
-class GzipHttpClient extends http.BaseClient {
+class GZipHttpClient extends http.BaseClient {
   final GZipCodec _encoder;
 
   /// A normal HTTP client, treated like a manual `super`
@@ -15,7 +15,7 @@ class GzipHttpClient extends http.BaseClient {
   @protected
   final http.Client innerClient;
 
-  GzipHttpClient({
+  GZipHttpClient({
     http.Client innerClient,
 
     /// The higher the level, the smaller the output at the expense of memory.

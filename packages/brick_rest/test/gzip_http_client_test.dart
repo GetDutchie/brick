@@ -8,7 +8,7 @@ import 'package:brick_rest/rest.dart';
 import '__mocks__.dart' hide MockClient;
 
 RestProvider withClient(MockClientHandler fn) {
-  final client = GzipHttpClient(innerClient: MockClient(fn));
+  final client = GZipHttpClient(innerClient: MockClient(fn));
   return RestProvider(
     'http://localhost:3000',
     modelDictionary: restModelDictionary,
@@ -17,7 +17,7 @@ RestProvider withClient(MockClientHandler fn) {
 }
 
 void main() {
-  group('GzipHttpClient', () {
+  group('GZipHttpClient', () {
     test('headers include Content-Encoding: gzip', () async {
       final provider = withClient((request) async {
         if (request.headers['Content-Encoding'] == 'gzip' &&
