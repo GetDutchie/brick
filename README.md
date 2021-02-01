@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/greenbits/brick.svg?branch=master)](https://travis-ci.org/greenbits/brick)
 
-![An intuitive way to work with persistent data](./doc/logo.svg)
+![An intuitive way to work with persistent data](./docs/logo.svg)
 
 An intuitive way to work with persistent data in Dart.
 
