@@ -169,8 +169,10 @@ class SqliteSchemaGenerator {
       final checker = checkerForField(field);
       final column = fields.finder.annotationForField(field);
 
+      // ignore all other checks if a custom column type is defined
+      if (column.columnType != null) return schemaColumn(column, checker: checker);
+
       if (column.ignore ||
-          column.columnType == null ||
           !checker.isSerializable ||
           (checker.isIterable && checker.isArgTypeASibling)) return null;
 
