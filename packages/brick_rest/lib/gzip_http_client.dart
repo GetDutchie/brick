@@ -29,7 +29,6 @@ class GzipHttpClient extends http.BaseClient {
     if (request is! http.Request) return innerClient.send(request);
 
     final httpRequest = request as http.Request;
-    httpRequest.headers['Accept-Encoding'] = 'gzip';
     if (httpRequest.body == null || httpRequest.body.isEmpty) return innerClient.send(request);
     httpRequest.bodyBytes = _encoder.encode(httpRequest.body.codeUnits);
     httpRequest.headers['Content-Encoding'] = 'gzip';

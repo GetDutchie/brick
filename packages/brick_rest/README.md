@@ -217,7 +217,7 @@ When true, the field will be ignored by the (de)serializing function in the adap
 
 ## GZipping Requests
 
-All requests to the API endpoint can be compressed with Dart's standard [GZip library](https://api.dart.dev/stable/2.10.4/dart-io/GZipCodec-class.html). All requests will (over)write the `Content-Encoding` header to `{'Content-Encoding': 'gzip'}` as well as `{'Accept-Encoding': 'gzip'}`.
+All requests to the API endpoint can be compressed with Dart's standard [GZip library](https://api.dart.dev/stable/2.10.4/dart-io/GZipCodec-class.html). All requests will (over)write the `Content-Encoding` header to `{'Content-Encoding': 'gzip'}`.
 
 ```dart
 import 'package:brick_rest/gzip_http_client.dart';
