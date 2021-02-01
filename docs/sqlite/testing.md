@@ -1,6 +1,6 @@
 # Testing
 
-SQLite providers should use sqlite_ffi as described in [multiplatform support](sqlite/index.md#multiplatform-support):
+SQLite providers should use sqlite_ffi as described in [multiplatform support](sqlite.md#multiplatform-support):
 
 ```dart
 import 'package:sqflite_common/sqlite_api.dart';

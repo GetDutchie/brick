@@ -1,19 +1,30 @@
 # Quick Start
 
-End-implementation uses (e.g. a Flutter application) should `extend` an abstract repository and pass arguments to `super`. If custom methods need to be added, they can be written in the application-specific repository and not the abstract one. Application-specific `brick.g.dart` are also imported:
+1. Add the packages:
+    ```yaml
+    dependencies:
+      brick_offline_first: any
+    dev_dependencies:
+      brick_offline_first_with_rest_build:
+        git:
+          url: https://github.com/greenbits/brick.git
+          path: packages/brick_offline_first_with_rest_build
+      build_runner: any
+    ```
 
-```dart
-// app/repository.dart
-import 'brick.g.dart' show migrations, restModelDictionary;
-class MyRepository extends OfflineFirstRepository {
-  MyRepository({
-    String baseEndpoint,
-  }) : super(
-    migrations: migrations,
-    restProvider: RestProvider(baseEndpoint, modelDictionary: restModelDictionary),
-  );
-}
-```
+1. Configure your app directory structure to match Brick's expectations:
+    ```bash
+    mkdir -p lib/app/adapters lib/app/db lib/app/models;
+    ```
+
+    Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+
+1. Extend [an existing repository](data/repositories.md) or create your own:
+    ```dart
+    // lib/app/repository.dart
+    class MyRepository extends OfflineFirstWithRestRepository {}
+    ```
+1. Add [models](data/models.md)
 
 ## Learn
 

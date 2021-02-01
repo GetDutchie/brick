@@ -12,7 +12,7 @@
   - [Model Config](rest/models.md)
   - [Field Config](rest/fields.md)
   - [Querying](rest/query.md)
-- [SQLite](sqlite/index.md)
+- [SQLite](sqlite.md)
   - [Field Config](sqlite/fields.md)
   - [Querying](sqlite/query.md)
   - [Testing](sqlite/testing.md)

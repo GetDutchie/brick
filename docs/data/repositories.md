@@ -2,7 +2,7 @@
 
 A repository routes application data to and from one or many providers. Repositories should only hold repository-specific logic and not pass interpreted data to its providers (e.g. the repository does not transform a `Query` into a SQL statement for its SQLite provider).
 
-## Access
+## Integrate
 
 To use a repository seamlessly with a state management system like BLoCs without passing around context, access the repository as a singleton:
 
@@ -42,6 +42,25 @@ class BootScreenState extends State<BootScreen> {
     MyRepository.create("https://api.com");
     MyRepository().initialize();
   }
+}
+```
+
+## Access
+
+
+
+End-implementation uses (e.g. a Flutter application) should `extend` an abstract repository and pass arguments to `super`. If custom methods need to be added, they can be written in the application-specific repository and not the abstract one. Application-specific `brick.g.dart` are also imported:
+
+```dart
+// app/repository.dart
+import 'brick.g.dart' show migrations, restModelDictionary;
+class MyRepository extends OfflineFirstRepository {
+  MyRepository({
+    String baseEndpoint,
+  }) : super(
+    migrations: migrations,
+    restProvider: RestProvider(baseEndpoint, modelDictionary: restModelDictionary),
+  );
 }
 ```
 
