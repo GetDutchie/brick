@@ -170,11 +170,11 @@ class SqliteSchemaGenerator {
       final column = fields.finder.annotationForField(field);
 
       if (column.ignore ||
-          column.columnType != null ||
+          column.columnType == null ||
           !checker.isSerializable ||
           (checker.isIterable && checker.isArgTypeASibling)) return null;
 
-      return null;
+      return schemaColumn(column, checker: checker);
     });
   }
 

@@ -24,19 +24,19 @@ Future<Map<String, dynamic>> _$SqliteColumnTypeToSqlite(
 class SqliteColumnTypeAdapter extends SqliteAdapter<SqliteColumnType> {
   SqliteColumnTypeAdapter();
 
-  final Map<String, Map<String, dynamic>> fieldsToSqliteColumns = {
-    'primaryKey': {
-      'name': '_brick_id',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    },
-    'someField': {
-      'name': 'some_field',
-      'type': int,
-      'iterable': false,
-      'association': false,
-    }
+  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+    'primaryKey': RuntimeSqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: '_brick_id',
+      type: int,
+    ),
+    'someField': RuntimeSqliteColumnDefinition(
+      association: false,
+      iterable: false,
+      name: 'some_field',
+      type: int,
+    )
   };
   Future<int> primaryKeyByUniqueColumns(
           SqliteColumnType instance, DatabaseExecutor executor) async =>

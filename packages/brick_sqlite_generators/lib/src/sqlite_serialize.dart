@@ -80,6 +80,10 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
     }
 
+    if (fieldAnnotation.columnType != null) {
+      return fieldValue;
+    }
+
     // DateTime
     if (checker.isDateTime) {
       return '$fieldValue?.toIso8601String()';
