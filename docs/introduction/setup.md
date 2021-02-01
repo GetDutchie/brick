@@ -19,7 +19,7 @@
 
     Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
 
-1. Extend [an existing repository](#providers-and-repositories) or create your own:
+1. Extend [an existing repository](data/repositories.md) or create your own:
     ```dart
     // lib/app/repository.dart
     class MyRepository extends OfflineFirstWithRestRepository {}

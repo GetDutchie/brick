@@ -40,6 +40,22 @@ class Weight extends OfflineFirstSerdes<Map<int, String>, String> {
 
 `OfflineFirstSerdes` should not be used when the managed data must be queried. Plainly, Brick does not support JSON searches.
 
+## Mixins
+
+Some regularly requested functionality doesn't exist in out-of-the-box Brick. This functionality does not exist in the core because it is dependent on remote data formatting outside the scope of Brick or it's non-essential. However, for convenience, these features are available in a mix-and-match support library. As this is not officially supported, please use caution determining if these mixins are applicable to your implementation.
+
+| Mixin | Description |
+|---|---|
+| [`DeleteAllMixin`](lib/mixins/delete_all_mixin.dart) | Adds methods `#deleteAll` and `#deleteAllExcept` |
+| [`DestructiveLocalSyncFromRemoteMixin`](lib/mixins/destructive_local_sync_from_remote_mixin.dart) | Extends `get` requests to force resync the `remoteProvider` to the local providers (also covered by new method `#destructiveLocalSyncFromRemote`) |
+
+### General Usage
+
+```dart
+import 'package:brick_offline_first/mixins.dart';
+class MyRepository extends OfflineFirstRepository with DeleteAllMixin {}
+```
+
 ## FAQ
 
 ### Why can't I declare a model argument?
