@@ -4,15 +4,15 @@
 
 An intuitive way to work with persistent data in Dart.
 
-## [Full documentation](https://brick.github.io)
+## [Full documentation](https://greenbits.github.io/brick)
 
 ## Why Brick?
 
 * Out-of-the-box [offline access](packages/brick_offline_first) to data
 * [Handle and hide](packages/brick_build) complex serialization/deserialization logic
-* Single [access point](#repository) and opinionated DSL
+* Single [access point](https://greenbits.github.io/brick/#/data/repositories) and opinionated DSL
 * Automatic, [intelligently-generated migrations](packages/brick_sqlite)
-* Legible [querying interface](#query)
+* Legible [querying interface](https://greenbits.github.io/brick/#/data/query)
 
 ## What is Brick?
 
@@ -39,7 +39,7 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
 
     Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
 
-1. Extend [an existing repository](#providers-and-repositories) or create your own:
+1. Extend [an existing repository](https://greenbits.github.io/brick/#/data/repositories) or create your own:
     ```dart
     // lib/app/repository.dart
     class MyRepository extends OfflineFirstWithRestRepository {}

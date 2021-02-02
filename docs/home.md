@@ -24,7 +24,8 @@
     // lib/app/repository.dart
     class MyRepository extends OfflineFirstWithRestRepository {}
     ```
-1. Add [models](data/models.md)
+1. Add [models](data/models.md) that contain your app logic.
+1. Profit.
 
 ## Learn
 
