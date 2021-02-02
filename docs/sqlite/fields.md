@@ -26,8 +26,9 @@ final String lastName;
 
 ## `@Sqlite(onDeleteSetDefault:)`
 
-When true, deletion of a parent will set this table's referencing column to the default,
-usually `NULL` unless otherwise declared. Defaults `false`. This value is only applicable when decorating fields that are **single associations** (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
+When true, deletion of a parent will set this table's referencing column to the default, usually `NULL` unless otherwise declared. Defaults `false`.
+
+This value is only applicable when decorating fields that are **single associations** (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
 
 ## `@Sqlite(onDeleteCascade:)`
 
