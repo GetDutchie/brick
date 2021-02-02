@@ -1,5 +1,7 @@
 # Models
 
+Models are business logic unique to the app. Fetched by the `Repository`, and if merited by the `Repository` implementation, the `Provider`.
+
 ## Setup
 
 Every model must be decorated by an annotation and extend a base type that the repository manages:

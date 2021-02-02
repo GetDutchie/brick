@@ -1,4 +1,6 @@
-# Model Properties
+# Fields (Model Properties)
+
+A field is a single, accessible property of a model. For example, `final String id`.
 
 ## Serialized Fields
 
