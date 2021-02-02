@@ -3,8 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// Gzip all incoming requests and mutate them so that the payload is encoded.
-/// Additionally, (over)writes the header `{'Content-Encoding': 'gzip'}` and
-/// `{'Accept-Encoding': 'gzip'}` to all requests.
+/// Additionally, (over)writes the header `{'Content-Encoding': 'gzip'}`,
+/// `{'Accept-Encoding': 'gzip'}` and `{'Content-Type': 'gzip/json'}` to all
+/// requests.
 class GZipHttpClient extends http.BaseClient {
   final GZipCodec _encoder;
 
@@ -32,6 +33,7 @@ class GZipHttpClient extends http.BaseClient {
     if (httpRequest.body == null || httpRequest.body.isEmpty) return innerClient.send(request);
     httpRequest.bodyBytes = _encoder.encode(httpRequest.body.codeUnits);
     httpRequest.headers['Content-Encoding'] = 'gzip';
+    httpRequest.headers['Content-Type'] = 'gzip/json';
 
     return innerClient.send(httpRequest);
   }
