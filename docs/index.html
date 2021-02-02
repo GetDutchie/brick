@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Brick Docs</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Data management for Flutter and Dart">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=1" />
+  <link rel="stylesheet" href="https://unpkg.com/docsify-themeable/dist/css/theme-simple.css">
+  <style type="text/css">
+    .lang-dart .class-name { color: var(--code-theme-function); }
+    :root {
+      --sidebar-nav-indent: 10px;
+      --sidebar-nav-link-before-content: '';
+      --sidebar-nav-link-before-content-l1: '';
+      --table-cell-border-width: 1px;
+      --table-cell-body-width: 1px;
+      --table-cell-head-width: 1px;
+      --link-color: var(--theme-color);
+      --cover-color: #999;
+      --cover-background-image: none;
+      --cover-background-color: #fff;
+      --theme-color: #9A3536;
+    }
+    .sidebar-nav > ul > li > a { padding-left: 0!important; background-image: none!important; }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'Brick Documentation',
+      repo: 'https://github.com/greenbits/brick',
+      loadSidebar: true,
+      maxLevel: 3,
+      subMaxLevel: 2,
+      homepage: 'home.md',
+      logo: 'logo.svg',
+      coverpage: true,
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-dart.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-yaml.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+</body>
