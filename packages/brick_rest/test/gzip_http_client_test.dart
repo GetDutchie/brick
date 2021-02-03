@@ -21,9 +21,7 @@ void main() {
     test('headers include Content-Encoding: gzip', () async {
       final provider = withClient((request) async {
         if (request.headers['Content-Encoding'] == 'gzip') {
-          if (request.headers['Content-Type'] == 'gzip/json') {
-            return http.Response('[{"name": "Guy"}]', 200);
-          }
+          return http.Response('[{"name": "Guy"}]', 200);
         }
 
         return null;
