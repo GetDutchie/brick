@@ -159,3 +159,14 @@ RestSerializable(fieldRename: FieldRename.snake_case)
 // on to rest (upsert)
 final String lastName => "last_name"
 ```
+
+## GZipping Requests
+
+All requests to the API endpoint can be compressed with Dart's standard [GZip library](https://api.dart.dev/stable/2.10.4/dart-io/GZipCodec-class.html). All requests will (over)write the `Content-Encoding` header to `{'Content-Encoding': 'gzip'}`.
+
+```dart
+import 'package:brick_rest/gzip_http_client.dart';
+final restProvider = RestProvider(client: GZipHttpClient(level: 9));
+```
+
+!> Your API must be able to accept and decode GZipped requests.
