@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.8
+
 * Add `GZipHttpClient`. When instantiating the `RestProvider`, optionally compose `client` with a `GZipHttpClient` to [gzip all requests](README.md#gzipping-requests).
 
 ## 0.0.7+1
