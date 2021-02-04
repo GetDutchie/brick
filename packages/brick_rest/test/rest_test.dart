@@ -7,40 +7,40 @@ import 'package:brick_rest/rest.dart';
 import '__mocks__.dart';
 
 void main() {
-  group("RestProvider", () {
+  group('RestProvider', () {
     MockClient client;
     RestProvider provider;
 
     setUp(() {
       client = MockClient();
       provider = RestProvider(
-        "http://localhost:3000",
+        'http://localhost:3000',
         modelDictionary: restModelDictionary,
         client: client,
       );
     });
 
-    group("#get", () {
-      test("simple", () async {
+    group('#get', () {
+      test('simple', () async {
         when(client.get('http://localhost:3000/person'))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
         final m = await provider.get<DemoRestModel>();
         final testable = m.first;
-        expect(testable.name, "Thomas");
+        expect(testable.name, 'Thomas');
       });
 
-      test("without specifying a top level key", () async {
+      test('without specifying a top level key', () async {
         when(client.get('http://localhost:3000/person'))
             .thenAnswer((_) async => http.Response('{"people": [{"name": "Thomas"}]}', 200));
 
         final m = await provider.get<DemoRestModel>();
         final testable = m.first;
-        expect(testable.name, "Thomas");
+        expect(testable.name, 'Thomas');
       });
     });
 
-    test("#defaultHeaders", () async {
+    test('#defaultHeaders', () async {
       final headers = {'Authorization': 'token=12345'};
 
       when(client.get('http://localhost:3000/person'))
@@ -51,33 +51,33 @@ void main() {
       provider.defaultHeaders = headers;
       final m = await provider.get<DemoRestModel>();
       final testable = m.first;
-      expect(testable.name, "Guy");
+      expect(testable.name, 'Guy');
     });
 
-    group("#upsert", () {
-      test("basic", () async {
+    group('#upsert', () {
+      test('basic', () async {
         when(client.post(
           'http://localhost:3000/person',
-          body: anyNamed("body"),
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          body: anyNamed('body'),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         )).thenAnswer((_) async => http.Response('{"name": "Guy"}', 200));
 
-        final instance = DemoRestModel("Guy");
+        final instance = DemoRestModel('Guy');
         final resp = await provider.upsert<DemoRestModel>(instance);
         expect(resp.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test("providerArgs['headers']", () async {
+      test('providerArgs["headers"]', () async {
         when(client.post(
           'http://localhost:3000/person',
-          body: anyNamed("body"),
-          headers: {"Content-Type": "application/json", "Authorization": "Basic xyz"},
-          encoding: anyNamed("encoding"),
+          body: anyNamed('body'),
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Basic xyz'},
+          encoding: anyNamed('encoding'),
         )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
-        final instance = DemoRestModel("Guy");
+        final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {
           'headers': {'Authorization': 'Basic xyz'}
         });
@@ -87,16 +87,16 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test("providerArgs['request']", () async {
+      test('providerArgs["request"]', () async {
         when(client.put(
           'http://localhost:3000/person',
-          body: anyNamed("body"),
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          body: anyNamed('body'),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         )).thenAnswer((_) async => http.Response('{"name": "Guy"}', 200));
 
-        final instance = DemoRestModel("Guy");
-        final query = Query(providerArgs: {"request": "PUT"});
+        final instance = DemoRestModel('Guy');
+        final query = Query(providerArgs: {'request': 'PUT'});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp.statusCode, 200);
@@ -107,19 +107,19 @@ void main() {
         when(client.post(
           'http://localhost:3000/person',
           body: '{"top":{"name":"Guy"}}',
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
-        final instance = DemoRestModel("Guy");
-        final query = Query(providerArgs: {"topLevelKey": "top"});
+        final instance = DemoRestModel('Guy');
+        final query = Query(providerArgs: {'topLevelKey': 'top'});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         verify(client.post(
           any,
           body: '{"top":{"name":"Guy"}}',
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         ));
 
         expect(resp.statusCode, 200);
@@ -130,15 +130,15 @@ void main() {
         when(client.post(
           'http://localhost:3000/person',
           body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
-        final instance = DemoRestModel("Guy");
+        final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {
-          "topLevelKey": "top",
-          "supplementalTopLevelData": {
-            "other_name": {"first_name": "Thomas"},
+          'topLevelKey': 'top',
+          'supplementalTopLevelData': {
+            'other_name': {'first_name': 'Thomas'},
           }
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
@@ -146,8 +146,8 @@ void main() {
         verify(client.post(
           any,
           body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
-          headers: anyNamed("headers"),
-          encoding: anyNamed("encoding"),
+          headers: anyNamed('headers'),
+          encoding: anyNamed('encoding'),
         ));
 
         expect(resp.statusCode, 200);
@@ -155,22 +155,22 @@ void main() {
       });
     });
 
-    test("#delete", () async {
+    test('#delete', () async {
       when(client.delete(
         'http://localhost:3000/person',
-        headers: anyNamed("headers"),
+        headers: anyNamed('headers'),
       )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
-      final instance = DemoRestModel("Guy");
+      final instance = DemoRestModel('Guy');
       await provider.delete<DemoRestModel>(instance);
 
       verify(client.delete(
         'http://localhost:3000/person',
-        headers: anyNamed("headers"),
+        headers: anyNamed('headers'),
       ));
     });
 
-    test("#statusCodeIsSuccessful", () {
+    test('#statusCodeIsSuccessful', () {
       expect(provider.statusCodeIsSuccessful(200), isTrue);
       expect(provider.statusCodeIsSuccessful(201), isTrue);
       expect(provider.statusCodeIsSuccessful(202), isTrue);
@@ -180,18 +180,18 @@ void main() {
     });
   });
 
-  group("RestAdapter", () {
-    test("#toRest", () async {
-      final m = DemoRestModel("Thomas");
+  group('RestAdapter', () {
+    test('#toRest', () async {
+      final m = DemoRestModel('Thomas');
       final payload = await DemoRestModelAdapter().toRest(m);
-      expect(payload, containsPair("name", "Thomas"));
+      expect(payload, containsPair('name', 'Thomas'));
     });
 
-    test("#fromRest", () async {
-      final m = DemoRestModel("Thomas");
+    test('#fromRest', () async {
+      final m = DemoRestModel('Thomas');
       final payload = await DemoRestModelAdapter().toRest(m);
       final newModel = await DemoRestModelAdapter().fromRest(payload);
-      expect(newModel.name, "Thomas");
+      expect(newModel.name, 'Thomas');
     });
   });
 }
