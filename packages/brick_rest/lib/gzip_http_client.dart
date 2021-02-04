@@ -1,6 +1,28 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'dart:convert' as convert;
+
+class GZipConverterFrom extends convert.Converter<List<int>, String> {
+  @override
+  String convert(List<int> value) => String.fromCharCodes(GZipCodec().decode(value));
+}
+
+class GZipConverterTo extends convert.Converter<String, List<int>> {
+  @override
+  List<int> convert(String value) => GZipCodec().encode(value.codeUnits);
+}
+
+class GZipRequestEncoding extends convert.Encoding {
+  @override
+  final encoder = GZipConverterTo();
+
+  @override
+  final decoder = GZipConverterFrom();
+
+  @override
+  final name = 'utf-8';
+}
 
 /// Gzip all incoming requests and mutate them so that the payload is encoded.
 /// Additionally, (over)writes the header `{'Content-Encoding': 'gzip'}` and
@@ -27,12 +49,17 @@ class GZipHttpClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     if (request is! http.Request) return innerClient.send(request);
-
     final httpRequest = request as http.Request;
     if (httpRequest.body == null || httpRequest.body.isEmpty) return innerClient.send(request);
-    httpRequest.bodyBytes = _encoder.encode(httpRequest.body.codeUnits);
-    httpRequest.headers['Content-Encoding'] = 'gzip';
+    if (httpRequest.headers['Content-Encoding'] == 'gzip') return innerClient.send(request);
 
-    return innerClient.send(httpRequest);
+    var newRequest = http.Request(httpRequest.method, httpRequest.url);
+    newRequest.headers.addAll(httpRequest.headers);
+    newRequest.bodyBytes = _encoder.encode(httpRequest.bodyBytes);
+
+    newRequest.headers['Content-Encoding'] = 'gzip';
+    // httpRequest.encoding = GZipRequestEncoding();
+
+    return innerClient.send(newRequest);
   }
 }
