@@ -11,6 +11,13 @@ class Mounty extends OfflineFirstWithRestModel {
   Mounty({
     this.name,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Mounty && name == other?.name;
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 class Horse extends OfflineFirstWithRestModel {

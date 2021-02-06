@@ -1,21 +1,4 @@
-# REST Provider
-
-Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.
-
-## Supported `Query` Configuration
-
-### `providerArgs:`
-
-* `'headers'` (`Map<String, String>`) set HTTP headers
-* `'request'` (`String`) specifies HTTP method. Only available to `#upsert`. Defaults to `POST`
-* `'topLevelKey'` (`String`) the payload is sent or received beneath a JSON key (For example, `{"user": {"id"...}}`)
-* `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload. For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
-
-### `where:`
-
-`RestProvider` does not support any `Query#where` arguments. These should be configured on a model-by-model base by the `RestSerializable#endpoint` argument.
-
-## Models
+# Model (Class) Configuration
 
 ### `@Rest(endpoint:)`
 
@@ -47,7 +30,7 @@ When managing an instance, say in `delete`, the endpoint will have to be expande
 class User extends OfflineFirstModel {}
 ```
 
-:warning: If an endpoint's function returns `null`, it is skipped by the provider.
+!> If an endpoint's function returns `null`, it is skipped by the provider.
 
 #### With Query#providerArgs
 
@@ -163,7 +146,7 @@ Data will be nested beneath a top-level key in a JSON response. The key is deter
 class User extends OfflineFirstModel {}
 ```
 
-:warning: If the response from REST **is not** a map, the full response is returned instead.
+!> If the response from REST **is not** a map, the full response is returned instead.
 
 ### `@RestSerializable(fieldRename:)`
 
@@ -177,59 +160,13 @@ RestSerializable(fieldRename: FieldRename.snake_case)
 final String lastName => "last_name"
 ```
 
-## Fields
-
-### `@Rest(enumAsString:)`
-
-Brick by default assumes enums from a REST API will be delivered as integers matching the index in the Flutter app. However, if your API delivers strings instead, the field can be easily annotated without writing a custom generator.
-
-Given the API:
-
-```json
-{ "user": { "hats": [ "bowler", "birthday" ] } }
-```
-
-Simply convert `hats` into a Dart enum:
-
-```dart
-enum Hat { baseball, bowler, birthday }
-
-...
-
-@Rest(enumAsString: true)
-final List<Hat> hats;
-```
-
-### `@Rest(name:)`
-
-REST keys can be renamed per field. This will override the default set by `RestSerializable#fieldRename`.
-
-```dart
-@Rest(
-  name: "full_name"  // "full_name" is used in from and to requests to REST instead of "last_name"
-)
-final String lastName;
-```
-
-### `@Rest(ignoreFrom:)` and `@Rest(ignoreTo:)`
-
-When true, the field will be ignored by the (de)serializing function in the adapter.
-
 ## GZipping Requests
 
 All requests to the API endpoint can be compressed with Dart's standard [GZip library](https://api.dart.dev/stable/2.10.4/dart-io/GZipCodec-class.html). All requests will (over)write the `Content-Encoding` header to `{'Content-Encoding': 'gzip'}`.
 
 ```dart
 import 'package:brick_rest/gzip_http_client.dart';
-
 final restProvider = RestProvider(client: GZipHttpClient(level: 9));
 ```
 
-:warning: Your API must be able to accept and decode GZipped requests.
-
-## Unsupported Field Types
-
-The following are not serialized to REST. However, unsupported types can still be accessed in the model as non-final fields.
-
-* Nested `List<>` e.g. `<List<List<int>>>`
-* Many-to-many associations
+!> Your API must be able to accept and decode GZipped requests.

@@ -16,7 +16,9 @@ class RestException implements Exception {
         if (decoded is Map && decoded.containsKey('errors')) {
           return decoded['errors'];
         }
-      } catch (e) {}
+      } catch (e) {
+        return null;
+      }
     }
 
     return null;
