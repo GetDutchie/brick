@@ -208,17 +208,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
           's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
     }
 
+    final removeStaleAssociations = field.isPublic && !field.isFinal
+        ? _removeStaleAssociations(
+            field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
+        : '';
+
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
-        final ${field.name}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
-        final ${field.name}OldIds = ${field.name}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
-        final ${field.name}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
-        final ${field.name}IdsToDelete = ${field.name}OldIds.where((id) => !${field.name}NewIds.contains(id));
-
-        await Future.wait<void>(${field.name}IdsToDelete?.map((id) async {
-          return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
-        }));
-
+        $removeStaleAssociations
         await Future.wait<int>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
           return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
@@ -246,4 +243,18 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     return convertToInt;
   }
+}
+
+String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
+    String joinsLocalColumn, String joinsTable, String siblingAssociations) {
+  return '''
+    final ${fieldName}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
+    final ${fieldName}OldIds = ${fieldName}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
+    final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
+    final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));
+
+    await Future.wait<void>(${fieldName}IdsToDelete?.map((id) async {
+      return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
+    }));
+  ''';
 }
