@@ -182,6 +182,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }""";
   }
 
+  @override
+  bool ignoreCoderForField(field, annotation, checker) {
+    if (annotation.columnType != null) return false;
+    return super.ignoreCoderForField(field, annotation, checker);
+  }
+
   String _saveIterableAssociationFieldToJoins(FieldElement field) {
     final annotation = fields.annotationForField(field);
     var checker = checkerForType(field.type);

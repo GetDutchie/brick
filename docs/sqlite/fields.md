@@ -36,6 +36,19 @@ When true, deletion of the referenced record by `foreignKeyColumn` on the `forei
 
 This value is only applicable when decorating fields that are **single associations** (e.g. `final SqliteModel otherSqliteModel`). It is otherwise ignored.
 
+### `@Sqlite(columnType:)`
+
+In some exceptional circumstances, low-level manipulation of Brick's automatic schema creation is necessary.
+
+:warning: This is an advanced feature. In nearly every case, you can trust Brick's determination of your field. If you're frequently using this option, consider your greater architecture and use of Brick.
+
+```dart
+@Sqlite(columnType: Column.blob)
+final Uint8List image;
+```
+
+!> Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). If additional manipulation is [likely] required, specify `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)`.
+
 ## Unsupported Field Types
 
 The following are not serialized to SQLite. However, unsupported types can still be accessed in the model as non-final fields.

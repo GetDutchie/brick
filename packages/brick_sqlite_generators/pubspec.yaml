@@ -10,8 +10,12 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  brick_build: ^0.0.7
-  brick_sqlite_abstract: 0.0.9+1
+  brick_build: ^0.0.8+1
+  brick_sqlite_abstract:
+    git:
+      url: git@github.com:greenbits/brick.git
+      path: packages/brick_sqlite_abstract
+      ref: add-uint8list-support
 
 dev_dependencies:
   test: ">=1.11.0 <2.0.0"

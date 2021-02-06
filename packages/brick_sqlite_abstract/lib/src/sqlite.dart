@@ -11,7 +11,10 @@ class Sqlite implements FieldSerializable {
   /// Leaving this field `null` will allow Brick to infer the column type from the
   /// Type argument. This will not create foreign keys or associations.
   ///
-  /// Because this value overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). Brick's conversions to and from Iterables or Futures **will not apply**. If additional manipulation is required, specify [fromGenerator] and [toGenerator].
+  /// Because this value overrides Brick assumptions about the column type, the field
+  /// will be inserted (toSqlite) **as is** and returned **as is** from deserialization
+  /// (fromSqlite). Brick's conversions to and from Iterables or Futures **will not apply**.
+  /// If additional manipulation is (likely) required, specify [fromGenerator] and [toGenerator].
   ///
   /// Advanced use only.
   final Column columnType;

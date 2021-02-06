@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Declare a `columnType` with `@Sqlite`
+* Declare a custom `columnType` with `@Sqlite`. Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite).
 
 ## 0.0.9+1
 

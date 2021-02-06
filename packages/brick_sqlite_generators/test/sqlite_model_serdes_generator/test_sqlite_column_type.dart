@@ -9,7 +9,7 @@ part of '../brick.g.dart';
 Future<SqliteColumnType> _$SqliteColumnTypeFromSqlite(Map<String, dynamic> data,
     {SqliteProvider provider, SqliteFirstRepository repository}) async {
   return SqliteColumnType(
-      someField: data['some_field'] == null ? null : data['some_field'] as int)
+      someField: data['some_field'] == null ? null : data['some_field'])
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -27,20 +27,20 @@ class SqliteColumnTypeAdapter extends SqliteAdapter<SqliteColumnType> {
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
+      columnName: '_brick_id',
       iterable: false,
-      name: '_brick_id',
       type: int,
     ),
     'someField': RuntimeSqliteColumnDefinition(
       association: false,
+      columnName: 'some_field',
       iterable: false,
-      name: 'some_field',
       type: int,
     )
   };
   Future<int> primaryKeyByUniqueColumns(
           SqliteColumnType instance, DatabaseExecutor executor) async =>
-      null;
+      instance?.primaryKey;
   final String tableName = 'SqliteColumnType';
 
   Future<SqliteColumnType> fromSqlite(Map<String, dynamic> input,

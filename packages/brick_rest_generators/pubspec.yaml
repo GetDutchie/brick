@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   brick_rest: ^0.0.8
-  brick_build: ^0.0.7
+  brick_build: ^0.0.8+1
 
 dev_dependencies:
   test: ">=1.9.4 <2.0.0"

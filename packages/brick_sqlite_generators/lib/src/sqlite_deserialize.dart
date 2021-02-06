@@ -154,4 +154,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     return null;
   }
+
+  @override
+  bool ignoreCoderForField(field, annotation, checker) {
+    if (annotation.columnType != null) return false;
+    return super.ignoreCoderForField(field, annotation, checker);
+  }
 }
