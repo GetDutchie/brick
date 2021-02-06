@@ -37,7 +37,7 @@ class RestProvider implements Provider<RestModel> {
     this.baseEndpoint, {
     this.modelDictionary,
     http.Client client,
-  })  : this.client = client ?? http.Client(),
+  })  : client = client ?? http.Client(),
         logger = Logger('RestProvider');
 
   /// Sends a DELETE request method to the endpoint
