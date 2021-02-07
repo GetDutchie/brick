@@ -90,7 +90,7 @@ Data will inevitably become out of sync between the local and remote providers. 
 
       // This hook exists for SqliteModels
       @override
-      Future<void> afterSave({provider, repository}) async => updatedAt = DateTime.now();
+      Future<void> beforeSave({provider, repository}) async => updatedAt = DateTime.now();
     }
 
     class MyRepository extends OfflineFirstRepository {
