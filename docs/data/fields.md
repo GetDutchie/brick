@@ -6,7 +6,7 @@ A field is a single, accessible property of a model. For example, `final String 
 
 All `final` fields of a model, unless specified, will be (de)serialized by the provider. Computed getters (`int get number => 5 + 10`) are not deserialized _from_ providers. However, they are serialized to, allowing generation of custom fields to send to an API or to query cached results in SQLite (to skip, declare `ignore: true` in the field's annotation). Setters are never serialized.
 
-### Annotations
+## Annotations
 
 As providers are ultimately responsible for converting raw data into model data, a description of fields on models is overly generic. Field-level annotations always override class-level annotations/configuration. However, providers should adhere to some standards of annotations:
 
@@ -19,7 +19,7 @@ As providers are ultimately responsible for converting raw data into model data,
 | `fromGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated deserialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Rest(fromGenerator: "int.tryParse(%DATA_PROPERTY%.toString())")` |
 | `toGenerator` | A stringified function with access to [placeholders](#placeholders); replaces adapter's generated serialize code for the field. Do not include trailing semicolons or function body wrapping symbols (`{}` or `=>`) in the definition. | `@Sqlite(toGenerator: "%INSTANCE_PROPERTY% > 1 ? 1 : 0")` |
 
-### Custom Generators
+## Custom Generators
 
 For non-standard input, consider writing a custom (de)serializer. Use caution as this will **completely replace** inferred type serializations. These are available at field-level as arguments.
 
@@ -44,7 +44,7 @@ final data = {
 })""";
 ```
 
-#### Placeholders
+### Placeholders
 
 To replace a few parts and DRY up code in custom, field-level generators, placeholders can be employed and replaced with values at build time.
 
