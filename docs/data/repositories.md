@@ -72,7 +72,7 @@ While a repository manages different providers and consolidates requests to a si
 
 It is strongly recommended to use a [string-based identifier for models created on the client](https://pub.dev/packages/uuid) and to index this value in the remote provider. Relying on a primary key generated within a remote table is not recommended, as instances created on the client can cause collisions.
 
-### Reconcilliation
+### Reconciliation
 
 Data will inevitably become out of sync between the local and remote providers. **Brick does not natively resolve these differences**. Your synchronization implementation should handle reconcilliation. Some examples of how to prioritize data:
 
