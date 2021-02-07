@@ -76,7 +76,7 @@ It is strongly recommended to use a [string-based identifier for models created 
 
 Data will inevitably become out of sync between the local and remote providers. **Brick does not natively resolve these differences**. Your synchronization implementation should handle reconcilliation. Some examples of how to prioritize data:
 
-* Consider one provider the source of truth and **always** [overwrite data](https://github.com/greenbits/brick/blob/master/packages/brick_offline_first/lib/src/mixins/destructive_local_sync_from_remote_mixin.dart) in one provider to the other(s). While this is the simplest solution, do not ignore its perks: in a distributed system, a single source of truth is sensible architecture.
+* Consider one provider the source of truth and **always** [overwrite data](https://github.com/greenbits/brick/blob/master/packages/brick_offline_first/lib/src/mixins/destructive_local_sync_from_remote_mixin.dart) from one provider to the other(s). While this is the simplest solution, do not ignore its perks: in a distributed system, a single source of truth is sensible architecture.
 * Persist updates based on specific field(s) between providers (I'm sure there's a term for this; looking to you, CS grads). The following is loose, psuedo code to illustrate clearly how an implementation *could* look. It should not be copy/pasted line-for-line.
     ```dart
     class MyModel extends OfflineFirstModel {
