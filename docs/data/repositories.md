@@ -47,8 +47,6 @@ class BootScreenState extends State<BootScreen> {
 
 ## Access
 
-
-
 End-implementation uses (e.g. a Flutter application) should `extend` an abstract repository and pass arguments to `super`. If custom methods need to be added, they can be written in the application-specific repository and not the abstract one. Application-specific `brick.g.dart` are also imported:
 
 ```dart
@@ -73,6 +71,49 @@ While a repository manages different providers and consolidates requests to a si
 * Subscribe to a websockets channel and stream responses and hydrate the results in the background
 
 It is strongly recommended to use a [string-based identifier for models created on the client](https://pub.dev/packages/uuid) and to index this value in the remote provider. Relying on a primary key generated within a remote table is not recommended, as instances created on the client can cause collisions.
+
+### Reconcilliation
+
+Data will inevitably become out of sync between the local and remote providers. **Brick does not natively resolve these differences**. Your synchronization implementation should handle reconcilliation. Some examples of how to prioritize data:
+
+* Consider one provider the source of truth and **always** [overwrite data](https://github.com/greenbits/brick/blob/master/packages/brick_offline_first/lib/src/mixins/destructive_local_sync_from_remote_mixin.dart) in one provider to the other(s). While this is the simplest solution, do not ignore its perks: in a distributed system, a single source of truth is sensible architecture.
+* Persist updates based on specific field(s) between providers (I'm sure there's a term for this; looking to you, CS grads). The following is loose, psuedo code to illustrate clearly how an implementation *could* look. It should not be copy/pasted line-for-line.
+    ```dart
+    class MyModel extends OfflineFirstModel {
+      // This is our timestamp for when the record was updated.
+      // This also expects other providers to deliver this model if a change has been reflected there.
+      DateTime updatedAt;
+
+      // A key to identify the record between all providers
+      @Sqlite(unique: true)
+      final String id;
+
+      // This hook exists for SqliteModels
+      @override
+      Future<void> afterSave({provider, repository}) async => updatedAt = DateTime.now();
+    }
+
+    class MyRepository extends OfflineFirstRepository {
+      @override
+      Future<List<_Model>> hydrate<_Model>({Query query}) async {
+        final remoteResults = await remoteProvider.get<_Model>(query: query);
+        final localResults = await sqliteProvider.get<_Model>(query: query);
+
+        for (final remoteItem in remoteResults) {
+          final localItem = localResults.firstWhere((i) => i.id == remoteItem.id, orElse: () => null);
+          // only persist the remote record if it has been modified after the local record
+          // or if it's a new record from the remote provider
+          if (localItem == null || localItem.updatedAt.isBefore(remoteItem.updatedAt)) {
+            await sqliteProvider.upsert(remoteItem);
+            // store the result in other providers here, like memory cache, if desired
+          }
+        }
+
+        // fetch the data again after it's been reconciled
+        return sqliteProvider.get<_Model>(query: query);
+      }
+    }
+    ```
 
 ## Creating a Custom Repository
 
