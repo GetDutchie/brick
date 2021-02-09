@@ -123,6 +123,19 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
+      final oldColumns = await provider?.rawQuery(
+          'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
+          [instance.primaryKey]);
+      final oldIds = oldColumns?.map((a) => a['f_DemoModelAssoc_brick_id']) ?? [];
+      final newIds = instance.manyAssoc?.map((s) => s?.primaryKey)?.where((s) => s != null) ?? [];
+      final idsToDelete = oldIds.where((id) => !newIds.contains(id));
+
+      await Future.wait<void>(idsToDelete?.map((id) async {
+        return await provider?.rawExecute(
+            'DELETE FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ? AND `f_DemoModelAssoc_brick_id` = ?',
+            [instance.primaryKey, id]);
+      }));
+
       await Future.wait<int>(instance.manyAssoc?.map((s) async {
             final id =
                 s?.primaryKey ?? await provider?.upsert<DemoModelAssoc>(s, repository: repository);
