@@ -51,6 +51,39 @@ void main() {
         final primaryKey = await provider.upsert<DemoModel>(newModel);
         expect(primaryKey, 2);
       });
+
+      test('update associations', () async {
+        final newModel = DemoModel(
+          name: 'Guy',
+          manyAssoc: [DemoModelAssoc(name: 'Thomas'), DemoModelAssoc(name: 'Alice')],
+        );
+        final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
+        final associationCount = await provider.get<DemoModelAssoc>();
+        expect(associationCount, hasLength(2));
+        model.manyAssoc.clear();
+        await provider.upsert<DemoModel>(model);
+        final withClearedAssociations = await provider.get<DemoModel>(
+          query: Query.where(
+            InsertTable.PRIMARY_KEY_FIELD,
+            model.primaryKey,
+            limit1: true,
+          ),
+        );
+        expect(withClearedAssociations.first.manyAssoc, isEmpty);
+      });
+    });
+
+    test('#delete', () async {
+      final newModel = DemoModel(name: 'GuyDelete');
+
+      final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
+      final doesExist = await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
+      expect(doesExist, isTrue);
+      final result = await provider.delete<DemoModel>(model);
+      expect(result, 1);
+      final existsAfterDelete =
+          await provider.exists<DemoModel>(query: Query.where('name', newModel.name));
+      expect(existsAfterDelete, isFalse);
     });
 
     test('#migrate', () {}, skip: 'Write test');

@@ -10,6 +10,10 @@ import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
     as _$fieldWithTypeArgument;
 import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as _$booleanFields;
+import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
+    as _$afterSaveWithAssociation;
+import 'sqlite_model_serdes_generator/test_after_save_with_non_final_association.dart'
+    as _$afterSaveWithNonFinalAssociation;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -47,6 +51,16 @@ void main() {
 
     test('BooleanFields', () async {
       await generateAdapterExpectation('boolean_fields', _$booleanFields.output);
+    });
+
+    test('AfterSaveWithAssociation', () async {
+      await generateAdapterExpectation(
+          'after_save_with_association', _$afterSaveWithAssociation.output);
+    });
+
+    test('AfterSaveWithNonFinalAssociation', () async {
+      await generateAdapterExpectation(
+          'after_save_with_non_final_association', _$afterSaveWithNonFinalAssociation.output);
     });
   });
 }

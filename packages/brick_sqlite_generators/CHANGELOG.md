@@ -8,3 +8,4 @@
 * Fix deserializing for null sibling arrays
 * Booleans are serialized as 1s or 0s
 * Foreign keys are no longer serialized in a JSON array and stored as a string
+* Reconcile changes for non-final associations (#112)

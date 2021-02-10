@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When deleting many associations from a parent, remove the association in the joins table but do not delete the instance. This is only applicable to non-final instance fields. (#112)
+
 ## 0.1.6+1
 
 * Fix: when non-SQLite providerArgs are provided in a query, false is no longer returned from `SqliteProvider#exists`

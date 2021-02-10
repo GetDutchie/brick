@@ -19,7 +19,7 @@ class DemoModel extends SqliteModel {
   final DemoModelAssoc assoc;
   final String complexFieldName;
   final String lastName;
-  final List<DemoModelAssoc> manyAssoc;
+  List<DemoModelAssoc> manyAssoc;
 
   @Sqlite(name: 'full_name')
   final String name;
