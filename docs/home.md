@@ -23,6 +23,7 @@
     // lib/app/repository.dart
     import 'package:brick_offline_first/offline_first_with_rest.dart';
     import 'package:audio_journal/app/brick.g.dart';
+    export 'package:brick_offline_first/offline_first_with_rest.dart' show Query, Where, And, Or, WherePhrase;
 
     class Repository extends OfflineFirstWithRestRepository {
       Repository()
