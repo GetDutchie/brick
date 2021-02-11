@@ -79,6 +79,30 @@ This fields are marked `UNIQUE` in SQLite and are useful for external identifier
 final String lastName;
 ```
 
+## Updating Associations
+
+If your instance fields are mutable (i.e. non `final`), Brick will reconcile associations after saving the instance.
+
+```dart
+class MyModel extends SqliteModel {
+  /// if this field were `final List<AssociationModel> associations`
+  /// calling `associations.clear()` and then `upsert(instance)` **would not**
+  /// change the value of associations.
+  List<AssociationModel> associations;
+
+  MyModel(this.associations)
+}
+
+final instance = MyModel([AssociationModel()]);
+instance.associations.length // => 1
+instance.associations.clear();
+await provider.upsert<MyModel>(instance);
+final instanceFromSqlite = await provider.get<MyModel>(
+  query: Query.where('primaryKey', instance.primaryKey, limit1: true)
+);
+instanceFromSqlite.associations.length // => 0
+```
+
 ## Unsupported Field Types
 
 The following are not serialized to SQLite. However, unsupported types can still be accessed in the model as non-final fields.
