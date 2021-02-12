@@ -335,7 +335,7 @@ class AllOtherClausesFragment {
       if (_operatorsDeclaringFields.contains(op)) {
         value = value.toString().split(',').fold<String>(value.toString(),
             (modValue, innerValueClause) {
-          final fragment = innerValueClause.split(' ');
+          final fragment = innerValueClause.trim().split(' ');
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
