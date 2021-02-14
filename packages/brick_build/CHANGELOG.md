@@ -1,5 +1,13 @@
 ## Unreleased
 
+## 0.0.8+1
+
+* Remove `getInheritedConcreteMap` from `fields_for_class.dart` as it's no longer used.
+
+## 0.0.8
+
+* Add method `ignoreCoderForField` to `SerdesGenerator`. This doesn't change existing functionality; it only moves it to an overridable method.
+
 ## 0.0.7
 
 * Use assignable instead of super type comparison when checking for siblings to account for inherited classes (#55)

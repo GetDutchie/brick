@@ -117,9 +117,13 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
 class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   FuturesAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -164,10 +168,13 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
       type: Assoc,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           Futures instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'Futures';
+  @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.futureAssocs?.map((s) async {
@@ -182,17 +189,21 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
     }
   }
 
+  @override
   Future<Futures> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$FuturesFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(Futures input,
           {provider, repository}) async =>
       await _$FuturesToRest(input, provider: provider, repository: repository);
+  @override
   Future<Futures> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$FuturesFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(Futures input,
           {provider, repository}) async =>
       await _$FuturesToSqlite(input,

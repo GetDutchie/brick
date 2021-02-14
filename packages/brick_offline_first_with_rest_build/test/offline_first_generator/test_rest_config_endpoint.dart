@@ -42,12 +42,16 @@ class RestConfigEndpointAdapter
     extends OfflineFirstAdapter<RestConfigEndpoint> {
   RestConfigEndpointAdapter();
 
+  @override
   String restEndpoint({query, instance}) {
     return 'anEndpoint';
   }
 
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -62,23 +66,29 @@ class RestConfigEndpointAdapter
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           RestConfigEndpoint instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'RestConfigEndpoint';
 
+  @override
   Future<RestConfigEndpoint> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$RestConfigEndpointFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(RestConfigEndpoint input,
           {provider, repository}) async =>
       await _$RestConfigEndpointToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<RestConfigEndpoint> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$RestConfigEndpointFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(RestConfigEndpoint input,
           {provider, repository}) async =>
       await _$RestConfigEndpointToSqlite(input,

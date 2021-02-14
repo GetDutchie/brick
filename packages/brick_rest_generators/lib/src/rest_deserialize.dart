@@ -24,7 +24,10 @@ class RestDeserialize extends RestSerdesGenerator {
 
     if (fromKey != null) fromKey = "'$fromKey'";
 
-    return ['String restEndpoint({query, instance}) $endpoint', 'final String fromKey = $fromKey;'];
+    return [
+      '@override\nString restEndpoint({query, instance}) $endpoint',
+      '@override\nfinal String fromKey = $fromKey;',
+    ];
   }
 
   @override
