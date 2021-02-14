@@ -47,7 +47,7 @@ In some exceptional circumstances, low-level manipulation of Brick's automatic s
 final Uint8List image;
 ```
 
-!> Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). If additional manipulation is [likely] required, specify `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)`.
+!> Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)` are required.
 
 ## Updating Associations
 
