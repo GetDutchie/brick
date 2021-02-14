@@ -375,6 +375,21 @@ void main() {
         sqliteStatementExpectation(statement);
       });
 
+      test('providerArgs.orderBy compound values are expanded to column names', () async {
+        final statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, complex_field_name ASC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(providerArgs: {
+            'orderBy': 'manyAssoc DESC, complexFieldName ASC',
+          }),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
       test('fields convert to column names in providerArgs values', () async {
         final statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
