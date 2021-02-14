@@ -72,6 +72,7 @@ class AfterSaveWithAssociationAdapter
           []);
     }
   }
+
   @override
   Future<AfterSaveWithAssociation> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
