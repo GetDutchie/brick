@@ -38,6 +38,7 @@ class AfterSaveWithAssociationAdapter
     extends SqliteAdapter<AfterSaveWithAssociation> {
   AfterSaveWithAssociationAdapter();
 
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -52,10 +53,13 @@ class AfterSaveWithAssociationAdapter
       type: Assoc,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           AfterSaveWithAssociation instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'AfterSaveWithAssociation';
+  @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       final someFieldOldColumns = await provider?.rawQuery(
@@ -87,10 +91,12 @@ class AfterSaveWithAssociationAdapter
     }
   }
 
+  @override
   Future<AfterSaveWithAssociation> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$AfterSaveWithAssociationFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(AfterSaveWithAssociation input,
           {provider, repository}) async =>
       await _$AfterSaveWithAssociationToSqlite(input,

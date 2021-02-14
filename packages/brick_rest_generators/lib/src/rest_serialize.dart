@@ -20,7 +20,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
     if (toKey != null) toKey = "'$toKey'";
 
-    return ['final String toKey = $toKey;'];
+    return ['@override\nfinal String toKey = $toKey;'];
   }
 
   @override

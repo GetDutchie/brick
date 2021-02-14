@@ -129,7 +129,6 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   @visibleForOverriding
   String addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
     var wrappedInFuture = false;
-    final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     final futureChecker = SharedChecker(field.type);
     var checker = checkerForType(field.type);
@@ -138,11 +137,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       checker = checkerForType(futureChecker.argType);
     }
 
-    if ((isComputedGetter && doesDeserialize) ||
-        fieldAnnotation.ignore ||
-        !checker.isSerializable) {
-      return null;
-    }
+    final shouldIgnore = ignoreCoderForField(field, fieldAnnotation, checker);
+    if (shouldIgnore) return null;
 
     if (wrappedInFuture && checker.isIterable && checker.isArgTypeAFuture) {
       throw InvalidGenerationSourceError(
@@ -262,6 +258,15 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   bool hasSerializer(DartType type) {
     final classElement = type.element as ClassElement;
     return classElement.getMethod(serializeMethod) != null;
+  }
+
+  /// Determine whether this field should be included in generated output.
+  @protected
+  bool ignoreCoderForField(
+      FieldElement field, _FieldAnnotation annotation, SharedChecker<Model> checker) {
+    final isComputedGetter = FieldsForClass.isComputedGetter(field);
+
+    return (isComputedGetter && doesDeserialize) || annotation.ignore || !checker.isSerializable;
   }
 
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal

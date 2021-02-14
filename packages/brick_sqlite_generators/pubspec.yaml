@@ -10,7 +10,7 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  brick_build: ^0.0.7
+  brick_build: ^0.0.8+2
   brick_sqlite_abstract: 0.0.9+1
 
 dev_dependencies:

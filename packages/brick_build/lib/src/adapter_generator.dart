@@ -25,7 +25,7 @@ class AdapterGenerator {
       final methodArguments = '${generator.adapterMethodInputType} input, {provider, repository}';
       final methodName = '$methodAction${generator.providerName}($methodArguments)';
 
-      acc.add('$expectedOutput $methodName async => ${generator.adapterMethod};');
+      acc.add('@override\n$expectedOutput $methodName async => ${generator.adapterMethod};');
       return acc;
     }).join('\n');
   }

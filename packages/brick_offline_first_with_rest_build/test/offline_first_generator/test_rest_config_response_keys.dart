@@ -42,9 +42,13 @@ class RestConfigResponseKeysAdapter
     extends OfflineFirstAdapter<RestConfigResponseKeys> {
   RestConfigResponseKeysAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = 'users';
+  @override
   final String toKey = 'user';
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -59,23 +63,29 @@ class RestConfigResponseKeysAdapter
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           RestConfigResponseKeys instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'RestConfigResponseKeys';
 
+  @override
   Future<RestConfigResponseKeys> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$RestConfigResponseKeysFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(RestConfigResponseKeys input,
           {provider, repository}) async =>
       await _$RestConfigResponseKeysToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<RestConfigResponseKeys> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$RestConfigResponseKeysFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(RestConfigResponseKeys input,
           {provider, repository}) async =>
       await _$RestConfigResponseKeysToSqlite(input,

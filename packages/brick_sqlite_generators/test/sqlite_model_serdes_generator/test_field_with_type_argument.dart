@@ -28,6 +28,7 @@ class FieldWithTypeArgumentAdapter
     extends SqliteAdapter<FieldWithTypeArgument> {
   FieldWithTypeArgumentAdapter();
 
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -42,15 +43,19 @@ class FieldWithTypeArgumentAdapter
       type: Map,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           FieldWithTypeArgument instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'FieldWithTypeArgument';
 
+  @override
   Future<FieldWithTypeArgument> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$FieldWithTypeArgumentFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(FieldWithTypeArgument input,
           {provider, repository}) async =>
       await _$FieldWithTypeArgumentToSqlite(input,

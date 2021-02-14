@@ -55,6 +55,7 @@ Future<Map<String, dynamic>> _$BooleanFieldsToSqlite(BooleanFields instance,
 class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
   BooleanFieldsAdapter();
 
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -93,15 +94,19 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
       type: bool,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           BooleanFields instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'BooleanFields';
 
+  @override
   Future<BooleanFields> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$BooleanFieldsFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(BooleanFields input,
           {provider, repository}) async =>
       await _$BooleanFieldsToSqlite(input,

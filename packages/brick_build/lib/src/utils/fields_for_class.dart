@@ -1,14 +1,10 @@
 // Borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/3b3e25e7522ad71011aa23656b3cd66cdc8b860c/json_serializable/lib/src/field_helpers.dart)
 import 'package:analyzer/dart/element/element.dart';
-// ignore: implementation_imports
-import 'package:analyzer/src/dart/element/inheritance_manager3.dart' show InheritanceManager3;
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Checker for the field having a predetermined annotation
 typedef HasFieldAnnotation = bool Function(FieldElement field);
-
-const _dartCoreObjectChecker = TypeChecker.fromRuntime(Object);
 
 /// Manages all fields of a [ClassElement]. Generously borrowed from JSON Serializable
 abstract class FieldsForClass<_FieldAnnotation> {
@@ -33,21 +29,6 @@ abstract class FieldsForClass<_FieldAnnotation> {
         Map.fromEntries(element.fields.where((e) => !e.isStatic).map((e) => MapEntry(e.name, e)));
 
     final inheritedFields = <String, FieldElement>{};
-    final manager = InheritanceManager3();
-
-    for (final v in manager.getInheritedConcreteMap2(element).values) {
-      assert(v is! FieldElement);
-      if (_dartCoreObjectChecker.isExactly(v.enclosingElement)) {
-        continue;
-      }
-
-      if (v is PropertyAccessorElement && v.isGetter) {
-        assert(v.variable is FieldElement);
-        final variable = v.variable as FieldElement;
-        assert(!inheritedFields.containsKey(variable.name));
-        // inheritedFields[variable.name] = variable;
-      }
-    }
 
     // Get the list of all fields for `element`
     final allFields = elementInstanceFields.keys.toSet().union(inheritedFields.keys.toSet());
