@@ -173,7 +173,9 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstWhere instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OfflineFirstWhere';
+  @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assocs?.map((s) async {
