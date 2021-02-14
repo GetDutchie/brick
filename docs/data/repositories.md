@@ -85,7 +85,11 @@ Consider one provider the source of truth and **always** [overwrite data](https:
 Persist updates based on specific field(s) between providers (I'm sure there's a term for this; looking to you, CS grads). The following is loose, psuedo code to illustrate clearly how an implementation *could* look.
 
 ```dart
-class MyModel extends OfflineFirstModel {
+abstract class BaseModel extends OfflineFirstModel {
+  String get id;
+}
+
+class MyModel extends BaseModel {
   // This is our timestamp for when the record was updated.
   // This also expects other providers to deliver this model if a change has been reflected there.
   DateTime updatedAt;
@@ -94,14 +98,17 @@ class MyModel extends OfflineFirstModel {
   @Sqlite(unique: true)
   final String id;
 
+  MyModel({this.id});
+
   // This hook exists for SqliteModels
   @override
   Future<void> beforeSave({provider, repository}) async => updatedAt = DateTime.now();
 }
 
-class MyRepository extends OfflineFirstRepository {
+class MyRepository extends OfflineFirstRepository<BaseModel> {
   @override
-  Future<List<_Model>> hydrate<_Model>({Query query}) async {
+  Future<List<_Model>> hydrate<_Model extends BaseModel>(
+      {bool deserializeSqlite = true, query}) async {
     final remoteResults = await remoteProvider.get<_Model>(query: query);
     final localResults = await sqliteProvider.get<_Model>(query: query);
     // Sort by map to avoid expensive, repetitive .where`queries
@@ -115,7 +122,7 @@ class MyRepository extends OfflineFirstRepository {
       // only persist the remote record if it has been modified after the local record
       // or if it's a new record from the remote provider
       if (localItem == null || localItem.updatedAt.isBefore(remoteItem.updatedAt)) {
-        await sqliteProvider.upsert(remoteItem);
+        await sqliteProvider.upsert<_Model>(remoteItem);
         // store the result in other providers here, like memory cache, if desired
       }
     }
