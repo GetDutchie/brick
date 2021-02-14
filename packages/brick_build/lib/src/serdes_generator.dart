@@ -265,8 +265,12 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   bool ignoreCoderForField(
       FieldElement field, _FieldAnnotation annotation, SharedChecker<Model> checker) {
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
-
-    return (isComputedGetter && doesDeserialize) || annotation.ignore || !checker.isSerializable;
+    final hasGenerator =
+        doesDeserialize ? annotation.fromGenerator != null : annotation.toGenerator != null;
+    return (isComputedGetter && doesDeserialize) ||
+        annotation.ignore ||
+        !checker.isSerializable ||
+        hasGenerator;
   }
 
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal
