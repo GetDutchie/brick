@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.8+2
+
+* Override build methods
+
 ## 0.0.8+1
 
 * Remove `getInheritedConcreteMap` from `fields_for_class.dart` as it's no longer used.
