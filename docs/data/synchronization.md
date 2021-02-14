@@ -10,7 +10,7 @@ It is strongly recommended to use a [string-based identifier for models created 
 
 ## Reconciliation
 
-Data will inevitably become out of sync between the local and remote providers. **Brick does not natively resolve these differences**. Your synchronization implementation should handle reconcilliation. Some examples of how to prioritize data:
+Data will inevitably become out of sync between the local and remote providers. **Brick does not resolve these differences**. Your synchronization implementation should handle reconcilliation. Some examples of how to prioritize data:
 
 ### Single Source of Truth
 
