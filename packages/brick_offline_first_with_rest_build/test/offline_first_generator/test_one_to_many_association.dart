@@ -79,9 +79,13 @@ class OneToManyAssociationAdapter
     extends OfflineFirstAdapter<OneToManyAssociation> {
   OneToManyAssociationAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -96,10 +100,13 @@ class OneToManyAssociationAdapter
       type: SqliteAssoc,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           OneToManyAssociation instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OneToManyAssociation';
+  @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assoc?.map((s) async {
@@ -113,18 +120,22 @@ class OneToManyAssociationAdapter
     }
   }
 
+  @override
   Future<OneToManyAssociation> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OneToManyAssociationFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(OneToManyAssociation input,
           {provider, repository}) async =>
       await _$OneToManyAssociationToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<OneToManyAssociation> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OneToManyAssociationFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(OneToManyAssociation input,
           {provider, repository}) async =>
       await _$OneToManyAssociationToSqlite(input,

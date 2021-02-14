@@ -31,16 +31,31 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
           path: packages/brick_offline_first_with_rest_build
       build_runner: any
     ```
-
 1. Configure your app directory structure to match Brick's expectations:
     ```bash
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
     ```
-
-    Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
-
+1. Add [models](https://greenbits.github.io/brick/#/data/models) that contain your app logic. Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](https://greenbits.github.io/brick/#/sqlite?id=intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
 1. Extend [an existing repository](https://greenbits.github.io/brick/#/data/repositories) or create your own:
     ```dart
     // lib/app/repository.dart
-    class MyRepository extends OfflineFirstWithRestRepository {}
+    import 'package:brick_offline_first/offline_first_with_rest.dart';
+    import 'package:audio_journal/app/brick.g.dart';
+    export 'package:brick_offline_first/offline_first_with_rest.dart' show Query, Where, And, Or, WherePhrase;
+
+    class Repository extends OfflineFirstWithRestRepository {
+      Repository()
+          : super(
+              restProvider: RestProvider(
+                'http://localhost:3000',
+                modelDictionary: restModelDictionary,
+              ),
+              sqliteProvider: SqliteProvider(
+                _DB_NAME,
+                modelDictionary: sqliteModelDictionary,
+              ),
+            );
+    }
     ```
+1. Profit.

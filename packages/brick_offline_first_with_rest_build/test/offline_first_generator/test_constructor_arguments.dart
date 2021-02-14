@@ -42,9 +42,13 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends OfflineFirstAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -53,23 +57,29 @@ class OfflineFirstGeneratorArgumentsAdapter
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OfflineFirstGeneratorArguments';
 
+  @override
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(OfflineFirstGeneratorArguments input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<OfflineFirstGeneratorArguments> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(OfflineFirstGeneratorArguments input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsToSqlite(input,
@@ -115,9 +125,13 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends SuperDuperAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -126,23 +140,29 @@ class OfflineFirstGeneratorArgumentsAdapter
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(OfflineFirstGeneratorArguments instance,
           DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OfflineFirstGeneratorArguments';
 
+  @override
   Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(OfflineFirstGeneratorArguments input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<OfflineFirstGeneratorArguments> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(OfflineFirstGeneratorArguments input,
           {provider, repository}) async =>
       await _$OfflineFirstGeneratorArgumentsToSqlite(input,

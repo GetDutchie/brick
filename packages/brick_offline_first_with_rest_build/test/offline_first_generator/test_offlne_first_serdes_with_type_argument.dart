@@ -38,9 +38,13 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
     extends OfflineFirstAdapter<OfflineFirstSerdesWithTypeArgument> {
   OfflineFirstSerdesWithTypeArgumentAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -55,28 +59,34 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
       type: SerdesWithTypeArgument,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstSerdesWithTypeArgument instance,
           DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OfflineFirstSerdesWithTypeArgument';
 
+  @override
   Future<OfflineFirstSerdesWithTypeArgument> fromRest(
           Map<String, dynamic> input,
           {provider,
           repository}) async =>
       await _$OfflineFirstSerdesWithTypeArgumentFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(OfflineFirstSerdesWithTypeArgument input,
           {provider, repository}) async =>
       await _$OfflineFirstSerdesWithTypeArgumentToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<OfflineFirstSerdesWithTypeArgument> fromSqlite(
           Map<String, dynamic> input,
           {provider,
           repository}) async =>
       await _$OfflineFirstSerdesWithTypeArgumentFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(
           OfflineFirstSerdesWithTypeArgument input,
           {provider,

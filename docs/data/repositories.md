@@ -2,6 +2,8 @@
 
 A repository routes application data to and from one or many providers. Repositories should only hold repository-specific logic and not pass interpreted data to its providers (e.g. the repository does not transform a `Query` into a SQL statement for its SQLite provider).
 
+Brick **does not synchronize data automatically between providers**. Learn about how [to synchronize and reconile data between multiple providers on Synchronization](data/synchronization.md).
+
 ## Integrate
 
 To use a repository seamlessly with a state management system like BLoCs without passing around context, access the repository as a singleton:
@@ -47,8 +49,6 @@ class BootScreenState extends State<BootScreen> {
 
 ## Access
 
-
-
 End-implementation uses (e.g. a Flutter application) should `extend` an abstract repository and pass arguments to `super`. If custom methods need to be added, they can be written in the application-specific repository and not the abstract one. Application-specific `brick.g.dart` are also imported:
 
 ```dart
@@ -63,16 +63,6 @@ class MyRepository extends OfflineFirstRepository {
   );
 }
 ```
-
-## Syncing Changes Between Providers
-
-While a repository manages different providers and consolidates requests to a single entrypoint, **Brick does not automatically sync changes between providers**. For example, while Client A may invoke `upsert<Pizza>(pepperoniPizza)` and notify REST, SQLite, and MemoryCache providers of a new `pepperoniPizza`, Client B will not receive this `pepperoniPizza` automatically. This synchronization is up to the implementation as remote providers vary in how they transmit data. Some examples of how to sync data:
-
-* Set up a push notification system that notifies the client every time a change occurs in the API, triggering a resync to hydrate the results in the background
-* Short poll the remote provider for new responses every x seconds and hydrate the results in the background
-* Subscribe to a websockets channel and stream responses and hydrate the results in the background
-
-It is strongly recommended to use a [string-based identifier for models created on the client](https://pub.dev/packages/uuid) and to index this value in the remote provider. Relying on a primary key generated within a remote table is not recommended, as instances created on the client can cause collisions.
 
 ## Creating a Custom Repository
 

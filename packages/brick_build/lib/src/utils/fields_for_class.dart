@@ -1,6 +1,5 @@
 // Borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/3b3e25e7522ad71011aa23656b3cd66cdc8b860c/json_serializable/lib/src/field_helpers.dart)
 import 'package:analyzer/dart/element/element.dart';
-// ignore: implementation_imports
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:source_gen/source_gen.dart';
 

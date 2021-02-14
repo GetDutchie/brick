@@ -16,15 +16,29 @@
     ```bash
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
     ```
-
-    Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
-
+1. Add [models](data/models.md) that contain your app logic. Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](sqlite.md). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
 1. Extend [an existing repository](data/repositories.md) or create your own:
     ```dart
     // lib/app/repository.dart
-    class MyRepository extends OfflineFirstWithRestRepository {}
+    import 'package:brick_offline_first/offline_first_with_rest.dart';
+    import 'package:audio_journal/app/brick.g.dart';
+    export 'package:brick_offline_first/offline_first_with_rest.dart' show Query, Where, And, Or, WherePhrase;
+
+    class Repository extends OfflineFirstWithRestRepository {
+      Repository()
+          : super(
+              restProvider: RestProvider(
+                'http://localhost:3000',
+                modelDictionary: restModelDictionary,
+              ),
+              sqliteProvider: SqliteProvider(
+                _DB_NAME,
+                modelDictionary: sqliteModelDictionary,
+              ),
+            );
+    }
     ```
-1. Add [models](data/models.md) that contain your app logic.
 1. Profit.
 
 ## Learn

@@ -2,6 +2,7 @@
 
 * Support `columnType` from SQLite annotations
 * When deleting many associations from a parent, remove the association in the joins table but do not delete the instance. This is only applicable to non-final instance fields. (#112)
+* Support spaces in compound orderBy clauses (i.e. `'orderBy': 'firstField DESC, secondField ASC'` where previously only `'orderBy': 'firstField DESC,secondField ASC'` worked)
 
 ## 0.1.6+1
 

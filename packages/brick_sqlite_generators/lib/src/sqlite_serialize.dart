@@ -60,11 +60,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }).map(_saveIterableAssociationFieldToJoins);
 
     return [
-      'final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
+      '@override\nfinal Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       primaryKeyByUniqueColumns,
-      "final String tableName = '$tableName';",
+      "@override\nfinal String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)
-        "Future<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
+        "@override\nFuture<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
     ];
   }
 
@@ -154,7 +154,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   @mustCallSuper
   String generateUniqueSqliteFunction(Map<String, String> uniqueFields) {
     final functionDeclaration =
-        'Future<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
+        '@override\nFuture<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
     final whereStatement = <String>[];
     final valuesStatement = <String>[];
     final selectStatement = <String>[];

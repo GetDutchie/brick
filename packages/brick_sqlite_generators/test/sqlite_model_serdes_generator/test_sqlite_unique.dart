@@ -22,6 +22,7 @@ Future<Map<String, dynamic>> _$SqliteUniqueToSqlite(SqliteUnique instance,
 class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
   SqliteUniqueAdapter();
 
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -36,6 +37,7 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
       SqliteUnique instance, DatabaseExecutor executor) async {
     final results = await executor.rawQuery('''
@@ -49,12 +51,15 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
     return results.first['_brick_id'];
   }
 
+  @override
   final String tableName = 'SqliteUnique';
 
+  @override
   Future<SqliteUnique> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$SqliteUniqueFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(SqliteUnique input,
           {provider, repository}) async =>
       await _$SqliteUniqueToSqlite(input,

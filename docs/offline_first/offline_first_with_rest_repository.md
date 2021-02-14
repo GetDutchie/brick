@@ -1,6 +1,6 @@
 # Offline First With Rest Repository
 
-`OfflineFirstWithRestRepository` streamlines the REST integration with an `OfflineFirstRepository`. A serial queue is included to track REST requests in a separate SQLite database, only removing requests when a response is not returned from the host (i.e. the device has lost internet connectivity).
+`OfflineFirstWithRestRepository` streamlines the REST integration with an `OfflineFirstRepository`. A serial queue is included to track REST requests in a separate SQLite database, only removing requests when a response is returned from the host (i.e. the device has lost internet connectivity). See `OfflineFirstWithRest#reattemptForStatusCodes`.
 
 The `OfflineFirstWithRest` domain uses all the same configurations and annotations as `OfflineFirst`.
 

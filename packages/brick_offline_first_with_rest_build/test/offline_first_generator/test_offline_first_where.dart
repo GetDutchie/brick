@@ -124,9 +124,13 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
 class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   OfflineFirstWhereAdapter();
 
+  @override
   String restEndpoint({query, instance}) => '';
+  @override
   final String fromKey = null;
+  @override
   final String toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -165,10 +169,13 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       type: Assoc,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           OfflineFirstWhere instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'OfflineFirstWhere';
+  @override
   Future<void> afterSave(instance, {provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assocs?.map((s) async {
@@ -207,18 +214,22 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
     }
   }
 
+  @override
   Future<OfflineFirstWhere> fromRest(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstWhereFromRest(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(OfflineFirstWhere input,
           {provider, repository}) async =>
       await _$OfflineFirstWhereToRest(input,
           provider: provider, repository: repository);
+  @override
   Future<OfflineFirstWhere> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$OfflineFirstWhereFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(OfflineFirstWhere input,
           {provider, repository}) async =>
       await _$OfflineFirstWhereToSqlite(input,
