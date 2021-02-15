@@ -24,6 +24,7 @@ Future<Map<String, dynamic>> _$SqliteColumnTypeToSqlite(
 class SqliteColumnTypeAdapter extends SqliteAdapter<SqliteColumnType> {
   SqliteColumnTypeAdapter();
 
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -38,15 +39,19 @@ class SqliteColumnTypeAdapter extends SqliteAdapter<SqliteColumnType> {
       type: int,
     )
   };
+  @override
   Future<int> primaryKeyByUniqueColumns(
           SqliteColumnType instance, DatabaseExecutor executor) async =>
       instance?.primaryKey;
+  @override
   final String tableName = 'SqliteColumnType';
 
+  @override
   Future<SqliteColumnType> fromSqlite(Map<String, dynamic> input,
           {provider, repository}) async =>
       await _$SqliteColumnTypeFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(SqliteColumnType input,
           {provider, repository}) async =>
       await _$SqliteColumnTypeToSqlite(input,

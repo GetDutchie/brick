@@ -38,6 +38,8 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   @override
   bool ignoreCoderForField(field, annotation, checker) {
     if (annotation.columnType != null) {
+      if (checker.isSerializable) return false;
+
       if (doesDeserialize) {
         if (annotation.fromGenerator == null) {
           throw InvalidGenerationSourceError(

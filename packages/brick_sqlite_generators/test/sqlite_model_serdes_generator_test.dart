@@ -38,6 +38,14 @@ void main() {
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
+
+      test('ColumnTypeWithoutFrom', () async {
+        final reader = await generateReader('column_type_without_generator');
+        expect(
+          () async => await _generator.generate(reader, null),
+          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+        );
+      });
     });
 
     group('@Sqlite', () {
