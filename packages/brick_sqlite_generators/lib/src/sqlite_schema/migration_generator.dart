@@ -72,8 +72,11 @@ class MigrationGenerator extends Generator {
           reader.read('name').stringValue,
         );
       } else if (_insertColumnChecker.isExactlyType(object.type)) {
-        final definitionObject =
+        final definitionType =
             reader.read('definitionType').isNull ? null : reader.read('definitionType').objectValue;
+        final definitionObject = reader.read('columnType').isNull
+            ? definitionType
+            : reader.read('columnType').objectValue;
         final definitionValue = Column.values.singleWhere(
           (f) => definitionObject?.getField(f.toString().split('.')[1]) != null,
           orElse: () => null,
