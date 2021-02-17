@@ -202,7 +202,7 @@ class SqliteSchemaGenerator {
     if (column.columnType != null) {
       return SchemaColumn(
         column.name,
-        null,
+        checker.asPrimitive,
         columnType: column.columnType,
         nullable: column?.nullable,
         unique: column?.unique,
