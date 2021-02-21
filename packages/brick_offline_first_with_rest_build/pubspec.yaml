@@ -10,16 +10,13 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  analyzer: ^0.39.0
+  analyzer: ">=0.39.0 <0.40.0"
   brick_offline_first_abstract: ^0.0.8
-  brick_rest_generators:
-    git:
-      url: https://github.com/greenbits/brick.git
-      path: packages/brick_rest_generators
-  brick_sqlite_generators:
-    git:
-      url: https://github.com/greenbits/brick.git
-      path: packages/brick_sqlite_generators
+  brick_build: 0.0.9
+  brick_rest: 0.0.8
+  brick_rest_generators: 0.0.1
+  brick_sqlite_abstract: 0.1.0
+  brick_sqlite_generators: 0.0.1
   build: ^1.2.0
   build_config: ^0.4.0
   dart_style: ^1.2.4
