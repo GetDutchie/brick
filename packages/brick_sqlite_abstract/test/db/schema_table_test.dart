@@ -99,7 +99,7 @@ void main() {
 
     test('#forGenerator', () {
       var column = SchemaColumn('first_name', Column.varchar);
-      expect(column.forGenerator, "SchemaColumn('first_name', String)");
+      expect(column.forGenerator, "SchemaColumn('first_name', Column.varchar)");
 
       column = SchemaColumn('_brick_id', Column.integer, autoincrement: true, isPrimaryKey: true);
       expect(

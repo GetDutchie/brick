@@ -1,6 +1,6 @@
 ## Unreleased
 
-## 1.0.0
+## 0.1.0
 
 * Declare a custom `columnType` with `@Sqlite`. Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite).
 * **BREAKING CHANGE** Positional argument `type`is no longer accepted when initializing `SchemaColumn`. The type was converted to a SQLite column type and rendered as the SQLite type in generators. Instead, explicitly define the `columnType` to use, such as `Column.integer`. For existing implementations, `SchemaColumn` should only be declared in generated `schema.g.dart` files. If the schema has not been committed to VCS (as recommended), no update steps will be necessary. Migrations remain unaffected.
