@@ -18,7 +18,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
     SchemaColumn('integer', Column.integer),
-    SchemaColumn('boolean', Column.bool),
+    SchemaColumn('boolean', Column.boolean),
     SchemaColumn('dub', Column.Double),
     SchemaColumn('string', Column.varchar),
     SchemaColumn('list', Column.varchar),

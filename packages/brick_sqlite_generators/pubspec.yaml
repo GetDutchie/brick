@@ -10,8 +10,13 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  brick_build: ^0.0.8+2
+  analyzer: ">=0.39.0 <0.40.0"
+  brick_build: ^0.0.9
   brick_sqlite_abstract: 0.1.0
+  build: ^1.2.0
+  dart_style: ^1.2.4
+  meta: ^1.1.6
+  source_gen: ^0.9.0
 
 dev_dependencies:
   test: ">=1.11.0 <2.0.0"
