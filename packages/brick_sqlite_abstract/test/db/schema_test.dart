@@ -272,7 +272,7 @@ Schema(
     SchemaTable(
       'demo',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
+        SchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
 
@@ -281,7 +281,7 @@ Schema(
     SchemaTable(
       'demo2',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true)
+        SchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
 

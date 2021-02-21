@@ -17,10 +17,10 @@ void main() {
       expect(table.forGenerator, '''SchemaTable(
 \t'users',
 \tcolumns: <SchemaColumn>{
-\t\tSchemaColumn('first_name', String),
-\t\tSchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true),
-\t\tSchemaColumn('amount', int, defaultValue: 0),
-\t\tSchemaColumn('last_name', String, nullable: false)
+\t\tSchemaColumn('first_name', columnType: Column.varchar),
+\t\tSchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, isPrimaryKey: true),
+\t\tSchemaColumn('amount', columnType: Column.integer, defaultValue: 0),
+\t\tSchemaColumn('last_name', columnType: Column.varchar, nullable: false)
 \t},
 \tindices: <SchemaIndex>{
 
@@ -104,26 +104,28 @@ void main() {
       column = SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true);
       expect(
         column.forGenerator,
-        "SchemaColumn('_brick_id', int, autoincrement: true, isPrimaryKey: true)",
+        "SchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, isPrimaryKey: true)",
       );
 
       column = SchemaColumn('amount', int, defaultValue: 0);
-      expect(column.forGenerator, "SchemaColumn('amount', int, defaultValue: 0)");
+      expect(column.forGenerator,
+          "SchemaColumn('amount', columnType: Column.integer, defaultValue: 0)");
 
       column = SchemaColumn('last_name', String, nullable: false);
-      expect(column.forGenerator, "SchemaColumn('last_name', String, nullable: false)");
+      expect(column.forGenerator,
+          "SchemaColumn('last_name', columnType: Column.varchar, nullable: false)");
 
       column = SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat');
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false, onDeleteSetDefault: false)",
+        "SchemaColumn('hat_id', columnType: Column.integer, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false, onDeleteSetDefault: false)",
       );
 
       column = SchemaColumn('hat_id', int,
           isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
       expect(
         column.forGenerator,
-        "SchemaColumn('hat_id', int, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
+        "SchemaColumn('hat_id', columnType: Column.integer, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
       );
     });
 

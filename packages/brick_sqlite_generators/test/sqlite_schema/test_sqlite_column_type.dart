@@ -15,9 +15,9 @@ final Set<Migration> migrations = <Migration>{};
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('ExplicitColumnType', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', int,
+    SchemaColumn('_brick_id', columnType: Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('image', null, columnType: Column.blob)
+    SchemaColumn('image', columnType: Column.blob)
   }, indices: <SchemaIndex>{})
 });
 ''';

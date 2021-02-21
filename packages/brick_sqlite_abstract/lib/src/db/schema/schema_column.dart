@@ -9,7 +9,6 @@ import 'schema_base.dart';
 class SchemaColumn extends BaseSchemaObject {
   @override
   String name;
-  final Type type;
   final bool autoincrement;
   final Column columnType;
   final dynamic defaultValue;
@@ -25,9 +24,10 @@ class SchemaColumn extends BaseSchemaObject {
 
   SchemaColumn(
     this.name,
-    this.type, {
+    @Deprecated('Positional argument [type] will be removed in a future release; use named argument [columnType] instead.')
+        Type type, {
     bool autoincrement,
-    this.columnType,
+    Column columnType,
     this.defaultValue,
     this.isPrimaryKey = false,
     this.isForeignKey = false,
@@ -41,19 +41,16 @@ class SchemaColumn extends BaseSchemaObject {
         unique = unique ?? InsertColumn.defaults.unique,
         assert(columnType != null || Migration.fromDartPrimitive(type) != null,
             'Type must serializable'),
+        columnType = columnType ?? Migration.fromDartPrimitive(type),
         assert(!isPrimaryKey || type == int, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
   @override
   String get forGenerator {
-    final parts = ["'$name'", type];
+    final parts = ["'$name'", 'columnType: $columnType'];
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
       parts.add('autoincrement: $autoincrement');
-    }
-
-    if (columnType != null) {
-      parts.add('columnType: $columnType');
     }
 
     if (defaultValue != null) {
@@ -100,7 +97,7 @@ class SchemaColumn extends BaseSchemaObject {
 
     return InsertColumn(
       name,
-      columnType ?? Migration.fromDartPrimitive(type),
+      columnType,
       onTable: tableName,
       defaultValue: defaultValue,
       autoincrement: autoincrement,
@@ -114,12 +111,11 @@ class SchemaColumn extends BaseSchemaObject {
       identical(this, other) ||
       other is SchemaColumn &&
           name == other.name &&
-          type == other.type &&
           columnType == other.columnType &&
           // tableNames don't compare nicely since they're non-final
           (tableName ?? '').compareTo(other.tableName ?? '') == 0 &&
           forGenerator == other.forGenerator;
 
   @override
-  int get hashCode => name.hashCode ^ type.hashCode ^ columnType.hashCode ^ forGenerator.hashCode;
+  int get hashCode => name.hashCode ^ columnType.hashCode ^ forGenerator.hashCode;
 }

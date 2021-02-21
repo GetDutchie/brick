@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Declare a custom `columnType` with `@Sqlite`. Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite).
+* Positional argument `type` will be deprecated when initializing `SchemaColumn`. The type was converted to a SQLite column type and rendered as the SQLite type in generators; therefore, use the named argument `columnType`
 
 ## 0.0.9+1
 
