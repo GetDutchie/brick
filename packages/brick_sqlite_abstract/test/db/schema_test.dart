@@ -20,7 +20,7 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 },
               )
@@ -48,7 +48,7 @@ void main() {
               SchemaTable(
                 'demo1',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true)
                 },
               )
@@ -94,9 +94,9 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
-                  SchemaColumn('name', String)
+                  SchemaColumn('name', Column.varchar)
                 },
               )
             },
@@ -128,9 +128,9 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
-                  SchemaColumn('first_name', String)
+                  SchemaColumn('first_name', Column.varchar)
                 },
               )
             },
@@ -157,9 +157,10 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
-                  SchemaColumn('demo2_id', int, isForeignKey: true, foreignTableName: 'demo2')
+                  SchemaColumn('demo2_id', Column.integer,
+                      isForeignKey: true, foreignTableName: 'demo2')
                 },
               )
             },
@@ -179,7 +180,7 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
                 },
                 indices: <SchemaIndex>{
@@ -203,7 +204,7 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', int,
+                  SchemaColumn('_brick_id', Column.integer,
                       autoincrement: true, nullable: false, isPrimaryKey: true),
                 },
                 indices: <SchemaIndex>{},
@@ -224,14 +225,14 @@ void main() {
             SchemaTable(
               'demo',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', int,
+                SchemaColumn('_brick_id', Column.integer,
                     autoincrement: true, nullable: false, isPrimaryKey: true)
               },
             ),
             SchemaTable(
               'demo2',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', int,
+                SchemaColumn('_brick_id', Column.integer,
                     autoincrement: true, nullable: false, isPrimaryKey: true)
               },
             ),
@@ -272,7 +273,7 @@ Schema(
     SchemaTable(
       'demo',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
+        SchemaColumn('_brick_id', Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
 
@@ -281,7 +282,7 @@ Schema(
     SchemaTable(
       'demo2',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', columnType: Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
+        SchemaColumn('_brick_id', Column.integer, autoincrement: true, nullable: false, isPrimaryKey: true)
       },
       indices: <SchemaIndex>{
 

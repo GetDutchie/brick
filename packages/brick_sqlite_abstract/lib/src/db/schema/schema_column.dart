@@ -1,6 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
-import '../migration.dart' show Migration, Column;
+import '../migration.dart' show Column;
 import '../migration_commands.dart';
 import 'schema_base.dart';
 
@@ -24,10 +24,8 @@ class SchemaColumn extends BaseSchemaObject {
 
   SchemaColumn(
     this.name,
-    @Deprecated('Positional argument [type] will be removed in a future release; use named argument [columnType] instead.')
-        Type type, {
+    this.columnType, {
     bool autoincrement,
-    Column columnType,
     this.defaultValue,
     this.isPrimaryKey = false,
     this.isForeignKey = false,
@@ -39,15 +37,13 @@ class SchemaColumn extends BaseSchemaObject {
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
-        assert(columnType != null || Migration.fromDartPrimitive(type) != null,
-            'Type must serializable'),
-        columnType = columnType ?? Migration.fromDartPrimitive(type),
-        assert(!isPrimaryKey || type == int, 'Primary key must be an integer'),
+        assert(columnType != null, 'Type must serializable'),
+        assert(!isPrimaryKey || columnType == Column.integer, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
   @override
   String get forGenerator {
-    final parts = ["'$name'", 'columnType: $columnType'];
+    final parts = ["'$name'", columnType];
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
       parts.add('autoincrement: $autoincrement');

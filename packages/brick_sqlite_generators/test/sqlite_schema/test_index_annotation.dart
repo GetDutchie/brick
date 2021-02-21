@@ -14,10 +14,10 @@ final Set<Migration> migrations = <Migration>{};
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('IndexAnnotation', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', columnType: Column.integer,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('non_unique', columnType: Column.varchar),
-    SchemaColumn('unique', columnType: Column.varchar, unique: true)
+    SchemaColumn('non_unique', Column.varchar),
+    SchemaColumn('unique', Column.varchar, unique: true)
   }, indices: <SchemaIndex>{
     SchemaIndex(columns: ['non_unique'], unique: false),
     SchemaIndex(columns: ['unique'], unique: true)

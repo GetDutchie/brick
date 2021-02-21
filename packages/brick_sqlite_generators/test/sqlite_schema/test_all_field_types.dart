@@ -15,15 +15,15 @@ final Set<Migration> migrations = <Migration>{};
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('AllFieldTypes', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', columnType: Column.integer,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('integer', columnType: Column.integer),
-    SchemaColumn('boolean', bool),
-    SchemaColumn('dub', double),
-    SchemaColumn('string', columnType: Column.varchar),
-    SchemaColumn('list', columnType: Column.varchar),
-    SchemaColumn('longer_camelized_variable', columnType: Column.varchar),
-    SchemaColumn('casing', columnType: Column.integer)
+    SchemaColumn('integer', Column.integer),
+    SchemaColumn('boolean', Column.bool),
+    SchemaColumn('dub', Column.Double),
+    SchemaColumn('string', Column.varchar),
+    SchemaColumn('list', Column.varchar),
+    SchemaColumn('longer_camelized_variable', Column.varchar),
+    SchemaColumn('casing', Column.integer)
   }, indices: <SchemaIndex>{})
 });
 ''';

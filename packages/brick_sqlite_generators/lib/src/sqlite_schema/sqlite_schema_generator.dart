@@ -202,8 +202,7 @@ class SqliteSchemaGenerator {
     if (column.columnType != null) {
       return SchemaColumn(
         column.name,
-        null,
-        columnType: column.columnType,
+        column.columnType,
         nullable: column?.nullable,
         unique: column?.unique,
       );
@@ -219,7 +218,7 @@ class SqliteSchemaGenerator {
     } else if (checker.isEnum) {
       return SchemaColumn(
         column.name,
-        int,
+        Column.integer,
         nullable: column?.nullable,
         unique: column?.unique,
       );
@@ -227,7 +226,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         InsertForeignKey.foreignKeyColumnName(
             checker.unFuturedType.getDisplayString(), column.name),
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: checker.unFuturedType.getDisplayString(),
         nullable: column?.nullable,
@@ -238,7 +237,7 @@ class SqliteSchemaGenerator {
       // Iterables and Maps are stored as JSON
       return SchemaColumn(
         column.name,
-        String,
+        Column.text,
         nullable: column?.nullable,
         unique: column?.unique,
       );
