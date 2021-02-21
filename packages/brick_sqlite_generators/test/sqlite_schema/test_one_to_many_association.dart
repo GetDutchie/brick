@@ -24,18 +24,18 @@ final Set<Migration> migrations = <Migration>{};
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('SqliteAssoc', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', int,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true)
   }, indices: <SchemaIndex>{}),
   SchemaTable('_brick_OneToManyAssocation_assoc', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', int,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_OneToManyAssocation_brick_id', int,
+    SchemaColumn('l_OneToManyAssocation_brick_id', Column.integer,
         isForeignKey: true,
         foreignTableName: 'OneToManyAssocation',
         onDeleteCascade: true,
         onDeleteSetDefault: false),
-    SchemaColumn('f_SqliteAssoc_brick_id', int,
+    SchemaColumn('f_SqliteAssoc_brick_id', Column.integer,
         isForeignKey: true,
         foreignTableName: 'SqliteAssoc',
         onDeleteCascade: true,
@@ -46,7 +46,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
         unique: true)
   }),
   SchemaTable('OneToManyAssocation', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', int,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true)
   }, indices: <SchemaIndex>{})
 });

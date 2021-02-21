@@ -1,8 +1,24 @@
 import 'package:brick_core/field_serializable.dart';
 
+import 'package:brick_sqlite_abstract/src/db/migration.dart' show Column;
+export 'package:brick_sqlite_abstract/src/db/migration.dart' show Column;
+
 /// An annotation used to specify how a field is serialized.
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
 class Sqlite implements FieldSerializable {
+  /// In very exceptional circumstance, the SQLite column type can be declared.
+  ///
+  /// Leaving this field `null` will allow Brick to infer the column type from the
+  /// Type argument. This will not create foreign keys or associations.
+  ///
+  /// Because this value overrides Brick assumptions about the column type, the field
+  /// will be inserted (toSqlite) **as is** and returned **as is** from deserialization
+  /// (fromSqlite). Brick's conversions to and from Iterables or Futures **will not apply**.
+  /// If additional manipulation is (likely) required, specify [fromGenerator] and [toGenerator].
+  ///
+  /// Advanced use only.
+  final Column columnType;
+
   @override
   final String defaultValue;
 
@@ -74,6 +90,7 @@ class Sqlite implements FieldSerializable {
   ///
   /// Only required when the default behavior is not desired.
   const Sqlite({
+    this.columnType,
     this.defaultValue,
     this.fromGenerator,
     this.ignore,

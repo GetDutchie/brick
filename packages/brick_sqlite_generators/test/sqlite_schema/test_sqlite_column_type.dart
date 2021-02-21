@@ -1,6 +1,6 @@
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'dart:typed_data';
 
-enum Casing { Snake, Camel }
+import 'package:brick_sqlite_abstract/annotations.dart';
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -14,16 +14,10 @@ final Set<Migration> migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
-  SchemaTable('AllFieldTypes', columns: <SchemaColumn>{
+  SchemaTable('ExplicitColumnType', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('integer', Column.integer),
-    SchemaColumn('boolean', Column.bool),
-    SchemaColumn('dub', Column.Double),
-    SchemaColumn('string', Column.varchar),
-    SchemaColumn('list', Column.varchar),
-    SchemaColumn('longer_camelized_variable', Column.varchar),
-    SchemaColumn('casing', Column.integer)
+    SchemaColumn('image', Column.blob)
   }, indices: <SchemaIndex>{})
 });
 ''';
@@ -33,22 +27,9 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 /// and [SqliteSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
-class AllFieldTypes {
-  AllFieldTypes({
-    this.integer,
-    this.boolean,
-    this.dub,
-    this.string,
-    this.list,
-    this.longerCamelizedVariable,
-    this.casing,
-  });
+class ExplicitColumnType {
+  @Sqlite(columnType: Column.blob)
+  final Uint8List image;
 
-  final int integer;
-  final bool boolean;
-  final double dub;
-  final String string;
-  final List<int> list;
-  final String longerCamelizedVariable;
-  final Casing casing;
+  ExplicitColumnType({this.image});
 }

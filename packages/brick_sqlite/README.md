@@ -48,6 +48,19 @@ flutter pub run build_runner watch
 
 `Map`s can be serialized, but they must be digestible by `jsonEncode`.
 
+### `@Sqlite(columnType:)`
+
+In some exceptional circumstances, low-level manipulation of Brick's automatic schema creation is necessary.
+
+:warning: This is an advanced feature. In nearly every case, you can trust Brick's determination of your field. If you're frequently using this option, consider your greater architecture and use of Brick.
+
+```dart
+@Sqlite(columnType: Column.blob)
+final Uint8List image;
+```
+
+:warning: Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)` are required if Brick does not know how [to serialize the field](https://github.com/greenbits/brick/blob/master/packages/brick_build/lib/src/utils/shared_checker.dart#L94-L109).
+
 ### `@Sqlite(name:)`
 
 SQLite column names can be named per field except with associations. Using `name:` is **strongly discouraged** as Brick's naming consistency is reliable and easily managed through migrations.
@@ -56,6 +69,17 @@ SQLite column names can be named per field except with associations. Using `name
 @Sqlite(name: "full_name")
 final String lastName;
 ```
+
+### `@Sqlite(unique:)`
+
+This fields are marked `UNIQUE` in SQLite and are useful for external identifiers. An error will throw if a non-unique value is inserted.
+
+```dart
+@Sqlite(unique: true)
+final String lastName;
+```
+
+## Updating Associations
 
 If your instance fields are mutable (i.e. non `final`), Brick will reconcile associations after saving the instance.
 

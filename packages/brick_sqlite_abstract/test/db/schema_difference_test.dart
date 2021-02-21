@@ -2,13 +2,14 @@ import '__mocks__.dart';
 
 void main() {
   group('SchemaDifference', () {
-    final column = SchemaColumn('name', String);
+    final column = SchemaColumn('name', Column.varchar);
     SchemaTable table;
 
     final tableNoColumn = SchemaTable(
       'demo',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('_brick_id', Column.integer,
+            autoincrement: true, nullable: false, isPrimaryKey: true),
       },
     );
 
@@ -16,7 +17,8 @@ void main() {
       table = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn('_brick_id', Column.integer,
+              autoincrement: true, nullable: false, isPrimaryKey: true),
           column
         },
       );
@@ -73,7 +75,7 @@ void main() {
             SchemaTable(
               'demo',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', int,
+                SchemaColumn('_brick_id', Column.integer,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 column,
               },
@@ -81,9 +83,9 @@ void main() {
             SchemaTable(
               'users',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', int,
+                SchemaColumn('_brick_id', Column.integer,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
-                SchemaColumn('email', String)
+                SchemaColumn('email', Column.varchar)
               },
             ),
           },
@@ -102,7 +104,7 @@ void main() {
     test('#addedForeignKeys', () {
       final foreignKeyColumn = SchemaColumn(
         'user_id',
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: 'user',
       );
@@ -120,7 +122,7 @@ void main() {
     test('#addedForeignKeys:onDeleteCascade', () {
       final foreignKeyColumn = SchemaColumn(
         'user_id',
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: 'user',
       );
@@ -128,13 +130,14 @@ void main() {
       final newTable = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn('_brick_id', Column.integer,
+              autoincrement: true, nullable: false, isPrimaryKey: true),
           column
         },
       );
       final foreignKeyColumnWithOnDeleteCascade = SchemaColumn(
         'user_id',
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: 'user',
         onDeleteCascade: true,
@@ -153,7 +156,7 @@ void main() {
     test('#addedForeignKeys:onDeleteSetDefault', () {
       final foreignKeyColumn = SchemaColumn(
         'user_id',
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: 'user',
       );
@@ -161,13 +164,14 @@ void main() {
       final newTable = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn('_brick_id', Column.integer,
+              autoincrement: true, nullable: false, isPrimaryKey: true),
           column
         },
       );
       final foreignKeyColumnWithOnDeleteSetDefault = SchemaColumn(
         'user_id',
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: 'user',
         onDeleteSetDefault: true,
@@ -243,18 +247,18 @@ void main() {
             SchemaTable(
               '_brick_People_friend',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', int,
+                SchemaColumn('_brick_id', Column.integer,
                     autoincrement: true, nullable: false, isPrimaryKey: true),
                 SchemaColumn(
                   'l_People_brick_id',
-                  int,
+                  Column.integer,
                   isForeignKey: true,
                   foreignTableName: 'People',
                   onDeleteSetDefault: true,
                 ),
                 SchemaColumn(
                   'f_Friend_brick_id',
-                  int,
+                  Column.integer,
                   isForeignKey: true,
                   foreignTableName: 'Friend',
                   onDeleteSetDefault: true,

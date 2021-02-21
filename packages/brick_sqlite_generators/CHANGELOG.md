@@ -8,4 +8,5 @@
 * Fix deserializing for null sibling arrays
 * Booleans are serialized as 1s or 0s
 * Foreign keys are no longer serialized in a JSON array and stored as a string
+* Support `columnType` from SQLite annotations
 * Reconcile changes for non-final associations (#112)

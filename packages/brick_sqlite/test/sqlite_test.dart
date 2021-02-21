@@ -139,14 +139,14 @@ void main() {
           InsertForeignKey.joinsTableName(columnName, localTableName: localTableName);
       final joinsColumnLocal = SchemaColumn(
         InsertForeignKey.joinsTableLocalColumnName(localTableName),
-        int,
+        Column.integer,
         foreignTableName: localTableName,
         isForeignKey: true,
         onDeleteCascade: true,
       )..tableName = joinsTableName;
       final joinsColumnForeign = SchemaColumn(
         InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: foreignTableName,
         onDeleteCascade: true,

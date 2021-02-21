@@ -72,7 +72,7 @@ class Schema {
       final table = tables.firstWhere((s) => s.name == command.name);
       table.columns.add(SchemaColumn(
         InsertTable.PRIMARY_KEY_COLUMN,
-        int,
+        Column.integer,
         autoincrement: true,
         nullable: false,
         isPrimaryKey: true,
@@ -88,7 +88,7 @@ class Schema {
       final table = findTable(command.onTable);
       table.columns.add(SchemaColumn(
         command.name,
-        Migration.toDartPrimitive(command.definitionType),
+        command.definitionType,
         autoincrement: command.autoincrement,
         defaultValue: command.defaultValue,
         isPrimaryKey: false,
@@ -116,7 +116,7 @@ class Schema {
       final table = findTable(command.localTableName);
       table.columns.add(SchemaColumn(
         command.foreignKeyColumn,
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: command.foreignTableName,
         onDeleteCascade: command.onDeleteCascade,

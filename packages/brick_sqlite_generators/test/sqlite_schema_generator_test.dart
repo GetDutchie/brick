@@ -7,6 +7,7 @@ import 'package:brick_build/testing.dart';
 
 import 'sqlite_schema/test_simple.dart' as _$simple;
 import 'sqlite_schema/test_nullable.dart' as _$nullable;
+import 'sqlite_schema/test_sqlite_column_type.dart' as _$sqliteColumnType;
 import 'sqlite_schema/test_one_to_one_association.dart' as _$oneToOneAssociation;
 import 'sqlite_schema/test_one_to_many_association.dart' as _$oneToManyAssociation;
 import 'sqlite_schema/test_index_annotation.dart' as _$indexAnnotation;
@@ -21,6 +22,11 @@ void main() {
       test('AllFieldTypes', () async {
         final input = await generateInput('all_field_types');
         expect(input, _$allFieldTypes.output);
+      });
+
+      test('ColumnType', () async {
+        final input = await generateInput('sqlite_column_type');
+        expect(input, _$sqliteColumnType.output);
       });
 
       test('Nullable', () async {

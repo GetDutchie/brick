@@ -17,6 +17,8 @@ enum Column {
   Double,
   integer,
   float,
+
+  /// DOUBLE column type is used
   num,
   text,
   varchar

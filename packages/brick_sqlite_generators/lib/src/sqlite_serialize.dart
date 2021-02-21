@@ -80,6 +80,10 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
     }
 
+    if (fieldAnnotation.columnType != null) {
+      return fieldValue;
+    }
+
     // DateTime
     if (checker.isDateTime) {
       return '$fieldValue?.toIso8601String()';
@@ -176,6 +180,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'];
     }""";
+  }
+
+  @override
+  bool ignoreCoderForField(field, annotation, checker) {
+    if (annotation.columnType != null) return false;
+    return super.ignoreCoderForField(field, annotation, checker);
   }
 
   String _saveIterableAssociationFieldToJoins(FieldElement field) {

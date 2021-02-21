@@ -5,6 +5,7 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/string_helpers.dart';
+import 'package:brick_sqlite_abstract/db.dart' show Column;
 
 /// Find `@Sqlite` given a field
 class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
@@ -28,7 +29,16 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
       );
     }
 
+    final columnTypeObject = obj.getField('columnType');
+    // a hacky way around getting the value because `.fields` is not
+    // exposed in DartObjectImpl
+    final columnType = Column.values.firstWhere((c) {
+      final asString = c.toString().split('.').last;
+      return columnTypeObject.getField(asString) != null;
+    }, orElse: () => null);
+
     return Sqlite(
+      columnType: columnType,
       defaultValue: obj.getField('defaultValue').toStringValue(),
       fromGenerator: obj.getField('fromGenerator').toStringValue(),
       ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,

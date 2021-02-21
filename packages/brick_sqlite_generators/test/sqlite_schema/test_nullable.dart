@@ -13,9 +13,9 @@ final Set<Migration> migrations = <Migration>{};
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('Nullable', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', int,
+    SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('name', String, nullable: false)
+    SchemaColumn('name', Column.varchar, nullable: false)
   }, indices: <SchemaIndex>{})
 });
 ''';

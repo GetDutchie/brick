@@ -100,14 +100,14 @@ class SqliteSchemaGenerator {
         columns: {
           SchemaColumn(
             InsertTable.PRIMARY_KEY_COLUMN,
-            int,
+            Column.integer,
             autoincrement: true,
             isPrimaryKey: true,
             nullable: false,
           ),
           SchemaColumn(
             InsertForeignKey.joinsTableLocalColumnName(localTableName),
-            int,
+            Column.integer,
             isForeignKey: true,
             foreignTableName: localTableName,
             nullable: foreignTableColumnDefinition?.nullable,
@@ -116,7 +116,7 @@ class SqliteSchemaGenerator {
           ),
           SchemaColumn(
             InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-            int,
+            Column.integer,
             isForeignKey: true,
             foreignTableName: foreignTableName,
             nullable: foreignTableColumnDefinition?.nullable,
@@ -143,7 +143,7 @@ class SqliteSchemaGenerator {
       0,
       SchemaColumn(
         InsertTable.PRIMARY_KEY_COLUMN,
-        int,
+        Column.integer,
         autoincrement: true,
         isPrimaryKey: true,
         nullable: false,
@@ -168,6 +168,9 @@ class SqliteSchemaGenerator {
     return fields.stableInstanceFields.map((field) {
       final checker = checkerForField(field);
       final column = fields.finder.annotationForField(field);
+
+      // ignore all other checks if a custom column type is defined
+      if (column.columnType != null) return schemaColumn(column, checker: checker);
 
       if (column.ignore ||
           !checker.isSerializable ||
@@ -196,17 +199,26 @@ class SqliteSchemaGenerator {
   @visibleForOverriding
   @mustCallSuper
   SchemaColumn schemaColumn(Sqlite column, {SharedChecker checker}) {
+    if (column.columnType != null) {
+      return SchemaColumn(
+        column.name,
+        column.columnType,
+        nullable: column?.nullable,
+        unique: column?.unique,
+      );
+    }
+
     if (checker.isDartCoreType) {
       return SchemaColumn(
         column.name,
-        checker.asPrimitive,
+        Migration.fromDartPrimitive(checker.asPrimitive),
         nullable: column?.nullable,
         unique: column?.unique,
       );
     } else if (checker.isEnum) {
       return SchemaColumn(
         column.name,
-        int,
+        Column.integer,
         nullable: column?.nullable,
         unique: column?.unique,
       );
@@ -214,7 +226,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         InsertForeignKey.foreignKeyColumnName(
             checker.unFuturedType.getDisplayString(), column.name),
-        int,
+        Column.integer,
         isForeignKey: true,
         foreignTableName: checker.unFuturedType.getDisplayString(),
         nullable: column?.nullable,
@@ -225,7 +237,7 @@ class SqliteSchemaGenerator {
       // Iterables and Maps are stored as JSON
       return SchemaColumn(
         column.name,
-        String,
+        Column.varchar,
         nullable: column?.nullable,
         unique: column?.unique,
       );

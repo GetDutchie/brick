@@ -1,6 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
-import '../migration.dart' show Migration;
+import '../migration.dart' show Column;
 import '../migration_commands.dart';
 import 'schema_base.dart';
 
@@ -9,8 +9,8 @@ import 'schema_base.dart';
 class SchemaColumn extends BaseSchemaObject {
   @override
   String name;
-  final Type type;
   final bool autoincrement;
+  final Column columnType;
   final dynamic defaultValue;
   final bool nullable;
   final bool isPrimaryKey;
@@ -24,7 +24,7 @@ class SchemaColumn extends BaseSchemaObject {
 
   SchemaColumn(
     this.name,
-    this.type, {
+    this.columnType, {
     bool autoincrement,
     this.defaultValue,
     this.isPrimaryKey = false,
@@ -37,13 +37,13 @@ class SchemaColumn extends BaseSchemaObject {
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
-        assert(Migration.fromDartPrimitive(type) != null, 'Type must serializable'),
-        assert(!isPrimaryKey || type == int, 'Primary key must be an integer'),
+        assert(columnType != null, 'Type must serializable'),
+        assert(!isPrimaryKey || columnType == Column.integer, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
   @override
   String get forGenerator {
-    final parts = ["'$name'", type];
+    final parts = ["'$name'", columnType];
 
     if (autoincrement != InsertColumn.defaults.autoincrement) {
       parts.add('autoincrement: $autoincrement');
@@ -93,7 +93,7 @@ class SchemaColumn extends BaseSchemaObject {
 
     return InsertColumn(
       name,
-      Migration.fromDartPrimitive(type),
+      columnType,
       onTable: tableName,
       defaultValue: defaultValue,
       autoincrement: autoincrement,
@@ -107,11 +107,11 @@ class SchemaColumn extends BaseSchemaObject {
       identical(this, other) ||
       other is SchemaColumn &&
           name == other.name &&
-          type == other.type &&
+          columnType == other.columnType &&
           // tableNames don't compare nicely since they're non-final
           (tableName ?? '').compareTo(other.tableName ?? '') == 0 &&
           forGenerator == other.forGenerator;
 
   @override
-  int get hashCode => name.hashCode ^ type.hashCode ^ forGenerator.hashCode;
+  int get hashCode => name.hashCode ^ columnType.hashCode ^ forGenerator.hashCode;
 }
