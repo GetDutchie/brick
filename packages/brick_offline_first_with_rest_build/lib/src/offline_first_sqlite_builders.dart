@@ -28,7 +28,7 @@ class OfflineFirstSchemaGenerator extends SqliteSchemaGenerator {
       final sqliteChecker = checkerForType(sqliteSerializerType);
       return SchemaColumn(
         column.name,
-        sqliteChecker.asPrimitive,
+        Migration.fromDartPrimitive(sqliteChecker.asPrimitive),
         nullable: column?.nullable,
         unique: column?.unique,
       );
