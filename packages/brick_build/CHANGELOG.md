@@ -1,6 +1,7 @@
 ## Unreleased
 
 * If `fromGenerator` or `toGenerator` is declared, the field will be generated for deserializing and serializing adapters, respectively
+* Strictly assign analyzer ahead of nullability release versions
 
 ## 0.0.8+2
 

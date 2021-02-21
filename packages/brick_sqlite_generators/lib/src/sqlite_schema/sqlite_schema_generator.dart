@@ -100,14 +100,14 @@ class SqliteSchemaGenerator {
         columns: {
           SchemaColumn(
             InsertTable.PRIMARY_KEY_COLUMN,
-            int,
+            Column.integer,
             autoincrement: true,
             isPrimaryKey: true,
             nullable: false,
           ),
           SchemaColumn(
             InsertForeignKey.joinsTableLocalColumnName(localTableName),
-            int,
+            Column.integer,
             isForeignKey: true,
             foreignTableName: localTableName,
             nullable: foreignTableColumnDefinition?.nullable,
@@ -116,7 +116,7 @@ class SqliteSchemaGenerator {
           ),
           SchemaColumn(
             InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-            int,
+            Column.integer,
             isForeignKey: true,
             foreignTableName: foreignTableName,
             nullable: foreignTableColumnDefinition?.nullable,
@@ -143,7 +143,7 @@ class SqliteSchemaGenerator {
       0,
       SchemaColumn(
         InsertTable.PRIMARY_KEY_COLUMN,
-        int,
+        Column.integer,
         autoincrement: true,
         isPrimaryKey: true,
         nullable: false,
@@ -211,7 +211,7 @@ class SqliteSchemaGenerator {
     if (checker.isDartCoreType) {
       return SchemaColumn(
         column.name,
-        checker.asPrimitive,
+        Migration.fromDartPrimitive(checker.asPrimitive),
         nullable: column?.nullable,
         unique: column?.unique,
       );
@@ -237,7 +237,7 @@ class SqliteSchemaGenerator {
       // Iterables and Maps are stored as JSON
       return SchemaColumn(
         column.name,
-        Column.text,
+        Column.varchar,
         nullable: column?.nullable,
         unique: column?.unique,
       );

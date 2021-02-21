@@ -21,9 +21,10 @@ final schema = Schema(
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable('User', columns: <SchemaColumn>{
-      SchemaColumn('_brick_id', int, autoincrement: true, nullable: false, isPrimaryKey: true),
-      SchemaColumn('address', String),
-      SchemaColumn('email', String),
+      SchemaColumn('_brick_id', Column.integer,
+          autoincrement: true, nullable: false, isPrimaryKey: true),
+      SchemaColumn('address', Column.varchar),
+      SchemaColumn('email', Column.varchar),
     })
   },
 );
