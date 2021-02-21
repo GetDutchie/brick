@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.8
+
+* Bump dependency versions
+
 ## 0.0.7
 
 * Bump dependency versions
