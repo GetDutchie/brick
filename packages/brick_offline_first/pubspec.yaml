@@ -13,9 +13,9 @@ environment:
 
 dependencies:
   brick_core: ^0.0.6
-  brick_offline_first_abstract: ^0.0.8
+  brick_offline_first_abstract: 0.0.8
   brick_rest: ^0.0.8
-  brick_sqlite: ^0.1.6+1
+  brick_sqlite: 0.1.7
   brick_sqlite_abstract: 0.1.0
   dart_style: ^1.2.4
   http: ^0.12.0
