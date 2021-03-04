@@ -47,7 +47,7 @@ class Query {
     this.action,
     Map<String, dynamic>? providerArgs,
     this.where,
-  }) : this.providerArgs = providerArgs ?? {} {
+  }) : providerArgs = providerArgs ?? {} {
     /// Number of results first returned from query; `0` returns all. Must be greater than -1
     if (this.providerArgs['limit'] != null) {
       assert(this.providerArgs['limit'] > -1);
@@ -114,9 +114,9 @@ class Query {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Query &&
-          this.action == other.action &&
-          _mapEquality.equals(this.providerArgs, other.providerArgs) &&
-          _listEquality.equals(this.where, other.where);
+          action == other.action &&
+          _mapEquality.equals(providerArgs, other.providerArgs) &&
+          _listEquality.equals(where, other.where);
 
   @override
   int get hashCode => action.hashCode ^ providerArgs.hashCode ^ where.hashCode;

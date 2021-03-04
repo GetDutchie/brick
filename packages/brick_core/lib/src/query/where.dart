@@ -90,12 +90,19 @@ abstract class WhereCondition {
 }
 
 class Where extends WhereCondition {
+  @override
   final String evaluatedField;
+
+  @override
   final Compare compare;
-  final dynamic value;
+
+  @override
   final bool isRequired;
 
-  static const defaults = const Where('');
+  @override
+  final dynamic value;
+
+  static const defaults = Where('');
 
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
   ///
@@ -106,8 +113,8 @@ class Where extends WhereCondition {
     this.value,
     Compare? compare,
     bool? isRequired,
-  })  : this.isRequired = isRequired ?? true,
-        this.compare = compare ?? Compare.exact;
+  })  : isRequired = isRequired ?? true,
+        compare = compare ?? Compare.exact;
 
   /// A condition written with brevity. [required] defaults `true`.
   factory Where.exact(String evaluatedField, dynamic value, {bool isRequired = true}) =>
@@ -117,7 +124,7 @@ class Where extends WhereCondition {
       Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
   Where isBetween(dynamic value1, dynamic value2) {
-    assert(value1.runtimeType == value2.runtimeType, "Comparison values must be the same type");
+    assert(value1.runtimeType == value2.runtimeType, 'Comparison values must be the same type');
     return Where(evaluatedField,
         value: [value1, value2], compare: Compare.between, isRequired: isRequired);
   }
@@ -176,15 +183,22 @@ class Where extends WhereCondition {
 }
 
 class WherePhrase extends WhereCondition {
+  @override
   final evaluatedField = '';
+
+  @override
   final compare = Compare.exact;
+
+  @override
   final value = null;
 
   /// Whether all [conditions] must evaulate to `true` for the query to return results.
   ///
   /// Defaults `false`.
+  @override
   final bool isRequired;
 
+  @override
   final List<WhereCondition> conditions;
 
   /// A collection of conditions that are evaluated together.
@@ -220,7 +234,7 @@ class WherePhrase extends WhereCondition {
   const WherePhrase(
     this.conditions, {
     bool? isRequired,
-  }) : this.isRequired = isRequired ?? false;
+  }) : isRequired = isRequired ?? false;
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

@@ -22,6 +22,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   delete<_Model extends _ManagedModel>(_Model instance, {Query query});
 
   /// Query for raw data from all [Provider]s.
@@ -29,6 +30,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   get<_Model extends _ManagedModel>({Query query});
 
   /// Perform required setup work. For example, migrating a database, starting a queue,
@@ -40,6 +42,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   upsert<_Model extends _ManagedModel>(_Model model, {Query query});
 }
 
@@ -61,7 +64,7 @@ abstract class SingleProviderRepository<_Model extends Model> implements ModelRe
       provider.get<T>(query: query, repository: this);
 
   @override
-  initialize() async {}
+  Future<void> initialize() async {}
 
   /// Query provider for raw data and convert to an app model
   @override

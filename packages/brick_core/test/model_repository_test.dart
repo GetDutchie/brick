@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import '__mocks__.dart';
 
 class DemoSimpleStore extends SingleProviderRepository<DemoModel> {
+  @override
   final DemoProvider provider;
 
   DemoSimpleStore(this.provider) : super(provider);
