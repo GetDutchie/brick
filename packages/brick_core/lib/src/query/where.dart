@@ -56,12 +56,12 @@ abstract class WhereCondition {
   Map<String, dynamic> toJson() {
     return {
       'subclass': runtimeType.toString(),
-      'evaluatedField': evaluatedField,
+      if (evaluatedField.isNotEmpty) 'evaluatedField': evaluatedField,
       'compare': Compare.values.indexOf(compare),
       if (conditions != null)
         'conditions': conditions!.map((s) => s.toJson()).toList().cast<Map<String, dynamic>>(),
       'required': isRequired,
-      'value': value,
+      if (value != null) 'value': value,
     };
   }
 
@@ -95,11 +95,7 @@ class Where extends WhereCondition {
   final dynamic value;
   final bool isRequired;
 
-  static const defaults = const Where(
-    '',
-    compare: Compare.exact,
-    isRequired: true,
-  );
+  static const defaults = const Where('');
 
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
   ///
@@ -151,7 +147,7 @@ class Where extends WhereCondition {
   /// such as `myUserId` in `final String myUserId`.
   /// If the use case for the field only requires one result, say `id` or `primaryKey`,
   /// [firstByField] may be more useful.
-  static List<WhereCondition> byField(String fieldName, List<WhereCondition> conditions) {
+  static List<WhereCondition> byField(String fieldName, List<WhereCondition>? conditions) {
     final flattenedConditions = <WhereCondition>[];
 
     /// recursively flatten all nested conditions
@@ -163,7 +159,7 @@ class Where extends WhereCondition {
       }
     }
 
-    conditions.forEach(expandConditions);
+    conditions?.forEach(expandConditions);
 
     return flattenedConditions
         .where((c) => c.evaluatedField == fieldName)
@@ -173,10 +169,9 @@ class Where extends WhereCondition {
 
   /// Find the first occurrance of a condition that evaluates a specific field
   /// For all conditions, use [byField].
-  static WhereCondition? firstByField(String fieldName, List<WhereCondition> conditions) {
+  static WhereCondition? firstByField(String fieldName, List<WhereCondition>? conditions) {
     final results = byField(fieldName, conditions);
-    if (results.isEmpty) return null;
-    return results.first;
+    return results.isEmpty ? null : results.first;
   }
 }
 
