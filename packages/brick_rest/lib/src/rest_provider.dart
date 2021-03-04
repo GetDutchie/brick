@@ -52,6 +52,17 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
+  @override
+  Future<bool> exists<_Model extends RestModel>({query, repository}) async {
+    final url = urlForModel<_Model>(query);
+    if (url == null) return false;
+
+    logger.fine('GET $url');
+
+    final resp = await client.get(Uri.parse(url), headers: headersForQuery(query));
+    return statusCodeIsSuccessful(resp.statusCode);
+  }
+
   /// [Query]'s `providerArgs` can extend the [get] functionality:
   /// * `'headers'` (`Map<String, String>`) set HTTP headers
   /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{"user": {"id"...}}`).
@@ -65,13 +76,13 @@ class RestProvider implements Provider<RestModel> {
 
     logger.fine('GET $url');
 
-    final adapter = modelDictionary.adapterFor[_Model];
+    final adapter = modelDictionary.adapterFor[_Model]!;
     final resp = await client.get(Uri.parse(url), headers: headersForQuery(query));
 
     logger.finest('#get: url=$url statusCode=${resp.statusCode} body=${resp.body}');
 
     if (statusCodeIsSuccessful(resp.statusCode)) {
-      final topLevelKey = (query.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
+      final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? adapter.fromKey;
       final parsed = convertJsonFromGet(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
@@ -100,7 +111,7 @@ class RestProvider implements Provider<RestModel> {
   /// (however, when defined, `topLevelKey` is prioritized).
   @override
   Future<http.Response?> upsert<_Model extends RestModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model];
+    final adapter = modelDictionary.adapterFor[_Model]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
 
     final url = urlForModel<_Model>(query, instance);
@@ -124,28 +135,28 @@ class RestProvider implements Provider<RestModel> {
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery([Query? query]) {
-    if (query == null || query.providerArgs['headers'] == null) {
-      return defaultHeaders;
+    if ((query == null || query.providerArgs['headers'] == null) && defaultHeaders != null) {
+      return defaultHeaders!;
     }
 
     return {}
       ..addAll({'Content-Type': 'application/json'})
       ..addAll(defaultHeaders ?? <String, String>{})
-      ..addAll(query.providerArgs['headers'] ?? <String, String>{});
+      ..addAll(query?.providerArgs['headers'] ?? <String, String>{});
   }
 
   /// Given a model instance and a query, produce a fully-qualified URL
   @protected
-  String? urlForModel<_Model extends RestModel>(Query query, [_Model? instance]) {
+  String? urlForModel<_Model extends RestModel>(Query? query, [_Model? instance]) {
     assert(
       modelDictionary.adapterFor.containsKey(_Model),
       'REST provider does not contain $_Model',
     );
     final adapter = modelDictionary.adapterFor[_Model];
-    final endpoint = adapter.restEndpoint(query: query, instance: instance);
+    final endpoint = adapter?.restEndpoint(query: query, instance: instance);
 
     if (endpoint?.isEmpty != false) return null;
-    return baseEndpoint + endpoint;
+    return baseEndpoint + endpoint!;
   }
 
   /// If a [key] is defined from the adapter and it is not null in the response, use it to narrow the response.

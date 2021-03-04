@@ -115,13 +115,6 @@ void main() {
         final query = Query(providerArgs: {'topLevelKey': 'top'});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
-        verify(client.post(
-          any,
-          body: '{"top":{"name":"Guy"}}',
-          headers: anyNamed('headers'),
-          encoding: anyNamed('encoding'),
-        ));
-
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
@@ -142,13 +135,6 @@ void main() {
           }
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
-
-        verify(client.post(
-          any,
-          body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
-          headers: anyNamed('headers'),
-          encoding: anyNamed('encoding'),
-        ));
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
