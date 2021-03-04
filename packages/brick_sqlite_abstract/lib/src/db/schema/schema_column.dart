@@ -76,7 +76,7 @@ class SchemaColumn extends BaseSchemaObject {
   @override
   MigrationCommand toCommand({bool shouldDrop = false}) {
     if (shouldDrop) {
-      return DropColumn(name!, onTable: tableName!);
+      return DropColumn(name, onTable: tableName!);
     }
 
     if (isForeignKey) {
@@ -90,7 +90,7 @@ class SchemaColumn extends BaseSchemaObject {
     }
 
     return InsertColumn(
-      name!,
+      name,
       columnType,
       onTable: tableName!,
       defaultValue: defaultValue,

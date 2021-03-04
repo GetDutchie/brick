@@ -4,6 +4,7 @@ import '../migration_commands.dart';
 import '../schema.dart';
 import 'schema_column.dart';
 import 'schema_table.dart';
+import 'package:collection/collection.dart';
 
 /// Compares two schemas to produce migrations that conver the difference
 class SchemaDifference {
@@ -76,8 +77,7 @@ class SchemaDifference {
   Set<SchemaColumn> _compareColumns(Schema from, Schema to) {
     Set<SchemaColumn> differenceFromTable(SchemaTable fromTable) {
       final toColumns =
-          to.tables.firstWhere((t) => t.name == fromTable.name, orElse: () => null)?.columns ??
-              <SchemaColumn>{};
+          to.tables.firstWhereOrNull((t) => t.name == fromTable.name)?.columns ?? <SchemaColumn>{};
 
       final fromColumns = <SchemaColumn>{}..addAll(fromTable.columns);
 
@@ -97,8 +97,7 @@ class SchemaDifference {
   Set<SchemaIndex> _compareIndices(Schema from, Schema to) {
     Set<SchemaIndex> differenceFromTable(SchemaTable fromTable) {
       final toIndices =
-          to.tables.firstWhere((t) => t.name == fromTable.name, orElse: () => null)?.indices ??
-              <SchemaIndex>{};
+          to.tables.firstWhereOrNull((t) => t.name == fromTable.name)?.indices ?? <SchemaIndex>{};
 
       final fromIndices = <SchemaIndex>{}..addAll(fromTable.indices);
 

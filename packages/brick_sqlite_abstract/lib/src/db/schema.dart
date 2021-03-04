@@ -115,7 +115,7 @@ class Schema {
     } else if (command is InsertForeignKey) {
       final table = findTable(command.localTableName);
       table.columns.add(SchemaColumn(
-        command.foreignKeyColumn!,
+        command.foreignKeyColumn,
         Column.integer,
         isForeignKey: true,
         foreignTableName: command.foreignTableName,
