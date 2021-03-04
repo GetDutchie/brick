@@ -43,7 +43,7 @@ class DemoModelMigration extends Migration {
 }
 
 class TestRepository extends OfflineFirstWithRestRepository {
-  static TestRepository _singleton;
+  static late TestRepository _singleton;
 
   TestRepository._(
     RestProvider _restProvider,
@@ -61,10 +61,10 @@ class TestRepository extends OfflineFirstWithRestRepository {
   factory TestRepository() => _singleton;
 
   factory TestRepository.createInstance({
-    String baseUrl,
-    RestModelDictionary restDictionary,
-    SqliteModelDictionary sqliteDictionary,
-    http.Client client,
+    required String baseUrl,
+    required RestModelDictionary restDictionary,
+    required SqliteModelDictionary sqliteDictionary,
+    http.Client? client,
   }) {
     return TestRepository._(
       RestProvider(baseUrl, modelDictionary: restDictionary, client: client),
@@ -77,10 +77,10 @@ class TestRepository extends OfflineFirstWithRestRepository {
   }
 
   static TestRepository configure({
-    String baseUrl,
-    RestModelDictionary restDictionary,
-    SqliteModelDictionary sqliteDictionary,
-    http.Client client,
+    required String baseUrl,
+    required RestModelDictionary restDictionary,
+    required SqliteModelDictionary sqliteDictionary,
+    required http.Client client,
   }) {
     _singleton = TestRepository.createInstance(
       baseUrl: baseUrl,

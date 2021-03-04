@@ -17,7 +17,7 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
     /// When [forceLocalSyncFromRemote] is `true`, local instances that do not exist in the [remoteProvider]
     /// are destroyed. Further, when `true`, all values from other parameters except [query] are ignored.
     bool forceLocalSyncFromRemote = false,
-    Query query,
+    Query? query,
     bool requireRemote = false,
     bool seedOnly = false,
   }) async {
@@ -37,7 +37,7 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
   /// When invoked, local instances that exist in [sqliteProvider] and [memoryCacheProvider] but
   /// do not exist in the [remoteProvider] are destroyed. The data from the [remoteProvider]
   /// should not be paginated and must be complete from a single request.
-  Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends T>({Query query}) async {
+  Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends T>({Query? query}) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $_Model $query');
 

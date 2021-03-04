@@ -11,7 +11,7 @@ void main() {
   group('RestToOfflineFirstConverter', () {
     group('#getRestPayload', () {
       test('with top-level array', () async {
-        when(client.get('http://localhost:3000/people'))
+        when(client.get(Uri.parse('http://localhost:3000/people')))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
         final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
@@ -22,7 +22,7 @@ void main() {
       });
 
       test('with top-level map', () async {
-        when(client.get('http://localhost:3000/person'))
+        when(client.get(Uri.parse('http://localhost:3000/person')))
             .thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
         final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/person');
@@ -33,7 +33,7 @@ void main() {
       });
 
       test('with top-level key', () async {
-        when(client.get('http://localhost:3000/person'))
+        when(client.get(Uri.parse('http://localhost:3000/person')))
             .thenAnswer((_) async => http.Response('{ "person": { "name": "Thomas"} }', 200));
 
         final converter = RestToOfflineFirstConverter(
@@ -93,7 +93,7 @@ class People extends OfflineFirstModel {
       });
 
       test('from rest', () async {
-        when(client.get('http://localhost:3000/people'))
+        when(client.get(Uri.parse('http://localhost:3000/people')))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
         final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
@@ -104,7 +104,7 @@ class People extends OfflineFirstModel {
       });
 
       test('with topLevelKey', () async {
-        when(client.get('http://localhost:3000/people'))
+        when(client.get(Uri.parse('http://localhost:3000/people')))
             .thenAnswer((_) async => http.Response('{"people": [{"name": "Thomas"}]}', 200));
 
         final converter = RestToOfflineFirstConverter(

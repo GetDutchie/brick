@@ -74,27 +74,22 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   final Logger logger;
 
   OfflineFirstRepository({
-    this.remoteProvider,
-    @required this.sqliteProvider,
-    bool autoHydrate,
-    MemoryCacheProvider memoryCacheProvider,
-    Set<Migration> migrations,
-    String loggerName,
+    required this.remoteProvider,
+    required this.sqliteProvider,
+    bool? autoHydrate,
+    MemoryCacheProvider? memoryCacheProvider,
+    required Set<Migration> migrations,
+    String? loggerName,
   })  : autoHydrate = autoHydrate ?? false,
         logger = Logger(loggerName ?? 'OfflineFirstRepository'),
         migrationManager = MigrationManager(migrations),
-        memoryCacheProvider = memoryCacheProvider ?? MemoryCacheProvider(),
-        assert(sqliteProvider != null) {
-    // assert after as remoteProvider may
-    // not come as an argument (i.e. defined final or assigned in the child class)
-    assert(remoteProvider != null);
-  }
+        memoryCacheProvider = memoryCacheProvider ?? MemoryCacheProvider();
 
   /// Remove a model from SQLite and the [remoteProvider]
   @override
   Future<bool> delete<_Model extends _RepositoryModel>(
     _Model instance, {
-    Query query,
+    Query? query,
   }) async {
     query = (query ?? Query()).copyWith(action: QueryAction.delete);
     logger.finest('#delete: $query');
@@ -123,7 +118,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// First checks if there's a matching query in [memoryCacheProvider] and then check [sqliteProvider].
   /// Does **not** query [remoteProvider].
   Future<bool> exists<_Model extends _RepositoryModel>({
-    Query query,
+    Query? query,
   }) async {
     if (memoryCacheProvider.canFind<_Model>(query)) {
       final results = memoryCacheProvider.get<_Model>(query: query, repository: this);
@@ -152,7 +147,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
   Future<List<_Model>> get<_Model extends _RepositoryModel>({
-    Query query,
+    Query? query,
     bool alwaysHydrate = false,
     bool hydrateUnexisting = true,
     bool requireRemote = false,
@@ -164,7 +159,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     if (memoryCacheProvider.canFind<_Model>(query)) {
       final memoryCacheResults = memoryCacheProvider.get<_Model>(query: query, repository: this);
 
-      if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults;
+      if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults!;
     }
 
     final modelExists = await exists<_Model>(query: query);
@@ -182,10 +177,10 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   }
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
-  Future<List<_Model>> getAssociation<_Model extends _RepositoryModel>(Query query) async {
+  Future<List<_Model>?> getAssociation<_Model extends _RepositoryModel>(Query query) async {
     logger.finest('#getAssociation: $_Model $query');
     final results = await get<_Model>(query: query, alwaysHydrate: false);
-    if (results?.isEmpty ?? true) return null;
+    if (results.isEmpty) return null;
     return results;
   }
 
@@ -203,7 +198,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   Future<List<_Model>> getBatched<_Model extends _RepositoryModel>({
-    Query query,
+    Query? query,
     int batchSize = 50,
     bool requireRemote = false,
     bool seedOnly = false,
@@ -215,8 +210,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     /// [batchSize] until no more results are retrieved.
     Future<List<_Model>> getFrom(int offset) async {
       // add offset to the existing query
-      final recursiveQuery = query.copyWith(
-        providerArgs: (query.providerArgs ?? {})..addAll({'offset': offset}),
+      final recursiveQuery = query!.copyWith(
+        providerArgs: query.providerArgs..addAll({'offset': offset}),
       );
 
       final results = await get<_Model>(
@@ -243,6 +238,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   ///
   /// If this method is overriden in the sub class, [migrate] must be called before using
   /// SQLite features.
+  @override
   Future<void> initialize() async {
     await migrate();
   }
@@ -266,7 +262,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   @override
   Future<_Model> upsert<_Model extends _RepositoryModel>(
     _Model instance, {
-    Query query,
+    Query? query,
   }) async {
     if (query?.action == null) {
       query = (query ?? Query()).copyWith(action: QueryAction.upsert);
@@ -302,7 +298,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   @protected
   Future<List<_Model>> hydrate<_Model extends _RepositoryModel>({
     bool deserializeSqlite = true,
-    Query query,
+    Query? query,
   }) async {
     try {
       logger.finest('#hydrate: $_Model $query');
@@ -332,10 +328,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   @visibleForTesting
   Future<List<_Model>> storeRemoteResults<_Model extends _RepositoryModel>(
       List<_Model> models) async {
-    final modelIds = models
-        .where((m) => m != null)
-        .map((m) => sqliteProvider.upsert<_Model>(m, repository: this));
-    final results = await Future.wait<int>(modelIds, eagerError: true);
+    final modelIds = models.map((m) => sqliteProvider.upsert<_Model>(m, repository: this));
+    final results = await Future.wait<int?>(modelIds, eagerError: true);
 
     MapEntry modelWithPrimaryKey(index, id) {
       final model = models[index];

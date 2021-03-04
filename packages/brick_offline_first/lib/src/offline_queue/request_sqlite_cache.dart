@@ -35,7 +35,7 @@ class RequestSqliteCache {
   }
 
   @protected
-  Future<Map<String, dynamic>> findRequestInDatabase(Database db) async {
+  Future<Map<String, dynamic>?> findRequestInDatabase(Database db) async {
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
       HTTP_JOBS_ENCODING_COLUMN,
@@ -53,12 +53,12 @@ class RequestSqliteCache {
       whereArgs: columns.map((c) => serialized[c]).toList(),
     );
 
-    return response?.isNotEmpty == true ? response.first : null;
+    return response.isNotEmpty ? response.first : null;
   }
 
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
-  Future<int> insertOrUpdate(Database db, {Logger logger}) async {
+  Future<int> insertOrUpdate(Database db, {Logger? logger}) async {
     final response = await findRequestInDatabase(db);
 
     return db.transaction((txn) async {
@@ -113,7 +113,8 @@ class RequestSqliteCache {
     );
 
     if (data[HTTP_JOBS_ENCODING_COLUMN] != null) {
-      _request.encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
+      final encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
+      if (encoding != null) _request.encoding = encoding;
     }
 
     if (data[HTTP_JOBS_HEADERS_COLUMN] != null) {

@@ -9,7 +9,7 @@ class RequestSqliteCacheManager {
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
   @protected
-  final DatabaseFactory databaseFactory;
+  final DatabaseFactory? databaseFactory;
 
   /// The file name for the database used.
   ///
@@ -18,7 +18,7 @@ class RequestSqliteCacheManager {
   /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String databaseName;
 
-  Future<Database> _db;
+  Future<Database>? _db;
 
   String get orderByStatement {
     if (!serialProcessing) {
@@ -62,7 +62,7 @@ class RequestSqliteCacheManager {
 
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<http.Request> prepareNextRequestToProcess() async {
+  Future<http.Request?> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
@@ -80,7 +80,7 @@ class RequestSqliteCacheManager {
 
     final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
 
-    if (jobs?.isEmpty == false) return jobs.first;
+    if (jobs.isNotEmpty) return jobs.first;
 
     return null;
   }
@@ -163,13 +163,13 @@ class RequestSqliteCacheManager {
   Future<Database> getDb() {
     if (_db == null) {
       if (databaseFactory != null) {
-        _db = databaseFactory.openDatabase(databaseName);
+        _db = databaseFactory?.openDatabase(databaseName);
       } else {
         _db = openDatabase(databaseName);
       }
     }
 
-    return _db;
+    return _db!;
   }
 }
 

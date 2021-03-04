@@ -17,10 +17,10 @@ import '../offline_first/__mocks__.dart';
 class DeleteAllRepository extends OfflineFirstWithRestRepository
     with DeleteAllMixin<OfflineFirstWithRestModel> {
   DeleteAllRepository({
-    String baseUrl,
-    RestModelDictionary restDictionary,
-    SqliteModelDictionary sqliteDictionary,
-    http.Client client,
+    required String baseUrl,
+    required RestModelDictionary restDictionary,
+    required SqliteModelDictionary sqliteDictionary,
+    required http.Client client,
   }) : super(
           restProvider: RestProvider(baseUrl, modelDictionary: restDictionary, client: client),
           sqliteProvider: SqliteProvider(

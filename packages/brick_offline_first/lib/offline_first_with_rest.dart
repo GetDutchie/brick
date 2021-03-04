@@ -57,16 +57,16 @@ abstract class OfflineFirstWithRestRepository
   final bool throwTunnelNotFoundExceptions;
 
   @protected
-  OfflineRequestQueue offlineRequestQueue;
+  late OfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
-    @required RestProvider restProvider,
-    @required SqliteProvider sqliteProvider,
-    MemoryCacheProvider memoryCacheProvider,
-    Set<Migration> migrations,
-    bool autoHydrate,
-    String loggerName,
-    RequestSqliteCacheManager offlineQueueHttpClientRequestSqliteCacheManager,
+    required RestProvider restProvider,
+    required SqliteProvider sqliteProvider,
+    MemoryCacheProvider? memoryCacheProvider,
+    required Set<Migration> migrations,
+    bool? autoHydrate,
+    String? loggerName,
+    RequestSqliteCacheManager? offlineQueueHttpClientRequestSqliteCacheManager,
     this.throwTunnelNotFoundExceptions = false,
     this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
   })  : remoteProvider = restProvider,
@@ -76,6 +76,7 @@ abstract class OfflineFirstWithRestRepository
           memoryCacheProvider: memoryCacheProvider,
           migrations: migrations,
           sqliteProvider: sqliteProvider,
+          remoteProvider: restProvider,
         ) {
     remoteProvider.client = OfflineQueueHttpClient(
       restProvider.client,
@@ -90,7 +91,7 @@ abstract class OfflineFirstWithRestRepository
 
   @override
   Future<bool> delete<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query query}) async {
+      {Query? query}) async {
     try {
       return await super.delete<_Model>(instance, query: query);
     } on RestException catch (e) {
@@ -152,7 +153,7 @@ abstract class OfflineFirstWithRestRepository
   /// Defaults `false`.
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query query, bool throwOnReattemptStatusCodes = false}) async {
+      {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
     } on RestException catch (e) {
@@ -162,8 +163,7 @@ abstract class OfflineFirstWithRestRepository
       }
 
       // since we know we'll reattempt this request, an exception does not need to be reported
-      if (reattemptForStatusCodes.contains(e.response?.statusCode) &&
-          !throwOnReattemptStatusCodes) {
+      if (reattemptForStatusCodes.contains(e.response.statusCode) && !throwOnReattemptStatusCodes) {
         return instance;
       }
 
@@ -175,7 +175,7 @@ abstract class OfflineFirstWithRestRepository
   @override
   Future<List<_Model>> hydrate<_Model extends OfflineFirstWithRestModel>({
     bool deserializeSqlite = true,
-    Query query,
+    Query? query,
   }) async {
     try {
       return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
@@ -187,7 +187,7 @@ abstract class OfflineFirstWithRestRepository
   }
 
   bool _ignoreTunnelException(RestException exception) =>
-      OfflineQueueHttpClient.isATunnelNotFoundResponse(exception?.response) &&
+      OfflineQueueHttpClient.isATunnelNotFoundResponse(exception.response) &&
       !throwTunnelNotFoundExceptions;
 }
 

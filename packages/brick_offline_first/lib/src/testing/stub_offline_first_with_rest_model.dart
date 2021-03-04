@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:brick_core/core.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
 /// Generate mocks for an [OfflineFirstWithRestModel]. Instantiation automatically stubs REST responses.
@@ -23,7 +22,7 @@ import 'package:path/path.dart' as p;
 ///
 /// To instantiate multiple models, use [StubOfflineFirstWithRest].
 class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
-  OfflineFirstWithRestAdapter get adapter => modelDictionary[_model];
+  OfflineFirstWithRestAdapter get adapter => modelDictionary[_model]!;
 
   /// Load sample API response from preloaded JSON files
   String get apiResponse {
@@ -47,7 +46,7 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     final contents = jsonDecode(apiResponse);
     if (adapter.fromKey != null) {
       return contents[adapter.fromKey];
-    } else if (contents is Map && contents?.keys?.length == 1) {
+    } else if (contents is Map && contents.keys.length == 1) {
       return contents.values.first;
     } else {
       return contents;
@@ -64,20 +63,20 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
 
   final Type _model;
 
-  Map<Type, OfflineFirstWithRestAdapter> modelDictionary;
+  late Map<Type, OfflineFirstWithRestAdapter> modelDictionary;
 
   /// The [OfflineFirstRepository] being stubbed for this model.
   final OfflineFirstWithRestRepository repository;
 
   StubOfflineFirstWithRestModel({
-    @required this.filePath,
-    @required this.repository,
+    required this.filePath,
+    required this.repository,
     this.endpoints = const <String>[],
-    Type model,
+    Type? model,
   }) : _model = model ?? _Model {
     final dictionary = <Type, Adapter>{};
-    dictionary.addAll(repository?.remoteProvider?.modelDictionary?.adapterFor ?? {});
-    dictionary.addAll(repository?.sqliteProvider?.modelDictionary?.adapterFor ?? {});
+    dictionary.addAll(repository.remoteProvider.modelDictionary.adapterFor);
+    dictionary.addAll(repository.sqliteProvider.modelDictionary.adapterFor);
     modelDictionary = dictionary.cast<Type, OfflineFirstWithRestAdapter>();
   }
 }

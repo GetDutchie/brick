@@ -7,7 +7,7 @@ class MockOfflineClient extends Mock implements OfflineQueueHttpClient {}
 
 class MockClient extends Mock implements http.Client {}
 
-MockClient stubResult({String response = 'response', int statusCode, String requestBody}) {
+MockClient stubResult({String response = 'response', int? statusCode, String? requestBody}) {
   final inner = MockClient();
 
   when(inner.send(any)).thenAnswer((_) {
@@ -19,11 +19,11 @@ MockClient stubResult({String response = 'response', int statusCode, String requ
 
 /// Useful for mocking a response to [http.Client]'s `#send` method
 http.StreamedResponse _buildStreamedResponse(String response,
-    [int statusCode, String requestBody]) {
+    [int? statusCode, String? requestBody]) {
   statusCode ??= 200;
 
   // args don't matter,
-  final request = http.Request("POST", Uri.parse("http://localhost:3000"));
+  final request = http.Request('POST', Uri.parse('http://localhost:3000'));
   request.body = requestBody ?? response;
 
   final resp = http.Response(response, statusCode, request: request);

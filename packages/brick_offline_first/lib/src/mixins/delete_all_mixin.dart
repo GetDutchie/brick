@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 mixin DeleteAllMixin<T extends OfflineFirstModel> on OfflineFirstRepository<T> {
   /// Delete every instance that matches [query] in all providers. Return value reflects if
   /// the operation completed without any failures.
-  Future<bool> deleteAll<_Model extends T>({Query query}) async {
+  Future<bool> deleteAll<_Model extends T>({Query? query}) async {
     final modelsToDelete = await get<_Model>(query: query);
     var allDeletesSuccessful = true;
     for (final model in modelsToDelete) {
@@ -23,7 +23,7 @@ mixin DeleteAllMixin<T extends OfflineFirstModel> on OfflineFirstRepository<T> {
   /// It is **strongly recommended** to use Equatable or to override the `==` operator in
   /// your app's models when incorporating this method. A delta between models to keep and
   /// models to remove is computed with `==`.
-  Future<bool> deleteAllExcept<_Model extends T>({@required Query query}) async {
+  Future<bool> deleteAllExcept<_Model extends T>({required Query query}) async {
     final allModels = await get<_Model>();
     final modelsToKeep = await get<_Model>(query: query);
     final modelsToDelete = allModels.where((m) => !modelsToKeep.contains(m));

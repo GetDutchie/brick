@@ -9,7 +9,7 @@ class MockClient extends Mock implements http.Client {}
 /// Manages multiple stubbed [OfflineFirstWithRestModel]s.
 class StubOfflineFirstWithRest {
   @protected
-  String get baseUrl => repository?.remoteProvider?.baseEndpoint;
+  String get baseUrl => repository.remoteProvider.baseEndpoint;
 
   final List<StubOfflineFirstWithRestModel> modelStubs;
 
@@ -18,14 +18,14 @@ class StubOfflineFirstWithRest {
   static final client = MockClient();
 
   StubOfflineFirstWithRest({
-    @required this.modelStubs,
-    @required this.repository,
+    required this.modelStubs,
+    required this.repository,
   });
 
   /// Invoked immediately after instantiation
   Future<void> initialize() async {
     await repository.migrate();
-    repository?.remoteProvider?.client = StubOfflineFirstWithRest.client;
+    repository.remoteProvider.client = StubOfflineFirstWithRest.client;
     forRest();
   }
 
@@ -33,17 +33,17 @@ class StubOfflineFirstWithRest {
   void forRest({int statusCode = 200}) {
     for (final modelStub in modelStubs) {
       for (final endpoint in modelStub.endpoints) {
-        when(StubOfflineFirstWithRest.client.get('$baseUrl/$endpoint'))
+        when(StubOfflineFirstWithRest.client.get(Uri.parse('$baseUrl/$endpoint')))
             .thenAnswer((_) async => http.Response(modelStub.apiResponse, statusCode));
 
-        when(StubOfflineFirstWithRest.client.post('$baseUrl/$endpoint',
+        when(StubOfflineFirstWithRest.client.post(Uri.parse('$baseUrl/$endpoint'),
                 headers: anyNamed('headers'),
                 body: anyNamed('body'),
                 encoding: anyNamed('encoding')))
             .thenAnswer((_) async => http.Response(modelStub.apiResponse, 201));
 
         when(StubOfflineFirstWithRest.client
-                .delete('$baseUrl/$endpoint', headers: anyNamed('headers')))
+                .delete(Uri.parse('$baseUrl/$endpoint'), headers: anyNamed('headers')))
             .thenAnswer((_) async => http.Response('{"status": "OK"}', 204));
       }
     }
