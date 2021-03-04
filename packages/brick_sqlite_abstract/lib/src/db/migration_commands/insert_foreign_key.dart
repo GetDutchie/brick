@@ -8,7 +8,7 @@ class InsertForeignKey extends MigrationCommand {
   final String foreignTableName;
 
   /// Defaults to lowercase `${foreignTableName}_brick_id`
-  final String foreignKeyColumn;
+  final String? foreignKeyColumn;
 
   /// When true, deletion of the referenced record by [foreignKeyColumn] on the [foreignTableName]
   /// this record. For example, if the foreign table is "departments" and the local table
@@ -30,7 +30,7 @@ class InsertForeignKey extends MigrationCommand {
 
   String get _foreignKeyColumn {
     if (foreignKeyColumn != null) {
-      return foreignKeyColumn;
+      return foreignKeyColumn!;
     }
 
     return foreignKeyColumnName(foreignTableName);
@@ -61,7 +61,7 @@ class InsertForeignKey extends MigrationCommand {
   /// would be `Hat_id`.
   ///
   /// If [prefix] is provided, it will be prepended to the normal convention with a `_`.
-  static String foreignKeyColumnName(String foreignTableName, [String prefix]) {
+  static String foreignKeyColumnName(String foreignTableName, [String? prefix]) {
     final defaultName = '$foreignTableName${InsertTable.PRIMARY_KEY_COLUMN}';
     if (prefix != null) {
       return '${prefix}_$defaultName';
@@ -80,7 +80,7 @@ class InsertForeignKey extends MigrationCommand {
   /// The downside of this pattern is the inevitable data duplication for such many-to-many
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
-  static String joinsTableName(String columnName, {String localTableName}) {
+  static String joinsTableName(String columnName, {required String localTableName}) {
     return ['_brick', localTableName, columnName].join('_');
   }
 

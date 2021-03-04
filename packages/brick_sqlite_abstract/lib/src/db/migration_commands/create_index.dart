@@ -1,5 +1,4 @@
 import 'package:brick_sqlite_abstract/src/db/migration_commands/drop_index.dart';
-import 'package:meta/meta.dart';
 import 'migration_command.dart';
 
 /// Create an index on a table if it doesn't already exists
@@ -14,8 +13,8 @@ class CreateIndex extends MigrationCommand {
   /// Before running this migration command, ensure that its table is either clean
   /// or does not contain data that conflicts with the columns specified by the index.
   const CreateIndex({
-    @required this.onTable,
-    @required this.columns,
+    required this.onTable,
+    required this.columns,
     this.unique = false,
   });
 

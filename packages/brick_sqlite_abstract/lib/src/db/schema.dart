@@ -25,7 +25,7 @@ class Schema {
   /// Version used to produce this scheme
   final int generatorVersion;
 
-  Schema(this.version, {@required this.tables, this.generatorVersion = GENERATOR_VERSION});
+  Schema(this.version, {required this.tables, this.generatorVersion = GENERATOR_VERSION});
 
   static const int GENERATOR_VERSION = 1;
 
@@ -45,8 +45,8 @@ class Schema {
 
   /// Create a schema from a set of migrations. If [version] is not provided,
   /// the highest migration version will be used
-  factory Schema.fromMigrations(Set<Migration> migrations, [int version]) {
-    assert((version == null) || (version != null && version > -1));
+  factory Schema.fromMigrations(Set<Migration> migrations, [int? version]) {
+    assert((version == null) || (version > -1));
     version = version ?? MigrationManager.latestMigrationVersion(migrations);
     final commands = expandMigrations(migrations);
     final tables = commands.fold(<SchemaTable>{}, _commandToSchema);
@@ -115,7 +115,7 @@ class Schema {
     } else if (command is InsertForeignKey) {
       final table = findTable(command.localTableName);
       table.columns.add(SchemaColumn(
-        command.foreignKeyColumn,
+        command.foreignKeyColumn!,
         Column.integer,
         isForeignKey: true,
         foreignTableName: command.foreignTableName,
@@ -140,7 +140,7 @@ class Schema {
       tables.forEach((t) => t.indices.forEach((i) => i.tableName == t.name));
       final table = tables.firstWhere(
         (s) => s.indices
-            .map((i) => CreateIndex.generateName(i.columns, i.tableName))
+            .map((i) => CreateIndex.generateName(i.columns, i.tableName!))
             .contains(command.name),
         orElse: () => throw StateError('Index ${command.name} must be inserted first'),
       );

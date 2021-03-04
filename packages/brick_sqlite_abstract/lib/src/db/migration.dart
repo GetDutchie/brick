@@ -1,6 +1,5 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/migration.dart)
 
-import 'package:meta/meta.dart';
 import 'migration_commands/migration_command.dart';
 
 /// SQLite data types.
@@ -31,7 +30,11 @@ abstract class Migration {
   final List<MigrationCommand> up;
   final List<MigrationCommand> down;
 
-  const Migration({@required this.version, @required this.up, @required this.down});
+  const Migration({
+    required this.version,
+    required this.up,
+    required this.down,
+  });
 
   String get statement => upStatement;
 
@@ -44,35 +47,25 @@ abstract class Migration {
     switch (definition) {
       case Column.bigint:
         return 'BIGINT';
-        break;
       case Column.boolean:
         return 'BOOLEAN';
-        break;
       case Column.blob:
         return 'BLOB';
-        break;
       case Column.date:
         return 'DATE';
-        break;
       case Column.datetime:
         return 'DATETIME';
-        break;
       case Column.Double:
       case Column.num:
         return 'DOUBLE';
-        break;
       case Column.integer:
         return 'INTEGER';
-        break;
       case Column.float:
         return 'FLOAT';
-        break;
       case Column.text:
         return 'TEXT';
-        break;
       case Column.varchar:
         return 'VARCHAR';
-        break;
       default:
         return throw ArgumentError('$definition not found in Column');
     }
@@ -83,22 +76,16 @@ abstract class Migration {
     switch (type) {
       case bool:
         return Column.boolean;
-        break;
       case DateTime:
         return Column.datetime;
-        break;
       case double:
         return Column.Double;
-        break;
       case int:
         return Column.integer;
-        break;
       case num:
         return Column.num;
-        break;
       case String:
         return Column.varchar;
-        break;
       default:
         return throw ArgumentError('$type not associated with a Column');
     }
@@ -109,35 +96,25 @@ abstract class Migration {
     switch (definition) {
       case Column.bigint:
         return num;
-        break;
       case Column.boolean:
         return bool;
-        break;
       case Column.blob:
         return List;
-        break;
       case Column.date:
         return DateTime;
-        break;
       case Column.datetime:
         return DateTime;
-        break;
       case Column.Double:
         return double;
-        break;
       case Column.integer:
         return int;
-        break;
       case Column.float:
       case Column.num:
         return num;
-        break;
       case Column.text:
         return String;
-        break;
       case Column.varchar:
         return String;
-        break;
       default:
         return throw ArgumentError('$definition not found in Column');
     }
@@ -146,7 +123,6 @@ abstract class Migration {
   static String generate(List<MigrationCommand> commands, int version) {
     final upCommands = commands.map((m) => m.forGenerator).join(',\n  ');
     final downCommands = commands.map((m) => m.down?.forGenerator).toList();
-    downCommands.removeWhere((m) => m == null);
 
     return '''
 // GENERATED CODE EDIT WITH CAUTION
