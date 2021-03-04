@@ -39,23 +39,23 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
   /// basic lookups such as a single field (primary key).
   /// However, if the provider is extended to support complex [Where] statements in [get],
   /// this method should also be extended.
-  bool canFind<_Model extends SqliteModel>([Query query]) {
+  bool canFind<_Model extends SqliteModel>([Query? query]) {
     final byPrimaryKey = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
     return manages(_Model) && byPrimaryKey?.value != null;
   }
 
   @override
   bool delete<_Model extends SqliteModel>(instance, {query, repository}) {
-    if (!manages(_Model)) return null;
+    if (!manages(_Model)) return false;
     logger.finest('#delete: $_Model, $instance, $query');
 
     managedObjects[_Model] ??= {};
-    managedObjects[_Model].remove(instance.primaryKey);
+    managedObjects[_Model]!.remove(instance.primaryKey);
     return true;
   }
 
   @override
-  List<_Model> get<_Model extends SqliteModel>({query, repository}) {
+  List<_Model>? get<_Model extends SqliteModel>({query, repository}) {
     if (!manages(_Model)) return null;
     managedObjects[_Model] ??= {};
 
@@ -64,7 +64,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     // If this query is searching for a unique identifier, return that specific record
     final byId = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
     if (byId?.value != null) {
-      final object = managedObjects[_Model][byId.value] as _Model;
+      final object = managedObjects[_Model]![byId!.value] as _Model;
       if (object != null) return [object];
     }
 
@@ -84,7 +84,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
 
     models.forEach((instance) {
       if (instance.primaryKey != null) {
-        managedObjects[_Model][instance.primaryKey] = instance;
+        managedObjects[_Model]![instance.primaryKey!] = instance;
       }
     });
 
@@ -97,10 +97,10 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
   }
 
   @override
-  _Model upsert<_Model extends SqliteModel>(instance, {query, repository}) {
+  _Model? upsert<_Model extends SqliteModel>(instance, {query, repository}) {
     if (!manages(_Model)) return null;
     logger.finest('#upsert: $_Model, $instance, $query');
     hydrate<_Model>([instance]);
-    return managedObjects[_Model][instance.primaryKey] as _Model;
+    return managedObjects[_Model]![instance.primaryKey] as _Model;
   }
 }

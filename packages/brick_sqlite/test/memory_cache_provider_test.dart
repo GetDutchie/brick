@@ -10,11 +10,7 @@ class PersonGroup extends SqliteModel {}
 
 void main() {
   group('MemoryCacheProvider', () {
-    MemoryCacheProvider provider;
-
-    setUp(() {
-      provider = MemoryCacheProvider([Person]);
-    });
+    final provider = MemoryCacheProvider([Person]);
 
     test('#managedModelTypes', () {
       expect(provider.managedModelTypes, [Person]);
@@ -84,14 +80,14 @@ void main() {
       provider.hydrate<Person>([instance]);
       expect(provider.managedObjects, isNotEmpty);
       expect(provider.managedObjects[Person], isNotNull);
-      expect(provider.managedObjects[Person][1], isNotNull);
+      expect(provider.managedObjects[Person]![1], isNotNull);
 
       // does not insert null ids
       final instanceWithoutId = Person();
       expect(instanceWithoutId.primaryKey, isNull);
-      expect(provider.managedObjects[Person].values, hasLength(1));
+      expect(provider.managedObjects[Person]!.values, hasLength(1));
       provider.hydrate<Person>([instanceWithoutId]);
-      expect(provider.managedObjects[Person].values, hasLength(1));
+      expect(provider.managedObjects[Person]!.values, hasLength(1));
     });
 
     test('#reset', () {

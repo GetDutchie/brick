@@ -124,60 +124,6 @@ void main() {
         expect(doesExistWithModel, isTrue);
       });
     });
-
-    group('#migrateFromStringToJoinsTable', () {
-      final localTableName = 'User';
-      final foreignTableName = 'Hat';
-      final columnName = 'hats';
-      final oldTable = [
-        InsertTable(localTableName),
-        InsertColumn(columnName, Column.varchar, onTable: localTableName),
-        InsertTable(foreignTableName),
-        InsertColumn('full_name', Column.varchar, onTable: foreignTableName),
-      ];
-      final joinsTableName =
-          InsertForeignKey.joinsTableName(columnName, localTableName: localTableName);
-      final joinsColumnLocal = SchemaColumn(
-        InsertForeignKey.joinsTableLocalColumnName(localTableName),
-        Column.integer,
-        foreignTableName: localTableName,
-        isForeignKey: true,
-        onDeleteCascade: true,
-      )..tableName = joinsTableName;
-      final joinsColumnForeign = SchemaColumn(
-        InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-        Column.integer,
-        isForeignKey: true,
-        foreignTableName: foreignTableName,
-        onDeleteCascade: true,
-      )..tableName = joinsTableName;
-      final table = [
-        InsertTable(joinsTableName),
-        joinsColumnLocal.toCommand(),
-        joinsColumnForeign.toCommand(),
-      ];
-
-      test('migrates', () async {
-        // setup
-        for (var command in oldTable) {
-          await provider.rawExecute(command.statement);
-        }
-        await provider.rawInsert('INSERT INTO `$foreignTableName` (full_name) VALUES ("Bowler")');
-        await provider.rawInsert('INSERT INTO `$foreignTableName` (full_name) VALUES ("Big")');
-        await provider.rawInsert(
-            'INSERT OR IGNORE INTO `$localTableName` ($columnName) VALUES (?)', ['[1,2,3]']);
-        for (var command in table) {
-          await provider.rawExecute(command.statement);
-        }
-
-        // ignore: deprecated_member_use_from_same_package
-        await provider.migrateFromStringToJoinsTable(columnName, localTableName, foreignTableName);
-
-        final joinsResults = await provider.rawQuery('SELECT * FROM `$joinsTableName`');
-        // only two becuase the third foreign key does not exist and therefore wasn't inserted
-        expect(joinsResults, hasLength(2));
-      });
-    });
   });
 
   group('SqliteModel', () {

@@ -11,8 +11,8 @@ import '__mocks__.dart';
 void main() {
   ft.TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('QuerySqlTransformer', () {
-    Database db;
+  group('QuerySqlTransformer', () async {
+    final db = await openDatabase('db.sqlite');
     var sqliteLogs = <MethodCall>[];
 
     MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
@@ -25,13 +25,9 @@ void main() {
       return Future.value(null);
     });
 
-    setUpAll(() async {
-      db = await openDatabase('db.sqlite');
-    });
-
     tearDown(sqliteLogs.clear);
 
-    void sqliteStatementExpectation(String statement, [List<dynamic> arguments]) {
+    void sqliteStatementExpectation(String statement, [List<dynamic>? arguments]) {
       final matcher = isMethodCall('query',
           arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
 
@@ -92,7 +88,7 @@ void main() {
           WherePhrase([
             Where.exact('id', 1),
             Where.exact('name', 'Guy'),
-          ], required: true),
+          ], isRequired: true),
           WherePhrase([
             Where.exact('id', 1),
             Where.exact('name', 'Guy'),
@@ -115,7 +111,7 @@ void main() {
           WherePhrase([
             Or('name').isExactly('Thomas'),
             Or('name').isExactly('Guy'),
-          ], required: true),
+          ], isRequired: true),
         ]),
       );
 
@@ -167,7 +163,7 @@ void main() {
             WherePhrase([
               Where.exact('id', 1),
               Where.exact('name', 'Guy'),
-            ], required: true),
+            ], isRequired: true),
             WherePhrase([
               Where.exact('id', 1),
               Where.exact('name', 'Guy'),
@@ -206,7 +202,7 @@ void main() {
             where: [
               WherePhrase([
                 if (nilValue != null) And('name').isExactly('John'),
-              ], required: false),
+              ], isRequired: false),
             ],
           ),
           selectStatement: false,
