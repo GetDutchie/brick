@@ -20,7 +20,7 @@ abstract class WhereCondition {
   String get evaluatedField;
 
   /// Nested conditions. Leave unchanged for [WhereCondition]s that do not nest.
-  final List<WhereCondition> conditions = null;
+  final List<WhereCondition>? conditions = null;
 
   /// The kind of comparison of the [evaluatedField] to the [value]. Defaults to [Compare.equals].
   /// It is the responsibility of the [Provider] to ignore or interpret the requested comparison.
@@ -30,7 +30,7 @@ abstract class WhereCondition {
   ///
   /// For example, `true` would translate to `AND` in SQL instead of `OR`.
   /// Some [Provider]s may ignore this field.
-  bool get required;
+  bool get isRequired;
 
   /// The value to compare on the [evaluatedField].
   dynamic get value;
@@ -41,7 +41,7 @@ abstract class WhereCondition {
     if (data['subclass'] == 'WherePhrase') {
       return WherePhrase(
         data['conditions'].map((s) => WhereCondition.fromJson(s)),
-        required: data['required'],
+        isRequired: data['required'],
       );
     }
 
@@ -49,19 +49,19 @@ abstract class WhereCondition {
       data['evaluatedField'],
       value: data['value'],
       compare: Compare.values[data['compare']],
-      required: data['required'],
+      isRequired: data['required'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'subclass': runtimeType.toString(),
-      if (evaluatedField != null) 'evaluatedField': evaluatedField,
-      if (compare != null) 'compare': Compare.values.indexOf(compare),
+      'evaluatedField': evaluatedField,
+      'compare': Compare.values.indexOf(compare),
       if (conditions != null)
-        'conditions': conditions.map((s) => s.toJson()).toList().cast<Map<String, dynamic>>(),
-      if (required != null) 'required': required,
-      if (value != null) 'value': value,
+        'conditions': conditions!.map((s) => s.toJson()).toList().cast<Map<String, dynamic>>(),
+      'required': isRequired,
+      'value': value,
     };
   }
 
@@ -72,20 +72,20 @@ abstract class WhereCondition {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WhereCondition &&
-          evaluatedField == other?.evaluatedField &&
-          compare == other?.compare &&
-          required == other?.required &&
-          _listEquality.equals(conditions, other?.conditions) &&
+          evaluatedField == other.evaluatedField &&
+          compare == other.compare &&
+          isRequired == other.isRequired &&
+          _listEquality.equals(conditions, other.conditions) &&
           ((value is List && other.value is List)
-              ? _listEquality.equals(value, other?.value)
-              : value == other?.value);
+              ? _listEquality.equals(value, other.value)
+              : value == other.value);
 
   @override
   int get hashCode =>
       evaluatedField.hashCode ^
       compare.hashCode ^
       conditions.hashCode ^
-      required.hashCode ^
+      isRequired.hashCode ^
       value.hashCode;
 }
 
@@ -93,12 +93,12 @@ class Where extends WhereCondition {
   final String evaluatedField;
   final Compare compare;
   final dynamic value;
-  final bool required;
+  final bool isRequired;
 
   static const defaults = const Where(
     '',
     compare: Compare.exact,
-    required: true,
+    isRequired: true,
   );
 
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
@@ -108,44 +108,44 @@ class Where extends WhereCondition {
   const Where(
     this.evaluatedField, {
     this.value,
-    Compare compare,
-    bool required,
-  })  : this.required = required ?? true,
+    Compare? compare,
+    bool? isRequired,
+  })  : this.isRequired = isRequired ?? true,
         this.compare = compare ?? Compare.exact;
 
   /// A condition written with brevity. [required] defaults `true`.
-  factory Where.exact(String evaluatedField, dynamic value, {bool required = true}) =>
-      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
+  factory Where.exact(String evaluatedField, dynamic value, {bool isRequired = true}) =>
+      Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
   Where isExactly(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.exact, required: required);
+      Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
   Where isBetween(dynamic value1, dynamic value2) {
     assert(value1.runtimeType == value2.runtimeType, "Comparison values must be the same type");
     return Where(evaluatedField,
-        value: [value1, value2], compare: Compare.between, required: required);
+        value: [value1, value2], compare: Compare.between, isRequired: isRequired);
   }
 
   Where contains(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.contains, required: required);
+      Where(evaluatedField, value: value, compare: Compare.contains, isRequired: isRequired);
 
   Where doesNotContain(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.doesNotContain, required: required);
+      Where(evaluatedField, value: value, compare: Compare.doesNotContain, isRequired: isRequired);
 
   Where isLessThan(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.lessThan, required: required);
+      Where(evaluatedField, value: value, compare: Compare.lessThan, isRequired: isRequired);
 
-  Where isLessThanOrEqualTo(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.lessThanOrEqualTo, required: required);
+  Where isLessThanOrEqualTo(dynamic value) => Where(evaluatedField,
+      value: value, compare: Compare.lessThanOrEqualTo, isRequired: isRequired);
 
   Where isGreaterThan(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.greaterThan, required: required);
+      Where(evaluatedField, value: value, compare: Compare.greaterThan, isRequired: isRequired);
 
   Where isGreaterThanOrEqualTo(dynamic value) => Where(evaluatedField,
-      value: value, compare: Compare.greaterThanOrEqualTo, required: required);
+      value: value, compare: Compare.greaterThanOrEqualTo, isRequired: isRequired);
 
   Where isNot(dynamic value) =>
-      Where(evaluatedField, value: value, compare: Compare.notEqual, required: required);
+      Where(evaluatedField, value: value, compare: Compare.notEqual, isRequired: isRequired);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
@@ -156,39 +156,39 @@ class Where extends WhereCondition {
 
     /// recursively flatten all nested conditions
     void expandConditions(WhereCondition condition) {
-      if (condition?.conditions == null || condition.conditions.isEmpty) {
+      if (condition.conditions == null || condition.conditions!.isEmpty) {
         flattenedConditions.add(condition);
       } else {
-        condition?.conditions?.forEach(expandConditions);
+        condition.conditions?.forEach(expandConditions);
       }
     }
 
-    conditions?.forEach(expandConditions);
+    conditions.forEach(expandConditions);
 
     return flattenedConditions
-        ?.where((c) => c.evaluatedField == fieldName)
-        ?.toList()
-        ?.cast<WhereCondition>();
+        .where((c) => c.evaluatedField == fieldName)
+        .toList()
+        .cast<WhereCondition>();
   }
 
   /// Find the first occurrance of a condition that evaluates a specific field
   /// For all conditions, use [byField].
-  static Where firstByField(String fieldName, List<WhereCondition> conditions) {
+  static WhereCondition? firstByField(String fieldName, List<WhereCondition> conditions) {
     final results = byField(fieldName, conditions);
-    if (results?.isEmpty ?? true) return null;
+    if (results.isEmpty) return null;
     return results.first;
   }
 }
 
 class WherePhrase extends WhereCondition {
-  final evaluatedField = null;
+  final evaluatedField = '';
   final compare = Compare.exact;
   final value = null;
 
   /// Whether all [conditions] must evaulate to `true` for the query to return results.
   ///
   /// Defaults `false`.
-  final bool required;
+  final bool isRequired;
 
   final List<WhereCondition> conditions;
 
@@ -224,8 +224,8 @@ class WherePhrase extends WhereCondition {
 // `required` also operates slightly differently for both. In where, it's the column. In WherePhrase, it's the whole chunk.
   const WherePhrase(
     this.conditions, {
-    bool required,
-  }) : this.required = required ?? false;
+    bool? isRequired,
+  }) : this.isRequired = isRequired ?? false;
 }
 
 /// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].

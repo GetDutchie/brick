@@ -14,7 +14,7 @@ class Query {
   /// ```dart
   ///   upsert(query) => final q = query.copyWith(action: QueryAction.upsert)
   /// ```
-  final QueryAction action;
+  final QueryAction? action;
 
   /// Properties that interact with the provider's source. For example, `'limit'`.
   /// The value **must** be serializable by `jsonEncode`.
@@ -41,11 +41,11 @@ class Query {
   /// By default, every [WhereCondition] should be presumed to be an `and`.
   /// For example, `where: [Where.exact('id', 1), Where.exact('name', 'Thomas')]`
   /// will only return results where the ID is 1 **and** the name is Thomas.
-  final List<WhereCondition> where;
+  final List<WhereCondition>? where;
 
   Query({
     this.action,
-    Map<String, dynamic> providerArgs,
+    Map<String, dynamic>? providerArgs,
     this.where,
   }) : this.providerArgs = providerArgs ?? {} {
     /// Number of results first returned from query; `0` returns all. Must be greater than -1
@@ -75,7 +75,7 @@ class Query {
   factory Query.where(
     String evaluatedField,
     dynamic value, {
-    Compare compare,
+    Compare? compare,
     bool limit1 = false,
   }) {
     compare ??= Where.defaults.compare;
@@ -88,9 +88,9 @@ class Query {
   }
 
   Query copyWith({
-    QueryAction action,
-    Map<String, dynamic> providerArgs,
-    List<WhereCondition> where,
+    QueryAction? action,
+    Map<String, dynamic>? providerArgs,
+    List<WhereCondition>? where,
   }) =>
       Query(
         action: action ?? this.action,
@@ -100,10 +100,10 @@ class Query {
 
   Map<String, dynamic> toJson() {
     return {
-      if (action != null) 'action': QueryAction.values.indexOf(action),
-      if (providerArgs != null) 'providerArgs': providerArgs,
+      if (action != null) 'action': QueryAction.values.indexOf(action!),
+      'providerArgs': providerArgs,
       if (where != null)
-        'where': where.map((w) => w.toJson()).toList().cast<Map<String, dynamic>>(),
+        'where': where!.map((w) => w.toJson()).toList().cast<Map<String, dynamic>>(),
     };
   }
 
@@ -114,9 +114,9 @@ class Query {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Query &&
-          this?.action == other?.action &&
-          _mapEquality.equals(this?.providerArgs, other?.providerArgs) &&
-          _listEquality.equals(this?.where, other?.where);
+          this.action == other.action &&
+          _mapEquality.equals(this.providerArgs, other.providerArgs) &&
+          _listEquality.equals(this.where, other.where);
 
   @override
   int get hashCode => action.hashCode ^ providerArgs.hashCode ^ where.hashCode;

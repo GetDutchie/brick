@@ -19,7 +19,7 @@ class DemoProvider extends Provider<DemoModel> {
   }
 
   get<_Model extends DemoModel>({query, repository}) {
-    final list = List<DemoModel>();
+    final list = <DemoModel>[];
     list.add(DemoModel('Thomas'));
     return Future.value(list);
   }

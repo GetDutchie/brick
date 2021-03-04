@@ -52,19 +52,19 @@ abstract class SingleProviderRepository<_Model extends Model> implements ModelRe
 
   /// Remove models from providers
   @override
-  FutureOr<bool> delete<T extends _Model>(T instance, {Query query}) =>
+  FutureOr<bool> delete<T extends _Model>(T instance, {Query? query}) =>
       provider.delete<T>(instance, query: query, repository: this);
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<List<T>> get<T extends _Model>({Query query}) =>
+  FutureOr<List<T>> get<T extends _Model>({Query? query}) =>
       provider.get<T>(query: query, repository: this);
 
   @override
-  initialize() => null;
+  initialize() async {}
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<T> upsert<T extends _Model>(T instance, {Query query}) =>
+  FutureOr<T> upsert<T extends _Model>(T instance, {Query? query}) =>
       provider.upsert<T>(instance, query: query, repository: this);
 }
