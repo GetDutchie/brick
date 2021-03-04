@@ -8,8 +8,8 @@ import '__mocks__.dart';
 
 void main() {
   group('RestProvider', () {
-    MockClient client;
-    RestProvider provider;
+    late MockClient client;
+    late RestProvider provider;
 
     setUp(() {
       client = MockClient();
@@ -22,7 +22,7 @@ void main() {
 
     group('#get', () {
       test('simple', () async {
-        when(client.get('http://localhost:3000/person'))
+        when(client.get(Uri.parse('http://localhost:3000/person')))
             .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
 
         final m = await provider.get<DemoRestModel>();
@@ -31,7 +31,7 @@ void main() {
       });
 
       test('without specifying a top level key', () async {
-        when(client.get('http://localhost:3000/person'))
+        when(client.get(Uri.parse('http://localhost:3000/person')))
             .thenAnswer((_) async => http.Response('{"people": [{"name": "Thomas"}]}', 200));
 
         final m = await provider.get<DemoRestModel>();
@@ -43,9 +43,9 @@ void main() {
     test('#defaultHeaders', () async {
       final headers = {'Authorization': 'token=12345'};
 
-      when(client.get('http://localhost:3000/person'))
+      when(client.get(Uri.parse('http://localhost:3000/person')))
           .thenAnswer((_) async => http.Response('[{"name": "Thomas"}]', 200));
-      when(client.get('http://localhost:3000/person', headers: headers))
+      when(client.get(Uri.parse('http://localhost:3000/person'), headers: headers))
           .thenAnswer((_) async => http.Response('[{"name": "Guy"}]', 200));
 
       provider.defaultHeaders = headers;
@@ -57,7 +57,7 @@ void main() {
     group('#upsert', () {
       test('basic', () async {
         when(client.post(
-          'http://localhost:3000/person',
+          Uri.parse('http://localhost:3000/person'),
           body: anyNamed('body'),
           headers: anyNamed('headers'),
           encoding: anyNamed('encoding'),
@@ -65,13 +65,13 @@ void main() {
 
         final instance = DemoRestModel('Guy');
         final resp = await provider.upsert<DemoRestModel>(instance);
-        expect(resp.statusCode, 200);
+        expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
       test('providerArgs["headers"]', () async {
         when(client.post(
-          'http://localhost:3000/person',
+          Uri.parse('http://localhost:3000/person'),
           body: anyNamed('body'),
           headers: {'Content-Type': 'application/json', 'Authorization': 'Basic xyz'},
           encoding: anyNamed('encoding'),
@@ -83,13 +83,13 @@ void main() {
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
-        expect(resp.statusCode, 200);
+        expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
 
       test('providerArgs["request"]', () async {
         when(client.put(
-          'http://localhost:3000/person',
+          Uri.parse('http://localhost:3000/person'),
           body: anyNamed('body'),
           headers: anyNamed('headers'),
           encoding: anyNamed('encoding'),
@@ -99,13 +99,13 @@ void main() {
         final query = Query(providerArgs: {'request': 'PUT'});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
-        expect(resp.statusCode, 200);
+        expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
       test("providerArgs['topLevelKey']", () async {
         when(client.post(
-          'http://localhost:3000/person',
+          Uri.parse('http://localhost:3000/person'),
           body: '{"top":{"name":"Guy"}}',
           headers: anyNamed('headers'),
           encoding: anyNamed('encoding'),
@@ -122,13 +122,13 @@ void main() {
           encoding: anyNamed('encoding'),
         ));
 
-        expect(resp.statusCode, 200);
+        expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
 
       test("providerArgs['supplementalTopLevelData']", () async {
         when(client.post(
-          'http://localhost:3000/person',
+          Uri.parse('http://localhost:3000/person'),
           body: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
           headers: anyNamed('headers'),
           encoding: anyNamed('encoding'),
@@ -150,14 +150,14 @@ void main() {
           encoding: anyNamed('encoding'),
         ));
 
-        expect(resp.statusCode, 200);
+        expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
     });
 
     test('#delete', () async {
       when(client.delete(
-        'http://localhost:3000/person',
+        Uri.parse('http://localhost:3000/person'),
         headers: anyNamed('headers'),
       )).thenAnswer((_) async => http.Response('{"name": "Thomas"}', 200));
 
@@ -165,7 +165,7 @@ void main() {
       await provider.delete<DemoRestModel>(instance);
 
       verify(client.delete(
-        'http://localhost:3000/person',
+        Uri.parse('http://localhost:3000/person'),
         headers: anyNamed('headers'),
       ));
     });

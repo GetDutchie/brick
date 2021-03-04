@@ -9,19 +9,15 @@ class RestException implements Exception {
 
   /// Decoded error messages if included under the top-level key 'errors' in the response.
   /// For example, `{"phone": ["Phone required"]}` in `{"errors":{"phone": ["Phone required"]}}`.
-  Map<String, dynamic> get errors {
-    if (response.body != null) {
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('errors')) {
-          return decoded['errors'];
-        }
-      } catch (e) {
-        return null;
+  Map<String, dynamic>? get errors {
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map && decoded.containsKey('errors')) {
+        return decoded['errors'];
       }
+    } catch (e) {
+      return null;
     }
-
-    return null;
   }
 
   String get message =>

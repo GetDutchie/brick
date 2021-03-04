@@ -28,7 +28,7 @@ void main() {
       });
       final instance = DemoRestModel('Guy');
       final resp = await provider.upsert<DemoRestModel>(instance);
-      expect(resp.statusCode, 200);
+      expect(resp!.statusCode, 200);
       expect(resp.body, '[{"name": "Guy"}]');
     });
   });
