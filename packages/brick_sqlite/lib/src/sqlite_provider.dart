@@ -63,12 +63,10 @@ class SqliteProvider implements Provider<SqliteModel> {
       );
     }
 
-    final primaryKey = existingPrimaryKey ?? instance.primaryKey;
-
     return await db.delete(
       '`${adapter.tableName}`',
       where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
-      whereArgs: [primaryKey],
+      whereArgs: [existingPrimaryKey],
     );
   }
 

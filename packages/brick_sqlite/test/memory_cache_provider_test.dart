@@ -10,7 +10,11 @@ class PersonGroup extends SqliteModel {}
 
 void main() {
   group('MemoryCacheProvider', () {
-    final provider = MemoryCacheProvider([Person]);
+    late MemoryCacheProvider provider;
+
+    setUp(() {
+      provider = MemoryCacheProvider([Person]);
+    });
 
     test('#managedModelTypes', () {
       expect(provider.managedModelTypes, [Person]);

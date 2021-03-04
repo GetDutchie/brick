@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart' show protected, required;
+import 'package:meta/meta.dart' show protected;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite_abstract/db.dart';
 
@@ -76,7 +76,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     _statement.add('$execute FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
       final whereStatement = _expandCondition(condition);
-      if (whereStatement?.isNotEmpty ?? false) _where.add(whereStatement);
+      if (whereStatement.isNotEmpty) _where.add(whereStatement);
     });
 
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);

@@ -41,7 +41,9 @@ Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
     {SqliteProvider? provider, repository}) async {
   return {
     'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
-        await provider?.upsert<DemoModelAssoc>(instance.assoc!, repository: repository),
+        (instance.assoc != null
+            ? await provider?.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
+            : null),
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
     'full_name': instance.name,

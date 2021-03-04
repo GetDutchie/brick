@@ -11,25 +11,31 @@ import '__mocks__.dart';
 void main() {
   ft.TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('QuerySqlTransformer', () async {
-    final db = await openDatabase('db.sqlite');
+  group('QuerySqlTransformer', () {
+    late Database db;
     var sqliteLogs = <MethodCall>[];
 
     MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
-      sqliteLogs.add(methodCall);
+      if (methodCall.method == 'query') sqliteLogs.add(methodCall);
 
       if (methodCall.method == 'getDatabasesPath') {
         return Future.value('db');
       }
 
-      return Future.value(null);
+      if (methodCall.method == 'openDatabase') return Future.value(1);
+
+      return Future.value([]);
+    });
+
+    setUpAll(() async {
+      db = await openDatabase('db.sqlite');
     });
 
     tearDown(sqliteLogs.clear);
 
     void sqliteStatementExpectation(String statement, [List<dynamic>? arguments]) {
       final matcher = isMethodCall('query',
-          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
+          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': 1});
 
       return expect(sqliteLogs, contains(matcher));
     }
