@@ -19,7 +19,7 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
 
   /// Only present to conform to the [Provider] spec.
   @override
-  final modelDictionary = null;
+  final modelDictionary = _MemoryCacheModelDictionary();
 
   /// A complete hash table of the
   Map<Type, Map<int, SqliteModel>> managedObjects = {};
@@ -103,4 +103,8 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     hydrate<_Model>([instance]);
     return managedObjects[_Model]![instance.primaryKey] as _Model;
   }
+}
+
+class _MemoryCacheModelDictionary extends ModelDictionary<SqliteModel, SqliteAdapter<SqliteModel>> {
+  _MemoryCacheModelDictionary() : super({});
 }

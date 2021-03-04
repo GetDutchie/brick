@@ -60,7 +60,7 @@ void main() {
         final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
         final associationCount = await provider.get<DemoModelAssoc>();
         expect(associationCount, hasLength(2));
-        model.manyAssoc.clear();
+        model.manyAssoc?.clear();
         await provider.upsert<DemoModel>(model);
         final withClearedAssociations = await provider.get<DemoModel>(
           query: Query.where(

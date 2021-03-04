@@ -195,8 +195,8 @@ class SqliteProvider implements Provider<SqliteModel> {
         await _lock.synchronized(() async {
           if (alterCommand.requiresSchema) {
             await alterCommand.execute(db);
-          } else {
-            await db.execute(command.statement);
+          } else if (command.statement != null) {
+            await db.execute(command.statement!);
           }
         });
       }
