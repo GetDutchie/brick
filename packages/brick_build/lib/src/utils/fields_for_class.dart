@@ -7,7 +7,7 @@ import 'package:source_gen/source_gen.dart';
 typedef HasFieldAnnotation = bool Function(FieldElement field);
 
 /// Manages all fields of a [ClassElement]. Generously borrowed from JSON Serializable
-abstract class FieldsForClass<_FieldAnnotation> {
+abstract class FieldsForClass<_FieldAnnotation extends Object> {
   /// The annotated element
   final ClassElement element;
 
@@ -34,7 +34,7 @@ abstract class FieldsForClass<_FieldAnnotation> {
     final allFields = elementInstanceFields.keys.toSet().union(inheritedFields.keys.toSet());
 
     final fields = allFields
-        .map((e) => _FieldSet(elementInstanceFields[e], inheritedFields[e], annotationCallback))
+        .map((e) => _FieldSet(elementInstanceFields[e]!, inheritedFields[e]!, annotationCallback))
         .toList();
 
     // Sort the fields using the `compare` implementation in _FieldSet
@@ -53,7 +53,7 @@ abstract class FieldsForClass<_FieldAnnotation> {
     });
   }
 
-  FieldsForClass({this.element});
+  FieldsForClass({required this.element});
 
   /// Returns `true` for `int get name => 5`
   static bool isComputedGetter(FieldElement field) {
@@ -113,9 +113,9 @@ class _FieldSet implements Comparable<_FieldSet> {
   /// Returns the offset of given field/property in its source file – with a
   /// preference for the getter if it's defined.
   static int _offsetFor(FieldElement e) {
-    if (e.getter != null && e.getter.nameOffset != e.nameOffset) {
+    if (e.getter != null && e.getter!.nameOffset != e.nameOffset) {
       assert(e.nameOffset == -1);
-      return e.getter.nameOffset;
+      return e.getter!.nameOffset;
     }
     return e.nameOffset;
   }

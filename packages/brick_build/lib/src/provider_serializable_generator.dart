@@ -22,12 +22,16 @@ abstract class ProviderSerializableGenerator<_Config> {
   final String configKey;
 
   /// Deserialize a [_Config] from an annotation, such as `RestSerializable`.
-  _Config get config => null;
+  _Config? get config => null;
 
   /// Produce serializer and deserializer generators
   List<SerdesGenerator> get generators;
 
-  ProviderSerializableGenerator(this.element, this.reader, {this.configKey}) {
+  ProviderSerializableGenerator(
+    this.element,
+    this.reader, {
+    required this.configKey,
+  }) {
     /// Verify the annotated element is a [ClassElement], otherwise throw
     if (element is! ClassElement) {
       final name = element.name;
@@ -41,7 +45,7 @@ abstract class ProviderSerializableGenerator<_Config> {
 
   /// `ConstantReader#read` does not return `null`, so we must safely navigate it
   @protected
-  ConstantReader withinConfigKey(String property) {
+  ConstantReader? withinConfigKey(String property) {
     if (reader.peek(configKey) == null) return null;
 
     final nestedConstant = reader.read(configKey).read(property);

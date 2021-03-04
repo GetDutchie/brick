@@ -21,7 +21,7 @@ abstract class AnnotationSuperGenerator<_Annotation> extends GeneratorForAnnotat
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation);
 
   /// Combine relevant serdes generators for output to a single file: the adapter.
-  String generateAdapter(Element element, ConstantReader annotation, BuildStep buildStep) {
+  String generateAdapter(Element element, ConstantReader annotation, BuildStep? buildStep) {
     final generators = buildGenerators(element, annotation);
 
     final adapterGenerator = AdapterGenerator(

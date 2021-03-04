@@ -29,7 +29,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   }
 
   /// Replace contents of file
-  Future<File> replaceWithinFile(String path, Pattern from, String to) async {
+  Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
     final file = File(p.join('lib', 'app', path));
     final fileExists = await file.exists();
     if (!fileExists) {

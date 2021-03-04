@@ -127,7 +127,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Private fields, methods, static members, and computed setters are automatically ignored.
   /// See [FieldsForClass#stableInstanceFields].
   @visibleForOverriding
-  String addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
+  String? addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
     var wrappedInFuture = false;
 
     final futureChecker = SharedChecker(field.type);
@@ -207,17 +207,17 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Injected between the field member in the constructor and the contents
   @visibleForOverriding
   String deserializerNullableClause({
-    FieldElement field,
-    _FieldAnnotation fieldAnnotation,
-    String name,
+    required FieldElement field,
+    required _FieldAnnotation fieldAnnotation,
+    required String name,
   }) {
     return fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
   }
 
-  String expandGenerator(
+  String? expandGenerator(
     _FieldAnnotation annotation, {
-    FieldElement field,
-    SharedChecker checker,
+    required FieldElement field,
+    required SharedChecker checker,
   }) {
     final name = providerNameForField(annotation.name, checker: checker);
 
@@ -279,13 +279,21 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal
   /// the field's purpose.
   @protected
-  String providerNameForField(String annotatedName, {SharedChecker checker}) => annotatedName;
+  String providerNameForField(
+    String annotatedName, {
+    required SharedChecker checker,
+  }) =>
+      annotatedName;
 
   /// The field's value when used by the generator.
   /// For example, `data['my_field']` when used by a deserializing generator
   /// or `instance.myField` when used by a serializing generator
   @protected
-  String serdesValueForField(FieldElement field, String annotatedName, {SharedChecker checker}) {
+  String serdesValueForField(
+    FieldElement field,
+    String annotatedName, {
+    required SharedChecker checker,
+  }) {
     if (doesDeserialize) {
       final name = providerNameForField(annotatedName, checker: checker);
       return "data['$name']";
@@ -317,7 +325,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
             '@$placeholderName@ requires a trailing value: @NAME@value@/NAME@');
       }
 
-      return valueMatch.group(1);
+      return valueMatch!.group(1)!;
     }).replaceAll(RegExp(r'@([\w\d]+)@.*@\/\1@'), ''); // Remove variable values
   }
 

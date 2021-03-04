@@ -24,7 +24,6 @@ LibraryGenerator generateLibraryForFolder(String folder) {
 ///
 /// [_Annotation] should reflect the class-level annotation, e.g. `@ConnectOfflineFirstWithRest`
 Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String filename) async {
-  assert(_Annotation != null);
   final annotationChecker = TypeChecker.fromRuntime(_Annotation);
   final reader = await _libraryForFolder(folder, filename);
   return reader.annotatedWith(annotationChecker)?.first;

@@ -6,7 +6,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/constant/value.dart';
 
 /// Find an [_Annotation] per field.
-abstract class AnnotationFinder<_Annotation> {
+abstract class AnnotationFinder<_Annotation extends Object> {
   AnnotationFinder();
 
   final _columnChecker = TypeChecker.fromRuntime(_Annotation);
