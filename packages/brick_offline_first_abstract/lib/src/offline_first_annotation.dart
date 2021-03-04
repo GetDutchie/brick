@@ -19,7 +19,7 @@ class OfflineFirst {
   /// If [where] is not defined for an association, Brick will attempt to instantiate the
   /// association from the data in the payload. When [where] is included, the field will
   /// not be generated for the serializer of the remote provider unless [toGenerator] is defined **or** only one pair is defined.
-  final Map<String, String> where;
+  final Map<String, String>? where;
 
   /// Annotates classes that require extra manipulation to map to the expected field type
   const OfflineFirst({
