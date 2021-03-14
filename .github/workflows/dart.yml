@@ -59,10 +59,10 @@ jobs:
         working-directory: packages/brick_offline_first_abstract
         run: dartanalyzer --fatal-warnings lib
       - id: packages_brick_offline_first_pub_get
-        name: "packages/brick_offline_first; pub get --no-precompile"
+        name: "packages/brick_offline_first; flutter pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: pub get --no-precompile
+        run: flutter pub get --no-precompile
       - name: "packages/brick_offline_first; dartanalyzer --fatal-warnings lib"
         if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first
@@ -104,10 +104,10 @@ jobs:
         working-directory: packages/brick_rest_generators
         run: dartanalyzer --fatal-warnings lib
       - id: packages_brick_sqlite_pub_get
-        name: "packages/brick_sqlite; pub get --no-precompile"
+        name: "packages/brick_sqlite; flutter pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: pub get --no-precompile
+        run: flutter pub get --no-precompile
       - name: "packages/brick_sqlite; dartanalyzer --fatal-warnings lib"
         if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
