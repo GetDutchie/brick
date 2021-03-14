@@ -52,94 +52,94 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_rest_pub_upgrade
-        name: "packages/brick_rest; pub upgrade --no-precompile"
+      - id: packages_brick_rest_pub_get
+        name: "packages/brick_rest; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_rest; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_core_pub_upgrade
-        name: "packages/brick_core; pub upgrade --no-precompile"
+      - id: packages_brick_core_pub_get
+        name: "packages/brick_core; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_core; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_abstract_pub_upgrade
-        name: "packages/brick_offline_first_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_abstract_pub_get
+        name: "packages/brick_offline_first_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first_abstract; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_pub_upgrade
-        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_pub_get
+        name: "packages/brick_offline_first; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
-        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_with_rest_build_pub_get
+        name: "packages/brick_offline_first_with_rest_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first_with_rest_build; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_abstract_pub_upgrade
-        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_abstract_pub_get
+        name: "packages/brick_sqlite_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite_abstract; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_generators_pub_upgrade
-        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_generators_pub_get
+        name: "packages/brick_sqlite_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite_generators; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_build_pub_upgrade
-        name: "packages/brick_build; pub upgrade --no-precompile"
+      - id: packages_brick_build_pub_get
+        name: "packages/brick_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_build; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_pub_upgrade
-        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_pub_get
+        name: "packages/brick_sqlite; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_rest_generators_pub_upgrade
-        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+      - id: packages_brick_rest_generators_pub_get
+        name: "packages/brick_rest_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_rest_generators; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dartanalyzer --fatal-warnings lib
     needs:
@@ -163,94 +163,94 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_core_pub_upgrade
-        name: "packages/brick_core; pub upgrade --no-precompile"
+      - id: packages_brick_core_pub_get
+        name: "packages/brick_core; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_core; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_pub_upgrade
-        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_pub_get
+        name: "packages/brick_offline_first; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_abstract_pub_upgrade
-        name: "packages/brick_offline_first_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_abstract_pub_get
+        name: "packages/brick_offline_first_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first_abstract; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_build_pub_upgrade
-        name: "packages/brick_build; pub upgrade --no-precompile"
+      - id: packages_brick_build_pub_get
+        name: "packages/brick_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_build; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
-        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_with_rest_build_pub_get
+        name: "packages/brick_offline_first_with_rest_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_offline_first_with_rest_build; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_rest_pub_upgrade
-        name: "packages/brick_rest; pub upgrade --no-precompile"
+      - id: packages_brick_rest_pub_get
+        name: "packages/brick_rest; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_rest; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_generators_pub_upgrade
-        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_generators_pub_get
+        name: "packages/brick_sqlite_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite_generators; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_abstract_pub_upgrade
-        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_abstract_pub_get
+        name: "packages/brick_sqlite_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite_abstract; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_sqlite_pub_upgrade
-        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_pub_get
+        name: "packages/brick_sqlite; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_sqlite; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dartanalyzer --fatal-warnings lib
-      - id: packages_brick_rest_generators_pub_upgrade
-        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+      - id: packages_brick_rest_generators_pub_get
+        name: "packages/brick_rest_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: "packages/brick_rest_generators; dartanalyzer --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dartanalyzer --fatal-warnings lib
     needs:
@@ -274,67 +274,67 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_rest_pub_upgrade
-        name: "packages/brick_rest; pub upgrade --no-precompile"
+      - id: packages_brick_rest_pub_get
+        name: "packages/brick_rest; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_rest; pub run test
-        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: pub run test
-      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
-        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_with_rest_build_pub_get
+        name: "packages/brick_offline_first_with_rest_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_offline_first_with_rest_build; pub run test
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: pub run test
-      - id: packages_brick_core_pub_upgrade
-        name: "packages/brick_core; pub upgrade --no-precompile"
+      - id: packages_brick_core_pub_get
+        name: "packages/brick_core; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_core; pub run test
-        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
         working-directory: packages/brick_core
         run: pub run test
-      - id: packages_brick_sqlite_abstract_pub_upgrade
-        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_abstract_pub_get
+        name: "packages/brick_sqlite_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite_abstract; pub run test
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: pub run test
-      - id: packages_brick_build_pub_upgrade
-        name: "packages/brick_build; pub upgrade --no-precompile"
+      - id: packages_brick_build_pub_get
+        name: "packages/brick_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_build; pub run test
-        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_build
         run: pub run test
-      - id: packages_brick_sqlite_generators_pub_upgrade
-        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_generators_pub_get
+        name: "packages/brick_sqlite_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite_generators; pub run test
-        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: pub run test
-      - id: packages_brick_rest_generators_pub_upgrade
-        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+      - id: packages_brick_rest_generators_pub_get
+        name: "packages/brick_rest_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_rest_generators; pub run test
-        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: pub run test
     needs:
@@ -360,67 +360,67 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_rest_pub_upgrade
-        name: "packages/brick_rest; pub upgrade --no-precompile"
+      - id: packages_brick_rest_pub_get
+        name: "packages/brick_rest; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_rest; pub run test
-        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: pub run test
-      - id: packages_brick_core_pub_upgrade
-        name: "packages/brick_core; pub upgrade --no-precompile"
+      - id: packages_brick_core_pub_get
+        name: "packages/brick_core; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_core; pub run test
-        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
         working-directory: packages/brick_core
         run: pub run test
-      - id: packages_brick_rest_generators_pub_upgrade
-        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+      - id: packages_brick_rest_generators_pub_get
+        name: "packages/brick_rest_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_rest_generators; pub run test
-        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: pub run test
-      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
-        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_with_rest_build_pub_get
+        name: "packages/brick_offline_first_with_rest_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_offline_first_with_rest_build; pub run test
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: pub run test
-      - id: packages_brick_sqlite_abstract_pub_upgrade
-        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_abstract_pub_get
+        name: "packages/brick_sqlite_abstract; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite_abstract; pub run test
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: pub run test
-      - id: packages_brick_build_pub_upgrade
-        name: "packages/brick_build; pub upgrade --no-precompile"
+      - id: packages_brick_build_pub_get
+        name: "packages/brick_build; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_build; pub run test
-        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_build
         run: pub run test
-      - id: packages_brick_sqlite_generators_pub_upgrade
-        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_generators_pub_get
+        name: "packages/brick_sqlite_generators; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite_generators; pub run test
-        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: pub run test
     needs:
@@ -446,22 +446,22 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_offline_first_pub_upgrade
-        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_pub_get
+        name: "packages/brick_offline_first; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_offline_first; flutter test
-        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
-      - id: packages_brick_sqlite_pub_upgrade
-        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_pub_get
+        name: "packages/brick_sqlite; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite; flutter test
-        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter test
     needs:
@@ -487,22 +487,22 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2
-      - id: packages_brick_sqlite_pub_upgrade
-        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+      - id: packages_brick_sqlite_pub_get
+        name: "packages/brick_sqlite; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_sqlite; flutter test
-        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter test
-      - id: packages_brick_offline_first_pub_upgrade
-        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+      - id: packages_brick_offline_first_pub_get
+        name: "packages/brick_offline_first; pub get --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: pub upgrade --no-precompile
+        run: pub get --no-precompile
       - name: packages/brick_offline_first; flutter test
-        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
     needs:
