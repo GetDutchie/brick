@@ -1,0 +1,511 @@
+# Created with package:mono_repo v3.4.7
+name: Dart CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  job_001:
+    name: mono_repo self validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - name: mono_repo self validate
+        run: pub global activate mono_repo 3.4.7
+      - name: mono_repo self validate
+        run: pub global run mono_repo generate --validate
+  job_002:
+    name: "analyze; Dart stable; PKGS: packages/brick_rest, packages/brick_core, packages/brick_offline_first_abstract, packages/brick_offline_first, packages/brick_offline_first_with_rest_build, packages/brick_sqlite_abstract, packages/brick_sqlite_generators, packages/brick_build, packages/brick_sqlite, packages/brick_rest_generators; `dartanalyzer --fatal-warnings lib`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_rest-packages/brick_core-packages/brick_offline_first_abstract-packages/brick_offline_first-packages/brick_offline_first_with_rest_build-packages/brick_sqlite_abstract-packages/brick_sqlite_generators-packages/brick_build-packages/brick_sqlite-packages/brick_rest_generators;commands:dartanalyzer"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_rest-packages/brick_core-packages/brick_offline_first_abstract-packages/brick_offline_first-packages/brick_offline_first_with_rest_build-packages/brick_sqlite_abstract-packages/brick_sqlite_generators-packages/brick_build-packages/brick_sqlite-packages/brick_rest_generators
+            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_rest_pub_upgrade
+        name: "packages/brick_rest; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_rest; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_core_pub_upgrade
+        name: "packages/brick_core; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_core; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_abstract_pub_upgrade
+        name: "packages/brick_offline_first_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_abstract
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first_abstract; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_abstract
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_pub_upgrade
+        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first_with_rest_build; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite_abstract; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite_generators; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_build_pub_upgrade
+        name: "packages/brick_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_build; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_pub_upgrade
+        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_rest_generators; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: dartanalyzer --fatal-warnings lib
+    needs:
+      - job_001
+  job_003:
+    name: "analyze; Dart dev; PKGS: packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_build, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_sqlite_generators, packages/brick_sqlite_abstract, packages/brick_sqlite, packages/brick_rest_generators; `dartanalyzer --fatal-warnings lib`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_core-packages/brick_offline_first-packages/brick_offline_first_abstract-packages/brick_build-packages/brick_offline_first_with_rest_build-packages/brick_rest-packages/brick_sqlite_generators-packages/brick_sqlite_abstract-packages/brick_sqlite-packages/brick_rest_generators;commands:dartanalyzer"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_core-packages/brick_offline_first-packages/brick_offline_first_abstract-packages/brick_build-packages/brick_offline_first_with_rest_build-packages/brick_rest-packages/brick_sqlite_generators-packages/brick_sqlite_abstract-packages/brick_sqlite-packages/brick_rest_generators
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_core_pub_upgrade
+        name: "packages/brick_core; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_core; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_pub_upgrade
+        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_abstract_pub_upgrade
+        name: "packages/brick_offline_first_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_abstract
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first_abstract; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_abstract
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_build_pub_upgrade
+        name: "packages/brick_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_build; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_offline_first_with_rest_build; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_rest_pub_upgrade
+        name: "packages/brick_rest; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_rest; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite_generators; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite_abstract; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_sqlite_pub_upgrade
+        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_sqlite; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: dartanalyzer --fatal-warnings lib
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub upgrade --no-precompile
+      - name: "packages/brick_rest_generators; dartanalyzer --fatal-warnings lib"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: dartanalyzer --fatal-warnings lib
+    needs:
+      - job_001
+  job_004:
+    name: "unit_test; Dart stable; PKGS: packages/brick_rest, packages/brick_offline_first_with_rest_build, packages/brick_core, packages/brick_sqlite_abstract, packages/brick_build, packages/brick_sqlite_generators, packages/brick_rest_generators; `pub run test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_rest-packages/brick_offline_first_with_rest_build-packages/brick_core-packages/brick_sqlite_abstract-packages/brick_build-packages/brick_sqlite_generators-packages/brick_rest_generators;commands:test"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_rest-packages/brick_offline_first_with_rest_build-packages/brick_core-packages/brick_sqlite_abstract-packages/brick_build-packages/brick_sqlite_generators-packages/brick_rest_generators
+            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_rest_pub_upgrade
+        name: "packages/brick_rest; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub upgrade --no-precompile
+      - name: packages/brick_rest; pub run test
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub run test
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub upgrade --no-precompile
+      - name: packages/brick_offline_first_with_rest_build; pub run test
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub run test
+      - id: packages_brick_core_pub_upgrade
+        name: "packages/brick_core; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub upgrade --no-precompile
+      - name: packages/brick_core; pub run test
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub run test
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite_abstract; pub run test
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub run test
+      - id: packages_brick_build_pub_upgrade
+        name: "packages/brick_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub upgrade --no-precompile
+      - name: packages/brick_build; pub run test
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub run test
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite_generators; pub run test
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub run test
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub upgrade --no-precompile
+      - name: packages/brick_rest_generators; pub run test
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub run test
+    needs:
+      - job_001
+      - job_002
+      - job_003
+  job_005:
+    name: "unit_test; Dart dev; PKGS: packages/brick_rest, packages/brick_core, packages/brick_rest_generators, packages/brick_offline_first_with_rest_build, packages/brick_sqlite_abstract, packages/brick_build, packages/brick_sqlite_generators; `pub run test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_rest-packages/brick_core-packages/brick_rest_generators-packages/brick_offline_first_with_rest_build-packages/brick_sqlite_abstract-packages/brick_build-packages/brick_sqlite_generators;commands:test"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_rest-packages/brick_core-packages/brick_rest_generators-packages/brick_offline_first_with_rest_build-packages/brick_sqlite_abstract-packages/brick_build-packages/brick_sqlite_generators
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_rest_pub_upgrade
+        name: "packages/brick_rest; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub upgrade --no-precompile
+      - name: packages/brick_rest; pub run test
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest
+        run: pub run test
+      - id: packages_brick_core_pub_upgrade
+        name: "packages/brick_core; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub upgrade --no-precompile
+      - name: packages/brick_core; pub run test
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_core
+        run: pub run test
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: "packages/brick_rest_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub upgrade --no-precompile
+      - name: packages/brick_rest_generators; pub run test
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_rest_generators
+        run: pub run test
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: "packages/brick_offline_first_with_rest_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub upgrade --no-precompile
+      - name: packages/brick_offline_first_with_rest_build; pub run test
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first_with_rest_build
+        run: pub run test
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: "packages/brick_sqlite_abstract; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite_abstract; pub run test
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: pub run test
+      - id: packages_brick_build_pub_upgrade
+        name: "packages/brick_build; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub upgrade --no-precompile
+      - name: packages/brick_build; pub run test
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_build
+        run: pub run test
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: "packages/brick_sqlite_generators; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite_generators; pub run test
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_generators
+        run: pub run test
+    needs:
+      - job_001
+      - job_002
+      - job_003
+  job_006:
+    name: "unit_test; Dart stable; PKGS: packages/brick_offline_first, packages/brick_sqlite; `flutter test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_offline_first-packages/brick_sqlite;commands:command"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_offline_first-packages/brick_sqlite
+            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_offline_first_pub_upgrade
+        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: pub upgrade --no-precompile
+      - name: packages/brick_offline_first; flutter test
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: flutter test
+      - id: packages_brick_sqlite_pub_upgrade
+        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite; flutter test
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: flutter test
+    needs:
+      - job_001
+      - job_002
+      - job_003
+  job_007:
+    name: "unit_test; Dart dev; PKGS: packages/brick_sqlite, packages/brick_offline_first; `flutter test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_sqlite-packages/brick_offline_first;commands:command"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_sqlite-packages/brick_offline_first
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: packages_brick_sqlite_pub_upgrade
+        name: "packages/brick_sqlite; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: pub upgrade --no-precompile
+      - name: packages/brick_sqlite; flutter test
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: flutter test
+      - id: packages_brick_offline_first_pub_upgrade
+        name: "packages/brick_offline_first; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: pub upgrade --no-precompile
+      - name: packages/brick_offline_first; flutter test
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: flutter test
+    needs:
+      - job_001
+      - job_002
+      - job_003

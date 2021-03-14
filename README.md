@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/greenbits/brick.svg?branch=master)](https://travis-ci.org/greenbits/brick)
+[![Dart CI](https://github.com/google/json_serializable.dart/workflows/Dart%20CI/badge.svg)](https://github.com/greenbits/brick/actions?query=workflow%3A%22Dart+CI%22)
+
 
 ![An intuitive way to work with persistent data](./docs/logo.svg)
 

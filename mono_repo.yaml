@@ -1,11 +1,12 @@
-travis:
-  branches:
-    only:
-    - master
-  before_install:
-    - git clone https://github.com/flutter/flutter.git -b stable
-    - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
-    - flutter doctor
+# See https://github.com/google/mono_repo.dart for details on this file
+self_validate: analyzer_and_format
+
+github:
+  on:
+    push:
+      branches:
+      - master
+    pull_request:
 
 merge_stages:
 - analyze
