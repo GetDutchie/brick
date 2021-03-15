@@ -13,7 +13,7 @@ void main() {
     });
 
     test('#upsert', () async {
-      final res = await provider.upsert(DemoModel('Thomas'));
+      final res = provider.upsert(DemoModel('Thomas'));
       expect(res, isTrue);
     });
 

@@ -2,16 +2,18 @@ import '../migration_commands.dart';
 import 'schema_base.dart';
 
 class SchemaIndex extends BaseSchemaObject {
+  String? name;
+
   final List<String> columns;
 
-  String tableName;
+  String? tableName;
 
   final bool unique;
 
   SchemaIndex({
-    this.columns,
+    required this.columns,
     this.tableName,
-    this.unique,
+    required this.unique,
   });
 
   @override
@@ -19,7 +21,8 @@ class SchemaIndex extends BaseSchemaObject {
       "SchemaIndex(columns: [${columns.map((c) => "'$c'").join(', ')}], unique: $unique)";
 
   @override
-  MigrationCommand toCommand() => CreateIndex(columns: columns, onTable: tableName, unique: unique);
+  MigrationCommand toCommand() =>
+      CreateIndex(columns: columns, onTable: tableName!, unique: unique);
 
   @override
   bool operator ==(Object other) =>

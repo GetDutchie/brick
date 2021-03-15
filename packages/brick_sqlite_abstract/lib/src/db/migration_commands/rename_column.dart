@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'migration_command.dart';
 
 /// Renames an existing SQLite column in a table
@@ -10,12 +9,12 @@ class RenameColumn extends MigrationCommand {
   const RenameColumn(
     this.oldName,
     this.newName, {
-    @required this.onTable,
+    required this.onTable,
   });
 
   /// This is intentionally null. The SqliteProvider handles renaming columns.
   @override
-  String get statement => null;
+  String? get statement => null;
 
   @override
   String get forGenerator => "RenameColumn('$oldName', '$newName', onTable: '$onTable')";

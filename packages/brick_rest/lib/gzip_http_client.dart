@@ -15,7 +15,7 @@ class GZipHttpClient extends http.BaseClient {
   final http.Client innerClient;
 
   GZipHttpClient({
-    http.Client innerClient,
+    http.Client? innerClient,
 
     /// The higher the level, the smaller the output at the expense of memory.
     /// Defaults to [GZipCodec]'s default `6`.
@@ -27,13 +27,12 @@ class GZipHttpClient extends http.BaseClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     if (request is! http.Request) return innerClient.send(request);
 
-    final httpRequest = request as http.Request;
-    if (httpRequest.body == null || httpRequest.body.isEmpty) return innerClient.send(request);
-    if (httpRequest.headers['Content-Encoding'] == 'gzip') return innerClient.send(request);
+    if (request.body.isEmpty) return innerClient.send(request);
+    if (request.headers['Content-Encoding'] == 'gzip') return innerClient.send(request);
 
-    var newRequest = http.Request(httpRequest.method, httpRequest.url);
-    newRequest.headers.addAll(httpRequest.headers);
-    newRequest.bodyBytes = _encoder.encode(httpRequest.bodyBytes);
+    var newRequest = http.Request(request.method, request.url);
+    newRequest.headers.addAll(request.headers);
+    newRequest.bodyBytes = _encoder.encode(request.bodyBytes);
     newRequest.headers['Content-Encoding'] = 'gzip';
 
     return innerClient.send(newRequest);
