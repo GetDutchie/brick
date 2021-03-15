@@ -106,7 +106,7 @@ class SharedChecker<_SiblingModel extends Model> {
   /// If this is a class similarly annotated by the current generator.
   ///
   /// Useful for verifying whether or not to generate Serialize/Deserializers methods.
-  bool get isSibling => _siblingClassChecker?.isAssignableFromType(targetType) ?? false;
+  bool get isSibling => _siblingClassChecker.isAssignableFromType(targetType) ?? false;
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
@@ -130,9 +130,9 @@ class SharedChecker<_SiblingModel extends Model> {
     if (classElement.supertype?.typeArguments == null ||
         classElement.supertype!.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        'Type argument for ${targetType.getDisplayString()} is undefined.',
+        'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString()}<int>`',
+            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString(withNullability: false)}<int>`',
         element: targetType.element,
       );
     }

@@ -50,7 +50,7 @@ class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final providerName = 'DefaultSerdes';
 
   @override
-  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
+  String? coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
 }
 
 class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
@@ -94,7 +94,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
 
   @override
   String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation?.name ?? '', checker: checker);
     return '$fieldValue as ${field.type}';
   }
 }

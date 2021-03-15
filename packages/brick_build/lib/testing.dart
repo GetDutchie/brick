@@ -26,5 +26,5 @@ LibraryGenerator generateLibraryForFolder(String folder) {
 Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String filename) async {
   final annotationChecker = TypeChecker.fromRuntime(_Annotation);
   final reader = await _libraryForFolder(folder, filename);
-  return reader.annotatedWith(annotationChecker)?.first;
+  return reader.annotatedWith(annotationChecker).first!;
 }

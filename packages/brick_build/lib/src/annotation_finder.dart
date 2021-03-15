@@ -15,7 +15,7 @@ abstract class AnnotationFinder<_Annotation extends Object> {
   final _columnExpando = Expando<_Annotation>();
 
   /// Find annotation for [FieldElement] if one exists
-  DartObject objectForField(FieldElement field) {
+  DartObject? objectForField(FieldElement field) {
     final firstOfType = _columnChecker.firstAnnotationOfExact(field);
 
     if (firstOfType != null) {
@@ -37,12 +37,12 @@ abstract class AnnotationFinder<_Annotation extends Object> {
 
   /// Return the actual value for fields of an element that could be one of any primitive
   dynamic valueForDynamicField(String fieldName, FieldElement element) {
-    final dynamicValue = objectForField(element).getField(fieldName);
+    final dynamicValue = objectForField(element)?.getField(fieldName);
     if (dynamicValue == null || dynamicValue.isNull) {
       return null;
     }
 
-    final checker = SharedChecker(dynamicValue.type);
+    final checker = SharedChecker(dynamicValue.type!);
     if (checker.isEnum || !checker.isSerializable) {
       throw Exception('$fieldName on ${element.name} must be a primitive');
     }

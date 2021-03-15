@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/builders.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -10,8 +11,10 @@ void main() {
   group('SerdesGenerator', () async {
     final annotation =
         await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
-    final defaults = DefaultSerdes(annotation.element, TestFields(annotation.element));
-    final custom = CustomSerdes(annotation.element, TestFields(annotation.element));
+    final defaults = DefaultSerdes(
+        annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
+    final custom = CustomSerdes(
+        annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
 
     test('adapterMethod', () {
       expect(defaults.className, 'Simple');
