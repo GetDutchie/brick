@@ -21,7 +21,7 @@ class RestException implements Exception {
   }
 
   String get message =>
-      'statusCode=${response?.statusCode} url=${response?.request?.url} method=${response?.request?.method} body=${response?.body}';
+      'statusCode=${response.statusCode} url=${response.request?.url} method=${response.request?.method} body=${response.body}';
 
   @override
   String toString() => message;

@@ -1,6 +1,7 @@
 name: brick_rest_example
 
 version: 0.0.0
+publish_to: none
 
 environment:
   sdk: ">=2.4.0 <3.0.0"
