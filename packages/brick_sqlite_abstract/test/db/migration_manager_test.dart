@@ -18,16 +18,8 @@ void main() {
     const m1 = Migration1();
     const m2 = Migration2();
     const m3 = Migration3();
-    MigrationManager manager;
+    final manager = MigrationManager({m1, m2, m3});
     final emptyManager = MigrationManager(<Migration>{});
-
-    setUp(() {
-      manager = MigrationManager({m1, m2, m3});
-    });
-
-    tearDown(() {
-      manager = null;
-    });
 
     test('#migrationsSince', () {
       expect(manager.migrationsSince(1), hasLength(2));
@@ -55,9 +47,9 @@ void main() {
 
       expect(emptyManager.version, 0);
 
-      manager = MigrationManager({Migration2(), Migration1()});
+      final otherManager = MigrationManager({Migration2(), Migration1()});
       // Should sort migrations inserted out of order
-      expect(manager.version, 2);
+      expect(otherManager.version, 2);
     });
 
     test('.latestMigrationVersion', () {

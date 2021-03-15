@@ -17,13 +17,13 @@ class Sqlite implements FieldSerializable {
   /// If additional manipulation is (likely) required, specify [fromGenerator] and [toGenerator].
   ///
   /// Advanced use only.
-  final Column columnType;
+  final Column? columnType;
 
   @override
-  final String defaultValue;
+  final String? defaultValue;
 
   @override
-  final String fromGenerator;
+  final String? fromGenerator;
 
   @override
   final bool ignore;
@@ -45,7 +45,7 @@ class Sqlite implements FieldSerializable {
   ///
   /// If `null`, the snake case value of the field is used.
   @override
-  final String name;
+  final String? name;
 
   /// When `false`, the column will be inserted as `NOT NULL` and a value will be required in
   /// subsequent operations. Takes precedence over [SqliteSerializable]'s `#nullable`.
@@ -76,7 +76,7 @@ class Sqlite implements FieldSerializable {
   ///
   /// Placeholders can be used in the value of this field.
   @override
-  final String toGenerator;
+  final String? toGenerator;
 
   /// When `true`, the column will be inserted with a `UNIQUE` constraint. Unique columns will
   /// also be listed in the adapter for querying if implemented by the invoking provider.
@@ -93,24 +93,22 @@ class Sqlite implements FieldSerializable {
     this.columnType,
     this.defaultValue,
     this.fromGenerator,
-    this.ignore,
-    this.index,
+    bool? ignore,
+    bool? index,
     this.name,
-    this.nullable,
-    this.onDeleteCascade,
-    this.onDeleteSetDefault,
+    bool? nullable,
+    bool? onDeleteCascade,
+    bool? onDeleteSetDefault,
     this.toGenerator,
-    this.unique,
-  });
+    bool? unique,
+  })  : ignore = ignore ?? false,
+        index = index ?? false,
+        nullable = nullable ?? true,
+        onDeleteCascade = onDeleteCascade ?? false,
+        onDeleteSetDefault = onDeleteSetDefault ?? false,
+        unique = unique ?? false;
 
   /// An instance of [Sqlite] with all fields set to their default
   /// values.
-  static const defaults = Sqlite(
-    ignore: false,
-    index: false,
-    nullable: true,
-    onDeleteCascade: false,
-    onDeleteSetDefault: false,
-    unique: false,
-  );
+  static const defaults = Sqlite();
 }
