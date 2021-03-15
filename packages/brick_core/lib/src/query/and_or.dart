@@ -4,12 +4,12 @@ import 'package:brick_core/src/query/where.dart';
 class And extends Where {
   const And(
     String evaluatedField,
-  ) : super(evaluatedField, required: true);
+  ) : super(evaluatedField, isRequired: true);
 }
 
 /// Generate an optional condition.
 class Or extends Where {
   const Or(
     String evaluatedField,
-  ) : super(evaluatedField, required: false);
+  ) : super(evaluatedField, isRequired: false);
 }

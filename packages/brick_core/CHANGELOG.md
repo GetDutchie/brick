@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0
+
+* Null safety
+* **BREAKING CHANGE**: because `required` is now a first-class Dart keyword, `required` in `WherePhrase`, `WhereCondition`, `And`, `Or`, and `Where` has been renamed to `isRequired`.
 * Add optional method `Provider#exists`. Whether a model instance is present. `null` is returned when existence is unknown. The model instance is not hydrated in the function output; a `bool` variant (e.g. `List<bool>`, `Map<_Model, bool>`) should be returned.
 
 ## 0.0.6
