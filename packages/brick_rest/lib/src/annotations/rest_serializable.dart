@@ -54,7 +54,7 @@ class RestSerializable {
   /// To determine which is being invoked, use `query.action`.
   ///
   /// This field is copied to the [Adapter].
-  final String endpoint;
+  final String? endpoint;
 
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
@@ -74,7 +74,7 @@ class RestSerializable {
   /// The [fromKey] would be `"users"`.
   ///
   /// This field is copied to the [Adapter].
-  final String fromKey;
+  final String? fromKey;
 
   /// When `true` (the default), `null` fields are handled gracefully when decoding `null`
   /// and nonexistent values from JSON.
@@ -95,21 +95,19 @@ class RestSerializable {
   /// The [toKey] would be `"user"`.
   ///
   /// This field is copied to the [Adapter].
-  final String toKey;
+  final String? toKey;
 
   /// Creates a new [RestSerializable] instance.
   const RestSerializable({
     this.endpoint,
-    this.fieldRename,
+    FieldRename? fieldRename,
     this.fromKey,
-    this.nullable,
+    bool? nullable,
     this.toKey,
-  });
+  })  : fieldRename = fieldRename ?? FieldRename.snake,
+        nullable = nullable ?? false;
 
   /// An instance of [RestSerializable] with all fields set to their default
   /// values.
-  static const defaults = RestSerializable(
-    fieldRename: FieldRename.snake,
-    nullable: false,
-  );
+  static const defaults = RestSerializable();
 }
