@@ -3,7 +3,7 @@ import '__mocks__.dart';
 void main() {
   group('SchemaDifference', () {
     final column = SchemaColumn('name', Column.varchar);
-    SchemaTable table;
+    late SchemaTable table;
 
     final tableNoColumn = SchemaTable(
       'demo',
@@ -197,7 +197,7 @@ void main() {
           diff.toMigrationCommands(),
           [
             InsertTable('demo'),
-            InsertColumn(column.name, Column.varchar, onTable: column.tableName)
+            InsertColumn(column.name, Column.varchar, onTable: column.tableName!)
           ],
         );
         expect(diff.hasDifference, isTrue);
@@ -213,7 +213,7 @@ void main() {
           diff.toMigrationCommands(),
           [
             InsertTable('demo'),
-            InsertColumn(column.name, Column.varchar, onTable: column.tableName)
+            InsertColumn(column.name, Column.varchar, onTable: column.tableName!)
           ],
         );
         expect(diff.hasDifference, isTrue);
@@ -224,7 +224,7 @@ void main() {
         final newSchema = Schema(1, tables: {tableNoColumn});
 
         final diff = SchemaDifference(oldSchema, newSchema);
-        expect(diff.toMigrationCommands(), [DropColumn(column.name, onTable: column.tableName)]);
+        expect(diff.toMigrationCommands(), [DropColumn(column.name, onTable: column.tableName!)]);
         expect(diff.droppedColumns, hasLength(1));
         expect(diff.insertedColumns, isEmpty);
       });

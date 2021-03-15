@@ -3,10 +3,23 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 
 class DemoModelAssoc extends SqliteModel {
   DemoModelAssoc({this.name});
-  final String name;
+  final String? name;
 }
 
 class DemoModel extends SqliteModel {
+  final DemoModelAssoc? assoc;
+
+  final String? complexFieldName;
+
+  final String? lastName;
+
+  List<DemoModelAssoc>? manyAssoc;
+
+  @Sqlite(name: 'full_name')
+  final String? name;
+
+  final bool? simpleBool;
+
   DemoModel({
     this.name,
     this.assoc,
@@ -15,13 +28,4 @@ class DemoModel extends SqliteModel {
     this.manyAssoc,
     this.simpleBool,
   });
-
-  final DemoModelAssoc assoc;
-  final String complexFieldName;
-  final String lastName;
-  List<DemoModelAssoc> manyAssoc;
-
-  @Sqlite(name: 'full_name')
-  final String name;
-  final bool simpleBool;
 }

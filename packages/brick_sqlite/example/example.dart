@@ -23,7 +23,7 @@ class UserAdapter extends SqliteAdapter<User> {
     ),
   };
 
-  primaryKeyByUniqueColumns(instance, executor) async => instance?.primaryKey;
+  primaryKeyByUniqueColumns(instance, executor) async => instance.primaryKey;
 
   fromSqlite(data, {provider, repository}) async {
     return User(
@@ -47,7 +47,7 @@ final dictionary = SqliteModelDictionary({
 
 /// A model is unique to the end implementation (e.g. a Flutter app)
 class User extends SqliteModel {
-  final String name;
+  final String? name;
 
   User({
     this.name,

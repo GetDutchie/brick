@@ -18,8 +18,8 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// `SqliteModel#beforeSave`.
   Future<void> beforeSave(
     _Model instance, {
-    SqliteProvider provider,
-    ModelRepository<SqliteModel> repository,
+    SqliteProvider? provider,
+    ModelRepository<SqliteModel>? repository,
   }) async {}
 
   /// Hook invoked after the model is successfully entered in the SQLite database.
@@ -27,28 +27,28 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// `SqliteModel#afterSave`.
   Future<void> afterSave(
     _Model instance, {
-    SqliteProvider provider,
-    ModelRepository<SqliteModel> repository,
+    SqliteProvider? provider,
+    ModelRepository<SqliteModel>? repository,
   }) async {}
 
   Future<_Model> fromSqlite(
     Map<String, dynamic> data, {
-    SqliteProvider provider,
-    ModelRepository<SqliteModel> repository,
+    SqliteProvider? provider,
+    ModelRepository<SqliteModel>? repository,
   });
   Future<Map<String, dynamic>> toSqlite(
     _Model data, {
-    SqliteProvider provider,
-    ModelRepository<SqliteModel> repository,
+    SqliteProvider? provider,
+    ModelRepository<SqliteModel>? repository,
   });
 
   /// A dictionary that connects field names to SQLite column properties.
-  Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns;
+  Map<String, RuntimeSqliteColumnDefinition> get fieldsToSqliteColumns;
 
   /// Find a record based on the existence of all contained fields annotated with
   /// `@Sqlite(unique: true)`. The Brick-defined primary key of the table is not included
   /// in the query. Returns the Brick-defined primary key of the discovered record.
   ///
   /// [executor] accepts a `Database` or `Transaction`.
-  Future<int> primaryKeyByUniqueColumns(_Model instance, DatabaseExecutor executor);
+  Future<int?> primaryKeyByUniqueColumns(_Model instance, DatabaseExecutor executor);
 }

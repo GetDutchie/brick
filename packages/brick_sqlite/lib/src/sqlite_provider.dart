@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,7 +22,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
   @protected
-  final DatabaseFactory databaseFactory;
+  final DatabaseFactory? databaseFactory;
 
   /// The file name for the database used.
   ///
@@ -42,19 +41,19 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   final Logger _logger;
 
-  Future<Database> _openDb;
+  Future<Database>? _openDb;
 
   SqliteProvider(
     this.dbName, {
     this.databaseFactory,
-    this.modelDictionary,
-  })  : _lock = Lock(reentrant: true),
+    required this.modelDictionary,
+  })   : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
 
   /// Remove record from SQLite. [query] is ignored.
   @override
   Future<int> delete<_Model extends SqliteModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model];
+    final adapter = modelDictionary.adapterFor[_Model]!;
     final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
 
@@ -64,21 +63,20 @@ class SqliteProvider implements Provider<SqliteModel> {
       );
     }
 
-    final primaryKey = existingPrimaryKey ?? instance.primaryKey;
-
     return await db.delete(
       '`${adapter.tableName}`',
       where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
-      whereArgs: [primaryKey],
+      whereArgs: [existingPrimaryKey],
     );
   }
 
   /// Returns `true` if [_Model] exists in SQLite.
   ///
   /// If [query.where] is `null`, existence for **any** record is executed.
+  @override
   Future<bool> exists<_Model extends SqliteModel>({
-    Query query,
-    ModelRepository<SqliteModel> repository,
+    Query? query,
+    ModelRepository<SqliteModel>? repository,
   }) async {
     final sqlQuery = QuerySqlTransformer<_Model>(
       modelDictionary: modelDictionary,
@@ -98,7 +96,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     }
 
     final countQuery = await (await getDb()).rawQuery(statement, sqlQuery.values);
-    final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
+    final count = offsetIsPresent ? countQuery.length : Sqflite.firstIntValue(countQuery);
 
     return (count ?? 0) > 0;
   }
@@ -140,12 +138,12 @@ class SqliteProvider implements Provider<SqliteModel> {
   Future<Database> getDb() {
     if (_openDb == null) {
       if (databaseFactory != null) {
-        _openDb = databaseFactory.openDatabase(dbName);
+        _openDb = databaseFactory!.openDatabase(dbName);
       } else {
         _openDb = openDatabase(dbName);
       }
     }
-    return _openDb;
+    return _openDb!;
   }
 
   Future<int> lastMigrationVersion() async {
@@ -162,7 +160,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       limit: 1,
     );
 
-    if (sqliteVersions == null || sqliteVersions.isEmpty) {
+    if (sqliteVersions.isEmpty) {
       return -1;
     }
 
@@ -195,8 +193,8 @@ class SqliteProvider implements Provider<SqliteModel> {
         await _lock.synchronized(() async {
           if (alterCommand.requiresSchema) {
             await alterCommand.execute(db);
-          } else {
-            await db.execute(command.statement);
+          } else if (command.statement != null) {
+            await db.execute(command.statement!);
           }
         });
       }
@@ -213,9 +211,9 @@ class SqliteProvider implements Provider<SqliteModel> {
   Future<List<_Model>> rawGet<_Model extends SqliteModel>(
     String sql,
     List arguments, {
-    ModelRepository<SqliteModel> repository,
+    ModelRepository<SqliteModel>? repository,
   }) async {
-    final adapter = modelDictionary.adapterFor[_Model];
+    final adapter = modelDictionary.adapterFor[_Model]!;
 
     final results = await _lock.synchronized(() async {
       return (await getDb()).rawQuery(sql, arguments);
@@ -234,17 +232,17 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Execute a raw SQL statement. **Advanced use only**.
-  Future<void> rawExecute(String sql, [List arguments]) async {
+  Future<void> rawExecute(String sql, [List? arguments]) async {
     return await (await getDb()).execute(sql, arguments);
   }
 
   /// Insert with a raw SQL statement. **Advanced use only**.
-  Future<int> rawInsert(String sql, [List arguments]) async {
+  Future<int> rawInsert(String sql, [List? arguments]) async {
     return await (await getDb()).rawInsert(sql, arguments);
   }
 
   /// Query with a raw SQL statement. **Advanced use only**.
-  Future<List<Map>> rawQuery(String sql, [List arguments]) async {
+  Future<List<Map>> rawQuery(String sql, [List? arguments]) async {
     return await (await getDb()).rawQuery(sql, arguments);
   }
 
@@ -258,7 +256,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       if (databaseFactory == null) {
         await deleteDatabase(dbName);
       } else {
-        await databaseFactory.deleteDatabase(dbName);
+        await databaseFactory?.deleteDatabase(dbName);
       }
 
       // recreate
@@ -271,10 +269,8 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
   @override
-  Future<int> upsert<_Model extends SqliteModel>(instance, {query, repository}) async {
-    if (instance == null) return NEW_RECORD_ID;
-
-    final adapter = modelDictionary.adapterFor[_Model];
+  Future<int?> upsert<_Model extends SqliteModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[_Model]!;
     final db = await getDb();
 
     await adapter.beforeSave(instance, provider: this, repository: repository);
@@ -282,7 +278,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     final data = await adapter.toSqlite(instance, provider: this, repository: repository);
 
     final id = await _lock.synchronized(() async {
-      return await db.transaction<int>((txn) async {
+      return await db.transaction<int?>((txn) async {
         final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, txn);
 
         if (instance.isNewRecord && existingPrimaryKey == null) {
@@ -307,36 +303,5 @@ class SqliteProvider implements Provider<SqliteModel> {
     await adapter.afterSave(instance, provider: this, repository: repository);
     await instance.afterSave(provider: this, repository: repository);
     return id;
-  }
-
-  /// brick_sqlite 0.1.0 changed the storage of iterable siblings from a JSON-encoded string to
-  /// a proper joins table entity. This method migrates from pre-0.1.0 to the new API.
-  /// It should be run after `migrate`. For more, see the [CHANGELOG notes](https://github.com/greenbits/brick/blob/master/packages/brick_sqlite/CHANGELOG.md#010).
-  ///
-  /// This method will be eventually deprecated and removed.
-  @deprecated
-  Future<void> migrateFromStringToJoinsTable(
-    String columnName,
-    String localTableName,
-    String foreignTableName,
-  ) async {
-    final db = await getDb();
-
-    final rawIds = await db
-        .rawQuery('SELECT $columnName, ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$localTableName`');
-    for (var result in rawIds) {
-      final ids = jsonDecode(result[columnName] as String ?? '[]');
-      for (var id in ids) {
-        // ignore deleted associations as they'll throw contraint exceptions
-        final hasAssociation = await db.rawQuery(
-            'SELECT DISTINCT ${InsertTable.PRIMARY_KEY_COLUMN} FROM `$foreignTableName` WHERE ${InsertTable.PRIMARY_KEY_COLUMN} = $id LIMIT 1');
-        if (hasAssociation.isNotEmpty) {
-          await db.rawInsert(
-            'INSERT OR IGNORE INTO `${InsertForeignKey.joinsTableName(columnName, localTableName: localTableName)}` (`${InsertForeignKey.joinsTableLocalColumnName(localTableName)}`, `${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}`) VALUES (?, ?)',
-            [result[InsertTable.PRIMARY_KEY_COLUMN], id],
-          );
-        }
-      }
-    }
   }
 }
