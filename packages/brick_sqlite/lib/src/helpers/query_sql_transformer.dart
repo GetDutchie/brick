@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart' show protected, required;
+import 'package:meta/meta.dart' show protected;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite_abstract/db.dart';
 
@@ -24,7 +24,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   final List<dynamic> _values = <dynamic>[];
 
   /// Must-haves for the [statement], mainly used to build clauses
-  final Query query;
+  final Query? query;
 
   /// An executable, prepared SQLite statement
   String get statement => _statement.join(' ').trim();
@@ -52,10 +52,10 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// [selectStatement] will output [statement] as a `SELECT FROM`. When false, the [statement]
   /// output will be a `SELECT COUNT(*)`. Defaults `true`.
   QuerySqlTransformer({
-    @required this.modelDictionary,
+    required this.modelDictionary,
     this.query,
     bool selectStatement = true,
-  }) : adapter = modelDictionary.adapterFor[_Model] {
+  }) : adapter = modelDictionary.adapterFor[_Model]! {
     generate(selectStatement);
   }
 
@@ -76,7 +76,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     _statement.add('$execute FROM `${adapter.tableName}`');
     (query?.where ?? []).forEach((condition) {
       final whereStatement = _expandCondition(condition);
-      if (whereStatement?.isNotEmpty ?? false) _where.add(whereStatement);
+      if (whereStatement.isNotEmpty) _where.add(whereStatement);
     });
 
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);
@@ -101,7 +101,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   }
 
   /// Recursively step through a `Where` or `WherePhrase` to ouput a condition for `WHERE`.
-  String _expandCondition(WhereCondition condition, [SqliteAdapter _adapter]) {
+  String _expandCondition(WhereCondition condition, [SqliteAdapter? _adapter]) {
     _adapter ??= adapter;
 
     // Begin a separate where phrase
@@ -111,7 +111,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       });
       if (phrase.isEmpty) return '';
 
-      final matcher = condition.required ? 'AND' : 'OR';
+      final matcher = condition.isRequired ? 'AND' : 'OR';
       return ' $matcher ($phrase)';
     }
 
@@ -120,7 +120,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
           'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite');
     }
 
-    final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField];
+    final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField]!;
 
     /// Add an INNER JOINS statement to the existing list
     if (definition.association) {
@@ -129,7 +129,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
             'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
       }
 
-      final associationAdapter = modelDictionary.adapterFor[definition.type];
+      final associationAdapter = modelDictionary.adapterFor[definition.type]!;
       final association = AssociationFragment(
         definition: definition,
         foreignTableName: associationAdapter.tableName,
@@ -163,9 +163,9 @@ class AssociationFragment {
   final String localTableName;
 
   AssociationFragment({
-    this.definition,
-    this.foreignTableName,
-    this.localTableName,
+    required this.definition,
+    required this.foreignTableName,
+    required this.localTableName,
   });
 
   List<String> toJoinFragment() {
@@ -196,7 +196,7 @@ class WhereColumnFragment {
 
   final WhereCondition condition;
 
-  String get matcher => condition.required ? 'AND' : 'OR';
+  String get matcher => condition.isRequired ? 'AND' : 'OR';
 
   String get sign {
     if (condition.value == null) {
@@ -210,7 +210,7 @@ class WhereColumnFragment {
   final List values = [];
 
   /// Computed once after initialization by [generate]
-  String _statement;
+  String? _statement;
 
   WhereColumnFragment(
     this.condition,
@@ -250,7 +250,7 @@ class WhereColumnFragment {
   }
 
   @override
-  String toString() => _statement;
+  String toString() => _statement ?? '';
 
   static String compareSign(Compare compare) {
     switch (compare) {
@@ -273,7 +273,6 @@ class WhereColumnFragment {
       case Compare.notEqual:
         return '!=';
     }
-    throw FallThroughError();
   }
 
   String _generateBetween() {
@@ -320,8 +319,8 @@ class AllOtherClausesFragment {
   static const List<String> _operatorsDeclaringFields = ['ORDER BY', 'GROUP BY', 'HAVING'];
 
   AllOtherClausesFragment(
-    Map<String, dynamic> providerArgs, {
-    this.fieldsToColumns,
+    Map<String, dynamic>? providerArgs, {
+    required this.fieldsToColumns,
   }) : providerArgs = providerArgs ?? {};
 
   @override
@@ -339,7 +338,7 @@ class AllOtherClausesFragment {
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = (fieldsToColumns ?? {})[fieldName]?.columnName;
+          final columnName = fieldsToColumns[fieldName]?.columnName;
           if (columnName != null && modValue.contains(fieldName)) {
             return modValue.replaceAll(fieldName, columnName);
           }

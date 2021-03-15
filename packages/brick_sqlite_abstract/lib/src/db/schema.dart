@@ -1,7 +1,7 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
 import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
-import 'package:meta/meta.dart' show required, visibleForTesting;
+import 'package:meta/meta.dart' show visibleForTesting;
 
 import 'migration.dart';
 import 'migration_commands.dart';

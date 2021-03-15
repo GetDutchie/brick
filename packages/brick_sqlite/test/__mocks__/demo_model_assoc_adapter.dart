@@ -5,26 +5,19 @@ import 'package:brick_sqlite/sqlite.dart';
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
 Future<DemoModelAssoc> _$DemoModelAssocFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, repository}) async {
+    {SqliteProvider? provider, repository}) async {
   return DemoModelAssoc(name: data['full_name'] == null ? null : data['full_name'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$DemoModelAssocToSqlite(DemoModelAssoc instance,
-    {SqliteProvider provider, repository}) async {
+    {SqliteProvider? provider, repository}) async {
   return {'full_name': instance.name};
 }
 
 /// Construct a [DemoModelAssoc]
 class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   DemoModelAssocAdapter();
-
-  String restEndpoint({query, instance}) {
-    return null;
-  }
-
-  final String fromKey = null;
-  final String toKey = null;
 
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
@@ -85,8 +78,9 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   };
 
   @override
-  Future<int> primaryKeyByUniqueColumns(DemoModelAssoc instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+  Future<int?> primaryKeyByUniqueColumns(
+          DemoModelAssoc instance, DatabaseExecutor executor) async =>
+      instance.primaryKey;
 
   @override
   final String tableName = 'DemoModelAssoc';

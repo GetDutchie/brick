@@ -11,9 +11,9 @@ import 'package:brick_offline_first_abstract/abstract.dart';
   ),
 )
 class Hat extends OfflineFirstWithRestModel {
-  final int id;
+  final int? id;
 
-  final String color;
+  final String? color;
 
   Hat({
     this.id,
