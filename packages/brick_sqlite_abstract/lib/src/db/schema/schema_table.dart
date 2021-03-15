@@ -2,13 +2,12 @@
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
 
 import '../migration_commands.dart';
-import 'schema_base.dart';
-import 'schema_column.dart';
-import 'schema_index.dart';
+import 'package:brick_sqlite_abstract/src/db/schema/schema_base.dart';
+import 'package:brick_sqlite_abstract/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
 
 /// Describes a table object managed by SQLite
 class SchemaTable extends BaseSchemaObject {
-  @override
   final String name;
 
   Set<SchemaColumn> columns;
@@ -17,8 +16,8 @@ class SchemaTable extends BaseSchemaObject {
 
   SchemaTable(
     this.name, {
-    Set<SchemaColumn> columns,
-    Set<SchemaIndex> indices,
+    Set<SchemaColumn>? columns,
+    Set<SchemaIndex>? indices,
   })  : columns = columns ?? <SchemaColumn>{},
         indices = indices ?? <SchemaIndex>{};
 
@@ -26,7 +25,7 @@ class SchemaTable extends BaseSchemaObject {
   String get forGenerator {
     final columnsStringified = columns.map((c) => c.forGenerator).join(',\n\t\t');
     final indicesStringified = indices.map((c) => c.forGenerator).join(',\n\t\t');
-    final printedIndices = indices?.isNotEmpty ?? false ? '\t\t$indicesStringified' : '';
+    final printedIndices = indices.isNotEmpty ? '\t\t$indicesStringified' : '';
     return '''SchemaTable(
 \t'$name',
 \tcolumns: <SchemaColumn>{

@@ -18,6 +18,7 @@ abstract class FileModel extends Model {
 }
 
 class User extends FileModel {
+  @override
   String get fileName => name;
 
   final String name;
@@ -28,15 +29,18 @@ class User extends FileModel {
 }
 
 class FileProvider implements Provider<FileModel> {
+  @override
   final FileModelDictionary modelDictionary;
   FileProvider({this.modelDictionary});
 
   @override
-  delete<T extends FileModel>(instance, {query, repository}) async =>
-      await instance.asFile.delete();
+  Future<bool> delete<T extends FileModel>(instance, {query, repository}) async {
+    await instance.asFile.delete();
+    return true;
+  }
 
   @override
-  exists<T extends FileModel>({Query query, ModelRepository<FileModel> repository}) => null;
+  bool exists<T extends FileModel>({Query query, ModelRepository<FileModel> repository}) => false;
 
   /// Query.where must always include `filePath`
   @override
@@ -89,15 +93,18 @@ abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
 /// have a complimenting build system to generate this adapter. It was handwritten
 /// for this example.
 class UserAdapter extends FileAdapter<User> {
+  @override
   final directory = 'users';
 
   UserAdapter();
 
+  @override
   Future<User> fromFile(input, {provider, repository}) async {
     final contents = jsonDecode(input);
     return User(name: contents['name']);
   }
 
+  @override
   Future<String> toFile(instance, {provider, repository}) async =>
       jsonEncode({'name': instance.name});
 }

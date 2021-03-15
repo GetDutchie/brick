@@ -4,48 +4,48 @@ import 'package:test/test.dart';
 void main() {
   group('Where', () {
     test('#isExactly', () {
-      expect(
-          Where('id').isExactly(1), Where('id', value: 1, compare: Compare.exact, required: true));
+      expect(Where('id').isExactly(1),
+          Where('id', value: 1, compare: Compare.exact, isRequired: true));
     });
 
     test('#isBetween', () {
       expect(Where('id').isBetween(1, 42),
-          Where('id', value: [1, 42], compare: Compare.between, required: true));
+          Where('id', value: [1, 42], compare: Compare.between, isRequired: true));
     });
 
     test('#contains', () {
       expect(Where('id').contains(1),
-          Where('id', value: 1, compare: Compare.contains, required: true));
+          Where('id', value: 1, compare: Compare.contains, isRequired: true));
     });
 
     test('#doesNotContain', () {
       expect(Where('id').doesNotContain(1),
-          Where('id', value: 1, compare: Compare.doesNotContain, required: true));
+          Where('id', value: 1, compare: Compare.doesNotContain, isRequired: true));
     });
 
     test('#isLessThan', () {
       expect(Where('id').isLessThan(1),
-          Where('id', value: 1, compare: Compare.lessThan, required: true));
+          Where('id', value: 1, compare: Compare.lessThan, isRequired: true));
     });
 
     test('#isLessThanOrEqualTo', () {
       expect(Where('id').isLessThanOrEqualTo(1),
-          Where('id', value: 1, compare: Compare.lessThanOrEqualTo, required: true));
+          Where('id', value: 1, compare: Compare.lessThanOrEqualTo, isRequired: true));
     });
 
     test('#isGreaterThan', () {
       expect(Where('id').isGreaterThan(1),
-          Where('id', value: 1, compare: Compare.greaterThan, required: true));
+          Where('id', value: 1, compare: Compare.greaterThan, isRequired: true));
     });
 
     test('#isGreaterThanOrEqualTo', () {
       expect(Where('id').isGreaterThanOrEqualTo(1),
-          Where('id', value: 1, compare: Compare.greaterThanOrEqualTo, required: true));
+          Where('id', value: 1, compare: Compare.greaterThanOrEqualTo, isRequired: true));
     });
 
     test('#isNot', () {
       expect(
-          Where('id').isNot(1), Where('id', value: 1, compare: Compare.notEqual, required: true));
+          Where('id').isNot(1), Where('id', value: 1, compare: Compare.notEqual, isRequired: true));
     });
   });
 
@@ -83,8 +83,8 @@ void main() {
     test('nested field', () {
       final conditions = [Where('id', value: Where('name', value: 'Thomas'))];
       final topLevelResult = Where.firstByField('id', conditions);
-      final result = Where.firstByField('name', [topLevelResult.value]);
-      expect(result.value, 'Thomas');
+      final result = Where.firstByField('name', [topLevelResult!.value]);
+      expect(result!.value, 'Thomas');
     });
   });
 
