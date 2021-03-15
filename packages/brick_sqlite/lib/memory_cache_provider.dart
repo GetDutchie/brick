@@ -64,8 +64,8 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     // If this query is searching for a unique identifier, return that specific record
     final byId = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
     if (byId?.value != null) {
-      final object = managedObjects[_Model]![byId!.value] as _Model;
-      if (object != null) return [object];
+      final object = managedObjects[_Model]?[byId!.value];
+      if (object != null) return [object as _Model];
     }
 
     return null;
