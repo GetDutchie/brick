@@ -12,10 +12,10 @@ class ConnectOfflineFirstWithRest {
   });
 
   /// Configuration for the [RestSerializable] annotation
-  final RestSerializable restConfig;
+  final RestSerializable? restConfig;
 
   /// Configuration for the [SqliteSerializable] annotation
-  final SqliteSerializable sqliteConfig;
+  final SqliteSerializable? sqliteConfig;
 
   /// An instance of [ConnectOfflineFirstWithRest] with all fields set to their default
   /// values.
