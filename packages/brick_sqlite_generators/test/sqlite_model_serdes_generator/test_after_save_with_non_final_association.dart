@@ -30,7 +30,7 @@ Future<Map<String, dynamic>> _$AfterSaveWithAssociationToSqlite(
     AfterSaveWithAssociation instance,
     {SqliteProvider provider,
     SqliteFirstRepository repository}) async {
-  return {'some_field': null};
+  return {};
 }
 
 /// Construct a [AfterSaveWithAssociation]
