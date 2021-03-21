@@ -20,7 +20,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
     if (toKey != null) toKey = "'$toKey'";
 
-    return ['@override\nfinal String toKey = $toKey;'];
+    return ['@override\nfinal String? toKey = $toKey;'];
   }
 
   @override
@@ -45,7 +45,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         if (fieldAnnotation.enumAsString) {
           return "$fieldValue?.map((e) => e.toString().split('.').last)?.toList()";
         } else {
-          return '$fieldValue?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))?.toList()';
+          return '$fieldValue?.map((e) => ${checker.argType.getDisplayString(withNullability: false)}.values.indexOf(e))?.toList()';
         }
       }
 
