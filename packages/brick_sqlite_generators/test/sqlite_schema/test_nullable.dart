@@ -27,7 +27,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 @SqliteSerializable()
 class Nullable {
   @Sqlite(nullable: false)
-  final String name;
+  final String? name;
 
   Nullable({this.name});
 }

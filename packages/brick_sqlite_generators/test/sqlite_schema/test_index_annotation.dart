@@ -32,10 +32,10 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 @SqliteSerializable()
 class IndexAnnotation extends SqliteModel {
   @Sqlite(index: true)
-  final String nonUnique;
+  final String? nonUnique;
 
   @Sqlite(index: true, unique: true)
-  final String unique;
+  final String? unique;
 
   IndexAnnotation({this.nonUnique, this.unique});
 }

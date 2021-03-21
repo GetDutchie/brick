@@ -12,7 +12,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   SqliteDeserialize(
     ClassElement element,
     SqliteFields fields, {
-    String? repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -23,7 +23,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
-  String deserializerNullableClause({field, fieldAnnotation, name}) {
+  String deserializerNullableClause({required field, required fieldAnnotation, required name}) {
     final checker = checkerForType(field.type);
     if (checker.isIterable && checker.isArgTypeASibling) {
       return '';
@@ -37,8 +37,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   }
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation?.name, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(
@@ -48,7 +48,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       );
     }
 
-    if (fieldAnnotation?.columnType != null) {
+    if (fieldAnnotation.columnType != null) {
       return fieldValue;
     }
 
@@ -77,7 +77,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
         final sqlStatement =
-            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString(withNullability: false))}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
+            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString(withNullability: false))}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
         final method = '''
           provider
             ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])

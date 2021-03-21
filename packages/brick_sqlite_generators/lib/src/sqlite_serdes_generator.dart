@@ -14,18 +14,18 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   final providerName = 'Sqlite';
 
   @override
-  final String? repositoryName;
+  final String repositoryName;
 
   SqliteSerdesGenerator(
     ClassElement element,
     SqliteFields fields, {
-    this.repositoryName,
+    required this.repositoryName,
   }) : super(element, fields);
 
   /// Generate foreign key column if the type is a sibling;
   /// otherwise, return the field's annotated name;
   @override
-  String providerNameForField(annotatedName, {checker}) {
+  String providerNameForField(annotatedName, {required checker}) {
     if (checker.isSibling) {
       return InsertForeignKey.foreignKeyColumnName(
           checker.unFuturedType.getDisplayString(withNullability: false), annotatedName);

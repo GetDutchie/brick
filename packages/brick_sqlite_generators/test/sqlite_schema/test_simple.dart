@@ -68,7 +68,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 /// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class Simple extends SqliteModel {
-  final String name;
+  final String? name;
 
   Simple({this.name});
 }

@@ -1,3 +1,4 @@
+import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:brick_sqlite_abstract/db.dart';
@@ -48,7 +49,7 @@ class MigrationGenerator extends Generator {
   List<MigrationCommand> _migrationCommandsFromReader(List<DartObject> rawCommands) {
     return rawCommands.map((object) {
       final reader = ConstantReader(object);
-      if (_createIndexChecker.isExactlyType(object.type)) {
+      if (_createIndexChecker.isExactlyType(object.type!)) {
         if (!reader.read('columns').isList) {
           throw ArgumentError(
               'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns');
@@ -56,39 +57,45 @@ class MigrationGenerator extends Generator {
         final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
 
         return CreateIndex(
-          columns: columns?.toList()?.cast<String>() ?? <String>[],
+          columns: columns.toList().cast<String>(),
           onTable: reader.read('onTable').stringValue,
           unique: reader.read('unique').boolValue,
         );
-      } else if (_dropColumnChecker.isExactlyType(object.type)) {
+      } else if (_dropColumnChecker.isExactlyType(object.type!)) {
         return DropColumn(
           reader.read('name').stringValue,
           onTable: reader.read('onTable').stringValue,
         );
-      } else if (_dropIndexChecker.isExactlyType(object.type)) {
+      } else if (_dropIndexChecker.isExactlyType(object.type!)) {
         return DropIndex(reader.read('name').stringValue);
-      } else if (_dropTableChecker.isExactlyType(object.type)) {
+      } else if (_dropTableChecker.isExactlyType(object.type!)) {
         return DropTable(
           reader.read('name').stringValue,
         );
-      } else if (_insertColumnChecker.isExactlyType(object.type)) {
+      } else if (_insertColumnChecker.isExactlyType(object.type!)) {
         final definitionObject =
             reader.read('definitionType').isNull ? null : reader.read('definitionType').objectValue;
-        final definitionValue = Column.values.singleWhere(
-          (f) => definitionObject.getField(f.toString().split('.')[1]) != null,
+        final definitionValue = Column.values.firstWhere(
+          (f) => definitionObject?.getField(f.toString().split('.')[1]) != null,
         );
         return InsertColumn(
           reader.read('name').stringValue,
           definitionValue,
-          autoincrement:
-              reader.read('autoincrement').isNull ? null : reader.read('autoincrement').boolValue,
-          defaultValue:
-              reader.read('defaultValue').isNull ? null : reader.read('defaultValue').literalValue,
-          nullable: reader.read('nullable').isNull ? null : reader.read('nullable').boolValue,
+          autoincrement: reader.read('autoincrement').isNull
+              ? InsertColumn.defaults.autoincrement
+              : reader.read('autoincrement').boolValue,
+          defaultValue: reader.read('defaultValue').isNull
+              ? InsertColumn.defaults.defaultValue
+              : reader.read('defaultValue').literalValue,
+          nullable: reader.read('nullable').isNull
+              ? InsertColumn.defaults.nullable
+              : reader.read('nullable').boolValue,
           onTable: reader.read('onTable').stringValue,
-          unique: reader.read('unique').isNull ? null : reader.read('unique').boolValue,
+          unique: reader.read('unique').isNull
+              ? InsertColumn.defaults.unique
+              : reader.read('unique').boolValue,
         );
-      } else if (_insertForeignKeyChecker.isExactlyType(object.type)) {
+      } else if (_insertForeignKeyChecker.isExactlyType(object.type!)) {
         return InsertForeignKey(
           reader.read('localTableName').stringValue,
           reader.read('foreignTableName').stringValue,
@@ -102,17 +109,17 @@ class MigrationGenerator extends Generator {
               ? false
               : reader.read('onDeleteSetDefault').boolValue,
         );
-      } else if (_insertTableChecker.isExactlyType(object.type)) {
+      } else if (_insertTableChecker.isExactlyType(object.type!)) {
         return InsertTable(
           reader.read('name').stringValue,
         );
-      } else if (_renameColumnChecker.isExactlyType(object.type)) {
+      } else if (_renameColumnChecker.isExactlyType(object.type!)) {
         return RenameColumn(
           reader.read('oldName').stringValue,
           reader.read('newName').stringValue,
           onTable: reader.read('onTable').stringValue,
         );
-      } else if (_renameTableChecker.isExactlyType(object.type)) {
+      } else if (_renameTableChecker.isExactlyType(object.type!)) {
         return RenameTable(
           reader.read('oldName').stringValue,
           reader.read('newName').stringValue,
@@ -125,7 +132,7 @@ class MigrationGenerator extends Generator {
 
   /// Creates a new migration from the delta between the existing migration and a new schema
   @override
-  String? generate(library, buildStep, {Schema? newSchema, int? version}) {
+  String? generate(library, BuildStep? buildStep, {Schema? newSchema, int? version}) {
     final allMigrations = expandAllMigrations(library);
     final oldSchema = Schema.fromMigrations(allMigrations.toSet());
 
@@ -151,7 +158,7 @@ class MigrationGenerator extends Generator {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
     return {
       for (var annotation in annotations)
-        '${annotation.element.name}': annotation.element.source.shortName,
+        '${annotation.element.name}': annotation.element.source!.shortName,
     };
   }
 }
