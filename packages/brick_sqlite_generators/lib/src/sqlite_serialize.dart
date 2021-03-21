@@ -1,3 +1,4 @@
+import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -102,7 +103,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
+        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -135,7 +136,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedType}>($instance, repository: repository)';
+      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {
@@ -209,13 +210,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
-        '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
+        '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
 
     // Iterable<SqliteModel>
     if (!checker.isArgTypeAFuture) {
       siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       upsertMethod =
-          's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
+          's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
     }
 
     final removeStaleAssociations = field.isPublic && !field.isFinal

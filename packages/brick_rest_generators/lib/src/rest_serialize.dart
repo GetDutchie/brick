@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serdes_generator.dart';
@@ -45,7 +46,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         if (fieldAnnotation.enumAsString) {
           return "$fieldValue?.map((e) => e.toString().split('.').last)?.toList()";
         } else {
-          return '$fieldValue?.map((e) => ${checker.argType.getDisplayString(withNullability: false)}.values.indexOf(e))?.toList()';
+          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e))?.toList()';
         }
       }
 
@@ -55,7 +56,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
         return '''await Future.wait<Map<String, dynamic>>(
           $fieldValue?.map((s) $awaited =>
-            ${checker.unFuturedArgType}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
+            ${SharedChecker.withoutNullability(checker.unFuturedArgType)}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
           )?.toList() ?? []
         )''';
       }
@@ -66,14 +67,14 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
-      return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
+      return 'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
         return "$fieldValue?.toString()?.split('.')?.last";
       } else {
-        return '$fieldValue != null ? ${field.type}.values.indexOf($fieldValue) : null';
+        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue) : null';
       }
     }
 

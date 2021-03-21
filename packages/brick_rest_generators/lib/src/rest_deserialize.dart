@@ -61,7 +61,7 @@ class RestDeserialize extends RestSerdesGenerator {
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>
-            ${argType}Adapter().fromRest(d, provider: provider, repository: repository)
+            ${SharedChecker.withoutNullability(argType)}Adapter().fromRest(d, provider: provider, repository: repository)
           )$fromRestCast
         ''';
 
@@ -81,11 +81,11 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return '''$fieldValue.map((value) => RestAdapter.enumValueFromName($argType.values, value))
+          return '''$fieldValue.map((value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)
             )$castIterable$defaultValue
           ''';
         } else {
-          return '$fieldValue.map((e) => $argType.values[e])$castIterable$defaultValue';
+          return '$fieldValue.map((e) => ${SharedChecker.withoutNullability(argType)}.values[e])$castIterable$defaultValue';
         }
       }
 
@@ -108,16 +108,16 @@ class RestDeserialize extends RestSerdesGenerator {
     } else if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
 
-      return '''$shouldAwait${checker.unFuturedType}Adapter().fromRest(
+      return '''$shouldAwait${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().fromRest(
           $fieldValue, provider: provider, repository: repository
         )''';
 
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return 'RestAdapter.enumValueFromName(${field.type}.values, $fieldValue)$defaultValue';
+        return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$defaultValue';
       } else {
-        return '$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue';
+        return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
       }
 
       // Map
