@@ -39,8 +39,8 @@ class EnumAsString {
   });
 
   @Rest(enumAsString: true)
-  final Hat hat;
+  final Hat? hat;
 
   @Rest(enumAsString: true)
-  final List<Hat> hats;
+  final List<Hat>? hats;
 }

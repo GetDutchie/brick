@@ -55,7 +55,7 @@ class TestGenerator extends AnnotationSuperGenerator<RestSerializable> {
   }
 }
 
-Future<void> generateExpectation(String filename, String output, {TestGenerator generator}) async {
+Future<void> generateExpectation(String filename, String output, {TestGenerator? generator}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
@@ -64,8 +64,8 @@ Future<void> generateExpectation(String filename, String output, {TestGenerator 
 Future<void> generateAdapterExpectation(String filename, String output) async {
   final annotation = await annotationForFile<RestSerializable>(folder, filename);
   final generated = _generator.generateAdapter(
-    annotation?.element,
-    annotation?.annotation,
+    annotation.element,
+    annotation.annotation,
     null,
   );
   expect(generated.trim(), output.trim());

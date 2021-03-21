@@ -8,7 +8,7 @@ class RestDeserialize extends RestSerdesGenerator {
   RestDeserialize(
     ClassElement element,
     RestFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -31,8 +31,8 @@ class RestDeserialize extends RestSerdesGenerator {
   }
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+  String? coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation!.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
@@ -52,7 +52,7 @@ class RestDeserialize extends RestSerdesGenerator {
       final castIterable = SerdesGenerator.iterableCast(argType,
           isSet: checker.isSet,
           isList: checker.isList,
-          isFuture: wrappedInFuture || checker.isFuture);
+          isFuture: (wrappedInFuture ?? false) || checker.isFuture);
 
       // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
@@ -65,7 +65,7 @@ class RestDeserialize extends RestSerdesGenerator {
           )$fromRestCast
         ''';
 
-        if (wrappedInFuture) {
+        if (wrappedInFuture ?? false) {
           deserializeMethod = 'Future.wait<$argType>($deserializeMethod ?? [])';
         } else if (!checker.isArgTypeAFuture && !checker.isFuture) {
           deserializeMethod = 'await Future.wait<$argType>($deserializeMethod ?? [])';
@@ -106,7 +106,7 @@ class RestDeserialize extends RestSerdesGenerator {
 
       // RestModel
     } else if (checker.isSibling) {
-      final shouldAwait = wrappedInFuture ? '' : 'await ';
+      final shouldAwait = wrappedInFuture ?? false ? '' : 'await ';
 
       return '''$shouldAwait${checker.unFuturedType}Adapter().fromRest(
           $fieldValue, provider: provider, repository: repository

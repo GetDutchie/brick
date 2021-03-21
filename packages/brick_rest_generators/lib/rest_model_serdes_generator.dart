@@ -12,7 +12,7 @@ import 'package:brick_rest/rest.dart' show RestSerializable, FieldRename;
 class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
-  final String repositoryName;
+  final String? repositoryName;
 
   RestModelSerdesGenerator(
     Element element,
@@ -27,9 +27,8 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
     }
 
     final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
-    final fieldRenameByEnumName = FieldRename.values.singleWhere(
+    final fieldRenameByEnumName = FieldRename.values.singleWhereOrNull(
       (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
-      orElse: () => null,
     );
 
     return RestSerializable(
@@ -46,8 +45,8 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);
     return [
-      RestDeserialize(classElement, fields, repositoryName: repositoryName),
-      RestSerialize(classElement, fields, repositoryName: repositoryName),
+      RestDeserialize(classElement, fields, repositoryName: repositoryName!),
+      RestSerialize(classElement, fields, repositoryName: repositoryName!),
     ];
   }
 }
