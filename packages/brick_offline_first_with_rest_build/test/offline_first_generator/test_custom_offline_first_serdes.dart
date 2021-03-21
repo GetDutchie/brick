@@ -68,7 +68,7 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
 class CustomOfflineFirstSerdes {
   CustomOfflineFirstSerdes({this.string, this.strings});
 
-  final Serializable string;
+  final Serializable? string;
 
-  final List<Serializable> strings;
+  final List<Serializable>? strings;
 }

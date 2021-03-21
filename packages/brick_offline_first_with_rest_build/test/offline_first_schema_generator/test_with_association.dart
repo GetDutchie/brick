@@ -42,8 +42,8 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 
 @ConnectOfflineFirstWithRest()
 class OneToOneAssocation extends OfflineFirstWithRestModel {
-  final SqliteAssoc assoc;
-  final SqliteAssoc assoc2;
+  final SqliteAssoc? assoc;
+  final SqliteAssoc? assoc2;
 
   OneToOneAssocation({this.assoc, this.assoc2});
 }

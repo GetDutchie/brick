@@ -34,7 +34,7 @@ Future<Map<String, dynamic>> _$UnreleatedAssociationToSqlite(
 
 @ConnectOfflineFirstWithRest()
 class UnreleatedAssociation {
-  UnreleatedAssociation({this.assoc});
+  final NonSqliteAssoc? assoc;
 
-  final NonSqliteAssoc assoc;
+  UnreleatedAssociation({this.assoc});
 }

@@ -56,14 +56,14 @@ class NullableField {
   });
 
   @Rest(nullable: false)
-  final String restFalse;
+  final String? restFalse;
 
   @Rest(nullable: true)
-  final String restTrue;
+  final String? restTrue;
 
   @Sqlite(nullable: false)
-  final String sqliteFalse;
+  final String? sqliteFalse;
 
   @Sqlite(nullable: true)
-  final String sqliteTrue;
+  final String? sqliteTrue;
 }

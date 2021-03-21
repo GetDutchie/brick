@@ -26,7 +26,7 @@ class Migration1 extends Migration {
 // serdes definition
 @ConnectOfflineFirstWithRest()
 class Serdes extends OfflineFirstSerdes<Map<String, dynamic>, String> {
-  final String name;
+  final String? name;
 
   Serdes({this.name});
 
@@ -50,9 +50,9 @@ class Serdes extends OfflineFirstSerdes<Map<String, dynamic>, String> {
 // model to receive new migration
 @ConnectOfflineFirstWithRest()
 class WithSerdes extends OfflineFirstWithRestModel {
-  final Serdes serdesMember;
+  final Serdes? serdesMember;
 
-  final Serdes additionalSerdesMember;
+  final Serdes? additionalSerdesMember;
 
   WithSerdes({
     this.serdesMember,

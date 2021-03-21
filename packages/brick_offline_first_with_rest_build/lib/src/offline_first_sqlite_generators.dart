@@ -8,15 +8,16 @@ import 'package:source_gen/source_gen.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 
 class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestModel> {
-  _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields, {String repositoryName})
+  _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields,
+      {required String repositoryName})
       : super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
@@ -25,7 +26,8 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
+          final serializableType =
+              argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
           return '''
             jsonEncode($fieldValue?.map(
               (${checker.unFuturedArgType} c) => c?.$serializeMethod()
@@ -49,15 +51,16 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
 }
 
 class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
-  _OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields, {String repositoryName})
+  _OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields,
+      {required String repositoryName})
       : super(element, fields, repositoryName: repositoryName);
 
   @override
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     // Iterable
     if (checker.isIterable) {
@@ -72,7 +75,8 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       if (argTypeChecker.hasSerdes) {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
-          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
+          final serializableType =
+              argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
           return '''
             jsonDecode($fieldValue).map(
               (c) => $argType.$constructorName(c as $serializableType)
@@ -86,7 +90,8 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
-        final serializableType = checker.superClassTypeArgs.last.getDisplayString();
+        final serializableType =
+            checker.superClassTypeArgs.last.getDisplayString(withNullability: true);
         return '${field.type}.$constructorName($fieldValue as $serializableType)';
       }
     }
@@ -98,7 +103,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
 
 class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator {
   OfflineFirstSqliteModelSerdesGenerator(Element element, ConstantReader reader,
-      {String repositoryName})
+      {required String repositoryName})
       : super(element, reader, repositoryName: repositoryName);
 
   @override

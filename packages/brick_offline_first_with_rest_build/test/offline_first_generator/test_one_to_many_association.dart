@@ -6,7 +6,7 @@ import 'package:brick_rest/rest.dart' show Rest;
 class OneToManyAssociation extends OfflineFirstModel {
   OneToManyAssociation({this.assoc});
 
-  final List<SqliteAssoc> assoc;
+  final List<SqliteAssoc>? assoc;
 }
 
 @ConnectOfflineFirstWithRest()

@@ -98,6 +98,6 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToSqlite(
 class OneToOneAssociation extends OfflineFirstModel {
   OneToOneAssociation({this.assoc, this.assoc2});
 
-  final SqliteAssoc assoc;
-  final SqliteAssoc assoc2;
+  final SqliteAssoc? assoc;
+  final SqliteAssoc? assoc2;
 }

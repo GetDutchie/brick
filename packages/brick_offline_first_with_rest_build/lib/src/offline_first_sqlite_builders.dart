@@ -22,15 +22,15 @@ class OfflineFirstSchemaGenerator extends SqliteSchemaGenerator {
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
-  SchemaColumn schemaColumn(column, {covariant OfflineFirstChecker checker}) {
+  SchemaColumn? schemaColumn(column, {required covariant OfflineFirstChecker checker}) {
     if (checker.hasSerdes) {
       final sqliteSerializerType = checker.superClassTypeArgs[1];
       final sqliteChecker = checkerForType(sqliteSerializerType);
       return SchemaColumn(
-        column.name,
+        column.name!,
         Migration.fromDartPrimitive(sqliteChecker.asPrimitive),
-        nullable: column?.nullable,
-        unique: column?.unique,
+        nullable: column.nullable,
+        unique: column.unique,
       );
     }
 
