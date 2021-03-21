@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0
+
+* Null safety
+
 ## 0.0.9
 
 * If `fromGenerator` or `toGenerator` is declared, the field will be generated for deserializing and serializing adapters, respectively

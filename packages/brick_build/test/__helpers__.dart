@@ -8,13 +8,13 @@ import 'package:source_gen/source_gen.dart';
 
 class FieldAnnotation extends FieldSerializable {
   @override
-  String get defaultValue => null;
+  String? get defaultValue => null;
 
   @override
-  String get fromGenerator => null;
+  String? get fromGenerator => null;
 
   @override
-  String get toGenerator => null;
+  String? get toGenerator => null;
 
   @override
   bool get ignore => false;
@@ -50,7 +50,8 @@ class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final providerName = 'DefaultSerdes';
 
   @override
-  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) => null;
+  String? coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) =>
+      null;
 }
 
 class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
@@ -93,7 +94,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final repositoryName = 'Some';
 
   @override
-  String coderForField(field, checker, {fieldAnnotation, wrappedInFuture}) {
+  String coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     return '$fieldValue as ${field.type}';
   }
@@ -104,7 +105,7 @@ class TestSerializableGenerator extends ProviderSerializableGenerator<Annotation
       : super(element, reader, configKey: 'testConfig');
 
   @override
-  AnnotationSuperGenerator get config => null;
+  AnnotationSuperGenerator? get config => null;
 
   @override
   List<SerdesGenerator> get generators {
