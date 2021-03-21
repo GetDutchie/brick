@@ -16,8 +16,7 @@ const _dateTimeChecker = TypeChecker.fromUrl('dart:core#DateTime');
 /// Optionally declare a model to discover "sibling" models, or models that share
 /// the same domain or provider (e.g. `SqliteModel`).
 class SharedChecker<_SiblingModel extends Model> {
-  final _siblingClassChecker =
-      _SiblingModel != null ? TypeChecker.fromRuntime(_SiblingModel) : null;
+  final _siblingClassChecker = TypeChecker.fromRuntime(_SiblingModel);
 
   /// The checked type
   final DartType targetType;
@@ -26,7 +25,7 @@ class SharedChecker<_SiblingModel extends Model> {
 
   /// Retrieves type argument, i.e. `Type` in `Future<Type>` or `List<Type>`
   DartType get argType {
-    return (targetType as InterfaceType)?.typeArguments?.first;
+    return (targetType as InterfaceType).typeArguments.first;
   }
 
   Type get asPrimitive {
@@ -45,10 +44,6 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   bool get isArgTypeAFuture {
-    if (argType == null) {
-      return false;
-    }
-
     return argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
   }
 
@@ -58,10 +53,10 @@ class SharedChecker<_SiblingModel extends Model> {
   bool get isArgTypeASibling {
     if (isArgTypeAFuture) {
       final futuredType = SharedChecker.typeOfFuture<_SiblingModel>(argType);
-      return _siblingClassChecker?.isAssignableFromType(futuredType) ?? false;
+      return _siblingClassChecker.isAssignableFromType(futuredType!);
     }
 
-    return _siblingClassChecker?.isAssignableFromType(argType) ?? false;
+    return _siblingClassChecker.isAssignableFromType(argType);
   }
 
   bool get isBool => targetType.isDartCoreBool;
@@ -92,10 +87,6 @@ class SharedChecker<_SiblingModel extends Model> {
 
   /// Not all [Type]s are parseable. For consistency, one catchall before smaller checks
   bool get isSerializable {
-    if (targetType == null) {
-      return false;
-    }
-
     if (isIterable) {
       final argTypeChecker = SharedChecker<_SiblingModel>(argType);
 
@@ -115,14 +106,14 @@ class SharedChecker<_SiblingModel extends Model> {
   /// If this is a class similarly annotated by the current generator.
   ///
   /// Useful for verifying whether or not to generate Serialize/Deserializers methods.
-  bool get isSibling => _siblingClassChecker?.isAssignableFromType(targetType) ?? false;
+  bool get isSibling => _siblingClassChecker.isAssignableFromType(targetType);
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
   /// Returns type arguments of [targetType]. For example, given `Map<Key, Value>`,
   /// `[Key, Value]` is returned. If the [targetType] does not declare type arguments,
   /// return is `null`.
-  List<DartType> get typeArguments {
+  List<DartType>? get typeArguments {
     final type = targetType as InterfaceType;
     if (type.typeArguments.isNotEmpty && type.typeArguments.length > 1) {
       return type.typeArguments;
@@ -137,22 +128,22 @@ class SharedChecker<_SiblingModel extends Model> {
   List<DartType> get superClassTypeArgs {
     final classElement = targetType.element as ClassElement;
     if (classElement.supertype?.typeArguments == null ||
-        classElement.supertype.typeArguments.isEmpty) {
+        classElement.supertype!.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        'Type argument for ${targetType.getDisplayString()} is undefined.',
+        'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype.getDisplayString()}<int>`',
+            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString(withNullability: false)}<int>`',
         element: targetType.element,
       );
     }
 
-    return classElement.supertype.typeArguments;
+    return classElement.supertype!.typeArguments;
   }
 
   /// [argType] without `Future` if it is a `Future`.
   DartType get unFuturedArgType {
     if (isArgTypeAFuture) {
-      return typeOfFuture(argType);
+      return typeOfFuture(argType)!;
     }
 
     return argType;
@@ -161,7 +152,7 @@ class SharedChecker<_SiblingModel extends Model> {
   /// [targetType] without `Future` if it is a `Future`
   DartType get unFuturedType {
     if (isFuture) {
-      return typeOfFuture(targetType);
+      return typeOfFuture(targetType)!;
     }
 
     return targetType;
@@ -173,7 +164,7 @@ class SharedChecker<_SiblingModel extends Model> {
   ///
   /// `Future`s of `Future` iterables (e.g. `Future<List<Future<String>>>`) are not supported,
   /// however, `Future`s in Iterables are supported (e.g. `List<Future<String>>`).
-  static DartType typeOfFuture<_SiblingModel extends Model>(DartType type) {
+  static DartType? typeOfFuture<_SiblingModel extends Model>(DartType type) {
     final checker = SharedChecker<_SiblingModel>(type);
     // Future<?>
     if (checker.isFuture) {

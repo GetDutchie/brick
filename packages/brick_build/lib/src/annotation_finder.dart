@@ -6,7 +6,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/constant/value.dart';
 
 /// Find an [_Annotation] per field.
-abstract class AnnotationFinder<_Annotation> {
+abstract class AnnotationFinder<_Annotation extends Object> {
   AnnotationFinder();
 
   final _columnChecker = TypeChecker.fromRuntime(_Annotation);
@@ -15,7 +15,7 @@ abstract class AnnotationFinder<_Annotation> {
   final _columnExpando = Expando<_Annotation>();
 
   /// Find annotation for [FieldElement] if one exists
-  DartObject objectForField(FieldElement field) {
+  DartObject? objectForField(FieldElement field) {
     final firstOfType = _columnChecker.firstAnnotationOfExact(field);
 
     if (firstOfType != null) {
@@ -26,7 +26,7 @@ abstract class AnnotationFinder<_Annotation> {
       return null;
     }
 
-    return _columnChecker.firstAnnotationOfExact(field.getter);
+    return _columnChecker.firstAnnotationOfExact(field.getter!);
   }
 
   /// Given a field element, retrieve the [_Annotation] equivalent
@@ -37,12 +37,12 @@ abstract class AnnotationFinder<_Annotation> {
 
   /// Return the actual value for fields of an element that could be one of any primitive
   dynamic valueForDynamicField(String fieldName, FieldElement element) {
-    final dynamicValue = objectForField(element).getField(fieldName);
+    final dynamicValue = objectForField(element)?.getField(fieldName);
     if (dynamicValue == null || dynamicValue.isNull) {
       return null;
     }
 
-    final checker = SharedChecker(dynamicValue.type);
+    final checker = SharedChecker(dynamicValue.type!);
     if (checker.isEnum || !checker.isSerializable) {
       throw Exception('$fieldName on ${element.name} must be a primitive');
     }

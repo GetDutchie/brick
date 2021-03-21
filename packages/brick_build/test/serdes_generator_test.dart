@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/builders.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -8,14 +9,15 @@ final generateReader = generateLibraryForFolder('serdes_generator');
 
 void main() {
   group('SerdesGenerator', () {
-    SerdesGenerator defaults;
-    SerdesGenerator custom;
-
-    setUpAll(() async {
+    late DefaultSerdes defaults;
+    late CustomSerdes custom;
+    setUp(() async {
       final annotation =
           await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
-      defaults = DefaultSerdes(annotation.element, TestFields(annotation.element));
-      custom = CustomSerdes(annotation.element, TestFields(annotation.element));
+      defaults = DefaultSerdes(
+          annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
+      custom = CustomSerdes(
+          annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
     });
 
     test('adapterMethod', () {

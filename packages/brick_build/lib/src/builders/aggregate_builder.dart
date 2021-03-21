@@ -57,7 +57,7 @@ class AggregateBuilder implements Builder {
 
   /// All unique `import:package` within a large body of text
   static Set<String> findAllImports(String contents) {
-    return importRegex.allMatches(contents).map((m) => m[0]).toSet();
+    return importRegex.allMatches(contents).map((m) => m[0]!).toSet();
   }
 
   @override

@@ -15,7 +15,7 @@ void main() {
       test('annotatedMethod', () async {
         final reader = await generateReader('annotated_method');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -23,7 +23,7 @@ void main() {
       test('annotatedTopLevelVariable', () async {
         final reader = await generateReader('annotated_top_level_variable');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -31,7 +31,7 @@ void main() {
       test('FutureIterableFuture', () async {
         final reader = await generateReader('future_iterable_future');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -39,17 +39,21 @@ void main() {
   });
 }
 
-Future<void> generateExpectation(String filename, String output, {TestGenerator generator}) async {
+Future<void> generateExpectation(
+  String filename,
+  String output, {
+  required TestGenerator generator,
+}) async {
   final reader = await generateReader(filename);
-  final generated = await (generator ?? _generator).generate(reader, null);
+  final generated = await generator.generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
 Future<void> generateAdapterExpectation(String filename, String output) async {
   final annotation = await annotationForFile<AnnotationSuperGenerator>(folder, filename);
-  final generated = await _generator.generateAdapter(
-    annotation?.element,
-    annotation?.annotation,
+  final generated = _generator.generateAdapter(
+    annotation.element,
+    annotation.annotation,
     null,
   );
   expect(generated.trim(), output.trim());

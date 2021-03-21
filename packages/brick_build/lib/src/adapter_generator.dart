@@ -55,7 +55,11 @@ class AdapterGenerator {
     }).join('\n');
   }
 
-  const AdapterGenerator({this.superAdapterName, this.className, this.generators});
+  const AdapterGenerator({
+    required this.superAdapterName,
+    required this.className,
+    required this.generators,
+  });
 
   /// Complete adapter code, including imports and serialization/deserialization
   String generate() {

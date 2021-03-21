@@ -6,7 +6,7 @@ class StringHelpers {
   /// Taken from [json_serializable](https://github.com/dart-lang/json_serializable/blob/d7e6612cf947e150710007a63b439f8f0c316d42/json_serializable/lib/src/utils.dart#L38-L47)
   static String snakeCase(String input) {
     return input.replaceAllMapped(RegExp('[A-Z]'), (match) {
-      var lower = match.group(0).toLowerCase();
+      var lower = match.group(0)!.toLowerCase();
 
       if (match.start > 0) {
         lower = '_$lower';
@@ -28,7 +28,7 @@ class StringHelpers {
   /// Taken from [json_serializable](https://github.com/dart-lang/json_serializable/blob/d7e6612cf947e150710007a63b439f8f0c316d42/json_serializable/lib/src/utils.dart#L38-L47)
   static String kebabCase(String input) {
     return input.replaceAllMapped(RegExp('[A-Z]'), (match) {
-      var lower = match.group(0).toLowerCase();
+      var lower = match.group(0)!.toLowerCase();
 
       if (match.start > 0) {
         lower = '-$lower';
@@ -56,7 +56,7 @@ class _EscapedDartString {
     var canBeRaw = true;
 
     value = value.replaceAllMapped(_escapeRegExp, (match) {
-      final value = match[0];
+      final value = match[0]!;
       if (value == "'") {
         hasSingleQuote = true;
         return value;
