@@ -154,7 +154,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       fieldAnnotation: fieldAnnotation,
       wrappedInFuture: wrappedInFuture,
     );
-    final contents = expandGenerator(fieldAnnotation, field: field, checker: checker) ?? coder;
+    final contents = expandGenerators(fieldAnnotation, field: field, checker: checker) ?? coder;
+    if (contents == null) return null;
 
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
     if (doesDeserialize) {
@@ -212,7 +213,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
   }
 
-  String? expandGenerator(
+  /// Convert placeholders in `fromGenerator` and `toGenerator` to functions.
+  String? expandGenerators(
     _FieldAnnotation annotation, {
     required FieldElement field,
     required SharedChecker checker,

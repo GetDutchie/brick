@@ -8,7 +8,7 @@ class RestDeserialize extends RestSerdesGenerator {
   RestDeserialize(
     ClassElement element,
     RestFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -25,14 +25,14 @@ class RestDeserialize extends RestSerdesGenerator {
     if (fromKey != null) fromKey = "'$fromKey'";
 
     return [
-      '@override\nString restEndpoint({query, instance}) $endpoint',
-      '@override\nfinal String fromKey = $fromKey;',
+      '@override\nString? restEndpoint({query, instance}) $endpoint',
+      '@override\nfinal String? fromKey = $fromKey;',
     ];
   }
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
@@ -61,7 +61,7 @@ class RestDeserialize extends RestSerdesGenerator {
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>
-            ${argType}Adapter().fromRest(d, provider: provider, repository: repository)
+            ${SharedChecker.withoutNullability(argType)}Adapter().fromRest(d, provider: provider, repository: repository)
           )$fromRestCast
         ''';
 
@@ -81,12 +81,11 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return '''$fieldValue.map((value) =>
-              $argType.values.firstWhere((e) => e.toString().split('.').last == value, orElse: () => null)
+          return '''$fieldValue.map((value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)
             )$castIterable$defaultValue
           ''';
         } else {
-          return '$fieldValue.map((e) => $argType.values[e])$castIterable$defaultValue';
+          return '$fieldValue.map((e) => ${SharedChecker.withoutNullability(argType)}.values[e])$castIterable$defaultValue';
         }
       }
 
@@ -109,16 +108,16 @@ class RestDeserialize extends RestSerdesGenerator {
     } else if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
 
-      return '''$shouldAwait${checker.unFuturedType}Adapter().fromRest(
+      return '''$shouldAwait${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().fromRest(
           $fieldValue, provider: provider, repository: repository
         )''';
 
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "${field.type}.values.firstWhere((h) => h.toString().split('.').last == $fieldValue, orElse: () => null)$defaultValue";
+        return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$defaultValue';
       } else {
-        return '$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue';
+        return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
       }
 
       // Map

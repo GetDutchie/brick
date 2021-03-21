@@ -158,6 +158,9 @@ class SharedChecker<_SiblingModel extends Model> {
     return targetType;
   }
 
+  /// Print the `DartType` without nullability
+  static String withoutNullability(DartType type) => type.getDisplayString(withNullability: false);
+
   /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///
   /// For example, `int` in `Future<int>` or `List<String>` in `Future<List<String>>`.
