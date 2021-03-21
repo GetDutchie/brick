@@ -22,6 +22,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   delete<_Model extends _ManagedModel>(_Model instance, {Query query});
 
   /// Query for raw data from all [Provider]s.
@@ -29,6 +30,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   get<_Model extends _ManagedModel>({Query query});
 
   /// Perform required setup work. For example, migrating a database, starting a queue,
@@ -40,6 +42,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// Optionally, the repository can
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
+  // ignore: always_declare_return_types
   upsert<_Model extends _ManagedModel>(_Model model, {Query query});
 }
 
@@ -52,19 +55,19 @@ abstract class SingleProviderRepository<_Model extends Model> implements ModelRe
 
   /// Remove models from providers
   @override
-  FutureOr<bool> delete<T extends _Model>(T instance, {Query query}) =>
+  FutureOr<bool> delete<T extends _Model>(T instance, {Query? query}) =>
       provider.delete<T>(instance, query: query, repository: this);
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<List<T>> get<T extends _Model>({Query query}) =>
+  FutureOr<List<T>> get<T extends _Model>({Query? query}) =>
       provider.get<T>(query: query, repository: this);
 
   @override
-  initialize() => null;
+  Future<void> initialize() async {}
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<T> upsert<T extends _Model>(T instance, {Query query}) =>
+  FutureOr<T> upsert<T extends _Model>(T instance, {Query? query}) =>
       provider.upsert<T>(instance, query: query, repository: this);
 }

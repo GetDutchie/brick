@@ -1,9 +1,7 @@
-import '../migration_commands.dart' show MigrationCommand;
+import 'package:brick_sqlite_abstract/src/db/migration_commands.dart';
 
 /// Generates code for [Migration] from [BaseSchemaObject]ss
 abstract class BaseSchemaObject {
-  String name;
-
   /// Generated Dart code to include in a migrations file.
   MigrationCommand toCommand();
 

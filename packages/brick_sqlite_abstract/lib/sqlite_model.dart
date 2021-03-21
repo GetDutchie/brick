@@ -1,6 +1,6 @@
 import 'package:brick_core/core.dart';
 
-const int NEW_RECORD_ID = null;
+const int? NEW_RECORD_ID = null;
 
 /// Models accessible to the [SqliteProvider].
 ///
@@ -11,16 +11,16 @@ abstract class SqliteModel implements Model {
   /// in the end implementation.
   ///
   /// Maps to the `_brick_id` column.
-  int primaryKey = NEW_RECORD_ID;
+  int? primaryKey = NEW_RECORD_ID;
 
   /// If `true`, this model has not yet been inserted into SQLite.
   bool get isNewRecord => primaryKey == NEW_RECORD_ID;
 
   /// Hook invoked before the model is successfully entered in the SQLite database.
   /// Useful to update or save associations.
-  Future<void> beforeSave({Provider provider, ModelRepository repository}) async {}
+  Future<void> beforeSave({Provider? provider, ModelRepository? repository}) async {}
 
   /// Hook invoked after the model is successfully entered in the SQLite database.
   /// Useful to update or save associations.
-  Future<void> afterSave({Provider provider, ModelRepository repository}) async {}
+  Future<void> afterSave({Provider? provider, ModelRepository? repository}) async {}
 }

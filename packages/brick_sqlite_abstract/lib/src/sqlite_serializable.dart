@@ -9,12 +9,10 @@ class SqliteSerializable {
 
   /// Creates a new [SqliteSerializable] instance.
   const SqliteSerializable({
-    this.nullable,
-  });
+    bool? nullable,
+  }) : nullable = nullable ?? true;
 
   /// An instance of [SqliteSerializable] with all fields set to their default
   /// values.
-  static const defaults = SqliteSerializable(
-    nullable: true,
-  );
+  static const defaults = SqliteSerializable();
 }

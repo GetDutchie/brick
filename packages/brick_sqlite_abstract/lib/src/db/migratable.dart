@@ -19,8 +19,8 @@ class Migratable {
   final String version;
 
   const Migratable({
-    this.down,
-    this.up,
-    this.version,
+    required this.down,
+    required this.up,
+    required this.version,
   });
 }

@@ -1,7 +1,7 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
 import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
-import 'package:meta/meta.dart' show required, visibleForTesting;
+import 'package:meta/meta.dart' show visibleForTesting;
 
 import 'migration.dart';
 import 'migration_commands.dart';
@@ -25,7 +25,7 @@ class Schema {
   /// Version used to produce this scheme
   final int generatorVersion;
 
-  Schema(this.version, {@required this.tables, this.generatorVersion = GENERATOR_VERSION});
+  Schema(this.version, {required this.tables, this.generatorVersion = GENERATOR_VERSION});
 
   static const int GENERATOR_VERSION = 1;
 
@@ -45,8 +45,8 @@ class Schema {
 
   /// Create a schema from a set of migrations. If [version] is not provided,
   /// the highest migration version will be used
-  factory Schema.fromMigrations(Set<Migration> migrations, [int version]) {
-    assert((version == null) || (version != null && version > -1));
+  factory Schema.fromMigrations(Set<Migration> migrations, [int? version]) {
+    assert((version == null) || (version > -1));
     version = version ?? MigrationManager.latestMigrationVersion(migrations);
     final commands = expandMigrations(migrations);
     final tables = commands.fold(<SchemaTable>{}, _commandToSchema);
@@ -140,7 +140,7 @@ class Schema {
       tables.forEach((t) => t.indices.forEach((i) => i.tableName == t.name));
       final table = tables.firstWhere(
         (s) => s.indices
-            .map((i) => CreateIndex.generateName(i.columns, i.tableName))
+            .map((i) => CreateIndex.generateName(i.columns, i.tableName!))
             .contains(command.name),
         orElse: () => throw StateError('Index ${command.name} must be inserted first'),
       );

@@ -52,8 +52,8 @@ void main() {
           Where('name', value: 'Thomas'),
         ]);
 
-        expect(q.where.first.evaluatedField, 'name');
-        expect(q.where.first.value, 'Thomas');
+        expect(q.where!.first.evaluatedField, 'name');
+        expect(q.where!.first.value, 'Thomas');
       });
     });
 
@@ -181,7 +181,7 @@ void main() {
           final expandedQuery = Query(where: [Where('id', value: 2)]);
           final factoried = Query.where('id', 2);
           expect(factoried, expandedQuery);
-          expect(Where.firstByField('id', factoried.where).value, 2);
+          expect(Where.firstByField('id', factoried.where!)!.value, 2);
           expect(factoried.unlimited, isTrue);
         });
 

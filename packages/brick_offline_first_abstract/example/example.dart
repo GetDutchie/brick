@@ -1,19 +1,19 @@
 import 'package:brick_rest/rest.dart';
 import 'dart:convert';
 
-import '../lib/annotations.dart';
-import '../lib/abstract.dart';
+import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_abstract/abstract.dart';
 
 /// A child association
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: "=> /hats;",
+    endpoint: '=> /hats;',
   ),
 )
 class Hat extends OfflineFirstWithRestModel {
-  final int id;
+  final int? id;
 
-  final String color;
+  final String? color;
 
   Hat({
     this.id,
@@ -24,7 +24,7 @@ class Hat extends OfflineFirstWithRestModel {
 /// A parent association
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: "=> /people;",
+    endpoint: '=> /people;',
   ),
 )
 class Person extends OfflineFirstWithRestModel {
@@ -36,9 +36,9 @@ class Person extends OfflineFirstWithRestModel {
 
   /// for upsert and delete, the rest key must be defined
   @Rest(name: 'hat_id')
-  final Hat hat;
+  final Hat? hat;
 
-  final Horse horse;
+  final Horse? horse;
 
   Person({
     this.hat,
@@ -49,7 +49,7 @@ class Person extends OfflineFirstWithRestModel {
 /// When we don't want to make a separate association but have complex data that can be stored in a single column
 /// Serdes classes cannot be queried like model members.
 class Horse extends OfflineFirstSerdes<Map<String, dynamic>, String> {
-  final String breed;
+  final String? breed;
 
   Horse({
     this.breed,
@@ -61,9 +61,11 @@ class Horse extends OfflineFirstSerdes<Map<String, dynamic>, String> {
 
   factory Horse.fromSqlite(String data) => Horse.fromRest(jsonDecode(data));
 
-  toRest() {
+  @override
+  Map<String, dynamic> toRest() {
     return {'breed': breed};
   }
 
-  toSqlite() => jsonEncode(toRest());
+  @override
+  String toSqlite() => jsonEncode(toRest());
 }

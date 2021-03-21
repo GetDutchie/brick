@@ -7,7 +7,6 @@ import 'schema_base.dart';
 /// Describes a column object managed by SQLite
 /// This should not exist outside of a SchemaTable
 class SchemaColumn extends BaseSchemaObject {
-  @override
   String name;
   final bool autoincrement;
   final Column columnType;
@@ -15,29 +14,28 @@ class SchemaColumn extends BaseSchemaObject {
   final bool nullable;
   final bool isPrimaryKey;
   final bool isForeignKey;
-  final String foreignTableName;
+  final String? foreignTableName;
   final bool onDeleteCascade;
   final bool onDeleteSetDefault;
   final bool unique;
 
-  String tableName;
+  String? tableName;
 
   SchemaColumn(
     this.name,
     this.columnType, {
-    bool autoincrement,
+    bool? autoincrement,
     this.defaultValue,
     this.isPrimaryKey = false,
     this.isForeignKey = false,
     this.foreignTableName,
-    bool nullable,
+    bool? nullable,
     this.onDeleteCascade = false,
     this.onDeleteSetDefault = false,
-    bool unique,
+    bool? unique,
   })  : autoincrement = autoincrement ?? InsertColumn.defaults.autoincrement,
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
-        assert(columnType != null, 'Type must serializable'),
         assert(!isPrimaryKey || columnType == Column.integer, 'Primary key must be an integer'),
         assert(!isForeignKey || (foreignTableName != null));
 
@@ -78,13 +76,13 @@ class SchemaColumn extends BaseSchemaObject {
   @override
   MigrationCommand toCommand({bool shouldDrop = false}) {
     if (shouldDrop) {
-      return DropColumn(name, onTable: tableName);
+      return DropColumn(name, onTable: tableName!);
     }
 
     if (isForeignKey) {
       return InsertForeignKey(
-        tableName,
-        foreignTableName,
+        tableName!,
+        foreignTableName!,
         foreignKeyColumn: name,
         onDeleteCascade: onDeleteCascade,
         onDeleteSetDefault: onDeleteSetDefault,
@@ -94,7 +92,7 @@ class SchemaColumn extends BaseSchemaObject {
     return InsertColumn(
       name,
       columnType,
-      onTable: tableName,
+      onTable: tableName!,
       defaultValue: defaultValue,
       autoincrement: autoincrement,
       nullable: nullable,
