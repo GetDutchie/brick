@@ -116,17 +116,17 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
 
 @SqliteSerializable()
 class BooleanFields extends SqliteModel {
-  final bool someField;
+  final bool? someField;
 
   @Sqlite(nullable: true)
-  final bool nullableField;
+  final bool? nullableField;
 
-  final List<bool> multipleFields;
+  final List<bool>? multipleFields;
 
   @Sqlite(nullable: true)
-  final List<bool> multipleNullableFields;
+  final List<bool>? multipleNullableFields;
 
-  final List<Future<bool>> multipleFutureFields;
+  final List<Future<bool>>? multipleFutureFields;
 
   BooleanFields({
     this.someField,

@@ -11,7 +11,7 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 /// to and from a `SqliteProvider`.
 class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSerializable> {
   /// Repository prefix passed to the generators. Does not include `Repository`.
-  final String repositoryName;
+  final String? repositoryName;
 
   SqliteModelSerdesGenerator(
     Element element,
@@ -26,9 +26,8 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
     }
 
     return SqliteSerializable(
-          nullable: withinConfigKey('nullable')?.boolValue ?? SqliteSerializable.defaults.nullable,
-        ) ??
-        SqliteSerializable.defaults;
+      nullable: withinConfigKey('nullable')?.boolValue ?? SqliteSerializable.defaults.nullable,
+    );
   }
 
   @override

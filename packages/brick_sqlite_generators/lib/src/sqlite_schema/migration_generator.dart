@@ -17,9 +17,9 @@ const _renameTableChecker = TypeChecker.fromRuntime(RenameTable);
 /// to access migration properties.
 class _MigrationImpl extends Migration {
   const _MigrationImpl({
-    int version,
-    List<MigrationCommand> up,
-    List<MigrationCommand> down,
+    required int version,
+    required List<MigrationCommand> up,
+    required List<MigrationCommand> down,
   }) : super(version: version, up: up, down: down);
 }
 
@@ -75,8 +75,7 @@ class MigrationGenerator extends Generator {
         final definitionObject =
             reader.read('definitionType').isNull ? null : reader.read('definitionType').objectValue;
         final definitionValue = Column.values.singleWhere(
-          (f) => definitionObject?.getField(f.toString().split('.')[1]) != null,
-          orElse: () => null,
+          (f) => definitionObject.getField(f.toString().split('.')[1]) != null,
         );
         return InsertColumn(
           reader.read('name').stringValue,
@@ -126,7 +125,7 @@ class MigrationGenerator extends Generator {
 
   /// Creates a new migration from the delta between the existing migration and a new schema
   @override
-  String generate(library, buildStep, {Schema newSchema, int version}) {
+  String? generate(library, buildStep, {Schema? newSchema, int? version}) {
     final allMigrations = expandAllMigrations(library);
     final oldSchema = Schema.fromMigrations(allMigrations.toSet());
 
@@ -141,7 +140,7 @@ class MigrationGenerator extends Generator {
       return null;
     }
 
-    final output = Migration.generate(difference.toMigrationCommands(), version);
+    final output = Migration.generate(difference.toMigrationCommands(), version!);
 
     return output;
   }
