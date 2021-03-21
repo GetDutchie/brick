@@ -1,5 +1,9 @@
 ## Unreleased
 
+# 1.0.0
+
+* Null safety
+
 ## 0.0.1
 
 * Fix sibling set serialization

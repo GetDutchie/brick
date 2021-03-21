@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
@@ -71,7 +72,7 @@ Future<Map<LibraryReader, List<SqliteFields>>> generateSchemaMap(String filename
   final reader = await generateReader(filename);
 
   final annotatedElements = reader.annotatedWith(annotationChecker);
-  final classes = annotatedElements.map((e) => SqliteFields(e.element)).toList();
+  final classes = annotatedElements.map((e) => SqliteFields(e.element as ClassElement)).toList();
 
   return {reader: classes};
 }
