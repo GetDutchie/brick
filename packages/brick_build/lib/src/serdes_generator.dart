@@ -186,8 +186,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   String? coderForField(
     FieldElement field,
     SharedChecker checker, {
-    _FieldAnnotation? fieldAnnotation,
-    bool? wrappedInFuture,
+    required _FieldAnnotation fieldAnnotation,
+    required bool wrappedInFuture,
   });
 
   /// Replace default placeholders
