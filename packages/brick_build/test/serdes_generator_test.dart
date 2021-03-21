@@ -8,13 +8,17 @@ import '__helpers__.dart';
 final generateReader = generateLibraryForFolder('serdes_generator');
 
 void main() {
-  group('SerdesGenerator', () async {
-    final annotation =
-        await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
-    final defaults = DefaultSerdes(
-        annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
-    final custom = CustomSerdes(
-        annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
+  group('SerdesGenerator', () {
+    late DefaultSerdes defaults;
+    late CustomSerdes custom;
+    setUp(() async {
+      final annotation =
+          await annotationForFile<AnnotationSuperGenerator>('serdes_generator', 'simple');
+      defaults = DefaultSerdes(
+          annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
+      custom = CustomSerdes(
+          annotation.element as ClassElement, TestFields(annotation.element as ClassElement));
+    });
 
     test('adapterMethod', () {
       expect(defaults.className, 'Simple');
