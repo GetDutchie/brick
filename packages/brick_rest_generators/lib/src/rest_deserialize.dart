@@ -81,7 +81,7 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return '''$fieldValue.map((value) => Adapter.enumValueFromName($argType.values, value))
+          return '''$fieldValue.map((value) => RestAdapter.enumValueFromName($argType.values, value))
             )$castIterable$defaultValue
           ''';
         } else {
@@ -115,7 +115,7 @@ class RestDeserialize extends RestSerdesGenerator {
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return 'Adater.enumValueFromName(${field.type}.values, $fieldValue)$defaultValue';
+        return 'RestAdapter.enumValueFromName(${field.type}.values, $fieldValue)$defaultValue';
       } else {
         return '$fieldValue is int ? ${field.type}.values[$fieldValue as int] : null$defaultValue';
       }
