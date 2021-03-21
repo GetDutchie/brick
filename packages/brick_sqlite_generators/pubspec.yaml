@@ -1,5 +1,5 @@
 name: brick_sqlite_generators
-description: Code generation library for the SQLite system
+description: Code generation library for the SQLite providers, models, and adapters in Brick
 homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite_generators
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
