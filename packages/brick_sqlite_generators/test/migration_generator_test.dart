@@ -109,7 +109,7 @@ void main() {
         final reader = await generateLibrary('from_new_schema');
         final output = generator.generate(
           reader,
-          null,
+          MockBuildStep(),
           newSchema: _$fromNewSchema.schema,
           version: 2,
         );
@@ -119,7 +119,8 @@ void main() {
 
       test('with an identical schema', () async {
         final reader = await generateLibrary('from_identical_schema');
-        final output = generator.generate(reader, null, newSchema: _$fromIdenticalSchema.schema);
+        final output =
+            generator.generate(reader, MockBuildStep(), newSchema: _$fromIdenticalSchema.schema);
         expect(output, isNull);
       });
     });

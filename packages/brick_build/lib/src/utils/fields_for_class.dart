@@ -28,7 +28,7 @@ abstract class FieldsForClass<_FieldAnnotation extends Object> {
     final allFields = elementInstanceFields.keys.toSet().union(inheritedFields.keys.toSet());
 
     final fields =
-        allFields.map((e) => _FieldSet(elementInstanceFields[e]!, inheritedFields[e]!)).toList();
+        allFields.map((e) => _FieldSet(elementInstanceFields[e], inheritedFields[e])).toList();
 
     // Sort the fields using the `compare` implementation in _FieldSet
     fields.sort();
@@ -61,10 +61,7 @@ class _FieldSet implements Comparable<_FieldSet> {
 
   _FieldSet._(this.field, this.sortField) : assert(field.name == sortField.name);
 
-  factory _FieldSet(
-    FieldElement classField,
-    FieldElement superField,
-  ) {
+  factory _FieldSet(FieldElement? classField, FieldElement? superField) {
     // At least one of these will != null, perhaps both.
     final fields = [classField, superField].whereType<FieldElement>().toList();
 

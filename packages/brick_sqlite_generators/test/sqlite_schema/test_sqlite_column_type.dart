@@ -29,7 +29,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 @SqliteSerializable()
 class ExplicitColumnType {
   @Sqlite(columnType: Column.blob)
-  final Uint8List image;
+  final Uint8List? image;
 
   ExplicitColumnType({this.image});
 }
