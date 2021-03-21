@@ -26,7 +26,7 @@ abstract class AnnotationSuperGenerator<_Annotation> extends GeneratorForAnnotat
 
     final adapterGenerator = AdapterGenerator(
       superAdapterName: superAdapterName,
-      className: element.name,
+      className: element.name!,
       generators: generators,
     );
 

@@ -32,9 +32,8 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
     final file = File(p.join('lib', 'app', path));
     final fileExists = await file.exists();
-    if (!fileExists) {
-      return null;
-    }
+    if (!fileExists) return null;
+
     final contents = await file.readAsString();
     final replacedContents = contents.replaceAll(from, to);
     final writtenFile = await file.writeAsString(replacedContents);

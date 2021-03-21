@@ -8,7 +8,7 @@ final _formatter = dart_style.DartFormatter();
 /// Given a model, outputs generated code to use as a Brick adapter.
 class AdapterGenerator {
   /// The adapted class
-  final String? className;
+  final String className;
 
   /// The generated output for serializing/deserializing to JSON and SQLite
   final List<SerdesGenerator> generators;
@@ -57,7 +57,7 @@ class AdapterGenerator {
 
   const AdapterGenerator({
     required this.superAdapterName,
-    this.className,
+    required this.className,
     required this.generators,
   });
 
