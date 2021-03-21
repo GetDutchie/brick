@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0+1
+
+* Add static methods `.firstWhereOrNull` and `.enumValueFromName` to `RestAdapter` to support null safe building
+
 ## 1.0.0
 
 * Null safety
