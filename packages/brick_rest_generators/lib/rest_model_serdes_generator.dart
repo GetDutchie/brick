@@ -27,7 +27,8 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
     }
 
     final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
-    final fieldRenameByEnumName = FieldRename.values.singleWhereOrNull(
+    final fieldRenameByEnumName = _firstWhereOrNull(
+      FieldRename.values,
       (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
     );
 
@@ -49,4 +50,12 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
       RestSerialize(classElement, fields, repositoryName: repositoryName!),
     ];
   }
+}
+
+// from dart:collections, instead of importing a whole package
+T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
+  for (var item in items) {
+    if (test(item)) return item;
+  }
+  return null;
 }

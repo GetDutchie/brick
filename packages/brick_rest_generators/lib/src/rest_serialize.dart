@@ -24,8 +24,8 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
   }
 
   @override
-  String? coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation!.name!, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;
 
     // DateTime
@@ -64,7 +64,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
-      final wrappedField = wrappedInFuture! ? '(await $fieldValue)' : fieldValue;
+      final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
 
       return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
 
