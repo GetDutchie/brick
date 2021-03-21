@@ -26,7 +26,7 @@ abstract class AnnotationFinder<_Annotation extends Object> {
       return null;
     }
 
-    return _columnChecker.firstAnnotationOfExact(field.getter);
+    return _columnChecker.firstAnnotationOfExact(field.getter!);
   }
 
   /// Given a field element, retrieve the [_Annotation] equivalent

@@ -1,3 +1,4 @@
+import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 import 'package:source_gen_test/source_gen_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -26,5 +27,10 @@ LibraryGenerator generateLibraryForFolder(String folder) {
 Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String filename) async {
   final annotationChecker = TypeChecker.fromRuntime(_Annotation);
   final reader = await _libraryForFolder(folder, filename);
-  return reader.annotatedWith(annotationChecker).first!;
+  return reader.annotatedWith(annotationChecker).first;
+}
+
+class MockBuildStep extends BuildStep {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

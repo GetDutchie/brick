@@ -15,7 +15,7 @@ void main() {
       test('annotatedMethod', () async {
         final reader = await generateReader('annotated_method');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -23,7 +23,7 @@ void main() {
       test('annotatedTopLevelVariable', () async {
         final reader = await generateReader('annotated_top_level_variable');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -31,7 +31,7 @@ void main() {
       test('FutureIterableFuture', () async {
         final reader = await generateReader('future_iterable_future');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -45,7 +45,7 @@ Future<void> generateExpectation(
   required TestGenerator generator,
 }) async {
   final reader = await generateReader(filename);
-  final generated = await generator.generate(reader, null);
+  final generated = await generator.generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
