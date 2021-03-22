@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/testing.dart';
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_sqlite_generators/generators.dart';
@@ -17,7 +18,7 @@ Future<String> generateOutputForFile(String fileName) async {
   final reader = await generateLibrary(fileName);
 
   final annotatedElements = reader.annotatedWith(annotationChecker);
-  final fieldses = annotatedElements.map((e) => SqliteFields(e.element)).toList();
+  final fieldses = annotatedElements.map((e) => SqliteFields(e.element as ClassElement)).toList();
   return generator.generate(reader, fieldses);
 }
 
@@ -26,7 +27,8 @@ void main() {
     test('adds serdes member', () async {
       final reader = await generateLibrary('with_serdes');
       final annotatedElements = reader.annotatedWith(annotationChecker);
-      final fieldses = annotatedElements.map((e) => SqliteFields(e.element)).toList();
+      final fieldses =
+          annotatedElements.map((e) => SqliteFields(e.element as ClassElement)).toList();
       final output = generator.createMigration(reader, fieldses, version: 2);
       expect(output, _$withSerdes.output);
     });

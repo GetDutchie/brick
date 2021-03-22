@@ -31,9 +31,9 @@ Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
 
 @ConnectOfflineFirstWithRest()
 class SpecifyFieldName {
-  SpecifyFieldName({this.email});
-
   @Sqlite(name: 'email_address')
   @Rest(name: 'email_address')
-  final String email;
+  final String? email;
+
+  SpecifyFieldName({this.email});
 }

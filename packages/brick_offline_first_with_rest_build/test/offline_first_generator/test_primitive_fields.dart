@@ -98,14 +98,14 @@ class PrimitiveFields {
     this.dateTime,
   });
 
-  final int integer;
-  final bool boolean;
-  final double dub;
-  final String string;
-  final List<int> list;
-  final Set<int> aSet;
-  final Map<String, dynamic> map;
-  final String longerCamelizedVariable;
-  final Casing casing;
-  final DateTime dateTime;
+  final int? integer;
+  final bool? boolean;
+  final double? dub;
+  final String? string;
+  final List<int>? list;
+  final Set<int>? aSet;
+  final Map<String, dynamic>? map;
+  final String? longerCamelizedVariable;
+  final Casing? casing;
+  final DateTime? dateTime;
 }

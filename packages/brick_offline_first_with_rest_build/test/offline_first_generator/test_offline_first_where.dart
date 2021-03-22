@@ -248,31 +248,31 @@ class OfflineFirstWhere extends OfflineFirstModel {
   });
 
   @OfflineFirst(where: {'id': "data['id']"})
-  final Future<OtherAssoc> assoc;
+  final Future<OtherAssoc>? assoc;
 
   @OfflineFirst(where: {'id': "data['id']", 'otherVar': "data['var']"})
-  final List<Future<Assoc>> assocs;
+  final List<Future<Assoc>>? assocs;
 
   @OfflineFirst(where: {'id': "data['id']"})
   @Rest(toGenerator: '"Going to REST"')
-  final Assoc loadedAssoc;
+  final Assoc? loadedAssoc;
 
   @OfflineFirst(where: {'id': "data['id']"})
-  final List<Assoc> loadedAssocs;
+  final List<Assoc>? loadedAssocs;
 
   @OfflineFirst(where: {'id': "data['id']", 'otherVar': "data['var']"})
   @Rest(toGenerator: '"As REST"')
-  final List<Future<Assoc>> multiLookupCustomGenerator;
+  final List<Future<Assoc>>? multiLookupCustomGenerator;
 }
 
 @ConnectOfflineFirstWithRest()
 class Assoc extends OfflineFirstModel {
-  final String name;
+  final String? name;
   Assoc({this.name});
 }
 
 @ConnectOfflineFirstWithRest()
 class OtherAssoc extends OfflineFirstModel {
-  final String name;
+  final String? name;
   OtherAssoc({this.name});
 }

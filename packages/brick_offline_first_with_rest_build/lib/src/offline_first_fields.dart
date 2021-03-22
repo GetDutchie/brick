@@ -11,14 +11,12 @@ class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {
   OfflineFirst from(element) {
     final obj = objectForField(element);
 
-    if (obj == null) {
-      return const OfflineFirst();
-    }
+    if (obj == null) return const OfflineFirst();
 
     final where = obj
         .getField('where')
-        .toMapValue()
-        ?.map((key, value) => MapEntry(key.toStringValue(), value.toStringValue()));
+        ?.toMapValue()
+        ?.map((key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
 
     return OfflineFirst(
       where: where,

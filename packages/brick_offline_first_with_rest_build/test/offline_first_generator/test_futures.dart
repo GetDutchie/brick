@@ -222,17 +222,17 @@ class Futures extends OfflineFirstModel {
     this.futureAssocs,
   });
 
-  final Future<String> string;
+  final Future<String>? string;
 
-  final Future<List<String>> strings;
+  final Future<List<String>>? strings;
 
-  final List<Future<String>> futureStrings;
+  final List<Future<String>>? futureStrings;
 
-  final Future<Assoc> assoc;
+  final Future<Assoc>? assoc;
 
-  final Future<List<Assoc>> assocs;
+  final Future<List<Assoc>>? assocs;
 
-  final List<Future<Assoc>> futureAssocs;
+  final List<Future<Assoc>>? futureAssocs;
 }
 
 @ConnectOfflineFirstWithRest()

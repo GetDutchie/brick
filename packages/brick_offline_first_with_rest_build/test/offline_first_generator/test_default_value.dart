@@ -33,5 +33,5 @@ class DefaultValue {
 
   @Rest(defaultValue: '"Thomas"')
   @Sqlite(defaultValue: '"Guy"')
-  final String string;
+  final String? string;
 }
