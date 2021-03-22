@@ -1,5 +1,13 @@
 ## Unreleased
 
+## 1.0.0+1
+
+* Add static methods `.firstWhereOrNull` and `.enumValueFromName` to `RestAdapter` to support null safe building
+
+## 1.0.0
+
+* Null safety
+
 ## 0.0.8
 
 * Add `GZipHttpClient`. When instantiating the `RestProvider`, optionally compose `client` with a `GZipHttpClient` to [gzip all requests](README.md#gzipping-requests).

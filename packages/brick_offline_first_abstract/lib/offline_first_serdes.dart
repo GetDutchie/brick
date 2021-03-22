@@ -14,13 +14,13 @@
 /// Both use one unnamed arg with a type post-`jsonDecode`.
 abstract class OfflineFirstSerdes<_RemoteSerializeType, _SqliteSerializeType> {
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
-  _RemoteSerializeType toRest() => null;
+  _RemoteSerializeType? toRest() => null;
 
   /// Must be one of the following: `bool`, `DateTime`, `double`, `int`, `num`, `String`,
   /// or another `Iterable` digestible by `jsonEncode`.
   ///
   /// Often, [_SqliteSerializeType] is a `String` and `toSqlite` performs `jsonEncode(toRest())`.
-  _SqliteSerializeType toSqlite() => null;
+  _SqliteSerializeType? toSqlite() => null;
 
   // factory.fromSqlite(_SqliteSerializeType data) {}
 }

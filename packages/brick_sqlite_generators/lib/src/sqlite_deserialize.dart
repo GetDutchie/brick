@@ -12,7 +12,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   SqliteDeserialize(
     ClassElement element,
     SqliteFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -23,7 +23,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
-  String deserializerNullableClause({field, fieldAnnotation, name}) {
+  String deserializerNullableClause({required field, required fieldAnnotation, required name}) {
     final checker = checkerForType(field.type);
     if (checker.isIterable && checker.isArgTypeASibling) {
       return '';
@@ -37,8 +37,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   }
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(
@@ -76,13 +76,14 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
+        final argTypeAsString = SharedChecker.withoutNullability(argType);
         final sqlStatement =
-            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
+            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
         final method = '''
           provider
             ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
             ?.then((results) {
-              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argType.getDisplayString())}']);
+              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
                 ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
                 ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
@@ -116,7 +117,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? $argType.values[d as int] : null)$castIterable';
+        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d as int] : null)$castIterable';
       }
 
       // Iterable<bool>
@@ -135,17 +136,17 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       if (wrappedInFuture) {
         return '''($fieldValue > -1
-            ? repository?.getAssociation<${checker.unFuturedType}>($query)?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
+            ? repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}}>($query)?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
             : null)''';
       }
 
       return '''($fieldValue > -1
-            ? (await repository?.getAssociation<${checker.unFuturedType}>($query))?.first
+            ? (await repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
             : null)''';
 
       // enum
     } else if (checker.isEnum) {
-      return '($fieldValue > -1 ? ${field.type}.values[$fieldValue as int] : null)$defaultValue';
+      return '($fieldValue > -1 ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null)$defaultValue';
 
       // Map
     } else if (checker.isMap) {

@@ -24,11 +24,11 @@ void main() {
           return http.Response('[{"name": "Guy"}]', 200);
         }
 
-        return null;
+        return Future.value(null);
       });
       final instance = DemoRestModel('Guy');
       final resp = await provider.upsert<DemoRestModel>(instance);
-      expect(resp.statusCode, 200);
+      expect(resp!.statusCode, 200);
       expect(resp.body, '[{"name": "Guy"}]');
     });
   });

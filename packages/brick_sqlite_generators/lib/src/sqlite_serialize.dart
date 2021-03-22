@@ -1,3 +1,4 @@
+import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -13,7 +14,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   SqliteSerialize(
     ClassElement element,
     SqliteFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
@@ -69,9 +70,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
         'Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key',
@@ -102,7 +103,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${checker.argType}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
+        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -135,7 +136,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedType}>($instance, repository: repository)';
+      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {
@@ -191,7 +192,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   String _saveIterableAssociationFieldToJoins(FieldElement field) {
     final annotation = fields.annotationForField(field);
     var checker = checkerForType(field.type);
-    final fieldValue = serdesValueForField(field, annotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, annotation.name!, checker: checker);
 
     final wrappedInFuture = checker.isFuture;
     if (wrappedInFuture) {
@@ -199,9 +200,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     final joinsTable =
-        InsertForeignKey.joinsTableName(annotation.name, localTableName: fields.element.name);
-    final joinsForeignColumn =
-        InsertForeignKey.joinsTableForeignColumnName(checker.unFuturedArgType.getDisplayString());
+        InsertForeignKey.joinsTableName(annotation.name!, localTableName: fields.element.name);
+    final joinsForeignColumn = InsertForeignKey.joinsTableForeignColumnName(
+        checker.unFuturedArgType.getDisplayString(withNullability: false));
     final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
 
     // Iterable<Future<SqliteModel>>
@@ -209,13 +210,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
-        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
+        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
 
     // Iterable<SqliteModel>
     if (!checker.isArgTypeAFuture) {
       siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       upsertMethod =
-          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
+          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
     }
 
     final removeStaleAssociations = field.isPublic && !field.isFinal
@@ -242,7 +243,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString().replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
+    return type.getDisplayString(withNullability: false).replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
   }
 
   String _boolForField(String fieldValue, bool nullable) {

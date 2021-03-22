@@ -17,7 +17,7 @@ abstract class SqliteBaseBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnn
   Future<List<SqliteFields>> sqliteFieldsFromBuildStep(BuildStep buildStep) async {
     final annotatedElements = await getAnnotatedElements(buildStep);
     return annotatedElements.where((e) => e.element is ClassElement).map((e) {
-      final sqlite = SqliteModelSerdesGenerator(e.element, e.annotation);
+      final sqlite = SqliteModelSerdesGenerator(e.element, e.annotation, repositoryName: '');
       return SqliteFields(sqlite.element as ClassElement, sqlite.config);
     }).toList();
   }

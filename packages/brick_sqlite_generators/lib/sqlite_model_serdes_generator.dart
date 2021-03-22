@@ -16,7 +16,7 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
   SqliteModelSerdesGenerator(
     Element element,
     ConstantReader reader, {
-    this.repositoryName,
+    required this.repositoryName,
   }) : super(element, reader, configKey: 'sqliteConfig');
 
   @override
@@ -26,9 +26,8 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
     }
 
     return SqliteSerializable(
-          nullable: withinConfigKey('nullable')?.boolValue ?? SqliteSerializable.defaults.nullable,
-        ) ??
-        SqliteSerializable.defaults;
+      nullable: withinConfigKey('nullable')?.boolValue ?? SqliteSerializable.defaults.nullable,
+    );
   }
 
   @override

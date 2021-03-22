@@ -26,7 +26,7 @@ void main() {
       test('IdField', () async {
         final reader = await generateReader('id_field');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -34,7 +34,7 @@ void main() {
       test('PrimaryKeyField', () async {
         final reader = await generateReader('primary_key_field');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -42,7 +42,7 @@ void main() {
       test('ColumnTypeWithoutFrom', () async {
         final reader = await generateReader('column_type_without_generator');
         expect(
-          () async => await _generator.generate(reader, null),
+          () async => await _generator.generate(reader, MockBuildStep()),
           throwsA(TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
@@ -99,17 +99,17 @@ class TestGenerator extends AnnotationSuperGenerator<SqliteSerializable> {
   }
 }
 
-Future<void> generateExpectation(String filename, String output, {TestGenerator generator}) async {
+Future<void> generateExpectation(String filename, String output, {TestGenerator? generator}) async {
   final reader = await generateReader(filename);
-  final generated = await (generator ?? _generator).generate(reader, null);
+  final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
 Future<void> generateAdapterExpectation(String filename, String output) async {
   final annotation = await annotationForFile<SqliteSerializable>(folder, filename);
-  final generated = await _generator.generateAdapter(
-    annotation?.element,
-    annotation?.annotation,
+  final generated = _generator.generateAdapter(
+    annotation.element,
+    annotation.annotation,
     null,
   );
   expect(generated.trim(), output.trim());

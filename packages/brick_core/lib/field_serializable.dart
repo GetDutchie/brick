@@ -6,7 +6,7 @@ abstract class FieldSerializable {
   /// (e.g. `defaultValue: "'Missing Last Name'"`)
   ///
   /// This value is usually only applied during deserialization.
-  String get defaultValue;
+  String? get defaultValue;
 
   /// Manipulates output for the field in the deserialize generator.
   /// The instance's field name is automatically defined. While the build method is ultimately
@@ -16,14 +16,14 @@ abstract class FieldSerializable {
   /// `data` and `provider` is available as the deserialized version of the model.
   ///
   /// Placeholders can be used in the value of this field.
-  String get fromGenerator;
+  String? get fromGenerator;
 
   /// `true` if the generator should ignore this field completely.
   bool get ignore;
 
   /// The key name to use when reading and writing values corresponding
   /// to the annotated field.
-  String get name;
+  String? get name;
 
   /// When `true`, `null` fields are handled gracefully when serializing and deserializing.
   bool get nullable;
@@ -36,7 +36,7 @@ abstract class FieldSerializable {
   /// `instance` and `provider` is available as the invoking model.
   ///
   /// Placeholders can be used in the value of this field.
-  String get toGenerator;
+  String? get toGenerator;
 
   /// Placeholder. Replaces with name (e.g. `@Rest(name:)` or `@Sqlite(name:)`).
   /// Defaults to field name after any applicable renaming transforms.

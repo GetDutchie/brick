@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'migration_command.dart';
 
 /// SQLite doesn't have a catch-all drop column command. On migrate, the provider can search for
@@ -10,13 +9,13 @@ class DropColumn extends MigrationCommand {
 
   const DropColumn(
     this.name, {
-    @required this.onTable,
+    required this.onTable,
   });
 
   /// SQLite does not support dropping individual columns. Instead, this command
   /// must be handled during migration when access to the table schema is available.
   @override
-  String get statement => null;
+  String? get statement => null;
 
   @override
   String get forGenerator => "DropColumn('$name', onTable: '$onTable')";

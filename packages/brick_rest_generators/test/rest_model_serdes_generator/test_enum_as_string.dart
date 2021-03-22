@@ -4,13 +4,9 @@ final output = r'''
 Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
     {RestProvider provider, RestFirstRepository repository}) async {
   return EnumAsString(
-      hat: Hat.values.firstWhere(
-          (h) => h.toString().split('.').last == data['hat'],
-          orElse: () => null),
+      hat: RestAdapter.enumValueFromName(Hat.values, data['hat']),
       hats: data['hats']
-          .map((value) => Hat.values.firstWhere(
-              (e) => e.toString().split('.').last == value,
-              orElse: () => null))
+          .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
           ?.toList()
           ?.cast<Hat>());
 }
@@ -39,8 +35,8 @@ class EnumAsString {
   });
 
   @Rest(enumAsString: true)
-  final Hat hat;
+  final Hat? hat;
 
   @Rest(enumAsString: true)
-  final List<Hat> hats;
+  final List<Hat>? hats;
 }

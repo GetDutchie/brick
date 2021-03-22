@@ -6,7 +6,7 @@ import 'package:brick_build/generators.dart';
 
 /// Find `@Rest` given a field
 class RestAnnotationFinder extends AnnotationFinder<Rest> {
-  final RestSerializable config;
+  final RestSerializable? config;
 
   RestAnnotationFinder([this.config]);
 
@@ -44,16 +44,16 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
     }
 
     return Rest(
-      defaultValue: obj.getField('defaultValue').toStringValue(),
-      enumAsString: obj.getField('enumAsString').toBoolValue() ?? Rest.defaults.enumAsString,
-      fromGenerator: obj.getField('fromGenerator').toStringValue(),
-      ignore: obj.getField('ignore').toBoolValue() ?? Rest.defaults.ignore,
-      ignoreFrom: obj.getField('ignoreFrom').toBoolValue() ?? Rest.defaults.ignoreFrom,
-      ignoreTo: obj.getField('ignoreTo').toBoolValue() ?? Rest.defaults.ignoreTo,
-      name: obj.getField('name').toStringValue() ?? _renameField(element.name),
+      defaultValue: obj.getField('defaultValue')!.toStringValue(),
+      enumAsString: obj.getField('enumAsString')!.toBoolValue() ?? Rest.defaults.enumAsString,
+      fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
+      ignore: obj.getField('ignore')!.toBoolValue() ?? Rest.defaults.ignore,
+      ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Rest.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
+      name: obj.getField('name')!.toStringValue() ?? _renameField(element.name),
       nullable:
-          obj.getField('nullable').toBoolValue() ?? config?.nullable ?? Rest.defaults.nullable,
-      toGenerator: obj.getField('toGenerator').toStringValue(),
+          obj.getField('nullable')!.toBoolValue() ?? config?.nullable ?? Rest.defaults.nullable,
+      toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }
 }
@@ -62,7 +62,7 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
 class RestFields extends FieldsForClass<Rest> {
   @override
   final RestAnnotationFinder finder;
-  final RestSerializable config;
+  final RestSerializable? config;
 
   RestFields(ClassElement element, [this.config])
       : finder = RestAnnotationFinder(config),

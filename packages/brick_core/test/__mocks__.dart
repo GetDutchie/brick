@@ -8,23 +8,28 @@ class DemoModelDictionary extends ModelDictionary<DemoModel, DemoAdapter> {
 class DemoProvider extends Provider<DemoModel> {
   DemoProvider(this.modelDictionary);
 
+  @override
   final DemoModelDictionary modelDictionary;
 
-  delete<_Model extends DemoModel>(instance, {query, repository}) {
+  @override
+  bool delete<_Model extends DemoModel>(instance, {query, repository}) {
     return true;
   }
 
-  exists<_Model extends DemoModel>({query, repository}) {
+  @override
+  bool exists<_Model extends DemoModel>({query, repository}) {
     return true;
   }
 
-  get<_Model extends DemoModel>({query, repository}) {
-    final list = List<DemoModel>();
+  @override
+  Future<List<DemoModel>> get<_Model extends DemoModel>({query, repository}) {
+    final list = <DemoModel>[];
     list.add(DemoModel('Thomas'));
     return Future.value(list);
   }
 
-  upsert<_Model extends DemoModel>(instance, {query, repository}) {
+  @override
+  bool upsert<_Model extends DemoModel>(instance, {query, repository}) {
     return true;
   }
 }
@@ -40,6 +45,6 @@ class DemoAdapter extends Adapter<DemoModel> {
 }
 
 const Map<Type, DemoAdapter> mappings = {
-  DemoModel: const DemoAdapter(),
+  DemoModel: DemoAdapter(),
 };
 final modelDictionary = DemoModelDictionary(mappings);

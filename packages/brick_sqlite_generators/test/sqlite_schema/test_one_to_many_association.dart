@@ -58,7 +58,7 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 /// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class OneToManyAssocation extends SqliteModel {
-  final List<SqliteAssoc> assoc;
+  final List<SqliteAssoc>? assoc;
 
   OneToManyAssocation({this.assoc});
 }

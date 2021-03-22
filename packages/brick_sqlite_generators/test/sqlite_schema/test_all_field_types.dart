@@ -44,11 +44,11 @@ class AllFieldTypes {
     this.casing,
   });
 
-  final int integer;
-  final bool boolean;
-  final double dub;
-  final String string;
-  final List<int> list;
-  final String longerCamelizedVariable;
-  final Casing casing;
+  final int? integer;
+  final bool? boolean;
+  final double? dub;
+  final String? string;
+  final List<int>? list;
+  final String? longerCamelizedVariable;
+  final Casing? casing;
 }

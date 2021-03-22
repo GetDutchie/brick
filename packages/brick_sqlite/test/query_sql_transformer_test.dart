@@ -12,17 +12,19 @@ void main() {
   ft.TestWidgetsFlutterBinding.ensureInitialized();
 
   group('QuerySqlTransformer', () {
-    Database db;
+    late Database db;
     var sqliteLogs = <MethodCall>[];
 
     MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
-      sqliteLogs.add(methodCall);
+      if (methodCall.method == 'query') sqliteLogs.add(methodCall);
 
       if (methodCall.method == 'getDatabasesPath') {
         return Future.value('db');
       }
 
-      return Future.value(null);
+      if (methodCall.method == 'openDatabase') return Future.value(1);
+
+      return Future.value([]);
     });
 
     setUpAll(() async {
@@ -31,9 +33,9 @@ void main() {
 
     tearDown(sqliteLogs.clear);
 
-    void sqliteStatementExpectation(String statement, [List<dynamic> arguments]) {
+    void sqliteStatementExpectation(String statement, [List<dynamic>? arguments]) {
       final matcher = isMethodCall('query',
-          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': null});
+          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': 1});
 
       return expect(sqliteLogs, contains(matcher));
     }
@@ -92,7 +94,7 @@ void main() {
           WherePhrase([
             Where.exact('id', 1),
             Where.exact('name', 'Guy'),
-          ], required: true),
+          ], isRequired: true),
           WherePhrase([
             Where.exact('id', 1),
             Where.exact('name', 'Guy'),
@@ -115,7 +117,7 @@ void main() {
           WherePhrase([
             Or('name').isExactly('Thomas'),
             Or('name').isExactly('Guy'),
-          ], required: true),
+          ], isRequired: true),
         ]),
       );
 
@@ -167,7 +169,7 @@ void main() {
             WherePhrase([
               Where.exact('id', 1),
               Where.exact('name', 'Guy'),
-            ], required: true),
+            ], isRequired: true),
             WherePhrase([
               Where.exact('id', 1),
               Where.exact('name', 'Guy'),
@@ -206,7 +208,7 @@ void main() {
             where: [
               WherePhrase([
                 if (nilValue != null) And('name').isExactly('John'),
-              ], required: false),
+              ], isRequired: false),
             ],
           ),
           selectStatement: false,

@@ -9,7 +9,7 @@ import 'package:brick_sqlite_abstract/db.dart' show Column;
 
 /// Find `@Sqlite` given a field
 class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
-  final SqliteSerializable config;
+  final SqliteSerializable? config;
 
   SqliteAnnotationFinder([this.config]);
 
@@ -32,26 +32,26 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
     final columnTypeObject = obj.getField('columnType');
     // a hacky way around getting the value because `.fields` is not
     // exposed in DartObjectImpl
-    final columnType = Column.values.firstWhere((c) {
+    final columnType = _firstWhereOrNull(Column.values, (c) {
       final asString = c.toString().split('.').last;
-      return columnTypeObject.getField(asString) != null;
-    }, orElse: () => null);
+      return columnTypeObject?.getField(asString) != null;
+    });
 
     return Sqlite(
       columnType: columnType,
-      defaultValue: obj.getField('defaultValue').toStringValue(),
-      fromGenerator: obj.getField('fromGenerator').toStringValue(),
-      ignore: obj.getField('ignore').toBoolValue() ?? Sqlite.defaults.ignore,
-      index: obj.getField('index').toBoolValue() ?? Sqlite.defaults.index,
-      name: obj.getField('name').toStringValue() ?? StringHelpers.snakeCase(element.name),
+      defaultValue: obj.getField('defaultValue')?.toStringValue(),
+      fromGenerator: obj.getField('fromGenerator')?.toStringValue(),
+      ignore: obj.getField('ignore')?.toBoolValue() ?? Sqlite.defaults.ignore,
+      index: obj.getField('index')?.toBoolValue() ?? Sqlite.defaults.index,
+      name: obj.getField('name')?.toStringValue() ?? StringHelpers.snakeCase(element.name),
       nullable:
-          obj.getField('nullable').toBoolValue() ?? config?.nullable ?? Sqlite.defaults.nullable,
+          obj.getField('nullable')?.toBoolValue() ?? config?.nullable ?? Sqlite.defaults.nullable,
       onDeleteCascade:
-          obj.getField('onDeleteCascade').toBoolValue() ?? Sqlite.defaults.onDeleteCascade,
+          obj.getField('onDeleteCascade')?.toBoolValue() ?? Sqlite.defaults.onDeleteCascade,
       onDeleteSetDefault:
-          obj.getField('onDeleteSetDefault').toBoolValue() ?? Sqlite.defaults.onDeleteSetDefault,
-      toGenerator: obj.getField('toGenerator').toStringValue(),
-      unique: obj.getField('unique').toBoolValue() ?? Sqlite.defaults.unique,
+          obj.getField('onDeleteSetDefault')?.toBoolValue() ?? Sqlite.defaults.onDeleteSetDefault,
+      toGenerator: obj.getField('toGenerator')?.toStringValue(),
+      unique: obj.getField('unique')?.toBoolValue() ?? Sqlite.defaults.unique,
     );
   }
 }
@@ -60,9 +60,17 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 class SqliteFields extends FieldsForClass<Sqlite> {
   @override
   final SqliteAnnotationFinder finder;
-  final SqliteSerializable config;
+  final SqliteSerializable? config;
 
   SqliteFields(ClassElement element, [this.config])
       : finder = SqliteAnnotationFinder(config),
         super(element: element);
+}
+
+// from dart:collection instead of importing the whole package
+T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
+  for (var item in items) {
+    if (test(item)) return item;
+  }
+  return null;
 }

@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import '../migration.dart';
 import 'drop_column.dart';
 import 'migration_command.dart';
@@ -24,14 +23,14 @@ class InsertColumn extends MigrationCommand {
   const InsertColumn(
     this.name,
     this.definitionType, {
-    @required this.onTable,
+    required this.onTable,
     this.defaultValue,
     this.autoincrement = false,
     this.nullable = true,
     this.unique = false,
   });
 
-  String get _defaultStatement {
+  String? get _defaultStatement {
     if (defaultValue == null) {
       return null;
     }
@@ -40,10 +39,8 @@ class InsertColumn extends MigrationCommand {
   }
 
   String get _nullStatement => nullable ? 'NULL' : 'NOT NULL';
-  String get _autoincrementStatement {
-    if (!autoincrement) {
-      return null;
-    }
+  String? get _autoincrementStatement {
+    if (!autoincrement) return null;
 
     return 'AUTOINCREMENT';
   }

@@ -29,7 +29,7 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
 
       // Since the generator must be aware of all classes and LibraryElement only targets
       // a single file, this must expaned the serialization output into its own file.
-      final snakedName = StringHelpers.snakeCase(annotatedElement.element.name);
+      final snakedName = StringHelpers.snakeCase(annotatedElement.element.name!);
       await manuallyUpsertAppFile('adapters/${snakedName}_adapter.g.dart', output);
       allOutputs.add(output);
       logStopwatch(

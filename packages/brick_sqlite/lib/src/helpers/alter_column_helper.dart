@@ -38,7 +38,7 @@ class AlterColumnHelper {
 
   /// Create new table with updated column data
   List<Map<String, dynamic>> newColumns(List<Map<String, dynamic>> columns) {
-    Map<String, dynamic> convertColumn(Map<String, dynamic> column) {
+    Map<String, dynamic>? convertColumn(Map<String, dynamic> column) {
       final newColumn = Map<String, dynamic>.from(column);
 
       if (isDrop) {
@@ -97,8 +97,8 @@ class AlterColumnHelper {
   /// Perform the necessary SQLite operation
   Future<void> execute(Database db) async {
     // Ensure table is aware of inserted column first
-    if (isUniqueInsert) {
-      await db.execute(command.statement);
+    if (isUniqueInsert && command.statement != null) {
+      await db.execute(command.statement!);
     }
 
     final columns = await tableInfo(db);

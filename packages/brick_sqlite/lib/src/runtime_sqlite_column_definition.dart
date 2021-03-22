@@ -18,8 +18,8 @@ class RuntimeSqliteColumnDefinition {
 
   const RuntimeSqliteColumnDefinition({
     this.association = false,
-    this.columnName,
+    required this.columnName,
     this.iterable = false,
-    this.type,
+    required this.type,
   });
 }
