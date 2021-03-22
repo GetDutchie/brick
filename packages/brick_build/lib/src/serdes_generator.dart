@@ -91,7 +91,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// as a named argument.
   String get serializingFunctionArguments {
     final input = doesDeserialize ? '$deserializeInputType data' : '$className instance';
-    return '$input, {${providerName}Provider provider, ${repositoryName}Repository repository}';
+    return '$input, {required ${providerName}Provider provider, ${repositoryName}Repository? repository}';
   }
 
   /// The generated deserialize function name

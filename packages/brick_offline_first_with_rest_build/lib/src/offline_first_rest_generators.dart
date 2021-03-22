@@ -115,8 +115,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
             final getAssociations = '''($fieldValue ?? []).map((s) => repository
               ?.getAssociation<${SharedChecker.withoutNullability(argType)}>(Query(where: $where))
-              .then((a) => a?.isNotEmpty ?? false ? a!.first : null)
-            )$fromRestCast''';
+              ?.then((a) => a?.isNotEmpty ?? false ? a!.first : null)
+            ).whereType<Future<$argType>>()$fromRestCast''';
 
             if (checker.isArgTypeAFuture) {
               return getAssociations;

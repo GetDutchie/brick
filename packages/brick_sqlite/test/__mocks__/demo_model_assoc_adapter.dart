@@ -86,9 +86,11 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   final String tableName = 'DemoModelAssoc';
 
   @override
-  Future<DemoModelAssoc> fromSqlite(Map<String, dynamic> input, {provider, repository}) async =>
+  Future<DemoModelAssoc> fromSqlite(Map<String, dynamic> input,
+          {required provider, repository}) async =>
       await _$DemoModelAssocFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(DemoModelAssoc input, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(DemoModelAssoc input,
+          {required provider, repository}) async =>
       await _$DemoModelAssocToSqlite(input, provider: provider, repository: repository);
 }

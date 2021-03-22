@@ -147,9 +147,9 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   }
 
   @override
-  Future<DemoModel> fromSqlite(Map<String, dynamic> input, {provider, repository}) async =>
+  Future<DemoModel> fromSqlite(Map<String, dynamic> input, {required provider, repository}) async =>
       await _$DemoModelFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(DemoModel input, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(DemoModel input, {required provider, repository}) async =>
       await _$DemoModelToSqlite(input, provider: provider, repository: repository);
 }

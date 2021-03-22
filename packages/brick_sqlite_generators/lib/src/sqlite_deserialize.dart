@@ -83,10 +83,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           provider
             .rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
             .then((results) {
-              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
+              final ids = results.map((r) => r['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
                 ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
-                ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null))
               );
             })
         ''';
@@ -117,7 +117,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d as int] : null)$castIterable';
+        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)$castIterable';
       }
 
       // Iterable<bool>

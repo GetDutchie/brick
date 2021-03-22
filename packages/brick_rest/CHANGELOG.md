@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0+2
+
+* Require provider in adapter methods `fromRest` and `toRest`
+
 ## 1.0.0+1
 
 * Add static methods `.firstWhereOrNull` and `.enumValueFromName` to `RestAdapter` to support null safe building

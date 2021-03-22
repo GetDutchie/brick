@@ -13,10 +13,14 @@ environment:
 
 dependencies:
   brick_core: ^1.0.0-nullsafety.1
-  brick_offline_first_abstract: ^1.0.0-nullsafety.0
-  brick_rest: ^1.0.0-nullsafety.0
-  brick_sqlite: ^1.0.0-nullsafety.0
-  brick_sqlite_abstract: ^1.0.0-nullsafety.0
+  brick_offline_first_abstract:
+    path: ../brick_offline_first_abstract
+  brick_rest:
+    path: ../brick_rest
+  brick_sqlite:
+    path: ../brick_sqlite
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
   dart_style: ^1.2.4
   http: ^0.13.0
   logging: ^1.0.0

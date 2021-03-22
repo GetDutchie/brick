@@ -12,7 +12,7 @@ class Repository extends OfflineFirstWithRestRepository {
             modelDictionary: restModelDictionary,
           ),
           sqliteProvider: SqliteProvider(
-            "pizzaShoppe.sqlite",
+            'pizzaShoppe.sqlite',
             modelDictionary: sqliteModelDictionary,
           ),
           // as both models store each other as associations, we should

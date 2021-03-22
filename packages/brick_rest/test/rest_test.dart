@@ -167,16 +167,28 @@ void main() {
   });
 
   group('RestAdapter', () {
+    late MockClient client;
+    late RestProvider provider;
+
+    setUp(() {
+      client = MockClient();
+      provider = RestProvider(
+        'http://localhost:3000',
+        modelDictionary: restModelDictionary,
+        client: client,
+      );
+    });
+
     test('#toRest', () async {
       final m = DemoRestModel('Thomas');
-      final payload = await DemoRestModelAdapter().toRest(m);
+      final payload = await DemoRestModelAdapter().toRest(m, provider: provider);
       expect(payload, containsPair('name', 'Thomas'));
     });
 
     test('#fromRest', () async {
       final m = DemoRestModel('Thomas');
-      final payload = await DemoRestModelAdapter().toRest(m);
-      final newModel = await DemoRestModelAdapter().fromRest(payload);
+      final payload = await DemoRestModelAdapter().toRest(m, provider: provider);
+      final newModel = await DemoRestModelAdapter().fromRest(payload, provider: provider);
       expect(newModel.name, 'Thomas');
     });
   });

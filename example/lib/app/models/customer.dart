@@ -26,15 +26,15 @@ import 'package:pizza_shoppe/app/models/pizza.dart';
 )
 class Customer extends OfflineFirstWithRestModel {
   @Sqlite(unique: true)
-  final int id;
+  final int? id;
 
-  final String firstName;
+  final String? firstName;
 
-  final String lastName;
+  final String? lastName;
 
   @OfflineFirst(where: {'id': "data['pizza_ids']"})
   @Rest(name: 'pizza_ids')
-  final List<Pizza> pizzas;
+  final List<Pizza>? pizzas;
 
   Customer({
     this.id,

@@ -177,9 +177,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
 
       // SQFlite returns [{}] when no results are found
-      if (results?.isEmpty == true || (results?.length == 1 && results?.first?.isEmpty == true)) return null;
+      if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) return null;
 
-      return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'];
+      return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;
     }""";
   }
 
@@ -259,7 +259,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
     String joinsLocalColumn, String joinsTable, String siblingAssociations) {
   return '''
-    final ${fieldName}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
+    final ${fieldName}OldColumns = await provider.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
     final ${fieldName}OldIds = ${fieldName}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
     final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));

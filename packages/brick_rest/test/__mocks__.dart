@@ -25,9 +25,10 @@ Future<Map<String, dynamic>> _$DemoRestModelToRest(DemoRestModel instance) async
 /// Construct a [DemoRestModel] for the [RestRepository]
 class DemoRestModelAdapter extends RestAdapter<DemoRestModel> {
   @override
-  Future<DemoRestModel> fromRest(data, {provider, repository}) => _$DemoRestModelFromRest(data);
+  Future<DemoRestModel> fromRest(data, {required provider, repository}) =>
+      _$DemoRestModelFromRest(data);
   @override
-  Future<Map<String, dynamic>> toRest(instance, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toRest(instance, {required provider, repository}) async =>
       await _$DemoRestModelToRest(instance);
   @override
   String restEndpoint({query, instance}) {

@@ -16,132 +16,132 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
   ),
 )
 class KitchenSink extends OfflineFirstWithRestModel {
-  final String anyString;
+  final String? anyString;
 
-  final int anyInt;
+  final int? anyInt;
 
-  final double anyDouble;
+  final double? anyDouble;
 
-  final num anyNum;
+  final num? anyNum;
 
-  final DateTime anyDateTime;
+  final DateTime? anyDateTime;
 
-  final bool anyBool;
+  final bool? anyBool;
 
-  final Map anyMap;
+  final Map? anyMap;
 
-  final AnyEnum enumFromIndex;
+  final AnyEnum? enumFromIndex;
 
-  final List<int> anyList;
+  final List<int>? anyList;
 
-  final Set<int> anySet;
+  final Set<int>? anySet;
 
-  final Mounty offlineFirstModel;
+  final Mounty? offlineFirstModel;
 
-  final List<Mounty> listOfflineFirstModel;
+  final List<Mounty>? listOfflineFirstModel;
 
-  final Set<Mounty> setOfflineFirstModel;
+  final Set<Mounty>? setOfflineFirstModel;
 
-  final Future<Mounty> futureOfflineFirstModel;
+  final Future<Mounty>? futureOfflineFirstModel;
 
-  final List<Future<Mounty>> futureListOfflineFirstModel;
+  final List<Future<Mounty>>? futureListOfflineFirstModel;
 
-  final Set<Future<Mounty>> futureSetOfflineFirstModel;
+  final Set<Future<Mounty>>? futureSetOfflineFirstModel;
 
-  final Hat offlineFirstSerdes;
+  final Hat? offlineFirstSerdes;
 
-  final List<Hat> listOfflineFirstSerdes;
+  final List<Hat>? listOfflineFirstSerdes;
 
-  final Set<Hat> setOfflineFirstSerdes;
+  final Set<Hat>? setOfflineFirstSerdes;
 
   @Rest(name: 'restAnnotationOtherName')
-  final String restAnnotationName;
+  final String? restAnnotationName;
 
   @Rest(defaultValue: '"a default value"')
-  final String restAnnotationDefaultValue;
+  final String? restAnnotationDefaultValue;
 
   @Rest(nullable: true)
-  final String restAnnotationNullable;
+  final String? restAnnotationNullable;
 
   @Rest(ignore: true)
-  final String restAnnotationIgnore;
+  final String? restAnnotationIgnore;
 
   @Rest(ignoreTo: true)
-  final String restAnnotationIgnoreTo;
+  final String? restAnnotationIgnoreTo;
 
   @Rest(ignoreFrom: true)
-  final String restAnnotationIgnoreFrom;
+  final String? restAnnotationIgnoreFrom;
 
   @Rest(fromGenerator: '%DATA_PROPERTY%.toString()')
-  final String restAnnotationFromGenerator;
+  final String? restAnnotationFromGenerator;
 
   @Rest(toGenerator: '%INSTANCE_PROPERTY%.toString()')
-  final String restAnnotationToGenerator;
+  final String? restAnnotationToGenerator;
 
   @Rest(enumAsString: true)
-  final AnyEnum enumFromString;
+  final AnyEnum? enumFromString;
 
   @Sqlite(nullable: true)
-  final String sqliteAnnotationNullable;
+  final String? sqliteAnnotationNullable;
 
   @Sqlite(defaultValue: '"default value"')
-  final String sqliteAnnotationDefaultValue;
+  final String? sqliteAnnotationDefaultValue;
 
   @Sqlite(fromGenerator: '%DATA_PROPERTY%.toString()')
-  final String sqliteAnnotationFromGenerator;
+  final String? sqliteAnnotationFromGenerator;
 
   @Sqlite(toGenerator: '%INSTANCE_PROPERTY%.toString()')
-  final String sqliteAnnotationToGenerator;
+  final String? sqliteAnnotationToGenerator;
 
   @Sqlite(ignore: true)
-  final String sqliteAnnotationIgnore;
+  final String? sqliteAnnotationIgnore;
 
   @Sqlite(unique: true)
-  final String sqliteAnnotationUnique;
+  final String? sqliteAnnotationUnique;
 
   @Sqlite(name: 'custom column name')
-  final String sqliteAnnotationName;
+  final String? sqliteAnnotationName;
 
   @OfflineFirst(where: {'email': "data['mounty_email']"})
-  final Mounty offlineFirstWhere;
+  final Mounty? offlineFirstWhere;
 
   KitchenSink({
-    required this.anyString,
-    required this.anyInt,
-    required this.anyDouble,
-    required this.anyNum,
-    required this.anyDateTime,
-    required this.anyBool,
-    required this.anyMap,
-    required this.enumFromIndex,
-    required this.anyList,
-    required this.anySet,
-    required this.offlineFirstModel,
-    required this.listOfflineFirstModel,
-    required this.setOfflineFirstModel,
-    required this.futureOfflineFirstModel,
-    required this.futureListOfflineFirstModel,
-    required this.futureSetOfflineFirstModel,
-    required this.offlineFirstSerdes,
-    required this.listOfflineFirstSerdes,
-    required this.setOfflineFirstSerdes,
-    required this.restAnnotationName,
-    required this.restAnnotationDefaultValue,
-    required this.restAnnotationNullable,
-    required this.restAnnotationIgnore,
-    required this.restAnnotationIgnoreTo,
-    required this.restAnnotationIgnoreFrom,
-    required this.restAnnotationFromGenerator,
-    required this.restAnnotationToGenerator,
-    required this.enumFromString,
-    required this.sqliteAnnotationNullable,
-    required this.sqliteAnnotationDefaultValue,
-    required this.sqliteAnnotationFromGenerator,
-    required this.sqliteAnnotationToGenerator,
-    required this.sqliteAnnotationIgnore,
-    required this.sqliteAnnotationUnique,
-    required this.sqliteAnnotationName,
-    required this.offlineFirstWhere,
+    this.anyString,
+    this.anyInt,
+    this.anyDouble,
+    this.anyNum,
+    this.anyDateTime,
+    this.anyBool,
+    this.anyMap,
+    this.enumFromIndex,
+    this.anyList,
+    this.anySet,
+    this.offlineFirstModel,
+    this.listOfflineFirstModel,
+    this.setOfflineFirstModel,
+    this.futureOfflineFirstModel,
+    this.futureListOfflineFirstModel,
+    this.futureSetOfflineFirstModel,
+    this.offlineFirstSerdes,
+    this.listOfflineFirstSerdes,
+    this.setOfflineFirstSerdes,
+    this.restAnnotationName,
+    this.restAnnotationDefaultValue,
+    this.restAnnotationNullable,
+    this.restAnnotationIgnore,
+    this.restAnnotationIgnoreTo,
+    this.restAnnotationIgnoreFrom,
+    this.restAnnotationFromGenerator,
+    this.restAnnotationToGenerator,
+    this.enumFromString,
+    this.sqliteAnnotationNullable,
+    this.sqliteAnnotationDefaultValue,
+    this.sqliteAnnotationFromGenerator,
+    this.sqliteAnnotationToGenerator,
+    this.sqliteAnnotationIgnore,
+    this.sqliteAnnotationUnique,
+    this.sqliteAnnotationName,
+    this.offlineFirstWhere,
   });
 }
 

@@ -3,7 +3,7 @@
 part of '../brick.g.dart';
 
 Future<Horse> _$HorseFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Horse(
       name: data['name'] as String,
       mounties: await Future.wait<Mounty>(data['mounties']
@@ -14,7 +14,7 @@ Future<Horse> _$HorseFromRest(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$HorseToRest(Horse instance,
-    {RestProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {
     'name': instance.name,
     'mounties': await Future.wait<Map<String, dynamic>>(instance.mounties
@@ -25,18 +25,18 @@ Future<Map<String, dynamic>> _$HorseToRest(Horse instance,
 }
 
 Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Horse(
       name: data['name'] == null ? null : data['name'] as String,
-      mounties: (await provider?.rawQuery(
+      mounties: (await provider.rawQuery(
               'SELECT DISTINCT `f_Mounty_brick_id` FROM `_brick_Horse_mounties` WHERE l_Horse_brick_id = ?',
-              [data['_brick_id'] as int])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['f_Mounty_brick_id']);
-        return Future.wait<Mounty>(ids.map((primaryKey) => repository
+              [data['_brick_id'] as int]).then((results) {
+        final ids = results.map((r) => r['f_Mounty_brick_id']);
+        return Future.wait<Mounty?>(ids.map((primaryKey) => repository
             ?.getAssociation<Mounty>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
-            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+            ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
       }))
           ?.toList()
           ?.cast<Mounty>())
@@ -44,7 +44,7 @@ Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$HorseToSqlite(Horse instance,
-    {SqliteProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {'name': instance.name};
 }
 
@@ -98,15 +98,15 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   }
 
   @override
-  Future<Horse> fromRest(Map<String, dynamic> input, {provider, repository}) async =>
+  Future<Horse> fromRest(Map<String, dynamic> input, {required provider, repository}) async =>
       await _$HorseFromRest(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(Horse input, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toRest(Horse input, {required provider, repository}) async =>
       await _$HorseToRest(input, provider: provider, repository: repository);
   @override
-  Future<Horse> fromSqlite(Map<String, dynamic> input, {provider, repository}) async =>
+  Future<Horse> fromSqlite(Map<String, dynamic> input, {required provider, repository}) async =>
       await _$HorseFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(Horse input, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(Horse input, {required provider, repository}) async =>
       await _$HorseToSqlite(input, provider: provider, repository: repository);
 }

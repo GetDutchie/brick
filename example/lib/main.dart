@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -57,7 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   return ListView.builder(
                     itemCount: customers?.length ?? 0,
-                    itemBuilder: (ctx, index) => CustomerTile(customers[index]),
+                    itemBuilder: (ctx, index) =>
+                        customers?[index] == null ? Container() : CustomerTile(customers![index]),
                   );
                 },
               ),
@@ -80,15 +81,17 @@ class CustomerTile extends StatelessWidget {
         Text('id: ${customer.id}'),
         Text('name: ${customer.firstName} ${customer.lastName}'),
         Text('pizzas:'),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              for (var pizza in customer.pizzas) Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
-            ],
-          ),
-        )
+        if (customer.pizzas != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                for (var pizza in customer.pizzas!)
+                  Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
+              ],
+            ),
+          )
       ],
     );
   }

@@ -74,7 +74,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
               : null),
       assocs: data['assocs'] == null
           ? null
-          : provider?.rawQuery(
+          : provider.rawQuery(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
               [
                   data['_brick_id'] as int
@@ -87,7 +87,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
                       )
                       ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
             }),
-      futureAssocs: await provider?.rawQuery(
+      futureAssocs: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
           [data['_brick_id'] as int])?.then((results) {
         final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);

@@ -44,9 +44,9 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue?.map((e) => e.toString().split('.').last)?.toList()";
+          return "$fieldValue?.map((e) => e.toString().split('.').last).toList()";
         } else {
-          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e))?.toList()';
+          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
       }
 

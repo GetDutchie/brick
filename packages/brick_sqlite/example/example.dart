@@ -25,13 +25,13 @@ class UserAdapter extends SqliteAdapter<User> {
 
   primaryKeyByUniqueColumns(instance, executor) async => instance.primaryKey;
 
-  fromSqlite(data, {provider, repository}) async {
+  fromSqlite(data, {required provider, repository}) async {
     return User(
       name: data['name'],
     );
   }
 
-  toSqlite(instance, {provider, repository}) async {
+  toSqlite(instance, {required provider, repository}) async {
     return {
       'name': instance.name,
     };
