@@ -154,7 +154,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   @mustCallSuper
   String generateUniqueSqliteFunction(Map<String, String> uniqueFields) {
     final functionDeclaration =
-        '@override\nFuture<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
+        '@override\nFuture<int?> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
     final whereStatement = <String>[];
     final valuesStatement = <String>[];
     final selectStatement = <String>[];
@@ -166,7 +166,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     if (selectStatement.isEmpty && whereStatement.isEmpty) {
-      return '$functionDeclaration => instance?.primaryKey;';
+      return '$functionDeclaration => instance.primaryKey;';
     }
 
     return """$functionDeclaration {
@@ -209,13 +209,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
-        '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
+        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>((await s), repository: repository)';
 
     // Iterable<SqliteModel>
     if (!checker.isArgTypeAFuture) {
       siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       upsertMethod =
-          's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
+          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${checker.unFuturedArgType}>(s, repository: repository)';
     }
 
     final removeStaleAssociations = field.isPublic && !field.isFinal
@@ -226,7 +226,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
         $removeStaleAssociations
-        await Future.wait<int>($siblingAssociations?.map((s) async {
+        await Future.wait<int?>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
           return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
         }) ?? []);

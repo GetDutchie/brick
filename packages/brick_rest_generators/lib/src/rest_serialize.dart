@@ -56,7 +56,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         return '''await Future.wait<Map<String, dynamic>>(
           $fieldValue?.map((s) $awaited =>
             ${checker.unFuturedArgType}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
-          )?.toList() ?? []
+          ).toList() ?? []
         )''';
       }
 

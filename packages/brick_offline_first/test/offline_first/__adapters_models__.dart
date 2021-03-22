@@ -60,9 +60,9 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
   @override
-  final String fromKey = null;
+  final String? fromKey = null;
   @override
-  final String toKey = null;
+  final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
@@ -149,9 +149,9 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   String restEndpoint({query, instance}) => '';
   @override
-  final String fromKey = null;
+  final String? fromKey = null;
   @override
-  final String toKey = null;
+  final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(

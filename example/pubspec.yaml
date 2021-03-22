@@ -4,7 +4,7 @@ description: A new Flutter project.
 version: 0.1.0
 
 environment:
-  sdk: ">=2.4.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   brick_offline_first:
@@ -14,8 +14,8 @@ dependencies:
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
-  brick_offline_first_with_rest_build:
-    path: ../packages/brick_offline_first_with_rest_build
+  # brick_offline_first_with_rest_build:
+  #   path: ../packages/brick_offline_first_with_rest_build
   build_runner: any
   shelf: any
 
