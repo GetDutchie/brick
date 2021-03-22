@@ -34,7 +34,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where.entries.first;
         final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-        return '$instanceWithField?.map((s) $awaited.${pair.key})?.toList()';
+        return '$instanceWithField?.map((s) $awaited.${pair.key}).toList()';
       }
 
       // Iterable<OfflineFirstSerdes>
@@ -113,7 +113,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
                 _convertSqliteLookupToString(offlineFirstAnnotation.where, iterableArgument: 's');
             final getAssociations = '''($fieldValue ?? []).map((s) => repository
               ?.getAssociation<$argType>(Query(where: $where))
-              ?.then((a) => a?.isNotEmpty == true ? a.first : null)
+              .then((a) => a?.isNotEmpty ?? false ? a!.first : null)
             )$fromRestCast''';
 
             if (checker.isArgTypeAFuture) {

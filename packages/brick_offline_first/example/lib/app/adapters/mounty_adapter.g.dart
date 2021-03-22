@@ -67,14 +67,19 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   @override
   Future<int?> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
+  @override
   final String tableName = 'Mounty';
 
+  @override
   Future<Mounty> fromRest(Map<String, dynamic> input, {provider, repository}) async =>
       await _$MountyFromRest(input, provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(Mounty input, {provider, repository}) async =>
       await _$MountyToRest(input, provider: provider, repository: repository);
+  @override
   Future<Mounty> fromSqlite(Map<String, dynamic> input, {provider, repository}) async =>
       await _$MountyFromSqlite(input, provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(Mounty input, {provider, repository}) async =>
       await _$MountyToSqlite(input, provider: provider, repository: repository);
 }

@@ -81,8 +81,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
             'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
         final method = '''
           provider
-            ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
-            ?.then((results) {
+            .rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
+            .then((results) {
               final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
                 ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)

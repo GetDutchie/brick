@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
-import '../lib/rest_to_offline_first_converter.dart';
+import 'package:brick_offline_first/rest_to_offline_first_converter.dart';
 
 class MockClient extends Mock implements http.Client {}
 

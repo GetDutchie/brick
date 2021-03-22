@@ -289,9 +289,13 @@ Future<Map<String, dynamic>> _$KitchenSinkToSqlite(KitchenSink instance,
 class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
   KitchenSinkAdapter();
 
-  String restEndpoint({query, instance}) => "/my-path";
-  final String fromKey = 'kitchen_sinks';
+  @override
+  String? restEndpoint({query, instance}) => '/my-path';
+  @override
+  final String? fromKey = 'kitchen_sinks';
+  @override
   final String toKey = 'kitchen_sink';
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -510,7 +514,9 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
       type: Mounty,
     )
   };
-  Future<int> primaryKeyByUniqueColumns(KitchenSink instance, DatabaseExecutor executor) async {
+  
+  @override
+  Future<int?> primaryKeyByUniqueColumns(KitchenSink instance, DatabaseExecutor executor) async {
     final results = await executor.rawQuery('''
         SELECT * FROM `KitchenSink` WHERE sqlite_annotation_unique = ? LIMIT 1''',
         [instance.sqliteAnnotationUnique]);

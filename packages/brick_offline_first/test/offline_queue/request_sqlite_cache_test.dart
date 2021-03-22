@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
-import '../../lib/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

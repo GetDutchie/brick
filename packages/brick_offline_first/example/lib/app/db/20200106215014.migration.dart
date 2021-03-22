@@ -10,17 +10,17 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_20200106215014_up = [
-  InsertTable("Mounty"),
-  InsertColumn("name", Column.varchar, onTable: "Mounty"),
-  InsertColumn("email", Column.varchar, onTable: "Mounty"),
-  InsertColumn("hat", Column.varchar, onTable: "Mounty")
+  InsertTable('Mounty'),
+  InsertColumn('name', Column.varchar, onTable: 'Mounty'),
+  InsertColumn('email', Column.varchar, onTable: 'Mounty'),
+  InsertColumn('hat', Column.varchar, onTable: 'Mounty')
 ];
 
 const List<MigrationCommand> _migration_20200106215014_down = [
-  DropTable("Mounty"),
-  DropColumn("name", onTable: "Mounty"),
-  DropColumn("email", onTable: "Mounty"),
-  DropColumn("hat", onTable: "Mounty")
+  DropTable('Mounty'),
+  DropColumn('name', onTable: 'Mounty'),
+  DropColumn('email', onTable: 'Mounty'),
+  DropColumn('hat', onTable: 'Mounty')
 ];
 
 //

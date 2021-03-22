@@ -8,15 +8,15 @@ import '__helpers__.dart';
 void main() {
   final offlineClient = OfflineQueueHttpClient(MockClient(), RequestSqliteCacheManager('db'));
 
-  group("OfflineRequestQueue", () {
-    test("#start", () {
+  group('OfflineRequestQueue', () {
+    test('#start', () {
       final queue = OfflineRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
 
-    test("#stop", () {
+    test('#stop', () {
       final queue = OfflineRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);

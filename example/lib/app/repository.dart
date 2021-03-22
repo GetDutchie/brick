@@ -21,9 +21,9 @@ class Repository extends OfflineFirstWithRestRepository {
           migrations: migrations,
         );
 
-  factory Repository() => _singleton ?? Exception("Must call #configure first");
+  factory Repository() => _singleton;
 
-  static Repository _singleton;
+  static Repository? _singleton;
 
   static void configure(String endpoint) {
     _singleton = Repository._(endpoint);
