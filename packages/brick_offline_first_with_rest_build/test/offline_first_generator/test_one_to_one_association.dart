@@ -85,10 +85,10 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToSqlite(
     OfflineFirstRepository repository}) async {
   return {
     'assoc_SqliteAssoc_brick_id': instance.assoc?.primaryKey ??
-        await provider?.upsert<SqliteAssoc>(instance.assoc,
+        await provider.upsert<SqliteAssoc>(instance.assoc,
             repository: repository),
     'assoc2_SqliteAssoc_brick_id': instance.assoc2?.primaryKey ??
-        await provider?.upsert<SqliteAssoc>(instance.assoc2,
+        await provider.upsert<SqliteAssoc>(instance.assoc2,
             repository: repository)
   };
 }

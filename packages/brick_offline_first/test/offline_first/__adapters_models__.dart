@@ -182,10 +182,10 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   final String tableName = 'Horse';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.mounties?.map((s) async {
-            final id = s.primaryKey ?? await provider?.upsert<Mounty>(s, repository: repository);
+            final id = s.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);

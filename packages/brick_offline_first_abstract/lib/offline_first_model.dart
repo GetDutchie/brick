@@ -13,10 +13,15 @@ abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestMode
 class Impl extends OfflineFirstWithRestModel {}
 
 class Repo extends ModelRepository<OfflineFirstWithRestModel> {
-  delete<_Model extends OfflineFirstWithRestModel>(instance, {Query? query}) => null;
-  get<_Model extends OfflineFirstWithRestModel>({Query? query}) => null;
-  upsert<_Model extends OfflineFirstWithRestModel>(instance, {Query? query}) => null;
+  @override
+  bool? delete<_Model extends OfflineFirstWithRestModel>(instance, {Query? query}) => null;
+  @override
+  List<_Model>? get<_Model extends OfflineFirstWithRestModel>({Query? query}) => null;
+  @override
+  _Model? upsert<_Model extends OfflineFirstWithRestModel>(instance, {Query? query}) => null;
 }
 
+final r = Repo();
+
 final i = Impl();
-final t = i as RestModel;
+final t = i as ModelRepository<SqliteModel>;

@@ -42,7 +42,7 @@ Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
   return {
     'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
         (instance.assoc != null
-            ? await provider?.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
+            ? await provider.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
             : null),
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
@@ -120,7 +120,7 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   @override
   final String tableName = 'DemoModel';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       final oldColumns = await provider?.rawQuery(
           'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
@@ -137,7 +137,7 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
 
       await Future.wait<int?>(instance.manyAssoc?.map((s) async {
             final id =
-                s.primaryKey ?? await provider?.upsert<DemoModelAssoc>(s, repository: repository);
+                s.primaryKey ?? await provider.upsert<DemoModelAssoc>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_DemoModel_many_assoc` (`l_DemoModel_brick_id`, `f_DemoModelAssoc_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);

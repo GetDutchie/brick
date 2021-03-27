@@ -65,7 +65,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       primaryKeyByUniqueColumns,
       "@override\nfinal String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)
-        "@override\nFuture<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
+        "@override\nFuture<void> afterSave(instance, {required provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
     ];
   }
 
@@ -136,7 +136,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
+      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
 
       // enum
     } else if (checker.isEnum) {
@@ -210,13 +210,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
-        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
+        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
 
     // Iterable<SqliteModel>
     if (!checker.isArgTypeAFuture) {
       siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       upsertMethod =
-          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
+          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
     }
 
     final removeStaleAssociations = field.isPublic && !field.isFinal

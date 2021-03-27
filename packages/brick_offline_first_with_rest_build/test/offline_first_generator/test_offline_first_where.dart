@@ -112,10 +112,10 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
     OfflineFirstRepository repository}) async {
   return {
     'assoc_OtherAssoc_brick_id': (await instance.assoc)?.primaryKey ??
-        await provider?.upsert<OtherAssoc>((await instance.assoc),
+        await provider.upsert<OtherAssoc>((await instance.assoc),
             repository: repository),
     'loaded_assoc_Assoc_brick_id': instance.loadedAssoc?.primaryKey ??
-        await provider?.upsert<Assoc>(instance.loadedAssoc,
+        await provider.upsert<Assoc>(instance.loadedAssoc,
             repository: repository)
   };
 }
@@ -176,11 +176,11 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   @override
   final String tableName = 'OfflineFirstWhere';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.assocs?.map((s) async {
             final id = (await s)?.primaryKey ??
-                await provider?.upsert<Assoc>((await s),
+                await provider.upsert<Assoc>((await s),
                     repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
@@ -192,7 +192,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.loadedAssocs?.map((s) async {
             final id = s?.primaryKey ??
-                await provider?.upsert<Assoc>(s, repository: repository);
+                await provider.upsert<Assoc>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_loaded_assocs` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -204,7 +204,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       await Future.wait<int>(
           instance.multiLookupCustomGenerator?.map((s) async {
                 final id = (await s)?.primaryKey ??
-                    await provider?.upsert<Assoc>((await s),
+                    await provider.upsert<Assoc>((await s),
                         repository: repository);
                 return await provider?.rawInsert(
                     'INSERT OR IGNORE INTO `_brick_OfflineFirstWhere_multi_lookup_custom_generator` (`l_OfflineFirstWhere_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',

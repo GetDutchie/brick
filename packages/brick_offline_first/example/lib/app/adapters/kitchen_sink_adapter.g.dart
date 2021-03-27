@@ -253,10 +253,10 @@ Future<Map<String, dynamic>> _$KitchenSinkToSqlite(KitchenSink instance,
     'any_list': jsonEncode(instance.anyList ?? []),
     'any_set': jsonEncode(instance.anySet?.toList() ?? []),
     'offline_first_model_Mounty_brick_id': instance.offlineFirstModel?.primaryKey ??
-        await provider?.upsert<Mounty>(instance.offlineFirstModel, repository: repository),
+        await provider.upsert<Mounty>(instance.offlineFirstModel, repository: repository),
     'future_offline_first_model_Mounty_brick_id':
         (await instance.futureOfflineFirstModel)?.primaryKey ??
-            await provider?.upsert<Mounty>((await instance.futureOfflineFirstModel),
+            await provider.upsert<Mounty>((await instance.futureOfflineFirstModel),
                 repository: repository),
     'offline_first_serdes': instance.offlineFirstSerdes?.toSqlite(),
     'list_offline_first_serdes': jsonEncode(
@@ -281,7 +281,7 @@ Future<Map<String, dynamic>> _$KitchenSinkToSqlite(KitchenSink instance,
     'sqlite_annotation_unique': instance.sqliteAnnotationUnique,
     'custom column name': instance.sqliteAnnotationName,
     'offline_first_where_Mounty_brick_id': instance.offlineFirstWhere?.primaryKey ??
-        await provider?.upsert<Mounty>(instance.offlineFirstWhere, repository: repository)
+        await provider.upsert<Mounty>(instance.offlineFirstWhere, repository: repository)
   };
 }
 
@@ -530,10 +530,10 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
   @override
   final String tableName = 'KitchenSink';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.listOfflineFirstModel?.map((s) async {
-            final id = s.primaryKey ?? await provider?.upsert<Mounty>(s, repository: repository);
+            final id = s.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_KitchenSink_list_offline_first_model` (`l_KitchenSink_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -543,7 +543,7 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
 
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.setOfflineFirstModel?.map((s) async {
-            final id = s.primaryKey ?? await provider?.upsert<Mounty>(s, repository: repository);
+            final id = s.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_KitchenSink_set_offline_first_model` (`l_KitchenSink_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -554,7 +554,7 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.futureListOfflineFirstModel?.map((s) async {
             final id = (await s).primaryKey ??
-                await provider?.upsert<Mounty>((await s), repository: repository);
+                await provider.upsert<Mounty>((await s), repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_KitchenSink_future_list_offline_first_model` (`l_KitchenSink_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -565,7 +565,7 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.futureSetOfflineFirstModel?.map((s) async {
             final id = (await s).primaryKey ??
-                await provider?.upsert<Mounty>((await s), repository: repository);
+                await provider.upsert<Mounty>((await s), repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_KitchenSink_future_set_offline_first_model` (`l_KitchenSink_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -583,7 +583,7 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
   @override
   Future<KitchenSink> fromSqlite(Map<String, dynamic> input,
           {required provider, repository}) async =>
-      await _$KitchenSinkFromSqlite(input, provider: provider, repository: repository as OfflineFirstWithRestRepository);
+      await _$KitchenSinkFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(KitchenSink input, {required provider, repository}) async =>
       await _$KitchenSinkToSqlite(input, provider: provider, repository: repository);

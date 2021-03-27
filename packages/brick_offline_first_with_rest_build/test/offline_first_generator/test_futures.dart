@@ -108,7 +108,7 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
     'future_strings':
         jsonEncode(await Future.wait<String>(instance.futureStrings) ?? []),
     'assoc_Assoc_brick_id': (await instance.assoc)?.primaryKey ??
-        await provider?.upsert<Assoc>((await instance.assoc),
+        await provider.upsert<Assoc>((await instance.assoc),
             repository: repository)
   };
 }
@@ -175,11 +175,11 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   @override
   final String tableName = 'Futures';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       await Future.wait<int>(instance.futureAssocs?.map((s) async {
             final id = (await s)?.primaryKey ??
-                await provider?.upsert<Assoc>((await s),
+                await provider.upsert<Assoc>((await s),
                     repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Futures_future_assocs` (`l_Futures_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',

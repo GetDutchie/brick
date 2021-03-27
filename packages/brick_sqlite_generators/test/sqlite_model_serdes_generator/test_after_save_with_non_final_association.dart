@@ -60,7 +60,7 @@ class AfterSaveWithAssociationAdapter
   @override
   final String tableName = 'AfterSaveWithAssociation';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       final someFieldOldColumns = await provider?.rawQuery(
           'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
@@ -82,7 +82,7 @@ class AfterSaveWithAssociationAdapter
 
       await Future.wait<int>(instance.someField?.map((s) async {
             final id = s?.primaryKey ??
-                await provider?.upsert<Assoc>(s, repository: repository);
+                await provider.upsert<Assoc>(s, repository: repository);
             return await provider?.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_some_field` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
