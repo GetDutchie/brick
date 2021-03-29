@@ -103,7 +103,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
+        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)).toList().cast<int>() ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,

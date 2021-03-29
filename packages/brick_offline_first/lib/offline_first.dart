@@ -109,6 +109,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       logger.warning('#delete socket failure: $e');
     }
 
+    // ignore: unawaited_futures
     if (autoHydrate) hydrate<_Model>(query: query);
 
     return rowsDeleted > 0;
@@ -167,6 +168,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       return await hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
     } else if (alwaysHydrate) {
       // start round trip for fresh data
+      // ignore: unawaited_futures
       hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
     }
 
@@ -285,6 +287,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       logger.warning('#upsert socket failure: $e');
     }
 
+    // ignore: unawaited_futures
     if (autoHydrate) hydrate<_Model>(query: query);
 
     return instance;

@@ -23,11 +23,11 @@ class Mounty extends OfflineFirstWithRestModel {
 class Horse extends OfflineFirstWithRestModel {
   final String? name;
 
-  final List<Mounty>? mounties;
+  final List<Mounty?> mounties;
 
   Horse({
     this.name,
-    this.mounties,
+    this.mounties = const <Mounty>[],
   });
 }
 
@@ -116,7 +116,7 @@ Future<Map<String, dynamic>> _$HorseToRest(Horse instance,
   return {
     'name': instance.name,
     'mounties': await Future.wait<Map<String, dynamic>>(instance.mounties
-            ?.map((s) => MountyAdapter().toRest(s, provider: provider, repository: repository))
+            .map((s) => MountyAdapter().toRest(s, provider: provider, repository: repository))
             .toList() ??
         [])
   };
@@ -136,13 +136,13 @@ Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
             )
             ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
       }))
-          ?.toList()
-          ?.cast<Mounty>())
+          .toList()
+          .cast<Mounty>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$HorseToSqlite(Horse instance,
-    {SqliteProvider? provider, OfflineFirstWithRestRepository? repository}) async {
+    {SqliteProvider? provider, OfflineFirstRepository<SqliteModel>? repository}) async {
   return {'name': instance.name};
 }
 
@@ -184,13 +184,12 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
-      await Future.wait<int?>(instance.mounties?.map((s) async {
-            final id = s.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
-            return await provider?.rawInsert(
-                'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id]);
-          }) ??
-          []);
+      await Future.wait<int?>(instance.mounties.map((s) async {
+        final id = s?.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
+        return await provider.rawInsert(
+            'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
     }
   }
 

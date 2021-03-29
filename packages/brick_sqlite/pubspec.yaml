@@ -11,7 +11,8 @@ environment:
   flutter: ">=1.9.1 <2.0.0"
 
 dependencies:
-  brick_core: ^1.0.0
+  brick_core:
+    path: ../brick_core
   brick_sqlite_abstract:
     path: ../brick_sqlite_abstract
   logging: ^1.0.0

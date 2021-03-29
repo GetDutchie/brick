@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_core/core.dart';
@@ -336,12 +337,13 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     bool isList = false,
     bool isFuture = false,
   }) {
+    final nullableSuffix = argType.nullabilitySuffix == NullabilitySuffix.question ? '?' : '';
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';
       final castType = isFuture ? 'Future<$argType>' : argType;
-      return '?.to$method()?.cast<$castType>()';
+      return '$nullableSuffix.to$method().cast<$castType>()';
     }
 
-    return '?.cast<$argType>()';
+    return '$nullableSuffix.cast<$argType>()';
   }
 }

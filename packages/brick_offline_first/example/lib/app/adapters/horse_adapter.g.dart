@@ -38,8 +38,8 @@ Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
             )
             ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
       }))
-          ?.toList()
-          ?.cast<Mounty>())
+          .toList()
+          .cast<Mounty>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -89,7 +89,7 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(instance.mounties?.map((s) async {
             final id = s.primaryKey ?? await provider.upsert<Mounty>(s, repository: repository);
-            return await provider?.rawInsert(
+            return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
           }) ??

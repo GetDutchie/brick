@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
@@ -66,8 +67,14 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
+      final isNullableField = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question;
+      final wrappedFieldWithSuffix = isNullableField ? '$wrappedField!' : wrappedField;
 
-      return 'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
+      final result =
+          'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedFieldWithSuffix, provider: provider, repository: repository)';
+      if (isNullableField) return '$wrappedField != null ? $result : null';
+
+      return result;
 
       // enum
     } else if (checker.isEnum) {

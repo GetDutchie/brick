@@ -12,7 +12,8 @@ environment:
   flutter: '>=1.8.0 <2.0.0'
 
 dependencies:
-  brick_core: ^1.0.0-nullsafety.1
+  brick_core:
+    path: ../brick_core
   brick_offline_first_abstract:
     path: ../brick_offline_first_abstract
   brick_rest:
@@ -21,7 +22,7 @@ dependencies:
     path: ../brick_sqlite
   brick_sqlite_abstract:
     path: ../brick_sqlite_abstract
-  dart_style: ^1.2.4
+  dart_style: ^2.0.0
   http: ^0.13.0
   logging: ^1.0.0
   meta: ^1.3.0

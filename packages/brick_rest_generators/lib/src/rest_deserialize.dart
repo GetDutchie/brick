@@ -39,7 +39,7 @@ class RestDeserialize extends RestSerdesGenerator {
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
+      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String?)';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
@@ -72,7 +72,7 @@ class RestDeserialize extends RestSerdesGenerator {
         }
 
         if (checker.isSet) {
-          return '($deserializeMethod$defaultValue)?.toSet()';
+          return '($deserializeMethod$defaultValue).toSet()';
         }
 
         return '$deserializeMethod$defaultValue';
