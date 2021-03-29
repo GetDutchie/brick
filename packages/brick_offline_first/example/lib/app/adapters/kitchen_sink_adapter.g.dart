@@ -575,16 +575,16 @@ class KitchenSinkAdapter extends OfflineFirstWithRestAdapter<KitchenSink> {
   }
 
   @override
-  Future<KitchenSink> fromRest(Map<String, dynamic> input, {required provider, repository}) async =>
+  Future<KitchenSink> fromRest(Map<String, dynamic> input, {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$KitchenSinkFromRest(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(KitchenSink input, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toRest(KitchenSink input, {required provider, covariant OfflineFirstWithRestRepository?repository}) async =>
       await _$KitchenSinkToRest(input, provider: provider, repository: repository);
   @override
   Future<KitchenSink> fromSqlite(Map<String, dynamic> input,
-          {required provider, repository}) async =>
+          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$KitchenSinkFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(KitchenSink input, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(KitchenSink input, {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$KitchenSinkToSqlite(input, provider: provider, repository: repository);
 }

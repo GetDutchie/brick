@@ -23,7 +23,7 @@ class Repository extends OfflineFirstWithRestRepository {
 
   factory Repository() => _singleton;
 
-  static Repository? _singleton;
+  static Repository _singleton = Repository._('');
 
   static void configure(String endpoint) {
     _singleton = Repository._(endpoint);

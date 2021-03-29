@@ -22,7 +22,8 @@ class AdapterGenerator {
     return generators.fold<Set<String>>(<String>{}, (acc, generator) {
       final expectedOutput = 'Future<${generator.adapterMethodOutputType}>';
       final methodAction = generator.doesDeserialize ? 'from' : 'to';
-      final methodArguments = '${generator.adapterMethodInputType} input, {provider, repository}';
+      final methodArguments =
+          '${generator.adapterMethodInputType} input, {required provider, covariant ${superAdapterName}Repository? repository}';
       final methodName = '$methodAction${generator.providerName}($methodArguments)';
 
       acc.add('@override\n$expectedOutput $methodName async => ${generator.adapterMethod};');
