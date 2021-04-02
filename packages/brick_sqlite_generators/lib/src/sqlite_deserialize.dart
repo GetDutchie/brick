@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
@@ -79,14 +80,14 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final argTypeAsString = SharedChecker.withoutNullability(argType);
         final sqlStatement =
             'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
+
         final method = '''
           provider
             .rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
             .then((results) {
               final ids = results.map((r) => r['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
-                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
-                ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null))
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${SerdesGenerator.getAssociationMethod(argType, query: query)})
               );
             })
         ''';
@@ -130,18 +131,21 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
+      final isNullable = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question;
+      final repositoryOperator = isNullable ? '?' : '!';
+
       final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', $fieldValue as int, limit1: true),
       ''';
 
       if (wrappedInFuture) {
         return '''($fieldValue > -1
-            ? repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}}>($query)?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
+            ? ${SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query)}
             : null)''';
       }
 
       return '''($fieldValue > -1
-            ? (await repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
+            ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
             : null)''';
 
       // enum

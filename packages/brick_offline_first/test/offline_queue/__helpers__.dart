@@ -10,9 +10,9 @@ class MockClient extends Mock implements http.Client {}
 MockClient stubResult({String response = 'response', int? statusCode, String? requestBody}) {
   final inner = MockClient();
 
-  when(inner.send(any)).thenAnswer((_) {
-    return Future.value(_buildStreamedResponse(response, statusCode, requestBody));
-  });
+  // when(inner.send(any)).thenAnswer((_) {
+  //   return Future.value(_buildStreamedResponse(response, statusCode, requestBody));
+  // });
 
   return inner;
 }

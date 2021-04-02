@@ -4,19 +4,19 @@ import 'package:pizza_shoppe/app/models/pizza.dart';
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: r'''{
-    if (query.action == QueryAction.upsert) {
+    if (query?.action == QueryAction.upsert) {
       return "/customers";
     }
 
-    if (query.action == QueryAction.get && query?.where != null) {
-      final byId = Where.firstByField('id', query.where);
+    if (query?.action == QueryAction.get && query?.where != null) {
+      final byId = Where.firstByField('id', query?.where);
       // member endpoint
-      if (byId.value != null) {
-        return "/customer/${byId.value}";
+      if (byId?.value != null) {
+        return "/customer/${byId!.value}";
       }
     }
 
-    if (query.action == QueryAction.get) {
+    if (query?.action == QueryAction.get) {
       return "/customers";
     }
 

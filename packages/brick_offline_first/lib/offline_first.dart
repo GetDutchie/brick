@@ -179,7 +179,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   }
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
-  Future<List<_Model>?>? getAssociation<_Model extends _RepositoryModel>(Query query) async {
+  Future<List<_Model>?> getAssociation<_Model extends _RepositoryModel>(Query query) async {
     logger.finest('#getAssociation: $_Model $query');
     final results = await get<_Model>(query: query, alwaysHydrate: false);
     if (results.isEmpty) return null;

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
@@ -98,6 +99,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
+        final isNullable = argType.nullabilitySuffix == NullabilitySuffix.question;
+        final repositoryOperator = isNullable ? '?' : '!';
+
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {
           final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
@@ -105,7 +109,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
           // Future<Iterable<OfflineFirstModel>>
           if (wrappedInFuture) {
             return '''repository
-              ?.getAssociation<${SharedChecker.withoutNullability(argType)}>(Query(where: $where))''';
+              $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>(Query(where: $where))''';
 
             // Iterable<OfflineFirstModel>
           } else {
@@ -113,9 +117,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
                 isSet: checker.isSet, isList: checker.isList, isFuture: true);
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
-            final getAssociations = '''($fieldValue ?? []).map((s) => repository
-              ?.getAssociation<${SharedChecker.withoutNullability(argType)}>(Query(where: $where))
-              ?.then((a) => a?.isNotEmpty ?? false ? a!.first : null)
+            final getAssociationText =
+                SerdesGenerator.getAssociationMethod(argType, query: 'Query(where: $where)');
+            final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
             ).whereType<Future<$argType>>()$fromRestCast''';
 
             if (checker.isArgTypeAFuture) {
@@ -149,8 +153,10 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (offlineFirstAnnotation.where != null) {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
-        return '''${shouldAwait}repository
-          ?.getAssociation<${SharedChecker.withoutNullability(type)}>(Query(where: $where, providerArgs: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null)''';
+        final getAssociationStatement = SerdesGenerator.getAssociationMethod(type,
+            query: "Query(where: $where, providerArgs: {'limit': 1})");
+
+        return '$shouldAwait$getAssociationStatement';
       }
     }
 

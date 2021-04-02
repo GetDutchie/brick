@@ -45,7 +45,7 @@ class AggregateBuilder implements Builder {
         final contents = await buildStep.readAsString(input);
         imports.addAll(findAllImports(contents));
         final newContents =
-            contents.replaceAll(importRegex, '').replaceAll("part of 'schema.g.dart';", '');
+            contents.replaceAll(importRegex, '').replaceAll(RegExp(r"part of '.*';"), '');
         files.add(newContents);
       }
     }

@@ -346,4 +346,18 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
     return '$nullableSuffix.cast<$argType>()';
   }
+
+  static String getAssociationMethod(
+    DartType argType, {
+    required String query,
+  }) {
+    final isNullable = argType.nullabilitySuffix == NullabilitySuffix.question;
+    final repositoryOperator = isNullable ? '?' : '!';
+    final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
+
+    return '''repository
+      $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>($query)
+      .then((r) => $thenStatement)
+    ''';
+  }
 }

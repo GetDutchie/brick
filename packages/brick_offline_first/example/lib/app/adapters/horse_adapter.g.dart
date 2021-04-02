@@ -26,20 +26,7 @@ Future<Map<String, dynamic>> _$HorseToRest(Horse instance,
 
 Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
-  return Horse(
-      name: data['name'] == null ? null : data['name'] as String,
-      mounties: (await provider.rawQuery(
-              'SELECT DISTINCT `f_Mounty_brick_id` FROM `_brick_Horse_mounties` WHERE l_Horse_brick_id = ?',
-              [data['_brick_id'] as int]).then((results) {
-        final ids = results.map((r) => r['f_Mounty_brick_id']);
-        return Future.wait<Mounty?>(ids.map((primaryKey) => repository
-            ?.getAssociation<Mounty>(
-              Query.where('primaryKey', primaryKey, limit1: true),
-            )
-            ?.then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
-      }))
-          .toList()
-          .cast<Mounty>())
+  return Horse(name: data['name'] == null ? null : data['name'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 

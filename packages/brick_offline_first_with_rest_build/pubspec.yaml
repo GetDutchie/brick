@@ -11,14 +11,20 @@ environment:
 
 dependencies:
   analyzer: ^1.2.0
-  brick_offline_first_abstract: ^1.0.0
-  brick_build: ^1.0.0-nullsafety.5
-  brick_rest: ^1.0.0
-  brick_rest_generators: ^1.0.0-nullsafety.0
-  brick_sqlite_abstract: ^1.0.0
-  brick_sqlite_generators: ^1.0.0-nullsafety.0
+  brick_offline_first_abstract:
+    path: ../brick_offline_first_abstract
+  brick_build:
+    path: ../brick_build
+  brick_rest:
+    path: ../brick_rest
+  brick_rest_generators:
+    path: ../brick_rest_generators
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
+  brick_sqlite_generators:
+    path: ../brick_sqlite_generators
   build: ^2.0.0
-  build_config: ^0.4.0
+  build_config: any
   dart_style: ^2.0.0
   glob: ^2.0.0
   logging: ^1.0.0

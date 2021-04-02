@@ -11,8 +11,10 @@ environment:
 
 dependencies:
   analyzer: ^1.2.0
-  brick_rest: ^1.0.0
-  brick_build: ^1.0.0-nullsafety.5
+  brick_rest:
+    path: ../brick_rest
+  brick_build:
+    path: ../brick_build
   build: ^2.0.0
   dart_style: ^2.0.0
   source_gen: ^1.0.0

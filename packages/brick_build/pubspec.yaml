@@ -11,7 +11,8 @@ environment:
 
 dependencies:
   analyzer: ^1.2.0
-  brick_core: ^1.0.0
+  brick_core:
+    path: ../brick_core
   build: ^2.0.0
   build_config: ^0.4.0
   dart_style: ^2.0.0

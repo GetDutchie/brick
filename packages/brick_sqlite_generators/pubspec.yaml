@@ -11,8 +11,10 @@ environment:
 
 dependencies:
   analyzer: ^1.1.0
-  brick_build: ^1.0.0-nullsafety.5
-  brick_sqlite_abstract: ^1.0.0
+  brick_build:
+    path: ../brick_build
+  brick_sqlite_abstract:
+    path: ../brick_sqlite_abstract
   build: ^2.0.0
   dart_style: ^2.0.0
   meta: ^1.3.0

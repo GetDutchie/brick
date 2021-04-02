@@ -4,19 +4,19 @@ import 'package:brick_offline_first/offline_first.dart';
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     endpoint: r'''{
-    if (query.action == QueryAction.upsert) {
+    if (query?.action == QueryAction.upsert) {
       return "/pizzas";
     }
 
-    if (query.action == QueryAction.get && query?.where != null) {
-      final byId = Where.firstByField('id', query.where);
+    if (query?.action == QueryAction.get && query?.where != null) {
+      final byId = Where.firstByField('id', query!.where);
       // member endpoint
-      if (byId.value != null) {
-        return "/pizza/${byId.value}";
+      if (byId?.value != null) {
+        return "/pizza/${byId!.value}";
       }
     }
 
-    if (query.action == QueryAction.get) {
+    if (query?.action == QueryAction.get) {
       return "/pizzas";
     }
 

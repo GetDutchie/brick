@@ -229,7 +229,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         $removeStaleAssociations
         await Future.wait<int?>($siblingAssociations?.map((s) async {
           final id = $upsertMethod;
-          return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
+          return await provider.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
         }) ?? []);
       }
     ''';
@@ -247,12 +247,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   String _boolForField(String fieldValue, bool nullable) {
-    final convertToInt = '$fieldValue ? 1 : 0';
     if (nullable) {
-      return '$fieldValue == null ? null : ($convertToInt)';
+      return '$fieldValue == null ? null : ($fieldValue! ? 1 : 0)';
     }
 
-    return convertToInt;
+    return '$fieldValue ?? false ? 1 : 0';
   }
 }
 
