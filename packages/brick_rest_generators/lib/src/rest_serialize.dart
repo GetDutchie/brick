@@ -79,9 +79,9 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue?.toString()?.split('.')?.last";
+        return "$fieldValue?.toString().split('.').last";
       } else {
-        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue) : null';
+        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }
     }
 

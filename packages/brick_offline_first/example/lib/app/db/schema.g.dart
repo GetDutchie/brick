@@ -19,7 +19,8 @@ final Set<Migration> migrations = <Migration>{
 };
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(20210111041540, generatorVersion: 1, tables: <SchemaTable>{
+final schema =
+    Schema(20210111041540, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('_brick_Horse_mounties', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
@@ -34,77 +35,94 @@ final schema = Schema(20210111041540, generatorVersion: 1, tables: <SchemaTable>
         onDeleteCascade: true,
         onDeleteSetDefault: false)
   }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'], unique: true)
+    SchemaIndex(
+        columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'], unique: true)
   }),
   SchemaTable('Horse', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
     SchemaColumn('name', Column.varchar)
   }, indices: <SchemaIndex>{}),
-  SchemaTable('_brick_KitchenSink_list_offline_first_model', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'KitchenSink',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false),
-    SchemaColumn('f_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], unique: true)
-  }),
-  SchemaTable('_brick_KitchenSink_set_offline_first_model', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'KitchenSink',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false),
-    SchemaColumn('f_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], unique: true)
-  }),
-  SchemaTable('_brick_KitchenSink_future_list_offline_first_model', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'KitchenSink',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false),
-    SchemaColumn('f_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], unique: true)
-  }),
-  SchemaTable('_brick_KitchenSink_future_set_offline_first_model', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'KitchenSink',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false),
-    SchemaColumn('f_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], unique: true)
-  }),
+  SchemaTable('_brick_KitchenSink_list_offline_first_model',
+      columns: <SchemaColumn>{
+        SchemaColumn('_brick_id', Column.integer,
+            autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'KitchenSink',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false),
+        SchemaColumn('f_Mounty_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'Mounty',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false)
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(
+            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+            unique: true)
+      }),
+  SchemaTable('_brick_KitchenSink_set_offline_first_model',
+      columns: <SchemaColumn>{
+        SchemaColumn('_brick_id', Column.integer,
+            autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'KitchenSink',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false),
+        SchemaColumn('f_Mounty_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'Mounty',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false)
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(
+            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+            unique: true)
+      }),
+  SchemaTable('_brick_KitchenSink_future_list_offline_first_model',
+      columns: <SchemaColumn>{
+        SchemaColumn('_brick_id', Column.integer,
+            autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'KitchenSink',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false),
+        SchemaColumn('f_Mounty_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'Mounty',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false)
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(
+            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+            unique: true)
+      }),
+  SchemaTable('_brick_KitchenSink_future_set_offline_first_model',
+      columns: <SchemaColumn>{
+        SchemaColumn('_brick_id', Column.integer,
+            autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'KitchenSink',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false),
+        SchemaColumn('f_Mounty_brick_id', Column.integer,
+            isForeignKey: true,
+            foreignTableName: 'Mounty',
+            onDeleteCascade: true,
+            onDeleteSetDefault: false)
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(
+            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+            unique: true)
+      }),
   SchemaTable('KitchenSink', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),

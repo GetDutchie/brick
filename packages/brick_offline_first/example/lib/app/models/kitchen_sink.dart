@@ -6,7 +6,7 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: '=> "/my-path";',
+    endpoint: "=> '/my-path';",
     // These are NOT necessary unless other properties are present
     // Brick will find the first top-level property if there are multiple properties
     // in the return response from REST
@@ -57,7 +57,7 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Rest(name: 'restAnnotationOtherName')
   final String? restAnnotationName;
 
-  @Rest(defaultValue: '"a default value"')
+  @Rest(defaultValue: "'a default value'")
   final String? restAnnotationDefaultValue;
 
   @Rest(nullable: true)
@@ -84,7 +84,7 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Sqlite(nullable: true)
   final String? sqliteAnnotationNullable;
 
-  @Sqlite(defaultValue: '"default value"')
+  @Sqlite(defaultValue: "'default value'")
   final String? sqliteAnnotationDefaultValue;
 
   @Sqlite(fromGenerator: '%DATA_PROPERTY%.toString()')

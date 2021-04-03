@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -136,11 +137,28 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
+      final isNullable = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question ||
+          checker.argType.nullabilitySuffix == NullabilitySuffix.question;
+      final nullabilitySuffix = isNullable ? '!' : '';
+      final upsertMethod = '''
+        $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??
+        await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>(
+          $instance$nullabilitySuffix, repository: repository
+        )''';
+
+      if (isNullable) {
+        return '$instance != null ? $upsertMethod : null';
+      }
+
+      return upsertMethod;
 
       // enum
     } else if (checker.isEnum) {
-      return '${field.type}.values.indexOf($fieldValue)';
+      if (checker.targetType.nullabilitySuffix == NullabilitySuffix.question) {
+        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
+      }
+
+      return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
 
       // Map
     } else if (checker.isMap) {
@@ -177,7 +195,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
 
       // SQFlite returns [{}] when no results are found
-      if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) return null;
+      if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) {
+        return null;
+      }
 
       return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;
     }""";

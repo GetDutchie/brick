@@ -43,7 +43,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return '$fieldValue?.map((${SharedChecker.withoutNullability(checker.argType)} c) => c?.$serializeMethod())?.toList()';
+          return '$fieldValue?.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
         }
       }
     }
@@ -54,7 +54,13 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final pair = offlineFirstAnnotation.where!.entries.first;
         return '$wrappedField?.${pair.key}';
       } else {
-        return 'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField)';
+        final restSerializerStatement =
+            'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField!, provider: provider, repository: repository)';
+        if (checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question) {
+          return '$wrappedField != null ? $restSerializerStatement : null';
+        }
+
+        return restSerializerStatement;
       }
     }
 

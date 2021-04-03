@@ -80,7 +80,7 @@ void main() {
 
     test('request creates and does not delete after an unsuccessful response', () async {
       final inner = MockClient();
-      // when(inner.send(any)).thenThrow(StateError('server not found'));
+      when(inner.send(any)).thenThrow(StateError('server not found'));
 
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');

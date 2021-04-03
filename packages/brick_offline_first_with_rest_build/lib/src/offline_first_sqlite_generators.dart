@@ -30,8 +30,8 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
               argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
           return '''
             jsonEncode($fieldValue?.map(
-              (${checker.unFuturedArgType} c) => c?.$serializeMethod()
-            )?.toList()?.cast<$serializableType>() ?? [])
+              (${checker.unFuturedArgType} c) => c.$serializeMethod()
+            ).toList().cast<$serializableType>() ?? [])
           ''';
         }
       }

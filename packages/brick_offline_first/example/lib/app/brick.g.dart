@@ -7,16 +7,14 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstSerdes;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first_example/app/models/hat.dart'; // GENERATED CODE DO NOT EDIT
+import 'package:brick_offline_first_example/app/models/hat.dart';// GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/sqlite.dart'
-    show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition;
-import 'package:brick_rest/rest.dart'
-    show RestProvider, RestModel, RestAdapter, RestModelDictionary;
+import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition;
+import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_core/core.dart' show Query, QueryAction, ModelRepository;
+import 'package:brick_core/core.dart' show Query, QueryAction;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
