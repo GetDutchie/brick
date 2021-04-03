@@ -25,8 +25,7 @@ class RequestSqliteCacheManager {
       return '$HTTP_JOBS_UPDATED_AT ASC';
     }
 
-    // TODO: change to '$HTTP_JOBS_CREATED_AT_COLUMN ASC' for first major release
-    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC, $HTTP_JOBS_ATTEMPTS_COLUMN DESC, $HTTP_JOBS_UPDATED_AT ASC';
+    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC';
   }
 
   /// Time between attempts to resubmit a request. Defaults to 5 seconds.

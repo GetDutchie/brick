@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.0.0
+
+* Null safety
+* Priority for the next job to process from the queue - when processing requests in serial - has changed from `'$HTTP_JOBS_CREATED_AT_COLUMN ASC, $HTTP_JOBS_ATTEMPTS_COLUMN DESC, $HTTP_JOBS_UPDATED_AT ASC'` to `'$HTTP_JOBS_CREATED_AT_COLUMN ASC'`; this uses the job column introduced in 0.0.7 (26 May 2020) and will not affect any implementations using 0.0.7 or higher.
+
 ## 0.1.2
 
 * Add [`mixins.dart`](README.md#mixins) for non essential but still regularly requested features that depend on a specific format of remote data or are useful variations of existing features. `DeleteAllMixin` and `DestructiveLocalSyncFromRemoteMixin` are the first two such mixins.
