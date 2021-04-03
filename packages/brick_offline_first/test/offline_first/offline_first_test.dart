@@ -78,8 +78,8 @@ void main() {
             await TestRepository().sqliteProvider.get<Horse>(repository: TestRepository());
 
         expect(results.first.mounties, hasLength(2));
-        expect(results.first.mounties.first!.primaryKey, greaterThan(0));
-        expect(results.first.mounties.last!.primaryKey, greaterThan(0));
+        expect(results.first.mounties.first.primaryKey, greaterThan(0));
+        expect(results.first.mounties.last.primaryKey, greaterThan(0));
         final findByName = await TestRepository().sqliteProvider.get<Horse>(
               repository: TestRepository(),
               query: Query(where: [

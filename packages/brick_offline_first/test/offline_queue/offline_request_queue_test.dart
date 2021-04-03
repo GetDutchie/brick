@@ -6,7 +6,7 @@ import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manag
 import '__helpers__.dart';
 
 void main() {
-  final offlineClient = OfflineQueueHttpClient(MockClient(), RequestSqliteCacheManager('db'));
+  final offlineClient = OfflineQueueHttpClient(stubResult(), RequestSqliteCacheManager('db'));
 
   group('OfflineRequestQueue', () {
     test('#start', () {

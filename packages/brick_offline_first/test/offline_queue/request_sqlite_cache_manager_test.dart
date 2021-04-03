@@ -31,7 +31,7 @@ void main() {
     });
 
     test('#serialProcessing:false', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final _requestManager = RequestSqliteCacheManager(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
@@ -53,7 +53,7 @@ void main() {
     });
 
     test('#prepareNextRequestToProcess', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
 
       await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
@@ -69,7 +69,7 @@ void main() {
     });
 
     test('#deleteUnprocessedRequest', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
       expect(await requestManager.unprocessedRequests(), isEmpty);
 

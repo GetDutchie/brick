@@ -1,6 +1,6 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:http/testing.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('request deletes after a successful response', () async {
-      final inner = stubResult(requestBody: 'existing record');
+      final inner = stubResult();
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
 
@@ -64,7 +64,7 @@ void main() {
     });
 
     test('request increments after a unsuccessful response', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
       await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
       var requests = await requestManager.unprocessedRequests();
@@ -79,8 +79,9 @@ void main() {
     });
 
     test('request creates and does not delete after an unsuccessful response', () async {
-      final inner = MockClient();
-      when(inner.send(any)).thenThrow(StateError('server not found'));
+      final inner = MockClient((req) async {
+        throw StateError('server not found');
+      });
 
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
@@ -90,7 +91,7 @@ void main() {
     });
 
     test('request is not deleted after sending to a misconfigured client', () async {
-      final inner = MockClient();
+      final inner = stubResult(statusCode: 501);
 
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
