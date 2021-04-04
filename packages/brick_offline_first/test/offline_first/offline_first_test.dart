@@ -1,4 +1,4 @@
-import 'package:brick_offline_first/testing.dart' hide MockClient;
+import 'package:brick_offline_first/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart' show TypeMatcher;
@@ -27,13 +27,11 @@ void main() {
 
   group('OfflineFirstRepository', () {
     final baseUrl = 'http://localhost:3000';
-    final client = MockClient();
 
     TestRepository.configure(
       baseUrl: baseUrl,
       restDictionary: restModelDictionary,
       sqliteDictionary: sqliteModelDictionary,
-      client: client,
     );
 
     setUpAll(() async {

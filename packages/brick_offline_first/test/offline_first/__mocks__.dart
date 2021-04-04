@@ -6,16 +6,12 @@ import 'package:brick_sqlite/sqlite.dart';
 
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_offline_first/offline_first.dart';
-import 'package:mockito/mockito.dart';
-import 'package:http/http.dart' as http;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '__adapters_models__.dart';
 
 export '__adapters_models__.dart';
 export 'package:brick_offline_first/offline_first.dart';
-
-class MockClient extends Mock implements http.Client {}
 
 /// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
 /// while [DemoModel] is not.
@@ -64,10 +60,9 @@ class TestRepository extends OfflineFirstWithRestRepository {
     required String baseUrl,
     required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
-    http.Client? client,
   }) {
     return TestRepository._(
-      RestProvider(baseUrl, modelDictionary: restDictionary, client: client),
+      RestProvider(baseUrl, modelDictionary: restDictionary),
       SqliteProvider(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
@@ -80,13 +75,11 @@ class TestRepository extends OfflineFirstWithRestRepository {
     required String baseUrl,
     required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
-    required http.Client client,
   }) {
     _singleton = TestRepository.createInstance(
       baseUrl: baseUrl,
       restDictionary: restDictionary,
       sqliteDictionary: sqliteDictionary,
-      client: client,
     );
     return _singleton;
   }
