@@ -42,12 +42,6 @@ class KitchenSink extends OfflineFirstWithRestModel {
 
   final Set<Mounty>? setOfflineFirstModel;
 
-  final Future<Mounty>? futureOfflineFirstModel;
-
-  final List<Future<Mounty>>? futureListOfflineFirstModel;
-
-  final Set<Future<Mounty>>? futureSetOfflineFirstModel;
-
   final Hat? offlineFirstSerdes;
 
   final List<Hat>? listOfflineFirstSerdes;
@@ -119,9 +113,6 @@ class KitchenSink extends OfflineFirstWithRestModel {
     this.offlineFirstModel,
     this.listOfflineFirstModel,
     this.setOfflineFirstModel,
-    this.futureOfflineFirstModel,
-    this.futureListOfflineFirstModel,
-    this.futureSetOfflineFirstModel,
     this.offlineFirstSerdes,
     this.listOfflineFirstSerdes,
     this.setOfflineFirstSerdes,

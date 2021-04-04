@@ -138,7 +138,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       final isNullable = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question ||
-          checker.argType.nullabilitySuffix == NullabilitySuffix.question;
+          checker.targetType.nullabilitySuffix == NullabilitySuffix.question;
       final nullabilitySuffix = isNullable ? '!' : '';
       final upsertMethod = '''
         $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??

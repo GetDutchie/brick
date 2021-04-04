@@ -83,46 +83,6 @@ final schema =
             columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
             unique: true)
       }),
-  SchemaTable('_brick_KitchenSink_future_list_offline_first_model',
-      columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', Column.integer,
-            autoincrement: true, nullable: false, isPrimaryKey: true),
-        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-            isForeignKey: true,
-            foreignTableName: 'KitchenSink',
-            onDeleteCascade: true,
-            onDeleteSetDefault: false),
-        SchemaColumn('f_Mounty_brick_id', Column.integer,
-            isForeignKey: true,
-            foreignTableName: 'Mounty',
-            onDeleteCascade: true,
-            onDeleteSetDefault: false)
-      },
-      indices: <SchemaIndex>{
-        SchemaIndex(
-            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
-            unique: true)
-      }),
-  SchemaTable('_brick_KitchenSink_future_set_offline_first_model',
-      columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', Column.integer,
-            autoincrement: true, nullable: false, isPrimaryKey: true),
-        SchemaColumn('l_KitchenSink_brick_id', Column.integer,
-            isForeignKey: true,
-            foreignTableName: 'KitchenSink',
-            onDeleteCascade: true,
-            onDeleteSetDefault: false),
-        SchemaColumn('f_Mounty_brick_id', Column.integer,
-            isForeignKey: true,
-            foreignTableName: 'Mounty',
-            onDeleteCascade: true,
-            onDeleteSetDefault: false)
-      },
-      indices: <SchemaIndex>{
-        SchemaIndex(
-            columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
-            unique: true)
-      }),
   SchemaTable('KitchenSink', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
@@ -137,11 +97,6 @@ final schema =
     SchemaColumn('any_list', Column.varchar),
     SchemaColumn('any_set', Column.varchar),
     SchemaColumn('offline_first_model_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: false,
-        onDeleteSetDefault: false),
-    SchemaColumn('future_offline_first_model_Mounty_brick_id', Column.integer,
         isForeignKey: true,
         foreignTableName: 'Mounty',
         onDeleteCascade: false,

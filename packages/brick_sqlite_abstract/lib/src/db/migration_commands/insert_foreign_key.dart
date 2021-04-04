@@ -7,7 +7,8 @@ class InsertForeignKey extends MigrationCommand {
   final String localTableName;
   final String foreignTableName;
 
-  final String? _foreignKeyColumn;
+  /// Defaults to lowercase `${foreignTableName}_brick_id`
+  final String foreignKeyColumn;
 
   /// When true, deletion of the referenced record by [foreignKeyColumn] on the [foreignTableName]
   /// this record. For example, if the foreign table is "departments" and the local table
@@ -25,10 +26,9 @@ class InsertForeignKey extends MigrationCommand {
     String? foreignKeyColumn,
     this.onDeleteCascade = false,
     this.onDeleteSetDefault = false,
-  }) : _foreignKeyColumn = foreignKeyColumn;
-
-  /// Defaults to lowercase `${foreignTableName}_brick_id`
-  String get foreignKeyColumn => _foreignKeyColumn ?? foreignKeyColumnName(foreignTableName);
+  }) : // Do not change this default without changing `foreignKeyColumnName`;
+        // it wasn't invoked because functions aren't `const`
+        foreignKeyColumn = foreignKeyColumn ?? '$foreignTableName${InsertTable.PRIMARY_KEY_COLUMN}';
 
   String get _onDeleteStatement {
     if (onDeleteSetDefault) return ' ON DELETE SET DEFAULT';
@@ -55,6 +55,8 @@ class InsertForeignKey extends MigrationCommand {
   /// would be `Hat_id`.
   ///
   /// If [prefix] is provided, it will be prepended to the normal convention with a `_`.
+  // Do not change this function without changing the default value in the constructor
+  // for `foreignKeyColumn`; this function isn't `const` so it could not be recycled
   static String foreignKeyColumnName(String foreignTableName, [String? prefix]) {
     final defaultName = '$foreignTableName${InsertTable.PRIMARY_KEY_COLUMN}';
     if (prefix != null) {
