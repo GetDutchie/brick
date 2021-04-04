@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:brick_core/core.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:path/path.dart' as p;
 
@@ -19,16 +17,19 @@ import 'package:path/path.dart' as p;
 ///   }
 /// }
 /// ```
-///
-/// To instantiate multiple models, use [StubOfflineFirstWithRest].
-class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
-  OfflineFirstWithRestAdapter get adapter => modelDictionary[_model]!;
-
-  /// Load sample API response from preloaded JSON files
-  String get apiResponse {
-    final apiFile = File(p.join(currentDirectory, filePath));
-    return apiFile.readAsStringSync();
-  }
+class StubOfflineFirstWithRestModel {
+  /// All reponses to return from an endpoint. For example, `user/1` or `users?limit=20&offset=1`.
+  /// Automatically prefixed with `$baseUrl/`.
+  ///
+  /// Responses can be either a file path or a custom response.
+  ///
+  /// For files, the path is **relative to the top-level /test directory** containing stub data
+  /// and must end in `.json`. For example, `api/user.json` in `my-app/test/api/user.json`
+  ///
+  /// For custom responses, the return value will be **exact**. This class will not attempt to
+  /// decode JSON for a custom response; it's recommended to submit a `Map` instead for
+  /// JSON responses.
+  final Map<String, String> apiResponses;
 
   String get currentDirectory {
     final directory = p.dirname(Platform.script.path);
@@ -41,42 +42,21 @@ class StubOfflineFirstWithRestModel<_Model extends OfflineFirstWithRestModel> {
     return p.join(directory, 'test');
   }
 
-  /// Decode the JSON with the response key, if applicable
-  dynamic get decodedApiResponse {
-    final contents = jsonDecode(apiResponse);
-    if (adapter.fromKey != null) {
-      return contents[adapter.fromKey];
-    } else if (contents is Map && contents.keys.length == 1) {
-      return contents.values.first;
-    } else {
-      return contents;
+  StubOfflineFirstWithRestModel({
+    required this.apiResponses,
+  });
+
+  /// Load sample API response from preloaded JSON files
+  String _parseResponse(dynamic customResponse) {
+    if (customResponse is String && customResponse.endsWith('.json')) {
+      final apiFile = File(p.join(currentDirectory, customResponse));
+      return apiFile.readAsStringSync();
     }
+
+    return customResponse;
   }
 
-  /// The path **relative to the top-level /test directory** containing stub data.
-  /// For example, `api/user.json` in `my-app/test/api/user.json`
-  final String filePath;
-
-  /// All endpoints to stub. For example, `user/1` or `users?limit=20&offset=1`.
-  /// Automatically prefixed with `$baseUrl/`.
-  final List<String> endpoints;
-
-  final Type _model;
-
-  late Map<Type, OfflineFirstWithRestAdapter> modelDictionary;
-
-  /// The [OfflineFirstRepository] being stubbed for this model.
-  final OfflineFirstWithRestRepository repository;
-
-  StubOfflineFirstWithRestModel({
-    required this.filePath,
-    required this.repository,
-    this.endpoints = const <String>[],
-    Type? model,
-  }) : _model = model ?? _Model {
-    final dictionary = <Type, Adapter>{};
-    dictionary.addAll(repository.remoteProvider.modelDictionary.adapterFor);
-    dictionary.addAll(repository.sqliteProvider.modelDictionary.adapterFor);
-    modelDictionary = dictionary.cast<Type, OfflineFirstWithRestAdapter>();
+  String responseForEndpoint(String endpoint) {
+    return _parseResponse(apiResponses[endpoint]);
   }
 }

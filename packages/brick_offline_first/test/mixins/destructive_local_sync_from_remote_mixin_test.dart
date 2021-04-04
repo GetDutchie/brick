@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_rest/rest.dart';
+import 'package:http/http.dart' as http;
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -19,8 +20,9 @@ class MyRepository extends OfflineFirstWithRestRepository
     required String baseUrl,
     required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
+    http.Client? client,
   }) : super(
-          restProvider: RestProvider(baseUrl, modelDictionary: restDictionary),
+          restProvider: RestProvider(baseUrl, client: client, modelDictionary: restDictionary),
           sqliteProvider: SqliteProvider(
             inMemoryDatabasePath,
             databaseFactory: databaseFactoryFfi,
@@ -44,19 +46,17 @@ void main() {
       baseUrl: 'http://localhost:3000',
       restDictionary: restModelDictionary,
       sqliteDictionary: sqliteModelDictionary,
+      client: stubRestClient('http://localhost:3000', [
+        StubOfflineFirstWithRestModel(
+          apiResponses: {
+            'mounties': 'offline_first/api/mounties.json',
+          },
+        ),
+      ]),
     );
 
     setUpAll(() async {
-      await StubOfflineFirstWithRest(
-        repository: repository,
-        modelStubs: [
-          StubOfflineFirstWithRestModel<Mounty>(
-            repository: repository,
-            filePath: 'offline_first/api/mounties.json',
-            endpoints: ['mounties'],
-          ),
-        ],
-      ).initialize();
+      await repository.initialize();
     });
 
     test('#get', () async {

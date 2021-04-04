@@ -1,49 +1,37 @@
 import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 import 'package:http/testing.dart';
 import 'package:brick_offline_first/src/testing/stub_offline_first_with_rest_model.dart';
 
 /// Manages multiple stubbed [OfflineFirstWithRestModel]s.
-class StubOfflineFirstWithRest {
-  @protected
-  String get baseUrl => repository.remoteProvider.baseEndpoint;
-
-  final List<StubOfflineFirstWithRestModel> modelStubs;
-
-  final OfflineFirstWithRestRepository repository;
-
-  StubOfflineFirstWithRest({
-    required this.modelStubs,
-    required this.repository,
+MockClient stubRestClient(String baseUrl, List<StubOfflineFirstWithRestModel> modelStubs) {
+  final endpoints = modelStubs.fold<Map<Uri, String>>({}, (acc, modelStub) {
+    for (final endpoint in modelStub.apiResponses.keys) {
+      acc[Uri.parse('$baseUrl/$endpoint')] = modelStub.responseForEndpoint(endpoint);
+    }
+    return acc;
   });
 
-  /// Invoked immediately after instantiation
-  Future<void> initialize() async {
-    await repository.migrate();
-    repository.remoteProvider.client = restClient();
-  }
+  return MockClient((req) async {
+    final statusCode = _statusCodeForMethod(req.method);
 
-  /// Stub REST responses
-  MockClient restClient() {
-    return MockClient((req) async {
-      for (final modelStub in modelStubs) {
-        for (final endpoint in modelStub.endpoints) {
-          if (req.method == 'GET' && req.url == Uri.parse('$baseUrl/$endpoint')) {
-            return http.Response(modelStub.apiResponse, 200);
-          }
+    if (endpoints[req.url] != null) {
+      return http.Response(endpoints[req.url]!, statusCode);
+    }
 
-          if (req.method == 'POST' && req.url == Uri.parse('$baseUrl/$endpoint')) {
-            return http.Response(modelStub.apiResponse, 201);
-          }
+    return http.Response('endpoint ${req.method} ${req.url} is not stubbed', 422);
+  });
+}
 
-          if (req.method == 'DELETE' && req.url == Uri.parse('$baseUrl/$endpoint')) {
-            return http.Response('{"status": "OK"}', 204);
-          }
-        }
-      }
-
-      return http.Response('endpoint is not stubbed', 422);
-    });
+int _statusCodeForMethod(String method) {
+  switch (method) {
+    case 'GET':
+      return 200;
+    case 'POST':
+      return 201;
+    case 'DELETE':
+      return 204;
+    default:
+      return 422;
   }
 }

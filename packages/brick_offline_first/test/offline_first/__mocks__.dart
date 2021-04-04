@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first_with_rest.dart';
@@ -39,7 +40,7 @@ class DemoModelMigration extends Migration {
 }
 
 class TestRepository extends OfflineFirstWithRestRepository {
-  static late TestRepository _singleton;
+  static TestRepository? _singleton;
 
   TestRepository._(
     RestProvider _restProvider,
@@ -54,34 +55,29 @@ class TestRepository extends OfflineFirstWithRestRepository {
             databaseFactory: databaseFactoryFfi,
           ),
         );
-  factory TestRepository() => _singleton;
+  factory TestRepository() => _singleton!;
 
-  factory TestRepository.createInstance({
+  factory TestRepository.withProviders(RestProvider restProvider, SqliteProvider sqliteProvider) =>
+      TestRepository._(restProvider, sqliteProvider);
+
+  factory TestRepository.configure({
     required String baseUrl,
     required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
+    http.Client? client,
   }) {
-    return TestRepository._(
-      RestProvider(baseUrl, modelDictionary: restDictionary),
+    return _singleton = TestRepository._(
+      RestProvider(
+        baseUrl,
+        modelDictionary: restDictionary,
+        client: client,
+      ),
       SqliteProvider(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteDictionary,
       ),
     );
-  }
-
-  static TestRepository configure({
-    required String baseUrl,
-    required RestModelDictionary restDictionary,
-    required SqliteModelDictionary sqliteDictionary,
-  }) {
-    _singleton = TestRepository.createInstance(
-      baseUrl: baseUrl,
-      restDictionary: restDictionary,
-      sqliteDictionary: sqliteDictionary,
-    );
-    return _singleton;
   }
 }
 
