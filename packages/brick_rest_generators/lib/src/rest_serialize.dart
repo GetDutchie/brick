@@ -55,8 +55,10 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       if (checker.isArgTypeASibling) {
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
+        final nullabilitySuffix =
+            checker.targetType.nullabilitySuffix == NullabilitySuffix.question ? '?' : '';
         return '''await Future.wait<Map<String, dynamic>>(
-          $fieldValue?.map((s) $awaited =>
+          $fieldValue$nullabilitySuffix.map((s) $awaited =>
             ${SharedChecker.withoutNullability(checker.unFuturedArgType)}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
           ).toList() ?? []
         )''';

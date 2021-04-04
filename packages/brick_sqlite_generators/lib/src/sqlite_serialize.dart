@@ -243,11 +243,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         ? _removeStaleAssociations(
             field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
         : '';
+    final nullabilitySuffix =
+        checker.targetType.nullabilitySuffix == NullabilitySuffix.question ? '?' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
         $removeStaleAssociations
-        await Future.wait<int?>($siblingAssociations?.map((s) async {
+        await Future.wait<int?>($siblingAssociations$nullabilitySuffix.map((s) async {
           final id = $upsertMethod;
           return await provider.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
         }) ?? []);

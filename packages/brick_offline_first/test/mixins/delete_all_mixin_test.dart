@@ -12,7 +12,7 @@ import 'package:brick_sqlite/sqlite.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
-import '../offline_first/__mocks__.dart';
+import '../offline_first/helpers/__mocks__.dart';
 
 class DeleteAllRepository extends OfflineFirstWithRestRepository
     with DeleteAllMixin<OfflineFirstWithRestModel> {

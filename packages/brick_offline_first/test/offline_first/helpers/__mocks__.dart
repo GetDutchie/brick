@@ -1,18 +1,20 @@
+import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:brick_sqlite/sqlite.dart';
 
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import '__adapters_models__.dart';
-
-export '__adapters_models__.dart';
 export 'package:brick_offline_first/offline_first.dart';
+
+part 'horse_adapter.dart';
+part 'horse.dart';
+part 'mounty_adapter.dart';
+part 'mounty.dart';
 
 /// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
 /// while [DemoModel] is not.
