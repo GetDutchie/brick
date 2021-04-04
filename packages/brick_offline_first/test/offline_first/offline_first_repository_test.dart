@@ -1,6 +1,5 @@
 import 'package:brick_offline_first/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__mocks__.dart';
@@ -75,10 +74,10 @@ void main() {
     test('#hydrateSqlite / #get requireRest:true', () async {
       await TestRepository().get<Mounty>(requireRemote: true);
 
-      verify(TestRepository()
-          .remoteProvider
-          .client
-          .get(Uri.parse('http://localhost:3000/mounties'), headers: anyNamed('headers')));
+      // verify(TestRepository()
+      //     .remoteProvider
+      //     .client
+      //     .get(Uri.parse('http://localhost:3000/mounties'), headers: anyNamed('headers')));
     }, skip: 'Client is no longer a Mockito instance');
 
     test('#storeRestResults', () async {
