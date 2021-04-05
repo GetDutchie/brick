@@ -77,7 +77,7 @@ class RequestSqliteCacheManager {
       return txn.rawQuery('$whereLocked;');
     });
 
-    final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
+    final jobs = unprocessedRequests.map<http.Request>(RequestSqliteCache.sqliteToRequest);
 
     if (jobs.isNotEmpty) return jobs.first;
 

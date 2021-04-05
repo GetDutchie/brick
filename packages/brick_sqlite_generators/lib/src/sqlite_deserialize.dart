@@ -68,8 +68,13 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
     } else if (checker.isIterable) {
       final argTypeChecker = SharedChecker<SqliteModel>(checker.argType);
       final argType = checker.unFuturedArgType;
-      final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet, isList: checker.isList, isFuture: checker.isArgTypeAFuture);
+      final castIterable = SerdesGenerator.iterableCast(
+        argType,
+        isSet: checker.isSet,
+        isList: checker.isList,
+        isFuture: checker.isArgTypeAFuture,
+        forceCast: !checker.isArgTypeASibling,
+      );
 
       if (checker.isArgTypeASibling) {
         final awaited = wrappedInFuture ? 'async => await' : '=>';
@@ -103,7 +108,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           // Iterable<SqliteModel>
         } else {
           if (checker.isSet) {
-            return '(await $method).toSet().cast<$argType>()';
+            return '(await $method).toSet()';
           }
 
           return '(await $method)$castIterable';

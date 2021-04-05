@@ -29,8 +29,7 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromRest(
       assoc: await Future.wait<SqliteAssoc>(data['assoc']
               ?.map((d) => SqliteAssocAdapter()
                   .fromRest(d, provider: provider, repository: repository))
-              .toList()
-              .cast<Future<SqliteAssoc>>() ??
+              .toList() ??
           []));
 }
 
@@ -62,8 +61,7 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
         )
         .then((r) => r!.first)));
   }))
-          .toList()
-          .cast<SqliteAssoc>())
+          .toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 

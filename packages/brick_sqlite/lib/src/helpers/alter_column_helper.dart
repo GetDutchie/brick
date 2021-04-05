@@ -66,7 +66,7 @@ class AlterColumnHelper {
       return newColumn;
     }
 
-    return columns.map(convertColumn).where((c) => c != null).toList().cast<Map<String, dynamic>>();
+    return columns.map(convertColumn).whereType<Map<String, dynamic>>().toList();
   }
 
   /// Given new columns, create the SQLite statement

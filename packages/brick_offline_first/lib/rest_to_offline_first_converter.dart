@@ -66,7 +66,7 @@ class RestToOfflineFirstConverter {
 
   /// Produce instance fields
   String generateFields(Map<String, dynamic> fields) {
-    final keys = fields.keys.toList().cast<String>();
+    final keys = fields.keys.toList();
     keys.sort();
     return keys.fold<List<String>>(<String>[], (acc, key) {
       final valueType = fields[key].runtimeType.toString();
@@ -76,7 +76,7 @@ class RestToOfflineFirstConverter {
 
   /// Produce fields to be invoked in the default constructor
   String generateConstructorFields(Map<String, dynamic> fields) {
-    final keys = fields.keys.toList().cast<String>();
+    final keys = fields.keys.toList();
     keys.sort();
     return keys.fold<List<String>>(<String>[], (acc, key) {
       return acc..add('    this.${toCamelCase(key)}');

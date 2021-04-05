@@ -15,7 +15,11 @@ import 'package:my_app/app/repository.dart';
 void main() {
   group("MySqliteProvider", () {
     setUpAll(() async {
-
+      MyRepository(
+        restProvider: RestProvider(
+          client: stubRestClient()
+        )
+      )
       await StubOfflineFirstWithRestModel<User>(
         filePath: "api/user.json",
         repository: MyRepository()

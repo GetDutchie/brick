@@ -129,9 +129,6 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
-  bool statusCodeIsSuccessful(int? statusCode) =>
-      statusCode != null && 200 <= statusCode && statusCode < 300;
-
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery([Query? query]) {
@@ -206,4 +203,7 @@ class RestProvider implements Provider<RestModel> {
     logger.finer('method=POST url=$url headers=$headers body=$wrappedBody');
     return await client.post(url, body: wrappedBody, headers: headers);
   }
+
+  static bool statusCodeIsSuccessful(int? statusCode) =>
+      statusCode != null && 200 <= statusCode && statusCode < 300;
 }

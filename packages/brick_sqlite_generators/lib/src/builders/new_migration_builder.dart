@@ -14,11 +14,8 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final now = DateTime.now().toUtc();
-    final timestamp = [now.month, now.day, now.hour, now.minute, now.second]
-        .map(_padToTwo)
-        .toList()
-        .cast<String>()
-        .join('');
+    final timestamp =
+        [now.month, now.day, now.hour, now.minute, now.second].map(_padToTwo).toList().join('');
     final version = int.parse('${now.year}$timestamp');
     final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 

@@ -71,6 +71,14 @@ class StubOfflineFirstWithRestModel {
     required this.apiResponses,
   });
 
+  /// Responses will be returned on all HTTP methods. The [filePath] is
+  /// **relative to the top-level /test directory**.
+  factory StubOfflineFirstWithRestModel.fromFile(String endpoint, String filePath) {
+    return StubOfflineFirstWithRestModel(apiResponses: {
+      endpoint: [StubOfflineFirstWithRestResponse.fromFile(filePath)]
+    });
+  }
+
   /// Provide a list of responses from a list of endpoints, for example:
   /// ```dart
   /// {
@@ -78,14 +86,12 @@ class StubOfflineFirstWithRestModel {
   /// }
   /// ```
   ///
-  /// Responses will be returned on all HTTP methods.
-  factory StubOfflineFirstWithRestModel.fromFiles(Map<String, String> endpointsAndFilePaths) {
-    final responses = endpointsAndFilePaths.entries
-        .fold<Map<String, List<StubOfflineFirstWithRestResponse>>>({}, (acc, entry) {
-      acc[entry.key] = [StubOfflineFirstWithRestResponse.fromFile(entry.value)];
-      return acc;
-    });
-    return StubOfflineFirstWithRestModel(apiResponses: responses);
+  /// Responses will be returned on all HTTP methods. The [filePath] is
+  /// **relative to the top-level /test directory**.
+  static List<StubOfflineFirstWithRestModel> fromFiles(Map<String, String> endpointsAndFilePaths) {
+    return endpointsAndFilePaths.entries.map((entry) {
+      return StubOfflineFirstWithRestModel.fromFile(entry.key, entry.value);
+    }).toList();
   }
 }
 

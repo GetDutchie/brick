@@ -16,11 +16,11 @@ import 'package:my_app/app/brick.g.dart' show restModelDictionary;
 // app/repository.dart
 class MyRepository extends SingleProviderRepository<RestModel> {
   MyRepository._({
-    String baseEndpoint,
+    required String baseEndpoint,
   }) : super(
     RestProvider(baseEndpoint, modelDictionary: restModelDictionary),
   );
-  factory MyRepository() => _singleton;
+  factory MyRepository() => _singleton!;
 
   static MyRepository create(String baseEnpoint) {
     _singleton = MyRepository._(

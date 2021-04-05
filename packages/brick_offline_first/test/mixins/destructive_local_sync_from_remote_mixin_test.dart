@@ -46,11 +46,12 @@ void main() {
       baseUrl: 'http://localhost:3000',
       restDictionary: restModelDictionary,
       sqliteDictionary: sqliteModelDictionary,
-      client: stubRestClient('http://localhost:3000', [
+      client: stubRestClient(
+        'http://localhost:3000',
         StubOfflineFirstWithRestModel.fromFiles({
           'mounties': 'offline_first/api/mounties.json',
         }),
-      ]),
+      ),
     );
 
     setUpAll(() async {

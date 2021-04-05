@@ -36,13 +36,13 @@ abstract class OfflineFirstAdapter<_Model extends OfflineFirstModel> extends Sql
 ///         remoteProvider: _restProvider,
 ///         sqliteProvider: _sqliteProvider,
 ///       );
-///   factory MyRepository() => _singleton;
+///   factory MyRepository() => _singleton!;
 ///
 ///   /// The singleton could be configured on the first call of `MyRepository()` or it can
 ///   /// be set by calling `configure` during app initialization.
 ///   static void configure({
-///     RestProvider restProvider,
-///     SqliteProvider sqliteProvider,
+///     required RestProvider restProvider,
+///     required SqliteProvider sqliteProvider,
 ///   }) {
 ///     _singleton = MyRepository._(
 ///       restProvider,

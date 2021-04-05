@@ -40,7 +40,7 @@ class Schema {
       return a.version > b.version ? 1 : -1;
     });
 
-    return sorted.map((m) => m.up).expand((c) => c).toList().cast<MigrationCommand>();
+    return sorted.map((m) => m.up).expand((c) => c).toList();
   }
 
   /// Create a schema from a set of migrations. If [version] is not provided,

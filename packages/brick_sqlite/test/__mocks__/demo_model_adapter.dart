@@ -31,8 +31,7 @@ Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
             )
             ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
       }))
-          ?.toList()
-          .cast<DemoModelAssoc>(),
+          ?.toList(),
       simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1)
     ..primaryKey = data['_brick_id'] as int;
 }

@@ -18,27 +18,27 @@ Future<KitchenSink> _$KitchenSinkFromRest(Map<String, dynamic> data,
       enumFromIndex: data['enum_from_index'] is int
           ? AnyEnum.values[data['enum_from_index'] as int]
           : null,
-      anyList: data['any_list'].toList().cast<int>() ?? <int>[],
-      anySet: data['any_set'].toSet().cast<int>() ?? <int>{},
+      anyList: data['any_list'].toList() ?? <int>[],
+      anySet: data['any_set'].toSet() ?? <int>{},
       offlineFirstModel: await MountyAdapter().fromRest(
           data['offline_first_model'],
           provider: provider,
           repository: repository),
       listOfflineFirstModel: await Future.wait<Mounty>(
-          data['list_offline_first_model']?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository)).toList().cast<Future<Mounty>>() ??
+          data['list_offline_first_model']?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository)).toList() ??
               []),
       setOfflineFirstModel:
-          (await Future.wait<Mounty>(data['set_offline_first_model']?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository)).toSet().cast<Future<Mounty>>() ?? []))
+          (await Future.wait<Mounty>(data['set_offline_first_model']?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository)).toSet() ?? []))
               .toSet(),
       offlineFirstSerdes: Hat.fromRest(data['offline_first_serdes']),
       listOfflineFirstSerdes: data['list_offline_first_serdes']
           .map((c) => Hat.fromRest(c as Map<String, dynamic>))
           .toList()
-          .cast<Hat>(),
+          ,
       setOfflineFirstSerdes: data['set_offline_first_serdes']
           .map((c) => Hat.fromRest(c as Map<String, dynamic>))
           .toSet()
-          .cast<Hat>(),
+          ,
       restAnnotationName: data['restAnnotationOtherName'] as String?,
       restAnnotationDefaultValue:
           data['rest_annotation_default_value'] as String? ?? 'a default value',
@@ -140,10 +140,10 @@ Future<KitchenSink> _$KitchenSinkFromSqlite(Map<String, dynamic> data,
               : null),
       anyList: data['any_list'] == null
           ? null
-          : jsonDecode(data['any_list']).toList().cast<int>(),
+          : jsonDecode(data['any_list']).toList(),
       anySet: data['any_set'] == null
           ? null
-          : jsonDecode(data['any_set']).toSet().cast<int>(),
+          : jsonDecode(data['any_set']).toSet(),
       offlineFirstModel: data['offline_first_model_Mounty_brick_id'] == null
           ? null
           : (data['offline_first_model_Mounty_brick_id'] > -1
@@ -165,7 +165,7 @@ Future<KitchenSink> _$KitchenSinkFromSqlite(Map<String, dynamic> data,
             .then((r) => r!.first)));
       }))
           .toList()
-          .cast<Mounty>(),
+          ,
       setOfflineFirstModel: (await provider.rawQuery('SELECT DISTINCT `f_Mounty_brick_id` FROM `_brick_KitchenSink_set_offline_first_model` WHERE l_KitchenSink_brick_id = ?', [data['_brick_id'] as int]).then(
               (results) {
         final ids = results.map((r) => r['f_Mounty_brick_id']);
@@ -176,7 +176,7 @@ Future<KitchenSink> _$KitchenSinkFromSqlite(Map<String, dynamic> data,
             .then((r) => r!.first)));
       }))
           .toSet()
-          .cast<Mounty>(),
+          ,
       offlineFirstSerdes: data['offline_first_serdes'] == null
           ? null
           : Hat?.fromSqlite(data['offline_first_serdes'] as String),
@@ -185,10 +185,10 @@ Future<KitchenSink> _$KitchenSinkFromSqlite(Map<String, dynamic> data,
           : jsonDecode(data['list_offline_first_serdes'])
               .map((c) => Hat.fromSqlite(c as String))
               .toList()
-              .cast<Hat>(),
+              ,
       setOfflineFirstSerdes: data['set_offline_first_serdes'] == null
           ? null
-          : jsonDecode(data['set_offline_first_serdes']).map((c) => Hat.fromSqlite(c as String)).toSet().cast<Hat>(),
+          : jsonDecode(data['set_offline_first_serdes']).map((c) => Hat.fromSqlite(c as String)).toSet(),
       restAnnotationName: data['rest_annotation_name'] == null ? null : data['rest_annotation_name'] as String?,
       restAnnotationDefaultValue: data['rest_annotation_default_value'] == null ? null : data['rest_annotation_default_value'] as String?,
       restAnnotationNullable: data['rest_annotation_nullable'] == null ? null : data['rest_annotation_nullable'] as String?,
@@ -241,13 +241,11 @@ Future<Map<String, dynamic>> _$KitchenSinkToSqlite(KitchenSink instance,
     'offline_first_serdes': instance.offlineFirstSerdes?.toSqlite(),
     'list_offline_first_serdes': jsonEncode(instance.listOfflineFirstSerdes
             ?.map((Hat c) => c.toSqlite())
-            .toList()
-            .cast<String>() ??
+            .toList() ??
         []),
     'set_offline_first_serdes': jsonEncode(instance.setOfflineFirstSerdes
             ?.map((Hat c) => c.toSqlite())
-            .toList()
-            .cast<String>() ??
+            .toList() ??
         []),
     'rest_annotation_name': instance.restAnnotationName,
     'rest_annotation_default_value': instance.restAnnotationDefaultValue,

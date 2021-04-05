@@ -51,7 +51,7 @@ class MigrationManager {
       return 0;
     }
 
-    final versions = _migrations.map((m) => m.version).toList().cast<int>();
+    final versions = _migrations.map((m) => m.version).toList();
     versions.sort();
     return versions.last;
   }

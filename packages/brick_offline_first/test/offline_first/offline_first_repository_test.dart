@@ -16,11 +16,12 @@ void main() {
         baseUrl: baseUrl,
         restDictionary: restModelDictionary,
         sqliteDictionary: sqliteModelDictionary,
-        client: stubRestClient(baseUrl, [
+        client: stubRestClient(
+          baseUrl,
           StubOfflineFirstWithRestModel.fromFiles({
             'mounties': 'offline_first/api/mounties.json',
           }),
-        ]),
+        ),
       );
 
       await TestRepository().initialize();

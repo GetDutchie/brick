@@ -22,13 +22,12 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
                   where: [Where.exact('id', s), Where.exact('otherVar', s)]))
               .then((r) => r!.first))
           .whereType<Future<Assoc>>()
-          .toList()
-          .cast<Future<Assoc>>(),
+          .toList(),
       loadedAssoc: await repository
           ?.getAssociation<Assoc>(Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
-      loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList().cast<Future<Assoc>>() ?? []),
-      multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList().cast<Future<Assoc>>());
+      loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList() ?? []),
+      multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList());
 }
 
 Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
@@ -93,8 +92,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             )
             .then((r) => r!.first)));
       }))
-          .toList()
-          .cast<Assoc>(),
+          .toList(),
       multiLookupCustomGenerator: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {

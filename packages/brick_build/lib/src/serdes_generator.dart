@@ -336,15 +336,21 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     bool isSet = false,
     bool isList = false,
     bool isFuture = false,
+    bool forceCast = false,
   }) {
     final nullableSuffix = argType.nullabilitySuffix != NullabilitySuffix.none ? '?' : '';
+    var castStatement = nullableSuffix;
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';
-      final castType = isFuture ? 'Future<$argType>' : argType;
-      return '$nullableSuffix.to$method().cast<$castType>()';
+      castStatement += '.to$method()';
     }
 
-    return '$nullableSuffix.cast<$argType>()';
+    if (forceCast) {
+      final castType = isFuture ? 'Future<$argType>' : argType;
+      castStatement += '.cast<$castType>()';
+    }
+
+    return castStatement;
   }
 
   static String getAssociationMethod(

@@ -6,8 +6,7 @@ Future<Horse> _$HorseFromRest(Map<String, dynamic> data,
       name: data['name'] as String?,
       mounties: await Future.wait<Mounty>(data['mounties']
               ?.map((d) => MountyAdapter().fromRest(d, provider: provider, repository: repository))
-              .toList()
-              .cast<Future<Mounty>>() ??
+              .toList() ??
           []));
 }
 
@@ -35,8 +34,7 @@ Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
             )
             .then((r) => r!.first)));
       }))
-          .toList()
-          .cast<Mounty>())
+          .toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 

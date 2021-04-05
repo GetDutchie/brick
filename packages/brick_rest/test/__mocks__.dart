@@ -1,4 +1,4 @@
-import 'package:mockito/mockito.dart';
+import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 
@@ -50,4 +50,13 @@ final Map<Type, RestAdapter<RestModel>> _restMappings = {
 };
 final restModelDictionary = RestModelDictionary(_restMappings);
 
-class MockClient extends Mock implements http.Client {}
+MockClient generateClient(String response, {String? requestBody, String? requestMethod}) {
+  return MockClient((req) async {
+    final matchesRequestBody = req.body == requestBody || requestBody == null;
+    final matchesRequestMethod = req.method == requestMethod || requestMethod == null;
+
+    if (matchesRequestMethod && matchesRequestBody) return http.Response(response, 200);
+
+    throw StateError('No response for $response');
+  });
+}
