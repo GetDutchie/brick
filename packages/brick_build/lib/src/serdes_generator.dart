@@ -337,7 +337,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     bool isList = false,
     bool isFuture = false,
   }) {
-    final nullableSuffix = argType.nullabilitySuffix == NullabilitySuffix.question ? '?' : '';
+    final nullableSuffix = argType.nullabilitySuffix != NullabilitySuffix.none ? '?' : '';
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';
       final castType = isFuture ? 'Future<$argType>' : argType;
@@ -351,7 +351,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     DartType argType, {
     required String query,
   }) {
-    final isNullable = argType.nullabilitySuffix == NullabilitySuffix.question;
+    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
     final repositoryOperator = isNullable ? '?' : '!';
     final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
 

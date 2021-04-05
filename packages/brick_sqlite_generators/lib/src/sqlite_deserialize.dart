@@ -131,8 +131,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
-      final isNullable = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question;
-      final repositoryOperator = isNullable ? '?' : '!';
+      final repositoryOperator = checker.isUnfuturedTypeNullable ? '?' : '!';
 
       final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', $fieldValue as int, limit1: true),

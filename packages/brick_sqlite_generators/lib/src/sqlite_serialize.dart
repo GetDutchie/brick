@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -137,16 +136,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      final isNullable = checker.unFuturedType.nullabilitySuffix == NullabilitySuffix.question ||
-          checker.targetType.nullabilitySuffix == NullabilitySuffix.question;
-      final nullabilitySuffix = isNullable ? '!' : '';
+      final nullabilitySuffix = checker.isUnfuturedTypeNullable || checker.isNullable ? '!' : '';
       final upsertMethod = '''
         $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??
         await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>(
           $instance$nullabilitySuffix, repository: repository
         )''';
 
-      if (isNullable) {
+      if (checker.isUnfuturedTypeNullable) {
         return '$instance != null ? $upsertMethod : null';
       }
 
@@ -154,7 +151,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // enum
     } else if (checker.isEnum) {
-      if (checker.targetType.nullabilitySuffix == NullabilitySuffix.question) {
+      if (checker.isNullable) {
         return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }
 
@@ -243,8 +240,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         ? _removeStaleAssociations(
             field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
         : '';
-    final nullabilitySuffix =
-        checker.targetType.nullabilitySuffix == NullabilitySuffix.question ? '?' : '';
+    final nullabilitySuffix = checker.isNullable ? '?' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
