@@ -3,16 +3,18 @@ import 'package:brick_rest/rest.dart' show Rest, RestSerializable;
 
 final output = r'''
 Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return NullableField(
-      restFalse: data['rest_false'] as String,
-      restTrue: data['rest_true'] == null ? null : data['rest_true'] as String,
-      sqliteFalse: data['sqlite_false'] as String,
-      sqliteTrue: data['sqlite_true'] as String);
+      restFalse: data['rest_false'] as String?,
+      restTrue: data['rest_true'] == null ? null : data['rest_true'] as String?,
+      sqliteFalse: data['sqlite_false'] as String?,
+      sqliteTrue: data['sqlite_true'] as String?);
 }
 
 Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'rest_false': instance.restFalse,
     'rest_true': instance.restTrue,
@@ -22,18 +24,20 @@ Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
 }
 
 Future<NullableField> _$NullableFieldFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return NullableField(
-      restFalse: data['rest_false'] as String,
-      restTrue: data['rest_true'] as String,
-      sqliteFalse: data['sqlite_false'] as String,
+      restFalse: data['rest_false'] as String?,
+      restTrue: data['rest_true'] as String?,
+      sqliteFalse: data['sqlite_false'] as String?,
       sqliteTrue:
-          data['sqlite_true'] == null ? null : data['sqlite_true'] as String)
+          data['sqlite_true'] == null ? null : data['sqlite_true'] as String?)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'rest_false': instance.restFalse,
     'rest_true': instance.restTrue,

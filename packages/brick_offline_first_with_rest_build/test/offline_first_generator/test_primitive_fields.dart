@@ -4,16 +4,17 @@ enum Casing { snake, camel }
 
 final output = r'''
 Future<PrimitiveFields> _$PrimitiveFieldsFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
-      integer: data['integer'] as int,
-      boolean: data['boolean'] as bool,
-      dub: data['dub'] as double,
-      string: data['string'] as String,
-      list: data['list']?.toList()?.cast<int>() ?? <int>[],
-      aSet: data['a_set']?.toSet()?.cast<int>() ?? <int>{},
+      integer: data['integer'] as int?,
+      boolean: data['boolean'] as bool?,
+      dub: data['dub'] as double?,
+      string: data['string'] as String?,
+      list: data['list'].toList().cast<int>() ?? <int>[],
+      aSet: data['a_set'].toSet().cast<int>() ?? <int>{},
       map: data['map'],
-      longerCamelizedVariable: data['longer_camelized_variable'] as String,
+      longerCamelizedVariable: data['longer_camelized_variable'] as String?,
       casing:
           data['casing'] is int ? Casing.values[data['casing'] as int] : null,
       dateTime: data['date_time'] == null
@@ -22,7 +23,8 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromRest(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$PrimitiveFieldsToRest(PrimitiveFields instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'integer': instance.integer,
     'boolean': instance.boolean,
@@ -32,29 +34,31 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToRest(PrimitiveFields instance,
     'a_set': instance.aSet,
     'map': instance.map,
     'longer_camelized_variable': instance.longerCamelizedVariable,
-    'casing':
-        instance.casing != null ? Casing.values.indexOf(instance.casing) : null,
+    'casing': instance.casing != null
+        ? Casing.values.indexOf(instance.casing!)
+        : null,
     'date_time': instance.dateTime?.toIso8601String()
   };
 }
 
 Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
-      integer: data['integer'] == null ? null : data['integer'] as int,
+      integer: data['integer'] == null ? null : data['integer'] as int?,
       boolean: data['boolean'] == null ? null : data['boolean'] == 1,
-      dub: data['dub'] == null ? null : data['dub'] as double,
-      string: data['string'] == null ? null : data['string'] as String,
+      dub: data['dub'] == null ? null : data['dub'] as double?,
+      string: data['string'] == null ? null : data['string'] as String?,
       list: data['list'] == null
           ? null
-          : jsonDecode(data['list'])?.toList()?.cast<int>(),
+          : jsonDecode(data['list']).toList().cast<int>(),
       aSet: data['a_set'] == null
           ? null
-          : jsonDecode(data['a_set'])?.toSet()?.cast<int>(),
+          : jsonDecode(data['a_set']).toSet().cast<int>(),
       map: data['map'] == null ? null : jsonDecode(data['map']),
       longerCamelizedVariable: data['longer_camelized_variable'] == null
           ? null
-          : data['longer_camelized_variable'] as String,
+          : data['longer_camelized_variable'] as String?,
       casing: data['casing'] == null
           ? null
           : (data['casing'] > -1 ? Casing.values[data['casing'] as int] : null),
@@ -67,17 +71,20 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'integer': instance.integer,
-    'boolean': instance.boolean == null ? null : (instance.boolean ? 1 : 0),
+    'boolean': instance.boolean == null ? null : (instance.boolean! ? 1 : 0),
     'dub': instance.dub,
     'string': instance.string,
     'list': jsonEncode(instance.list ?? []),
     'a_set': jsonEncode(instance.aSet?.toList() ?? []),
     'map': jsonEncode(instance.map ?? {}),
     'longer_camelized_variable': instance.longerCamelizedVariable,
-    'casing': Casing.values.indexOf(instance.casing),
+    'casing': instance.casing != null
+        ? Casing.values.indexOf(instance.casing!)
+        : null,
     'date_time': instance.dateTime?.toIso8601String()
   };
 }

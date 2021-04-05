@@ -77,7 +77,8 @@ class RestSerializable {
   final String? fromKey;
 
   /// When `true` (the default), `null` fields are handled gracefully when decoding `null`
-  /// and nonexistent values from JSON.
+  /// and nonexistent values from JSON. This indicates that the fields from REST could be `null`
+  /// and is not related to Dart nullability.
   ///
   /// Setting to `false` eliminates `null` verification in the generated code,
   /// which reduces the code size. Errors may be thrown at runtime if `null`

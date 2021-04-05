@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;

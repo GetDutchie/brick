@@ -2,14 +2,16 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 
 final output = r'''
 Future<NoFinalNoConst> _$NoFinalNoConstFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return NoFinalNoConst(
       declaredVar: data['declared_var'] as int,
       regularVar: data['regular_var'] as bool);
 }
 
 Future<Map<String, dynamic>> _$NoFinalNoConstToRest(NoFinalNoConst instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'declared_var': instance.declaredVar,
     'regular_var': instance.regularVar,
@@ -18,7 +20,8 @@ Future<Map<String, dynamic>> _$NoFinalNoConstToRest(NoFinalNoConst instance,
 }
 
 Future<NoFinalNoConst> _$NoFinalNoConstFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return NoFinalNoConst(
       declaredVar:
           data['declared_var'] == null ? null : data['declared_var'] as int,
@@ -27,11 +30,12 @@ Future<NoFinalNoConst> _$NoFinalNoConstFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$NoFinalNoConstToSqlite(NoFinalNoConst instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'declared_var': instance.declaredVar,
     'regular_var':
-        instance.regularVar == null ? null : (instance.regularVar ? 1 : 0),
+        instance.regularVar == null ? null : (instance.regularVar! ? 1 : 0),
     'computed_field': instance.computedField
   };
 }

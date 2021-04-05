@@ -3,24 +3,28 @@ import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
 Future<IgnoreField> _$IgnoreFieldFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return IgnoreField(name: data['name'] as String);
 }
 
 Future<Map<String, dynamic>> _$IgnoreFieldToRest(IgnoreField instance,
-    {RestProvider provider, OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {'name': instance.name};
 }
 
 Future<IgnoreField> _$IgnoreFieldFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return IgnoreField(
       email: data['email'] == null ? null : data['email'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$IgnoreFieldToSqlite(IgnoreField instance,
-    {SqliteProvider provider, OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {'email': instance.email};
 }
 ''';

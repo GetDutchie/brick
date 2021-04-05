@@ -9,22 +9,22 @@ part of '../brick.g.dart';
 
 Future<RestConfigEndpoint> _$RestConfigEndpointFromRest(
     Map<String, dynamic> data,
-    {RestProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return RestConfigEndpoint(someField: data['some_field'] as int);
 }
 
 Future<Map<String, dynamic>> _$RestConfigEndpointToRest(
     RestConfigEndpoint instance,
-    {RestProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {'some_field': instance.someField};
 }
 
 Future<RestConfigEndpoint> _$RestConfigEndpointFromSqlite(
     Map<String, dynamic> data,
-    {SqliteProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return RestConfigEndpoint(
       someField: data['some_field'] == null ? null : data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
@@ -32,8 +32,8 @@ Future<RestConfigEndpoint> _$RestConfigEndpointFromSqlite(
 
 Future<Map<String, dynamic>> _$RestConfigEndpointToSqlite(
     RestConfigEndpoint instance,
-    {SqliteProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {'some_field': instance.someField};
 }
 
@@ -43,14 +43,14 @@ class RestConfigEndpointAdapter
   RestConfigEndpointAdapter();
 
   @override
-  String restEndpoint({query, instance}) {
+  String? restEndpoint({query, instance}) {
     return 'anEndpoint';
   }
 
   @override
-  final String fromKey = null;
+  final String? fromKey = null;
   @override
-  final String toKey = null;
+  final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
@@ -67,30 +67,34 @@ class RestConfigEndpointAdapter
     )
   };
   @override
-  Future<int> primaryKeyByUniqueColumns(
+  Future<int?> primaryKeyByUniqueColumns(
           RestConfigEndpoint instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+      instance.primaryKey;
   @override
   final String tableName = 'RestConfigEndpoint';
 
   @override
   Future<RestConfigEndpoint> fromRest(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstRepository? repository}) async =>
       await _$RestConfigEndpointFromRest(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toRest(RestConfigEndpoint input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstRepository? repository}) async =>
       await _$RestConfigEndpointToRest(input,
           provider: provider, repository: repository);
   @override
   Future<RestConfigEndpoint> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstRepository? repository}) async =>
       await _$RestConfigEndpointFromSqlite(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(RestConfigEndpoint input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstRepository? repository}) async =>
       await _$RestConfigEndpointToSqlite(input,
           provider: provider, repository: repository);
 }
