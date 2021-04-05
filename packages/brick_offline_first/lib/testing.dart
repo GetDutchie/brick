@@ -123,7 +123,7 @@ class StubOfflineFirstWithRest {
     Map<String, String> endpointsAndFilePaths,
   ) {
     final responses = endpointsAndFilePaths.entries.map((entry) {
-      return StubOfflineFirstRestResponse.fromFile(entry.key, endpoint: entry.value);
+      return StubOfflineFirstRestResponse.fromFile(entry.value, endpoint: entry.key);
     }).toList();
 
     return StubOfflineFirstWithRest(responses: responses, baseEndpoint: baseEndpoint);
