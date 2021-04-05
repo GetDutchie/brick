@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0+1
+
+* Require `provider` in `SqliteAdapter#fromSqlite`, `SqliteAdapter#toSqlite`, `SqliteAdapter#beforeSave`, `SqliteAdapter#afterSave`
+
 ## 1.0.0
 
 * Migrate to null safety

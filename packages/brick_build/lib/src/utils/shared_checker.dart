@@ -113,7 +113,7 @@ class SharedChecker<_SiblingModel extends Model> {
 
   bool get isString => _stringChecker.isExactlyType(targetType);
 
-  bool get isUnfuturedTypeNullable => unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
+  bool get isUnFuturedTypeNullable => unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
 
   /// Returns type arguments of [targetType]. For example, given `Map<Key, Value>`,
   /// `[Key, Value]` is returned. If the [targetType] does not declare type arguments,

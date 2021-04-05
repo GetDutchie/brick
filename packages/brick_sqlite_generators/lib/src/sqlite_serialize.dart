@@ -136,14 +136,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      final nullabilitySuffix = checker.isUnfuturedTypeNullable || checker.isNullable ? '!' : '';
+      final nullabilitySuffix = checker.isUnFuturedTypeNullable || checker.isNullable ? '!' : '';
       final upsertMethod = '''
         $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??
         await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>(
           $instance$nullabilitySuffix, repository: repository
         )''';
 
-      if (checker.isUnfuturedTypeNullable) {
+      if (checker.isUnFuturedTypeNullable) {
         return '$instance != null ? $upsertMethod : null';
       }
 

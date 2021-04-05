@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.0.0+1
+
+* Null safety cleanup and refactor
+* Fixes foreign key column bug introduced in 1.0.0: explicitly declared column names are no longer regenerated
+
 ## 1.0.0
 
 * Null safety

@@ -4,17 +4,15 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite_g
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 1.0.0-nullsafety.0
+version: 1.0.0
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   analyzer: ^1.1.0
-  brick_build:
-    path: ../brick_build
-  brick_sqlite_abstract:
-    path: ../brick_sqlite_abstract
+  brick_build: 1.0.0+1
+  brick_sqlite_abstract: 1.0.0+1
   build: ^2.0.0
   dart_style: ^2.0.0
   meta: ^1.3.0

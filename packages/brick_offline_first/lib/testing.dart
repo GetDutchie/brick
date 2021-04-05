@@ -74,7 +74,7 @@ class StubOfflineFirstWithRest {
   final String baseEndpoint;
 
   /// All reponses to return from an endpoint. For example, `user/1` or `users?limit=20&offset=1`.
-  /// Automatically prefixed with `$baseUrl/`.
+  /// Automatically prefixed with `$baseEndpoint/`.
   ///
   /// Responses can be either a file path or a custom response.
   ///

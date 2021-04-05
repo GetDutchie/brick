@@ -41,7 +41,7 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     ```dart
     // lib/app/repository.dart
     import 'package:brick_offline_first/offline_first_with_rest.dart';
-    import 'package:audio_journal/app/brick.g.dart';
+    import 'package:my_app/app/brick.g.dart';
     export 'package:brick_offline_first/offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
 
     class Repository extends OfflineFirstWithRestRepository {
