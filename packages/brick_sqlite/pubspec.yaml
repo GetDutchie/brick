@@ -4,11 +4,11 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.9.1 <2.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
   brick_core: ^1.0.0+1

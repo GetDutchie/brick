@@ -18,7 +18,7 @@ dependencies:
   brick_sqlite_abstract: ^1.0.0+1
   brick_sqlite_generators: ^1.0.0
   build: ^2.0.0
-  build_config: any
+  build_config: ^0.4.7
   dart_style: ^2.0.0
   glob: ^2.0.0
   logging: ^1.0.0

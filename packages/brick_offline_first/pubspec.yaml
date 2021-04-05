@@ -5,18 +5,19 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_offline_
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 1.0.0
+version: 1.0.0-nullsafety.0
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
-  flutter: '>=1.8.0 <2.0.0'
+  flutter: '>=2.0.0'
 
 dependencies:
   brick_core: ^1.0.0+1
   brick_offline_first_abstract: ^1.0.0+1
   brick_rest: ^1.0.0+3
-  brick_sqlite: ^1.0.0+1
+  brick_sqlite: ^1.0.0
   brick_sqlite_abstract: ^1.0.0+1
+  collection: ^1.15.0
   dart_style: ^2.0.0
   http: ^0.13.0
   logging: ^1.0.0
