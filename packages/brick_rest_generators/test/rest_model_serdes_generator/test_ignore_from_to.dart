@@ -2,7 +2,7 @@ import 'package:brick_rest/rest.dart';
 
 final output = r'''
 Future<RestIgnoreFromTo> _$RestIgnoreFromToFromRest(Map<String, dynamic> data,
-    {RestProvider provider, RestFirstRepository repository}) async {
+    {required RestProvider provider, RestFirstRepository? repository}) async {
   return RestIgnoreFromTo(
       ignoredTo: data['ignored_to'] as bool,
       otherIgnoredTo: data['other_ignored_to'] as bool,
@@ -10,7 +10,7 @@ Future<RestIgnoreFromTo> _$RestIgnoreFromToFromRest(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$RestIgnoreFromToToRest(RestIgnoreFromTo instance,
-    {RestProvider provider, RestFirstRepository repository}) async {
+    {required RestProvider provider, RestFirstRepository? repository}) async {
   return {'ignored_from': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';

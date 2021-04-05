@@ -7,7 +7,8 @@ final output = r"""
 part of '../brick.g.dart';
 
 Future<SqliteColumnType> _$SqliteColumnTypeFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return SqliteColumnType(
       someField: data['some_field'] == null ? null : data['some_field'])
     ..primaryKey = data['_brick_id'] as int;
@@ -15,8 +16,8 @@ Future<SqliteColumnType> _$SqliteColumnTypeFromSqlite(Map<String, dynamic> data,
 
 Future<Map<String, dynamic>> _$SqliteColumnTypeToSqlite(
     SqliteColumnType instance,
-    {SqliteProvider provider,
-    SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return {'some_field': instance.someField};
 }
 
@@ -40,20 +41,20 @@ class SqliteColumnTypeAdapter extends SqliteAdapter<SqliteColumnType> {
     )
   };
   @override
-  Future<int> primaryKeyByUniqueColumns(
+  Future<int?> primaryKeyByUniqueColumns(
           SqliteColumnType instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+      instance.primaryKey;
   @override
   final String tableName = 'SqliteColumnType';
 
   @override
   Future<SqliteColumnType> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$SqliteColumnTypeFromSqlite(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(SqliteColumnType input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$SqliteColumnTypeToSqlite(input,
           provider: provider, repository: repository);
 }
