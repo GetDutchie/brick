@@ -8,7 +8,13 @@ import 'package:collection/collection.dart';
 
 enum StubHttpMethod { get, post, put, delete, any }
 
-class StubOfflineFirstWithRestResponse {
+class StubOfflineFirstRestResponse {
+  /// The path where the [response] should be returned. Avoid leading slashes.
+  ///
+  /// This does not include the base URL or domain. For example,
+  /// `users` not `http://0.0.0.0:3000/api/users`.
+  final String endpoint;
+
   /// Limit this [response] to only return for a specific HTTP method;
   /// defaults to `any`, meaning the [response] will be returned regardless
   /// of the request.
@@ -28,14 +34,23 @@ class StubOfflineFirstWithRestResponse {
     return p.join(directory, 'test');
   }
 
-  StubOfflineFirstWithRestResponse(
+  StubOfflineFirstRestResponse(
     this.response, {
+    required this.endpoint,
     StubHttpMethod? method,
   }) : method = method ?? StubHttpMethod.any;
 
-  factory StubOfflineFirstWithRestResponse.fromFile(String filePath, {StubHttpMethod? method}) {
+  factory StubOfflineFirstRestResponse.fromFile(
+    String filePath, {
+    required String endpoint,
+    StubHttpMethod? method,
+  }) {
     final apiFile = File(p.join(currentDirectory, filePath));
-    return StubOfflineFirstWithRestResponse(apiFile.readAsStringSync(), method: method);
+    return StubOfflineFirstRestResponse(
+      apiFile.readAsStringSync(),
+      endpoint: endpoint,
+      method: method,
+    );
   }
 }
 
@@ -53,7 +68,11 @@ class StubOfflineFirstWithRestResponse {
 ///   }
 /// }
 /// ```
-class StubOfflineFirstWithRestModel {
+class StubOfflineFirstWithRest {
+  /// The prefix for all endpoints. For example, `http://0.0.0.0:3000/api`
+  /// in `http://0.0.0.0:3000/api`. This is equivalent to `RestProvider#baseEndpoint`.
+  final String baseEndpoint;
+
   /// All reponses to return from an endpoint. For example, `user/1` or `users?limit=20&offset=1`.
   /// Automatically prefixed with `$baseUrl/`.
   ///
@@ -65,19 +84,30 @@ class StubOfflineFirstWithRestModel {
   /// For custom responses, the return value will be **exact**. This class will not attempt to
   /// decode JSON for a custom response; it's recommended to submit a `Map` instead for
   /// JSON responses.
-  final Map<String, List<StubOfflineFirstWithRestResponse>> apiResponses;
+  final Iterable<StubOfflineFirstRestResponse> responses;
 
-  StubOfflineFirstWithRestModel({
-    required this.apiResponses,
+  /// Create a client to use with [RestProvider] that responds to endpoints
+  /// with predefined responses.
+  MockClient get client => MockClient((req) async {
+        final statusCode = _statusCodeForMethod(req.method);
+        final reqMethodToEnum = _stubHttpEnumFromMethod(req.method);
+
+        final response = responses.firstWhereOrNull((e) {
+          final methodMatches = e.method == reqMethodToEnum || e.method == StubHttpMethod.any;
+          final urlMatches = req.url == Uri.parse('$baseEndpoint/${e.endpoint}');
+          return methodMatches && urlMatches;
+        });
+        if (response != null) {
+          return http.Response(response.response, statusCode);
+        }
+
+        return http.Response('endpoint ${req.method} ${req.url} is not stubbed', 422);
+      });
+
+  StubOfflineFirstWithRest({
+    required this.baseEndpoint,
+    required this.responses,
   });
-
-  /// Responses will be returned on all HTTP methods. The [filePath] is
-  /// **relative to the top-level /test directory**.
-  factory StubOfflineFirstWithRestModel.fromFile(String endpoint, String filePath) {
-    return StubOfflineFirstWithRestModel(apiResponses: {
-      endpoint: [StubOfflineFirstWithRestResponse.fromFile(filePath)]
-    });
-  }
 
   /// Provide a list of responses from a list of endpoints, for example:
   /// ```dart
@@ -88,34 +118,16 @@ class StubOfflineFirstWithRestModel {
   ///
   /// Responses will be returned on all HTTP methods. The [filePath] is
   /// **relative to the top-level /test directory**.
-  static List<StubOfflineFirstWithRestModel> fromFiles(Map<String, String> endpointsAndFilePaths) {
-    return endpointsAndFilePaths.entries.map((entry) {
-      return StubOfflineFirstWithRestModel.fromFile(entry.key, entry.value);
+  factory StubOfflineFirstWithRest.fromFiles(
+    String baseEndpoint,
+    Map<String, String> endpointsAndFilePaths,
+  ) {
+    final responses = endpointsAndFilePaths.entries.map((entry) {
+      return StubOfflineFirstRestResponse.fromFile(entry.key, endpoint: entry.value);
     }).toList();
+
+    return StubOfflineFirstWithRest(responses: responses, baseEndpoint: baseEndpoint);
   }
-}
-
-/// Create a client to use with [RestProvider] that responds to endpoints
-/// with predefined responses.
-MockClient stubRestClient(String baseUrl, List<StubOfflineFirstWithRestModel> modelStubs) {
-  return MockClient((req) async {
-    final statusCode = _statusCodeForMethod(req.method);
-    final reqMethodToEnum = _stubHttpEnumFromMethod(req.method);
-
-    for (final modelStub in modelStubs) {
-      for (final endpoint in modelStub.apiResponses.keys) {
-        if (req.url == Uri.parse('$baseUrl/$endpoint')) {
-          final response = modelStub.apiResponses[endpoint]!.firstWhereOrNull(
-              (e) => e.method == reqMethodToEnum || e.method == StubHttpMethod.any);
-          if (response != null) {
-            return http.Response(response.response, statusCode);
-          }
-        }
-      }
-    }
-
-    return http.Response('endpoint ${req.method} ${req.url} is not stubbed', 422);
-  });
 }
 
 int _statusCodeForMethod(String method) {

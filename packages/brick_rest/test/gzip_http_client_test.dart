@@ -10,7 +10,7 @@ import '__mocks__.dart';
 RestProvider generateProvider(MockClientHandler fn) {
   final client = GZipHttpClient(innerClient: MockClient(fn));
   return RestProvider(
-    'http://localhost:3000',
+    'http://0.0.0.0:3000',
     modelDictionary: restModelDictionary,
     client: client,
   );

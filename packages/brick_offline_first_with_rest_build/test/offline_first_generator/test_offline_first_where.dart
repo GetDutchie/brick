@@ -24,7 +24,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
           .whereType<Future<Assoc>>()
           .toList(),
       loadedAssoc: await repository
-          ?.getAssociation<Assoc>(Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
+          ?.getAssociation<Assoc>(
+              Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
       loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList() ?? []),
       multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList());

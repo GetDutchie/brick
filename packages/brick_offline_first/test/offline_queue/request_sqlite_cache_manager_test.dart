@@ -40,8 +40,8 @@ void main() {
       );
       final client = OfflineQueueHttpClient(inner, _requestManager);
 
-      await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
-      await client.put(Uri.parse('http://localhost:3000'), body: 'existing record');
+      await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       final request = await _requestManager.prepareNextRequestToProcess();
       expect(request!.method, 'POST');
@@ -56,8 +56,8 @@ void main() {
       final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
 
-      await client.post(Uri.parse('http://localhost:3000'), body: 'existing record');
-      await client.put(Uri.parse('http://localhost:3000'), body: 'existing record');
+      await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       final request = await requestManager.prepareNextRequestToProcess();
       expect(request!.method, 'POST');
@@ -73,7 +73,7 @@ void main() {
       final client = OfflineQueueHttpClient(inner, requestManager);
       expect(await requestManager.unprocessedRequests(), isEmpty);
 
-      await client.put(Uri.parse('http://localhost:3000/stored-query'), body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000/stored-query'), body: 'existing record');
       final unprocessedRequests = await requestManager.unprocessedRequests();
       expect(unprocessedRequests, hasLength(1));
 

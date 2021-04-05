@@ -9,19 +9,16 @@ void main() {
   sqfliteFfiInit();
 
   group('OfflineFirstRepository', () {
-    final baseUrl = 'http://localhost:3000';
+    final baseUrl = 'http://0.0.0.0:3000';
 
     setUpAll(() async {
       TestRepository.configure(
         baseUrl: baseUrl,
         restDictionary: restModelDictionary,
         sqliteDictionary: sqliteModelDictionary,
-        client: stubRestClient(
-          baseUrl,
-          StubOfflineFirstWithRestModel.fromFiles({
-            'mounties': 'offline_first/api/mounties.json',
-          }),
-        ),
+        client: StubOfflineFirstWithRest.fromFiles(baseUrl, {
+          'mounties': 'offline_first/api/mounties.json',
+        }).client,
       );
 
       await TestRepository().initialize();
@@ -76,7 +73,7 @@ void main() {
       // verify(TestRepository()
       //     .remoteProvider
       //     .client
-      //     .get(Uri.parse('http://localhost:3000/mounties'), headers: anyNamed('headers')));
+      //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
     }, skip: 'Client is no longer a Mockito instance');
 
     test('#storeRestResults', () async {

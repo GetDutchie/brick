@@ -94,7 +94,7 @@ void main() {
     test('#generate', () {
       final defaultOutput = r'''
 Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
-    {DefaultSerdesProvider provider, ModelRepository repository}) async {
+    {required DefaultSerdesProvider provider, ModelRepository? repository}) async {
   return Simple();
 }
 ''';

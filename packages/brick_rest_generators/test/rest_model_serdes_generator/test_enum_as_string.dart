@@ -7,7 +7,8 @@ Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
       hat: RestAdapter.enumValueFromName(Hat.values, data['hat']),
       hats: data['hats']
           .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
-          .toList());
+          .toList()
+          .cast<Hat>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,

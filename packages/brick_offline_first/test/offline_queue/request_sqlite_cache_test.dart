@@ -99,23 +99,21 @@ void main() {
       test('basic', () {
         final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
+          HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
         });
 
         expect(request.method, 'POST');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.body, 'POST body');
       });
 
       test('missing headers', () {
-        final request = RequestSqliteCache.sqliteToRequest({
-          HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000'
-        });
+        final request = RequestSqliteCache.sqliteToRequest(
+            {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
 
         expect(request.method, 'GET');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.headers, {});
         expect(request.body, '');
       });
@@ -123,12 +121,12 @@ void main() {
       test('with headers', () {
         final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
+          HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
         });
 
         expect(request.method, 'GET');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.headers, {'Content-Type': 'application/json'});
         expect(request.body, '');
       });

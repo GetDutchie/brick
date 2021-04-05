@@ -11,8 +11,8 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromRest(Map<String, dynamic> data,
       boolean: data['boolean'] as bool?,
       dub: data['dub'] as double?,
       string: data['string'] as String?,
-      list: data['list'].toList() ?? <int>[],
-      aSet: data['a_set'].toSet() ?? <int>{},
+      list: data['list'].toList().cast<int>() ?? <int>[],
+      aSet: data['a_set'].toSet().cast<int>() ?? <int>{},
       map: data['map'],
       longerCamelizedVariable: data['longer_camelized_variable'] as String?,
       casing:
@@ -51,10 +51,10 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(Map<String, dynamic> data,
       string: data['string'] == null ? null : data['string'] as String?,
       list: data['list'] == null
           ? null
-          : jsonDecode(data['list']).toList(),
+          : jsonDecode(data['list']).toList().cast<int>(),
       aSet: data['a_set'] == null
           ? null
-          : jsonDecode(data['a_set']).toSet(),
+          : jsonDecode(data['a_set']).toSet().cast<int>(),
       map: data['map'] == null ? null : jsonDecode(data['map']),
       longerCamelizedVariable: data['longer_camelized_variable'] == null
           ? null

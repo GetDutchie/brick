@@ -11,9 +11,9 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return Futures(
       string: data['string'] as Future<String>?,
-      strings: data['strings'].toList() ?? <String>[],
+      strings: data['strings'].toList().cast<Future<String>>() ?? <String>[],
       futureStrings:
-          data['future_strings'].toList() ?? <Future<String>>[],
+          data['future_strings'].toList().cast<String>() ?? <Future<String>>[],
       assoc: AssocAdapter()
           .fromRest(data['assoc'], provider: provider, repository: repository),
       assocs: Future.wait<Assoc>(data['assocs']
@@ -57,10 +57,10 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
       string: data['string'] == null ? null : data['string'] as Future<String>?,
       strings: data['strings'] == null
           ? null
-          : jsonDecode(data['strings']).toList(),
+          : jsonDecode(data['strings']).toList().cast<String>(),
       futureStrings: data['future_strings'] == null
           ? null
-          : jsonDecode(data['future_strings']).toList(),
+          : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
       assoc: data['assoc_Assoc_brick_id'] == null
           ? null
           : (data['assoc_Assoc_brick_id'] > -1

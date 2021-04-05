@@ -43,15 +43,12 @@ void main() {
 
   group('DeleteAllMixin', () {
     final repository = DeleteAllRepository(
-      baseUrl: 'http://localhost:3000',
+      baseUrl: 'http://0.0.0.0:3000',
       restDictionary: restModelDictionary,
       sqliteDictionary: sqliteModelDictionary,
-      client: stubRestClient(
-        'http://localhost:3000',
-        StubOfflineFirstWithRestModel.fromFiles({
-          'mounties': 'offline_first/api/mounties.json',
-        }),
-      ),
+      client: StubOfflineFirstWithRest.fromFiles('http://0.0.0.0:3000', {
+        'mounties': 'offline_first/api/mounties.json',
+      }).client,
     );
 
     setUpAll(() async {

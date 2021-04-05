@@ -13,7 +13,7 @@ void main() {
   group('RestToOfflineFirstConverter', () {
     group('#getRestPayload', () {
       test('with top-level array', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
         converter.client = _generateResponse('[{"name": "Thomas"}]');
 
         final result = await converter.getRestPayload();
@@ -21,7 +21,7 @@ void main() {
       });
 
       test('with top-level map', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/person');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/person');
         converter.client = _generateResponse('[{"name": "Thomas"}]');
 
         final result = await converter.getRestPayload();
@@ -30,7 +30,7 @@ void main() {
 
       test('with top-level key', () async {
         final converter = RestToOfflineFirstConverter(
-            endpoint: 'http://localhost:3000/person', topLevelKey: 'person');
+            endpoint: 'http://0.0.0.0:3000/person', topLevelKey: 'person');
         converter.client = _generateResponse('{ "person": { "name": "Thomas"} }');
 
         final result = await converter.getRestPayload();
@@ -40,7 +40,7 @@ void main() {
 
     test('#generateFields', () {
       final fields = {'name': 'Thomas', 'age': 26, 'pocket_change': 1.05};
-      final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
+      final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
 
       final fieldsOutput = converter.generateFields(fields);
       expect(fieldsOutput, '''  final int age;
@@ -52,7 +52,7 @@ void main() {
 
     test('#generateConstructorFields', () {
       final fields = {'name': 'Thomas', 'age': 26, 'pocket_change': 1.05};
-      final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
+      final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
 
       final fieldsOutput = converter.generateConstructorFields(fields);
       expect(fieldsOutput, '''    this.age,
@@ -79,14 +79,14 @@ class People extends OfflineFirstModel {
 }
 ''';
       test('from map', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
         final output = await converter.generate({'name': 'Thomas'});
 
         expect(output, expectedOutput);
       });
 
       test('from rest', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://localhost:3000/people');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
         converter.client = _generateResponse('[{"name": "Thomas"}]');
 
         final output = await converter.generate();
@@ -95,7 +95,7 @@ class People extends OfflineFirstModel {
 
       test('with topLevelKey', () async {
         final converter = RestToOfflineFirstConverter(
-            endpoint: 'http://localhost:3000/people', topLevelKey: 'people');
+            endpoint: 'http://0.0.0.0:3000/people', topLevelKey: 'people');
         converter.client = _generateResponse('{"people": [{"name": "Thomas"}]}');
 
         final output = await converter.generate();

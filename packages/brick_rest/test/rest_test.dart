@@ -8,7 +8,7 @@ import '__mocks__.dart';
 
 RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) {
   return RestProvider(
-    'http://localhost:3000',
+    'http://0.0.0.0:3000',
     modelDictionary: restModelDictionary,
     client: generateClient(response, requestBody: requestBody, requestMethod: requestMethod),
   );
@@ -55,7 +55,7 @@ void main() {
 
       test('providerArgs["headers"]', () async {
         final provider = RestProvider(
-          'http://localhost:3000',
+          'http://0.0.0.0:3000',
           modelDictionary: restModelDictionary,
           client: MockClient((req) async {
             if (req.method == 'POST' && req.headers['Authorization'] == 'Basic xyz') {

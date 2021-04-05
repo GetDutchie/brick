@@ -111,7 +111,7 @@ A utility class is provided to make model generation from a JSON API a snap. Giv
 // lib/converter_script.dart
 import 'package:brick_offline_first/rest_to_offline_first_converter.dart';
 
-const BASE = "http://localhost:3000";
+const BASE = "http://0.0.0.0:3000";
 const endpoint = "$BASE/users";
 
 final converter = RestToOfflineFirstConverter(
@@ -161,7 +161,7 @@ import 'package:my_app/app/repository.dart';
 void main() {
   group("MySqliteProvider", () {
     setUpAll(() async {
-      await StubOfflineFirstWithRestModel<User>(
+      await StubOfflineFirstRestResponse<User>(
         filePath: "api/user.json",
         repository: MyRepository()
       ).initialize();
@@ -177,7 +177,7 @@ Currently the same response is returned for both `upsert` and `get` methods, wit
 As Mockito is rightfully strict in its stubbing, variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:
 
 ```dart
-StubOfflineFirstWithRestModel<User>(
+StubOfflineFirstRestResponse<User>(
   endpoints: ["user", "users", "users?by_first_name=Guy"]
 )
 ```

@@ -14,29 +14,54 @@ import 'package:my_app/app/repository.dart';
 
 void main() {
   group("MySqliteProvider", () {
+    late MyRepository repository;
     setUpAll(() async {
-      MyRepository(
+      repository = MyRepository(
         restProvider: RestProvider(
-          client: stubRestClient()
+          client: StubOfflineFirstWithRest.fromFiles('http://0.0.0.0:3000', {
+            'users': 'api/user.json'
+          }).client,
         )
-      )
-      await StubOfflineFirstWithRestModel<User>(
-        filePath: "api/user.json",
-        repository: MyRepository()
-      ).initialize();
+      );
+
+      await repository.initialize()
     });
   });
 }
 ```
 
-Currently the same response is returned for both `upsert` and `get` methods, with the only variation being in status code.
+By default, the same response is returned for both `upsert` and `get` methods, with the only variation being in status code. However, responses can be configured for different methods:
+
+```dart
+StubOfflineFirstWithRest(
+  baseEndpoint: 'http://0.0.0.0:3000',
+  responses: [
+    StubOfflineFirstRestResponse.fromFile('users', 'api/user.json', StubHttpMethod.get),
+    StubOfflineFirstRestResponse.fromFile('users', 'api/user-post.json', StubHttpMethod.post),
+  ],
+)
+```
+
+## Stubbing Without Files
+
+While storing the responses in a file can be convenient and reduce code clutter, responses can be defined inline:
+
+```dart
+StubOfflineFirstWithRest(
+  baseEndpoint: 'http://0.0.0.0:3000',
+  responses: [
+    StubOfflineFirstRestResponse('users', '{"name":"Bob"'),
+    StubOfflineFirstRestResponse('users', '{"name":"Alice"'),
+  ],
+)
+```
 
 ## Handling Endpoint Variations
 
-As Mockito is rightfully strict in its stubbing, variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:
+Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:
 
 ```dart
-StubOfflineFirstWithRestModel<User>(
+StubOfflineFirstRestResponse<User>(
   endpoints: ["user", "users", "users?by_first_name=Guy"]
 )
 ```
@@ -48,23 +73,22 @@ Rarely will only one model need to be stubbed. All classes in an app can be stub
 ```dart
 setUpAll() async {
   final config = {
-    User: ["user", "users"],
+    User: ['user', 'users'],
     // Even individual member endpoints must be declared for association fetching
     // REST endpoints are manually configured, so the content may vary
-    Hat: ["hat/1", "hat/2", "hats"],
+    Hat: ['hat/1', 'hat/2', 'hats'],
   }
-  final models = config.entries.map((modelConfig) {
-    return StubOfflineFirstWithRest(
-      filePath: "api/${modelConfig.key.toString().toLowerCase()}.json",
-      model: modelConfig.key,
-      endpoints: modelConfig.value,
-    );
-  });
-  await StubOfflineFirstWithRest(
-    modelStubs: models,
-    repository: MyRepository(),
-  ).initialize();
+  final responses = config.entries.map((modelConfig) {
+    return modelConfig.value.map((endpoint) {
+      return StubOfflineFirstRestResponse.fromFile(
+        'api/${modelConfig.key.toString().toLowerCase()}.json',
+        endpoint: endpoint,
+      );
+    });
+  }).expand((e) => e);
+  final client = StubOfflineFirstWithRest(
+    baseEndpoint: 'http://0.0.0.0:3000',
+    responses: responses,
+  ).client;
 }
 ```
-
-?> `MyRepository()`'s REST client is now a Mockito instance. `verify` and other interaction matchers can be called on `MyRepository().restProvider.client`.

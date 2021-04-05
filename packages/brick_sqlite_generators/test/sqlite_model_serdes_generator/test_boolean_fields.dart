@@ -17,12 +17,14 @@ Future<BooleanFields> _$BooleanFieldsFromSqlite(Map<String, dynamic> data,
           ? null
           : jsonDecode(data['multiple_fields'])
               .map((d) => d == 1)
-              .toList(),
+              .toList()
+              .cast<bool>(),
       multipleNullableFields: data['multiple_nullable_fields'] == null
           ? null
           : jsonDecode(data['multiple_nullable_fields'])
               .map((d) => d == 1)
-              .toList(),
+              .toList()
+              .cast<bool>(),
       multipleFutureFields: data['multiple_future_fields'] == null
           ? null
           : jsonDecode(data['multiple_future_fields'])
