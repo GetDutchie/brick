@@ -31,7 +31,7 @@ void main() {
     });
 
     test('#serialProcessing:false', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final _requestManager = RequestSqliteCacheManager(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
@@ -40,40 +40,40 @@ void main() {
       );
       final client = OfflineQueueHttpClient(inner, _requestManager);
 
-      await client.post('http://localhost:3000', body: 'existing record');
-      await client.put('http://localhost:3000', body: 'existing record');
+      await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       final request = await _requestManager.prepareNextRequestToProcess();
-      expect(request.method, 'POST');
+      expect(request!.method, 'POST');
 
       final asCacheItem = RequestSqliteCache(request);
       await asCacheItem.insertOrUpdate(await _requestManager.getDb());
       final req = await _requestManager.prepareNextRequestToProcess();
-      expect(req.method, 'PUT');
+      expect(req!.method, 'PUT');
     });
 
     test('#prepareNextRequestToProcess', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
 
-      await client.post('http://localhost:3000', body: 'existing record');
-      await client.put('http://localhost:3000', body: 'existing record');
+      await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       final request = await requestManager.prepareNextRequestToProcess();
-      expect(request.method, 'POST');
+      expect(request!.method, 'POST');
 
       final asCacheItem = RequestSqliteCache(request);
       await asCacheItem.insertOrUpdate(await requestManager.getDb());
       final req = await requestManager.prepareNextRequestToProcess();
-      expect(req.method, 'POST');
+      expect(req!.method, 'POST');
     });
 
     test('#deleteUnprocessedRequest', () async {
-      final inner = stubResult(requestBody: 'existing record', statusCode: 501);
+      final inner = stubResult(statusCode: 501);
       final client = OfflineQueueHttpClient(inner, requestManager);
       expect(await requestManager.unprocessedRequests(), isEmpty);
 
-      await client.put('http://localhost:3000/stored-query', body: 'existing record');
+      await client.put(Uri.parse('http://0.0.0.0:3000/stored-query'), body: 'existing record');
       final unprocessedRequests = await requestManager.unprocessedRequests();
       expect(unprocessedRequests, hasLength(1));
 

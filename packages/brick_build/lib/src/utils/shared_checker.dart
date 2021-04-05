@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -85,6 +86,10 @@ class SharedChecker<_SiblingModel extends Model> {
 
   bool get isMap => _mapChecker.isExactlyType(targetType);
 
+  bool get isNullable => targetType.nullabilitySuffix != NullabilitySuffix.none;
+
+  bool get isNum => _numChecker.isExactlyType(targetType);
+
   /// Not all [Type]s are parseable. For consistency, one catchall before smaller checks
   bool get isSerializable {
     if (isIterable) {
@@ -99,8 +104,6 @@ class SharedChecker<_SiblingModel extends Model> {
     return isDartCoreType || isEnum || isMap || isSibling || (isFuture && canSerializeArgType);
   }
 
-  bool get isNum => _numChecker.isExactlyType(targetType);
-
   bool get isSet => _setChecker.isExactlyType(targetType);
 
   /// If this is a class similarly annotated by the current generator.
@@ -109,6 +112,8 @@ class SharedChecker<_SiblingModel extends Model> {
   bool get isSibling => _siblingClassChecker.isAssignableFromType(targetType);
 
   bool get isString => _stringChecker.isExactlyType(targetType);
+
+  bool get isUnFuturedTypeNullable => unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
 
   /// Returns type arguments of [targetType]. For example, given `Map<Key, Value>`,
   /// `[Key, Value]` is returned. If the [targetType] does not declare type arguments,

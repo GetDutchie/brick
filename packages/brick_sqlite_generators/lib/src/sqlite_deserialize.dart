@@ -68,8 +68,13 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
     } else if (checker.isIterable) {
       final argTypeChecker = SharedChecker<SqliteModel>(checker.argType);
       final argType = checker.unFuturedArgType;
-      final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet, isList: checker.isList, isFuture: checker.isArgTypeAFuture);
+      final castIterable = SerdesGenerator.iterableCast(
+        argType,
+        isSet: checker.isSet,
+        isList: checker.isList,
+        isFuture: checker.isArgTypeAFuture,
+        forceCast: !checker.isArgTypeASibling,
+      );
 
       if (checker.isArgTypeASibling) {
         final awaited = wrappedInFuture ? 'async => await' : '=>';
@@ -79,14 +84,14 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final argTypeAsString = SharedChecker.withoutNullability(argType);
         final sqlStatement =
             'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
+
         final method = '''
           provider
-            ?.rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
-            ?.then((results) {
-              final ids = results.map((r) => (r ?? {})['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
+            .rawQuery('$sqlStatement', [data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int])
+            .then((results) {
+              final ids = results.map((r) => r['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
-                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited repository?.getAssociation<$argType>($query)
-                ?.then((r) => (r?.isEmpty ?? true) ? null : r.first))
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${SerdesGenerator.getAssociationMethod(argType, query: query)})
               );
             })
         ''';
@@ -103,7 +108,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
           // Iterable<SqliteModel>
         } else {
           if (checker.isSet) {
-            return '(await $method).toSet().cast<$argType>()';
+            return '(await $method).toSet()';
           }
 
           return '(await $method)$castIterable';
@@ -117,7 +122,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d as int] : null)$castIterable';
+        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)$castIterable';
       }
 
       // Iterable<bool>
@@ -130,18 +135,20 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
+      final repositoryOperator = checker.isUnFuturedTypeNullable ? '?' : '!';
+
       final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', $fieldValue as int, limit1: true),
       ''';
 
       if (wrappedInFuture) {
         return '''($fieldValue > -1
-            ? repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}}>($query)?.then((r) => (r?.isEmpty ?? true) ? null : r.first)
+            ? ${SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query)}
             : null)''';
       }
 
       return '''($fieldValue > -1
-            ? (await repository?.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
+            ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
             : null)''';
 
       // enum

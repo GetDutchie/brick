@@ -15,7 +15,7 @@ A utility class is provided to make model generation from a JSON API a snap. Giv
 // lib/converter_script.dart
 import 'package:brick_offline_first/rest_to_offline_first_converter.dart';
 
-const BASE = "http://localhost:3000";
+const BASE = "http://0.0.0.0:3000";
 const endpoint = "$BASE/users";
 
 final converter = RestToOfflineFirstConverter(

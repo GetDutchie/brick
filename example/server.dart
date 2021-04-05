@@ -17,12 +17,11 @@ Future<shelf.Response> _echoRequest(shelf.Request request) async {
       .fold(shelf.Response.notFound("Request ${request.url} does not match a known endpoint"),
           (acc, endpoint) async {
     final resp = await _jsonForRequest(request, endpoint);
-    if (resp != null) return shelf.Response.ok(resp, headers: {"Content-Type": "application/json"});
-    return acc;
+    return shelf.Response.ok(resp, headers: {"Content-Type": "application/json"});
   });
 }
 
-Future<String> _jsonForRequest(shelf.Request request, String fileName) async {
+Future<String?> _jsonForRequest(shelf.Request request, String fileName) async {
   if (!request.url.toString().startsWith(fileName)) return null;
   return await File("_api/$fileName.json").readAsString();
 }

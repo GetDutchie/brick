@@ -12,7 +12,7 @@ class Repository extends OfflineFirstWithRestRepository {
             modelDictionary: restModelDictionary,
           ),
           sqliteProvider: SqliteProvider(
-            "pizzaShoppe.sqlite",
+            'pizzaShoppe.sqlite',
             modelDictionary: sqliteModelDictionary,
           ),
           // as both models store each other as associations, we should
@@ -21,9 +21,9 @@ class Repository extends OfflineFirstWithRestRepository {
           migrations: migrations,
         );
 
-  factory Repository() => _singleton ?? Exception("Must call #configure first");
+  factory Repository() => _singleton!;
 
-  static Repository _singleton;
+  static Repository? _singleton;
 
   static void configure(String endpoint) {
     _singleton = Repository._(endpoint);

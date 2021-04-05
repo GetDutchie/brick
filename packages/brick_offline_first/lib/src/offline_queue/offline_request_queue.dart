@@ -13,10 +13,10 @@ class OfflineRequestQueue {
 
   final Logger _logger;
 
-  Timer _timer;
+  Timer? _timer;
 
   OfflineRequestQueue({
-    @required this.client,
+    required this.client,
   }) : _logger = Logger('OfflineRequestQueue#${client.requestManager.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].

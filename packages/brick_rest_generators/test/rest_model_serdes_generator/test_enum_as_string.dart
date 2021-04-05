@@ -2,20 +2,20 @@ import 'package:brick_rest/rest.dart';
 
 final output = r'''
 Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
-    {RestProvider provider, RestFirstRepository repository}) async {
+    {required RestProvider provider, RestFirstRepository? repository}) async {
   return EnumAsString(
       hat: RestAdapter.enumValueFromName(Hat.values, data['hat']),
       hats: data['hats']
           .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
-          ?.toList()
-          ?.cast<Hat>());
+          .toList()
+          .cast<Hat>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
-    {RestProvider provider, RestFirstRepository repository}) async {
+    {required RestProvider provider, RestFirstRepository? repository}) async {
   return {
-    'hat': instance.hat?.toString()?.split('.')?.last,
-    'hats': instance.hats?.map((e) => e.toString().split('.').last)?.toList()
+    'hat': instance.hat?.toString().split('.').last,
+    'hats': instance.hats?.map((e) => e.toString().split('.').last).toList()
   };
 }
 ''';

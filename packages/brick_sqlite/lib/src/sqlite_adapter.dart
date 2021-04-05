@@ -18,7 +18,7 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// `SqliteModel#beforeSave`.
   Future<void> beforeSave(
     _Model instance, {
-    SqliteProvider? provider,
+    required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   }) async {}
 
@@ -27,18 +27,18 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// `SqliteModel#afterSave`.
   Future<void> afterSave(
     _Model instance, {
-    SqliteProvider? provider,
+    required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   }) async {}
 
   Future<_Model> fromSqlite(
     Map<String, dynamic> data, {
-    SqliteProvider? provider,
+    required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
   Future<Map<String, dynamic>> toSqlite(
     _Model data, {
-    SqliteProvider? provider,
+    required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
 

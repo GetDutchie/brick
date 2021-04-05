@@ -5,9 +5,9 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
 
 @ConnectOfflineFirstWithRest()
 class Horse extends OfflineFirstWithRestModel {
-  final String name;
+  final String? name;
 
-  final List<Mounty> mounties;
+  final List<Mounty>? mounties;
 
   Horse({
     this.name,

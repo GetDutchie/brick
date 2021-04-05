@@ -102,8 +102,7 @@ class Query {
     return {
       if (action != null) 'action': QueryAction.values.indexOf(action!),
       'providerArgs': providerArgs,
-      if (where != null)
-        'where': where!.map((w) => w.toJson()).toList().cast<Map<String, dynamic>>(),
+      if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
     };
   }
 

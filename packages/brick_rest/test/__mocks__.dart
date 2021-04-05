@@ -1,4 +1,4 @@
-import 'package:mockito/mockito.dart';
+import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 
@@ -25,9 +25,10 @@ Future<Map<String, dynamic>> _$DemoRestModelToRest(DemoRestModel instance) async
 /// Construct a [DemoRestModel] for the [RestRepository]
 class DemoRestModelAdapter extends RestAdapter<DemoRestModel> {
   @override
-  Future<DemoRestModel> fromRest(data, {provider, repository}) => _$DemoRestModelFromRest(data);
+  Future<DemoRestModel> fromRest(data, {required provider, repository}) =>
+      _$DemoRestModelFromRest(data);
   @override
-  Future<Map<String, dynamic>> toRest(instance, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toRest(instance, {required provider, repository}) async =>
       await _$DemoRestModelToRest(instance);
   @override
   String restEndpoint({query, instance}) {
@@ -49,4 +50,13 @@ final Map<Type, RestAdapter<RestModel>> _restMappings = {
 };
 final restModelDictionary = RestModelDictionary(_restMappings);
 
-class MockClient extends Mock implements http.Client {}
+MockClient generateClient(String response, {String? requestBody, String? requestMethod}) {
+  return MockClient((req) async {
+    final matchesRequestBody = req.body == requestBody || requestBody == null;
+    final matchesRequestMethod = req.method == requestMethod || requestMethod == null;
+
+    if (matchesRequestMethod && matchesRequestBody) return http.Response(response, 200);
+
+    throw StateError('No response for $response');
+  });
+}

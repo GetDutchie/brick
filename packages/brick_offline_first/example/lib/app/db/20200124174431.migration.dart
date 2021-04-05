@@ -21,12 +21,10 @@ const List<MigrationCommand> _migration_20200124174431_up = [
   InsertColumn('enum_from_index', Column.integer, onTable: 'KitchenSink'),
   InsertColumn('any_list', Column.varchar, onTable: 'KitchenSink'),
   InsertColumn('any_set', Column.varchar, onTable: 'KitchenSink'),
-  InsertForeignKey('KitchenSink', 'Mounty', foreignKeyColumn: 'offline_first_model_Mounty_brick_id'),
+  InsertForeignKey('KitchenSink', 'Mounty',
+      foreignKeyColumn: 'offline_first_model_Mounty_brick_id'),
   InsertColumn('list_offline_first_model', Column.varchar, onTable: 'KitchenSink'),
   InsertColumn('set_offline_first_model', Column.varchar, onTable: 'KitchenSink'),
-  InsertForeignKey('KitchenSink', 'Mounty', foreignKeyColumn: 'future_offline_first_model_Mounty_brick_id'),
-  InsertColumn('future_list_offline_first_model', Column.varchar, onTable: 'KitchenSink'),
-  InsertColumn('future_set_offline_first_model', Column.varchar, onTable: 'KitchenSink'),
   InsertColumn('offline_first_serdes', Column.varchar, onTable: 'KitchenSink'),
   InsertColumn('list_offline_first_serdes', Column.varchar, onTable: 'KitchenSink'),
   InsertColumn('set_offline_first_serdes', Column.varchar, onTable: 'KitchenSink'),
@@ -63,9 +61,6 @@ const List<MigrationCommand> _migration_20200124174431_down = [
   DropColumn('offline_first_model_Mounty_brick_id', onTable: 'KitchenSink'),
   DropColumn('list_offline_first_model', onTable: 'KitchenSink'),
   DropColumn('set_offline_first_model', onTable: 'KitchenSink'),
-  DropColumn('future_offline_first_model_Mounty_brick_id', onTable: 'KitchenSink'),
-  DropColumn('future_list_offline_first_model', onTable: 'KitchenSink'),
-  DropColumn('future_set_offline_first_model', onTable: 'KitchenSink'),
   DropColumn('offline_first_serdes', onTable: 'KitchenSink'),
   DropColumn('list_offline_first_serdes', onTable: 'KitchenSink'),
   DropColumn('set_offline_first_serdes', onTable: 'KitchenSink'),
@@ -98,9 +93,9 @@ const List<MigrationCommand> _migration_20200124174431_down = [
 )
 class Migration20200124174431 extends Migration {
   const Migration20200124174431()
-    : super(
-        version: 20200124174431,
-        up: _migration_20200124174431_up,
-        down: _migration_20200124174431_down,
-      );
+      : super(
+          version: 20200124174431,
+          up: _migration_20200124174431_up,
+          down: _migration_20200124174431_down,
+        );
 }

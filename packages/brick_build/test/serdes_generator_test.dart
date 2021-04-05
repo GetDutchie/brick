@@ -81,7 +81,7 @@ void main() {
     test('serializingFunctionArguments', () {
       expect(
         defaults.serializingFunctionArguments,
-        'Map<String, dynamic> data, {DefaultSerdesProvider provider, ModelRepository repository}',
+        'Map<String, dynamic> data, {required DefaultSerdesProvider provider, ModelRepository? repository}',
       );
       expect(custom.serializingFunctionArguments, 'Map, {provider, SomeRepository repository}');
     });
@@ -94,7 +94,8 @@ void main() {
     test('#generate', () {
       final defaultOutput = r'''
 Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
-    {DefaultSerdesProvider provider, ModelRepository repository}) async {
+    {required DefaultSerdesProvider provider,
+    ModelRepository? repository}) async {
   return Simple();
 }
 ''';

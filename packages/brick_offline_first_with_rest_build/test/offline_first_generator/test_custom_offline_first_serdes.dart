@@ -4,47 +4,45 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 final output = r'''
 Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromRest(
     Map<String, dynamic> data,
-    {RestProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
       string: Serializable.fromRest(data['string']),
       strings: data['strings']
           .map((c) => Serializable.fromRest(c as Map<String, dynamic>))
-          ?.toList()
-          ?.cast<Serializable>());
+          .toList());
 }
 
 Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToRest(
     CustomOfflineFirstSerdes instance,
-    {RestProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {
     'string': instance.string?.toRest(),
-    'strings': instance.strings?.map((Serializable c) => c?.toRest())?.toList()
+    'strings': instance.strings?.map((Serializable c) => c.toRest()).toList()
   };
 }
 
 Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
     Map<String, dynamic> data,
-    {SqliteProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
       string: data['string'] == null
           ? null
-          : Serializable.fromSqlite(data['string'] as int),
+          : Serializable?.fromSqlite(data['string'] as int),
       strings: data['strings'] == null
           ? null
           : jsonDecode(data['strings'])
               .map((c) => Serializable.fromSqlite(c as int))
-              ?.toList()
-              ?.cast<Serializable>())
+              .toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToSqlite(
     CustomOfflineFirstSerdes instance,
-    {SqliteProvider provider,
-    OfflineFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstRepository? repository}) async {
   return {};
 }
 ''';
@@ -68,7 +66,7 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
 class CustomOfflineFirstSerdes {
   CustomOfflineFirstSerdes({this.string, this.strings});
 
-  final Serializable string;
+  final Serializable? string;
 
-  final List<Serializable> strings;
+  final List<Serializable>? strings;
 }

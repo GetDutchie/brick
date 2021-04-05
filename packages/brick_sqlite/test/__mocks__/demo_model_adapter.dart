@@ -31,18 +31,17 @@ Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
             )
             ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
       }))
-          ?.toList()
-          .cast<DemoModelAssoc>(),
+          ?.toList(),
       simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
-    {SqliteProvider? provider, repository}) async {
+    {required SqliteProvider provider, repository}) async {
   return {
     'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
         (instance.assoc != null
-            ? await provider?.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
+            ? await provider.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
             : null),
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
@@ -120,25 +119,25 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   @override
   final String tableName = 'DemoModel';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
-      final oldColumns = await provider?.rawQuery(
+      final oldColumns = await provider.rawQuery(
           'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
           [instance.primaryKey]);
-      final oldIds = oldColumns?.map((a) => a['f_DemoModelAssoc_brick_id']) ?? [];
+      final oldIds = oldColumns.map((a) => a['f_DemoModelAssoc_brick_id']);
       final newIds = instance.manyAssoc?.map((s) => s.primaryKey).where((s) => s != null) ?? [];
       final idsToDelete = oldIds.where((id) => !newIds.contains(id));
 
       await Future.wait<void>(idsToDelete.map((id) async {
-        return await provider?.rawExecute(
+        return await provider.rawExecute(
             'DELETE FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ? AND `f_DemoModelAssoc_brick_id` = ?',
             [instance.primaryKey, id]);
       }));
 
       await Future.wait<int?>(instance.manyAssoc?.map((s) async {
             final id =
-                s.primaryKey ?? await provider?.upsert<DemoModelAssoc>(s, repository: repository);
-            return await provider?.rawInsert(
+                s.primaryKey ?? await provider.upsert<DemoModelAssoc>(s, repository: repository);
+            return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_DemoModel_many_assoc` (`l_DemoModel_brick_id`, `f_DemoModelAssoc_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
           }) ??
@@ -147,9 +146,9 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   }
 
   @override
-  Future<DemoModel> fromSqlite(Map<String, dynamic> input, {provider, repository}) async =>
+  Future<DemoModel> fromSqlite(Map<String, dynamic> input, {required provider, repository}) async =>
       await _$DemoModelFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(DemoModel input, {provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(DemoModel input, {required provider, repository}) async =>
       await _$DemoModelToSqlite(input, provider: provider, repository: repository);
 }

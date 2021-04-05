@@ -65,7 +65,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       primaryKeyByUniqueColumns,
       "@override\nfinal String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)
-        "@override\nFuture<void> afterSave(instance, {provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
+        "@override\nFuture<void> afterSave(instance, {required provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
     ];
   }
 
@@ -103,7 +103,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s))?.toList()?.cast<int>() ?? [])';
+        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)).toList() ?? [])';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -136,11 +136,26 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      return '$instance?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>($instance, repository: repository)';
+      final nullabilitySuffix = checker.isUnFuturedTypeNullable || checker.isNullable ? '!' : '';
+      final upsertMethod = '''
+        $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??
+        await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>(
+          $instance$nullabilitySuffix, repository: repository
+        )''';
+
+      if (checker.isUnFuturedTypeNullable) {
+        return '$instance != null ? $upsertMethod : null';
+      }
+
+      return upsertMethod;
 
       // enum
     } else if (checker.isEnum) {
-      return '${field.type}.values.indexOf($fieldValue)';
+      if (checker.isNullable) {
+        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
+      }
+
+      return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
 
       // Map
     } else if (checker.isMap) {
@@ -155,7 +170,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   @mustCallSuper
   String generateUniqueSqliteFunction(Map<String, String> uniqueFields) {
     final functionDeclaration =
-        '@override\nFuture<int> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
+        '@override\nFuture<int?> primaryKeyByUniqueColumns(${element.name} instance, DatabaseExecutor executor) async';
     final whereStatement = <String>[];
     final valuesStatement = <String>[];
     final selectStatement = <String>[];
@@ -167,7 +182,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     if (selectStatement.isEmpty && whereStatement.isEmpty) {
-      return '$functionDeclaration => instance?.primaryKey;';
+      return '$functionDeclaration => instance.primaryKey;';
     }
 
     return """$functionDeclaration {
@@ -177,9 +192,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
 
       // SQFlite returns [{}] when no results are found
-      if (results?.isEmpty == true || (results?.length == 1 && results?.first?.isEmpty == true)) return null;
+      if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) {
+        return null;
+      }
 
-      return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'];
+      return results.first['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;
     }""";
   }
 
@@ -210,26 +227,27 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         'INSERT OR IGNORE INTO `$joinsTable` (`$joinsLocalColumn`, `$joinsForeignColumn`)';
     var siblingAssociations = fieldValue;
     var upsertMethod =
-        '(await s)?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
+        '(await s).${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>((await s), repository: repository)';
 
     // Iterable<SqliteModel>
     if (!checker.isArgTypeAFuture) {
       siblingAssociations = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       upsertMethod =
-          's?.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider?.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
+          's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
     }
 
     final removeStaleAssociations = field.isPublic && !field.isFinal
         ? _removeStaleAssociations(
             field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
         : '';
+    final nullabilitySuffix = checker.isNullable ? '?' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
         $removeStaleAssociations
-        await Future.wait<int>($siblingAssociations?.map((s) async {
+        await Future.wait<int?>($siblingAssociations$nullabilitySuffix.map((s) async {
           final id = $upsertMethod;
-          return await provider?.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
+          return await provider.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
         }) ?? []);
       }
     ''';
@@ -247,19 +265,18 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   String _boolForField(String fieldValue, bool nullable) {
-    final convertToInt = '$fieldValue ? 1 : 0';
     if (nullable) {
-      return '$fieldValue == null ? null : ($convertToInt)';
+      return '$fieldValue == null ? null : ($fieldValue! ? 1 : 0)';
     }
 
-    return convertToInt;
+    return '$fieldValue ?? false ? 1 : 0';
   }
 }
 
 String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
     String joinsLocalColumn, String joinsTable, String siblingAssociations) {
   return '''
-    final ${fieldName}OldColumns = await provider?.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
+    final ${fieldName}OldColumns = await provider.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
     final ${fieldName}OldIds = ${fieldName}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
     final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));

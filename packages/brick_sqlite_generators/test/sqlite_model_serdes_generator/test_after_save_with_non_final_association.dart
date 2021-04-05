@@ -8,28 +8,27 @@ part of '../brick.g.dart';
 
 Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
     Map<String, dynamic> data,
-    {SqliteProvider provider,
-    SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return AfterSaveWithAssociation(
-      someField: (await provider?.rawQuery(
+      someField: (await provider.rawQuery(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE l_AfterSaveWithAssociation_brick_id = ?',
-              [data['_brick_id'] as int])?.then((results) {
-    final ids = results.map((r) => (r ?? {})['f_Assoc_brick_id']);
-    return Future.wait<Assoc>(ids.map((primaryKey) => repository
-        ?.getAssociation<Assoc>(
+              [data['_brick_id'] as int]).then((results) {
+    final ids = results.map((r) => r['f_Assoc_brick_id']);
+    return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        .getAssociation<Assoc>(
           Query.where('primaryKey', primaryKey, limit1: true),
         )
-        ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+        .then((r) => r!.first)));
   }))
-          ?.toList()
-          ?.cast<Assoc>())
+          .toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$AfterSaveWithAssociationToSqlite(
     AfterSaveWithAssociation instance,
-    {SqliteProvider provider,
-    SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return {};
 }
 
@@ -54,15 +53,15 @@ class AfterSaveWithAssociationAdapter
     )
   };
   @override
-  Future<int> primaryKeyByUniqueColumns(
+  Future<int?> primaryKeyByUniqueColumns(
           AfterSaveWithAssociation instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+      instance.primaryKey;
   @override
   final String tableName = 'AfterSaveWithAssociation';
   @override
-  Future<void> afterSave(instance, {provider, repository}) async {
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
-      final someFieldOldColumns = await provider?.rawQuery(
+      final someFieldOldColumns = await provider.rawQuery(
           'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
           [instance.primaryKey]);
       final someFieldOldIds =
@@ -80,10 +79,10 @@ class AfterSaveWithAssociationAdapter
             [instance.primaryKey, id])?.catchError((e) => null);
       }));
 
-      await Future.wait<int>(instance.someField?.map((s) async {
-            final id = s?.primaryKey ??
-                await provider?.upsert<Assoc>(s, repository: repository);
-            return await provider?.rawInsert(
+      await Future.wait<int?>(instance.someField.map((s) async {
+            final id = s.primaryKey ??
+                await provider.upsert<Assoc>(s, repository: repository);
+            return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_some_field` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
           }) ??
@@ -93,12 +92,12 @@ class AfterSaveWithAssociationAdapter
 
   @override
   Future<AfterSaveWithAssociation> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$AfterSaveWithAssociationFromSqlite(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(AfterSaveWithAssociation input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$AfterSaveWithAssociationToSqlite(input,
           provider: provider, repository: repository);
 }

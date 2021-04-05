@@ -3,52 +3,52 @@
 part of '../brick.g.dart';
 
 Future<Horse> _$HorseFromRest(Map<String, dynamic> data,
-    {RestProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return Horse(
-      name: data['name'] as String,
+      name: data['name'] as String?,
       mounties: await Future.wait<Mounty>(data['mounties']
               ?.map((d) => MountyAdapter()
                   .fromRest(d, provider: provider, repository: repository))
-              ?.toList()
-              ?.cast<Future<Mounty>>() ??
+              .toList() ??
           []));
 }
 
 Future<Map<String, dynamic>> _$HorseToRest(Horse instance,
-    {RestProvider provider, OfflineFirstWithRestRepository repository}) async {
+    {required RestProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return {
     'name': instance.name,
     'mounties': await Future.wait<Map<String, dynamic>>(instance.mounties
             ?.map((s) => MountyAdapter()
                 .toRest(s, provider: provider, repository: repository))
-            ?.toList() ??
+            .toList() ??
         [])
   };
 }
 
 Future<Horse> _$HorseFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider,
-    OfflineFirstWithRestRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return Horse(
-      name: data['name'] == null ? null : data['name'] as String,
-      mounties: (await provider?.rawQuery(
+      name: data['name'] == null ? null : data['name'] as String?,
+      mounties: (await provider.rawQuery(
               'SELECT DISTINCT `f_Mounty_brick_id` FROM `_brick_Horse_mounties` WHERE l_Horse_brick_id = ?',
-              [data['_brick_id'] as int])?.then((results) {
-        final ids = results.map((r) => (r ?? {})['f_Mounty_brick_id']);
-        return Future.wait<Mounty>(ids.map((primaryKey) => repository
-            ?.getAssociation<Mounty>(
+              [data['_brick_id'] as int]).then((results) {
+        final ids = results.map((r) => r['f_Mounty_brick_id']);
+        return Future.wait<Mounty>(ids.map((primaryKey) => repository!
+            .getAssociation<Mounty>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
-            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
+            .then((r) => r!.first)));
       }))
-          ?.toList()
-          ?.cast<Mounty>())
+          .toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$HorseToSqlite(Horse instance,
-    {SqliteProvider provider,
-    OfflineFirstWithRestRepository repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return {'name': instance.name};
 }
 
@@ -56,9 +56,13 @@ Future<Map<String, dynamic>> _$HorseToSqlite(Horse instance,
 class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   HorseAdapter();
 
-  String restEndpoint({query, instance}) => '';
-  final String fromKey = null;
-  final String toKey = null;
+  @override
+  String? restEndpoint({query, instance}) => '';
+  @override
+  final String? fromKey = null;
+  @override
+  final String? toKey = null;
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': RuntimeSqliteColumnDefinition(
       association: false,
@@ -79,16 +83,19 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       type: Mounty,
     )
   };
-  Future<int> primaryKeyByUniqueColumns(
+  @override
+  Future<int?> primaryKeyByUniqueColumns(
           Horse instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+      instance.primaryKey;
+  @override
   final String tableName = 'Horse';
-  Future<void> afterSave(instance, {provider, repository}) async {
+  @override
+  Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
-      await Future.wait<int>(instance.mounties?.map((s) async {
-            final id = s?.primaryKey ??
-                await provider?.upsert<Mounty>(s, repository: repository);
-            return await provider?.rawInsert(
+      await Future.wait<int?>(instance.mounties?.map((s) async {
+            final id = s.primaryKey ??
+                await provider.upsert<Mounty>(s, repository: repository);
+            return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Horse_mounties` (`l_Horse_brick_id`, `f_Mounty_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
           }) ??
@@ -96,17 +103,25 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
     }
   }
 
+  @override
   Future<Horse> fromRest(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$HorseFromRest(input, provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toRest(Horse input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$HorseToRest(input, provider: provider, repository: repository);
+  @override
   Future<Horse> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$HorseFromSqlite(input,
           provider: provider, repository: repository);
+  @override
   Future<Map<String, dynamic>> toSqlite(Horse input,
-          {provider, repository}) async =>
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$HorseToSqlite(input, provider: provider, repository: repository);
 }

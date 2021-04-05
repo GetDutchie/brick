@@ -1,6 +1,10 @@
 ## Unreleased
 
-# 1.0.0
+## 1.0.0+1
+
+* Loosen `brick_build` pubspec restriction
+
+## 1.0.0
 
 * Null safety
 

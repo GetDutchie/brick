@@ -12,12 +12,12 @@ abstract class RestAdapter<_Model extends Model> implements Adapter<_Model> {
 
   Future<_Model> fromRest(
     Map<String, dynamic> data, {
-    RestProvider? provider,
+    required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });
   Future<Map<String, dynamic>> toRest(
     _Model instance, {
-    RestProvider? provider,
+    required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });
 

@@ -11,11 +11,11 @@ class OfflineFirstException implements Exception {
 
   String get message => originalError.toString();
 
-  int get restErrorCode => fromRest ? (originalError as RestException).response.statusCode : null;
+  int? get restErrorCode => fromRest ? (originalError as RestException).response.statusCode : null;
 
   /// Forward errors from a [RestException] response. `null` is returned
   /// if [originalError] was not [fromRest].
-  Map<String, dynamic> get restErrors {
+  Map<String, dynamic>? get restErrors {
     if (!fromRest) return null;
 
     return (originalError as RestException).errors;

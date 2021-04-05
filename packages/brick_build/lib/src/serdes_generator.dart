@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_core/core.dart';
@@ -91,7 +92,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// as a named argument.
   String get serializingFunctionArguments {
     final input = doesDeserialize ? '$deserializeInputType data' : '$className instance';
-    return '$input, {${providerName}Provider provider, ${repositoryName}Repository repository}';
+    return '$input, {required ${providerName}Provider provider, ${repositoryName}Repository? repository}';
   }
 
   /// The generated deserialize function name
@@ -335,13 +336,34 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     bool isSet = false,
     bool isList = false,
     bool isFuture = false,
+    bool forceCast = false,
   }) {
+    final nullableSuffix = argType.nullabilitySuffix != NullabilitySuffix.none ? '?' : '';
+    var castStatement = nullableSuffix;
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';
-      final castType = isFuture ? 'Future<$argType>' : argType;
-      return '?.to$method()?.cast<$castType>()';
+      castStatement += '.to$method()';
     }
 
-    return '?.cast<$argType>()';
+    if (forceCast) {
+      final castType = isFuture ? 'Future<$argType>' : argType;
+      castStatement += '.cast<$castType>()';
+    }
+
+    return castStatement;
+  }
+
+  static String getAssociationMethod(
+    DartType argType, {
+    required String query,
+  }) {
+    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
+    final repositoryOperator = isNullable ? '?' : '!';
+    final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
+
+    return '''repository
+      $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>($query)
+      .then((r) => $thenStatement)
+    ''';
   }
 }

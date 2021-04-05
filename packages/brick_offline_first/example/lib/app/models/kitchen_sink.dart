@@ -6,7 +6,7 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: '=> "/my-path";',
+    endpoint: "=> '/my-path';",
     // These are NOT necessary unless other properties are present
     // Brick will find the first top-level property if there are multiple properties
     // in the return response from REST
@@ -16,94 +16,88 @@ import 'package:brick_offline_first_example/app/models/mounty.dart';
   ),
 )
 class KitchenSink extends OfflineFirstWithRestModel {
-  final String anyString;
+  final String? anyString;
 
-  final int anyInt;
+  final int? anyInt;
 
-  final double anyDouble;
+  final double? anyDouble;
 
-  final num anyNum;
+  final num? anyNum;
 
-  final DateTime anyDateTime;
+  final DateTime? anyDateTime;
 
-  final bool anyBool;
+  final bool? anyBool;
 
-  final Map anyMap;
+  final Map? anyMap;
 
-  final AnyEnum enumFromIndex;
+  final AnyEnum? enumFromIndex;
 
-  final List<int> anyList;
+  final List<int>? anyList;
 
-  final Set<int> anySet;
+  final Set<int>? anySet;
 
-  final Mounty offlineFirstModel;
+  final Mounty? offlineFirstModel;
 
-  final List<Mounty> listOfflineFirstModel;
+  final List<Mounty>? listOfflineFirstModel;
 
-  final Set<Mounty> setOfflineFirstModel;
+  final Set<Mounty>? setOfflineFirstModel;
 
-  final Future<Mounty> futureOfflineFirstModel;
+  final Hat? offlineFirstSerdes;
 
-  final List<Future<Mounty>> futureListOfflineFirstModel;
+  final List<Hat>? listOfflineFirstSerdes;
 
-  final Set<Future<Mounty>> futureSetOfflineFirstModel;
-
-  final Hat offlineFirstSerdes;
-
-  final List<Hat> listOfflineFirstSerdes;
-
-  final Set<Hat> setOfflineFirstSerdes;
+  final Set<Hat>? setOfflineFirstSerdes;
 
   @Rest(name: 'restAnnotationOtherName')
-  final String restAnnotationName;
+  final String? restAnnotationName;
 
-  @Rest(defaultValue: '"a default value"')
-  final String restAnnotationDefaultValue;
+  @Rest(defaultValue: "'a default value'")
+  final String? restAnnotationDefaultValue;
 
   @Rest(nullable: true)
-  final String restAnnotationNullable;
+  final String? restAnnotationNullable;
 
   @Rest(ignore: true)
-  final String restAnnotationIgnore;
+  final String? restAnnotationIgnore;
 
   @Rest(ignoreTo: true)
-  final String restAnnotationIgnoreTo;
+  final String? restAnnotationIgnoreTo;
 
   @Rest(ignoreFrom: true)
-  final String restAnnotationIgnoreFrom;
+  final String? restAnnotationIgnoreFrom;
 
   @Rest(fromGenerator: '%DATA_PROPERTY%.toString()')
-  final String restAnnotationFromGenerator;
+  final String? restAnnotationFromGenerator;
 
   @Rest(toGenerator: '%INSTANCE_PROPERTY%.toString()')
-  final String restAnnotationToGenerator;
+  final String? restAnnotationToGenerator;
 
   @Rest(enumAsString: true)
-  final AnyEnum enumFromString;
+  final AnyEnum? enumFromString;
 
   @Sqlite(nullable: true)
-  final String sqliteAnnotationNullable;
+  final String? sqliteAnnotationNullable;
 
-  @Sqlite(defaultValue: '"default value"')
-  final String sqliteAnnotationDefaultValue;
+  @Sqlite(defaultValue: "'default value'")
+  final String? sqliteAnnotationDefaultValue;
 
   @Sqlite(fromGenerator: '%DATA_PROPERTY%.toString()')
-  final String sqliteAnnotationFromGenerator;
+  final String? sqliteAnnotationFromGenerator;
 
   @Sqlite(toGenerator: '%INSTANCE_PROPERTY%.toString()')
-  final String sqliteAnnotationToGenerator;
+  final String? sqliteAnnotationToGenerator;
 
   @Sqlite(ignore: true)
-  final String sqliteAnnotationIgnore;
+  final String? sqliteAnnotationIgnore;
 
   @Sqlite(unique: true)
-  final String sqliteAnnotationUnique;
+  final String? sqliteAnnotationUnique;
 
   @Sqlite(name: 'custom column name')
-  final String sqliteAnnotationName;
+  final String? sqliteAnnotationName;
 
   @OfflineFirst(where: {'email': "data['mounty_email']"})
-  final Mounty offlineFirstWhere;
+  final Mounty? offlineFirstWhere;
 
   KitchenSink({
     this.anyString,
@@ -119,9 +113,6 @@ class KitchenSink extends OfflineFirstWithRestModel {
     this.offlineFirstModel,
     this.listOfflineFirstModel,
     this.setOfflineFirstModel,
-    this.futureOfflineFirstModel,
-    this.futureListOfflineFirstModel,
-    this.futureSetOfflineFirstModel,
     this.offlineFirstSerdes,
     this.listOfflineFirstSerdes,
     this.setOfflineFirstSerdes,

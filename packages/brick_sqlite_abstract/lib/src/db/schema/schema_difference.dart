@@ -64,8 +64,7 @@ class SchemaDifference {
 
     return [removedTables, removedColumns, added, addedIndices, removedIndices]
         .expand((l) => l)
-        .toList()
-        .cast<MigrationCommand>();
+        .toList();
   }
 
   /// Output to be used when building `up` statements in a [Migration]

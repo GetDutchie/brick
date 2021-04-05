@@ -14,11 +14,8 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final now = DateTime.now().toUtc();
-    final timestamp = [now.month, now.day, now.hour, now.minute, now.second]
-        .map(_padToTwo)
-        .toList()
-        .cast<String>()
-        .join('');
+    final timestamp =
+        [now.month, now.day, now.hour, now.minute, now.second].map(_padToTwo).toList().join('');
     final version = int.parse('${now.year}$timestamp');
     final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 
@@ -28,14 +25,6 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
 
     final stopwatch = Stopwatch();
     stopwatch.start();
-
-    // TODO Set.from([ format is deprecated. Remove both of these on the next major release
-    await replaceWithinFile(
-      'db/schema.g.dart',
-      'final Set<Migration> migrations = Set.from([',
-      'final Set<Migration> migrations = <Migration>{',
-    );
-    await replaceWithinFile('db/schema.g.dart', '])', '}');
 
     // in a perfect world, the schema would not be edited in such a brittle way
     // however, reruning the schema generator here doesn't pick up the new migration

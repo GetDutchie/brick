@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
@@ -44,9 +45,9 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue?.map((e) => e.toString().split('.').last)?.toList()";
+          return "$fieldValue?.map((e) => e.toString().split('.').last).toList()";
         } else {
-          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e))?.toList()';
+          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
       }
 
@@ -54,10 +55,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       if (checker.isArgTypeASibling) {
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
         return '''await Future.wait<Map<String, dynamic>>(
-          $fieldValue?.map((s) $awaited =>
+          $fieldValue$nullabilitySuffix.map((s) $awaited =>
             ${SharedChecker.withoutNullability(checker.unFuturedArgType)}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
-          )?.toList() ?? []
+          ).toList() ?? []
         )''';
       }
 
@@ -66,15 +68,21 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
+      final isNullableField = checker.unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
+      final wrappedFieldWithSuffix = isNullableField ? '$wrappedField!' : wrappedField;
 
-      return 'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField, provider: provider, repository: repository)';
+      final result =
+          'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedFieldWithSuffix, provider: provider, repository: repository)';
+      if (isNullableField) return '$wrappedField != null ? $result : null';
+
+      return result;
 
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue?.toString()?.split('.')?.last";
+        return "$fieldValue?.toString().split('.').last";
       } else {
-        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue) : null';
+        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }
     }
 

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
@@ -9,7 +10,8 @@ import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel> {
   final OfflineFirstFields offlineFirstFields;
-  _OfflineFirstRestSerialize(ClassElement element, RestFields fields, {String repositoryName})
+  _OfflineFirstRestSerialize(ClassElement element, RestFields fields,
+      {required String repositoryName})
       : offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: repositoryName);
 
@@ -17,31 +19,31 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
 
-    if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where.length > 1) {
+    if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where!.length > 1) {
       return null;
     }
 
     if (fieldAnnotation.ignoreTo) return null;
 
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
       if (checker.isArgTypeASibling && offlineFirstAnnotation.where != null) {
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
-        final pair = offlineFirstAnnotation.where.entries.first;
+        final pair = offlineFirstAnnotation.where!.entries.first;
         final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-        return '$instanceWithField?.map((s) $awaited.${pair.key})?.toList()';
+        return '$instanceWithField?.map((s) $awaited.${pair.key}).toList()';
       }
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return '$fieldValue?.map((${checker.argType.getDisplayString()} c) => c?.$serializeMethod())?.toList()';
+          return '$fieldValue?.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
         }
       }
     }
@@ -49,10 +51,16 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
     if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       if (offlineFirstAnnotation.where != null) {
-        final pair = offlineFirstAnnotation.where.entries.first;
+        final pair = offlineFirstAnnotation.where!.entries.first;
         return '$wrappedField?.${pair.key}';
       } else {
-        return 'await ${checker.unFuturedType}Adapter().toRest($wrappedField)';
+        final restSerializerStatement =
+            'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField!, provider: provider, repository: repository)';
+        if (checker.isUnFuturedTypeNullable) {
+          return '$wrappedField != null ? $restSerializerStatement : null';
+        }
+
+        return restSerializerStatement;
       }
     }
 
@@ -70,7 +78,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
 
 class _OfflineFirstRestDeserialize extends RestDeserialize {
   final OfflineFirstFields offlineFirstFields;
-  _OfflineFirstRestDeserialize(ClassElement element, RestFields fields, {String repositoryName})
+  _OfflineFirstRestDeserialize(ClassElement element, RestFields fields,
+      {required String repositoryName})
       : offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: repositoryName);
 
@@ -78,9 +87,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
-    final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
@@ -96,25 +105,28 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
+        final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
+        final repositoryOperator = isNullable ? '?' : '!';
+
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {
-          final where = _convertSqliteLookupToString(offlineFirstAnnotation.where);
+          final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
 
           // Future<Iterable<OfflineFirstModel>>
           if (wrappedInFuture) {
             return '''repository
-              ?.getAssociation<$argType>(Query(where: $where))''';
+              $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>(Query(where: $where))''';
 
             // Iterable<OfflineFirstModel>
           } else {
             final fromRestCast = SerdesGenerator.iterableCast(argType,
                 isSet: checker.isSet, isList: checker.isList, isFuture: true);
             final where =
-                _convertSqliteLookupToString(offlineFirstAnnotation.where, iterableArgument: 's');
-            final getAssociations = '''($fieldValue ?? []).map((s) => repository
-              ?.getAssociation<$argType>(Query(where: $where))
-              ?.then((a) => a?.isNotEmpty == true ? a.first : null)
-            )$fromRestCast''';
+                _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
+            final getAssociationText =
+                SerdesGenerator.getAssociationMethod(argType, query: 'Query(where: $where)');
+            final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
+            ).whereType<Future<$argType>>()$fromRestCast''';
 
             if (checker.isArgTypeAFuture) {
               return getAssociations;
@@ -133,8 +145,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (argTypeChecker.hasSerdes) {
         final _hasConstructor = hasConstructor(checker.argType);
         if (_hasConstructor) {
-          final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
-          return '$fieldValue.map((c) => ${checker.argType}.$constructorName(c as $serializableType))$castIterable$defaultValue';
+          final serializableType =
+              argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
+          return '$fieldValue.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
       }
     }
@@ -145,9 +158,11 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
       if (offlineFirstAnnotation.where != null) {
         final type = checker.unFuturedType;
-        final where = _convertSqliteLookupToString(offlineFirstAnnotation.where);
-        return '''${shouldAwait}repository
-          ?.getAssociation<$type>(Query(where: $where, providerArgs: {'limit': 1}))?.then((a) => a?.isNotEmpty == true ? a.first : null)''';
+        final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
+        final getAssociationStatement = SerdesGenerator.getAssociationMethod(type,
+            query: "Query(where: $where, providerArgs: {'limit': 1})");
+
+        return '$shouldAwait$getAssociationStatement';
       }
     }
 
@@ -155,7 +170,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasConstructor = hasConstructor(field.type);
       if (_hasConstructor) {
-        return '${field.type}.$constructorName($fieldValue)';
+        return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue)';
       }
     }
 
@@ -164,7 +179,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
   }
 
   /// Define [iterableArgument] to condition value with one that comes from an iterated result
-  String _convertSqliteLookupToString(Map<String, String> lookup, {String iterableArgument}) {
+  String _convertSqliteLookupToString(Map<String, String> lookup, {String? iterableArgument}) {
     final conditions = lookup.entries.fold<Set<String>>(<String>{}, (acc, pair) {
       final matchedValue = iterableArgument ?? pair.value;
       acc.add("Where.exact('${pair.key}', $matchedValue)");
@@ -176,7 +191,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
 class OfflineFirstRestModelSerdesGenerator extends RestModelSerdesGenerator {
   OfflineFirstRestModelSerdesGenerator(Element element, ConstantReader reader,
-      {String repositoryName})
+      {required String repositoryName})
       : super(element, reader, repositoryName: repositoryName);
 
   @override
@@ -184,8 +199,8 @@ class OfflineFirstRestModelSerdesGenerator extends RestModelSerdesGenerator {
     final classElement = element as ClassElement;
     final fields = RestFields(classElement, config);
     return [
-      _OfflineFirstRestDeserialize(classElement, fields, repositoryName: repositoryName),
-      _OfflineFirstRestSerialize(classElement, fields, repositoryName: repositoryName),
+      _OfflineFirstRestDeserialize(classElement, fields, repositoryName: repositoryName!),
+      _OfflineFirstRestSerialize(classElement, fields, repositoryName: repositoryName!),
     ];
   }
 }

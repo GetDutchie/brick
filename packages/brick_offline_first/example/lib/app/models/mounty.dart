@@ -3,13 +3,13 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 
 import 'package:brick_offline_first_example/app/models/hat.dart';
 
-@ConnectOfflineFirstWithRest(restConfig: RestSerializable(endpoint: '=> "/mounties"'))
+@ConnectOfflineFirstWithRest(restConfig: RestSerializable(endpoint: "=> '/mounties'"))
 class Mounty extends OfflineFirstWithRestModel {
-  final String name;
+  final String? name;
 
-  final String email;
+  final String? email;
 
-  final Hat hat;
+  final Hat? hat;
 
   Mounty({
     this.name,

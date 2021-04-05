@@ -7,14 +7,16 @@ final output = r"""
 part of '../brick.g.dart';
 
 Future<SqliteUnique> _$SqliteUniqueFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider provider, SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return SqliteUnique(
       someField: data['some_field'] == null ? null : data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$SqliteUniqueToSqlite(SqliteUnique instance,
-    {SqliteProvider provider, SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return {'some_field': instance.someField};
 }
 
@@ -38,17 +40,18 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
     )
   };
   @override
-  Future<int> primaryKeyByUniqueColumns(
+  Future<int?> primaryKeyByUniqueColumns(
       SqliteUnique instance, DatabaseExecutor executor) async {
     final results = await executor.rawQuery('''
         SELECT * FROM `SqliteUnique` WHERE some_field = ? LIMIT 1''',
         [instance.someField]);
 
     // SQFlite returns [{}] when no results are found
-    if (results?.isEmpty == true ||
-        (results?.length == 1 && results?.first?.isEmpty == true)) return null;
+    if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) {
+      return null;
+    }
 
-    return results.first['_brick_id'];
+    return results.first['_brick_id'] as int;
   }
 
   @override
@@ -56,12 +59,12 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
 
   @override
   Future<SqliteUnique> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$SqliteUniqueFromSqlite(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(SqliteUnique input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$SqliteUniqueToSqlite(input,
           provider: provider, repository: repository);
 }

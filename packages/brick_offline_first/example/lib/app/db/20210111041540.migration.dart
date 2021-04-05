@@ -14,27 +14,32 @@ const List<MigrationCommand> _migration_20210111041540_up = [
   DropColumn('Mounty_brick_id', onTable: '_brick_KitchenSink_list_offline_first_model'),
   DropColumn('KitchenSink_brick_id', onTable: '_brick_KitchenSink_set_offline_first_model'),
   DropColumn('Mounty_brick_id', onTable: '_brick_KitchenSink_set_offline_first_model'),
-  DropColumn('KitchenSink_brick_id', onTable: '_brick_KitchenSink_future_list_offline_first_model'),
-  DropColumn('Mounty_brick_id', onTable: '_brick_KitchenSink_future_list_offline_first_model'),
-  DropColumn('KitchenSink_brick_id', onTable: '_brick_KitchenSink_future_set_offline_first_model'),
-  DropColumn('Mounty_brick_id', onTable: '_brick_KitchenSink_future_set_offline_first_model'),
   DropColumn('Horse_brick_id', onTable: '_brick_Horse_mounties'),
   DropColumn('Mounty_brick_id', onTable: '_brick_Horse_mounties'),
-  InsertForeignKey('_brick_Horse_mounties', 'Horse', foreignKeyColumn: 'l_Horse_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_Horse_mounties', 'Mounty', foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_list_offline_first_model', 'KitchenSink', foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_list_offline_first_model', 'Mounty', foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_set_offline_first_model', 'KitchenSink', foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_set_offline_first_model', 'Mounty', foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_future_list_offline_first_model', 'KitchenSink', foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_future_list_offline_first_model', 'Mounty', foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_future_set_offline_first_model', 'KitchenSink', foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  InsertForeignKey('_brick_KitchenSink_future_set_offline_first_model', 'Mounty', foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
-  CreateIndex(columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'], onTable: '_brick_Horse_mounties', unique: true),
-  CreateIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], onTable: '_brick_KitchenSink_list_offline_first_model', unique: true),
-  CreateIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], onTable: '_brick_KitchenSink_set_offline_first_model', unique: true),
-  CreateIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], onTable: '_brick_KitchenSink_future_list_offline_first_model', unique: true),
-  CreateIndex(columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'], onTable: '_brick_KitchenSink_future_set_offline_first_model', unique: true)
+  InsertForeignKey('_brick_Horse_mounties', 'Horse',
+      foreignKeyColumn: 'l_Horse_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_Horse_mounties', 'Mounty',
+      foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_KitchenSink_list_offline_first_model', 'KitchenSink',
+      foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_KitchenSink_list_offline_first_model', 'Mounty',
+      foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_KitchenSink_set_offline_first_model', 'KitchenSink',
+      foreignKeyColumn: 'l_KitchenSink_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  InsertForeignKey('_brick_KitchenSink_set_offline_first_model', 'Mounty',
+      foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true, onDeleteSetDefault: false),
+  CreateIndex(
+      columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'],
+      onTable: '_brick_Horse_mounties',
+      unique: true),
+  CreateIndex(
+      columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+      onTable: '_brick_KitchenSink_list_offline_first_model',
+      unique: true),
+  CreateIndex(
+      columns: ['l_KitchenSink_brick_id', 'f_Mounty_brick_id'],
+      onTable: '_brick_KitchenSink_set_offline_first_model',
+      unique: true),
 ];
 
 const List<MigrationCommand> _migration_20210111041540_down = [
@@ -44,15 +49,11 @@ const List<MigrationCommand> _migration_20210111041540_down = [
   DropColumn('f_Mounty_brick_id', onTable: '_brick_KitchenSink_list_offline_first_model'),
   DropColumn('l_KitchenSink_brick_id', onTable: '_brick_KitchenSink_set_offline_first_model'),
   DropColumn('f_Mounty_brick_id', onTable: '_brick_KitchenSink_set_offline_first_model'),
-  DropColumn('l_KitchenSink_brick_id', onTable: '_brick_KitchenSink_future_list_offline_first_model'),
-  DropColumn('f_Mounty_brick_id', onTable: '_brick_KitchenSink_future_list_offline_first_model'),
-  DropColumn('l_KitchenSink_brick_id', onTable: '_brick_KitchenSink_future_set_offline_first_model'),
-  DropColumn('f_Mounty_brick_id', onTable: '_brick_KitchenSink_future_set_offline_first_model'),
   DropIndex('index__brick_Horse_mounties_on_l_Horse_brick_id_f_Mounty_brick_id'),
-  DropIndex('index__brick_KitchenSink_list_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id'),
-  DropIndex('index__brick_KitchenSink_set_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id'),
-  DropIndex('index__brick_KitchenSink_future_list_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id'),
-  DropIndex('index__brick_KitchenSink_future_set_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id')
+  DropIndex(
+      'index__brick_KitchenSink_list_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id'),
+  DropIndex(
+      'index__brick_KitchenSink_set_offline_first_model_on_l_KitchenSink_brick_id_f_Mounty_brick_id'),
 ];
 
 //
@@ -66,9 +67,9 @@ const List<MigrationCommand> _migration_20210111041540_down = [
 )
 class Migration20210111041540 extends Migration {
   const Migration20210111041540()
-    : super(
-        version: 20210111041540,
-        up: _migration_20210111041540_up,
-        down: _migration_20210111041540_down,
-      );
+      : super(
+          version: 20210111041540,
+          up: _migration_20210111041540_up,
+          down: _migration_20210111041540_down,
+        );
 }

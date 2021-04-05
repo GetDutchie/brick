@@ -9,7 +9,7 @@ class RequestSqliteCacheManager {
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
   @protected
-  final DatabaseFactory databaseFactory;
+  final DatabaseFactory? databaseFactory;
 
   /// The file name for the database used.
   ///
@@ -18,15 +18,14 @@ class RequestSqliteCacheManager {
   /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String databaseName;
 
-  Future<Database> _db;
+  Future<Database>? _db;
 
   String get orderByStatement {
     if (!serialProcessing) {
       return '$HTTP_JOBS_UPDATED_AT ASC';
     }
 
-    // TODO: change to '$HTTP_JOBS_CREATED_AT_COLUMN ASC' for first major release
-    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC, $HTTP_JOBS_ATTEMPTS_COLUMN DESC, $HTTP_JOBS_UPDATED_AT ASC';
+    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC';
   }
 
   /// Time between attempts to resubmit a request. Defaults to 5 seconds.
@@ -62,7 +61,7 @@ class RequestSqliteCacheManager {
 
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<http.Request> prepareNextRequestToProcess() async {
+  Future<http.Request?> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
@@ -78,9 +77,9 @@ class RequestSqliteCacheManager {
       return txn.rawQuery('$whereLocked;');
     });
 
-    final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
+    final jobs = unprocessedRequests.map<http.Request>(RequestSqliteCache.sqliteToRequest);
 
-    if (jobs?.isEmpty == false) return jobs.first;
+    if (jobs.isNotEmpty) return jobs.first;
 
     return null;
   }
@@ -163,13 +162,13 @@ class RequestSqliteCacheManager {
   Future<Database> getDb() {
     if (_db == null) {
       if (databaseFactory != null) {
-        _db = databaseFactory.openDatabase(databaseName);
+        _db = databaseFactory?.openDatabase(databaseName);
       } else {
         _db = openDatabase(databaseName);
       }
     }
 
-    return _db;
+    return _db!;
   }
 }
 

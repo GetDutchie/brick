@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
-import '../../lib/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -99,23 +99,21 @@ void main() {
       test('basic', () {
         final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
+          HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
         });
 
         expect(request.method, 'POST');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.body, 'POST body');
       });
 
       test('missing headers', () {
-        final request = RequestSqliteCache.sqliteToRequest({
-          HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000'
-        });
+        final request = RequestSqliteCache.sqliteToRequest(
+            {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
 
         expect(request.method, 'GET');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.headers, {});
         expect(request.body, '');
       });
@@ -123,12 +121,12 @@ void main() {
       test('with headers', () {
         final request = RequestSqliteCache.sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
-          HTTP_JOBS_URL_COLUMN: 'http://localhost:3000',
+          HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
         });
 
         expect(request.method, 'GET');
-        expect(request.url.toString(), 'http://localhost:3000');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
         expect(request.headers, {'Content-Type': 'application/json'});
         expect(request.body, '');
       });

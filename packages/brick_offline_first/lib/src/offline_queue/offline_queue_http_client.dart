@@ -25,7 +25,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
   OfflineQueueHttpClient(
     this._inner,
     this.requestManager, {
-    List<int> reattemptForStatusCodes,
+    List<int>? reattemptForStatusCodes,
   })  : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}'),
         reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 501, 502, 503, 504];
 
@@ -52,16 +52,14 @@ class OfflineQueueHttpClient extends http.BaseClient {
       // Attempt to make HTTP Request
       final resp = await _inner.send(request);
 
-      if (cacheItem.requestIsPush &&
-          resp != null &&
-          !reattemptForStatusCodes.contains(resp.statusCode)) {
+      if (cacheItem.requestIsPush && !reattemptForStatusCodes.contains(resp.statusCode)) {
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         final db = await requestManager.getDb();
         await cacheItem.delete(db);
       }
 
-      return resp ?? _genericErrorResponse;
+      return resp;
     } catch (e) {
       _logger.warning('#send: $e');
     }
@@ -73,9 +71,8 @@ class OfflineQueueHttpClient extends http.BaseClient {
   /// As a device with connectivity will still return a response if the endpoint is unreachable,
   /// false positives need to be filtered after the [response] is available.
   static bool isATunnelNotFoundResponse(http.Response response) {
-    return response?.body != null &&
-        response.statusCode == 404 &&
-        response.body.startsWith("Tunnel") &&
-        response.body.endsWith("not found");
+    return response.statusCode == 404 &&
+        response.body.startsWith('Tunnel') &&
+        response.body.endsWith('not found');
   }
 }

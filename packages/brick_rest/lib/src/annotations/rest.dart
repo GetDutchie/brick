@@ -44,7 +44,8 @@ class Rest implements FieldSerializable {
   final String? name;
 
   /// When `true`, `null` fields are handled gracefully when encoding from JSON.
-  /// Defaults to `false`.
+  /// This indicates that the payload from REST could be `null` and is not related to
+  /// Dart nullability. Defaults to `false`.
   @override
   final bool nullable;
 

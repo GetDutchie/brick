@@ -58,8 +58,7 @@ abstract class WhereCondition {
       'subclass': runtimeType.toString(),
       if (evaluatedField.isNotEmpty) 'evaluatedField': evaluatedField,
       'compare': Compare.values.indexOf(compare),
-      if (conditions != null)
-        'conditions': conditions!.map((s) => s.toJson()).toList().cast<Map<String, dynamic>>(),
+      if (conditions != null) 'conditions': conditions!.map((s) => s.toJson()).toList(),
       'required': isRequired,
       if (value != null) 'value': value,
     };
@@ -168,10 +167,7 @@ class Where extends WhereCondition {
 
     conditions?.forEach(expandConditions);
 
-    return flattenedConditions
-        .where((c) => c.evaluatedField == fieldName)
-        .toList()
-        .cast<WhereCondition>();
+    return flattenedConditions.where((c) => c.evaluatedField == fieldName).toList();
   }
 
   /// Find the first occurrance of a condition that evaluates a specific field

@@ -8,8 +8,8 @@ part of '../brick.g.dart';
 
 Future<FieldWithTypeArgument> _$FieldWithTypeArgumentFromSqlite(
     Map<String, dynamic> data,
-    {SqliteProvider provider,
-    SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return FieldWithTypeArgument(
       someField:
           data['some_field'] == null ? null : jsonDecode(data['some_field']))
@@ -18,8 +18,8 @@ Future<FieldWithTypeArgument> _$FieldWithTypeArgumentFromSqlite(
 
 Future<Map<String, dynamic>> _$FieldWithTypeArgumentToSqlite(
     FieldWithTypeArgument instance,
-    {SqliteProvider provider,
-    SqliteFirstRepository repository}) async {
+    {required SqliteProvider provider,
+    SqliteFirstRepository? repository}) async {
   return {'some_field': jsonEncode(instance.someField ?? {})};
 }
 
@@ -44,20 +44,20 @@ class FieldWithTypeArgumentAdapter
     )
   };
   @override
-  Future<int> primaryKeyByUniqueColumns(
+  Future<int?> primaryKeyByUniqueColumns(
           FieldWithTypeArgument instance, DatabaseExecutor executor) async =>
-      instance?.primaryKey;
+      instance.primaryKey;
   @override
   final String tableName = 'FieldWithTypeArgument';
 
   @override
   Future<FieldWithTypeArgument> fromSqlite(Map<String, dynamic> input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$FieldWithTypeArgumentFromSqlite(input,
           provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(FieldWithTypeArgument input,
-          {provider, repository}) async =>
+          {required provider, covariant SqliteRepository? repository}) async =>
       await _$FieldWithTypeArgumentToSqlite(input,
           provider: provider, repository: repository);
 }
