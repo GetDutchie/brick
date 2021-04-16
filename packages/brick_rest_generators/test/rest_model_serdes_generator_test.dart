@@ -4,7 +4,7 @@ import 'package:brick_rest/rest.dart';
 import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_build/testing.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 
 import 'rest_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
 import 'rest_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;

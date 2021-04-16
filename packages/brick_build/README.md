@@ -659,7 +659,7 @@ class MyDomainAdapter....
 In the test suite, an expectation can be written:
 
 ```dart
-import 'package:brick_build/testing.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 import 'generated_source/test_simple.dart' as _$simple;
 
 final generator = MyDomainGenerator();

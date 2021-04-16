@@ -1,7 +1,7 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:test/test.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
-import 'package:brick_build/testing.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;
 import 'offline_first_generator/test_nullable_field.dart' as _$nullableField;
