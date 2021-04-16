@@ -43,7 +43,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          return '$fieldValue?.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
+          final nullableSuffix = checker.isNullable ? '?' : '';
+          return '$fieldValue$nullableSuffix.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
         }
       }
     }
@@ -67,7 +68,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        return '$fieldValue?.$serializeMethod()';
+        final nullableSuffix = checker.isNullable ? '?' : '';
+        return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
     }
 

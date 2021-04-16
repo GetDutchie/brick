@@ -32,7 +32,8 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue?.toIso8601String()';
+      final nullabilitySuffix = checker.isNullable ? '?' : '';
+      return '$fieldValue$nullabilitySuffix.toIso8601String()';
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
@@ -44,10 +45,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue?.map((e) => e.toString().split('.').last).toList()";
+          return "$fieldValue$nullabilitySuffix.map((e) => e.toString().split('.').last).toList()";
         } else {
-          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
+          return '$fieldValue$nullabilitySuffix.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
       }
 
@@ -82,6 +84,10 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       if (fieldAnnotation.enumAsString) {
         return "$fieldValue?.toString().split('.').last";
       } else {
+        if (checker.isNullable) {
+          return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
+        }
+
         return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }
     }

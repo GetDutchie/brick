@@ -39,6 +39,9 @@ class RestDeserialize extends RestSerdesGenerator {
 
     // DateTime
     if (checker.isDateTime) {
+      if (!checker.isNullable) {
+        return 'DateTime.parse($fieldValue$defaultValue as String)';
+      }
       return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool, double, int, num, String

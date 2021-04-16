@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -91,7 +92,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // bool
     } else if (checker.isBool) {
-      return _boolForField(fieldValue, fieldAnnotation.nullable);
+      return _boolForField(fieldValue, checker.isNullable);
 
       // double, int, num, String
     } else if (checker.isDartCoreType) {
@@ -269,7 +270,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       return '$fieldValue == null ? null : ($fieldValue! ? 1 : 0)';
     }
 
-    return '$fieldValue ?? false ? 1 : 0';
+    return '$fieldValue ? 1 : 0';
   }
 }
 
@@ -277,12 +278,12 @@ String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
     String joinsLocalColumn, String joinsTable, String siblingAssociations) {
   return '''
     final ${fieldName}OldColumns = await provider.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
-    final ${fieldName}OldIds = ${fieldName}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
+    final ${fieldName}OldIds = ${fieldName}OldColumns.map((a) => a['$joinsForeignColumn']);
     final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));
 
-    await Future.wait<void>(${fieldName}IdsToDelete?.map((id) async {
-      return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
+    await Future.wait<void>(${fieldName}IdsToDelete.map((id) async {
+      return await provider.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
     }));
   ''';
 }

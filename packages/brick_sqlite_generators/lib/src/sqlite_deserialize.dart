@@ -54,6 +54,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     // DateTime
     if (checker.isDateTime) {
+      if (checker.isNullable) {
+        return 'DateTime.parse($fieldValue$defaultValue as String)';
+      }
+
       return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
 
       // bool
