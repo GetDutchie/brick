@@ -1,4 +1,4 @@
-export 'package:brick_build/testing.dart';
+export 'package:brick_build_test/brick_build_test.dart';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';

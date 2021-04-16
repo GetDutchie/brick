@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0+1
+
+* Remove `source_gen_test` dependency
+
 ## 1.0.0
 
 * Null safety

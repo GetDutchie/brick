@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0
+
+* **BREAKING CHANGE** removing  `testing.dart` in favor of new package `brick_build_test`. Please use `import 'package:brick_build_test/brick_build_test.dart'` instead. `source_gen_test` is not null safe, and testing shouldn't be in distributed packages anyway.
+
 ## 1.0.0
 
 * Null safety

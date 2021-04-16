@@ -4,7 +4,7 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_build/testing.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 
 import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as _$sqliteColumnType;
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
