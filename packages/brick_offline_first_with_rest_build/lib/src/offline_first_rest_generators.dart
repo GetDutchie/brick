@@ -36,7 +36,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where!.entries.first;
         final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-        return '$instanceWithField?.map((s) $awaited.${pair.key}).toList()';
+        final nullableSuffix = checker.isNullable ? '?' : '';
+        return '$instanceWithField$nullableSuffix.map((s) $awaited.${pair.key}).toList()';
       }
 
       // Iterable<OfflineFirstSerdes>
@@ -53,7 +54,8 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       if (offlineFirstAnnotation.where != null) {
         final pair = offlineFirstAnnotation.where!.entries.first;
-        return '$wrappedField?.${pair.key}';
+        final nullableSuffix = checker.isNullable ? '?' : '';
+        return '$wrappedField$nullableSuffix.${pair.key}';
       } else {
         final restSerializerStatement =
             'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField!, provider: provider, repository: repository)';

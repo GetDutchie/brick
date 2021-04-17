@@ -39,10 +39,10 @@ class RestDeserialize extends RestSerdesGenerator {
 
     // DateTime
     if (checker.isDateTime) {
-      if (!checker.isNullable) {
-        return 'DateTime.parse($fieldValue$defaultValue as String)';
+      if (checker.isNullable) {
+        return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
       }
-      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
+      return 'DateTime.parse($fieldValue$defaultValue as String)';
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
@@ -123,7 +123,10 @@ class RestDeserialize extends RestSerdesGenerator {
       if (fieldAnnotation.enumAsString) {
         return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$defaultValue';
       } else {
-        return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
+        if (checker.isNullable) {
+          return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
+        }
+        return '${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int]';
       }
 
       // Map

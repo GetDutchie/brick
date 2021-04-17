@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -88,7 +87,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue?.toIso8601String()';
+      final nullableSuffix = checker.isNullable ? '?' : '';
+      return '$fieldValue$nullableSuffix.toIso8601String()';
 
       // bool
     } else if (checker.isBool) {
@@ -104,7 +104,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)).toList() ?? [])';
+        final nullablePrefix = checker.isNullable ? '?' : '';
+        final nullableDefault = checker.isNullable ? ' ?? []' : '';
+        return '''
+          jsonEncode($fieldValue$nullablePrefix.map((s) =>
+            ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)
+          ).toList()$nullableDefault)
+        ''';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -132,7 +138,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        return 'jsonEncode($fieldValue ?? [])';
+        final nullableSuffix = argTypeChecker.isNullable ? ' ?? []' : '';
+        return 'jsonEncode($fieldValue$nullableSuffix)';
       }
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
@@ -242,6 +249,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
             field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
         : '';
     final nullabilitySuffix = checker.isNullable ? '?' : '';
+    final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
@@ -249,7 +257,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         await Future.wait<int?>($siblingAssociations$nullabilitySuffix.map((s) async {
           final id = $upsertMethod;
           return await provider.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
-        }) ?? []);
+        })$nullabilityDefault);
       }
     ''';
   }
@@ -283,7 +291,7 @@ String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));
 
     await Future.wait<void>(${fieldName}IdsToDelete.map((id) async {
-      return await provider.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
+      return await provider.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]).catchError((e) => null);
     }));
   ''';
 }
