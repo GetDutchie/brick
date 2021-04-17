@@ -30,7 +30,7 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
   return CustomOfflineFirstSerdes(
       string: data['string'] == null
           ? null
-          : Serializable?.fromSqlite(data['string'] as int),
+          : Serializable.fromSqlite(data['string'] as int),
       strings: data['strings'] == null
           ? null
           : jsonDecode(data['strings'])

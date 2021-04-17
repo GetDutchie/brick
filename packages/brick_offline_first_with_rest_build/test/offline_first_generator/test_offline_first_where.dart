@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
-    'assoc': (await instance.assoc)?.id,
+    'assoc': (await instance.assoc).id,
     'loaded_assoc': "Going to REST",
     'loaded_assocs': instance.loadedAssocs?.map((s) => s.id).toList(),
     'multi_lookup_custom_generator': "As REST"

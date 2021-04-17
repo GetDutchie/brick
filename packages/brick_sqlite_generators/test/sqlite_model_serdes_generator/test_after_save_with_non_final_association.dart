@@ -65,28 +65,25 @@ class AfterSaveWithAssociationAdapter
           'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
           [instance.primaryKey]);
       final someFieldOldIds =
-          someFieldOldColumns?.map((a) => a['f_Assoc_brick_id']) ?? [];
-      final someFieldNewIds = instance.someField
-              ?.map((s) => s?.primaryKey)
-              ?.where((s) => s != null) ??
-          [];
+          someFieldOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final someFieldNewIds =
+          instance.someField?.map((s) => s?.primaryKey)?.whereType<int>() ?? [];
       final someFieldIdsToDelete =
           someFieldOldIds.where((id) => !someFieldNewIds.contains(id));
 
-      await Future.wait<void>(someFieldIdsToDelete?.map((id) async {
-        return await provider?.rawExecute(
+      await Future.wait<void>(someFieldIdsToDelete.map((id) async {
+        return await provider.rawExecute(
             'DELETE FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
-            [instance.primaryKey, id])?.catchError((e) => null);
+            [instance.primaryKey, id]).catchError((e) => null);
       }));
 
       await Future.wait<int?>(instance.someField.map((s) async {
-            final id = s.primaryKey ??
-                await provider.upsert<Assoc>(s, repository: repository);
-            return await provider.rawInsert(
-                'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_some_field` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id]);
-          }) ??
-          []);
+        final id = s.primaryKey ??
+            await provider.upsert<Assoc>(s, repository: repository);
+        return await provider.rawInsert(
+            'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_some_field` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
     }
   }
 
