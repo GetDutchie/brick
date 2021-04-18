@@ -21,10 +21,7 @@ Future<RestConfigNoRename> _$RestConfigNoRenameFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return RestConfigNoRename(
-      someLongField: data['some_long_field'] == null
-          ? null
-          : data['some_long_field'] as int)
+  return RestConfigNoRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -53,10 +50,7 @@ Future<RestConfigSnakeRename> _$RestConfigSnakeRenameFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return RestConfigSnakeRename(
-      someLongField: data['some_long_field'] == null
-          ? null
-          : data['some_long_field'] as int)
+  return RestConfigSnakeRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -85,10 +79,7 @@ Future<RestConfigKebabRename> _$RestConfigKebabRenameFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return RestConfigKebabRename(
-      someLongField: data['some_long_field'] == null
-          ? null
-          : data['some_long_field'] as int)
+  return RestConfigKebabRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -117,10 +108,7 @@ Future<RestConfigPascalRename> _$RestConfigPascalRenameFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return RestConfigPascalRename(
-      someLongField: data['some_long_field'] == null
-          ? null
-          : data['some_long_field'] as int)
+  return RestConfigPascalRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 

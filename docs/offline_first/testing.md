@@ -9,7 +9,7 @@ Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For c
 }
 
 // test/models/user_test.dart
-import 'package:brick_sqlite/testing.dart';
+import 'package:brick_offline_first/testing.dart';
 import 'package:my_app/app/repository.dart';
 
 void main() {
@@ -56,16 +56,6 @@ StubOfflineFirstWithRest(
 )
 ```
 
-## Handling Endpoint Variations
-
-Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:
-
-```dart
-StubOfflineFirstRestResponse<User>(
-  endpoints: ["user", "users", "users?by_first_name=Guy"]
-)
-```
-
 ## Stubbing Multiple Models
 
 Rarely will only one model need to be stubbed. All classes in an app can be stubbed efficiently using `StubOfflineFirstWithRest`:
@@ -92,3 +82,5 @@ setUpAll() async {
   ).client;
 }
 ```
+
+?> Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0+1
+
+* Do not generate null-safe return values in adapters if the member cannot be null. For example, this would remove `data['name'] == null ? null :` in the REST adapter function of field that cannot be null in Dart >=2.12
+
 ## 1.1.0
 
 * **BREAKING CHANGE** removing  `testing.dart` in favor of new package `brick_build_test`. Please use `import 'package:brick_build_test/brick_build_test.dart'` instead. `source_gen_test` is not null safe, and testing shouldn't be in distributed packages anyway.

@@ -17,8 +17,7 @@ Future<Map<String, dynamic>> _$IgnoreFieldToRest(IgnoreField instance,
 Future<IgnoreField> _$IgnoreFieldFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return IgnoreField(
-      email: data['email'] == null ? null : data['email'] as String)
+  return IgnoreField(email: data['email'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 

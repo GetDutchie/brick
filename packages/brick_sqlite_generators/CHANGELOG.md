@@ -1,5 +1,14 @@
 ## Unreleased
 
+## 1.0.0+4
+
+* Fix pubspec dependencies
+
+## 1.0.0+3
+
+* Fix deserialization for associations, enum, and DateTime in Dart >=2.12
+* Fix serialization for associations, afterSave, enum, core types, booleans, and DateTime in Dart >=2.12
+
 ## 1.0.0+2
 
 * Remove `source_gen_test` dependency

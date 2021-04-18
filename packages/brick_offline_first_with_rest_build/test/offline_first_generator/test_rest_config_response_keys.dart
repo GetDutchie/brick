@@ -25,8 +25,7 @@ Future<RestConfigResponseKeys> _$RestConfigResponseKeysFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return RestConfigResponseKeys(
-      someField: data['some_field'] == null ? null : data['some_field'] as int)
+  return RestConfigResponseKeys(someField: data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 

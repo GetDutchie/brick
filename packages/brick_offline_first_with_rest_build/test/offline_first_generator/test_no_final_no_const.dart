@@ -23,9 +23,8 @@ Future<NoFinalNoConst> _$NoFinalNoConstFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
   return NoFinalNoConst(
-      declaredVar:
-          data['declared_var'] == null ? null : data['declared_var'] as int,
-      regularVar: data['regular_var'] == null ? null : data['regular_var'] == 1)
+      declaredVar: data['declared_var'] as int,
+      regularVar: data['regular_var'] == 1)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -34,8 +33,7 @@ Future<Map<String, dynamic>> _$NoFinalNoConstToSqlite(NoFinalNoConst instance,
     OfflineFirstRepository? repository}) async {
   return {
     'declared_var': instance.declaredVar,
-    'regular_var':
-        instance.regularVar == null ? null : (instance.regularVar! ? 1 : 0),
+    'regular_var': instance.regularVar ? 1 : 0,
     'computed_field': instance.computedField
   };
 }
