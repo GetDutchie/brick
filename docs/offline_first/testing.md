@@ -83,4 +83,4 @@ setUpAll() async {
 }
 ```
 
-?> Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify any expected variants:
+?> Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify all expected variants.
