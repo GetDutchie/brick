@@ -37,10 +37,9 @@ Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,
     'assoc': await AssocAdapter().toRest((await instance.assoc)!,
         provider: provider, repository: repository),
     'assocs': await Future.wait<Map<String, dynamic>>(instance.assocs
-            .map((s) => AssocAdapter()
-                .toRest(s, provider: provider, repository: repository))
-            .toList() ??
-        []),
+        .map((s) => AssocAdapter()
+            .toRest(s, provider: provider, repository: repository))
+        .toList()),
     'future_assocs': await Future.wait<Map<String, dynamic>>(instance
             .futureAssocs
             ?.map((s) async => AssocAdapter()
@@ -63,15 +62,12 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
           : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
       assoc: data['assoc_Assoc_brick_id'] == null
           ? null
-          : (data['assoc_Assoc_brick_id'] > -1
-              ? repository!
-                  .getAssociation<Assoc>(
-                    Query.where(
-                        'primaryKey', data['assoc_Assoc_brick_id'] as int,
-                        limit1: true),
-                  )
-                  .then((r) => r!.first)
-              : null),
+          : repository!
+              .getAssociation<Assoc>(
+                Query.where('primaryKey', data['assoc_Assoc_brick_id'] as int,
+                    limit1: true),
+              )
+              .then((r) => r!.first),
       assocs: data['assocs'] == null
           ? null
           : provider.rawQuery(
@@ -105,7 +101,7 @@ Future<Map<String, dynamic>> _$FuturesToSqlite(Futures instance,
     OfflineFirstRepository? repository}) async {
   return {
     'string': instance.string,
-    'strings': jsonEncode(instance.strings ?? []),
+    'strings': jsonEncode(instance.strings),
     'future_strings':
         jsonEncode(await Future.wait<String>(instance.futureStrings) ?? []),
     'assoc_Assoc_brick_id': (await instance.assoc).primaryKey ??

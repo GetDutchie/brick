@@ -9,8 +9,7 @@ part of '../brick.g.dart';
 Future<SqliteColumnType> _$SqliteColumnTypeFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
-  return SqliteColumnType(
-      someField: data['some_field'] == null ? null : data['some_field'])
+  return SqliteColumnType(someField: data['some_field'])
     ..primaryKey = data['_brick_id'] as int;
 }
 

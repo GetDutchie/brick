@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
-    'assoc': (await instance.assoc)?.id,
+    'assoc': (await instance.assoc).id,
     'loaded_assoc': "Going to REST",
     'loaded_assocs': instance.loadedAssocs?.map((s) => s.id).toList(),
     'multi_lookup_custom_generator': "As REST"
@@ -50,15 +50,13 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
   return OfflineFirstWhere(
       assoc: data['assoc_OtherAssoc_brick_id'] == null
           ? null
-          : (data['assoc_OtherAssoc_brick_id'] > -1
-              ? repository!
-                  .getAssociation<OtherAssoc>(
-                    Query.where(
-                        'primaryKey', data['assoc_OtherAssoc_brick_id'] as int,
-                        limit1: true),
-                  )
-                  .then((r) => r!.first)
-              : null),
+          : repository!
+              .getAssociation<OtherAssoc>(
+                Query.where(
+                    'primaryKey', data['assoc_OtherAssoc_brick_id'] as int,
+                    limit1: true),
+              )
+              .then((r) => r!.first),
       assocs: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
           [

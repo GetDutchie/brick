@@ -32,7 +32,8 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue?.toIso8601String()';
+      final nullabilitySuffix = checker.isNullable ? '?' : '';
+      return '$fieldValue$nullabilitySuffix.toIso8601String()';
 
       // bool, double, int, num, String, Map, Iterable, enum
     } else if ((checker.isDartCoreType) || checker.isMap) {
@@ -44,10 +45,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue?.map((e) => e.toString().split('.').last).toList()";
+          return "$fieldValue$nullabilitySuffix.map((e) => e.toString().split('.').last).toList()";
         } else {
-          return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
+          return '$fieldValue$nullabilitySuffix.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
       }
 
@@ -56,10 +58,11 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
         final nullabilitySuffix = checker.isNullable ? '?' : '';
+        final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
         return '''await Future.wait<Map<String, dynamic>>(
           $fieldValue$nullabilitySuffix.map((s) $awaited =>
             ${SharedChecker.withoutNullability(checker.unFuturedArgType)}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
-          ).toList() ?? []
+          ).toList()$nullabilityDefault
         )''';
       }
 
@@ -82,7 +85,10 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       if (fieldAnnotation.enumAsString) {
         return "$fieldValue?.toString().split('.').last";
       } else {
-        return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
+        if (checker.isNullable) {
+          return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
+        }
+        return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
       }
     }
 

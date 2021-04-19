@@ -54,7 +54,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
+      if (checker.isNullable) {
+        return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
+      }
+      return 'DateTime.parse($fieldValue$defaultValue as String)';
 
       // bool
     } else if (checker.isBool) {
@@ -142,18 +145,27 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       ''';
 
       if (wrappedInFuture) {
-        return '''($fieldValue > -1
-            ? ${SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query)}
-            : null)''';
+        if (checker.isNullable) {
+          return '''($fieldValue > -1
+              ? ${SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query)}
+              : null)''';
+        }
+        return SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query);
       }
 
-      return '''($fieldValue > -1
-            ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
-            : null)''';
+      if (checker.isNullable) {
+        return '''($fieldValue > -1
+              ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
+              : null)''';
+      }
+      return '(await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first';
 
       // enum
     } else if (checker.isEnum) {
-      return '($fieldValue > -1 ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null)$defaultValue';
+      if (checker.isNullable) {
+        return '($fieldValue > -1 ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null)$defaultValue';
+      }
+      return '${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int]';
 
       // Map
     } else if (checker.isMap) {

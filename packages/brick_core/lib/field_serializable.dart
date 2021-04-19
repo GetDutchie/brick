@@ -26,6 +26,7 @@ abstract class FieldSerializable {
   String? get name;
 
   /// When `true`, `null` fields are handled gracefully when serializing and deserializing.
+  /// For Dart >=2.12, the member type must also be nullable (i.e. `bool?`).
   bool get nullable;
 
   /// Manipulates output for the field in the serialize generator.

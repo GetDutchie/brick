@@ -39,7 +39,8 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        return '$fieldValue?.$serializeMethod()';
+        final nullableSuffix = checker.isNullable ? '?' : '';
+        return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
     }
 
@@ -90,7 +91,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       if (_hasConstructor) {
         final serializableType =
             checker.superClassTypeArgs.last.getDisplayString(withNullability: true);
-        return '${field.type}.$constructorName($fieldValue as $serializableType)';
+        return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue as $serializableType)';
       }
     }
 

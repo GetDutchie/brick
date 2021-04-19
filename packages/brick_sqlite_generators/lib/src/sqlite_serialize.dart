@@ -87,11 +87,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // DateTime
     if (checker.isDateTime) {
-      return '$fieldValue?.toIso8601String()';
+      final nullableSuffix = checker.isNullable ? '?' : '';
+      return '$fieldValue$nullableSuffix.toIso8601String()';
 
       // bool
     } else if (checker.isBool) {
-      return _boolForField(fieldValue, fieldAnnotation.nullable);
+      return _boolForField(fieldValue, checker.isNullable);
 
       // double, int, num, String
     } else if (checker.isDartCoreType) {
@@ -103,7 +104,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonEncode($fieldValue?.map((s) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)).toList() ?? [])';
+        final nullablePrefix = checker.isNullable ? '?' : '';
+        final nullableDefault = checker.isNullable ? ' ?? []' : '';
+        return '''
+          jsonEncode($fieldValue$nullablePrefix.map((s) =>
+            ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)
+          ).toList()$nullableDefault)
+        ''';
       }
 
       // Iterable<Future<bool>>, Iterable<Future<DateTime>>, Iterable<Future<double>>,
@@ -131,7 +138,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        return 'jsonEncode($fieldValue ?? [])';
+        final nullableSuffix = argTypeChecker.isNullable ? ' ?? []' : '';
+        return 'jsonEncode($fieldValue$nullableSuffix)';
       }
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
@@ -241,6 +249,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
             field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
         : '';
     final nullabilitySuffix = checker.isNullable ? '?' : '';
+    final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {
@@ -248,7 +257,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         await Future.wait<int?>($siblingAssociations$nullabilitySuffix.map((s) async {
           final id = $upsertMethod;
           return await provider.rawInsert('$insertStatement VALUES (?, ?)', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]);
-        }) ?? []);
+        })$nullabilityDefault);
       }
     ''';
   }
@@ -269,7 +278,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       return '$fieldValue == null ? null : ($fieldValue! ? 1 : 0)';
     }
 
-    return '$fieldValue ?? false ? 1 : 0';
+    return '$fieldValue ? 1 : 0';
   }
 }
 
@@ -277,12 +286,12 @@ String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
     String joinsLocalColumn, String joinsTable, String siblingAssociations) {
   return '''
     final ${fieldName}OldColumns = await provider.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
-    final ${fieldName}OldIds = ${fieldName}OldColumns?.map((a) => a['$joinsForeignColumn']) ?? [];
-    final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.where((s) => s != null) ?? [];
+    final ${fieldName}OldIds = ${fieldName}OldColumns.map((a) => a['$joinsForeignColumn']);
+    final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.whereType<int>() ?? [];
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));
 
-    await Future.wait<void>(${fieldName}IdsToDelete?.map((id) async {
-      return await provider?.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id])?.catchError((e) => null);
+    await Future.wait<void>(${fieldName}IdsToDelete.map((id) async {
+      return await provider.rawExecute('DELETE FROM `$joinsTable` WHERE `$joinsLocalColumn` = ? AND `$joinsForeignColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}, id]).catchError((e) => null);
     }));
   ''';
 }

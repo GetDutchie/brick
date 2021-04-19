@@ -10,9 +10,7 @@ Future<FieldWithTypeArgument> _$FieldWithTypeArgumentFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
-  return FieldWithTypeArgument(
-      someField:
-          data['some_field'] == null ? null : jsonDecode(data['some_field']))
+  return FieldWithTypeArgument(someField: jsonDecode(data['some_field']))
     ..primaryKey = data['_brick_id'] as int;
 }
 

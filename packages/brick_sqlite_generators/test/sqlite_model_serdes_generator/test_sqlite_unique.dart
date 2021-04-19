@@ -9,8 +9,7 @@ part of '../brick.g.dart';
 Future<SqliteUnique> _$SqliteUniqueFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
-  return SqliteUnique(
-      someField: data['some_field'] == null ? null : data['some_field'] as int)
+  return SqliteUnique(someField: data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 

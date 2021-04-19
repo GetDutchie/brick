@@ -39,6 +39,12 @@ Future<OneToOneAssociation> _$OneToOneAssociationFromRest(
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OneToOneAssociation(
+      nullableAssoc: await SqliteAssocAdapter().fromRest(data['nullable_assoc'],
+          provider: provider, repository: repository),
+      nullableAssoc2: await SqliteAssocAdapter().fromRest(
+          data['nullable_assoc2'],
+          provider: provider,
+          repository: repository),
       assoc: await SqliteAssocAdapter()
           .fromRest(data['assoc'], provider: provider, repository: repository),
       assoc2: await SqliteAssocAdapter().fromRest(data['assoc2'],
@@ -50,14 +56,18 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToRest(
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
-    'assoc': instance.assoc != null
-        ? await SqliteAssocAdapter()
-            .toRest(instance.assoc!, provider: provider, repository: repository)
-        : null,
-    'assoc2': instance.assoc2 != null
-        ? await SqliteAssocAdapter().toRest(instance.assoc2!,
+    'nullable_assoc': instance.nullableAssoc != null
+        ? await SqliteAssocAdapter().toRest(instance.nullableAssoc!,
             provider: provider, repository: repository)
-        : null
+        : null,
+    'nullable_assoc2': instance.nullableAssoc2 != null
+        ? await SqliteAssocAdapter().toRest(instance.nullableAssoc2!,
+            provider: provider, repository: repository)
+        : null,
+    'assoc': await SqliteAssocAdapter()
+        .toRest(instance.assoc!, provider: provider, repository: repository),
+    'assoc2': await SqliteAssocAdapter()
+        .toRest(instance.assoc2!, provider: provider, repository: repository)
   };
 }
 
@@ -66,26 +76,36 @@ Future<OneToOneAssociation> _$OneToOneAssociationFromSqlite(
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
   return OneToOneAssociation(
-      assoc: data['assoc_SqliteAssoc_brick_id'] == null
+      nullableAssoc: data['nullable_assoc_SqliteAssoc_brick_id'] == null
           ? null
-          : (data['assoc_SqliteAssoc_brick_id'] > -1
+          : (data['nullable_assoc_SqliteAssoc_brick_id'] > -1
               ? (await repository?.getAssociation<SqliteAssoc>(
-                  Query.where(
-                      'primaryKey', data['assoc_SqliteAssoc_brick_id'] as int,
+                  Query.where('primaryKey',
+                      data['nullable_assoc_SqliteAssoc_brick_id'] as int,
                       limit1: true),
                 ))
                   ?.first
               : null),
-      assoc2: data['assoc2_SqliteAssoc_brick_id'] == null
+      nullableAssoc2: data['nullable_assoc2_SqliteAssoc_brick_id'] == null
           ? null
-          : (data['assoc2_SqliteAssoc_brick_id'] > -1
+          : (data['nullable_assoc2_SqliteAssoc_brick_id'] > -1
               ? (await repository?.getAssociation<SqliteAssoc>(
-                  Query.where(
-                      'primaryKey', data['assoc2_SqliteAssoc_brick_id'] as int,
+                  Query.where('primaryKey',
+                      data['nullable_assoc2_SqliteAssoc_brick_id'] as int,
                       limit1: true),
                 ))
                   ?.first
-              : null))
+              : null),
+      assoc: (await repository!.getAssociation<SqliteAssoc>(
+        Query.where('primaryKey', data['assoc_SqliteAssoc_brick_id'] as int,
+            limit1: true),
+      ))!
+          .first,
+      assoc2: (await repository!.getAssociation<SqliteAssoc>(
+        Query.where('primaryKey', data['assoc2_SqliteAssoc_brick_id'] as int,
+            limit1: true),
+      ))!
+          .first)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -94,24 +114,38 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToSqlite(
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
-    'assoc_SqliteAssoc_brick_id': instance.assoc != null
-        ? instance.assoc!.primaryKey ??
-            await provider.upsert<SqliteAssoc>(instance.assoc!,
+    'nullable_assoc_SqliteAssoc_brick_id': instance.nullableAssoc != null
+        ? instance.nullableAssoc!.primaryKey ??
+            await provider.upsert<SqliteAssoc>(instance.nullableAssoc!,
                 repository: repository)
         : null,
-    'assoc2_SqliteAssoc_brick_id': instance.assoc2 != null
-        ? instance.assoc2!.primaryKey ??
-            await provider.upsert<SqliteAssoc>(instance.assoc2!,
+    'nullable_assoc2_SqliteAssoc_brick_id': instance.nullableAssoc2 != null
+        ? instance.nullableAssoc2!.primaryKey ??
+            await provider.upsert<SqliteAssoc>(instance.nullableAssoc2!,
                 repository: repository)
-        : null
+        : null,
+    'assoc_SqliteAssoc_brick_id': instance.assoc.primaryKey ??
+        await provider.upsert<SqliteAssoc>(instance.assoc,
+            repository: repository),
+    'assoc2_SqliteAssoc_brick_id': instance.assoc2.primaryKey ??
+        await provider.upsert<SqliteAssoc>(instance.assoc2,
+            repository: repository)
   };
 }
 ''';
 
 @ConnectOfflineFirstWithRest()
 class OneToOneAssociation extends OfflineFirstModel {
-  OneToOneAssociation({this.assoc, this.assoc2});
+  OneToOneAssociation({
+    this.nullableAssoc,
+    this.nullableAssoc2,
+    required this.assoc,
+    required this.assoc2,
+  });
 
-  final SqliteAssoc? assoc;
-  final SqliteAssoc? assoc2;
+  final SqliteAssoc? nullableAssoc;
+  final SqliteAssoc? nullableAssoc2;
+
+  final SqliteAssoc assoc;
+  final SqliteAssoc assoc2;
 }

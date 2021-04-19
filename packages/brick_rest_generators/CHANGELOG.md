@@ -1,5 +1,13 @@
 ## Unreleased
 
+## 1.0.0+3
+
+* Fix pubspec dependencies
+
+## 1.0.0+2
+
+* Fix nullable analyzer errors around DateTime and enum (de)serialization and association serialization
+
 ## 1.0.0+1
 
 * Remove `source_gen_test` dependency

@@ -211,7 +211,9 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     required _FieldAnnotation fieldAnnotation,
     required String name,
   }) {
-    return fieldAnnotation.nullable ? "data['$name'] == null ? null :" : '';
+    return fieldAnnotation.nullable && field.type.nullabilitySuffix != NullabilitySuffix.none
+        ? "data['$name'] == null ? null :"
+        : '';
   }
 
   /// Convert placeholders in `fromGenerator` and `toGenerator` to functions.

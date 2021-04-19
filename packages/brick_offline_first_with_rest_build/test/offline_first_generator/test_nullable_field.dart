@@ -7,7 +7,10 @@ Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return NullableField(
       restFalse: data['rest_false'] as String?,
-      restTrue: data['rest_true'] == null ? null : data['rest_true'] as String?,
+      nullableRestTrue: data['nullable_rest_true'] == null
+          ? null
+          : data['nullable_rest_true'] as String?,
+      restTrue: data['rest_true'] as String,
       sqliteFalse: data['sqlite_false'] as String?,
       sqliteTrue: data['sqlite_true'] as String?);
 }
@@ -17,6 +20,7 @@ Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
     OfflineFirstRepository? repository}) async {
   return {
     'rest_false': instance.restFalse,
+    'nullable_rest_true': instance.nullableRestTrue,
     'rest_true': instance.restTrue,
     'sqlite_false': instance.sqliteFalse,
     'sqlite_true': instance.sqliteTrue
@@ -28,7 +32,8 @@ Future<NullableField> _$NullableFieldFromSqlite(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return NullableField(
       restFalse: data['rest_false'] as String?,
-      restTrue: data['rest_true'] as String?,
+      nullableRestTrue: data['nullable_rest_true'] as String?,
+      restTrue: data['rest_true'] as String,
       sqliteFalse: data['sqlite_false'] as String?,
       sqliteTrue:
           data['sqlite_true'] == null ? null : data['sqlite_true'] as String?)
@@ -40,6 +45,7 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
     OfflineFirstRepository? repository}) async {
   return {
     'rest_false': instance.restFalse,
+    'nullable_rest_true': instance.nullableRestTrue,
     'rest_true': instance.restTrue,
     'sqlite_false': instance.sqliteFalse,
     'sqlite_true': instance.sqliteTrue
@@ -54,7 +60,8 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
 class NullableField {
   NullableField({
     this.restFalse,
-    this.restTrue,
+    this.nullableRestTrue,
+    required this.restTrue,
     this.sqliteFalse,
     this.sqliteTrue,
   });
@@ -63,7 +70,10 @@ class NullableField {
   final String? restFalse;
 
   @Rest(nullable: true)
-  final String? restTrue;
+  final String? nullableRestTrue;
+
+  @Rest(nullable: true)
+  final String restTrue;
 
   @Sqlite(nullable: false)
   final String? sqliteFalse;
