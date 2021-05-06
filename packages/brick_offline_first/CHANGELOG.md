@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.1.3
+
+* RequestSqliteCache no longer queries cached requests based on headers; requests are rediscovered based on their encoding, URL, request method, and body. Rehydrated (reattempted) requests will be hydrated with headers from the original request.
+
 ## 0.1.2
 
 * Add [`mixins.dart`](README.md#mixins) for non essential but still regularly requested features that depend on a specific format of remote data or are useful variations of existing features. `DeleteAllMixin` and `DestructiveLocalSyncFromRemoteMixin` are the first two such mixins.
