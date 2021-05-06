@@ -39,7 +39,6 @@ class RequestSqliteCache {
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
       HTTP_JOBS_ENCODING_COLUMN,
-      HTTP_JOBS_HEADERS_COLUMN,
       HTTP_JOBS_REQUEST_METHOD_COLUMN,
       HTTP_JOBS_URL_COLUMN,
     ];
