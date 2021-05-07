@@ -136,14 +136,23 @@ class RequestSqliteCache {
     return _request;
   }
 
-  static Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async {
-    return await db.update(
-      HTTP_JOBS_TABLE_NAME,
-      {
-        HTTP_JOBS_LOCKED_COLUMN: 0,
-      },
-      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
-      whereArgs: [data[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
-    );
-  }
+  static Future<int> lockRequest(Map<String, dynamic> data, DatabaseExecutor db) async =>
+      await _updateLock(true, data, db);
+  static Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async =>
+      await _updateLock(false, data, db);
+}
+
+Future<int> _updateLock(
+  bool shouldLock,
+  Map<String, dynamic> data,
+  DatabaseExecutor db,
+) async {
+  return await db.update(
+    HTTP_JOBS_TABLE_NAME,
+    {
+      HTTP_JOBS_LOCKED_COLUMN: shouldLock ? 1 : 0,
+    },
+    where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+    whereArgs: [data[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+  );
 }

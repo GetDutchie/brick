@@ -146,6 +146,22 @@ void main() {
       });
     });
 
+    test('.lockRequest', () async {
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      await RequestSqliteCache.unlockRequest(lockedRequests.first, await requestManager.getDb());
+
+      var requests = await requestManager.unprocessedRequests();
+      expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 0);
+      await RequestSqliteCache.lockRequest(requests.first, await requestManager.getDb());
+
+      requests = await requestManager.unprocessedRequests();
+      expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 1);
+    });
+
     test('.unlockRequest', () async {
       final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
       final uninserted = RequestSqliteCache(uninsertedRequest);

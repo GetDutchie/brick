@@ -86,7 +86,7 @@ class RequestSqliteCacheManager {
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests?.isEmpty ?? true) return [];
       // lock the latest unlocked request
-      await _lockRequest(txn, unlockedRequests.first);
+      await RequestSqliteCache.lockRequest(unlockedRequests.first, txn);
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
@@ -182,17 +182,6 @@ class RequestSqliteCacheManager {
       whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
       orderBy: orderByStatement,
       limit: 1,
-    );
-  }
-
-  Future<void> _lockRequest(DatabaseExecutor txn, Map<String, dynamic> request) async {
-    await txn.update(
-      HTTP_JOBS_TABLE_NAME,
-      {
-        HTTP_JOBS_LOCKED_COLUMN: 1,
-      },
-      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
-      whereArgs: [request[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
     );
   }
 }
