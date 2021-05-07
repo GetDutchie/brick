@@ -64,8 +64,9 @@ void main() {
 
       final asCacheItem = RequestSqliteCache(request);
       await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      // Do not retry request if the row is locked and serial processing is active
       final req = await requestManager.prepareNextRequestToProcess();
-      expect(req.method, 'POST');
+      expect(req, isNull);
     });
 
     test('#deleteUnprocessedRequest', () async {

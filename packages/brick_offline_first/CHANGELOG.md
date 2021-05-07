@@ -3,6 +3,7 @@
 ## 0.1.3
 
 * RequestSqliteCache no longer queries cached requests based on headers; requests are rediscovered based on their encoding, URL, request method, and body. Rehydrated (reattempted) requests will be hydrated with headers from the original request.
+* Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
 
 ## 0.1.2
 

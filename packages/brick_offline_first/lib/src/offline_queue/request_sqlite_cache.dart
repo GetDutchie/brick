@@ -35,7 +35,7 @@ class RequestSqliteCache {
   }
 
   @protected
-  Future<Map<String, dynamic>> findRequestInDatabase(Database db) async {
+  Future<Map<String, dynamic>> findRequestInDatabase(DatabaseExecutor db) async {
     final columns = [
       HTTP_JOBS_BODY_COLUMN,
       HTTP_JOBS_ENCODING_COLUMN,
@@ -52,7 +52,7 @@ class RequestSqliteCache {
       whereArgs: columns.map((c) => serialized[c]).toList(),
     );
 
-    return response?.isNotEmpty == true ? response.first : null;
+    return response?.isNotEmpty ?? false ? response.first : null;
   }
 
   /// If the request already exists in the database, increment attemps and
@@ -79,7 +79,6 @@ class RequestSqliteCache {
         {
           HTTP_JOBS_ATTEMPTS_COLUMN: response[HTTP_JOBS_ATTEMPTS_COLUMN] + 1,
           HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
-          HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
         },
         where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
         whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
@@ -104,6 +103,16 @@ class RequestSqliteCache {
     };
   }
 
+  /// If the request did not succeed, unlock for subsequent processing
+  Future<int> unlock(Database db) async {
+    final response = await findRequestInDatabase(db);
+    if (response == null) return null;
+
+    return await db.transaction((txn) async {
+      return await unlockRequest(response, txn);
+    });
+  }
+
   /// Recreate a request from SQLite data
   static http.Request sqliteToRequest(Map<String, dynamic> data) {
     var _request = http.Request(
@@ -124,5 +133,16 @@ class RequestSqliteCache {
     }
 
     return _request;
+  }
+
+  static Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async {
+    return await db.update(
+      HTTP_JOBS_TABLE_NAME,
+      {
+        HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
+      },
+      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+      whereArgs: [data[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+    );
   }
 }

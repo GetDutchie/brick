@@ -65,22 +65,31 @@ class RequestSqliteCacheManager {
   Future<http.Request> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
-      final whereLocked = _lockedQuery(true, limit: 1);
+      final query = _QueryHelper(orderByStatement, processingInterval);
+      final lockedRows = await query.allLockedRows(txn);
+
+      final atLeastOneRequestIsLocked = lockedRows?.isNotEmpty ?? false;
+      if (atLeastOneRequestIsLocked) {
+        final lastUpdated = DateTime.parse(lockedRows.first[HTTP_JOBS_UPDATED_AT]);
+        if (lastUpdated.isBefore(DateTime.now().subtract(Duration(minutes: 2)))) {
+          await RequestSqliteCache.unlockRequest(lockedRows.first, txn);
+        } else {
+          return [];
+        }
+
+        if (serialProcessing) return [];
+      }
 
       // lock all unlocked requests for idempotency
-      await txn.rawUpdate([
-        'UPDATE $HTTP_JOBS_TABLE_NAME',
-        'SET $HTTP_JOBS_LOCKED_COLUMN = 1',
-        'WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);',
-      ].join(' '));
+      await query.lockUnlockedRows(txn);
 
-      return txn.rawQuery('$whereLocked;');
+      // rerun and return the next locked request
+      return lockedRows;
     });
 
     final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
 
-    if (jobs?.isEmpty == false) return jobs.first;
+    if (jobs?.isNotEmpty ?? false) return jobs.first;
 
     return null;
   }
@@ -138,28 +147,6 @@ class RequestSqliteCacheManager {
     );
   }
 
-  /// Generate SQLite query for [prepareNextRequestToProcess].
-  /// When [limit] is `<= 0`, all results are returned
-  String _lockedQuery(
-    bool whereIsLocked, {
-    int limit = 1,
-    String selectFields = '*',
-  }) {
-    // Ensure that a request that's immediately attempted and stored is not immediately
-    // reattempted by the queue interval before an HTTP response is received.
-    final nowMinusNextPoll =
-        DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
-    return [
-      'SELECT DISTINCT',
-      selectFields,
-      'FROM $HTTP_JOBS_TABLE_NAME',
-      'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
-      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $nowMinusNextPoll',
-      'ORDER BY $orderByStatement',
-      if (limit > 0) 'LIMIT $limit'
-    ].join(' ');
-  }
-
   Future<Database> getDb() {
     if (_db == null) {
       if (databaseFactory != null) {
@@ -185,3 +172,50 @@ const HTTP_JOBS_LOCKED_COLUMN = 'locked';
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
 const HTTP_JOBS_URL_COLUMN = 'url';
+
+/// Generate SQLite queries for [prepareNextRequestToProcess].
+class _QueryHelper {
+  final String orderByStatement;
+
+  final Duration processingInterval;
+
+  _QueryHelper(
+    this.orderByStatement,
+    this.processingInterval,
+  );
+
+  /// Ensure that a request that's immediately attempted and stored is not immediately
+  /// reattempted by the queue interval before an HTTP response is received.
+  int get _nowMinusNextPoll =>
+      DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
+
+  Future<List<Map<String, dynamic>>> allLockedRows(DatabaseExecutor txn) async {
+    final query = [
+      'SELECT DISTINCT',
+      '*',
+      'FROM $HTTP_JOBS_TABLE_NAME',
+      'WHERE $HTTP_JOBS_LOCKED_COLUMN = 1',
+      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $_nowMinusNextPoll',
+      'ORDER BY $orderByStatement',
+      'LIMIT 1'
+    ].join(' ');
+    return await txn.rawQuery(query);
+  }
+
+  Future<void> lockUnlockedRows(DatabaseExecutor txn) async {
+    final unlockedRows = [
+      'SELECT DISTINCT',
+      'HTTP_JOBS_LOCKED_COLUMN',
+      'FROM $HTTP_JOBS_TABLE_NAME',
+      'WHERE $HTTP_JOBS_LOCKED_COLUMN = 0',
+      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $_nowMinusNextPoll',
+      'ORDER BY $orderByStatement',
+    ].join(' ');
+
+    await txn.rawUpdate([
+      'UPDATE $HTTP_JOBS_TABLE_NAME',
+      'SET $HTTP_JOBS_LOCKED_COLUMN = 1',
+      'WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($unlockedRows);',
+    ].join(' '));
+  }
+}
