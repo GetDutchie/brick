@@ -65,31 +65,35 @@ class RequestSqliteCacheManager {
   Future<http.Request> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final query = _QueryHelper(orderByStatement, processingInterval);
-      final lockedRows = await query.allLockedRows(txn);
+      final latestLockedRequests = await _latestRequest(txn, whereLocked: true);
 
-      final atLeastOneRequestIsLocked = lockedRows?.isNotEmpty ?? false;
+      final atLeastOneRequestIsLocked = latestLockedRequests?.isNotEmpty ?? false;
+
       if (atLeastOneRequestIsLocked) {
-        final lastUpdated = DateTime.parse(lockedRows.first[HTTP_JOBS_UPDATED_AT]);
+        final lastUpdated = DateTime.parse(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
         if (lastUpdated.isBefore(DateTime.now().subtract(Duration(minutes: 2)))) {
-          await RequestSqliteCache.unlockRequest(lockedRows.first, txn);
+          await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
         } else {
           return [];
         }
-
         if (serialProcessing) return [];
       }
 
-      // lock all unlocked requests for idempotency
-      await query.lockUnlockedRows(txn);
+      // Find the latest unlocked request
+      final unlockedRequests = await _latestRequest(txn, whereLocked: false);
+      if (unlockedRequests?.isEmpty ?? true) return [];
+      // lock the latest unlocked request
+      await _lockRequest(txn, unlockedRequests.first);
 
-      // rerun and return the next locked request
-      return lockedRows;
+      // return the next unlocked request (now locked)
+      return unlockedRequests;
     });
 
     final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
 
-    if (jobs?.isNotEmpty ?? false) return jobs.first;
+    if (jobs?.isEmpty ?? true) return null;
+
+    // lock the request for idempotency
 
     return null;
   }
@@ -158,6 +162,36 @@ class RequestSqliteCacheManager {
 
     return _db;
   }
+
+  Future<List<Map<String, dynamic>>> _latestRequest(
+    DatabaseExecutor txn, {
+    @required bool whereLocked,
+  }) async {
+    /// Ensure that a request that's immediately attempted and stored is not immediately
+    /// reattempted by the queue interval before an HTTP response is received.
+    final nowMinusNextPoll =
+        DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
+
+    return await txn.query(
+      HTTP_JOBS_TABLE_NAME,
+      distinct: true,
+      where: '$HTTP_JOBS_LOCKED_COLUMN = ? AND $HTTP_JOBS_CREATED_AT_COLUMN = ?',
+      whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
+      orderBy: orderByStatement,
+      limit: 1,
+    );
+  }
+
+  Future<void> _lockRequest(DatabaseExecutor txn, Map<String, dynamic> request) async {
+    await txn.update(
+      HTTP_JOBS_TABLE_NAME,
+      {
+        HTTP_JOBS_LOCKED_COLUMN: 1,
+      },
+      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+      whereArgs: [request[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
+    );
+  }
 }
 
 const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
@@ -172,50 +206,3 @@ const HTTP_JOBS_LOCKED_COLUMN = 'locked';
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
 const HTTP_JOBS_URL_COLUMN = 'url';
-
-/// Generate SQLite queries for [prepareNextRequestToProcess].
-class _QueryHelper {
-  final String orderByStatement;
-
-  final Duration processingInterval;
-
-  _QueryHelper(
-    this.orderByStatement,
-    this.processingInterval,
-  );
-
-  /// Ensure that a request that's immediately attempted and stored is not immediately
-  /// reattempted by the queue interval before an HTTP response is received.
-  int get _nowMinusNextPoll =>
-      DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
-
-  Future<List<Map<String, dynamic>>> allLockedRows(DatabaseExecutor txn) async {
-    final query = [
-      'SELECT DISTINCT',
-      '*',
-      'FROM $HTTP_JOBS_TABLE_NAME',
-      'WHERE $HTTP_JOBS_LOCKED_COLUMN = 1',
-      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $_nowMinusNextPoll',
-      'ORDER BY $orderByStatement',
-      'LIMIT 1'
-    ].join(' ');
-    return await txn.rawQuery(query);
-  }
-
-  Future<void> lockUnlockedRows(DatabaseExecutor txn) async {
-    final unlockedRows = [
-      'SELECT DISTINCT',
-      'HTTP_JOBS_LOCKED_COLUMN',
-      'FROM $HTTP_JOBS_TABLE_NAME',
-      'WHERE $HTTP_JOBS_LOCKED_COLUMN = 0',
-      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $_nowMinusNextPoll',
-      'ORDER BY $orderByStatement',
-    ].join(' ');
-
-    await txn.rawUpdate([
-      'UPDATE $HTTP_JOBS_TABLE_NAME',
-      'SET $HTTP_JOBS_LOCKED_COLUMN = 1',
-      'WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($unlockedRows);',
-    ].join(' '));
-  }
-}

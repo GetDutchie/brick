@@ -105,10 +105,9 @@ class RequestSqliteCache {
 
   /// If the request did not succeed, unlock for subsequent processing
   Future<int> unlock(Database db) async {
-    final response = await findRequestInDatabase(db);
-    if (response == null) return null;
-
     return await db.transaction((txn) async {
+      final response = await findRequestInDatabase(txn);
+      if (response == null) return null;
       return await unlockRequest(response, txn);
     });
   }
