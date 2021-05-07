@@ -91,7 +91,7 @@ class RequestSqliteCacheManager {
 
     final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
 
-    if (jobs?.isEmpty ?? true) return null;
+    if (jobs?.isNotEmpty ?? false) return jobs.first;
 
     // lock the request for idempotency
 
