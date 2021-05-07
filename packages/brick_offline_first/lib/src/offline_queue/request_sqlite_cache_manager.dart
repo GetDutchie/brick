@@ -70,8 +70,11 @@ class RequestSqliteCacheManager {
       final atLeastOneRequestIsLocked = latestLockedRequests?.isNotEmpty ?? false;
 
       if (atLeastOneRequestIsLocked) {
-        final lastUpdated = DateTime.parse(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
-        if (lastUpdated.isBefore(DateTime.now().subtract(Duration(minutes: 2)))) {
+        // ensure that if the request is longer the 2 minutes old it's unlocked automatically
+        final lastUpdated =
+            DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
+        final twoMinutesAgo = DateTime.now().subtract(Duration(minutes: 2));
+        if (lastUpdated.isBefore(twoMinutesAgo)) {
           await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
         } else {
           return [];
@@ -128,13 +131,13 @@ class RequestSqliteCacheManager {
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.
   ///
-  /// When [whereLocked] is `true`, only jobs that are not actively being processed are returned.
+  /// When [onlyLocked] is `true`, only jobs that are not actively being processed are returned.
   /// Accessing this sublist can be useful for deleting a job blocking the queue.
   /// Defaults `false`.
-  Future<List<Map<String, dynamic>>> unprocessedRequests({bool whereLocked = false}) async {
+  Future<List<Map<String, dynamic>>> unprocessedRequests({bool onlyLocked = false}) async {
     final db = await getDb();
 
-    if (whereLocked) {
+    if (onlyLocked) {
       return await db.query(
         HTTP_JOBS_TABLE_NAME,
         distinct: true,
@@ -175,7 +178,7 @@ class RequestSqliteCacheManager {
     return await txn.query(
       HTTP_JOBS_TABLE_NAME,
       distinct: true,
-      where: '$HTTP_JOBS_LOCKED_COLUMN = ? AND $HTTP_JOBS_CREATED_AT_COLUMN = ?',
+      where: '$HTTP_JOBS_LOCKED_COLUMN = ? AND $HTTP_JOBS_CREATED_AT_COLUMN <= ?',
       whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
       orderBy: orderByStatement,
       limit: 1,
@@ -196,13 +199,32 @@ class RequestSqliteCacheManager {
 
 const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
 
+/// int; autoincrement'd
 const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
+
+/// int
 const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
+
+/// String
 const HTTP_JOBS_BODY_COLUMN = 'body';
+
+/// int; millisecondsSinceEpoch
 const HTTP_JOBS_CREATED_AT_COLUMN = 'created_at';
+
+/// String
 const HTTP_JOBS_ENCODING_COLUMN = 'encoding';
+
+/// json-encoded String
 const HTTP_JOBS_HEADERS_COLUMN = 'headers';
+
+/// int; 1 for true, 0 for false
 const HTTP_JOBS_LOCKED_COLUMN = 'locked';
+
+/// String
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
+
+/// int; millisecondsSinceEpoch
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
+
+/// String
 const HTTP_JOBS_URL_COLUMN = 'url';

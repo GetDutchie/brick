@@ -145,5 +145,17 @@ void main() {
         expect(request.body, '');
       });
     });
+
+    test('.unlockRequest', () async {
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final requests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(requests, hasLength(1));
+      await RequestSqliteCache.unlockRequest(requests.first, await requestManager.getDb());
+      final newLockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(newLockedRequests, isEmpty);
+    });
   });
 }

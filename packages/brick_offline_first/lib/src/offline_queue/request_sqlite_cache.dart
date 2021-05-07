@@ -63,6 +63,7 @@ class RequestSqliteCache {
     return db.transaction((txn) async {
       if (response == null || response.isEmpty) {
         final serialized = toSqlite();
+        serialized[HTTP_JOBS_LOCKED_COLUMN] = 1;
 
         logger?.fine('adding to queue: $serialized');
         return await txn.insert(
@@ -79,6 +80,7 @@ class RequestSqliteCache {
         {
           HTTP_JOBS_ATTEMPTS_COLUMN: response[HTTP_JOBS_ATTEMPTS_COLUMN] + 1,
           HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+          HTTP_JOBS_LOCKED_COLUMN: 1,
         },
         where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
         whereArgs: [response[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
@@ -138,7 +140,7 @@ class RequestSqliteCache {
     return await db.update(
       HTTP_JOBS_TABLE_NAME,
       {
-        HTTP_JOBS_LOCKED_COLUMN: 0, // unlock the row, this job has finished processing
+        HTTP_JOBS_LOCKED_COLUMN: 0,
       },
       where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
       whereArgs: [data[HTTP_JOBS_PRIMARY_KEY_COLUMN]],
