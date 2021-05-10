@@ -62,7 +62,7 @@ void main() {
         await client.put('http://localhost:3000', body: 'existing record');
 
         final request = await requestManager.prepareNextRequestToProcess();
-        expect(request?.method, isNull);
+        expect(request?.method, 'POST');
 
         final asCacheItem = RequestSqliteCache(request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());

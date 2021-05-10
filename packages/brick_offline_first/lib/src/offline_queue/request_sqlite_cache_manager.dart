@@ -76,8 +76,6 @@ class RequestSqliteCacheManager {
         final twoMinutesAgo = DateTime.now().subtract(Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
           await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
-        } else {
-          return [];
         }
         if (serialProcessing) return [];
       }
