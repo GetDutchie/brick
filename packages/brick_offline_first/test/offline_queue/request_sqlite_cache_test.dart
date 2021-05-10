@@ -95,6 +95,18 @@ void main() {
       });
     });
 
+    test('#unlock', () async {
+      final logger = MockLogger();
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+      await uninserted.insertOrUpdate(db, logger: logger);
+      await uninserted.unlock(db);
+      final request = await requestManager.unprocessedRequests();
+      expect(request.first[HTTP_JOBS_LOCKED_COLUMN], 0);
+    });
+
     group('.toRequest', () {
       test('basic', () {
         final request = RequestSqliteCache.sqliteToRequest({
@@ -132,6 +144,34 @@ void main() {
         expect(request.headers, {'Content-Type': 'application/json'});
         expect(request.body, '');
       });
+    });
+
+    test('.lockRequest', () async {
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      await RequestSqliteCache.unlockRequest(lockedRequests.first, await requestManager.getDb());
+
+      var requests = await requestManager.unprocessedRequests();
+      expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 0);
+      await RequestSqliteCache.lockRequest(requests.first, await requestManager.getDb());
+
+      requests = await requestManager.unprocessedRequests();
+      expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 1);
+    });
+
+    test('.unlockRequest', () async {
+      final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+      final uninserted = RequestSqliteCache(uninsertedRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final requests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(requests, hasLength(1));
+      await RequestSqliteCache.unlockRequest(requests.first, await requestManager.getDb());
+      final newLockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(newLockedRequests, isEmpty);
     });
   });
 }
