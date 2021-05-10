@@ -59,29 +59,16 @@ class RequestSqliteCacheManager {
     return result > 0;
   }
 
-  /// Discover most recent unprocessed job in database convert it back to an HTTP request.
-  /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<http.Request?> prepareNextRequestToProcess() async {
-    final db = await getDb();
-    final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
-      final whereUnlocked = _lockedQuery(false, selectFields: HTTP_JOBS_LOCKED_COLUMN, limit: 0);
-      final whereLocked = _lockedQuery(true, limit: 1);
+  Future<Database> getDb() {
+    if (_db == null) {
+      if (databaseFactory != null) {
+        _db = databaseFactory?.openDatabase(databaseName);
+      } else {
+        _db = openDatabase(databaseName);
+      }
+    }
 
-      // lock all unlocked requests for idempotency
-      await txn.rawUpdate([
-        'UPDATE $HTTP_JOBS_TABLE_NAME',
-        'SET $HTTP_JOBS_LOCKED_COLUMN = 1',
-        'WHERE $HTTP_JOBS_LOCKED_COLUMN IN ($whereUnlocked);',
-      ].join(' '));
-
-      return txn.rawQuery('$whereLocked;');
-    });
-
-    final jobs = unprocessedRequests.map<http.Request>(RequestSqliteCache.sqliteToRequest);
-
-    if (jobs.isNotEmpty) return jobs.first;
-
-    return null;
+    return _db!;
   }
 
   /// Prepare schema.
@@ -111,16 +98,55 @@ class RequestSqliteCacheManager {
     }
   }
 
+  /// Discover most recent unprocessed job in database convert it back to an HTTP request.
+  /// This method also locks the row to make it idempotent to subsequent processing.
+  Future<http.Request?> prepareNextRequestToProcess() async {
+    final db = await getDb();
+    final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
+      final latestLockedRequests = await _latestRequest(txn, whereLocked: true);
+
+      if (latestLockedRequests.isNotEmpty) {
+        // ensure that if the request is longer the 2 minutes old it's unlocked automatically
+        final lastUpdated =
+            DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
+        final twoMinutesAgo = DateTime.now().subtract(Duration(minutes: 2));
+        if (lastUpdated.isBefore(twoMinutesAgo)) {
+          await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
+        } else {
+          return [];
+        }
+        if (serialProcessing) return [];
+      }
+
+      // Find the latest unlocked request
+      final unlockedRequests = await _latestRequest(txn, whereLocked: false);
+      if (unlockedRequests.isEmpty) return [];
+      // lock the latest unlocked request
+      await RequestSqliteCache.lockRequest(unlockedRequests.first, txn);
+
+      // return the next unlocked request (now locked)
+      return unlockedRequests;
+    });
+
+    final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
+
+    if (jobs.isNotEmpty) return jobs.first;
+
+    // lock the request for idempotency
+
+    return null;
+  }
+
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.
   ///
-  /// When [whereLocked] is `true`, only jobs that are not actively being processed are returned.
+  /// When [onlyLocked] is `true`, only jobs that are not actively being processed are returned.
   /// Accessing this sublist can be useful for deleting a job blocking the queue.
   /// Defaults `false`.
-  Future<List<Map<String, dynamic>>> unprocessedRequests({bool whereLocked = false}) async {
+  Future<List<Map<String, dynamic>>> unprocessedRequests({bool onlyLocked = false}) async {
     final db = await getDb();
 
-    if (whereLocked) {
+    if (onlyLocked) {
       return await db.query(
         HTTP_JOBS_TABLE_NAME,
         distinct: true,
@@ -137,50 +163,54 @@ class RequestSqliteCacheManager {
     );
   }
 
-  /// Generate SQLite query for [prepareNextRequestToProcess].
-  /// When [limit] is `<= 0`, all results are returned
-  String _lockedQuery(
-    bool whereIsLocked, {
-    int limit = 1,
-    String selectFields = '*',
-  }) {
-    // Ensure that a request that's immediately attempted and stored is not immediately
-    // reattempted by the queue interval before an HTTP response is received.
+  Future<List<Map<String, dynamic>>> _latestRequest(
+    DatabaseExecutor txn, {
+    required bool whereLocked,
+  }) async {
+    /// Ensure that a request that's immediately attempted and stored is not immediately
+    /// reattempted by the queue interval before an HTTP response is received.
     final nowMinusNextPoll =
         DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
-    return [
-      'SELECT DISTINCT',
-      selectFields,
-      'FROM $HTTP_JOBS_TABLE_NAME',
-      'WHERE $HTTP_JOBS_LOCKED_COLUMN = ${whereIsLocked ? 1 : 0}',
-      'AND $HTTP_JOBS_CREATED_AT_COLUMN <= $nowMinusNextPoll',
-      'ORDER BY $orderByStatement',
-      if (limit > 0) 'LIMIT $limit'
-    ].join(' ');
-  }
 
-  Future<Database> getDb() {
-    if (_db == null) {
-      if (databaseFactory != null) {
-        _db = databaseFactory?.openDatabase(databaseName);
-      } else {
-        _db = openDatabase(databaseName);
-      }
-    }
-
-    return _db!;
+    return await txn.query(
+      HTTP_JOBS_TABLE_NAME,
+      distinct: true,
+      where: '$HTTP_JOBS_LOCKED_COLUMN = ? AND $HTTP_JOBS_CREATED_AT_COLUMN <= ?',
+      whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
+      orderBy: orderByStatement,
+      limit: 1,
+    );
   }
 }
 
 const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
 
+/// int; autoincrement'd
 const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
+
+/// int
 const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
+
+/// String
 const HTTP_JOBS_BODY_COLUMN = 'body';
+
+/// int; millisecondsSinceEpoch
 const HTTP_JOBS_CREATED_AT_COLUMN = 'created_at';
+
+/// String
 const HTTP_JOBS_ENCODING_COLUMN = 'encoding';
+
+/// json-encoded String
 const HTTP_JOBS_HEADERS_COLUMN = 'headers';
+
+/// int; 1 for true, 0 for false
 const HTTP_JOBS_LOCKED_COLUMN = 'locked';
+
+/// String
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
+
+/// int; millisecondsSinceEpoch
 const HTTP_JOBS_UPDATED_AT = 'updated_at';
+
+/// String
 const HTTP_JOBS_URL_COLUMN = 'url';

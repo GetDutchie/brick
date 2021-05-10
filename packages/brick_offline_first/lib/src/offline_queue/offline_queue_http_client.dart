@@ -53,15 +53,18 @@ class OfflineQueueHttpClient extends http.BaseClient {
       final resp = await _inner.send(request);
 
       if (cacheItem.requestIsPush && !reattemptForStatusCodes.contains(resp.statusCode)) {
+        final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-        final db = await requestManager.getDb();
         await cacheItem.delete(db);
       }
 
       return resp;
     } catch (e) {
       _logger.warning('#send: $e');
+    } finally {
+      final db = await requestManager.getDb();
+      await cacheItem.unlock(db);
     }
 
     return _genericErrorResponse;
