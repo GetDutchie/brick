@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
+
 ## 1.0.0
 
 * Null safety

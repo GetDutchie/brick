@@ -76,7 +76,13 @@ void main() {
         await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
         final request = await requestManager.prepareNextRequestToProcess();
-        expect(request?.method, isNull);
+        expect(request?.method, 'POST');
+
+        final asCacheItem = RequestSqliteCache(request!);
+        await asCacheItem.insertOrUpdate(await requestManager.getDb());
+        // Do not retry request if the row is locked and serial processing is active
+        final req = await requestManager.prepareNextRequestToProcess();
+        expect(req, isNull);
       });
 
       test('new request is locked and skipped', () async {
