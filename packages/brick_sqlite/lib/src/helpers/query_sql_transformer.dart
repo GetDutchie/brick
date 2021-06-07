@@ -145,7 +145,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     }
 
     /// Finally add the column to the complete phrase
-    final sqliteColumn = '`${_adapter.tableName}`.${definition.columnName}'
+    final sqliteColumn = '`${_adapter.tableName}`.${definition.columnName}';
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
