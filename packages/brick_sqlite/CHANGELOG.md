@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
+
 ## 1.0.0+1
 
 * Require `provider` in `SqliteAdapter#fromSqlite`, `SqliteAdapter#toSqlite`, `SqliteAdapter#beforeSave`, `SqliteAdapter#afterSave`
