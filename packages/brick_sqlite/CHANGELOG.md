@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
+
 ## 0.1.7
 
 * Support `columnType` from SQLite annotations

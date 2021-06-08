@@ -123,6 +123,23 @@ void main() {
         final doesExistWithModel = await provider.exists<DemoModel>(query: query);
         expect(doesExistWithModel, isTrue);
       });
+
+      test('with an association and an offset', () async {
+        await provider
+            .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
+        final query = Query(
+          where: [Where('manyAssoc').isExactly(Where('name').isExactly('Thomas'))],
+          providerArgs: {'limit': 1, 'offset': 1},
+        );
+
+        final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);
+        expect(doesExistWithoutModel, isFalse);
+
+        await provider
+            .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
+        final doesExistWithModel = await provider.exists<DemoModel>(query: query);
+        expect(doesExistWithModel, isTrue);
+      });
     });
 
     group('#migrateFromStringToJoinsTable', () {
