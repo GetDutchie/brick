@@ -43,7 +43,7 @@ class AggregateBuilder implements Builder {
     for (final glob in [migrationFiles, modelFiles]) {
       await for (final input in buildStep.findAssets(glob)) {
         final contents = await buildStep.readAsString(input);
-        imports.addAll(findAllImports(contents));
+        imports.addAll(findAllDirectives(contents));
         final newContents =
             contents.replaceAll(importRegex, '').replaceAll(RegExp(r"part of '.*';"), '');
         files.add(newContents);
@@ -56,8 +56,11 @@ class AggregateBuilder implements Builder {
   }
 
   /// All unique `import:package` within a large body of text
-  static Set<String> findAllImports(String contents) {
-    return importRegex.allMatches(contents).map((m) => m[0]!).toSet();
+  static Set<String> findAllDirectives(String contents) {
+    final imports = importRegex.allMatches(contents).map((m) => m[0]!).toSet();
+    final parts = RegExp(r"part of '.*';").allMatches(contents).map((m) => m[0]!).toSet();
+    final exports = RegExp(r'(^export\s.*;)', multiLine: true).allMatches(contents).map((m) => m[0]!).toSet();
+    return {...imports, ...parts, ...exports};
   }
 
   @override
