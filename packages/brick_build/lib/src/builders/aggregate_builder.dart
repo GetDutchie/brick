@@ -47,8 +47,8 @@ class AggregateBuilder implements Builder {
         final newContents = contents
             .replaceAll(importRegex, '')
             .replaceAll(RegExp(r"part of '.*';"), '')
-            .replaceAll(RegExp(r"part of '.*';"), '')
-            .replaceAll(RegExp(r'(^export\s.*;)', multiLine: true), '');
+            .replaceAll(RegExp(r"^part\s'.*';", multiLine: true), '')
+            .replaceAll(RegExp(r'^export\s.*;', multiLine: true), '');
         files.add(newContents);
       }
     }
