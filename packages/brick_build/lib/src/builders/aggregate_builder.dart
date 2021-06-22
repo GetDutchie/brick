@@ -44,8 +44,11 @@ class AggregateBuilder implements Builder {
       await for (final input in buildStep.findAssets(glob)) {
         final contents = await buildStep.readAsString(input);
         imports.addAll(findAllImports(contents));
-        final newContents =
-            contents.replaceAll(importRegex, '').replaceAll(RegExp(r"part of '.*';"), '');
+        final newContents = contents
+            .replaceAll(importRegex, '')
+            .replaceAll(RegExp(r"part of '.*';"), '')
+            .replaceAll(RegExp(r"^part\s'.*';", multiLine: true), '')
+            .replaceAll(RegExp(r'^export\s.*;', multiLine: true), '');
         files.add(newContents);
       }
     }

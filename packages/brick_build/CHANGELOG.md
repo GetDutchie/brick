@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0+2
+
+* Remove `part` and `export` directives during build
+
 ## 1.1.0+1
 
 * Do not generate null-safe return values in adapters if the member cannot be null. For example, this would remove `data['name'] == null ? null :` in the REST adapter function of field that cannot be null in Dart >=2.12
