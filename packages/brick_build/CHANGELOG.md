@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0+3
+
+* Ignore `unnecessary_non_null_assertion` and `invalid_null_aware_operator` in adapter generated code. If a repository is forced to a non-null value (`repository!`) subsequent access of the repository must not have an operator (`repository.` instead of `repository?`). Brick determines properties on a per-member basis, requiring a break in architecture to resolve subsquent access. These are linter warnings, not errors, and therefore they're safe to ignore for adapters.
+
 ## 1.1.0+2
 
 * Remove `part` and `export` directives during build
