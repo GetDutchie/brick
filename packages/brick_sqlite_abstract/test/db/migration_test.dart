@@ -156,6 +156,17 @@ class Migration15 extends Migration {
 }
 ''');
       });
+
+      test('null drop commands are not reported', () {
+        final commands = [
+          DropColumn('first_name', onTable: 'people'),
+          DropColumn('last_name', onTable: 'people'),
+        ];
+
+        final output = Migration.generate(commands, 15);
+        expect(output,
+            contains(RegExp(r'const List<MigrationCommand> _migration_15_down = \[\s+\];')));
+      });
     });
 
     test('#statement', () {

@@ -121,8 +121,8 @@ abstract class Migration {
   }
 
   static String generate(List<MigrationCommand> commands, int version) {
-    final upCommands = commands.map((m) => m.forGenerator).join(',\n  ');
-    final downCommands = commands.map((m) => m.down?.forGenerator).toList();
+    final upCommands = commands.map((m) => m.forGenerator);
+    final downCommands = commands.where((m) => m.down != null).map((m) => m.forGenerator).toList();
 
     return '''
 // GENERATED CODE EDIT WITH CAUTION
@@ -137,7 +137,7 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_${version}_up = [
-  $upCommands
+  ${upCommands.join(',\n  ')}
 ];
 
 const List<MigrationCommand> _migration_${version}_down = [
