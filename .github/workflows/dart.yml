@@ -31,15 +31,15 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2.3.4
+      - name: "packages/brick_sqlite; git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: "git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
       - id: packages_brick_sqlite_pub_get
         name: packages/brick_sqlite; dart pub get
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dart pub get
-      - name: "packages/brick_sqlite; git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
-        working-directory: packages/brick_sqlite
-        run: "git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
   job_002:
     name: "install_flutter; Dart stable; PKG: packages/brick_sqlite; `git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor`"
     runs-on: ubuntu-latest
