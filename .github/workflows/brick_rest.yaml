@@ -49,7 +49,7 @@ jobs:
         if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_rest; dart test
+      - name: packages/brick_rest; dart run test
         if: "always() && steps.packages_brick_rest_analyze.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: dart test
+        run: dart run test

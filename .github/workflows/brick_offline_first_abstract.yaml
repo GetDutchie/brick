@@ -49,7 +49,7 @@ jobs:
         if: "always() && steps.packages_brick_offline_first_abstract_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_offline_first_abstract; dart test
+      - name: packages/brick_offline_first_abstract; dart run test
         if: "always() && steps.packages_brick_offline_first_abstract_analyze.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
-        run: dart test
+        run: dart run test
