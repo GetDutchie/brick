@@ -56,11 +56,11 @@ for PKG in ${PKGS}; do
     exit 64
   fi
 
-  dart pub upgrade || EXIT_CODE=$?
+  dart pub get || EXIT_CODE=$?
 
   if [[ ${EXIT_CODE} -ne 0 ]]; then
-    echo -e "\033[31mPKG: ${PKG}; 'dart pub upgrade' - FAILED  (${EXIT_CODE})\033[0m"
-    FAILURES+=("${PKG}; 'dart pub upgrade'")
+    echo -e "\033[31mPKG: ${PKG}; 'dart pub get' - FAILED  (${EXIT_CODE})\033[0m"
+    FAILURES+=("${PKG}; 'dart pub get'")
   else
     for TASK in "$@"; do
       EXIT_CODE=0
@@ -71,9 +71,13 @@ for PKG in ${PKGS}; do
         echo 'dart analyze --fatal-warnings lib'
         dart analyze --fatal-warnings lib || EXIT_CODE=$?
         ;;
-      command)
+      command_0)
         echo 'flutter test'
         flutter test || EXIT_CODE=$?
+        ;;
+      command_1)
+        echo 'git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor'
+        git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor || EXIT_CODE=$?
         ;;
       test)
         echo 'dart test'

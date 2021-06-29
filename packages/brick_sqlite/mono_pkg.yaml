@@ -7,4 +7,5 @@ stages:
     - group:
       - analyze: --fatal-warnings lib
   - unit_test:
+    - command: git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor
     - command: flutter test

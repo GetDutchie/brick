@@ -5,6 +5,8 @@ github:
       - master
     pull_request:
 
+pub_action: get
+
 merge_stages:
 - analyzer_and_format
 - unit_test
