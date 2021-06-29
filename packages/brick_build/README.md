@@ -1,3 +1,5 @@
+![brick_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_build.yml/badge.svg)
+
 # Brick Build
 
 Code generator utilities for [Brick](https://github.com/greenbits/brick) adapters and model dictionaries.
