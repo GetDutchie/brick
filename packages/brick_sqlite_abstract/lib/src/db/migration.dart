@@ -122,7 +122,7 @@ abstract class Migration {
 
   static String generate(List<MigrationCommand> commands, int version) {
     final upCommands = commands.map((m) => m.forGenerator);
-    final downCommands = commands.where((m) => m.down != null).map((m) => m.forGenerator).toList();
+    final downCommands = commands.map((m) => m.down?.forGenerator).toList();
 
     return '''
 // GENERATED CODE EDIT WITH CAUTION

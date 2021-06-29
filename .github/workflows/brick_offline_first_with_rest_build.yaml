@@ -49,7 +49,7 @@ jobs:
         if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_offline_first_with_rest_build; dart run test
+      - name: packages/brick_offline_first_with_rest_build; dart test
         if: "always() && steps.packages_brick_offline_first_with_rest_build_analyze.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: dart run test
+        run: dart test

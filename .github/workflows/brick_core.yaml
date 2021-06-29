@@ -49,7 +49,7 @@ jobs:
         if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_core; dart run test
+      - name: packages/brick_core; dart test
         if: "always() && steps.packages_brick_core_analyze.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: dart run test
+        run: dart test
