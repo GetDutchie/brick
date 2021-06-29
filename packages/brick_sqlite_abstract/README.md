@@ -1,3 +1,5 @@
+![brick_sqlite_abstract workflow](https://github.com/greenbits/brick/actions/workflows/brick_sqlite_abstract.yaml/badge.svg)
+
 # Brick SQLite Abstract
 
 Adding class- and field-level configuration to the [SQLite provider](https://github.com/greenbits/brick/tree/master/packages/brick_sqlite).

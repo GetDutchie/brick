@@ -1,0 +1,56 @@
+name: Brick Offline First
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "packages/brick_offline_first/**"
+      - ".github/workflows/brick_offline_first.yaml"
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  analyze_test:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:${{ matrix.flutter_version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_version: [dev, stable]
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+      - name: Install SQLite3
+        run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: "~/.pub-cache/hosted"
+          key: ${{ runner.os }}-brick_offline_first-v1-${{ matrix.flutter_version }}-${{ hashFiles('packages/brick_offline_first/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-brick_offline_first-v1-${{ matrix.flutter_version }}
+      - id: checkout
+        uses: actions/checkout@v2.3.4
+      - id: packages_brick_offline_first_pub_get
+        name: flutter pub get
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: flutter pub get
+      - id: packages_brick_offline_first_analyze
+        name: dart_analyze
+        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: dart analyze --fatal-warnings lib
+      - name: flutter test
+        if: "always() && steps.packages_brick_offline_first_analyze.conclusion == 'success'"
+        working-directory: packages/brick_offline_first
+        run: flutter test

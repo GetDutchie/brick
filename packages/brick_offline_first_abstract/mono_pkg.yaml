@@ -1,7 +1,0 @@
-dart:
-  - stable
-  - dev
-
-stages:
-  - analyze:
-    - dartanalyzer: --fatal-warnings lib

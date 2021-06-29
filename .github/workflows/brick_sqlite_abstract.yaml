@@ -1,0 +1,55 @@
+name: Brick SQLite Abstract
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "packages/brick_sqlite_abstract/**"
+      - ".github/workflows/brick_sqlite_abstract.yaml"
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  analyze_test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk_version: [dev, stable]
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: ${{ matrix.sdk_version }}
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: "~/.pub-cache/hosted"
+          key: ${{ runner.os }}-brick_sqlite_abstract-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_sqlite_abstract/pubspec.yaml') }}
+          sqliteore-keys: |
+            ${{ runner.os }}-brick_sqlite_abstract-v1-${{ matrix.sdk_version }}
+      - id: checkout
+        uses: actions/checkout@v2.3.4
+      - id: packages_brick_sqlite_abstract_pub_get
+        name: dart pub get
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: dart pub get
+      - id: packages_brick_sqlite_abstract_analyze
+        name: dart_analyze
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: dart analyze --fatal-warnings lib
+      - name: dart test
+        if: "always() && steps.packages_brick_sqlite_abstract_analyze.conclusion == 'success'"
+        working-directory: packages/brick_sqlite_abstract
+        run: dart test

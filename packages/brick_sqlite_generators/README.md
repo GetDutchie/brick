@@ -1,3 +1,5 @@
+![brick_sqlite_generators workflow](https://github.com/greenbits/brick/actions/workflows/brick_sqlite_generators.yaml/badge.svg)
+
 # Brick Sqlite Build
 
 Code generator that provides (de)serializing functions for Brick adapters using SqliteProvider. This package **does not** produce code. It can be imported into other Brick build domains.
