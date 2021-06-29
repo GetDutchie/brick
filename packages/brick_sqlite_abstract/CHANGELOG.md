@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0+2
+
+* Fixes migration generation error that included `null` when an `up` migration did not have a `down` generator.
+
 ## 1.0.0+1
 
 * Null safety cleanup and refactor
