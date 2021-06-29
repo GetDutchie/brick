@@ -29,6 +29,8 @@ jobs:
         uses: styfle/cancel-workflow-action@0.9.0
         with:
           access_token: ${{ github.token }}
+      - name: Install SQLite3
+        run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
       - name: Cache Pub hosted dependencies
         uses: actions/cache@v2.1.6
         with:
