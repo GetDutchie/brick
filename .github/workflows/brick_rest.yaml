@@ -1,12 +1,12 @@
-name: Brick Core
+name: Brick REST
 on:
   push:
     branches:
       - master
   pull_request:
     paths:
-      - "packages/brick_core/**"
-      - ".github/workflows/brick_core.yaml"
+      - "packages/brick_rest/**"
+      - ".github/workflows/brick_rest.yaml"
 
 defaults:
   run:
@@ -34,22 +34,22 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: "~/.pub-cache/hosted"
-          key: ${{ runner.os }}-brick_core-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_core/pubspec.yaml') }}
+          key: ${{ runner.os }}-brick_rest-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_rest/pubspec.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-brick_core-v1-${{ matrix.sdk_version }}
+            ${{ runner.os }}-brick_rest-v1-${{ matrix.sdk_version }}
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_core_pub_get
-        name: packages/brick_core; dart pub get
+      - id: packages_brick_rest_pub_get
+        name: packages/brick_rest; dart pub get
         if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: packages/brick_core
+        working-directory: packages/brick_rest
         run: dart pub get
-      - id: packages_brick_core_analyze
-        name: packages/brick_core; dart_analyze
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
-        working-directory: packages/brick_core
+      - id: packages_brick_rest_analyze
+        name: packages/brick_rest; dart_analyze
+        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
+        working-directory: packages/brick_rest
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_core; dart test
-        if: "always() && steps.packages_brick_core_analyze.conclusion == 'success'"
-        working-directory: packages/brick_core
+      - name: packages/brick_rest; dart test
+        if: "always() && steps.packages_brick_rest_analyze.conclusion == 'success'"
+        working-directory: packages/brick_rest
         run: dart test

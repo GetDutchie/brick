@@ -1,4 +1,4 @@
-name: Brick SQLite
+name: Brick Offline First
 on:
   push:
     branches:
