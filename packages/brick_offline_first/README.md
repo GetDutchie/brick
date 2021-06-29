@@ -1,3 +1,5 @@
+![brick_offline_first workflow](https://github.com/greenbits/brick/actions/workflows/brick_offline_first.yaml/badge.svg)
+
 # Brick Offline First
 
 Offline First combines SQLite and a remote provider into one unified repository. And, optionally, a memory cache layer as the entry point. The remote provider could query Firebase or REST, hydrate the results to SQLite, and then deliver those SQLite results back to the app. In this way, the app functions identically when it's online or offline:

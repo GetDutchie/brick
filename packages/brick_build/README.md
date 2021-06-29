@@ -1,4 +1,4 @@
-![brick_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_build.yml/badge.svg)
+![brick_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_build.yaml/badge.svg)
 
 # Brick Build
 

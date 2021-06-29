@@ -1,3 +1,5 @@
+![brick_rest workflow](https://github.com/greenbits/brick/actions/workflows/brick_rest.yaml/badge.svg)
+
 # REST Provider
 
 Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.

@@ -1,3 +1,5 @@
+![brick_sqlite workflow](https://github.com/greenbits/brick/actions/workflows/brick_sqlite.yaml/badge.svg)
+
 # Brick SQLite Provider
 
 Local storage for Flutter apps using [Brick](https://github.com/greenbits/brick).

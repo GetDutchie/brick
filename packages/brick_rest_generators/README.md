@@ -1,3 +1,5 @@
+![brick_rest_generators workflow](https://github.com/greenbits/brick/actions/workflows/brick_rest_generators.yaml/badge.svg)
+
 # Brick Rest Build
 
 Code generator that provides (de)serializing functions for Brick adapters using RestProvider. This package **does not** produce code. It can be imported into other Brick build domains.

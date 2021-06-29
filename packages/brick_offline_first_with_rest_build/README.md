@@ -1,3 +1,5 @@
+![brick_offline_first_with_rest_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_offline_first_with_rest_build.yaml/badge.svg)
+
 # Brick Offline First with Rest Build
 
 Code generator that provides (de)serializing functions for Brick adapters using RestProvider and SqliteProvider within the OfflineFirstWithRest domain. Classes annotated with `ConnectOfflineFirstWithRest` **and** extending the model `OfflineFirstWithRest` will be discovered.
