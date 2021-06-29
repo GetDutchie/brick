@@ -50,10 +50,10 @@ jobs:
         working-directory: packages/brick_core
         run: dart analyze --fatal-warnings lib
       - id: packages_brick_offline_first_pub_upgrade
-        name: packages/brick_offline_first; dart pub upgrade
+        name: packages/brick_offline_first; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: "packages/brick_offline_first; dart analyze --fatal-warnings lib"
         if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
@@ -95,10 +95,10 @@ jobs:
         working-directory: packages/brick_rest_generators
         run: dart analyze --fatal-warnings lib
       - id: packages_brick_sqlite_pub_upgrade
-        name: packages/brick_sqlite; dart pub upgrade
+        name: packages/brick_sqlite; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: "packages/brick_sqlite; dart analyze --fatal-warnings lib"
         if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
@@ -159,10 +159,10 @@ jobs:
         working-directory: packages/brick_core
         run: dart analyze --fatal-warnings lib
       - id: packages_brick_offline_first_pub_upgrade
-        name: packages/brick_offline_first; dart pub upgrade
+        name: packages/brick_offline_first; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: "packages/brick_offline_first; dart analyze --fatal-warnings lib"
         if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
@@ -204,10 +204,10 @@ jobs:
         working-directory: packages/brick_rest_generators
         run: dart analyze --fatal-warnings lib
       - id: packages_brick_sqlite_pub_upgrade
-        name: packages/brick_sqlite; dart pub upgrade
+        name: packages/brick_sqlite; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: "packages/brick_sqlite; dart analyze --fatal-warnings lib"
         if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
@@ -335,19 +335,19 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.3.4
       - id: packages_brick_offline_first_pub_upgrade
-        name: packages/brick_offline_first; dart pub upgrade
+        name: packages/brick_offline_first; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: packages/brick_offline_first; flutter test
         if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
       - id: packages_brick_sqlite_pub_upgrade
-        name: packages/brick_sqlite; dart pub upgrade
+        name: packages/brick_sqlite; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: packages/brick_sqlite; flutter test
         if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
@@ -460,19 +460,19 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.3.4
       - id: packages_brick_offline_first_pub_upgrade
-        name: packages/brick_offline_first; dart pub upgrade
+        name: packages/brick_offline_first; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: packages/brick_offline_first; flutter test
         if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
       - id: packages_brick_sqlite_pub_upgrade
-        name: packages/brick_sqlite; dart pub upgrade
+        name: packages/brick_sqlite; flutter pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub upgrade
+        run: flutter pub upgrade
       - name: packages/brick_sqlite; flutter test
         if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
