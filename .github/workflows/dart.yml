@@ -15,6 +15,8 @@ jobs:
   job_001:
     name: "install_flutter; Dart dev; PKG: packages/brick_sqlite; `git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor`"
     runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:2.2.0
     steps:
       - name: Cache Pub hosted dependencies
         uses: actions/cache@v2.1.6
