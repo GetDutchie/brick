@@ -22,6 +22,9 @@ class SqliteAssoc extends OfflineFirstModel {
 }
 
 final output = r'''
+// ignore_for_file: unnecessary_non_null_assertion
+// ignore_for_file: invalid_null_aware_operator
+
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
