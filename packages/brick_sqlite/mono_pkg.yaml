@@ -3,7 +3,8 @@ dart:
   - dev
 
 stages:
-  - analyze:
-    - dartanalyzer: --fatal-warnings lib
+  - analyzer_and_format:
+    - group:
+      - analyze: --fatal-warnings lib
   - unit_test:
     - command: flutter test
