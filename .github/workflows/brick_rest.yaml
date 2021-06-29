@@ -40,16 +40,16 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.3.4
       - id: packages_brick_rest_pub_get
-        name: packages/brick_rest; dart pub get
+        name: dart pub get
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart pub get
       - id: packages_brick_rest_analyze
-        name: packages/brick_rest; dart_analyze
+        name: dart_analyze
         if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_rest; dart test
+      - name: dart test
         if: "always() && steps.packages_brick_rest_analyze.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart test

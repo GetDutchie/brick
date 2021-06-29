@@ -41,16 +41,16 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.3.4
       - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; flutter pub get
+        name: flutter pub get
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter pub get
       - id: packages_brick_sqlite_analyze
-        name: packages/brick_sqlite; dart_analyze
+        name: dart_analyze
         if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dart analyze --fatal-warnings lib
-      - name: packages/brick_sqlite; flutter test
+      - name: flutter test
         if: "always() && steps.packages_brick_sqlite_analyze.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter test
