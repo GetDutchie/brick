@@ -13,64 +13,6 @@ env:
 
 jobs:
   job_001:
-    name: "install_flutter; Dart dev; PKG: packages/brick_sqlite; `git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor`"
-    runs-on: ubuntu-latest
-    container:
-      image: cirrusci/flutter:2.2.0
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.6
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_sqlite;commands:command_1"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_sqlite
-            os:ubuntu-latest;pub-cache-hosted;dart:dev
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: dev
-      - id: checkout
-        uses: actions/checkout@v2.3.4
-      - name: "packages/brick_sqlite; git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
-        working-directory: packages/brick_sqlite
-        run: "git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: packages/brick_sqlite
-        run: dart pub get
-  job_002:
-    name: "install_flutter; Dart stable; PKG: packages/brick_sqlite; `git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.6
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_sqlite;commands:command_1"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_sqlite
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2.3.4
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: packages/brick_sqlite
-        run: dart pub get
-      - name: "packages/brick_sqlite; git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
-        working-directory: packages/brick_sqlite
-        run: "git clone https://github.com/flutter/flutter.git -b stable; export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH; flutter doctor"
-  job_003:
     name: "analyzer_and_format; Dart dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; `dart analyze --fatal-warnings lib`"
     runs-on: ubuntu-latest
     steps:
@@ -89,100 +31,97 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_build_pub_get
-        name: packages/brick_build; dart pub get
+      - id: packages_brick_build_pub_upgrade
+        name: packages/brick_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_build; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_core_pub_get
-        name: packages/brick_core; dart pub get
+      - id: packages_brick_core_pub_upgrade
+        name: packages/brick_core; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_core; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_pub_get
-        name: packages/brick_offline_first; dart pub get
+      - id: packages_brick_offline_first_pub_upgrade
+        name: packages/brick_offline_first; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_abstract_pub_get
-        name: packages/brick_offline_first_abstract; dart pub get
+      - id: packages_brick_offline_first_abstract_pub_upgrade
+        name: packages/brick_offline_first_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first_abstract; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_with_rest_build_pub_get
-        name: packages/brick_offline_first_with_rest_build; dart pub get
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: packages/brick_offline_first_with_rest_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first_with_rest_build; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_rest_pub_get
-        name: packages/brick_rest; dart pub get
+      - id: packages_brick_rest_pub_upgrade
+        name: packages/brick_rest; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_rest; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_rest_generators_pub_get
-        name: packages/brick_rest_generators; dart pub get
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: packages/brick_rest_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_rest_generators; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
+      - id: packages_brick_sqlite_pub_upgrade
+        name: packages/brick_sqlite; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_abstract_pub_get
-        name: packages/brick_sqlite_abstract; dart pub get
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: packages/brick_sqlite_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite_abstract; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_generators_pub_get
-        name: packages/brick_sqlite_generators; dart pub get
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: packages/brick_sqlite_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite_generators; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dart analyze --fatal-warnings lib
-    needs:
-      - job_001
-      - job_002
-  job_004:
+  job_002:
     name: "analyzer_and_format; Dart stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first, packages/brick_offline_first_abstract, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; `dart analyze --fatal-warnings lib`"
     runs-on: ubuntu-latest
     steps:
@@ -201,100 +140,97 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_build_pub_get
-        name: packages/brick_build; dart pub get
+      - id: packages_brick_build_pub_upgrade
+        name: packages/brick_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_build; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_core_pub_get
-        name: packages/brick_core; dart pub get
+      - id: packages_brick_core_pub_upgrade
+        name: packages/brick_core; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_core; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_pub_get
-        name: packages/brick_offline_first; dart pub get
+      - id: packages_brick_offline_first_pub_upgrade
+        name: packages/brick_offline_first; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_abstract_pub_get
-        name: packages/brick_offline_first_abstract; dart pub get
+      - id: packages_brick_offline_first_abstract_pub_upgrade
+        name: packages/brick_offline_first_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first_abstract; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_abstract
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_offline_first_with_rest_build_pub_get
-        name: packages/brick_offline_first_with_rest_build; dart pub get
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: packages/brick_offline_first_with_rest_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_offline_first_with_rest_build; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_rest_pub_get
-        name: packages/brick_rest; dart pub get
+      - id: packages_brick_rest_pub_upgrade
+        name: packages/brick_rest; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_rest; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_rest_generators_pub_get
-        name: packages/brick_rest_generators; dart pub get
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: packages/brick_rest_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_rest_generators; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
+      - id: packages_brick_sqlite_pub_upgrade
+        name: packages/brick_sqlite; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_abstract_pub_get
-        name: packages/brick_sqlite_abstract; dart pub get
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: packages/brick_sqlite_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite_abstract; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dart analyze --fatal-warnings lib
-      - id: packages_brick_sqlite_generators_pub_get
-        name: packages/brick_sqlite_generators; dart pub get
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: packages/brick_sqlite_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: "packages/brick_sqlite_generators; dart analyze --fatal-warnings lib"
-        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dart analyze --fatal-warnings lib
-    needs:
-      - job_001
-      - job_002
-  job_005:
+  job_003:
     name: "unit_test; Dart dev; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; `dart test`"
     runs-on: ubuntu-latest
     steps:
@@ -313,75 +249,73 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_build_pub_get
-        name: packages/brick_build; dart pub get
+      - id: packages_brick_build_pub_upgrade
+        name: packages/brick_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_build; dart test
-        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dart test
-      - id: packages_brick_core_pub_get
-        name: packages/brick_core; dart pub get
+      - id: packages_brick_core_pub_upgrade
+        name: packages/brick_core; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_core; dart test
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dart test
-      - id: packages_brick_offline_first_with_rest_build_pub_get
-        name: packages/brick_offline_first_with_rest_build; dart pub get
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: packages/brick_offline_first_with_rest_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_offline_first_with_rest_build; dart test
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dart test
-      - id: packages_brick_rest_pub_get
-        name: packages/brick_rest; dart pub get
+      - id: packages_brick_rest_pub_upgrade
+        name: packages/brick_rest; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_rest; dart test
-        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart test
-      - id: packages_brick_rest_generators_pub_get
-        name: packages/brick_rest_generators; dart pub get
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: packages/brick_rest_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_rest_generators; dart test
-        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dart test
-      - id: packages_brick_sqlite_abstract_pub_get
-        name: packages/brick_sqlite_abstract; dart pub get
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: packages/brick_sqlite_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite_abstract; dart test
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dart test
-      - id: packages_brick_sqlite_generators_pub_get
-        name: packages/brick_sqlite_generators; dart pub get
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: packages/brick_sqlite_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite_generators; dart test
-        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dart test
     needs:
       - job_001
       - job_002
-      - job_003
-      - job_004
-  job_006:
+  job_004:
     name: "unit_test; Dart dev; PKGS: packages/brick_offline_first, packages/brick_sqlite; `flutter test`"
     runs-on: ubuntu-latest
     steps:
@@ -389,7 +323,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_offline_first-packages/brick_sqlite;commands:command_0"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_offline_first-packages/brick_sqlite;commands:command"
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:packages/brick_offline_first-packages/brick_sqlite
             os:ubuntu-latest;pub-cache-hosted;dart:dev
@@ -400,30 +334,28 @@ jobs:
           sdk: dev
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_offline_first_pub_get
-        name: packages/brick_offline_first; dart pub get
+      - id: packages_brick_offline_first_pub_upgrade
+        name: packages/brick_offline_first; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_offline_first; flutter test
-        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
+      - id: packages_brick_sqlite_pub_upgrade
+        name: packages/brick_sqlite; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite; flutter test
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter test
     needs:
       - job_001
       - job_002
-      - job_003
-      - job_004
-  job_007:
+  job_005:
     name: "unit_test; Dart stable; PKGS: packages/brick_build, packages/brick_core, packages/brick_offline_first_with_rest_build, packages/brick_rest, packages/brick_rest_generators, packages/brick_sqlite_abstract, packages/brick_sqlite_generators; `dart test`"
     runs-on: ubuntu-latest
     steps:
@@ -442,75 +374,73 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_build_pub_get
-        name: packages/brick_build; dart pub get
+      - id: packages_brick_build_pub_upgrade
+        name: packages/brick_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_build; dart test
-        if: "always() && steps.packages_brick_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_build
         run: dart test
-      - id: packages_brick_core_pub_get
-        name: packages/brick_core; dart pub get
+      - id: packages_brick_core_pub_upgrade
+        name: packages/brick_core; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_core
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_core; dart test
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_core_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_core
         run: dart test
-      - id: packages_brick_offline_first_with_rest_build_pub_get
-        name: packages/brick_offline_first_with_rest_build; dart pub get
+      - id: packages_brick_offline_first_with_rest_build_pub_upgrade
+        name: packages/brick_offline_first_with_rest_build; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_offline_first_with_rest_build; dart test
-        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_with_rest_build_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first_with_rest_build
         run: dart test
-      - id: packages_brick_rest_pub_get
-        name: packages/brick_rest; dart pub get
+      - id: packages_brick_rest_pub_upgrade
+        name: packages/brick_rest; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_rest; dart test
-        if: "always() && steps.packages_brick_rest_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest
         run: dart test
-      - id: packages_brick_rest_generators_pub_get
-        name: packages/brick_rest_generators; dart pub get
+      - id: packages_brick_rest_generators_pub_upgrade
+        name: packages/brick_rest_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_rest_generators; dart test
-        if: "always() && steps.packages_brick_rest_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_rest_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_rest_generators
         run: dart test
-      - id: packages_brick_sqlite_abstract_pub_get
-        name: packages/brick_sqlite_abstract; dart pub get
+      - id: packages_brick_sqlite_abstract_pub_upgrade
+        name: packages/brick_sqlite_abstract; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite_abstract; dart test
-        if: "always() && steps.packages_brick_sqlite_abstract_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_abstract_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_abstract
         run: dart test
-      - id: packages_brick_sqlite_generators_pub_get
-        name: packages/brick_sqlite_generators; dart pub get
+      - id: packages_brick_sqlite_generators_pub_upgrade
+        name: packages/brick_sqlite_generators; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite_generators; dart test
-        if: "always() && steps.packages_brick_sqlite_generators_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_generators_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite_generators
         run: dart test
     needs:
       - job_001
       - job_002
-      - job_003
-      - job_004
-  job_008:
+  job_006:
     name: "unit_test; Dart stable; PKGS: packages/brick_offline_first, packages/brick_sqlite; `flutter test`"
     runs-on: ubuntu-latest
     steps:
@@ -518,7 +448,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_offline_first-packages/brick_sqlite;commands:command_0"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_offline_first-packages/brick_sqlite;commands:command"
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:packages/brick_offline_first-packages/brick_sqlite
             os:ubuntu-latest;pub-cache-hosted;dart:stable
@@ -529,26 +459,24 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_offline_first_pub_get
-        name: packages/brick_offline_first; dart pub get
+      - id: packages_brick_offline_first_pub_upgrade
+        name: packages/brick_offline_first; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_offline_first
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_offline_first; flutter test
-        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_offline_first_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_offline_first
         run: flutter test
-      - id: packages_brick_sqlite_pub_get
-        name: packages/brick_sqlite; dart pub get
+      - id: packages_brick_sqlite_pub_upgrade
+        name: packages/brick_sqlite; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: packages/brick_sqlite
-        run: dart pub get
+        run: dart pub upgrade
       - name: packages/brick_sqlite; flutter test
-        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        if: "always() && steps.packages_brick_sqlite_pub_upgrade.conclusion == 'success'"
         working-directory: packages/brick_sqlite
         run: flutter test
     needs:
       - job_001
       - job_002
-      - job_003
-      - job_004

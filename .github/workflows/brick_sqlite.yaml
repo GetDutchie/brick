@@ -1,0 +1,54 @@
+name: Brick SQLite
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "packages/brick_sqlite/**"
+      - ".github/workflows/brick_sqlite.yaml"
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  brick_sqlite:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:${{ matrix.flutter_version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_version: [dev, stable]
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: "~/.pub-cache/hosted"
+          key: ${{ runner.os }}-brick_sqlite-v1-${{ matrix.flutter_version }}-${{ hashFiles('packages/brick_sqlite/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-brick_sqlite-v1-${{ matrix.flutter_version }}
+      - id: checkout
+        uses: actions/checkout@v2.3.4
+      - id: packages_brick_sqlite_pub_get
+        name: packages/brick_sqlite; flutter pub get
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: flutter pub upgrade
+      - id: packages_brick_sqlite_analyze
+        name: packages/brick_sqlite; dart_analyze
+        if: "always() && steps.packages_brick_sqlite_pub_get.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: dart analyze --fatal-warnings lib
+      - name: packages/brick_sqlite; flutter test
+        if: "always() && steps.packages_brick_sqlite_analyze.conclusion == 'success'"
+        working-directory: packages/brick_sqlite
+        run: flutter test
