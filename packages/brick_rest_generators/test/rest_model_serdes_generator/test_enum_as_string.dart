@@ -4,18 +4,28 @@ final output = r'''
 Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return EnumAsString(
-      hat: RestAdapter.enumValueFromName(Hat.values, data['hat']),
+      hat: RestAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      nullableHat: data['nullable_hat'] == null
+          ? null
+          : RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
       hats: data['hats']
-          .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
+          .map((value) => RestAdapter.enumValueFromName(Hat.values, value)!)
           .toList()
-          .cast<Hat>());
+          .cast<Hat>(),
+      nullableHats: data['nullable_hats']
+          .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
+          ?.toList()
+          .cast<Hat?>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return {
-    'hat': instance.hat?.toString().split('.').last,
-    'hats': instance.hats?.map((e) => e.toString().split('.').last).toList()
+    'hat': instance.hat.toString().split('.').last,
+    'nullable_hat': instance.nullableHat?.toString().split('.').last,
+    'hats': instance.hats.map((e) => e.toString().split('.').last).toList(),
+    'nullable_hats':
+        instance.nullableHats.map((e) => e.toString().split('.').last).toList()
   };
 }
 ''';
@@ -30,13 +40,21 @@ enum Hat { party, dance, sleeping }
 @RestSerializable()
 class EnumAsString {
   EnumAsString({
-    this.hat,
-    this.hats,
+    required this.hat,
+    this.nullableHat,
+    required this.hats,
+    required this.nullableHats,
   });
 
   @Rest(enumAsString: true)
-  final Hat? hat;
+  final Hat hat;
+
+  @Rest(enumAsString: true, nullable: true)
+  final Hat? nullableHat;
 
   @Rest(enumAsString: true)
-  final List<Hat>? hats;
+  final List<Hat> hats;
+
+  @Rest(enumAsString: true)
+  final List<Hat?> nullableHats;
 }
