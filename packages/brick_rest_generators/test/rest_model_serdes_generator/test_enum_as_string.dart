@@ -5,8 +5,9 @@ Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return EnumAsString(
       hat: RestAdapter.enumValueFromName(Hat.values, data['hat'])!,
-      nullableHat:
-          RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
+      nullableHat: data['nullable_hat'] == null
+          ? null
+          : RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
       hats: data['hats']
           .map((value) => RestAdapter.enumValueFromName(Hat.values, value)!)
           .toList()
