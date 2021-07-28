@@ -21,7 +21,7 @@ Future<Map<String, dynamic>> _$FieldWithTypeArgumentToSqlite(
     FieldWithTypeArgument instance,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
-  return {'some_field': jsonEncode(instance.someField ?? {})};
+  return {'some_field': jsonEncode(instance.someField)};
 }
 
 /// Construct a [FieldWithTypeArgument]
