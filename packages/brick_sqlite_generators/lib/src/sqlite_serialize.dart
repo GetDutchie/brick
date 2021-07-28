@@ -167,7 +167,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Map
     } else if (checker.isMap) {
-      return 'jsonEncode($fieldValue ?? {})';
+      final nullableSuffix = checker.isNullable ? ' ?? {}' : '';
+      return 'jsonEncode($fieldValue$nullableSuffix)';
     }
 
     return null;

@@ -167,7 +167,7 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
     'string': instance.string,
     'list': jsonEncode(instance.list),
     'a_set': jsonEncode(instance.aSet?.toList() ?? []),
-    'map': jsonEncode(instance.map ?? {}),
+    'map': jsonEncode(instance.map),
     'longer_camelized_variable': instance.longerCamelizedVariable,
     'casing': Casing.values.indexOf(instance.casing),
     'list_casing': jsonEncode(

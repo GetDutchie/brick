@@ -83,7 +83,8 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue?.toString().split('.').last";
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        return "$fieldValue$nullabilitySuffix.toString().split('.').last";
       } else {
         if (checker.isNullable) {
           return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
