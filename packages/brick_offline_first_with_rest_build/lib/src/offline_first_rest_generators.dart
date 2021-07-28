@@ -60,7 +60,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final nullableSuffix = checker.isNullable ? '!' : '';
         print(checker.argType);
         print(checker.isNullable);
-        print(checker.type.getDisplayString(withNullability: true));
+        print(checker.targetType.getDisplayString(withNullability: true));
         final restSerializerStatement =
             'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField$nullableSuffix, provider: provider, repository: repository)';
         if (checker.isUnFuturedTypeNullable) {
