@@ -87,8 +87,10 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          return '''$fieldValue.map((value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)
-            )$castIterable$defaultValue
+          final nullableSuffix = argTypeChecker.isNullable ? '' : '!';
+          return '''$fieldValue.map(
+            (value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)$nullableSuffix
+          )$castIterable$defaultValue
           ''';
         } else {
           return '$fieldValue.map((e) => ${SharedChecker.withoutNullability(argType)}.values[e])$castIterable$defaultValue';
@@ -121,7 +123,8 @@ class RestDeserialize extends RestSerdesGenerator {
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$defaultValue';
+        final nullableSuffix = checker.isNullable ? '' : '!';
+        return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$nullableSuffix$defaultValue';
       } else {
         if (checker.isNullable) {
           return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
