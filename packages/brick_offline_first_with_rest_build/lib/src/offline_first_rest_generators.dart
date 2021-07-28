@@ -57,8 +57,11 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final nullableSuffix = checker.isNullable ? '?' : '';
         return '$wrappedField$nullableSuffix.${pair.key}';
       } else {
+        final parentFieldIsNullable =
+            wrappedInFuture && field.type.nullabilitySuffix != NullabilitySuffix.none;
+        final nullableSuffix = parentFieldIsNullable || checker.isNullable ? '!' : '';
         final restSerializerStatement =
-            'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField!, provider: provider, repository: repository)';
+            'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField$nullableSuffix, provider: provider, repository: repository)';
         if (checker.isUnFuturedTypeNullable) {
           return '$wrappedField != null ? $restSerializerStatement : null';
         }
