@@ -5,12 +5,12 @@ Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return EnumAsString(
       hat: RestAdapter.enumValueFromName(Hat.values, data['hat'])!,
-      nullableHat: RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
+      nullableHat: data['nullable_hat'] != null ? RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']) : null,
       hats: data['hats']
           .map((value) => RestAdapter.enumValueFromName(Hat.values, value)!)
           .toList()
           .cast<Hat>());
-      nullableHats: data['hats']
+      nullableHats: data['nullable_hats']
           .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
           .toList()
           .cast<Hat>());
@@ -22,7 +22,7 @@ Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
     'hat': instance.hat.toString().split('.').last,
     'nullable_hat': instance.hat?.toString().split('.').last,
     'hats': instance.hats.map((e) => e.toString().split('.').last).toList()
-    'nullable_hats': instance.hats?.map((e) => e.toString().split('.').last).toList()
+    'nullable_hats': instance.hats.map((e) => e?.toString().split('.').last).toList()
   };
 }
 ''';
@@ -37,10 +37,10 @@ enum Hat { party, dance, sleeping }
 @RestSerializable()
 class EnumAsString {
   EnumAsString({
-    this.hat,
+    required this.hat,
     this.nullableHat,
-    this.hats,
-    this.nullableHats,
+    required this.hats,
+    required this.nullableHats,
   });
 
   @Rest(enumAsString: true)
