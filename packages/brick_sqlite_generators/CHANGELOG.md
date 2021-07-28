@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.0.0+5
+
 * Fix nullable warning when serializing non-nullable maps (#187)
 
 ## 1.0.0+4

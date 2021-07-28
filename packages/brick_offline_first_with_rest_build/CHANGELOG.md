@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.0.0+2
+
 * Fix null safety for one-to-one REST serializing associations (#186)
 
 ## 1.0.0+1
