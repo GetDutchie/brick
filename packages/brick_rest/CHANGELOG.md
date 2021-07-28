@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.1
+
+* Add support for PATCH requests (#188)
+
 ## 1.0.0+3
 
 * Improve code hint documentation

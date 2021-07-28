@@ -76,11 +76,22 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test('providerArgs["request"]', () async {
+      test('providerArgs["request"] PUT', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 
         final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {'request': 'PUT'});
+        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
+
+        expect(resp!.statusCode, 200);
+        expect(resp.body, '{"name": "Guy"}');
+      });
+
+      test('providerArgs["request"] PATCH', () async {
+        final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PATCH');
+
+        final instance = DemoRestModel('Guy');
+        final query = Query(providerArgs: {'request': 'PATCH'});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
