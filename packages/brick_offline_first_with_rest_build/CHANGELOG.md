@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix null safety for one-to-one REST serializing associations (#186)
+
 ## 1.0.0+1
 
 * Remove `source_gen_test` and `glob` dependencies

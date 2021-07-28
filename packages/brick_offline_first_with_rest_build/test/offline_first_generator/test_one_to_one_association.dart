@@ -65,9 +65,9 @@ Future<Map<String, dynamic>> _$OneToOneAssociationToRest(
             provider: provider, repository: repository)
         : null,
     'assoc': await SqliteAssocAdapter()
-        .toRest(instance.assoc!, provider: provider, repository: repository),
+        .toRest(instance.assoc, provider: provider, repository: repository),
     'assoc2': await SqliteAssocAdapter()
-        .toRest(instance.assoc2!, provider: provider, repository: repository)
+        .toRest(instance.assoc2, provider: provider, repository: repository)
   };
 }
 
