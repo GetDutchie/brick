@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,
     'string': instance.string,
     'strings': instance.strings,
     'future_strings': instance.futureStrings,
-    'assoc': await AssocAdapter().toRest((await instance.assoc),
+    'assoc': await AssocAdapter().toRest((await instance.assoc)!,
         provider: provider, repository: repository),
     'assocs': await Future.wait<Map<String, dynamic>>(instance.assocs
         .map((s) => AssocAdapter()
