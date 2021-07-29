@@ -193,8 +193,17 @@ class RestProvider implements Provider<RestModel> {
 
     final headers = headersForQuery(query);
 
-    if ((query?.providerArgs ?? {})['request'] == 'PUT') {
-      logger.fine('PUT $url');
+    for (final method in {'PUT', 'PATCH'}) {
+      if ((query?.providerArgs ?? {})['request'] == method) {
+        logger.fine('$method $url');
+        logger.finer('method=$method url=$url headers=$headers body=$wrappedBody');
+        if (method == 'PUT') return await client.put(url, body: wrappedBody, headers: headers);
+        if (method == 'PATCH') return await client.patch(url, body: wrappedBody, headers: headers);
+      }
+    }
+
+    if ((query?.providerArgs ?? {})['request'] == 'PATCH') {
+      logger.fine('PATCH $url');
       logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
       return await client.put(url, body: wrappedBody, headers: headers);
     }
