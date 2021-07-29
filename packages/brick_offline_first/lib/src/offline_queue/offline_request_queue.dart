@@ -5,8 +5,6 @@ import 'offline_queue_http_client.dart';
 
 /// Repeatedly reattempts requests in an interval
 class OfflineRequestQueue {
-  bool _backgroundIsProcessing = false;
-
   /// The client responsible for resending requests
   final OfflineQueueHttpClient client;
 
@@ -14,6 +12,10 @@ class OfflineRequestQueue {
   bool get isRunning => _timer?.isActive == true;
 
   final Logger _logger;
+
+  /// This mutex ensures that concurrent writes to the DB will
+  /// not occur as the Timer runs in sub routines or isolates
+  bool _processingInBackground = false;
 
   Timer _timer;
 
@@ -26,7 +28,7 @@ class OfflineRequestQueue {
   void start() {
     stop();
     _logger.finer('Queue started');
-    _backgroundIsProcessing = false;
+    _processingInBackground = false;
     _timer = Timer.periodic(client.requestManager.processingInterval, process);
   }
 
@@ -34,17 +36,17 @@ class OfflineRequestQueue {
   void stop() {
     _timer?.cancel();
     _timer = null;
-    _backgroundIsProcessing = false;
+    _processingInBackground = false;
     _logger.finer('Queue stopped');
   }
 
   /// Resend latest unproccessed request to the client.
   @protected
   void process(Timer _timer) async {
-    if (_backgroundIsProcessing) return;
-    _backgroundIsProcessing = true;
+    if (_processingInBackground) return;
+    _processingInBackground = true;
     final request = await client.requestManager.prepareNextRequestToProcess();
-    _backgroundIsProcessing = false;
+    _processingInBackground = false;
 
     if (request != null) {
       _logger.finest('Processing request ${request.method} ${request.url}');
