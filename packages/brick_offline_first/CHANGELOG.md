@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.1.4
+
+* Introduce mutex around processing in the `OfflineRequestQueue`. This will avoid simultaneous DB writes on different isolates* while a previous operation is still performing. 
+
+*Or sub routines? Microtasks? It's unclear how Timer moves its work to the background or how to force it to remain in the original "thread."
+
 ## 0.1.3
 
 * RequestSqliteCache no longer queries cached requests based on headers; requests are rediscovered based on their encoding, URL, request method, and body. Rehydrated (reattempted) requests will be hydrated with headers from the original request.
