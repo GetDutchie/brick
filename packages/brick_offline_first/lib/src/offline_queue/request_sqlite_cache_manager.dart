@@ -94,8 +94,6 @@ class RequestSqliteCacheManager {
 
     if (jobs?.isNotEmpty ?? false) return jobs.first;
 
-    // lock the request for idempotency
-
     return null;
   }
 
