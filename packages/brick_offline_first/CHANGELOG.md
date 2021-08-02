@@ -1,6 +1,9 @@
 ## Unreleased
 
 * Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
+* Introduce mutex around processing in the `OfflineRequestQueue`. This will avoid simultaneous DB writes on different isolates* while a previous operation is still performing. 
+
+*Or sub routines? Microtasks? It's unclear how Timer moves its work to the background or how to force it to remain in the original "thread."
 
 ## 1.0.0
 
