@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'offline_queue_http_client.dart';
@@ -45,8 +46,12 @@ class OfflineRequestQueue {
   void process(Timer _timer) async {
     if (_processingInBackground) return;
     _processingInBackground = true;
-    final request = await client.requestManager.prepareNextRequestToProcess();
-    _processingInBackground = false;
+    http.Request request;
+    try {
+      request = await client.requestManager.prepareNextRequestToProcess();
+    } finally {
+      _processingInBackground = false;
+    }
 
     if (request != null) {
       _logger.finest('Processing request ${request.method} ${request.url}');
