@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
+* Wrap `SqliteProvider#exists` and `SqliteProvider#delete` in the synchronous lock to prevent simultaneous operation. All other operations also use the lock. 
 
 ## 0.1.7
 
