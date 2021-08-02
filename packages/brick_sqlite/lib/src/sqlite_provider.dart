@@ -66,11 +66,13 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     final primaryKey = existingPrimaryKey ?? instance.primaryKey;
 
-    return await db.delete(
-      '`${adapter.tableName}`',
-      where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
-      whereArgs: [primaryKey],
-    );
+    return await _lock.synchronized<int>(() async {
+      return await db.delete(
+        '`${adapter.tableName}`',
+        where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
+        whereArgs: [primaryKey],
+      );
+    });
   }
 
   /// Returns `true` if [_Model] exists in SQLite.
@@ -99,10 +101,13 @@ class SqliteProvider implements Provider<SqliteModel> {
       });
     }
 
-    final countQuery = await (await getDb()).rawQuery(statement, sqlQuery.values);
-    final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
+    final db = await getDb();
+    return await _lock.synchronized<bool>(() async {
+      final countQuery = await db.rawQuery(statement, sqlQuery.values);
+      final count = offsetIsPresent ? countQuery?.length : Sqflite.firstIntValue(countQuery ?? []);
 
-    return (count ?? 0) > 0;
+      return (count ?? 0) > 0;
+    });
   }
 
   /// Fetch one time from the SQLite database
