@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:http/http.dart' as http;
 import 'offline_queue_http_client.dart';
 
 /// Repeatedly reattempts requests in an interval
@@ -46,8 +47,13 @@ class OfflineRequestQueue {
     if (_processingInBackground) return;
 
     _processingInBackground = true;
-    final request = await client.requestManager.prepareNextRequestToProcess();
-    _processingInBackground = false;
+
+    http.Request request;
+    try {
+      request = await client.requestManager.prepareNextRequestToProcess();
+    } finally {
+      _processingInBackground = false;
+    }
 
     if (request != null) {
       _logger.finest('Processing request ${request.method} ${request.url}');
