@@ -48,7 +48,7 @@ class OfflineRequestQueue {
 
     _processingInBackground = true;
 
-    http.Request request;
+    http.Request? request;
     try {
       request = await client.requestManager.prepareNextRequestToProcess();
     } finally {
