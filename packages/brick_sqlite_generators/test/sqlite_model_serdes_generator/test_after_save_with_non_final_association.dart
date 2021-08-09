@@ -15,7 +15,7 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
     SqliteFirstRepository? repository}) async {
   return AfterSaveWithAssociation(
       assoc: (await provider.rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc` WHERE l_AfterSaveWithAssociation_brick_id ',
+              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc` WHERE l_AfterSaveWithAssociation_brick_id = ?',
               [
             data['_brick_id'] as int
           ]).then((results) {
