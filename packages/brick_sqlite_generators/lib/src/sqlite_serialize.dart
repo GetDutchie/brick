@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -247,7 +248,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     final removeStaleAssociations = field.isPublic && !field.isFinal
         ? _removeStaleAssociations(
-            field.name, joinsForeignColumn, joinsLocalColumn, joinsTable, siblingAssociations)
+            field.name,
+            joinsForeignColumn,
+            joinsLocalColumn,
+            joinsTable,
+            siblingAssociations,
+            checker.isUnFuturedTypeNullable,
+            checker.unFuturedArgType.nullabilitySuffix != NullabilitySuffix.none,
+          )
         : '';
     final nullabilitySuffix = checker.isNullable ? '?' : '';
     final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
@@ -283,12 +291,31 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 }
 
-String _removeStaleAssociations(String fieldName, String joinsForeignColumn,
-    String joinsLocalColumn, String joinsTable, String siblingAssociations) {
+String _removeStaleAssociations(
+  String fieldName,
+  String joinsForeignColumn,
+  String joinsLocalColumn,
+  String joinsTable,
+  String siblingAssociations,
+
+  /// `true` when `Iterable<Model>` is `Iterable<Model>?`
+  bool nullableField,
+
+  /// `true` when `<Model>` in `Iterable<Model>` is `Iterable<Model?>`
+  bool nullableArgType,
+) {
+  final argTypeNullabilitySuffix = nullableArgType ? '' : '?';
+  var newIdFieldsValue =
+      '$siblingAssociations.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD}).whereType<int>()';
+  if (nullableField) {
+    newIdFieldsValue =
+        '$siblingAssociations?.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD})?.whereType<int>() ?? []';
+  }
+
   return '''
     final ${fieldName}OldColumns = await provider.rawQuery('SELECT `$joinsForeignColumn` FROM `$joinsTable` WHERE `$joinsLocalColumn` = ?', [instance.${InsertTable.PRIMARY_KEY_FIELD}]);
     final ${fieldName}OldIds = ${fieldName}OldColumns.map((a) => a['$joinsForeignColumn']);
-    final ${fieldName}NewIds = $siblingAssociations?.map((s) => s?.${InsertTable.PRIMARY_KEY_FIELD})?.whereType<int>() ?? [];
+    final ${fieldName}NewIds = $newIdFieldsValue;
     final ${fieldName}IdsToDelete = ${fieldName}OldIds.where((id) => !${fieldName}NewIds.contains(id));
 
     await Future.wait<void>(${fieldName}IdsToDelete.map((id) async {
