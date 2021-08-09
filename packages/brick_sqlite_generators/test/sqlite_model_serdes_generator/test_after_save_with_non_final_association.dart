@@ -118,9 +118,9 @@ class AfterSaveWithAssociation extends SqliteModel {
   List<Assoc?>? assocNullableAndNullableArg;
 
   AfterSaveWithAssociation({
-    this.assoc,
+    required this.assoc,
     this.assocNullable,
-    this.assocNullableArg,
+    required this.assocNullableArg,
     this.assocNullableAndNullableArg,
   });
 }
