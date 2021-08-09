@@ -14,17 +14,52 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return AfterSaveWithAssociation(
-      someField: (await provider.rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE l_AfterSaveWithAssociation_brick_id = ?',
+      assoc: (await provider.rawQuery(
+              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc` WHERE l_AfterSaveWithAssociation_brick_id ',
+              [
+            data['_brick_id'] as int
+          ]).then((results) {
+        final ids = results.map((r) => r['f_Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+            .getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            .then((r) => r!.first)));
+      }))
+          .toList(),
+      assocNullable: (await provider.rawQuery(
+              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable` WHERE l_AfterSaveWithAssociation_brick_id = ?',
+              [
+            data['_brick_id'] as int
+          ]).then((results) {
+        final ids = results.map((r) => r['f_Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+            .getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            .then((r) => r!.first)));
+      }))
+          .toList(),
+      assocNullableArg: (await provider.rawQuery(
+              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?',
               [data['_brick_id'] as int]).then((results) {
-    final ids = results.map((r) => r['f_Assoc_brick_id']);
-    return Future.wait<Assoc>(ids.map((primaryKey) => repository!
-        .getAssociation<Assoc>(
-          Query.where('primaryKey', primaryKey, limit1: true),
-        )
-        .then((r) => r!.first)));
-  }))
-          .toList())
+        final ids = results.map((r) => r['f_Assoc_brick_id']);
+        return Future.wait<Assoc?>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
+      }))
+          ?.toList(),
+      assocNullableAndNullableArg: (await provider.rawQuery('SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?', [data['_brick_id'] as int]).then((results) {
+        final ids = results.map((r) => r['f_Assoc_brick_id']);
+        return Future.wait<Assoc?>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
+      }))
+          ?.toList())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -48,9 +83,27 @@ class AfterSaveWithAssociationAdapter
       iterable: false,
       type: int,
     ),
-    'someField': RuntimeSqliteColumnDefinition(
+    'assoc': RuntimeSqliteColumnDefinition(
       association: true,
-      columnName: 'some_field',
+      columnName: 'assoc',
+      iterable: true,
+      type: Assoc,
+    ),
+    'assocNullable': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc_nullable',
+      iterable: true,
+      type: Assoc,
+    ),
+    'assocNullableArg': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc_nullable_arg',
+      iterable: true,
+      type: Assoc,
+    ),
+    'assocNullableAndNullableArg': RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'assoc_nullable_and_nullable_arg',
       iterable: true,
       type: Assoc,
     )
@@ -64,29 +117,116 @@ class AfterSaveWithAssociationAdapter
   @override
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
-      final someFieldOldColumns = await provider.rawQuery(
-          'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
+      final assocOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
           [instance.primaryKey]);
-      final someFieldOldIds =
-          someFieldOldColumns.map((a) => a['f_Assoc_brick_id']);
-      final someFieldNewIds =
-          instance.someField.map((s) => s.primaryKey).whereType<int>();
-      final someFieldIdsToDelete =
-          someFieldOldIds.where((id) => !someFieldNewIds.contains(id));
+      final assocOldIds = assocOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final assocNewIds =
+          instance.assoc.map((s) => s.primaryKey).whereType<int>();
+      final assocIdsToDelete =
+          assocOldIds.where((id) => !assocNewIds.contains(id));
 
-      await Future.wait<void>(someFieldIdsToDelete.map((id) async {
+      await Future.wait<void>(assocIdsToDelete.map((id) async {
         return await provider.rawExecute(
-            'DELETE FROM `_brick_AfterSaveWithAssociation_some_field` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            'DELETE FROM `_brick_AfterSaveWithAssociation_assoc` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
             [instance.primaryKey, id]).catchError((e) => null);
       }));
 
-      await Future.wait<int?>(instance.someField.map((s) async {
+      await Future.wait<int?>(instance.assoc.map((s) async {
         final id = s.primaryKey ??
             await provider.upsert<Assoc>(s, repository: repository);
         return await provider.rawInsert(
-            'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_some_field` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_assoc` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
             [instance.primaryKey, id]);
       }));
+    }
+
+    if (instance.primaryKey != null) {
+      final assocNullableOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
+          [instance.primaryKey]);
+      final assocNullableOldIds =
+          assocNullableOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final assocNullableNewIds =
+          instance.assocNullable?.map((s) => s.primaryKey)?.whereType<int>() ??
+              [];
+      final assocNullableIdsToDelete =
+          assocNullableOldIds.where((id) => !assocNullableNewIds.contains(id));
+
+      await Future.wait<void>(assocNullableIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_AfterSaveWithAssociation_assoc_nullable` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
+      await Future.wait<int?>(instance.assocNullable?.map((s) async {
+            final id = s.primaryKey ??
+                await provider.upsert<Assoc>(s, repository: repository);
+            return await provider.rawInsert(
+                'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_assoc_nullable` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+                [instance.primaryKey, id]);
+          }) ??
+          []);
+    }
+
+    if (instance.primaryKey != null) {
+      final assocNullableArgOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_arg` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
+          [instance.primaryKey]);
+      final assocNullableArgOldIds =
+          assocNullableArgOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final assocNullableArgNewIds =
+          instance.assocNullableArg.map((s) => s?.primaryKey).whereType<int>();
+      final assocNullableArgIdsToDelete = assocNullableArgOldIds
+          .where((id) => !assocNullableArgNewIds.contains(id));
+
+      await Future.wait<void>(assocNullableArgIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_AfterSaveWithAssociation_assoc_nullable_arg` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
+      await Future.wait<int?>(instance.assocNullableArg.map((s) async {
+        final id = s.primaryKey ??
+            await provider.upsert<Assoc>(s, repository: repository);
+        return await provider.rawInsert(
+            'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_assoc_nullable_arg` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
+    }
+
+    if (instance.primaryKey != null) {
+      final assocNullableAndNullableArgOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` WHERE `l_AfterSaveWithAssociation_brick_id` = ?',
+          [instance.primaryKey]);
+      final assocNullableAndNullableArgOldIds =
+          assocNullableAndNullableArgOldColumns
+              .map((a) => a['f_Assoc_brick_id']);
+      final assocNullableAndNullableArgNewIds = instance
+              .assocNullableAndNullableArg
+              ?.map((s) => s?.primaryKey)
+              ?.whereType<int>() ??
+          [];
+      final assocNullableAndNullableArgIdsToDelete =
+          assocNullableAndNullableArgOldIds
+              .where((id) => !assocNullableAndNullableArgNewIds.contains(id));
+
+      await Future.wait<void>(
+          assocNullableAndNullableArgIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` WHERE `l_AfterSaveWithAssociation_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
+      await Future.wait<int?>(
+          instance.assocNullableAndNullableArg?.map((s) async {
+                final id = s.primaryKey ??
+                    await provider.upsert<Assoc>(s, repository: repository);
+                return await provider.rawInsert(
+                    'INSERT OR IGNORE INTO `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` (`l_AfterSaveWithAssociation_brick_id`, `f_Assoc_brick_id`) VALUES (?, ?)',
+                    [instance.primaryKey, id]);
+              }) ??
+              []);
     }
   }
 

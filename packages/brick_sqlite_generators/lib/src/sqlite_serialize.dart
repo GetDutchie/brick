@@ -304,7 +304,7 @@ String _removeStaleAssociations(
   /// `true` when `<Model>` in `Iterable<Model>` is `Iterable<Model?>`
   bool nullableArgType,
 ) {
-  final argTypeNullabilitySuffix = nullableArgType ? '' : '?';
+  final argTypeNullabilitySuffix = nullableArgType ? '?' : ':';
   var newIdFieldsValue =
       '$siblingAssociations.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD}).whereType<int>()';
   if (nullableField) {
