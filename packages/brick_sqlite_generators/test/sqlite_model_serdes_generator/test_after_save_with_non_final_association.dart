@@ -70,7 +70,7 @@ class AfterSaveWithAssociationAdapter
       final someFieldOldIds =
           someFieldOldColumns.map((a) => a['f_Assoc_brick_id']);
       final someFieldNewIds =
-          instance.someField?.map((s) => s?.primaryKey)?.whereType<int>() ?? [];
+          instance.someField.map((s) => s.primaryKey).whereType<int>();
       final someFieldIdsToDelete =
           someFieldOldIds.where((id) => !someFieldNewIds.contains(id));
 
@@ -111,7 +111,16 @@ class Assoc extends SqliteModel {
 
 @SqliteSerializable()
 class AfterSaveWithAssociation extends SqliteModel {
-  List<Assoc> someField;
+  List<Assoc> assoc;
 
-  AfterSaveWithAssociation(this.someField);
+  List<Assoc>? assocNullable;
+  List<Assoc?> assocNullableArg;
+  List<Assoc?>? assocNullableAndNullableArg;
+
+  AfterSaveWithAssociation({
+    this.assoc,
+    this.assocNullable,
+    this.assocNullableArg,
+    this.assocNullableAndNullableArg,
+  });
 }
