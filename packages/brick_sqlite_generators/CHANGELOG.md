@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix analyzer's nullable warning when serializing non-final iterables (#185)
+
 ## 1.0.0+5
 
 * Fix nullable warning when serializing non-nullable maps (#187)
