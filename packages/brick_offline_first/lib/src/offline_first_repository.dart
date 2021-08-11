@@ -195,7 +195,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool seedOnly = false,
   }) async {
     query = query ?? Query();
-    query = query!.copyWith(providerArgs: {...query.providerArgs, 'limit': batchSize});
+    query = query.copyWith(providerArgs: {...query.providerArgs, 'limit': batchSize});
     final total = <_Model>[];
 
     /// Retrieve up to [batchSize] starting at [offset]. Recursively retrieves the next
