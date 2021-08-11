@@ -2,11 +2,6 @@
 
 * Carry `providerArgs` from query when using `getBatched` (#200)
 
-* Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
-* Introduce mutex around processing in the `OfflineRequestQueue`. This will avoid simultaneous DB writes on different isolates* while a previous operation is still performing. 
-
-*Or sub routines? Microtasks? It's unclear how Timer moves its work to the background or how to force it to remain in the original "thread."
-
 ## 1.0.0
 
 * Null safety
@@ -14,6 +9,10 @@
 * `RequestSqliteCache` no longer queries cached requests based on headers; requests are rediscovered based on their encoding, URL, request method, and body. Rehydrated (reattempted) requests will be hydrated with headers from the original request.
 * **BREAKING CHANGE** Field types in models `Set<Future<OfflineFirstModel>>`, `List<Future<OfflineFirstModel>>`, and `Future<OfflineFirstModel>` are no longer supported. Instead, use `Set<OfflineFirstModel>`, `List<OfflineFirstModel>`, and `OfflineFirstModel` (the adapters will `await` each).
 * **BREAKING CHANGE** `StubOfflineFirstWithRest` is functionally changed. SQLiteFFI has satisfied much of the original stubbing required for this class, and http's testing.dart library is sufficient to not require Mockito. Therefore, `verify` calls will no longer be effective in testing on the client. Instead, pass `StubOfflineFirstWithRest.client` to your `RestProvider#client` with the response values. `StubOfflineFirstWithRestModel` has been removed. Please review [Offline First Testing](https://greenbits.github.io/brick/#/offline_first/testing) for implementation examples.
+* Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
+* Introduce mutex around processing in the `OfflineRequestQueue`. This will avoid simultaneous DB writes on different isolates* while a previous operation is still performing. 
+
+*Or sub routines? Microtasks? It's unclear how Timer moves its work to the background or how to force it to remain in the original "thread."
 
 ## 0.1.2
 
