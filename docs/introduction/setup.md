@@ -5,10 +5,7 @@
     dependencies:
       brick_offline_first: any
     dev_dependencies:
-      brick_offline_first_with_rest_build:
-        git:
-          url: https://github.com/greenbits/brick.git
-          path: packages/brick_offline_first_with_rest_build
+      brick_offline_first_with_rest_build: any
       build_runner: any
     ```
 
