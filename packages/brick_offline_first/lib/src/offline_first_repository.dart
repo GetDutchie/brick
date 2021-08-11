@@ -194,7 +194,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool requireRemote = false,
     bool seedOnly = false,
   }) async {
-    final queryWithLimit = (query ?? Query()).copyWith(
+    query = query ?? Query();
+    final queryWithLimit = query!.copyWith(
       providerArgs: {...query.providerArgs, 'limit': batchSize},
     );
     final total = <_Model>[];
