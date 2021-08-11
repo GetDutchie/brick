@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Carry `providerArgs` from query when using `getBatched` (#200)
+
 * Do not reprocess queue requests during a single attempt. Server response times may be greater than the reattempt timer; in these situations, requests should remain locked.
 * Introduce mutex around processing in the `OfflineRequestQueue`. This will avoid simultaneous DB writes on different isolates* while a previous operation is still performing. 
 
