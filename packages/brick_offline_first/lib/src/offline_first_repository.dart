@@ -194,15 +194,18 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     bool requireRemote = false,
     bool seedOnly = false,
   }) async {
-    query = (query ?? Query()).copyWith(providerArgs: {'limit': batchSize});
+    query = query ?? Query();
+    final queryWithLimit = query.copyWith(
+      providerArgs: {...query.providerArgs, 'limit': batchSize},
+    );
     final total = <_Model>[];
 
     /// Retrieve up to [batchSize] starting at [offset]. Recursively retrieves the next
     /// [batchSize] until no more results are retrieved.
     Future<List<_Model>> getFrom(int offset) async {
       // add offset to the existing query
-      final recursiveQuery = query!.copyWith(
-        providerArgs: query.providerArgs..addAll({'offset': offset}),
+      final recursiveQuery = queryWithLimit.copyWith(
+        providerArgs: {...queryWithLimit.providerArgs, 'offset': offset},
       );
 
       final results = await get<_Model>(

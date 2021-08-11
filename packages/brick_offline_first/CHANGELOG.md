@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Carry `providerArgs` from query when using `getBatched` (#200)
+
 ## 1.0.0
 
 * Null safety
