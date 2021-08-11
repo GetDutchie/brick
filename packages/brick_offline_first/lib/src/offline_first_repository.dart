@@ -205,7 +205,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Future<List<_Model>> getFrom(int offset) async {
       // add offset to the existing query
       final recursiveQuery = queryWithLimit.copyWith(
-        providerArgs: {...query.providerArgs, 'offset': offset},
+        providerArgs: {...queryWithLimit.providerArgs, 'offset': offset},
       );
 
       final results = await get<_Model>(
