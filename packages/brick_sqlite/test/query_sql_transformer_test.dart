@@ -407,6 +407,19 @@ void main() {
         expect(statement, sqliteQuery.statement);
         sqliteStatementExpectation(statement);
       });
+
+      test('date time is converted', () async {
+        final statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(simple_time) DESC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(providerArgs: {'orderBy': 'simpleTime DESC'}),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
     });
 
     group('#values', () {

@@ -25,6 +25,7 @@ const _demoModelMigrationCommands = [
   InsertColumn('full_name', Column.varchar, onTable: 'DemoModel'),
   InsertColumn('full_name', Column.varchar, onTable: 'DemoModelAssoc'),
   InsertColumn('simple_bool', Column.boolean, onTable: 'DemoModel'),
+  InsertColumn('simple_time', Column.varchar, onTable: 'DemoModel'),
   CreateIndex(
       columns: ['l_DemoModel_brick_id', 'f_DemoModelAssoc_brick_id'],
       onTable: '_brick_DemoModel_many_assoc',

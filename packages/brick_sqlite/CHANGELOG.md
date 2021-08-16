@@ -1,7 +1,8 @@
 ## Unreleased
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
-* Wrap `SqliteProvider#exists` and `SqliteProvider#delete` in the synchronous lock to prevent simultaneous operation. All other operations also use the lock. 
+* Wrap `SqliteProvider#exists` and `SqliteProvider#delete` in the synchronous lock to prevent simultaneous operation. All other operations also use the lock.
+* When using a DateTime field with an operator (`ORDER BY`, `HAVING`, `GROUP BY`, etc), wrap the `ORDER BY` queries in `datetime`
 
 ## 0.1.7
 

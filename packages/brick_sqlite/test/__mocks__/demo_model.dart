@@ -14,6 +14,7 @@ class DemoModel extends SqliteModel {
     this.lastName,
     this.manyAssoc,
     this.simpleBool,
+    this.simpleTime,
   });
 
   final DemoModelAssoc assoc;
@@ -24,4 +25,5 @@ class DemoModel extends SqliteModel {
   @Sqlite(name: 'full_name')
   final String name;
   final bool simpleBool;
+  final DateTime simpleTime;
 }

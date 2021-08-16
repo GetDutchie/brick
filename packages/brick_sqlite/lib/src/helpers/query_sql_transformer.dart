@@ -317,7 +317,7 @@ class AllOtherClausesFragment {
   /// These operators declare a column to compare against. The fields provided in [providerArgs]
   /// will have to be converted to their column name.
   /// For example, `'orderBy': 'createdAt ASC'` must become `ORDER BY created_at ASC`.
-  static const List<String> _operatorsDeclaringFields = ['ORDER BY', 'GROUP BY', 'HAVING'];
+  static const Set<String> _operatorsDeclaringFields = {'ORDER BY', 'GROUP BY', 'HAVING'};
 
   AllOtherClausesFragment(
     Map<String, dynamic> providerArgs, {
@@ -339,8 +339,12 @@ class AllOtherClausesFragment {
           if (fragment.isEmpty) return modValue;
 
           final fieldName = fragment.first;
-          final columnName = (fieldsToColumns ?? {})[fieldName]?.columnName;
+          final columnDefinition = (fieldsToColumns ?? {})[fieldName];
+          var columnName = columnDefinition.columnName;
           if (columnName != null && modValue.contains(fieldName)) {
+            if (columnDefinition.type == DateTime) {
+              columnName = 'datetime($columnName)';
+            }
             return modValue.replaceAll(fieldName, columnName);
           }
 
