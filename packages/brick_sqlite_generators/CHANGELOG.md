@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.0
+
 * Fix analyzer's nullable warning when serializing non-final iterables (#185)
 * Expose `SqliteSchemaGenerator#schemaColumn` for calling super in sub classes
 * Prepend `const` before `RuntimeSqliteColumnDefinition`
