@@ -14,7 +14,7 @@ environment:
 dependencies:
   brick_core: ^1.0.0+1
   brick_offline_first_abstract: ^1.0.0+1
-  brick_rest: ^1.0.0+3
+  brick_rest: ^1.1.0
   brick_sqlite: ^1.0.0
   brick_sqlite_abstract: ^1.0.0+1
   collection: ^1.15.0

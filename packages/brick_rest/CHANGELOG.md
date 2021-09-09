@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 1.1.0
+
 * Add Dart Lints
+* Change `instance` and `data` positional arguments in `RestAdapter` to `input` to match generator variable
 
 ## 1.0.1
 
