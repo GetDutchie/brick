@@ -52,13 +52,13 @@ class RestConfigResponseKeysAdapter
   final String? toKey = 'user';
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'someField': RuntimeSqliteColumnDefinition(
+    'someField': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'some_field',
       iterable: false,

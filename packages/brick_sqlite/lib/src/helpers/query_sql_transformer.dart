@@ -74,10 +74,10 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final execute = outputAsSelect ? 'SELECT DISTINCT `${adapter.tableName}`.*' : 'SELECT COUNT(*)';
 
     _statement.add('$execute FROM `${adapter.tableName}`');
-    (query?.where ?? []).forEach((condition) {
+    for (final condition in query?.where ?? []) {
       final whereStatement = _expandCondition(condition);
       if (whereStatement.isNotEmpty) _where.add(whereStatement);
-    });
+    }
 
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);
     if (_where.isNotEmpty) _statement.add(whereClause);
@@ -169,7 +169,7 @@ class AssociationFragment {
   });
 
   List<String> toJoinFragment() {
-    final primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
+    const primaryKeyColumn = InsertTable.PRIMARY_KEY_COLUMN;
     final oneToOneAssociation = !definition.iterable;
     final localColumnName = definition.columnName;
     final localTableColumn = '`$localTableName`.${definition.columnName}';

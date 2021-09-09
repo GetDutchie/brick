@@ -27,6 +27,7 @@ class Schema {
 
   Schema(this.version, {required this.tables, this.generatorVersion = GENERATOR_VERSION});
 
+  // ignore: constant_identifier_names
   static const int GENERATOR_VERSION = 1;
 
   @visibleForTesting
@@ -125,19 +126,23 @@ class Schema {
     } else if (command is CreateIndex) {
       final table = findTable(command.onTable);
       final tableColumnNames = table.columns.map((c) => c.name);
-      command.columns.forEach((c) {
+      for (final c in command.columns) {
         if (!tableColumnNames.contains(c)) {
           throw StateError(
               '${command.onTable} does not contain column $c specified by CreateIndex');
         }
-      });
+      }
       table.indices.add(SchemaIndex(
         columns: command.columns,
         tableName: command.onTable,
         unique: command.unique,
       ));
     } else if (command is DropIndex) {
-      tables.forEach((t) => t.indices.forEach((i) => i.tableName == t.name));
+      for (final t in tables) {
+        for (final i in t.indices) {
+          i.tableName == t.name;
+        }
+      }
       final table = tables.firstWhere(
         (s) => s.indices
             .map((i) => CreateIndex.generateName(i.columns, i.tableName!))

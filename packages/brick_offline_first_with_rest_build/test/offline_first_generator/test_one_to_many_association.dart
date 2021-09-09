@@ -116,19 +116,19 @@ class OneToManyAssociationAdapter
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'assoc': RuntimeSqliteColumnDefinition(
+    'assoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc',
       iterable: true,
       type: SqliteAssoc,
     ),
-    'nullableAssoc': RuntimeSqliteColumnDefinition(
+    'nullableAssoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'nullable_assoc',
       iterable: true,

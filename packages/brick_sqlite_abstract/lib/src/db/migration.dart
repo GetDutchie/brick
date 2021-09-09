@@ -13,6 +13,7 @@ enum Column {
   boolean,
   date,
   datetime,
+  // ignore: constant_identifier_names
   Double,
   integer,
   float,

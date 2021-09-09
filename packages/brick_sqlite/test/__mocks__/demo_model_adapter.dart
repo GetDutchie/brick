@@ -56,55 +56,55 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
 
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'id': RuntimeSqliteColumnDefinition(
+    'id': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'id',
       iterable: false,
       type: int,
     ),
-    'someField': RuntimeSqliteColumnDefinition(
+    'someField': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'some_field',
       iterable: false,
       type: bool,
     ),
-    'assoc': RuntimeSqliteColumnDefinition(
+    'assoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_DemoModelAssoc_brick_id',
       iterable: false,
       type: DemoModelAssoc,
     ),
-    'complexFieldName': RuntimeSqliteColumnDefinition(
+    'complexFieldName': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'complex_field_name',
       iterable: false,
       type: String,
     ),
-    'lastName': RuntimeSqliteColumnDefinition(
+    'lastName': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'last_name',
       iterable: false,
       type: String,
     ),
-    'manyAssoc': RuntimeSqliteColumnDefinition(
+    'manyAssoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'many_assoc',
       iterable: true,
       type: DemoModelAssoc,
     ),
-    'name': RuntimeSqliteColumnDefinition(
+    'name': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'full_name',
       iterable: false,
       type: String,
     ),
-    'simpleBool': RuntimeSqliteColumnDefinition(
+    'simpleBool': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'simple_bool',
       iterable: false,

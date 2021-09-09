@@ -22,7 +22,7 @@ void main() {
     );
 
     setUp(() async {
-      await provider.migrate([DemoModelMigration()]);
+      await provider.migrate([const DemoModelMigration()]);
       await provider.upsert<DemoModel>(DemoModel(name: 'ThomasDefault'));
       await provider.upsert<DemoModel>(DemoModel(name: 'GuyDefault'));
       await provider.upsert<DemoModel>(DemoModel(name: 'AliceDefault'));
@@ -129,7 +129,7 @@ void main() {
       await provider
           .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
       final query = Query(
-        where: [Where('manyAssoc').isExactly(Where('name').isExactly('Thomas'))],
+        where: [const Where('manyAssoc').isExactly(const Where('name').isExactly('Thomas'))],
         providerArgs: {'limit': 1, 'offset': 1},
       );
 

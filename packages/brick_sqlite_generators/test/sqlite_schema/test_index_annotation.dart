@@ -9,7 +9,7 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite_abstract/db.dart' show Migratable;
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final Set<Migration> migrations = <Migration>{};
+const migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{

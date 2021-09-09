@@ -128,6 +128,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Private fields, methods, static members, and computed setters are automatically ignored.
   /// See [FieldsForClass#stableInstanceFields].
   @visibleForOverriding
+  @visibleForTesting
   String? addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
     var wrappedInFuture = false;
 

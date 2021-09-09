@@ -8,14 +8,14 @@ class FileDeserialize extends FileSerdesGenerator {
   FileDeserialize(
     ClassElement element,
     FileFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
   final doesDeserialize = true;
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
@@ -67,12 +67,12 @@ class FileDeserialize extends FileSerdesGenerator {
 
       // List
       if (checker.isList) {
-        final addon = fieldAnnotation.defaultValue ?? 'List<${checker.argType}>()';
+        final addon = fieldAnnotation.defaultValue;
         return '$fieldValue$castIterable ?? $addon';
 
         // Set
       } else if (checker.isSet) {
-        final addon = fieldAnnotation.defaultValue ?? 'Set<${checker.argType}>()';
+        final addon = fieldAnnotation.defaultValue;
         return '$fieldValue$castIterable ?? $addon';
 
         // other Iterable

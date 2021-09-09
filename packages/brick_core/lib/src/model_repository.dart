@@ -35,6 +35,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
 
   /// Perform required setup work. For example, migrating a database, starting a queue,
   /// or authenticating with a [Provider]'s service.
+  // ignore: avoid_returning_null_for_void
   Future<void> initialize() async => null;
 
   /// Insert or update a model in all [Provider]s

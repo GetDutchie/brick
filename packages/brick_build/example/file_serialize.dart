@@ -7,14 +7,14 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
   FileSerialize(
     ClassElement element,
     FileFields fields, {
-    String repositoryName,
+    required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 
   @override
   final doesDeserialize = false;
 
   @override
-  String coderForField(field, checker, {wrappedInFuture, fieldAnnotation}) {
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 
     // DateTime

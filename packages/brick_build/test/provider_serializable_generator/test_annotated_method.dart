@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_returning_null_for_void
 import 'package:brick_build/builders.dart';
 
 /// Output serializing code for all models with the @[AnnotationSuperGenerator] annotation.

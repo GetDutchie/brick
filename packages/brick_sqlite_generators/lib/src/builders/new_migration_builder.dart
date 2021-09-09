@@ -20,7 +20,7 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 
     if (output == null) {
-      return null;
+      return;
     }
 
     final stopwatch = Stopwatch();

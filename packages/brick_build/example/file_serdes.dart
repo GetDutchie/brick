@@ -20,7 +20,7 @@ class FileSerdes extends ProviderSerializableGenerator<FileSerializable> {
   FileSerdes(
     Element element,
     ConstantReader reader, {
-    this.repositoryName,
+    required this.repositoryName,
   }) : super(element, reader, configKey: 'fileConfig');
 
   @override

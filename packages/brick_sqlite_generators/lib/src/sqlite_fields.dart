@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 // Generously inspired by JsonSerializable
 
 import 'package:analyzer/dart/element/element.dart';

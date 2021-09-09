@@ -85,8 +85,12 @@ class SchemaDifference {
       toColumns.removeWhere((c) => c.isPrimaryKey);
 
       // From and to tables should have identical names via `lookup`
-      fromColumns.forEach((c) => c.tableName = fromTable.name);
-      toColumns.forEach((c) => c.tableName = fromTable.name);
+      for (final c in fromColumns) {
+        c.tableName = fromTable.name;
+      }
+      for (final c in toColumns) {
+        c.tableName = fromTable.name;
+      }
       return fromColumns.difference(toColumns);
     }
 
@@ -101,8 +105,12 @@ class SchemaDifference {
       final fromIndices = <SchemaIndex>{}..addAll(fromTable.indices);
 
       // From and to tables should have identical names via `lookup`
-      fromIndices.forEach((c) => c.tableName = fromTable.name);
-      toIndices.forEach((c) => c.tableName = fromTable.name);
+      for (final c in fromIndices) {
+        c.tableName = fromTable.name;
+      }
+      for (final c in toIndices) {
+        c.tableName = fromTable.name;
+      }
       return fromIndices.difference(toIndices);
     }
 

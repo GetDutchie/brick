@@ -101,7 +101,7 @@ void main() {
     });
 
     test('request is not deleted after sending to an inaccessible endpoint', () async {
-      final body = 'Tunnel http://0.0.0.0:3000 not found';
+      const body = 'Tunnel http://0.0.0.0:3000 not found';
       final inner = stubResult(response: body, statusCode: 404);
       final client = OfflineQueueHttpClient(inner, requestManager);
 
@@ -122,7 +122,7 @@ void main() {
 
     test('request is not deleted after receiving a status code that should be reattempted',
         () async {
-      final body = 'Too many requests';
+      const body = 'Too many requests';
       final inner = stubResult(response: body, statusCode: 429);
       final client = OfflineQueueHttpClient(inner, requestManager, reattemptForStatusCodes: [429]);
 
@@ -142,7 +142,7 @@ void main() {
     });
 
     test('.isATunnelNotFoundResponse', () async {
-      final body = 'Tunnel http://0.0.0.0:3000 not found';
+      const body = 'Tunnel http://0.0.0.0:3000 not found';
       final inner = stubResult(response: body, statusCode: 404);
       final client = OfflineQueueHttpClient(inner, requestManager);
       final resp = await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'new record');

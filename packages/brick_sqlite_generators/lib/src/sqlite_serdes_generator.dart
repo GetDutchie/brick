@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+// ignore: implementation_imports
 import 'package:brick_build/src/serdes_generator.dart';
 import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/db.dart' show InsertForeignKey;

@@ -82,11 +82,11 @@ class MemoryCacheProvider extends Provider<SqliteModel> {
     if (!manages(_Model)) return models;
     managedObjects[_Model] ??= {};
 
-    models.forEach((instance) {
+    for (final instance in models) {
       if (instance.primaryKey != null) {
         managedObjects[_Model]![instance.primaryKey!] = instance;
       }
-    });
+    }
 
     return models;
   }
