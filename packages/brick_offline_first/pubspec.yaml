@@ -16,7 +16,7 @@ dependencies:
   brick_offline_first_abstract: ^1.0.0+1
   brick_rest: ^1.1.0
   brick_sqlite: ^1.0.0
-  brick_sqlite_abstract: ^1.0.0+1
+  brick_sqlite_abstract: ^1.0.0+3
   collection: ^1.15.0
   dart_style: ^2.0.0
   http: ^0.13.0
