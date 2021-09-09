@@ -1,6 +1,10 @@
 ## Unreleased
 
 * Fix analyzer's nullable warning when serializing non-final iterables (#185)
+* Expose `SqliteSchemaGenerator#schemaColumn` for calling super in sub classes
+* Prepend `const` before `RuntimeSqliteColumnDefinition`
+* Use `const` when declaring migrations at the top of `schema.g.dart`
+* Add Dart Lints
 
 ## 1.0.0+5
 

@@ -20,6 +20,6 @@ dependencies:
 
 dev_dependencies:
   test: ^1.16.8
-  lints: any
+  lints: ^1.0.1
   brick_build_test:
     path: ../brick_build_test

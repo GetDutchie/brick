@@ -1,7 +1,4 @@
-include: package:pedantic/analysis_options.yaml
-analyzer:
-  enable-experiment:
-    - non-nullable
+include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:

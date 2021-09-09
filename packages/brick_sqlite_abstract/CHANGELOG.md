@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add Dart Lints
+
 ## 1.0.0+3
 
 * Fixes migration generation error that included `null` when an `up` migration did not have a `down` generator.

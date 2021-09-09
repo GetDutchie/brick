@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add Dart Lints
+
 ## 1.0.0+4
 
 * Fix deserialize and serialize `enumAsString` for non-nullable types (#183)

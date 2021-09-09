@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add Dart Lints
+
 ## 1.0.1
 
 * Add support for PATCH requests (#188)
