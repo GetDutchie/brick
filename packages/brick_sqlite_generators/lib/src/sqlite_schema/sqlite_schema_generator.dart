@@ -37,7 +37,7 @@ class SqliteSchemaGenerator {
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk
-      final Set<Migration> migrations = <Migration>{ ${migrationClasses.join(",\n")} };
+      const migrations = <Migration>{ ${migrationClasses.join(",\n")} };
 
       /// A consumable database structure including the latest generated migration.
       final schema = ${newSchema.forGenerator};
@@ -68,13 +68,13 @@ class SqliteSchemaGenerator {
       });
 
       if (iterableAssociations.isNotEmpty) {
-        iterableAssociations.forEach((iterableSibling) {
+        for (final iterableSibling in iterableAssociations) {
           acc.add(_createJoinsTable(
             localTableName: fields.element.name,
             foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
             checker: checkerForField(iterableSibling),
           ));
-        });
+        }
       }
 
       acc.add(_createTable(fields.element.name, fields));
@@ -200,7 +200,6 @@ class SqliteSchemaGenerator {
   @visibleForOverriding
   SharedChecker<SqliteModel> checkerForType(DartType type) => SharedChecker<SqliteModel>(type);
 
-  @visibleForOverriding
   @mustCallSuper
   SchemaColumn? schemaColumn(Sqlite column, {required SharedChecker checker}) {
     if (column.columnType != null) {

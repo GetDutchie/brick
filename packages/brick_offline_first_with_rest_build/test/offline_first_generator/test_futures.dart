@@ -125,43 +125,43 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'string': RuntimeSqliteColumnDefinition(
+    'string': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'string',
       iterable: false,
       type: String,
     ),
-    'strings': RuntimeSqliteColumnDefinition(
+    'strings': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'strings',
       iterable: false,
       type: String,
     ),
-    'futureStrings': RuntimeSqliteColumnDefinition(
+    'futureStrings': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'future_strings',
       iterable: true,
       type: String,
     ),
-    'assoc': RuntimeSqliteColumnDefinition(
+    'assoc': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'assoc',
       iterable: false,
       type: Assoc,
     ),
-    'assocs': RuntimeSqliteColumnDefinition(
+    'assocs': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'assocs',
       iterable: false,
       type: Assoc,
     ),
-    'futureAssocs': RuntimeSqliteColumnDefinition(
+    'futureAssocs': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'future_assocs',
       iterable: true,

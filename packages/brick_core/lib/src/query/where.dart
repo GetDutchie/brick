@@ -195,6 +195,7 @@ class WherePhrase extends WhereCondition {
   final bool isRequired;
 
   @override
+  // ignore: overridden_fields
   final List<WhereCondition> conditions;
 
   /// A collection of conditions that are evaluated together.

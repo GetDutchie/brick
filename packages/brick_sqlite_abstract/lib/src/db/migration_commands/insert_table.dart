@@ -18,6 +18,8 @@ class InsertTable extends MigrationCommand {
   MigrationCommand get down => DropTable(name);
 
   /// Automatically aliased to [rowid](https://www.sqlite.org/lang_createtable.html#rowid).
+  // ignore: constant_identifier_names
   static const PRIMARY_KEY_COLUMN = '_brick_id';
+  // ignore: constant_identifier_names
   static const PRIMARY_KEY_FIELD = 'primaryKey';
 }

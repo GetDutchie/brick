@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add Dart Lints
+
 ## 1.0.0+1
 
 * Null safety cleanup and refactor

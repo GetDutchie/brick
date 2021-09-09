@@ -8,6 +8,7 @@ abstract class ModelDictionaryGenerator {
   /// Consider adding analyzer ignores to disable 'unused_import' warnings.
   final requiredImports = '';
 
+  // ignore: constant_identifier_names
   static const HEADER = '''
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.''';

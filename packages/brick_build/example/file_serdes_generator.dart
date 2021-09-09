@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_core/core.dart' show Model;
-import 'package:meta/meta.dart';
 import 'package:brick_build/generators.dart';
 import 'file_fields.dart';
 
@@ -17,6 +16,6 @@ abstract class FileSerdesGenerator<_Model extends FileModel> extends SerdesGener
   FileSerdesGenerator(
     ClassElement element,
     FileFields fields, {
-    @required this.repositoryName,
+    required this.repositoryName,
   }) : super(element, fields);
 }

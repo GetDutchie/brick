@@ -32,12 +32,12 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   }) async {}
 
   Future<_Model> fromSqlite(
-    Map<String, dynamic> data, {
+    Map<String, dynamic> input, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
   Future<Map<String, dynamic>> toSqlite(
-    _Model data, {
+    _Model input, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });

@@ -77,31 +77,31 @@ class AfterSaveWithAssociationAdapter
 
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'assoc': RuntimeSqliteColumnDefinition(
+    'assoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc',
       iterable: true,
       type: Assoc,
     ),
-    'assocNullable': RuntimeSqliteColumnDefinition(
+    'assocNullable': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_nullable',
       iterable: true,
       type: Assoc,
     ),
-    'assocNullableArg': RuntimeSqliteColumnDefinition(
+    'assocNullableArg': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_nullable_arg',
       iterable: true,
       type: Assoc,
     ),
-    'assocNullableAndNullableArg': RuntimeSqliteColumnDefinition(
+    'assocNullableAndNullableArg': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_nullable_and_nullable_arg',
       iterable: true,

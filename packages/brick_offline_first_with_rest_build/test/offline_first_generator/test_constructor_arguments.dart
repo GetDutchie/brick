@@ -54,7 +54,7 @@ class OfflineFirstGeneratorArgumentsAdapter
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
@@ -146,7 +146,7 @@ class OfflineFirstGeneratorArgumentsAdapter
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,

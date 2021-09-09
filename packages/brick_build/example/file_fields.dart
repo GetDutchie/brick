@@ -4,34 +4,34 @@ import 'package:brick_build/generators.dart';
 
 // in a real-world equivalent, this is an annotation
 class File implements FieldSerializable {
-  final String path;
+  final String? path;
 
   @override
   final String name;
 
   @override
-  final String defaultValue;
+  final String? defaultValue;
 
   @override
   final bool ignore;
 
   @override
-  final String fromGenerator;
+  final String? fromGenerator;
 
   @override
-  final String toGenerator;
+  final String? toGenerator;
 
   @override
   final bool nullable;
 
   const File({
     this.path,
-    this.name,
+    required this.name,
     this.defaultValue,
-    this.ignore,
+    this.ignore = false,
     this.fromGenerator,
     this.toGenerator,
-    this.nullable,
+    this.nullable = false,
   });
 }
 
@@ -44,11 +44,12 @@ class _FileSerdesFinder extends AnnotationFinder<File> {
     final obj = objectForField(element);
 
     if (obj == null) {
-      return const File();
+      return const File(name: '');
     }
 
     return File(
-      path: obj.getField('path').toStringValue(),
+      name: '',
+      path: obj.getField('path')?.toStringValue(),
     );
   }
 }

@@ -9,7 +9,7 @@ void main() {
   sqfliteFfiInit();
 
   group('OfflineFirstRepository', () {
-    final baseUrl = 'http://0.0.0.0:3000';
+    const baseUrl = 'http://0.0.0.0:3000';
 
     setUpAll(() async {
       TestRepository.configure(
@@ -53,7 +53,7 @@ void main() {
         final findByName = await TestRepository().sqliteProvider.get<Horse>(
               repository: TestRepository(),
               query: Query(where: [
-                Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+                const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
               ]),
             );
 

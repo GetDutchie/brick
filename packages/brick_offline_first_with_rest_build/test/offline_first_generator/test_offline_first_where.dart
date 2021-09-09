@@ -136,37 +136,37 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'assoc': RuntimeSqliteColumnDefinition(
+    'assoc': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'assoc',
       iterable: false,
       type: OtherAssoc,
     ),
-    'assocs': RuntimeSqliteColumnDefinition(
+    'assocs': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assocs',
       iterable: true,
       type: Assoc,
     ),
-    'loadedAssoc': RuntimeSqliteColumnDefinition(
+    'loadedAssoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'loaded_assoc_Assoc_brick_id',
       iterable: false,
       type: Assoc,
     ),
-    'loadedAssocs': RuntimeSqliteColumnDefinition(
+    'loadedAssocs': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'loaded_assocs',
       iterable: true,
       type: Assoc,
     ),
-    'multiLookupCustomGenerator': RuntimeSqliteColumnDefinition(
+    'multiLookupCustomGenerator': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'multi_lookup_custom_generator',
       iterable: true,

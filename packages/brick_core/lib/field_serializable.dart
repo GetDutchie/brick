@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /// Interface for other field-level annotations.
 /// For example, `class Rest extends FieldSerializable {}`
 abstract class FieldSerializable {

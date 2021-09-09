@@ -62,37 +62,37 @@ class BooleanFieldsAdapter extends SqliteAdapter<BooleanFields> {
 
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'someField': RuntimeSqliteColumnDefinition(
+    'someField': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'some_field',
       iterable: false,
       type: bool,
     ),
-    'nullableField': RuntimeSqliteColumnDefinition(
+    'nullableField': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'nullable_field',
       iterable: false,
       type: bool,
     ),
-    'multipleFields': RuntimeSqliteColumnDefinition(
+    'multipleFields': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'multiple_fields',
       iterable: true,
       type: bool,
     ),
-    'multipleNullableFields': RuntimeSqliteColumnDefinition(
+    'multipleNullableFields': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'multiple_nullable_fields',
       iterable: true,
       type: bool,
     ),
-    'multipleFutureFields': RuntimeSqliteColumnDefinition(
+    'multipleFutureFields': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'multiple_future_fields',
       iterable: true,

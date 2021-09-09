@@ -29,7 +29,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final uniqueFields = <String, String>{};
 
     fieldsToColumns.add('''
-      '${InsertTable.PRIMARY_KEY_FIELD}': RuntimeSqliteColumnDefinition(
+      '${InsertTable.PRIMARY_KEY_FIELD}': const RuntimeSqliteColumnDefinition(
         association: false,
         columnName: '${InsertTable.PRIMARY_KEY_COLUMN}',
         iterable: false,
@@ -44,7 +44,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
-          '${field.name}': RuntimeSqliteColumnDefinition(
+          '${field.name}': const RuntimeSqliteColumnDefinition(
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
             columnName: '$columnName',
             iterable: ${checker.isIterable},

@@ -14,3 +14,6 @@ dependencies:
   brick_core: ^1.0.0+1
   brick_rest: ^1.0.0+3
   brick_sqlite_abstract: ^1.0.0+1
+
+dev_dependencies:
+  lints: ^1.0.1

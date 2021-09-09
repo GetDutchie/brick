@@ -15,7 +15,7 @@ void main() {
     late Database db;
     var sqliteLogs = <MethodCall>[];
 
-    MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
+    const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
       if (methodCall.method == 'query') sqliteLogs.add(methodCall);
 
       if (methodCall.method == 'getDatabasesPath') {
@@ -41,7 +41,7 @@ void main() {
     }
 
     test('empty', () async {
-      final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel`';
+      const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel`';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(modelDictionary: dictionary);
       await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -55,12 +55,12 @@ void main() {
           modelDictionary: dictionary,
           query: Query.where('ignored_column', 1),
         ),
-        throwsA(TypeMatcher<ArgumentError>()),
+        throwsA(const TypeMatcher<ArgumentError>()),
       );
     });
 
     test('where non association field', () async {
-      final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ?';
+      const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ?';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query.where('name', 'Thomas'),
@@ -77,19 +77,19 @@ void main() {
           modelDictionary: dictionary,
           query: Query.where('assoc', 1),
         ),
-        throwsA(TypeMatcher<ArgumentError>()),
+        throwsA(const TypeMatcher<ArgumentError>()),
       );
     });
 
     test('compound clause', () async {
-      final statement =
+      const statement =
           '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)''';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query(where: [
           WherePhrase([
             Where.exact('id', 1),
-            Or('name').isExactly('Guy'),
+            const Or('name').isExactly('Guy'),
           ]),
           WherePhrase([
             Where.exact('id', 1),
@@ -108,15 +108,15 @@ void main() {
     });
 
     test('leading requirement with compound clauses', () async {
-      final statement =
+      const statement =
           'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE id = ? AND (full_name = ? OR full_name = ?)';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
         query: Query(where: [
           Where.exact('id', 1),
           WherePhrase([
-            Or('name').isExactly('Thomas'),
-            Or('name').isExactly('Guy'),
+            const Or('name').isExactly('Thomas'),
+            const Or('name').isExactly('Guy'),
           ], isRequired: true),
         ]),
       );
@@ -128,12 +128,12 @@ void main() {
 
     group('Compare', () {
       test('.doesNotContain', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name NOT LIKE ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Where('name').doesNotContain('Thomas'),
+            const Where('name').doesNotContain('Thomas'),
           ]),
         );
 
@@ -145,7 +145,7 @@ void main() {
 
     group('SELECT COUNT', () {
       test('basic', () async {
-        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        const statement = 'SELECT COUNT(*) FROM `DemoModel`';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           selectStatement: false,
@@ -157,14 +157,14 @@ void main() {
       });
 
       test('simple', () async {
-        final statement =
+        const statement =
             'SELECT COUNT(*) FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
             WherePhrase([
               Where.exact('id', 1),
-              Or('name').isExactly('Guy'),
+              const Or('name').isExactly('Guy'),
             ]),
             WherePhrase([
               Where.exact('id', 1),
@@ -184,7 +184,7 @@ void main() {
       });
 
       test('associations', () async {
-        final statement =
+        const statement =
             'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -200,14 +200,14 @@ void main() {
       });
 
       test('without any where arguments', () async {
-        final statement = 'SELECT COUNT(*) FROM `DemoModel`';
-        var nilValue;
+        const statement = 'SELECT COUNT(*) FROM `DemoModel`';
+        String? nilValue;
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(
             where: [
               WherePhrase([
-                if (nilValue != null) And('name').isExactly('John'),
+                if (nilValue != null) const And('name').isExactly('John'),
               ], isRequired: false),
             ],
           ),
@@ -222,7 +222,7 @@ void main() {
 
     group('associations', () {
       test('simple', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -237,7 +237,7 @@ void main() {
       });
 
       test('OR', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -245,8 +245,8 @@ void main() {
             Where.exact(
               'assoc',
               WherePhrase([
-                Or('id').isExactly(1),
-                Or('name').isExactly('Guy'),
+                const Or('id').isExactly(1),
+                const Or('name').isExactly('Guy'),
               ]),
             ),
           ]),
@@ -258,7 +258,7 @@ void main() {
       });
 
       test('one-to-many', () {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -276,7 +276,7 @@ void main() {
 
     group('providerArgs', () {
       test('providerArgs.collate', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'collate': 'NOCASE'}),
@@ -288,7 +288,7 @@ void main() {
       });
 
       test('providerArgs.groupBy', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'groupBy': 'id'}),
@@ -300,7 +300,7 @@ void main() {
       });
 
       test('providerArgs.having', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'having': 'id'}),
@@ -312,7 +312,7 @@ void main() {
       });
 
       test('providerArgs.limit', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'limit': 1}),
@@ -324,7 +324,7 @@ void main() {
       });
 
       test('providerArgs.offset', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {
@@ -340,7 +340,7 @@ void main() {
 
       group('providerArgs.orderBy', () {
         test('simple', () async {
-          final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
+          const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
             query: Query(providerArgs: {'orderBy': 'id DESC'}),
@@ -352,7 +352,7 @@ void main() {
         });
 
         test('discovered columns share similar names', () async {
-          final statement =
+          const statement =
               'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY last_name DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
@@ -366,7 +366,7 @@ void main() {
       });
 
       test('providerArgs.orderBy expands field names to column names', () async {
-        final statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(providerArgs: {'orderBy': 'manyAssoc DESC'}),
@@ -378,7 +378,7 @@ void main() {
       });
 
       test('providerArgs.orderBy compound values are expanded to column names', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, complex_field_name ASC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -393,7 +393,7 @@ void main() {
       });
 
       test('fields convert to column names in providerArgs values', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -413,13 +413,13 @@ void main() {
 
     group('#values', () {
       test('boolean queries are converted', () {
-        final statement =
+        const statement =
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ? OR full_name = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(where: [
-            Or('name').isExactly(true),
-            Or('name').isExactly(false),
+            const Or('name').isExactly(true),
+            const Or('name').isExactly(false),
           ]),
         );
         expect(sqliteQuery.statement, statement);

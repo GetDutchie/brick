@@ -15,7 +15,7 @@ void main() {
     final requestManager = RequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
-      processingInterval: Duration(seconds: 0),
+      processingInterval: const Duration(seconds: 0),
     );
 
     setUpAll(() async {
@@ -37,7 +37,7 @@ void main() {
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
-        processingInterval: Duration(seconds: 0),
+        processingInterval: const Duration(seconds: 0),
       );
       final client = OfflineQueueHttpClient(inner, _requestManager);
 
@@ -134,7 +134,7 @@ void main() {
           HTTP_JOBS_TABLE_NAME,
           {
             HTTP_JOBS_UPDATED_AT:
-                DateTime.now().subtract(Duration(seconds: 122)).millisecondsSinceEpoch,
+                DateTime.now().subtract(const Duration(seconds: 122)).millisecondsSinceEpoch,
           },
           where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
           whereArgs: [response![HTTP_JOBS_PRIMARY_KEY_COLUMN]],

@@ -1,5 +1,6 @@
 import 'package:brick_core/core.dart';
 
+// ignore: constant_identifier_names
 const int? NEW_RECORD_ID = null;
 
 /// Models accessible to the [SqliteProvider].

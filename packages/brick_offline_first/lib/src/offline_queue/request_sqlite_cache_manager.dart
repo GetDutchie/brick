@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
@@ -73,7 +75,7 @@ class RequestSqliteCacheManager {
 
   /// Prepare schema.
   Future<void> migrate() async {
-    final statement = '''
+    const statement = '''
       CREATE TABLE IF NOT EXISTS `$HTTP_JOBS_TABLE_NAME` (
         `$HTTP_JOBS_PRIMARY_KEY_COLUMN` INTEGER PRIMARY KEY AUTOINCREMENT,
         `$HTTP_JOBS_ATTEMPTS_COLUMN` INTEGER DEFAULT 1,
@@ -109,7 +111,7 @@ class RequestSqliteCacheManager {
         // ensure that if the request is longer the 2 minutes old it's unlocked automatically
         final lastUpdated =
             DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
-        final twoMinutesAgo = DateTime.now().subtract(Duration(minutes: 2));
+        final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
           await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
         }

@@ -37,6 +37,7 @@ abstract class OfflineFirstWithRestRepository
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
   @override
+  // ignore: overridden_fields
   final RestProvider remoteProvider;
 
   /// When the device is connected but the URL is unreachable, the response will
@@ -72,7 +73,7 @@ abstract class OfflineFirstWithRestRepository
     remoteProvider.client = OfflineQueueHttpClient(
       restProvider.client,
       offlineQueueHttpClientRequestSqliteCacheManager ??
-          RequestSqliteCacheManager(_QUEUE_DATABASE_NAME),
+          RequestSqliteCacheManager(_queueDatabaseName),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = OfflineRequestQueue(
@@ -182,4 +183,4 @@ abstract class OfflineFirstWithRestRepository
       !throwTunnelNotFoundExceptions;
 }
 
-const _QUEUE_DATABASE_NAME = 'brick_offline_queue.sqlite';
+const _queueDatabaseName = 'brick_offline_queue.sqlite';

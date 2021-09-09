@@ -33,13 +33,13 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
-    'primaryKey': RuntimeSqliteColumnDefinition(
+    'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: '_brick_id',
       iterable: false,
       type: int,
     ),
-    'name': RuntimeSqliteColumnDefinition(
+    'name': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'name',
       iterable: false,

@@ -16,6 +16,7 @@ import 'package:meta/meta.dart';
 
 /// Retrieves from a Sqlite database
 class SqliteProvider implements Provider<SqliteModel> {
+  // ignore: constant_identifier_names
   static const String MIGRATION_VERSIONS_TABLE_NAME = 'MigrationVersions';
 
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
@@ -47,7 +48,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     this.dbName, {
     this.databaseFactory,
     required this.modelDictionary,
-  })   : _lock = Lock(reentrant: true),
+  })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
 
   /// Remove record from SQLite. [query] is ignored.
@@ -183,7 +184,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     // Guard if migration has already been committed.
     if (latestSqliteMigrationVersion == latestMigrationVersion) {
       _logger.info('Already at latest migration version ($latestMigrationVersion)');
-      return null;
+      return;
     }
 
     for (var migration in migrations) {

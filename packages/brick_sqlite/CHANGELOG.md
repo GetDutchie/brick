@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
+* Add Flutter Lints
+* Change `instance` and `data` positional arguments in `SqliteAdapter` to `input` to match generator variable
 
 ## 1.0.0+1
 
