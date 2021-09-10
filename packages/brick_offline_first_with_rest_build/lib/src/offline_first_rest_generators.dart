@@ -114,8 +114,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (checker.isArgTypeASibling) {
         final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
         var repositoryOperator = isNullable ? '?' : '!';
-        if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
         if (repositoryHasBeenForceCast) repositoryOperator = '';
+        if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
 
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {

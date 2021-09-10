@@ -139,8 +139,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       var repositoryOperator = checker.isUnFuturedTypeNullable ? '?' : '!';
-      if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
       if (repositoryHasBeenForceCast) repositoryOperator = '';
+      if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
 
       final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', $fieldValue as int, limit1: true),
