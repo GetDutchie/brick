@@ -104,7 +104,7 @@ Future<OneToOneAssociation> _$OneToOneAssociationFromSqlite(
       assoc2: (await repository.getAssociation<SqliteAssoc>(
         Query.where('primaryKey', data['assoc2_SqliteAssoc_brick_id'] as int,
             limit1: true),
-      ))!
+      ))
           .first)
     ..primaryKey = data['_brick_id'] as int;
 }

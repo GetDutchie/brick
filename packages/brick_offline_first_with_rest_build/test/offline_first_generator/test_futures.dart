@@ -65,7 +65,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
           : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
       assoc: data['assoc_Assoc_brick_id'] == null
           ? null
-          : repository!
+          : repository
               .getAssociation<Assoc>(
                 Query.where('primaryKey', data['assoc_Assoc_brick_id'] as int,
                     limit1: true),

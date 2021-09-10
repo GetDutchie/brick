@@ -27,7 +27,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
           .whereType<Future<Assoc>>()
           .toList(),
       loadedAssoc: await repository
-          ?.getAssociation<Assoc>(
+          .getAssociation<Assoc>(
               Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
       loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList() ?? []),
@@ -53,7 +53,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
   return OfflineFirstWhere(
       assoc: data['assoc_OtherAssoc_brick_id'] == null
           ? null
-          : repository!
+          : repository
               .getAssociation<OtherAssoc>(
                 Query.where(
                     'primaryKey', data['assoc_OtherAssoc_brick_id'] as int,
@@ -75,12 +75,12 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
       loadedAssoc: data['loaded_assoc_Assoc_brick_id'] == null
           ? null
           : (data['loaded_assoc_Assoc_brick_id'] > -1
-              ? (await repository?.getAssociation<Assoc>(
+              ? (await repository.getAssociation<Assoc>(
                   Query.where(
                       'primaryKey', data['loaded_assoc_Assoc_brick_id'] as int,
                       limit1: true),
                 ))
-                  ?.first
+                  .first
               : null),
       loadedAssocs: (await provider.rawQuery(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
