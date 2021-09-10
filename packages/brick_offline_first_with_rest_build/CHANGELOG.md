@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Add Dart Lints
+* Update to use new `brick_build` API for `getAssociationMethod` and `repositoryHasBeenForceCast`
 
 ## 1.0.0+2
 

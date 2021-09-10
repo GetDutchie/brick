@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Add Dart Lints
+* Bump `brick_build`
 
 ## 1.0.0+4
 

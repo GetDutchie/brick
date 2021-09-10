@@ -113,7 +113,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
         final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
-        final repositoryOperator = isNullable ? '?' : '!';
+        var repositoryOperator = isNullable ? '?' : '!';
+        if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
+        if (repositoryHasBeenForceCast) repositoryOperator = '';
 
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {
@@ -131,7 +133,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
             final getAssociationText =
-                SerdesGenerator.getAssociationMethod(argType, query: 'Query(where: $where)');
+                getAssociationMethod(argType, query: 'Query(where: $where)');
             final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
             ).whereType<Future<$argType>>()$fromRestCast''';
 
@@ -166,7 +168,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (offlineFirstAnnotation.where != null) {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
-        final getAssociationStatement = SerdesGenerator.getAssociationMethod(type,
+        final getAssociationStatement = getAssociationMethod(type,
             query: "Query(where: $where, providerArgs: {'limit': 1})");
 
         return '$shouldAwait$getAssociationStatement';
