@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0+1
+
+* Apply `const` for individual migrations in `schema.g.dart`
+
 ## 1.1.0
 
 * Fix analyzer's nullable warning when serializing non-final iterables (#185)
