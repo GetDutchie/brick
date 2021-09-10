@@ -157,10 +157,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       if (checker.isNullable) {
         return '''($fieldValue > -1
-              ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
+              ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
               : null)''';
       }
-      return '(await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first';
+      return '(await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))!.first';
 
       // enum
     } else if (checker.isEnum) {

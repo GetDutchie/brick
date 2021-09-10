@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.2.0+3
+
+* Remove `// ignore_for_file: unnecessary_non_null_assertion` and `// ignore_for_file: invalid_null_aware_operator` from all adapters and add `// ignore_for_file: prefer_null_aware_operators`
+* Remove setting `repositoryHasBeenForceCast` in `SerdesGenerator#getAssociationMethod`
+
 ## 1.2.0+2
 
 * Remove `@visibleForOverriding` annotation from `SerdesGenerator#deserializeNullableClause`

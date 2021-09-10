@@ -183,7 +183,6 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
     var repositoryOperator = isNullable ? '?' : '!';
     if (repositoryHasBeenForceCast) repositoryOperator = '';
-    if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
 
     final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
 
