@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.1
+
 * Update to use new `brick_build` API for `getAssociationMethod` and `repositoryHasBeenForceCast`
 
 ## 1.1.0+1
