@@ -86,7 +86,7 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
               'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_nullable_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
               [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_SqliteAssoc_brick_id']);
-        return Future.wait<SqliteAssoc>(ids.map((primaryKey) => repository!
+        return Future.wait<SqliteAssoc>(ids.map((primaryKey) => repository
             .getAssociation<SqliteAssoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )

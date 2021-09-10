@@ -20,7 +20,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
               providerArgs: {'limit': 1}))
           .then((r) => r!.first),
       assocs: (data['assocs'] ?? [])
-          .map((s) => repository!
+          .map((s) => repository
               .getAssociation<Assoc>(Query(
                   where: [Where.exact('id', s), Where.exact('otherVar', s)]))
               .then((r) => r!.first))
@@ -30,8 +30,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
           ?.getAssociation<Assoc>(
               Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1}))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
-      loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList() ?? []),
-      multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList());
+      loadedAssocs: await Future.wait<Assoc>((data['loaded_assocs'] ?? []).map((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList() ?? []),
+      multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? []).map((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first)).whereType<Future<Assoc>>().toList());
 }
 
 Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
@@ -66,7 +66,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             data['_brick_id'] as int
           ]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
             .getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
@@ -88,7 +88,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             data['_brick_id'] as int
           ]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
             .getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
@@ -99,7 +99,7 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
             .getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )

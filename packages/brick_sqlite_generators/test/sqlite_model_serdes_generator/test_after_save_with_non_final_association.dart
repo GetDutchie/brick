@@ -33,7 +33,7 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
             data['_brick_id'] as int
           ]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
             .getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
