@@ -113,7 +113,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
         final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
-        var repositoryOperator = isNullable ? '?' : '!';
+        final repositoryOperator = isNullable ? '?' : '!';
 
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null) {
