@@ -149,6 +149,5 @@ Future<void> generateAdapterExpectation(String filename, String output,
     annotation.annotation,
     MockBuildStep(),
   );
-  print(generated);
   expect(generated.trim(), output.trim());
 }

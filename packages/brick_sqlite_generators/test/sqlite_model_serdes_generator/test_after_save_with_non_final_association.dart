@@ -43,8 +43,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?',
               [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc?>(ids.map((primaryKey) => repository!
-            .getAssociation<Assoc>(
+        return Future.wait<Assoc?>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
             .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
@@ -52,8 +52,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
           ?.toList(),
       assocNullableAndNullableArg: (await provider.rawQuery('SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?', [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc?>(ids.map((primaryKey) => repository!
-            .getAssociation<Assoc>(
+        return Future.wait<Assoc?>(ids.map((primaryKey) => repository
+            ?.getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )
             .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
