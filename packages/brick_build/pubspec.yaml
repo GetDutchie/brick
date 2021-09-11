@@ -4,7 +4,7 @@ homepage: https://github.com/greenbits/brick/tree/master/packages/brick_build
 issue_tracker: https://github.com/greenbits/brick/issues
 repository: https://github.com/greenbits/brick
 
-version: 1.1.0+3
+version: 1.2.0+3
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

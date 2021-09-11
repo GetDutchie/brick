@@ -1,6 +1,10 @@
 ## Unreleased
 
+## 1.1.0
+
 * Add Dart Lints
+* Update to use new `brick_build` API for `getAssociationMethod` and `repositoryHasBeenForceCast`
+* Fix Dart null safety complaints when accessing repository in a subsequent null or non null safe way after a force cast to non-null.
 
 ## 1.0.0+2
 

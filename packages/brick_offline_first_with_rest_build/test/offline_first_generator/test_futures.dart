@@ -2,8 +2,7 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 
 final output = r'''
-// ignore_for_file: unnecessary_non_null_assertion
-// ignore_for_file: invalid_null_aware_operator
+// ignore_for_file: prefer_null_aware_operators
 
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
@@ -65,7 +64,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
           : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
       assoc: data['assoc_Assoc_brick_id'] == null
           ? null
-          : repository!
+          : repository
               .getAssociation<Assoc>(
                 Query.where('primaryKey', data['assoc_Assoc_brick_id'] as int,
                     limit1: true),
@@ -80,7 +79,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
                 ]).then((results) {
               final ids = results.map((r) => r['f_Assoc_brick_id']);
               return Future.wait<Assoc>(
-                  ids.map((primaryKey) async => await repository!
+                  ids.map((primaryKey) async => await repository
                       .getAssociation<Assoc>(
                         Query.where('primaryKey', primaryKey, limit1: true),
                       )
@@ -90,7 +89,7 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
-        return Future.wait<Assoc>(ids.map((primaryKey) => repository!
+        return Future.wait<Assoc>(ids.map((primaryKey) => repository
             .getAssociation<Assoc>(
               Query.where('primaryKey', primaryKey, limit1: true),
             )

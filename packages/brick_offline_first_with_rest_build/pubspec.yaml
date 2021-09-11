@@ -12,11 +12,11 @@ environment:
 dependencies:
   analyzer: ^1.2.0
   brick_offline_first_abstract: ^1.0.0+1
-  brick_build: ^1.1.0+1
+  brick_build: ^1.2.0+3
   brick_rest: ^1.0.0+3
   brick_rest_generators: ^1.0.0+4
   brick_sqlite_abstract: ^1.0.0+1
-  brick_sqlite_generators: ^1.1.0+1
+  brick_sqlite_generators: ^1.1.1
   build: ^2.0.0
   dart_style: ^2.0.0
   logging: ^1.0.0
@@ -31,3 +31,7 @@ dev_dependencies:
   lints: ^1.0.1
   brick_build_test:
     path: ../brick_build_test
+
+dependency_overrides:
+  brick_build:
+    path: ../brick_build

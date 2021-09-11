@@ -1,7 +1,20 @@
 ## Unreleased
 
+## 1.2.0+3
+
+* Remove `// ignore_for_file: unnecessary_non_null_assertion` and `// ignore_for_file: invalid_null_aware_operator` from all adapters and add `// ignore_for_file: prefer_null_aware_operators`
+* Remove setting `repositoryHasBeenForceCast` in `SerdesGenerator#getAssociationMethod`
+
+## 1.2.0+2
+
+* Remove `@visibleForOverriding` annotation from `SerdesGenerator#deserializeNullableClause`
+
+## 1.2.0
+
 * Add Dart Lints
 * Improve null safe checking in example
+* Add `repositoryHasBeenForceCast` to determine whether a repository needs to use the null operator `!`. Warnings clutter the console when running `flutter build` or `flutter test` and they cannot be disabled with `--no-sound-null-safety`
+* Convert `SerdesGenerator.getAssociationMethod` to `SerdesGenerator#getAssociationMethod` to access `repositoryHasBeenForceCast`
 
 ## 1.1.0+3
 

@@ -82,6 +82,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// For example, `Rest` or `Sqlite`
   String get providerName;
 
+  /// Avoid linter error on subsequent passes for the repository.
+  /// For example, if repository has already been casted to `!` it should not be recast
+  bool repositoryHasBeenForceCast = false;
+
   /// For example, `OfflineFirst`
   String get repositoryName => 'Model';
 
@@ -172,6 +176,22 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return "'$name': $contents";
   }
 
+  String getAssociationMethod(
+    DartType argType, {
+    required String query,
+  }) {
+    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
+    var repositoryOperator = isNullable ? '?' : '!';
+    if (repositoryHasBeenForceCast) repositoryOperator = '';
+
+    final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
+
+    return '''repository
+      $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>($query)
+      .then((r) => $thenStatement)
+    ''';
+  }
+
   /// Return a `SharedChecker` for a type.
   /// If including a custom checker in your domain, overwrite this field
   SharedChecker checkerForType(DartType type) => SharedChecker(type);
@@ -206,7 +226,6 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   /// Injected between the field member in the constructor and the contents
-  @visibleForOverriding
   String deserializerNullableClause({
     required FieldElement field,
     required _FieldAnnotation fieldAnnotation,
@@ -354,19 +373,5 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     }
 
     return castStatement;
-  }
-
-  static String getAssociationMethod(
-    DartType argType, {
-    required String query,
-  }) {
-    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
-    final repositoryOperator = isNullable ? '?' : '!';
-    final thenStatement = isNullable ? 'r?.isNotEmpty ?? false ? r!.first : null' : 'r!.first';
-
-    return '''repository
-      $repositoryOperator.getAssociation<${SharedChecker.withoutNullability(argType)}>($query)
-      .then((r) => $thenStatement)
-    ''';
   }
 }

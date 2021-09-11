@@ -94,7 +94,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
             .then((results) {
               final ids = results.map((r) => r['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
-                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${SerdesGenerator.getAssociationMethod(argType, query: query)})
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${getAssociationMethod(argType, query: query)})
               );
             })
         ''';
@@ -138,7 +138,9 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
-      final repositoryOperator = checker.isUnFuturedTypeNullable ? '?' : '!';
+      var repositoryOperator = checker.isUnFuturedTypeNullable ? '?' : '!';
+      if (repositoryHasBeenForceCast) repositoryOperator = '';
+      if (repositoryOperator == '!') repositoryHasBeenForceCast = true;
 
       final query = '''
         Query.where('${InsertTable.PRIMARY_KEY_FIELD}', $fieldValue as int, limit1: true),
@@ -147,18 +149,18 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       if (wrappedInFuture) {
         if (checker.isNullable) {
           return '''($fieldValue > -1
-              ? ${SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query)}
+              ? ${getAssociationMethod(checker.unFuturedType, query: query)}
               : null)''';
         }
-        return SerdesGenerator.getAssociationMethod(checker.unFuturedType, query: query);
+        return getAssociationMethod(checker.unFuturedType, query: query);
       }
 
       if (checker.isNullable) {
         return '''($fieldValue > -1
-              ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first
+              ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
               : null)''';
       }
-      return '(await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))$repositoryOperator.first';
+      return '(await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))!.first';
 
       // enum
     } else if (checker.isEnum) {

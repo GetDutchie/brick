@@ -1,5 +1,13 @@
 ## Unreleased
 
+## 1.1.1+1
+
+* Fix adapter when deserializing single siblings
+
+## 1.1.1
+
+* Update to use new `brick_build` API for `getAssociationMethod` and `repositoryHasBeenForceCast`
+
 ## 1.1.0+1
 
 * Apply `const` for individual migrations in `schema.g.dart`
