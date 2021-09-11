@@ -168,6 +168,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
         final getAssociationStatement = getAssociationMethod(type,
             query: "Query(where: $where, providerArgs: {'limit': 1})");
+        final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
+        if (!isNullable) repositoryHasBeenForceCast = true;
 
         return '$shouldAwait$getAssociationStatement';
       }
