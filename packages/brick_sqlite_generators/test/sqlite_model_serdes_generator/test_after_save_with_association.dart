@@ -21,7 +21,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
         )
         .then((r) => r!.first)));
   }))
-          .toList())
+          .toList()
+          .cast<Assoc>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
