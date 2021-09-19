@@ -5,8 +5,6 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 class OfflineFirstGeneratorArguments extends OfflineFirstModel {}
 
 final repositoryNameAdapterExpectation = r'''
-// ignore_for_file: prefer_null_aware_operators
-
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
@@ -96,8 +94,6 @@ class OfflineFirstGeneratorArgumentsAdapter
 ''';
 
 final superAdapterNameAdapterExpectation = r'''
-// ignore_for_file: prefer_null_aware_operators
-
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
