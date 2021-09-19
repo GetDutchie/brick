@@ -19,12 +19,14 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
       assocs: Future.wait<Assoc>(data['assocs']
               ?.map((d) => AssocAdapter()
                   .fromRest(d, provider: provider, repository: repository))
-              .toList() ??
+              .toList()
+              .cast<Future<Assoc>>() ??
           []),
       futureAssocs: data['future_assocs']
           ?.map((d) => AssocAdapter()
               .fromRest(d, provider: provider, repository: repository))
-          .toList());
+          .toList()
+          .cast<Future<Assoc>>());
 }
 
 Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,

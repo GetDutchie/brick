@@ -91,7 +91,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             )
             .then((r) => r!.first)));
       }))
-          .toList(),
+          .toList()
+          .cast<Assoc>(),
       multiLookupCustomGenerator: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {
