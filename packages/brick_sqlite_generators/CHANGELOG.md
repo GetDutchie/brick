@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.2
+
+* Always cast when using `toList` and deserializing
+
 ## 1.1.1+1
 
 * Fix adapter when deserializing single siblings

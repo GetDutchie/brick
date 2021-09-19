@@ -76,7 +76,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         isSet: checker.isSet,
         isList: checker.isList,
         isFuture: checker.isArgTypeAFuture,
-        forceCast: !checker.isArgTypeASibling,
+        forceCast: true,
       );
 
       if (checker.isArgTypeASibling) {
