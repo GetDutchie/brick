@@ -105,10 +105,13 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = OfflineFirstChecker(checker.argType);
-      final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet,
-          isList: checker.isList,
-          isFuture: wrappedInFuture || checker.isFuture);
+      final castIterable = SerdesGenerator.iterableCast(
+        argType,
+        isSet: checker.isSet,
+        isList: checker.isList,
+        isFuture: wrappedInFuture || checker.isFuture,
+        forceCast: true,
+      );
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
@@ -130,8 +133,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
                 isSet: checker.isSet, isList: checker.isList, isFuture: true);
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
-            final getAssociationText =
-                getAssociationMethod(argType, query: 'Query(where: $where)');
+            final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
             final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
             ).whereType<Future<$argType>>()$fromRestCast''';
 
@@ -154,7 +156,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         if (_hasConstructor) {
           final serializableType =
               argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
-          return '$fieldValue.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
+          final nullabilityOperator = checker.isNullable ? '?' : '';
+          return '$fieldValue$nullabilityOperator.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
       }
     }
@@ -166,8 +169,8 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (offlineFirstAnnotation.where != null) {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
-        final getAssociationStatement = getAssociationMethod(type,
-            query: "Query(where: $where, providerArgs: {'limit': 1})");
+        final getAssociationStatement =
+            getAssociationMethod(type, query: "Query(where: $where, providerArgs: {'limit': 1})");
         final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
         if (!isNullable) repositoryHasBeenForceCast = true;
 

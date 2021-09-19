@@ -65,10 +65,13 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
     if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = OfflineFirstChecker(checker.argType);
-      final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet,
-          isList: checker.isList,
-          isFuture: wrappedInFuture || checker.isFuture);
+      final castIterable = SerdesGenerator.iterableCast(
+        argType,
+        isSet: checker.isSet,
+        isList: checker.isList,
+        isFuture: wrappedInFuture || checker.isFuture,
+        forceCast: true,
+      );
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {

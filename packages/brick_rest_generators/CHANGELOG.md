@@ -1,7 +1,10 @@
 ## Unreleased
 
+## 1.0.1
+
 * Add Dart Lints
 * Bump `brick_build`
+* Always cast from list when deserializing siblings
 
 ## 1.0.0+4
 
