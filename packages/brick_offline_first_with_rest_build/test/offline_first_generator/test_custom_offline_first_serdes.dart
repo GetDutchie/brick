@@ -9,8 +9,9 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromRest(
   return CustomOfflineFirstSerdes(
       string: Serializable.fromRest(data['string']),
       strings: data['strings']
-          .map((c) => Serializable.fromRest(c as Map<String, dynamic>))
-          .toList());
+          ?.map((c) => Serializable.fromRest(c as Map<String, dynamic>))
+          .toList()
+          .cast<Serializable>());
 }
 
 Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToRest(
@@ -35,7 +36,8 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
           ? null
           : jsonDecode(data['strings'])
               .map((c) => Serializable.fromSqlite(c as int))
-              .toList())
+              .toList()
+              .cast<Serializable>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
