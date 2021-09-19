@@ -2,8 +2,6 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
 final output = r"""
-// ignore_for_file: prefer_null_aware_operators
-
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
@@ -25,7 +23,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
             )
             .then((r) => r!.first)));
       }))
-          .toList(),
+          .toList()
+          .cast<Assoc>(),
       assocNullable: (await provider.rawQuery(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable` WHERE l_AfterSaveWithAssociation_brick_id = ?',
               [
@@ -38,7 +37,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
             )
             .then((r) => r!.first)));
       }))
-          .toList(),
+          .toList()
+          .cast<Assoc>(),
       assocNullableArg: (await provider.rawQuery(
               'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?',
               [data['_brick_id'] as int]).then((results) {
@@ -49,7 +49,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
             )
             .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
       }))
-          ?.toList(),
+          ?.toList()
+          .cast<Assoc?>(),
       assocNullableAndNullableArg: (await provider.rawQuery('SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_AfterSaveWithAssociation_assoc_nullable_and_nullable_arg` WHERE l_AfterSaveWithAssociation_brick_id = ?', [data['_brick_id'] as int]).then((results) {
         final ids = results.map((r) => r['f_Assoc_brick_id']);
         return Future.wait<Assoc?>(ids.map((primaryKey) => repository
@@ -58,7 +59,8 @@ Future<AfterSaveWithAssociation> _$AfterSaveWithAssociationFromSqlite(
             )
             .then((r) => r?.isNotEmpty ?? false ? r!.first : null)));
       }))
-          ?.toList())
+          ?.toList()
+          .cast<Assoc?>())
     ..primaryKey = data['_brick_id'] as int;
 }
 

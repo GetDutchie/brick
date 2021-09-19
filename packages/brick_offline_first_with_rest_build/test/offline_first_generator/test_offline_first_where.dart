@@ -3,8 +3,6 @@ import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
-// ignore_for_file: prefer_null_aware_operators
-
 // GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
@@ -93,7 +91,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             )
             .then((r) => r!.first)));
       }))
-          .toList(),
+          .toList()
+          .cast<Assoc>(),
       multiLookupCustomGenerator: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {

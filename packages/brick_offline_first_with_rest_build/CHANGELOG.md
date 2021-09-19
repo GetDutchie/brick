@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 1.1.1
+
+* Always cast when deserializing `OfflineFirstSerdes` from SQLite
+* Always cast when deserializing `OfflineFirstSerdes` from REST
+* Use null aware operators when deserializing `OfflineFirstSerdes` iterables from REST
+
+
 ## 1.1.0
 
 * Add Dart Lints

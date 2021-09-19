@@ -63,7 +63,7 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
         final fromRestCast = SerdesGenerator.iterableCast(argType,
-            isSet: checker.isSet, isList: checker.isList, isFuture: true);
+            isSet: checker.isSet, isList: checker.isList, isFuture: true, forceCast: true);
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>
