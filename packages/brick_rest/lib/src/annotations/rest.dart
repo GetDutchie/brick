@@ -47,6 +47,7 @@ class Rest implements FieldSerializable {
   /// This indicates that the payload from REST could be `null` and is not related to
   /// Dart nullability. Defaults to `false`.
   @override
+  @Deprecated('use of nullable operators eliminates need for nullable annotation')
   final bool nullable;
 
   @override

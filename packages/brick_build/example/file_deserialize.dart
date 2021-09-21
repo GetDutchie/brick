@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
@@ -19,6 +20,12 @@ class FileDeserialize extends FileSerdesGenerator {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     // DateTime
     if (checker.isDateTime) {
       return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
@@ -31,14 +38,14 @@ class FileDeserialize extends FileSerdesGenerator {
     } else if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = checkerForType(checker.argType);
-      final castIterable = SerdesGenerator.iterableCast(argType,
+      final castIterable = SerdesGenerator.iterableCast(argType, isNullable,
           isSet: checker.isSet,
           isList: checker.isList,
           isFuture: wrappedInFuture || checker.isFuture);
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
-        final fromFileCast = SerdesGenerator.iterableCast(argType,
+        final fromFileCast = SerdesGenerator.iterableCast(argType, isNullable,
             isSet: checker.isSet, isList: checker.isList, isFuture: true);
 
         var deserializeMethod = '''

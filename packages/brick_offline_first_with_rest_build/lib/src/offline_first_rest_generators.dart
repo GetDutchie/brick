@@ -28,6 +28,12 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
 
     if (fieldAnnotation.ignoreTo) return null;
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     if (checker.isIterable) {
@@ -36,7 +42,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
         final awaited = checker.isArgTypeAFuture ? 'async => (await s)' : '=> s';
         final pair = offlineFirstAnnotation.where!.entries.first;
         final instanceWithField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-        final nullableSuffix = checker.isNullable ? '?' : '';
+        final nullableSuffix = isNullable ? '?' : '';
         return '$instanceWithField$nullableSuffix.map((s) $awaited.${pair.key}).toList()';
       }
 
@@ -44,7 +50,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       if (argTypeChecker.hasSerdes) {
         final _hasSerializer = hasSerializer(checker.argType);
         if (_hasSerializer) {
-          final nullableSuffix = checker.isNullable ? '?' : '';
+          final nullableSuffix = isNullable ? '?' : '';
           return '$fieldValue$nullableSuffix.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
         }
       }
@@ -54,12 +60,12 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
       if (offlineFirstAnnotation.where != null) {
         final pair = offlineFirstAnnotation.where!.entries.first;
-        final nullableSuffix = checker.isNullable ? '?' : '';
+        final nullableSuffix = isNullable ? '?' : '';
         return '$wrappedField$nullableSuffix.${pair.key}';
       } else {
         final parentFieldIsNullable =
             wrappedInFuture && field.type.nullabilitySuffix != NullabilitySuffix.none;
-        final nullableSuffix = parentFieldIsNullable || checker.isNullable ? '!' : '';
+        final nullableSuffix = parentFieldIsNullable || isNullable ? '!' : '';
         final restSerializerStatement =
             'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().toRest($wrappedField$nullableSuffix, provider: provider, repository: repository)';
         if (checker.isUnFuturedTypeNullable) {
@@ -73,7 +79,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        final nullableSuffix = checker.isNullable ? '?' : '';
+        final nullableSuffix = isNullable ? '?' : '';
         return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
     }
@@ -99,6 +105,12 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     if (fieldAnnotation.ignoreFrom) return null;
 
     // Iterable
@@ -107,6 +119,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       final argTypeChecker = OfflineFirstChecker(checker.argType);
       final castIterable = SerdesGenerator.iterableCast(
         argType,
+        isNullable,
         isSet: checker.isSet,
         isList: checker.isList,
         isFuture: wrappedInFuture || checker.isFuture,
@@ -115,7 +128,6 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
-        final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
         final repositoryOperator = isNullable ? '?' : '!';
 
         // @OfflineFirst(where: )
@@ -129,11 +141,12 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
 
             // Iterable<OfflineFirstModel>
           } else {
-            final fromRestCast = SerdesGenerator.iterableCast(argType,
+            final fromRestCast = SerdesGenerator.iterableCast(argType, isNullable,
                 isSet: checker.isSet, isList: checker.isList, isFuture: true);
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
-            final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
+            final getAssociationText =
+                getAssociationMethod(argType, isNullable, query: 'Query(where: $where)');
             final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
             ).whereType<Future<$argType>>()$fromRestCast''';
 
@@ -156,7 +169,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
         if (_hasConstructor) {
           final serializableType =
               argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
-          final nullabilityOperator = checker.isNullable ? '?' : '';
+          final nullabilityOperator = isNullable ? '?' : '';
           return '$fieldValue$nullabilityOperator.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
       }
@@ -169,9 +182,11 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
       if (offlineFirstAnnotation.where != null) {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
-        final getAssociationStatement =
-            getAssociationMethod(type, query: "Query(where: $where, providerArgs: {'limit': 1})");
-        final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
+        final getAssociationStatement = getAssociationMethod(
+          type,
+          isNullable,
+          query: "Query(where: $where, providerArgs: {'limit': 1})",
+        );
         if (!isNullable) repositoryHasBeenForceCast = true;
 
         return '$shouldAwait$getAssociationStatement';

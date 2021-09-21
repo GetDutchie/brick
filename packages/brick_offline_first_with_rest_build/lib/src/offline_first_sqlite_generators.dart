@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
@@ -18,6 +19,12 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
   @override
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
+
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
 
     if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
@@ -39,7 +46,7 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final _hasSerializer = hasSerializer(field.type);
       if (_hasSerializer) {
-        final nullableSuffix = checker.isNullable ? '?' : '';
+        final nullableSuffix = isNullable ? '?' : '';
         return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
     }
@@ -61,12 +68,19 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     // Iterable
     if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = OfflineFirstChecker(checker.argType);
       final castIterable = SerdesGenerator.iterableCast(
         argType,
+        isNullable,
         isSet: checker.isSet,
         isList: checker.isList,
         isFuture: wrappedInFuture || checker.isFuture,

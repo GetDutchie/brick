@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
@@ -40,6 +41,13 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
+
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(
         'Field `${InsertTable.PRIMARY_KEY_FIELD}` conflicts with reserved `SqliteModel` getter.',
@@ -54,7 +62,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
     // DateTime
     if (checker.isDateTime) {
-      if (checker.isNullable) {
+      if (isNullable) {
         return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
       }
       return 'DateTime.parse($fieldValue$defaultValue as String)';
@@ -73,6 +81,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       final argType = checker.unFuturedArgType;
       final castIterable = SerdesGenerator.iterableCast(
         argType,
+        isNullable,
         isSet: checker.isSet,
         isList: checker.isList,
         isFuture: checker.isArgTypeAFuture,
@@ -94,7 +103,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
             .then((results) {
               final ids = results.map((r) => r['${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}']);
               return Future.wait<$argType>(
-                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${getAssociationMethod(argType, query: query)})
+                ids.map((${InsertTable.PRIMARY_KEY_FIELD}) $awaited ${getAssociationMethod(argType, isNullable, query: query)})
               );
             })
         ''';
@@ -147,15 +156,15 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       ''';
 
       if (wrappedInFuture) {
-        if (checker.isNullable) {
+        if (isNullable) {
           return '''($fieldValue > -1
-              ? ${getAssociationMethod(checker.unFuturedType, query: query)}
+              ? ${getAssociationMethod(checker.unFuturedType, isNullable, query: query)}
               : null)''';
         }
-        return getAssociationMethod(checker.unFuturedType, query: query);
+        return getAssociationMethod(checker.unFuturedType, isNullable, query: query);
       }
 
-      if (checker.isNullable) {
+      if (isNullable) {
         return '''($fieldValue > -1
               ? (await repository$repositoryOperator.getAssociation<${SharedChecker.withoutNullability(checker.unFuturedType)}>($query))?.first
               : null)''';
@@ -164,7 +173,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
-      if (checker.isNullable) {
+      if (isNullable) {
         return '($fieldValue > -1 ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null)$defaultValue';
       }
       return '${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int]';

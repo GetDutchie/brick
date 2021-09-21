@@ -40,9 +40,7 @@ class RestDeserialize extends RestSerdesGenerator {
     final defaultConstructorParameter =
         defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
 
-    final isNullable =
-        defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none ||
-            checker.isNullable;
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
     final nullableSuffix = isNullable ? '' : '!';
 
     if (fieldAnnotation.ignoreFrom) return null;
@@ -64,6 +62,7 @@ class RestDeserialize extends RestSerdesGenerator {
       final argTypeChecker = checkerForType(checker.argType);
       final castIterable = SerdesGenerator.iterableCast(
         argType,
+        isNullable,
         isSet: checker.isSet,
         isList: checker.isList,
         isFuture: wrappedInFuture || checker.isFuture,
@@ -72,8 +71,14 @@ class RestDeserialize extends RestSerdesGenerator {
 
       // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
-        final fromRestCast = SerdesGenerator.iterableCast(argType,
-            isSet: checker.isSet, isList: checker.isList, isFuture: true, forceCast: true);
+        final fromRestCast = SerdesGenerator.iterableCast(
+          argType,
+          isNullable,
+          isSet: checker.isSet,
+          isList: checker.isList,
+          isFuture: true,
+          forceCast: true,
+        );
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>

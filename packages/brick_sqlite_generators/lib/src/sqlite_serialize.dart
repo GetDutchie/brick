@@ -74,6 +74,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
+
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
         'Field named `${InsertTable.PRIMARY_KEY_COLUMN}` conflicts with primary key',
@@ -88,12 +95,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     // DateTime
     if (checker.isDateTime) {
-      final nullableSuffix = checker.isNullable ? '?' : '';
+      final nullableSuffix = isNullable ? '?' : '';
       return '$fieldValue$nullableSuffix.toIso8601String()';
 
       // bool
     } else if (checker.isBool) {
-      return _boolForField(fieldValue, checker.isNullable);
+      return _boolForField(fieldValue, isNullable);
 
       // double, int, num, String
     } else if (checker.isDartCoreType) {
@@ -105,8 +112,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        final nullablePrefix = checker.isNullable ? '?' : '';
-        final nullableDefault = checker.isNullable ? ' ?? []' : '';
+        final nullablePrefix = isNullable ? '?' : '';
+        final nullableDefault = isNullable ? ' ?? []' : '';
         return '''
           jsonEncode($fieldValue$nullablePrefix.map((s) =>
             ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)
@@ -145,7 +152,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      final nullabilitySuffix = checker.isUnFuturedTypeNullable || checker.isNullable ? '!' : '';
+      final nullabilitySuffix = checker.isUnFuturedTypeNullable || isNullable ? '!' : '';
       final upsertMethod = '''
         $instance$nullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD} ??
         await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedType)}>(
@@ -160,7 +167,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // enum
     } else if (checker.isEnum) {
-      if (checker.isNullable) {
+      if (isNullable) {
         return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }
 
@@ -168,7 +175,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Map
     } else if (checker.isMap) {
-      final nullableSuffix = checker.isNullable ? ' ?? {}' : '';
+      final nullableSuffix = isNullable ? ' ?? {}' : '';
       return 'jsonEncode($fieldValue$nullableSuffix)';
     }
 
@@ -221,6 +228,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     var checker = checkerForType(field.type);
     final fieldValue = serdesValueForField(field, annotation.name!, checker: checker);
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     final wrappedInFuture = checker.isFuture;
     if (wrappedInFuture) {
       checker = checkerForType(checker.argType);
@@ -257,8 +270,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
             checker.unFuturedArgType.nullabilitySuffix != NullabilitySuffix.none,
           )
         : '';
-    final nullabilitySuffix = checker.isNullable ? '?' : '';
-    final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
+    final nullabilitySuffix = isNullable ? '?' : '';
+    final nullabilityDefault = isNullable ? ' ?? []' : '';
 
     return '''
       if (instance.${InsertTable.PRIMARY_KEY_FIELD} != null) {

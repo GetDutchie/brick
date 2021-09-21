@@ -177,10 +177,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   String getAssociationMethod(
-    DartType argType, {
+    DartType argType,
+    bool isNullable, {
     required String query,
   }) {
-    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
     var repositoryOperator = isNullable ? '?' : '!';
     if (repositoryHasBeenForceCast) repositoryOperator = '';
 
@@ -226,6 +226,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   }
 
   /// Injected between the field member in the constructor and the contents
+  /// TODO: remove in future version due to deprecation of nullable annotation.
   String deserializerNullableClause({
     required FieldElement field,
     required _FieldAnnotation fieldAnnotation,
@@ -354,13 +355,14 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
   /// Cast mapped values to their desired output value
   static String iterableCast(
-    DartType argType, {
+    DartType argType,
+    bool isNullable, {
     bool isSet = false,
     bool isList = false,
     bool isFuture = false,
     bool forceCast = false,
   }) {
-    final nullableSuffix = argType.nullabilitySuffix != NullabilitySuffix.none ? '?' : '';
+    final nullableSuffix = isNullable ? '?' : '';
     var castStatement = nullableSuffix;
     if (isSet || isList) {
       final method = isSet ? 'Set' : 'List';

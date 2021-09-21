@@ -28,11 +28,17 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
   @override
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+
     if (fieldAnnotation.ignoreTo) return null;
 
     // DateTime
     if (checker.isDateTime) {
-      final nullabilitySuffix = checker.isNullable ? '?' : '';
+      final nullabilitySuffix = isNullable ? '?' : '';
       return '$fieldValue$nullabilitySuffix.toIso8601String()';
 
       // bool, double, int, num, String, Map, Iterable, enum
@@ -45,7 +51,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        final nullabilitySuffix = isNullable ? '?' : '';
         if (fieldAnnotation.enumAsString) {
           return "$fieldValue$nullabilitySuffix.map((e) => e.toString().split('.').last).toList()";
         } else {
@@ -57,8 +63,8 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       if (checker.isArgTypeASibling) {
         final awaited = checker.isArgTypeAFuture ? 'async' : '';
         final awaitedValue = checker.isArgTypeAFuture ? '(await s)' : 's';
-        final nullabilitySuffix = checker.isNullable ? '?' : '';
-        final nullabilityDefault = checker.isNullable ? ' ?? []' : '';
+        final nullabilitySuffix = isNullable ? '?' : '';
+        final nullabilityDefault = isNullable ? ' ?? []' : '';
         return '''await Future.wait<Map<String, dynamic>>(
           $fieldValue$nullabilitySuffix.map((s) $awaited =>
             ${SharedChecker.withoutNullability(checker.unFuturedArgType)}Adapter().toRest($awaitedValue, provider: provider, repository: repository)
@@ -83,10 +89,10 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        final nullabilitySuffix = isNullable ? '?' : '';
         return "$fieldValue$nullabilitySuffix.toString().split('.').last";
       } else {
-        if (checker.isNullable) {
+        if (isNullable) {
           return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
         }
         return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
