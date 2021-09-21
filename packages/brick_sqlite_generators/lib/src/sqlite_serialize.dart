@@ -75,11 +75,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
       throw InvalidGenerationSourceError(
@@ -230,11 +226,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     var checker = checkerForType(field.type);
     final fieldValue = serdesValueForField(field, annotation.name!, checker: checker);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     final wrappedInFuture = checker.isFuture;
     if (wrappedInFuture) {

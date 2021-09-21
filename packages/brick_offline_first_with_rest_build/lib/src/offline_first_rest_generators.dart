@@ -28,12 +28,7 @@ class _OfflineFirstRestSerialize extends RestSerialize<OfflineFirstWithRestModel
 
     if (fieldAnnotation.ignoreTo) return null;
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
-
+    final isNullable = isFieldNullable(element, field);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     if (checker.isIterable) {
@@ -105,11 +100,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     if (fieldAnnotation.ignoreFrom) return null;
 

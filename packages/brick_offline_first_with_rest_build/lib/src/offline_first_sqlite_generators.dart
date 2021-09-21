@@ -20,11 +20,7 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
@@ -68,11 +64,7 @@ class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     // Iterable
     if (checker.isIterable) {

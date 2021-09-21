@@ -125,6 +125,14 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
   SerdesGenerator(this.element, this.fields);
 
+  bool isFieldNullable(ClassElement element, FieldElement field) {
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    return defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+  }
+
   /// Given each field, determine whether it can be added to the serdes function
   /// and, more importantly, determine how it should be added. If the field should not
   /// be added, return `null`.

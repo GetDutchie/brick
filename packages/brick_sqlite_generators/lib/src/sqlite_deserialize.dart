@@ -42,11 +42,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
       throw InvalidGenerationSourceError(

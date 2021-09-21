@@ -28,11 +28,7 @@ class RestSerialize<_Model extends RestModel> extends RestSerdesGenerator<_Model
   @override
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
-    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
-    final defaultConstructorParameter =
-        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
-
-    final isNullable = defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = isFieldNullable(element, field);
 
     if (fieldAnnotation.ignoreTo) return null;
 
