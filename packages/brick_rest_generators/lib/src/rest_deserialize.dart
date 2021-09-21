@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serdes_generator.dart';
@@ -35,11 +36,20 @@ class RestDeserialize extends RestSerdesGenerator {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
+    final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
+
+    final isNullable =
+        defaultConstructorParameter.type.nullabilitySuffix != NullabilitySuffix.none ||
+            checker.isNullable;
+    final nullableSuffix = isNullable ? '' : '!';
+
     if (fieldAnnotation.ignoreFrom) return null;
 
     // DateTime
     if (checker.isDateTime) {
-      if (checker.isNullable) {
+      if (isNullable) {
         return '$fieldValue == null ? null : DateTime.tryParse($fieldValue$defaultValue as String)';
       }
       return 'DateTime.parse($fieldValue$defaultValue as String)';
@@ -87,7 +97,6 @@ class RestDeserialize extends RestSerdesGenerator {
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         if (fieldAnnotation.enumAsString) {
-          final nullableSuffix = argTypeChecker.isNullable ? '' : '!';
           return '''$fieldValue.map(
             (value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)$nullableSuffix
           )$castIterable$defaultValue
@@ -123,10 +132,9 @@ class RestDeserialize extends RestSerdesGenerator {
       // enum
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
-        final nullableSuffix = checker.isNullable ? '' : '!';
         return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$nullableSuffix$defaultValue';
       } else {
-        if (checker.isNullable) {
+        if (isNullable) {
           return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
         }
         return '${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int]';
