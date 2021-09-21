@@ -109,6 +109,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Iterable
     } else if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
+      final argTypeCheckerConstructor = checkerForType(defaultConstructorParameter.type);
+      final isNullable = argTypeCheckerConstructor.isNullable;
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
@@ -146,7 +148,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<DateTime>, Iterable<double>, Iterable<int>, Iterable<num>, Iterable<String>, Iterable<Map>
       if (argTypeChecker.isDartCoreType || argTypeChecker.isMap) {
-        final nullableSuffix = argTypeChecker.isNullable ? ' ?? []' : '';
+        final nullableSuffix = isNullable ? ' ?? []' : '';
         return 'jsonEncode($fieldValue$nullableSuffix)';
       }
       // SqliteModel, Future<SqliteModel>
