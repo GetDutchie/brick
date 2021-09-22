@@ -46,7 +46,7 @@ class RestDeserialize extends RestSerdesGenerator {
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return '$fieldValue as ${field.type}$defaultValue';
+      return '$fieldValue as ${checker.targetType}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {

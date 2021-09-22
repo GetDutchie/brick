@@ -96,7 +96,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   @override
   String coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
-    return '$fieldValue as ${field.type}';
+    return '$fieldValue as ${checker.targetType}';
   }
 }
 

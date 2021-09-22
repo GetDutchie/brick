@@ -199,7 +199,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
   /// Return a `SharedChecker` for a type via field.
   SharedChecker checkerForField(FieldElement field) {
-    final defaultConstructor = element.constructors.firstWhereOrNull((e) => e.isDefaultConstructor);
+    final defaultConstructor =
+        element.constructors.firstWhereOrNull((e) => (!e.isFactory && e.name.isEmpty));
     final defaultConstructorParameter =
         defaultConstructor?.parameters.firstWhereOrNull((e) => e.name == field.name);
     return checkerForType(defaultConstructorParameter?.type ?? field.type);

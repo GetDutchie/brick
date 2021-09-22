@@ -15,7 +15,9 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('Nullable', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('name', Column.varchar, nullable: false)
+    SchemaColumn('name', Column.varchar, nullable: false),
+    SchemaColumn('constructor_field_nullability_mismatch', Column.varchar),
+    SchemaColumn('constructor_field_type_mismatch', Column.varchar)
   }, indices: <SchemaIndex>{})
 });
 ''';
@@ -29,5 +31,14 @@ class Nullable {
   @Sqlite(nullable: false)
   final String? name;
 
-  Nullable({this.name});
+  final String constructorFieldNullabilityMismatch;
+
+  final String constructorFieldTypeMismatch;
+
+  Nullable({
+    String? constructorFieldNullabilityMismatch,
+    required bool constructorFieldTypeMismatch,
+    this.name,
+  })  : constructorFieldNullabilityMismatch = constructorFieldNullabilityMismatch ?? 'default',
+        constructorFieldTypeMismatch = constructorFieldTypeMismatch ? 'true' : 'false';
 }
