@@ -4,6 +4,7 @@ import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
+import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
@@ -137,7 +138,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     var wrappedInFuture = false;
 
     final futureChecker = SharedChecker(field.type);
-    var checker = checkerForType(field.type);
+    var checker = checkerForField(field);
     if (futureChecker.isFuture) {
       wrappedInFuture = true;
       checker = checkerForType(futureChecker.argType);
@@ -195,6 +196,14 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Return a `SharedChecker` for a type.
   /// If including a custom checker in your domain, overwrite this field
   SharedChecker checkerForType(DartType type) => SharedChecker(type);
+
+  /// Return a `SharedChecker` for a type via field.
+  SharedChecker checkerForField(FieldElement field) {
+    final defaultConstructor = element.constructors.firstWhereOrNull((e) => e.isDefaultConstructor);
+    final defaultConstructorParameter =
+        defaultConstructor?.parameters.firstWhereOrNull((e) => e.name == field.name);
+    return checkerForType(defaultConstructorParameter?.type ?? field.type);
+  }
 
   /// Produces serializing or deserializing method given a field and checker.
   ///
