@@ -105,6 +105,10 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Iterable
     } else if (checker.isIterable) {
       final argTypeChecker = checkerForType(checker.argType);
+
+      final defaultConstructor = element.constructors.firstWhere((e) => e.isDefaultConstructor);
+      final defaultConstructorParameter =
+          defaultConstructor.parameters.firstWhere((e) => e.name == field.name);
       final argTypeCheckerConstructor = checkerForType(defaultConstructorParameter.type);
       final isNullable = argTypeCheckerConstructor.isNullable;
 
