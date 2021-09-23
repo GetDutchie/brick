@@ -6,8 +6,10 @@ final output = r'''
 import 'package:brick_sqlite_abstract/db.dart';
 // ignore: unused_import
 import 'package:brick_sqlite_abstract/db.dart' show Migratable;
+
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{};
+
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('Nullable', columns: <SchemaColumn>{
