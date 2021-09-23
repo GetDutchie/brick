@@ -23,6 +23,16 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
     required this.repositoryName,
   }) : super(element, fields);
 
+  /// External models, such as REST or I/O, pull type inference data from class constructors.
+  /// This is to allow for class constructors to process potentially nullable data
+  /// into non-nullable data by assigning a default at initialization, or to allow a class
+  /// to process one type into another at construction (eg String myString -> Foo(myString)).
+  /// Sqlite data, however, is always serialized from dart -- as a result, we don't care about
+  /// mismatches between the constructor and member fields, and will always use the type defined
+  /// by the class member.
+  @override
+  SharedChecker checkerForField(FieldElement field) => checkerForType(field.type);
+
   /// Generate foreign key column if the type is a sibling;
   /// otherwise, return the field's annotated name;
   @override
