@@ -197,7 +197,19 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// If including a custom checker in your domain, overwrite this field
   SharedChecker checkerForType(DartType type) => SharedChecker(type);
 
-  /// Return a `SharedChecker` for a type via field.
+  /// Return a `SharedChecker` for a type via the corresponding parameter in the constructor.
+  ///
+  /// This is necessary to support behavior where type definitions (particularly nullability)
+  /// in a class member definition might not match that of the constructor. In this instance,
+  /// we want to infere type from the constructor, not the field. This requires the class member
+  /// name to match the parameter name in the constructor.
+  ///
+  /// Ex:
+  /// class MyClass {
+  /// final String field;
+  ///
+  /// MyClass({String? field}): field = field ?? 'default;
+  /// }
   SharedChecker checkerForField(FieldElement field) {
     final defaultConstructor =
         element.constructors.firstWhereOrNull((e) => (!e.isFactory && e.name.isEmpty));
