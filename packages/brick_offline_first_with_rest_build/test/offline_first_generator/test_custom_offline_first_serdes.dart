@@ -66,9 +66,12 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
 
 @ConnectOfflineFirstWithRest()
 class CustomOfflineFirstSerdes {
-  CustomOfflineFirstSerdes({this.string, this.strings});
+  CustomOfflineFirstSerdes({this.string, this.strings, bool? constructorFieldNullabilityMismatch})
+      : constructorFieldNullabilityMismatch = constructorFieldNullabilityMismatch ?? false;
 
   final Serializable? string;
+
+  final bool constructorFieldNullabilityMismatch;
 
   final List<Serializable>? strings;
 }
