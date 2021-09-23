@@ -65,7 +65,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // double, int, String
     } else if (checker.isDartCoreType) {
-      return '$fieldValue as ${checker.targetType}$defaultValue';
+      return '$fieldValue as ${field.type}$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {

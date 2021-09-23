@@ -208,7 +208,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// class MyClass {
   /// final String field;
   ///
-  /// MyClass({String? field}): field = field ?? 'default;
+  /// MyClass({String? field}): field = field ?? 'default';
   /// }
   SharedChecker checkerForField(FieldElement field) {
     final defaultConstructor =

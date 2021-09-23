@@ -8,6 +8,8 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromRest(
     OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
       string: Serializable.fromRest(data['string']),
+      constructorFieldNullabilityMismatch:
+          data['constructor_field_nullability_mismatch'] as bool?,
       strings: data['strings']
           ?.map((c) => Serializable.fromRest(c as Map<String, dynamic>))
           .toList()
@@ -20,6 +22,8 @@ Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToRest(
     OfflineFirstRepository? repository}) async {
   return {
     'string': instance.string?.toRest(),
+    'constructor_field_nullability_mismatch':
+        instance.constructorFieldNullabilityMismatch,
     'strings': instance.strings?.map((Serializable c) => c.toRest()).toList()
   };
 }
@@ -32,6 +36,8 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
       string: data['string'] == null
           ? null
           : Serializable.fromSqlite(data['string'] as int),
+      constructorFieldNullabilityMismatch:
+          data['constructor_field_nullability_mismatch'] == 1,
       strings: data['strings'] == null
           ? null
           : jsonDecode(data['strings'])
@@ -45,7 +51,10 @@ Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToSqlite(
     CustomOfflineFirstSerdes instance,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return {};
+  return {
+    'constructor_field_nullability_mismatch':
+        instance.constructorFieldNullabilityMismatch ? 1 : 0
+  };
 }
 ''';
 
