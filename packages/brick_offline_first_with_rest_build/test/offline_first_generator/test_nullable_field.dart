@@ -44,7 +44,7 @@ Future<NullableField> _$NullableFieldFromSqlite(Map<String, dynamic> data,
       constructorFieldNullabilityMismatch:
           data['constructor_field_nullability_mismatch'] as String,
       constructorFieldTypeMismatch:
-          data['constructor_field_type_mismatch'] == 1)
+          data['constructor_field_type_mismatch'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -59,8 +59,7 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
     'sqlite_true': instance.sqliteTrue,
     'constructor_field_nullability_mismatch':
         instance.constructorFieldNullabilityMismatch,
-    'constructor_field_type_mismatch':
-        instance.constructorFieldTypeMismatch ? 1 : 0
+    'constructor_field_type_mismatch': instance.constructorFieldTypeMismatch
   };
 }
 ''';

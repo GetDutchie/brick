@@ -10,7 +10,7 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return Futures(
-      string: data['string'] as Future<String>?,
+      string: data['string'] as Future<String>,
       strings: data['strings'].toList().cast<Future<String>>() ?? <String>[],
       futureStrings:
           data['future_strings'].toList().cast<String>() ?? <Future<String>>[],
@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,
     'string': instance.string,
     'strings': instance.strings,
     'future_strings': instance.futureStrings,
-    'assoc': await AssocAdapter().toRest((await instance.assoc)!,
+    'assoc': await AssocAdapter().toRest((await instance.assoc),
         provider: provider, repository: repository),
     'assocs': await Future.wait<Map<String, dynamic>>(instance.assocs
         .map((s) => AssocAdapter()
@@ -55,36 +55,29 @@ Future<Futures> _$FuturesFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
   return Futures(
-      string: data['string'] == null ? null : data['string'] as Future<String>?,
-      strings: data['strings'] == null
-          ? null
-          : jsonDecode(data['strings']).toList().cast<String>(),
+      string: data['string'] as Future<String>,
+      strings: jsonDecode(data['strings']).toList().cast<String>(),
       futureStrings: data['future_strings'] == null
           ? null
           : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
-      assoc: data['assoc_Assoc_brick_id'] == null
-          ? null
-          : repository
-              .getAssociation<Assoc>(
-                Query.where('primaryKey', data['assoc_Assoc_brick_id'] as int,
-                    limit1: true),
-              )
-              .then((r) => r!.first),
-      assocs: data['assocs'] == null
-          ? null
-          : provider.rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
-              [
-                  data['_brick_id'] as int
-                ]).then((results) {
-              final ids = results.map((r) => r['f_Assoc_brick_id']);
-              return Future.wait<Assoc>(
-                  ids.map((primaryKey) async => await repository
-                      .getAssociation<Assoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first)));
-            }),
+      assoc: repository
+          .getAssociation<Assoc>(
+            Query.where('primaryKey', data['assoc_Assoc_brick_id'] as int,
+                limit1: true),
+          )
+          .then((r) => r!.first),
+      assocs: provider.rawQuery(
+          'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_assocs` WHERE l_Futures_brick_id = ?',
+          [
+            data['_brick_id'] as int
+          ]).then((results) {
+        final ids = results.map((r) => r['f_Assoc_brick_id']);
+        return Future.wait<Assoc>(ids.map((primaryKey) async => await repository
+            .getAssociation<Assoc>(
+              Query.where('primaryKey', primaryKey, limit1: true),
+            )
+            .then((r) => r!.first)));
+      }),
       futureAssocs: await provider.rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE l_Futures_brick_id = ?',
           [data['_brick_id'] as int]).then((results) {
@@ -216,23 +209,23 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
 @ConnectOfflineFirstWithRest()
 class Futures extends OfflineFirstModel {
   Futures({
-    this.string,
-    this.strings,
+    required this.string,
+    required this.strings,
     this.futureStrings,
-    this.assoc,
-    this.assocs,
+    required this.assoc,
+    required this.assocs,
     this.futureAssocs,
   });
 
-  final Future<String>? string;
+  final Future<String> string;
 
-  final Future<List<String>>? strings;
+  final Future<List<String>> strings;
 
   final List<Future<String>>? futureStrings;
 
-  final Future<Assoc>? assoc;
+  final Future<Assoc> assoc;
 
-  final Future<List<Assoc>>? assocs;
+  final Future<List<Assoc>> assocs;
 
   final List<Future<Assoc>>? futureAssocs;
 }
