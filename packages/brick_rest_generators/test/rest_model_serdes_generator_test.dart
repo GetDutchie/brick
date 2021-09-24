@@ -33,7 +33,7 @@ void main() {
             'unserializable_field_with_generator', unserializable_field_with_generator.output);
       });
 
-      test('constructor_member_field_mismatch', () async {
+      test('RestConstructorMemberFieldMismatch', () async {
         await generateExpectation(
             'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
       });

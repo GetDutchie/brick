@@ -205,11 +205,13 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// name to match the parameter name in the constructor.
   ///
   /// Ex:
-  /// class MyClass {
-  /// final String field;
+  /// ```dart
+  ///   class MyClass {
+  ///     final String field;
   ///
-  /// MyClass({String? field}): field = field ?? 'default';
-  /// }
+  ///     MyClass({String? field}): field = field ?? 'default';
+  ///   }
+  /// ```
   SharedChecker checkerForField(FieldElement field) {
     final defaultConstructor =
         element.constructors.firstWhereOrNull((e) => (!e.isFactory && e.name.isEmpty));
