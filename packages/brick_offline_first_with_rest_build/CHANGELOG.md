@@ -1,8 +1,9 @@
 ## Unreleased
 
 ## 1.1.2
-* Enforce constructor preference over field definition for type inference in adapter generation.
-* Remove support for nullable futures as the outer-most type (eg brick now reads `Future<String?>?` as `Future<String?>`, but `List<Future<String?>?>?` remains valid).
+
+* Prefer constructor field type (including nullability) over field definition for type inference in adapter generation.
+* **BREAKING CHANGE**: Remove support for nullable futures as the outer-most type (eg brick now reads `Future<String?>?` as `Future<String?>`, but `List<Future<String?>?>?` remains valid).
 * Bump `brick_build`
 
 ## 1.1.1

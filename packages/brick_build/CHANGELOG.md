@@ -2,7 +2,7 @@
 
 ## 1.2.2
 
-* Add `checkForField` method to enforce constructor preference over field definition for type inference in adapter generation. This affects all models *except* for SQLite.
+* Add `checkForField` method to enforce constructor preference over field definition for type inference in adapter generation.
 
 ## 1.2.1
 
