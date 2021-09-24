@@ -49,7 +49,7 @@ class RestDeserialize extends RestSerdesGenerator {
     } else if (checker.isDartCoreType) {
       final wrappedCheckerType =
           wrappedInFuture ? 'Future<${checker.targetType}>' : '${checker.targetType}';
-      return '$fieldValue as ${wrappedCheckerType}$defaultValue';
+      return '$fieldValue as $wrappedCheckerType$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
