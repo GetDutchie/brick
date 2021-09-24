@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serdes_generator.dart';
@@ -46,7 +47,9 @@ class RestDeserialize extends RestSerdesGenerator {
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return '$fieldValue as ${field.type}$defaultValue';
+      final wrappedCheckerType =
+          wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();
+      return '$fieldValue as $wrappedCheckerType$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {

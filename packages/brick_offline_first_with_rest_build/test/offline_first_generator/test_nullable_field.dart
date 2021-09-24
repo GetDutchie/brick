@@ -7,12 +7,14 @@ Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return NullableField(
       restFalse: data['rest_false'] as String?,
-      nullableRestTrue: data['nullable_rest_true'] == null
-          ? null
-          : data['nullable_rest_true'] as String?,
+      nullableRestTrue: data['nullable_rest_true'] as String?,
       restTrue: data['rest_true'] as String,
       sqliteFalse: data['sqlite_false'] as String?,
-      sqliteTrue: data['sqlite_true'] as String?);
+      sqliteTrue: data['sqlite_true'] as String?,
+      constructorFieldNullabilityMismatch:
+          data['constructor_field_nullability_mismatch'] as String?,
+      constructorFieldTypeMismatch:
+          data['constructor_field_type_mismatch'] as bool);
 }
 
 Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
@@ -23,7 +25,10 @@ Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
     'nullable_rest_true': instance.nullableRestTrue,
     'rest_true': instance.restTrue,
     'sqlite_false': instance.sqliteFalse,
-    'sqlite_true': instance.sqliteTrue
+    'sqlite_true': instance.sqliteTrue,
+    'constructor_field_nullability_mismatch':
+        instance.constructorFieldNullabilityMismatch,
+    'constructor_field_type_mismatch': instance.constructorFieldTypeMismatch
   };
 }
 
@@ -35,8 +40,11 @@ Future<NullableField> _$NullableFieldFromSqlite(Map<String, dynamic> data,
       nullableRestTrue: data['nullable_rest_true'] as String?,
       restTrue: data['rest_true'] as String,
       sqliteFalse: data['sqlite_false'] as String?,
-      sqliteTrue:
-          data['sqlite_true'] == null ? null : data['sqlite_true'] as String?)
+      sqliteTrue: data['sqlite_true'] as String?,
+      constructorFieldNullabilityMismatch:
+          data['constructor_field_nullability_mismatch'] as String,
+      constructorFieldTypeMismatch:
+          data['constructor_field_type_mismatch'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -48,7 +56,10 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
     'nullable_rest_true': instance.nullableRestTrue,
     'rest_true': instance.restTrue,
     'sqlite_false': instance.sqliteFalse,
-    'sqlite_true': instance.sqliteTrue
+    'sqlite_true': instance.sqliteTrue,
+    'constructor_field_nullability_mismatch':
+        instance.constructorFieldNullabilityMismatch,
+    'constructor_field_type_mismatch': instance.constructorFieldTypeMismatch
   };
 }
 ''';
@@ -59,25 +70,27 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
 )
 class NullableField {
   NullableField({
+    String? constructorFieldNullabilityMismatch,
+    required bool constructorFieldTypeMismatch,
     this.restFalse,
     this.nullableRestTrue,
     required this.restTrue,
     this.sqliteFalse,
     this.sqliteTrue,
-  });
+  })  : constructorFieldNullabilityMismatch = constructorFieldNullabilityMismatch ?? 'default',
+        constructorFieldTypeMismatch = constructorFieldTypeMismatch ? 'true' : 'false';
 
-  @Rest(nullable: false)
   final String? restFalse;
 
-  @Rest(nullable: true)
   final String? nullableRestTrue;
 
-  @Rest(nullable: true)
   final String restTrue;
 
-  @Sqlite(nullable: false)
   final String? sqliteFalse;
 
-  @Sqlite(nullable: true)
   final String? sqliteTrue;
+
+  final String constructorFieldNullabilityMismatch;
+
+  final String constructorFieldTypeMismatch;
 }

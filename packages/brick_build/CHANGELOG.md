@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.2
+
+* Add `checkForField` method to enforce constructor preference over field definition for type inference in adapter generation.
+
 ## 1.2.1
 
 * Remove `// ignore_for_file: prefer_null_aware_operators`

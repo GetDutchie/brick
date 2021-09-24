@@ -10,6 +10,8 @@ import 'rest_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
 import 'rest_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 import 'rest_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
+import 'rest_model_serdes_generator/test_constructor_member_field_mismatch.dart'
+    as constructor_member_field_mismatch;
 
 final _generator = TestGenerator();
 final folder = 'rest_model_serdes_generator';
@@ -29,6 +31,11 @@ void main() {
       test('fromGenerator toGenerator', () async {
         await generateExpectation(
             'unserializable_field_with_generator', unserializable_field_with_generator.output);
+      });
+
+      test('RestConstructorMemberFieldMismatch', () async {
+        await generateExpectation(
+            'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
       });
     });
   });

@@ -25,7 +25,9 @@ class FileDeserialize extends FileSerdesGenerator {
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      return '$fieldValue as ${field.type}$defaultValue';
+      final wrappedCheckerType =
+          wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();
+      return '$fieldValue as $wrappedCheckerType$defaultValue';
 
       // Iterable
     } else if (checker.isIterable) {
