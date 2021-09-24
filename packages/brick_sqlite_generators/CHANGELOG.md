@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.3
+* Bump `brick_build`
+* Explicitely override `checkerForField` function in order to have sqlite maintain member field typing as it's source of truth over the constructor.
+
 ## 1.1.2
 
 * Always cast when using `toList` and deserializing
