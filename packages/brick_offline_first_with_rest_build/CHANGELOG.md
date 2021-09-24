@@ -4,6 +4,7 @@
 * Enforce constructor preference over field definition for type inference in adapter generation.
 * Remove support for nullable futures as the outer-most type (eg brick now reads `Future<String?>?` as `Future<String?>`, but `List<Future<String?>?>?` remains valid).
 * Bump `brick_build`
+
 ## 1.1.1
 
 * Always cast when deserializing `OfflineFirstSerdes` from SQLite
