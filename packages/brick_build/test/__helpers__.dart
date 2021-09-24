@@ -97,7 +97,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   String coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final wrappedCheckerType =
-        wrappedInFuture ? 'Future<${checker.targetType}>' : '${checker.targetType}';
+        wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();
     return '$fieldValue as $wrappedCheckerType';
   }
 }

@@ -48,7 +48,7 @@ class RestDeserialize extends RestSerdesGenerator {
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
       final wrappedCheckerType =
-          wrappedInFuture ? 'Future<${checker.targetType}>' : '${checker.targetType}';
+          wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();
       return '$fieldValue as $wrappedCheckerType$defaultValue';
 
       // Iterable
