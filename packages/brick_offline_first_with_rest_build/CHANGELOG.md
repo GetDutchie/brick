@@ -1,7 +1,9 @@
 ## Unreleased
 
 ## 1.1.3
+
 * Bump `brick_sqlite_generators`
+
 ## 1.1.2
 
 * Prefer constructor field type (including nullability) over field definition for type inference in adapter generation.
