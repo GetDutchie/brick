@@ -7,7 +7,13 @@ Future<RestConstructorMemberFieldMismatch>
         RestFirstRepository? repository}) async {
   return RestConstructorMemberFieldMismatch(
       nullableConstructor: data['nullable_constructor'] as String?,
-      nonNullableConstructor: data['non_nullable_constructor'] as String);
+      nonNullableConstructor: data['non_nullable_constructor'] as String,
+      someField: await Future.wait<Assoc>(data['some_field']
+              ?.map((d) => AssocAdapter()
+                  .fromRest(d, provider: provider, repository: repository))
+              .toList()
+              .cast<Future<Assoc>>() ??
+          []));
 }
 
 Future<Map<String, dynamic>> _$RestConstructorMemberFieldMismatchToRest(
@@ -16,7 +22,11 @@ Future<Map<String, dynamic>> _$RestConstructorMemberFieldMismatchToRest(
     RestFirstRepository? repository}) async {
   return {
     'nullable_constructor': instance.nullableConstructor,
-    'non_nullable_constructor': instance.nonNullableConstructor
+    'non_nullable_constructor': instance.nonNullableConstructor,
+    'some_field': await Future.wait<Map<String, dynamic>>(instance.someField
+        .map((s) => AssocAdapter()
+            .toRest(s, provider: provider, repository: repository))
+        .toList())
   };
 }
 ''';
@@ -31,7 +41,18 @@ class RestConstructorMemberFieldMismatch extends RestModel {
   final String nullableConstructor;
   final String nonNullableConstructor;
 
-  RestConstructorMemberFieldMismatch(
-      {String? nullableConstructor, required this.nonNullableConstructor})
-      : nullableConstructor = nullableConstructor ?? 'default';
+  final List<Assoc> someField;
+
+  RestConstructorMemberFieldMismatch({
+    String? nullableConstructor,
+    required this.nonNullableConstructor,
+    List<Assoc>? someField,
+  })  : nullableConstructor = nullableConstructor ?? 'default',
+        someField = someField ?? <Assoc>[];
+}
+
+class Assoc extends RestModel {
+  final String someField;
+
+  Assoc(this.someField);
 }

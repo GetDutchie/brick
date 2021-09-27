@@ -202,7 +202,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// This is necessary to support behavior where type definitions (particularly nullability)
   /// in a class member definition might not match that of the constructor. In this instance,
   /// we want to infere type from the constructor, not the field. This requires the class member
-  /// name to match the parameter name in the constructor.
+  /// name to match the parameter name in the constructor. We only want to apply this logic to
+  /// deserialization, so serialization will always respect the type of the member field.
   ///
   /// Ex:
   /// ```dart
@@ -213,6 +214,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   ///   }
   /// ```
   SharedChecker checkerForField(FieldElement field) {
+    if (!doesDeserialize) return checkerForType(field.type);
     final defaultConstructor =
         element.constructors.firstWhereOrNull((e) => (!e.isFactory && e.name.isEmpty));
     final defaultConstructorParameter =
