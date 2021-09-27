@@ -36,8 +36,9 @@ class ModelDictionaryBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotat
     final modelDictionaryOutput = modelDictionaryGenerator.generate(classNamesByFileNames);
     allImports.removeAll(["import 'dart:convert';", 'import "dart:convert";']);
     allImports.removeAll(expectedImportRemovals);
-    final analyzedImports =
-        allImports.map((i) => '// ignore: unused_import, unused_shown_name\n$i').join('\n');
+    final analyzedImports = allImports
+        .map((i) => '// ignore: unused_import, unused_shown_name, unnecessary_import\n$i')
+        .join('\n');
     final output = analyzedImports + modelDictionaryOutput;
 
     await manuallyUpsertAppFile('brick.g.dart', output);
