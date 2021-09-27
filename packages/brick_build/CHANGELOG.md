@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.3
+
+* Override `checkForField` method for serialization to prevent unnecessary null checks triggering flutter lint.
+
 ## 1.2.2
 
 * Add `checkForField` method to enforce constructor preference over field definition for type inference in adapter generation.
