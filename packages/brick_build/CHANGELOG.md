@@ -1,8 +1,8 @@
 ## Unreleased
 
-## 1.2.3
+## 1.2.2+1
 
-* Override `checkForField` method for serialization to prevent unnecessary null checks triggering flutter lint.
+* Access `checkForField` by default only when deserializing for fields instead of constructor overrides
 
 ## 1.2.2
 
