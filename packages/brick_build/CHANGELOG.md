@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.2+1
+
+* Access `checkForField` by default only when deserializing for fields instead of constructor overrides
+
 ## 1.2.2
 
 * Add `checkForField` method to enforce constructor preference over field definition for type inference in adapter generation.

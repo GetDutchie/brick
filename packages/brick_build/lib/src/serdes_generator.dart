@@ -4,7 +4,6 @@ import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
-import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
@@ -202,7 +201,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// This is necessary to support behavior where type definitions (particularly nullability)
   /// in a class member definition might not match that of the constructor. In this instance,
   /// we want to infere type from the constructor, not the field. This requires the class member
-  /// name to match the parameter name in the constructor.
+  /// name to match the parameter name in the constructor. We only want to apply this logic to
+  /// deserialization, so serialization will always respect the type of the member field.
   ///
   /// Ex:
   /// ```dart
@@ -213,10 +213,13 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   ///   }
   /// ```
   SharedChecker checkerForField(FieldElement field) {
-    final defaultConstructor =
-        element.constructors.firstWhereOrNull((e) => (!e.isFactory && e.name.isEmpty));
-    final defaultConstructorParameter =
-        defaultConstructor?.parameters.firstWhereOrNull((e) => e.name == field.name);
+    if (!doesDeserialize) return checkerForType(field.type);
+    final defaultConstructor = _firstWhereOrNull<ConstructorElement>(
+        element.constructors, (e) => !e.isFactory && e.name.isEmpty);
+    final defaultConstructorParameter = defaultConstructor?.parameters != null
+        ? _firstWhereOrNull<ParameterElement>(
+            defaultConstructor!.parameters, (e) => e.name == field.name)
+        : null;
     return checkerForType(defaultConstructorParameter?.type ?? field.type);
   }
 
@@ -398,4 +401,12 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
     return castStatement;
   }
+}
+
+// from dart:collections, instead of importing a whole package
+T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
+  for (var item in items) {
+    if (test(item)) return item;
+  }
+  return null;
 }
