@@ -178,9 +178,10 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
   String getAssociationMethod(
     DartType argType, {
+    bool forceNullable = false,
     required String query,
   }) {
-    final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
+    final isNullable = forceNullable || argType.nullabilitySuffix != NullabilitySuffix.none;
     var repositoryOperator = isNullable ? '?' : '!';
     if (repositoryHasBeenForceCast) repositoryOperator = '';
 
