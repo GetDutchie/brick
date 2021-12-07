@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.0
+
 * Carry `providerArgs` from query when using `getBatched` (#200)
 * Add Flutter Lints
 
