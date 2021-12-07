@@ -2,7 +2,7 @@ name: Brick Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_build/**"

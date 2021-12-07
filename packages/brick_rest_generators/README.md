@@ -1,4 +1,4 @@
-![brick_rest_generators workflow](https://github.com/greenbits/brick/actions/workflows/brick_rest_generators.yaml/badge.svg)
+![brick_rest_generators workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_rest_generators.yaml/badge.svg)
 
 # Brick Rest Build
 

@@ -14,7 +14,7 @@ Data will inevitably become out of sync between the local and remote providers. 
 
 ### Single Source of Truth
 
-Consider one provider the source of truth and **always** [overwrite data](https://github.com/greenbits/brick/blob/master/packages/brick_offline_first/lib/src/mixins/destructive_local_sync_from_remote_mixin.dart) from one provider to the other(s). While this is the simplest solution, do not ignore its perks: in a distributed system, a single source of truth is sensible architecture.
+Consider one provider the source of truth and **always** [overwrite data](https://github.com/GetDutchie/brick/blob/main/packages/brick_offline_first/lib/src/mixins/destructive_local_sync_from_remote_mixin.dart) from one provider to the other(s). While this is the simplest solution, do not ignore its perks: in a distributed system, a single source of truth is sensible architecture.
 
 ### Custom Hydrate
 

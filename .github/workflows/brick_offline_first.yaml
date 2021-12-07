@@ -2,7 +2,7 @@ name: Brick Offline First
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_offline_first/**"

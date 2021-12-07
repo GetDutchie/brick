@@ -4,7 +4,7 @@ Providers deliver data from a single source as a model. For example, a provider 
 
 A provider is **only accessed from the repository**. Invoking the provider from the application is strongly discouraged; if a custom method or extension is required, the repository should be customized instead of the provider.
 
-To generate code for a custom provider, please see [brick_build](https://github.com/greenbits/brick/tree/master/packages/brick_build#provider).
+To generate code for a custom provider, please see [brick_build](https://github.com/GetDutchie/brick/tree/main/packages/brick_build#provider).
 
 ## Fetching and Mutating Data
 

@@ -1,8 +1,8 @@
-![brick_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_build.yaml/badge.svg)
+![brick_build workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_build.yaml/badge.svg)
 
 # Brick Build
 
-Code generator utilities for [Brick](https://github.com/greenbits/brick) adapters and model dictionaries.
+Code generator utilities for [Brick](https://github.com/GetDutchie/brick) adapters and model dictionaries.
 
 ## Setup
 
@@ -201,7 +201,7 @@ abstract class SqliteModel {
 
 ## Repository
 
-Please review best practice methods described in [Creating a Custom Repository](https://github.com/greenbits/brick#creating-a-custom-repository) before designing an interface. Build libraries should not generate repositories, however, sometimes a domain adds extra configuration that requires extending provider generators (for example, `OfflineFirstSerdes`).
+Please review best practice methods described in [Creating a Custom Repository](https://github.com/GetDutchie/brick#creating-a-custom-repository) before designing an interface. Build libraries should not generate repositories, however, sometimes a domain adds extra configuration that requires extending provider generators (for example, `OfflineFirstSerdes`).
 
 ### Class-level Configuration
 

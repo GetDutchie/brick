@@ -2,7 +2,7 @@ name: Brick Offline First with Rest Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_offline_first_with_rest_build/**"

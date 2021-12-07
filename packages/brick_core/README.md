@@ -1,8 +1,8 @@
-![brick_core workflow](https://github.com/greenbits/brick/actions/workflows/brick_core.yaml/badge.svg)
+![brick_core workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_core.yaml/badge.svg)
 
 # Brick Core
 
-Interfaces and shared helpers for implementing models, adapters, providers, and repositories in [Brick](https://github.com/greenbits/brick).
+Interfaces and shared helpers for implementing models, adapters, providers, and repositories in [Brick](https://github.com/GetDutchie/brick).
 
 ## Principles
 
