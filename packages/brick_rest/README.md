@@ -1,8 +1,8 @@
-![brick_rest workflow](https://github.com/greenbits/brick/actions/workflows/brick_rest.yaml/badge.svg)
+![brick_rest workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_rest.yaml/badge.svg)
 
 # REST Provider
 
-Connecting [Brick](https://github.com/greenbits/brick) with a RESTful API.
+Connecting [Brick](https://github.com/GetDutchie/brick) with a RESTful API.
 
 ## Supported `Query` Configuration
 

@@ -1,4 +1,4 @@
-![brick_offline_first workflow](https://github.com/greenbits/brick/actions/workflows/brick_offline_first.yaml/badge.svg)
+![brick_offline_first workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_offline_first.yaml/badge.svg)
 
 # Brick Offline First
 

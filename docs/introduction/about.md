@@ -8,10 +8,10 @@ Brick does a lot at once. [Learn](home.md#learn) includes videos, tutorials, and
 
 ## Why Brick?
 
-* Your app requires [offline access](https://github.com/greenbits/brick/blob/master/packages/brick_offline_first) to data
-* Handles and [hides](https://github.com/greenbits/brick/blob/master/packages/brick_build) all complex serialization/deserialization logic between any external source(s)
+* Your app requires [offline access](https://github.com/GetDutchie/brick/blob/main/packages/brick_offline_first) to data
+* Handles and [hides](https://github.com/GetDutchie/brick/blob/main/packages/brick_build) all complex serialization/deserialization logic between any external source(s)
 * Single [access point](data/repositories.md) and opinionated DSL establishes consistency when pushing and pulling data across your app
-* Automatic, [intelligently-generated migrations](https://github.com/greenbits/brick/blob/master/packages/brick_sqlite)
+* Automatic, [intelligently-generated migrations](https://github.com/GetDutchie/brick/blob/main/packages/brick_sqlite)
 * Legible [querying interface](data/query.md)
 
 ## When should I not use Brick?

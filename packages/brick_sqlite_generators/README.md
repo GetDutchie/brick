@@ -1,4 +1,4 @@
-![brick_sqlite_generators workflow](https://github.com/greenbits/brick/actions/workflows/brick_sqlite_generators.yaml/badge.svg)
+![brick_sqlite_generators workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_sqlite_generators.yaml/badge.svg)
 
 # Brick Sqlite Build
 

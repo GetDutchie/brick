@@ -1,8 +1,8 @@
 name: brick_rest
 description: RESTful API connector for Brick, a data persistence library. Includes annotations, adapter, model, and provider.
-homepage: https://github.com/greenbits/brick/tree/master/packages/brick_rest
-issue_tracker: https://github.com/greenbits/brick/issues
-repository: https://github.com/greenbits/brick
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest
+issue_tracker: https://github.com/GetDutchie/brick/issues
+repository: https://github.com/GetDutchie/brick
 
 version: 1.1.0
 

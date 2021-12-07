@@ -1,8 +1,8 @@
-![brick_sqlite workflow](https://github.com/greenbits/brick/actions/workflows/brick_sqlite.yaml/badge.svg)
+![brick_sqlite workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_sqlite.yaml/badge.svg)
 
 # Brick SQLite Provider
 
-Local storage for Flutter apps using [Brick](https://github.com/greenbits/brick).
+Local storage for Flutter apps using [Brick](https://github.com/GetDutchie/brick).
 
 ## Supported `Query` Configuration
 
@@ -61,7 +61,7 @@ In some exceptional circumstances, low-level manipulation of Brick's automatic s
 final Uint8List image;
 ```
 
-:warning: Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)` are required if Brick does not know how [to serialize the field](https://github.com/greenbits/brick/blob/master/packages/brick_build/lib/src/utils/shared_checker.dart#L94-L109).
+:warning: Because this feature overrides Brick assumptions about the column type, the field will be inserted (toSqlite) **as is** and returned **as is** from deserialization (fromSqlite). `@Sqlite(fromGenerator:)` and `@Sqlite(toGenerator:)` are required if Brick does not know how [to serialize the field](https://github.com/GetDutchie/brick/blob/main/packages/brick_build/lib/src/utils/shared_checker.dart#L94-L109).
 
 ### `@Sqlite(name:)`
 

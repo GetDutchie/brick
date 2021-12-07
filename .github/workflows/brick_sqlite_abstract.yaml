@@ -2,7 +2,7 @@ name: Brick SQLite Abstract
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_sqlite_abstract/**"

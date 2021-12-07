@@ -2,7 +2,7 @@ name: Brick REST Generators
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_rest_generators/**"

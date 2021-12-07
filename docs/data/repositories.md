@@ -74,7 +74,7 @@ There are several principles for repositories that should be considered beyond i
 * [ ] Every method returns from the same provider
 * [ ] `Query#action` is applied when it does not exist on a `query` from arguments
 
-To generate code for a custom repository, please see [brick_build](https://github.com/greenbits/brick/tree/master/packages/brick_build#repository).
+To generate code for a custom repository, please see [brick_build](https://github.com/GetDutchie/brick/tree/main/packages/brick_build#repository).
 
 ### Methods
 

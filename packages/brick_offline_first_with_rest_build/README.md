@@ -1,4 +1,4 @@
-![brick_offline_first_with_rest_build workflow](https://github.com/greenbits/brick/actions/workflows/brick_offline_first_with_rest_build.yaml/badge.svg)
+![brick_offline_first_with_rest_build workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_offline_first_with_rest_build.yaml/badge.svg)
 
 # Brick Offline First with Rest Build
 
@@ -12,7 +12,7 @@ Code generator that provides (de)serializing functions for Brick adapters using 
 dev_dependencies:
   brick_offline_first_with_rest_build:
     git:
-      url: git@github.com:greenbits/brick.get
+      url: git@github.com:GetDutchie/brick.get
       path: packages/brick_offline_first_with_rest_build
 ```
 

@@ -25,11 +25,11 @@ import 'package:brick_offline_first/offline_first.dart';
   ),
 )
 class Pizza extends OfflineFirstWithRestModel {
-  /// Read more about `@Sqlite`: https://github.com/greenbits/brick/tree/master/packages/brick_sqlite#fields
+  /// Read more about `@Sqlite`: https://github.com/GetDutchie/brick/tree/main/packages/brick_sqlite#fields
   @Sqlite(unique: true)
   final int? id;
 
-  /// Read more about `@Rest`: https://github.com/greenbits/brick/tree/master/packages/brick_rest#fields
+  /// Read more about `@Rest`: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest#fields
   @Rest(enumAsString: true)
   final List<Topping>? toppings;
 

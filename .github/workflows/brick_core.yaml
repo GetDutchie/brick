@@ -2,7 +2,7 @@ name: Brick Core
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "packages/brick_core/**"
