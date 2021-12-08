@@ -136,7 +136,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
             final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
 
             if (checker.isArgTypeAFuture) {
-              return '''($fieldValue ?? []).map((s) => $getAssociationText)$fromRestCast''';
+              return '''($fieldValue ?? []).map<Future<$argType>>((s) => $getAssociationText)$fromRestCast''';
             }
 
             final getAssociationTextForceNullable =
@@ -144,7 +144,7 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
             final getAssociations =
                 '''($fieldValue ?? []).map<Future<$argType?>>((s) => $getAssociationTextForceNullable)''';
             final awaitGetAssociations =
-                '''(await Future.wait<$argType?>($getAssociations)).whereType<$argType>()$fromRestCast''';
+                '(await Future.wait<$argType?>($getAssociations)).whereType<$argType>()$fromRestCast';
 
             if (checker.isSet) {
               return '$awaitGetAssociations.toSet()';
