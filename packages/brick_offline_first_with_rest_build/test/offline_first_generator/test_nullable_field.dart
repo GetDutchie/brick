@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
-import 'package:brick_rest/rest.dart' show Rest, RestSerializable;
+import 'package:brick_rest/rest.dart' show RestSerializable;
 
 final output = r'''
 Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,

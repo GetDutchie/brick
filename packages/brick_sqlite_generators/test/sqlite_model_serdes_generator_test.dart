@@ -15,6 +15,8 @@ import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
     as _$afterSaveWithAssociation;
 import 'sqlite_model_serdes_generator/test_after_save_with_non_final_association.dart'
     as _$afterSaveWithNonFinalAssociation;
+import 'sqlite_model_serdes_generator/test_all_field_types.dart'
+    as _$allFieldTypes;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -74,6 +76,11 @@ void main() {
     test('AfterSaveWithNonFinalAssociation', () async {
       await generateAdapterExpectation(
           'after_save_with_non_final_association', _$afterSaveWithNonFinalAssociation.output);
+    });
+
+    test('AllFieldTypes', () async {
+      await generateAdapterExpectation(
+          'all_field_types', _$allFieldTypes.output);
     });
   });
 }
