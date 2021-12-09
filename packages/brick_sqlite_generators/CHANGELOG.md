@@ -1,9 +1,5 @@
 ## Unreleased
 
-## 1.1.4
-
-* Bump `brick_build`
-
 ## 1.1.3
 
 * Bump `brick_build`

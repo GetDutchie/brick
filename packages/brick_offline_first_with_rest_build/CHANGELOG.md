@@ -4,8 +4,6 @@
 
 * Always use `whereType<T>` casts after awaiting `Future.wait()` in adapters.
 * Bump `brick_build`
-* Bump `brick_sqlite_generators`
-* Bump `brick_rest_generators`
 
 ## 1.1.3
 
