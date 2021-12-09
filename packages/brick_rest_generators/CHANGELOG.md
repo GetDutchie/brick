@@ -1,6 +1,5 @@
 ## Unreleased
 
-
 ## 1.0.2
 
 * Prefer constructor field type (including nullability) over field definition for type inference in adapter generation.
