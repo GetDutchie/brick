@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.1.4
+
+* Always use `whereType<T>` casts after awaiting `Future.wait()` in adapters.
+* Bump `brick_build`
+
 ## 1.1.3
 
 * Bump `brick_sqlite_generators`
