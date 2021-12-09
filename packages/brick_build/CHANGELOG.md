@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.3
+
+* Allow forced type nullability on `getAssociationMethod` for improved null safety on future internals.
+
 ## 1.2.2+1
 
 * Access `checkForField` by default only when deserializing for fields instead of constructor overrides

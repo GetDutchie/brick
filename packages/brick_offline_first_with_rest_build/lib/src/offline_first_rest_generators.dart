@@ -134,18 +134,23 @@ class _OfflineFirstRestDeserialize extends RestDeserialize {
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
             final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
-            final getAssociations = '''($fieldValue ?? []).map((s) => $getAssociationText
-            ).whereType<Future<$argType>>()$fromRestCast''';
 
             if (checker.isArgTypeAFuture) {
-              return getAssociations;
+              return '($fieldValue ?? []).map<Future<$argType>>((s) => $getAssociationText)$fromRestCast';
             }
+
+            final getAssociationTextForceNullable =
+                getAssociationMethod(argType, query: 'Query(where: $where)', forceNullable: true);
+            final getAssociations =
+                '''($fieldValue ?? []).map<Future<$argType?>>((s) => $getAssociationTextForceNullable)''';
+            final awaitGetAssociations =
+                '(await Future.wait<$argType?>($getAssociations)).whereType<$argType>()$fromRestCast';
 
             if (checker.isSet) {
-              return '(await Future.wait<$argType>($getAssociations ?? [])).toSet()';
+              return '$awaitGetAssociations.toSet()';
             }
 
-            return 'await Future.wait<$argType>($getAssociations ?? [])';
+            return awaitGetAssociations;
           }
         }
       }
