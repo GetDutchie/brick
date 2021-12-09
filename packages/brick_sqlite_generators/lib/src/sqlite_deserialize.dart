@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart' show ClassElement;
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
@@ -126,9 +125,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        final discoveredByIndex = 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
-        final nullableSuffix = checker.isNullable ? '?' : '.';
-        return '$discoveredByIndex${nullableSuffix}whereType<${argType.getDisplayString(withNullability: true)}>()$castIterable';
+        final discoveredByIndex =
+            'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
+        final nullableSuffix = checker.isNullable ? '?' : '';
+        return '$discoveredByIndex$nullableSuffix.whereType<${argType.getDisplayString(withNullability: true)}>()$castIterable';
       }
 
       // Iterable<bool>
