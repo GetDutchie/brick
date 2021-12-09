@@ -125,7 +125,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)$castIterable';
+        final discoveredByIndex = 'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
+        return '$discoveredByIndex${argType.getDisplayString(withNullability: true)}$castIterable';
       }
 
       // Iterable<bool>
