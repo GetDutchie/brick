@@ -2,7 +2,7 @@
 
 ## 1.1.4
 
-* Always use `whereType<T>` casts after awaiting `Future.wait()` in adapters.
+* Always use `whereType<T>` casts after awaiting `Future.wait()` in Rest deserializing adapters.
 * Bump `brick_build`
 
 ## 1.1.3
