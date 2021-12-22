@@ -1,9 +1,5 @@
-import 'package:brick_sqlite_abstract/src/db/schema/schema_index.dart';
-
 import '../migration_commands.dart';
 import '../schema.dart';
-import 'schema_column.dart';
-import 'schema_table.dart';
 import 'package:collection/collection.dart';
 
 /// Compares two schemas to produce migrations that conver the difference

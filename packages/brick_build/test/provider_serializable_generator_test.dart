@@ -1,7 +1,6 @@
 import 'package:brick_build/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import 'package:brick_build_test/brick_build_test.dart';
 
 import '__helpers__.dart';
 

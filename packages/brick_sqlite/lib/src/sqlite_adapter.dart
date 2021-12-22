@@ -2,7 +2,6 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:brick_sqlite/src/sqlite_provider.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 
