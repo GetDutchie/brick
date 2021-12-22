@@ -15,8 +15,6 @@ import 'dart:convert';
 import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition;
 import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_core/core.dart' show Query, QueryAction;
-// ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
 import 'models/person.dart';

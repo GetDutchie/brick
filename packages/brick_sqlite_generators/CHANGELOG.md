@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Fix casting when deserializing enums. The analyzer does not alert for `cast` on a list that could contain nullable values; if the field type is non-nullable, null types must be removed before the cast.
+* Remove unnecessary import in `schema.g.dart`
 
 ## 1.1.3
 

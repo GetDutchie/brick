@@ -34,8 +34,6 @@ class SqliteSchemaGenerator {
       // GENERATED CODE DO NOT EDIT
       // This file should be version controlled
       import 'package:brick_sqlite_abstract/db.dart';
-      // ignore: unused_import
-      import 'package:brick_sqlite_abstract/db.dart' show Migratable;
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk
