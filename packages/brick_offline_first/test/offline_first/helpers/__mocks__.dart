@@ -6,7 +6,6 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
 
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_offline_first/offline_first.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 export 'package:brick_offline_first/offline_first.dart';

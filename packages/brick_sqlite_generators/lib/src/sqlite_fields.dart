@@ -7,7 +7,6 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/string_helpers.dart';
-import 'package:brick_sqlite_abstract/db.dart' show Column;
 
 /// Find `@Sqlite` given a field
 class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {

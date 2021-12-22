@@ -1,8 +1,6 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite_abstract/db.dart';
-// ignore: unused_import
-import 'package:brick_sqlite_abstract/db.dart' show Migratable;
 part '20200616220821.migration.dart';
 part '20210111041540.migration.dart';
 part '20200106215014.migration.dart';

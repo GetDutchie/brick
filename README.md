@@ -2,7 +2,7 @@
 
 An intuitive way to work with persistent data in Dart.
 
-## [Full documentation](https://greenbits.github.io/brick/)
+## [Full documentation](https://getdutchie.github.io/brick/)
 
 ## Why Brick?
 

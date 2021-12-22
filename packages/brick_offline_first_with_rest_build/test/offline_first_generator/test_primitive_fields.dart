@@ -114,6 +114,7 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(Map<String, dynamic> data,
           ? null
           : jsonDecode(data['nullable_list_casing'])
               .map((d) => d as int > -1 ? Casing.values[d] : null)
+              ?.whereType<Casing>()
               .toList()
               .cast<Casing>(),
       nullableDateTime: data['nullable_date_time'] == null
@@ -132,6 +133,7 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(Map<String, dynamic> data,
       casing: Casing.values[data['casing'] as int],
       listCasing: jsonDecode(data['list_casing'])
           .map((d) => d as int > -1 ? Casing.values[d] : null)
+          .whereType<Casing>()
           .toList()
           .cast<Casing>(),
       dateTime: DateTime.parse(data['date_time'] as String))

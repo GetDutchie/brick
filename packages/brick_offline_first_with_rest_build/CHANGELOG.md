@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Remove unnecessary import in `brick.g.dart`
+
 ## 1.1.4
 
 * Always use `whereType<T>` casts after awaiting `Future.wait()` in Rest deserializing adapters.
