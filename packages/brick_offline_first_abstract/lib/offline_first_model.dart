@@ -10,4 +10,4 @@ abstract class OfflineFirstModel extends SqliteModel {}
 
 abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestModel {}
 
-abstract class OfllineFirstGraphQLModel extends GraphQLModel {}
+abstract class OfflineFirstGraphQLModel extends GraphQLModel {}

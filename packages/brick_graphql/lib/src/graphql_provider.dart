@@ -37,16 +37,16 @@ class GraphQLProvider implements Provider<GraphQLModel> {
             ),
         logger = Logger('GraphQLProvider');
 
-  Future<void> query<_Model extends GraphQLModel>(query) async {
+  Future<QueryResult> query<_Model extends GraphQLModel>(query) async {
     QueryOptions options = QueryOptions(document: query);
-    if (baseEndpoint == null) return null;
     final resp = client.query(options);
+    return resp;
   }
 
-  Future<void> mutation<_Model extends GraphQLModel>(query) async {
-    QueryOptions options = QueryOptions(document: query);
-    if (baseEndpoint == null) return null;
-    final resp = client.query(options);
+  Future<QueryResult> mutation<_Model extends GraphQLModel>(query) async {
+    MutationOptions options = MutationOptions(document: query);
+    final resp = client.mutate(options);
+    return resp;
   }
 
   static bool statusCodeIsSuccessful(int? statusCode) =>

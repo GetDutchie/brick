@@ -33,6 +33,8 @@ dev_dependencies:
 dependency_overrides:
   brick_build:
     path: ../brick_build
+  brick_offline_first:
+    path: ../brick_offline_first
   brick_offline_first_abstract:
     path: ../brick_offline_first_abstract
   brick_rest:
