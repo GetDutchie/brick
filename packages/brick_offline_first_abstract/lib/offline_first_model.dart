@@ -1,5 +1,7 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_rest/rest.dart' show RestModel;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
 
 /// This model is constructed by data in SQLite. It hydrates from a REST endpoint.
 ///
@@ -8,3 +10,5 @@ import 'package:brick_sqlite_abstract/sqlite_model.dart';
 abstract class OfflineFirstModel extends SqliteModel {}
 
 abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestModel {}
+
+abstract class OfllineFirstGraphQLModel extends GraphQLModel {}
