@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_rest/rest.dart' show RestModel;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
