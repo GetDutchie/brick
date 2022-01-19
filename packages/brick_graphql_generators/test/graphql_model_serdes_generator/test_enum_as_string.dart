@@ -2,30 +2,31 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 Future<EnumAsString> _$EnumAsStringFromGraphQL(Map<String, dynamic> data,
-    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
+    {required GraphQLProvider provider,
+    GraphQLFirstRepository? repository}) async {
   return EnumAsString(
-      hat: GraphQLAdapter.enumValueFromName(Hat.values, data['hat'])!,
-      nullableHat: data['nullable_hat'] == null
-          ? null
-          : GraphQLAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
-      hats: data['hats']
-          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value)!)
-          .toList()
-          .cast<Hat>(),
-      nullableHats: data['nullable_hats']
-          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value))
+      hat: Hat.values[data['hat'] as int],
+      nullableHat: data['nullableHat'] is int
+          ? Hat.values[data['nullableHat'] as int]
+          : null,
+      hats: data['hats'].map((e) => Hat.values[e]).toList().cast<Hat>(),
+      nullableHats: data['nullableHats']
+          .map((e) => Hat.values[e])
           ?.toList()
           .cast<Hat?>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToGraphQL(EnumAsString instance,
-    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
+    {required GraphQLProvider provider,
+    GraphQLFirstRepository? repository}) async {
   return {
-    'hat': instance.hat.toString().split('.').last,
-    'nullable_hat': instance.nullableHat?.toString().split('.').last,
-    'hats': instance.hats.map((e) => e.toString().split('.').last).toList(),
-    'nullable_hats':
-        instance.nullableHats.map((e) => e.toString().split('.').last).toList()
+    'hat': Hat.values.indexOf(instance.hat),
+    'nullableHat': instance.nullableHat != null
+        ? Hat.values.indexOf(instance.nullableHat!)
+        : null,
+    'hats': instance.hats.map((e) => Hat.values.indexOf(e)).toList(),
+    'nullableHats':
+        instance.nullableHats.map((e) => Hat.values.indexOf(e)).toList()
   };
 }
 ''';

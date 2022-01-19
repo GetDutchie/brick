@@ -6,6 +6,7 @@ import 'package:brick_rest_generators/generators.dart';
 /// Generate a function to produce a [ClassElement] to REST data
 class GraphQLSerialize<_Model extends RestModel> extends RestSerialize {
   @override
+  // ignore: overridden_fields
   final providerName = 'GraphQL';
 
   GraphQLSerialize(

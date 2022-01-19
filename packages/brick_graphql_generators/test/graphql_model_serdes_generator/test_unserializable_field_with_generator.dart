@@ -5,17 +5,18 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 Future<GraphQLUnserializableFieldWithGenerator>
-    _$GraphQLUnserializableFieldWithGeneratorFromGraphQL(Map<String, dynamic> data,
+    _$GraphQLUnserializableFieldWithGeneratorFromGraphQL(
+        Map<String, dynamic> data,
         {required GraphQLProvider provider,
         GraphQLFirstRepository? repository}) async {
-  return GraphQLUnserializableFieldWithGenerator(withFrom: data['with_from']);
+  return GraphQLUnserializableFieldWithGenerator();
 }
 
 Future<Map<String, dynamic>> _$GraphQLUnserializableFieldWithGeneratorToGraphQL(
     GraphQLUnserializableFieldWithGenerator instance,
     {required GraphQLProvider provider,
     GraphQLFirstRepository? repository}) async {
-  return {'with_to': instance.withTo};
+  return {};
 }
 ''';
 

@@ -5,6 +5,7 @@ import 'package:brick_rest_generators/generators.dart';
 /// Generate a function to produce a [ClassElement] from GraphQL data
 class GraphQLDeserialize extends RestDeserialize {
   @override
+  // ignore: overridden_fields
   final providerName = 'GraphQL';
 
   GraphQLDeserialize(

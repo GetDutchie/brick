@@ -26,12 +26,10 @@ class Rest implements FieldSerializable {
   @override
   final bool ignore;
 
-  /// `true` if this field should be ignored **only during** deserializization
-  /// (when remote data is converted to Dart code). Defaults to `false`.
+  @override
   final bool ignoreFrom;
 
-  /// `true` if this field should be ignored **only during** serializization
-  /// (when Dart code is sent to a remote source). Defaults to `false`.
+  @override
   final bool ignoreTo;
 
   /// The key name to use when reading and writing values corresponding

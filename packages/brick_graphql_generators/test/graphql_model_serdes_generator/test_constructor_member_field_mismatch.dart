@@ -2,13 +2,14 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 Future<GraphQLConstructorMemberFieldMismatch>
-    _$GraphQLConstructorMemberFieldMismatchFromGraphQL(Map<String, dynamic> data,
+    _$GraphQLConstructorMemberFieldMismatchFromGraphQL(
+        Map<String, dynamic> data,
         {required GraphQLProvider provider,
         GraphQLFirstRepository? repository}) async {
   return GraphQLConstructorMemberFieldMismatch(
-      nullableConstructor: data['nullable_constructor'] as String?,
-      nonNullableConstructor: data['non_nullable_constructor'] as String,
-      someField: await Future.wait<Assoc>(data['some_field']
+      nullableConstructor: data['nullableConstructor'] as String?,
+      nonNullableConstructor: data['nonNullableConstructor'] as String,
+      someField: await Future.wait<Assoc>(data['someField']
               ?.map((d) => AssocAdapter()
                   .fromGraphQL(d, provider: provider, repository: repository))
               .toList()
@@ -21,9 +22,9 @@ Future<Map<String, dynamic>> _$GraphQLConstructorMemberFieldMismatchToGraphQL(
     {required GraphQLProvider provider,
     GraphQLFirstRepository? repository}) async {
   return {
-    'nullable_constructor': instance.nullableConstructor,
-    'non_nullable_constructor': instance.nonNullableConstructor,
-    'some_field': await Future.wait<Map<String, dynamic>>(instance.someField
+    'nullableConstructor': instance.nullableConstructor,
+    'nonNullableConstructor': instance.nonNullableConstructor,
+    'someField': await Future.wait<Map<String, dynamic>>(instance.someField
         .map((s) => AssocAdapter()
             .toGraphQL(s, provider: provider, repository: repository))
         .toList())

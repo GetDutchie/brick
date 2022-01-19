@@ -1,17 +1,29 @@
 import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<GraphQLIgnoreFromTo> _$GraphQLIgnoreFromToFromGraphQL(Map<String, dynamic> data,
-    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
+Future<GraphQLIgnoreFromTo> _$GraphQLIgnoreFromToFromGraphQL(
+    Map<String, dynamic> data,
+    {required GraphQLProvider provider,
+    GraphQLFirstRepository? repository}) async {
   return GraphQLIgnoreFromTo(
-      ignoredTo: data['ignored_to'] as bool,
-      otherIgnoredTo: data['other_ignored_to'] as bool,
+      ignoredFrom: data['ignoredFrom'] as bool,
+      ignoredTo: data['ignoredTo'] as bool,
+      otherIgnoredTo: data['otherIgnoredTo'] as bool,
+      ignorePrecedence: data['ignorePrecedence'] as bool,
       normal: data['normal'] as bool);
 }
 
-Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(GraphQLIgnoreFromTo instance,
-    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
-  return {'ignored_from': instance.ignoredFrom, 'normal': instance.normal};
+Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(
+    GraphQLIgnoreFromTo instance,
+    {required GraphQLProvider provider,
+    GraphQLFirstRepository? repository}) async {
+  return {
+    'ignoredFrom': instance.ignoredFrom,
+    'ignoredTo': instance.ignoredTo,
+    'otherIgnoredTo': instance.otherIgnoredTo,
+    'ignorePrecedence': instance.ignorePrecedence,
+    'normal': instance.normal
+  };
 }
 ''';
 

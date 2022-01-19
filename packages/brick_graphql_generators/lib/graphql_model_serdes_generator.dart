@@ -7,7 +7,6 @@ import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_deserialize.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_graphql_generators/src/graphql_serialize.dart';
-import 'package:brick_rest/rest.dart' show FieldRename;
 import 'package:gql/ast.dart' show DocumentNode;
 import 'package:source_gen/source_gen.dart';
 
