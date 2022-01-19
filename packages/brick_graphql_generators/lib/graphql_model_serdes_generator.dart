@@ -11,8 +11,8 @@ import 'package:brick_rest/rest.dart' show FieldRename;
 import 'package:gql/ast.dart' show DocumentNode;
 import 'package:source_gen/source_gen.dart';
 
-/// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
-/// to and from a `RestProvider`.
+/// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
+/// to and from a `GraphQLProvider`.
 class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphQLSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
