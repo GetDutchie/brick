@@ -1,8 +1,9 @@
 import 'package:brick_core/field_serializable.dart';
+import 'package:brick_rest/rest.dart';
 
 /// An annotation used to specify how a field is serialized for a [GraphQLAdapter].
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
-class GraphQL implements FieldSerializable {
+class GraphQL implements FieldSerializable, Rest {
   @override
   final String? defaultValue;
 

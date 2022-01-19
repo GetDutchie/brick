@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_rest/rest.dart';
+import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/graphql_model_serdes_generator.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -18,8 +18,8 @@ final folder = 'graphql_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
-  group('RestModelSerdesGenerator', () {
-    group('@Rest', () {
+  group('GraphQLModelSerdesGenerator', () {
+    group('@GraphQL', () {
       test('enum_as_string', () async {
         await generateExpectation('enum_as_string', enum_as_string.output);
       });
@@ -33,7 +33,7 @@ void main() {
             'unserializable_field_with_generator', unserializable_field_with_generator.output);
       });
 
-      test('RestConstructorMemberFieldMismatch', () async {
+      test('GraphQLConstructorMemberFieldMismatch', () async {
         await generateExpectation(
             'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
       });
@@ -41,15 +41,15 @@ void main() {
   });
 }
 
-/// Output serializing code for all models with the @[RestSerializable] annotation.
-/// [RestSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
+/// [GraphQLSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [RestSerializable] was arbitrarily chosen for this test.
+/// and [GraphQLSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-class TestGenerator extends AnnotationSuperGenerator<RestSerializable> {
+class TestGenerator extends AnnotationSuperGenerator<GraphQLSerializable> {
   @override
-  final superAdapterName = 'RestFirst';
-  final repositoryName = 'RestFirst';
+  final superAdapterName = 'GraphQLFirst';
+  final repositoryName = 'GraphQLFirst';
 
   TestGenerator();
 
@@ -57,7 +57,7 @@ class TestGenerator extends AnnotationSuperGenerator<RestSerializable> {
   @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
-        GraphqlModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
+        GraphQLModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     return serializableGenerator.generators;
   }
 }
@@ -69,7 +69,7 @@ Future<void> generateExpectation(String filename, String output, {TestGenerator?
 }
 
 Future<void> generateAdapterExpectation(String filename, String output) async {
-  final annotation = await annotationForFile<RestSerializable>(folder, filename);
+  final annotation = await annotationForFile<GraphQLSerializable>(folder, filename);
   final generated = _generator.generateAdapter(
     annotation.element,
     annotation.annotation,

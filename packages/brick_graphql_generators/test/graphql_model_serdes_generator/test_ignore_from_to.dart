@@ -1,42 +1,42 @@
-import 'package:brick_rest/rest.dart';
+import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<RestIgnoreFromTo> _$RestIgnoreFromToFromRest(Map<String, dynamic> data,
-    {required RestProvider provider, RestFirstRepository? repository}) async {
-  return RestIgnoreFromTo(
+Future<GraphQLIgnoreFromTo> _$GraphQLIgnoreFromToFromGraphQL(Map<String, dynamic> data,
+    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
+  return GraphQLIgnoreFromTo(
       ignoredTo: data['ignored_to'] as bool,
       otherIgnoredTo: data['other_ignored_to'] as bool,
       normal: data['normal'] as bool);
 }
 
-Future<Map<String, dynamic>> _$RestIgnoreFromToToRest(RestIgnoreFromTo instance,
-    {required RestProvider provider, RestFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(GraphQLIgnoreFromTo instance,
+    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
   return {'ignored_from': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';
 
-/// Output serializing code for all models with the @[RestSerializable] annotation.
-/// [RestSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
+/// [GraphQLSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [RestSerializable] was arbitrarily chosen for this test.
+/// and [GraphQLSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@RestSerializable()
-class RestIgnoreFromTo extends RestModel {
-  @Rest(ignoreFrom: true)
+@GraphQLSerializable()
+class GraphQLIgnoreFromTo extends GraphQLModel {
+  @GraphQL(ignoreFrom: true)
   final bool ignoredFrom;
 
-  @Rest(ignoreTo: true)
+  @GraphQL(ignoreTo: true)
   final bool ignoredTo;
 
-  @Rest(ignoreTo: true, ignoreFrom: false)
+  @GraphQL(ignoreTo: true, ignoreFrom: false)
   final bool otherIgnoredTo;
 
-  @Rest(ignore: true, ignoreTo: false, ignoreFrom: false)
+  @GraphQL(ignore: true, ignoreTo: false, ignoreFrom: false)
   final bool ignorePrecedence;
 
   final bool normal;
 
-  RestIgnoreFromTo(
+  GraphQLIgnoreFromTo(
     this.ignoredFrom,
     this.ignoredTo,
     this.otherIgnoredTo,

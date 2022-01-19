@@ -1,13 +1,13 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_rest/rest.dart';
-import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serialize.dart';
 
 /// Generate a function to produce a [ClassElement] to REST data
-class GraphqlSerialize<_Model extends RestModel> extends RestSerialize {
-  GraphqlSerialize(
+class GraphQLSerialize<_Model extends RestModel> extends RestSerialize {
+  GraphQLSerialize(
     ClassElement element,
-    RestFields fields, {
+    GraphQLFields fields, {
     required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
 }

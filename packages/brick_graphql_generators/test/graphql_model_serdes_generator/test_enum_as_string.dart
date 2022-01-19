@@ -1,25 +1,25 @@
-import 'package:brick_rest/rest.dart';
+import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
-    {required RestProvider provider, RestFirstRepository? repository}) async {
+Future<EnumAsString> _$EnumAsStringFromGraphQL(Map<String, dynamic> data,
+    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
   return EnumAsString(
-      hat: RestAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      hat: GraphQLAdapter.enumValueFromName(Hat.values, data['hat'])!,
       nullableHat: data['nullable_hat'] == null
           ? null
-          : RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
+          : GraphQLAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
       hats: data['hats']
-          .map((value) => RestAdapter.enumValueFromName(Hat.values, value)!)
+          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value)!)
           .toList()
           .cast<Hat>(),
       nullableHats: data['nullable_hats']
-          .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
+          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value))
           ?.toList()
           .cast<Hat?>());
 }
 
-Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
-    {required RestProvider provider, RestFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$EnumAsStringToGraphQL(EnumAsString instance,
+    {required GraphQLProvider provider, GraphQLFirstRepository? repository}) async {
   return {
     'hat': instance.hat.toString().split('.').last,
     'nullable_hat': instance.nullableHat?.toString().split('.').last,
@@ -32,12 +32,12 @@ Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
 
 enum Hat { party, dance, sleeping }
 
-/// Output serializing code for all models with the @[RestSerializable] annotation.
-/// [RestSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
+/// [GraphQLSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [RestSerializable] was arbitrarily chosen for this test.
+/// and [GraphQLSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@RestSerializable()
+@GraphQLSerializable()
 class EnumAsString {
   EnumAsString({
     required this.hat,
@@ -46,15 +46,15 @@ class EnumAsString {
     required this.nullableHats,
   });
 
-  @Rest(enumAsString: true)
+  @GraphQL(enumAsString: true)
   final Hat hat;
 
-  @Rest(enumAsString: true, nullable: true)
+  @GraphQL(enumAsString: true, nullable: true)
   final Hat? nullableHat;
 
-  @Rest(enumAsString: true)
+  @GraphQL(enumAsString: true)
   final List<Hat> hats;
 
-  @Rest(enumAsString: true)
+  @GraphQL(enumAsString: true)
   final List<Hat?> nullableHats;
 }
