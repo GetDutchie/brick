@@ -3,11 +3,6 @@ import 'package:brick_core/field_serializable.dart';
 /// An annotation used to specify how a field is serialized for a [GraphQLAdapter].
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
 class GraphQL implements FieldSerializable {
-  /// The value to use if the source does not contain this key or if the
-  /// value is `null`. **Only applicable during deserialization.**
-  ///
-  /// Must be a primitive type: `bool`, `DateTime`, `double`, `int`, `List`, `Map`,
-  /// `Set`, or `String`. [defaultValue] must also match the field's `Type`.
   @override
   final String? defaultValue;
 
