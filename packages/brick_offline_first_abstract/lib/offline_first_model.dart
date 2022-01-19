@@ -9,5 +9,3 @@ import 'package:brick_graphql/src/graphql_model.dart';
 abstract class OfflineFirstModel extends SqliteModel {}
 
 abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestModel {}
-
-abstract class OfflineFirstGraphQLModel extends GraphQLModel {}
