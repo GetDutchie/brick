@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:brick_graphql/src/graphql_model.dart';
+import 'package:brick_graphql/src/graphql_model_dictionary.dart';
 import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -7,46 +10,26 @@ import 'package:graphql/client.dart';
 
 /// Retrieves from an HTTP endpoint
 class GraphQLProvider implements Provider<GraphQLModel> {
-  /// A fully-qualified URL
-  final String baseEndpoint;
-
   /// The glue between app models and generated adapters.
   @override
-  final DocumentNode graphlDefinition;
 
   /// All requests pass through this client.
-  GraphQLClient client;
+  final GraphQLModelDictionary modelDictionary;
+  final Link link;
 
   @protected
   final Logger logger;
 
-  GraphQLProvider(
-    this.baseEndpoint, {
-    required this.graphlDefinition,
-    GraphQLClient? client,
-  })  : client = client ??
-            GraphQLClient(
-              cache: GraphQLCache(),
-              link: Link.from(
-                [
-                  HttpLink(
-                    baseEndpoint,
-                  )
-                ],
-              ),
-            ),
-        logger = Logger('GraphQLProvider');
+  GraphQLProvider(this.link, this.modelDictionary) : logger = Logger('GraphQLProvider');
 
-  Future<QueryResult> query<_Model extends GraphQLModel>(query) async {
-    QueryOptions options = QueryOptions(document: query);
-    final resp = client.query(options);
-    return resp;
-  }
+  Future<_Model> upsert<_Model extends GraphQLModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[_Model]!;
+    final variables = await adapter.toGraphQL(instance, provider: this, repository: repository);
 
-  Future<QueryResult> mutation<_Model extends GraphQLModel>(query) async {
-    MutationOptions options = MutationOptions(document: query);
-    final resp = client.mutate(options);
-    return resp;
+    MutationOptions options =
+        MutationOptions(document: adapter.mututationEndpoint, variables: variables);
+    final resp = await link.request(options.asRequest);
+    return instance;
   }
 
   static bool statusCodeIsSuccessful(int? statusCode) =>
@@ -62,17 +45,6 @@ class GraphQLProvider implements Provider<GraphQLModel> {
   @override
   exists<T extends GraphQLModel>({Query? query, ModelRepository<GraphQLModel>? repository}) {
     // TODO: implement exists
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement modelDictionary
-  ModelDictionary<Model, Adapter<Model>>? get modelDictionary => throw UnimplementedError();
-
-  @override
-  upsert<T extends GraphQLModel>(T instance,
-      {Query? query, ModelRepository<GraphQLModel>? repository}) {
-    // TODO: implement upsert
     throw UnimplementedError();
   }
 

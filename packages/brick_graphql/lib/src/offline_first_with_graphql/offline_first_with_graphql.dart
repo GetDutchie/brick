@@ -3,6 +3,9 @@ import 'package:brick_graphql/src/offline_first_with_graphql/offline_request_que
 import 'package:brick_graphql/src/offline_queue/offline_queue_graphql_client.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:graphql/src/graphql_client.dart';
+import 'package:gql_exec/gql_exec.dart';
+import 'package:graphql/client.dart';
+export 'package:gql_exec/gql_exec.dart' show GraphQLError;
 import 'package:meta/meta.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
@@ -73,9 +76,6 @@ abstract class OfflineFirstWithGraphQLRespository
       return await super.delete<_Model>(instance, query: query);
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
-      if (_ignoreTunnelException(e)) {
-        return false;
-      }
 
       throw OfflineFirstException(e);
     }
@@ -97,13 +97,10 @@ abstract class OfflineFirstWithGraphQLRespository
         requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
-    } on RestException catch (e) {
+    } on GraphQLError catch (e) {
       logger.warning('#get rest failure: $e');
-      if (_ignoreTunnelException(e)) {
-        return <_Model>[];
-      }
 
-      throw OfflineFirstException(e);
+      throw Exception(e);
     }
   }
 
@@ -133,18 +130,12 @@ abstract class OfflineFirstWithGraphQLRespository
       {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
-    } on RestException catch (e) {
+    } on GraphQLError catch (e) {
       logger.warning('#upsert rest failure: $e');
-      if (_ignoreTunnelException(e)) {
-        return instance;
-      }
 
       // since we know we'll reattempt this request, an exception does not need to be reported
-      if (reattemptForStatusCodes.contains(e.response.statusCode) && !throwOnReattemptStatusCodes) {
-        return instance;
-      }
 
-      throw OfflineFirstException(e);
+      throw Exception(e);
     }
   }
 
@@ -156,16 +147,15 @@ abstract class OfflineFirstWithGraphQLRespository
   }) async {
     try {
       return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
-    } on RestException catch (e) {
-      logger.warning('#hydrate rest failure: $e');
+    } on GraphQLError catch (e) {
+      logger.warning('#hydrate graphl failure: $e');
+      return <_Model>[];
+    } on LinkException catch (e) {
+      logger.warning('#link failure: $e');
     }
 
     return <_Model>[];
   }
-
-  bool _ignoreTunnelException(RestException exception) =>
-      OfflineGraphqlRequestQueue.isATunnelNotFoundResponse(exception.response) &&
-      !throwTunnelNotFoundExceptions;
 }
 
 const _queueDatabaseName = 'brick_offline_queue.sqlite';

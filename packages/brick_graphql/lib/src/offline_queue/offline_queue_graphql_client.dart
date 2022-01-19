@@ -19,8 +19,8 @@ class OfflineGraphQLClient  {
   OfflineGraphQLClient(this._inner, this.requestManager)
 
   // ignore: empty_constructor_bodies
+  // ignore: avoid_renaming_method_parameters, empty_constructor_bodies
   @override
-  // ignore: avoid_renaming_method_parameters
   Future<Stream<Response>> send(query, params) async {
     final _logger = Logger('OfflineGraphQLClient#${requestManager.databaseName}');
     final request = Request(operation: Operation(document: gql(query),), variables: params, context: Context());
