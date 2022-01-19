@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:brick_rest/src/rest_model_dictionary.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
