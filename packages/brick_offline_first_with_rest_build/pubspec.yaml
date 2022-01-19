@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  analyzer: ^2.0.0
+  analyzer: ^1.2.0
   brick_offline_first_abstract: ^1.0.0+1
   brick_build: ^1.2.3
   brick_rest: ^1.0.0+3
