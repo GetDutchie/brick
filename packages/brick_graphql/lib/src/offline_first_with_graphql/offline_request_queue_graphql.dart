@@ -3,9 +3,11 @@ import 'package:brick_graphql/src/offline_queue/offline_queue_graphql_client.dar
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'package:graphql/client.dart';
+import 'package:gql/ast.dart';
 
 /// Repeatedly reattempts requests in an interval
-class OfflineRequestQueue {
+class OfflineGraphqlRequestQueue {
   /// The client responsible for resending requests
   final OfflineGraphQLClient client;
 
@@ -20,9 +22,12 @@ class OfflineRequestQueue {
 
   Timer? _timer;
 
-  OfflineRequestQueue({
+  String queryString;
+
+  OfflineGraphqlRequestQueue({
+    required this.queryString,
     required this.client,
-  }) : _logger = Logger('OfflineRequestQueue#${client.requestManager.databaseName}');
+  }) : _logger = Logger('OfflineGraphqlRequestQueue#${client.requestManager.databaseName}');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
@@ -57,7 +62,7 @@ class OfflineRequestQueue {
 
     if (request != null) {
       _logger.finest('Processing request ${request.method} ${request.url}');
-      await client.send(request);
+      await client.send(queryString, {});
     }
   }
 }

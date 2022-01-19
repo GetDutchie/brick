@@ -11,7 +11,7 @@ abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
   });
 
   Future<_Model> toGraphQL(
-    Map<String, dynamic> input, {
+    _Model input, {
     required GraphQLProvider provider,
     ModelRepository<GraphQLModel>? repository,
   });

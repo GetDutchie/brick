@@ -1,7 +1,10 @@
 import 'package:brick_graphql/src/graphql_provider.dart';
+import 'package:brick_graphql/src/offline_first_with_graphql/offline_request_queue_graphql.dart';
 import 'package:brick_graphql/src/offline_queue/offline_queue_graphql_client.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
+import 'package:graphql/src/graphql_client.dart';
 import 'package:meta/meta.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 
 import 'package:brick_rest/rest.dart' show RestProvider, RestException;
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstGraphQLModel;
@@ -25,43 +28,24 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// compiler/analyzer.
 abstract class OfflineFirstWithGraphQLRespository
     extends OfflineFirstRepository<OfflineFirstGraphQLModel> {
-  /// If the response returned from the client is one of these error codes, the request
-  /// **will not** be removed from the queue. For example, if the result of a request produces a
-  /// 404 status code response (such as in a Tunnel not found exception), the request will
-  /// be reattempted. If [upsert] response matches this status code, it **will not** throw
-  /// an exception.
-  ///
-  /// Defaults to `[404, 501, 502, 503, 504]`.
-  @protected
-  final List<int> reattemptForStatusCodes;
-
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
   @override
   // ignore: overridden_fields
   final GraphQLProvider remoteProvider;
 
-  /// When the device is connected but the URL is unreachable, the response will
-  /// begin with "Tunnel" and ends with "not found".
-  ///
-  /// As this may be irrelevant to an offline first application, the end implementation may choose
-  /// to ignore the warning as the request will eventually be reattempted by the queue.
-  /// Defaults `false`.
-  final bool throwTunnelNotFoundExceptions;
-
   @protected
-  late OfflineRequestQueue offlineRequestQueue;
+  late OfflineGraphqlRequestQueue offlineRequestQueue;
 
   OfflineFirstWithGraphQLRespository({
     required GraphQLProvider restProvider,
     required SqliteProvider sqliteProvider,
     MemoryCacheProvider? memoryCacheProvider,
     required Set<Migration> migrations,
+    required String queryString,
     bool? autoHydrate,
     String? loggerName,
     RequestSqliteCacheManager? offlineQueueHttpClientRequestSqliteCacheManager,
-    this.throwTunnelNotFoundExceptions = false,
-    this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
   })  : remoteProvider = restProvider,
         super(
           autoHydrate: autoHydrate,
@@ -75,14 +59,15 @@ abstract class OfflineFirstWithGraphQLRespository
       restProvider.client,
       offlineQueueHttpClientRequestSqliteCacheManager ??
           RequestSqliteCacheManager(_queueDatabaseName),
-    );
-    offlineRequestQueue = OfflineRequestQueue(
-      client: remoteProvider.client as OfflineQueueHttpClient,
+    ) as GraphQLClient;
+    offlineRequestQueue = OfflineGraphqlRequestQueue(
+      client: remoteProvider.client as OfflineGraphQLClient,
+      queryString: '',
     );
   }
 
   @override
-  Future<bool> delete<_Model extends OfflineFirstWithRestModel>(_Model instance,
+  Future<bool> delete<_Model extends OfflineFirstGraphQLModel>(_Model instance,
       {Query? query}) async {
     try {
       return await super.delete<_Model>(instance, query: query);
@@ -97,7 +82,7 @@ abstract class OfflineFirstWithGraphQLRespository
   }
 
   @override
-  Future<List<_Model>> get<_Model extends OfflineFirstWithRestModel>({
+  Future<List<_Model>> get<_Model extends OfflineFirstGraphQLModel>({
     query,
     bool alwaysHydrate = false,
     bool hydrateUnexisting = true,
@@ -144,7 +129,7 @@ abstract class OfflineFirstWithGraphQLRespository
   /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
   /// Defaults `false`.
   @override
-  Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(_Model instance,
+  Future<_Model> upsert<_Model extends OfflineFirstGraphQLModel>(_Model instance,
       {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
@@ -165,7 +150,7 @@ abstract class OfflineFirstWithGraphQLRespository
 
   @protected
   @override
-  Future<List<_Model>> hydrate<_Model extends OfflineFirstWithGraphQLRespository>({
+  Future<List<_Model>> hydrate<_Model extends OfflineFirstGraphQLModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
@@ -179,7 +164,7 @@ abstract class OfflineFirstWithGraphQLRespository
   }
 
   bool _ignoreTunnelException(RestException exception) =>
-      OfflineQueueHttpClient.isATunnelNotFoundResponse(exception.response) &&
+      OfflineGraphqlRequestQueue.isATunnelNotFoundResponse(exception.response) &&
       !throwTunnelNotFoundExceptions;
 }
 
