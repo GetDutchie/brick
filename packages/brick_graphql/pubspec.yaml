@@ -31,24 +31,6 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
-  brick_build:
-    path: ../brick_build
-  brick_offline_first:
-    path: ../brick_offline_first
-  brick_offline_first_abstract:
-    path: ../brick_offline_first_abstract
-  brick_rest:
-    path: ../brick_rest
-  brick_sqlite:
-    path: ../brick_sqlite
-  brick_sqlite_abstract:
-    path: ../brick_sqlite_abstract
-  brick_offline_first_with_rest_build:
-    path: ../brick_offline_first_with_rest_build
-  brick_sqlite_generators:
-    path: ../brick_sqlite_generators
-  brick_rest_generators:
-    path: ../brick_rest_generators
 
   gql_build: "0.3.0-alpha+1633799193977"
   gql_code_builder: "0.3.0-alpha+1633799193964"
