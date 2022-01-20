@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.0
+
+* Supports `ignoreFrom`, `ignoreTo`, and `enumAsString`
+
 ## 1.1.4
 
 * Fix casting when deserializing enums. The analyzer does not alert for `cast` on a list that could contain nullable values; if the field type is non-nullable, null types must be removed before the cast.
