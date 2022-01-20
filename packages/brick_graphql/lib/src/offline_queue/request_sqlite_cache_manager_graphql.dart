@@ -84,7 +84,6 @@ class RequestGrapqQLSqliteCacheManager {
         `$GRAPHQL_JOB_LOCKED_COLUMN` INTEGER DEFAULT 0,
         `$GRAPHQL_JOB_OPERATION_NAME_COLUMN` TEXT,
         `$GRAPHQL_JOB_UPDATED_AT` INTEGER DEFAULT 0,
-        `$GRAPHQL_JOB_OPERATION_TYPE_COLUMN   ` TEXT,
         `$GRAPHQL_JOB_CREATED_AT_COLUMN` INTEGER DEFAULT 0
       );
     ''';
@@ -202,9 +201,6 @@ const GRAPHQL_JOB_VARIABLES_COLUMN = 'varibles';
 
 /// int; 1 for true, 0 for false
 const GRAPHQL_JOB_LOCKED_COLUMN = 'locked';
-
-/// String
-const GRAPHQL_JOB_OPERATION_TYPE_COLUMN = 'operation_type';
 
 /// String
 const GRAPHQL_JOB_OPERATION_NAME_COLUMN = 'name';

@@ -34,7 +34,6 @@ class RequestGraphqlSqliteCache {
       GRAPHQL_JOB_DOCUMENT_COLUMN,
       GRAPHQL_JOB_VARIABLES_COLUMN,
       GRAPHQL_JOB_OPERATION_NAME_COLUMN,
-      GRAPHQL_JOB_OPERATION_TYPE_COLUMN,
     ];
 
     final whereStatement = columns.join(' = ? AND ');
@@ -67,7 +66,6 @@ class RequestGraphqlSqliteCache {
       }
       final methodWithUrl = [
         response[GRAPHQL_JOB_OPERATION_NAME_COLUMN],
-        response[GRAPHQL_JOB_OPERATION_TYPE_COLUMN]
       ].join(' ');
       logger?.warning(
           'failed, attempt #${response[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $methodWithUrl : $response');
@@ -95,7 +93,6 @@ class RequestGraphqlSqliteCache {
       GRAPHQL_JOB_VARIABLES_COLUMN: request.variables.toString(),
       GRAPHQL_JOB_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
       GRAPHQL_JOB_OPERATION_NAME_COLUMN: request.operation.operationName.toString(),
-      GRAPHQL_JOB_OPERATION_TYPE_COLUMN: request.type.toString(),
       GRAPHQL_JOB_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
     };
   }
@@ -119,9 +116,7 @@ class RequestGraphqlSqliteCache {
     final variables = jsonDecode(data[GRAPHQL_JOB_VARIABLES_COLUMN]);
 
     final operation = Operation(document: document, operationName: operationName);
-    var _request = Request(variables: variables, operation: operation);
-
-    return _request;
+    return Request(variables: variables, operation: operation);
   }
 
   static Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async =>

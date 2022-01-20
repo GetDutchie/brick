@@ -5,8 +5,8 @@ import 'package:graphql/client.dart';
 
 /// Stores all requests in a SQLite database
 class OfflineQueueGraphqlClient {
-  /// A normal HTTP client, treated like a manual `super`
-  /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
+  /// A DocumentNode GraphQL execution interface
+  /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
 
   final RequestGrapqQLSqliteCacheManager requestManager;
