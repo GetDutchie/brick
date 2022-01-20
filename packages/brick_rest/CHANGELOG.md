@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.1
+
+* Upgrade `brick_core`
+
 ## 1.1.0
 
 * Add Dart Lints

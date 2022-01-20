@@ -8,6 +8,7 @@ import 'package:brick_build_test/brick_build_test.dart';
 
 import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as _$sqliteColumnType;
 import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as _$sqliteUnique;
+import 'sqlite_model_serdes_generator/test_sqlite_enum_as_string.dart' as _$sqliteEnumAsString;
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
     as _$fieldWithTypeArgument;
 import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as _$booleanFields;
@@ -15,8 +16,7 @@ import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
     as _$afterSaveWithAssociation;
 import 'sqlite_model_serdes_generator/test_after_save_with_non_final_association.dart'
     as _$afterSaveWithNonFinalAssociation;
-import 'sqlite_model_serdes_generator/test_all_field_types.dart'
-    as _$allFieldTypes;
+import 'sqlite_model_serdes_generator/test_all_field_types.dart' as _$allFieldTypes;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -58,6 +58,10 @@ void main() {
       test('unique', () async {
         await generateAdapterExpectation('sqlite_unique', _$sqliteUnique.output);
       });
+
+      test('enumAsString', () async {
+        await generateAdapterExpectation('sqlite_enum_as_string', _$sqliteEnumAsString.output);
+      });
     });
 
     test('FieldWithTypeArgument', () async {
@@ -79,8 +83,7 @@ void main() {
     });
 
     test('AllFieldTypes', () async {
-      await generateAdapterExpectation(
-          'all_field_types', _$allFieldTypes.output);
+      await generateAdapterExpectation('all_field_types', _$allFieldTypes.output);
     });
   });
 }

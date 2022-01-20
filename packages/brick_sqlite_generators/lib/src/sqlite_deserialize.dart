@@ -48,6 +48,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       );
     }
 
+    if (fieldAnnotation.ignoreFrom) return null;
+
     if (fieldAnnotation.columnType != null) {
       return fieldValue;
     }
@@ -125,6 +127,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
+        if (fieldAnnotation.enumAsString) {
+          return "jsonDecode($fieldValue ?? []).map((d) => ${SharedChecker.withoutNullability(argType)}.values.firstWhere((v) => v.toString().split('.').last == d as String))";
+        }
+
         final discoveredByIndex =
             'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
         final nullableSuffix = checker.isNullable ? '?' : '';
@@ -167,6 +173,13 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
+      if (fieldAnnotation.enumAsString) {
+        final nullablePrefix = checker.isNullable
+            ? "$fieldValue == null ? ${fieldAnnotation.defaultValue ?? 'null'} : "
+            : '';
+        return "$nullablePrefix${SharedChecker.withoutNullability(field.type)}.values.firstWhere((v) => v.toString().split('.').last == $fieldValue as String)";
+      }
+
       if (checker.isNullable) {
         return '($fieldValue > -1 ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null)$defaultValue';
       }

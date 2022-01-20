@@ -16,13 +16,12 @@ class Rest implements FieldSerializable {
   /// single field types of `enum`.
   ///
   /// The type of this field should be an enum. Defaults to `false`.
+  @override
   final bool enumAsString;
 
   @override
   final String? fromGenerator;
 
-  /// `true` if the generator should ignore this field completely.
-  /// When `true`, takes precedence over [ignoreFrom] and [ignoreTo]. Defaults to `false`.
   @override
   final bool ignore;
 

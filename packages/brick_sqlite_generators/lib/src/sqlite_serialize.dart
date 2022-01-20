@@ -82,6 +82,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       );
     }
 
+    if (fieldAnnotation.ignoreTo) return null;
+
     if (fieldAnnotation.columnType != null) {
       return fieldValue;
     }
@@ -107,9 +109,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       if (argTypeChecker.isEnum) {
         final nullablePrefix = checker.isNullable ? '?' : '';
         final nullableDefault = checker.isNullable ? ' ?? []' : '';
+        final serializedValue = fieldAnnotation.enumAsString
+            ? "s.toString().split('.').last"
+            : '${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)';
         return '''
           jsonEncode($fieldValue$nullablePrefix.map((s) =>
-            ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)
+            $serializedValue
           ).toList()$nullableDefault)
         ''';
       }
@@ -160,6 +165,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // enum
     } else if (checker.isEnum) {
+      if (fieldAnnotation.enumAsString) {
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        return "$fieldValue$nullabilitySuffix.toString().split('.').last";
+      }
+
       if (checker.isNullable) {
         return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
       }

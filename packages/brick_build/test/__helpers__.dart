@@ -11,6 +11,9 @@ class FieldAnnotation extends FieldSerializable {
   String? get defaultValue => null;
 
   @override
+  bool get enumAsString => false;
+
+  @override
   String? get fromGenerator => null;
 
   @override
@@ -18,6 +21,12 @@ class FieldAnnotation extends FieldSerializable {
 
   @override
   bool get ignore => false;
+
+  @override
+  bool get ignoreFrom => false;
+
+  @override
+  bool get ignoreTo => false;
 
   @override
   final String name;

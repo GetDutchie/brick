@@ -20,7 +20,10 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 
     if (obj == null) {
       return Sqlite(
+        enumAsString: Sqlite.defaults.enumAsString,
         ignore: Sqlite.defaults.ignore,
+        ignoreTo: Sqlite.defaults.ignoreTo,
+        ignoreFrom: Sqlite.defaults.ignoreFrom,
         index: Sqlite.defaults.index,
         name: StringHelpers.snakeCase(element.name),
         nullable: config?.nullable ?? Sqlite.defaults.nullable,
@@ -41,8 +44,11 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
     return Sqlite(
       columnType: columnType,
       defaultValue: obj.getField('defaultValue')?.toStringValue(),
+      enumAsString: obj.getField('enumAsString')?.toBoolValue() ?? Sqlite.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')?.toStringValue(),
       ignore: obj.getField('ignore')?.toBoolValue() ?? Sqlite.defaults.ignore,
+      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? Sqlite.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Sqlite.defaults.ignoreTo,
       index: obj.getField('index')?.toBoolValue() ?? Sqlite.defaults.index,
       name: obj.getField('name')?.toStringValue() ?? StringHelpers.snakeCase(element.name),
       nullable:

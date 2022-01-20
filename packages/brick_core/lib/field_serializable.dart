@@ -10,6 +10,13 @@ abstract class FieldSerializable {
   /// This value is usually only applied during deserialization.
   String? get defaultValue;
 
+  /// By default, all enums are assumed to be delivered as `int`.
+  /// However, this requires order to be maintained; additionally some providers
+  /// deliver enums as `String` (e.g. `{"party", "baseball", ...}`). This field value should apply to Iterable and single field types of `enum`.
+  ///
+  /// The type of this field should be an enum. Defaults to `false`.
+  bool get enumAsString;
+
   /// Manipulates output for the field in the deserialize generator.
   /// The instance's field name is automatically defined. While the build method is ultimately
   /// responsible for how the output is applied, it is most often directly injected as the
@@ -21,7 +28,16 @@ abstract class FieldSerializable {
   String? get fromGenerator;
 
   /// `true` if the generator should ignore this field completely.
+  /// When `true`, takes precedence over [ignoreFrom] and [ignoreTo]. Defaults to `false`.
   bool get ignore;
+
+  /// `true` if this field should be ignored **only during** deserializization
+  /// (when remote data is converted to Dart code). Defaults to `false`.
+  bool get ignoreFrom;
+
+  /// `true` if this field should be ignored **only during** serializization
+  /// (when Dart code is sent to a remote source). Defaults to `false`.
+  bool get ignoreTo;
 
   /// The key name to use when reading and writing values corresponding
   /// to the annotated field.

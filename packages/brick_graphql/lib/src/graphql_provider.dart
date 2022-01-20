@@ -1,5 +1,5 @@
 import 'package:brick_core/src/model_dictionary.dart';
-import 'package:brick_core/src/model.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
 
 /// A [Provider] fetches raw data and creates [Model]s. An app can have many [Provider]s.
 class GraphQLProvider<GraphQLModel> {
