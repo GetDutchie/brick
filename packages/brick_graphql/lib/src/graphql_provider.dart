@@ -9,14 +9,17 @@ class GraphQLProvider<GraphQLModel> {
     required this.modelDictionary,
   });
 
-  Future<bool> delete<T extends GraphQLModel>(instance, {query, repository}) async =>
+  Future<bool> delete<T extends GraphQLModel>(instance,
+          {query, repository}) async =>
       throw UnimplementedError();
 
   Future<bool> exists<T extends GraphQLModel>({query, repository}) async =>
       throw UnimplementedError();
 
-  Future<T> get<T extends GraphQLModel>({query, repository}) async => throw UnimplementedError();
+  Future<T> get<T extends GraphQLModel>({query, repository}) async =>
+      throw UnimplementedError();
 
-  Future<T> upsert<T extends GraphQLModel>(instance, {query, repository}) async =>
+  Future<T> upsert<T extends GraphQLModel>(instance,
+          {query, repository}) async =>
       throw UnimplementedError();
 }

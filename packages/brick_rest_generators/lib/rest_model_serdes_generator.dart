@@ -9,7 +9,8 @@ import 'package:brick_rest/rest.dart' show RestSerializable, FieldRename;
 
 /// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
 /// to and from a `RestProvider`.
-class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSerializable> {
+class RestModelSerdesGenerator
+    extends ProviderSerializableGenerator<RestSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
   final String? repositoryName;
@@ -33,11 +34,16 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
     );
 
     return RestSerializable(
-      nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
-      fieldRename: fieldRenameByEnumName ?? RestSerializable.defaults.fieldRename,
-      endpoint: withinConfigKey('endpoint')?.stringValue ?? RestSerializable.defaults.endpoint,
-      fromKey: withinConfigKey('fromKey')?.stringValue ?? RestSerializable.defaults.fromKey,
-      toKey: withinConfigKey('toKey')?.stringValue ?? RestSerializable.defaults.toKey,
+      nullable: withinConfigKey('nullable')?.boolValue ??
+          RestSerializable.defaults.nullable,
+      fieldRename:
+          fieldRenameByEnumName ?? RestSerializable.defaults.fieldRename,
+      endpoint: withinConfigKey('endpoint')?.stringValue ??
+          RestSerializable.defaults.endpoint,
+      fromKey: withinConfigKey('fromKey')?.stringValue ??
+          RestSerializable.defaults.fromKey,
+      toKey: withinConfigKey('toKey')?.stringValue ??
+          RestSerializable.defaults.toKey,
     );
   }
 
