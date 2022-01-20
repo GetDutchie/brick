@@ -5,7 +5,8 @@ import 'package:brick_graphql_generators/src/graphql_serdes_generator.dart';
 import 'package:brick_rest_generators/generators.dart' show JsonSerialize;
 
 /// Generate a function to produce a [ClassElement] from GraphQL data
-class GraphQLSerialize extends GraphQLSerdesGenerator with JsonSerialize<GraphQLModel, GraphQL> {
+class GraphQLSerialize extends GraphQLSerdesGenerator
+    with JsonSerialize<GraphQLModel, GraphQL> {
   GraphQLSerialize(
     ClassElement element,
     GraphQLFields fields, {
