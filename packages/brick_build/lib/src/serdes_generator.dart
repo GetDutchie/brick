@@ -298,14 +298,14 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
     return _formatter.format(output);
   }
 
-  /// If this element possesses a factory such as `fromRest`
+  /// If this class possesses a factory such as `fromRest`
   @protected
   bool hasConstructor(DartType type) {
     final classElement = type.element as ClassElement;
     return classElement.getNamedConstructor(constructorName) != null;
   }
 
-  /// If this field possesses a serializing method such as `toSqlite`
+  /// If this class possesses a serializing method such as `toSqlite`
   @protected
   bool hasSerializer(DartType type) {
     final classElement = type.element as ClassElement;
