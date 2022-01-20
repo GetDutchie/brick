@@ -36,7 +36,7 @@ class OfflineQueueGraphqlClient {
       // Attempt to make Graphql Request
       final resp = await _inner.request(request).first;
 
-      if (!(resp.errors == [])) {
+      if (!isAGraphqlErrorsEmpty(resp)) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
@@ -55,6 +55,8 @@ class OfflineQueueGraphqlClient {
   }
 
   /// This method checks if there are any Graphql errors present
+  /// TODO need to find a better way to find out how a Link determines a request is offline
+  /// Similar to _ignoreTunnelException
   static bool isAGraphqlErrorsEmpty(Response response) {
     return response.errors == [];
   }
