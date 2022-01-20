@@ -45,13 +45,13 @@ class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
 
     return GraphQL(
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
-      enumAsString: obj.getField('enumAsString')!.toBoolValue() ?? GraphQL.defaults.enumAsString,
+      enumAsString: obj.getField('enumAsString')?.toBoolValue() ?? GraphQL.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
-      ignore: obj.getField('ignore')!.toBoolValue() ?? GraphQL.defaults.ignore,
-      ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? GraphQL.defaults.ignoreFrom,
-      ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? GraphQL.defaults.ignoreTo,
-      name: obj.getField('name')!.toStringValue() ?? _renameField(element.name),
-      nullable: obj.getField('nullable')!.toBoolValue() ?? GraphQL.defaults.nullable,
+      ignore: obj.getField('ignore')?.toBoolValue() ?? GraphQL.defaults.ignore,
+      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? GraphQL.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? GraphQL.defaults.ignoreTo,
+      name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
+      nullable: obj.getField('nullable')?.toBoolValue() ?? GraphQL.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }

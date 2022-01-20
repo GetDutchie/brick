@@ -98,7 +98,7 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
         if (fieldAnnotation.enumAsString) {
           final nullableSuffix = argTypeChecker.isNullable ? '' : '!';
           return '''$fieldValue.map(
-            (value) => RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)$nullableSuffix
+            (value) => ${providerName}Adapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)$nullableSuffix
           )$castIterable$defaultValue
           ''';
         } else {
@@ -133,7 +133,7 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
     } else if (checker.isEnum) {
       if (fieldAnnotation.enumAsString) {
         final nullableSuffix = checker.isNullable ? '' : '!';
-        return 'RestAdapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$nullableSuffix$defaultValue';
+        return '${providerName}Adapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$nullableSuffix$defaultValue';
       } else {
         if (checker.isNullable) {
           return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';
