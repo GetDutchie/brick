@@ -39,17 +39,15 @@ jobs:
             ${{ runner.os }}-brick_core-v1-${{ matrix.sdk_version }}
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_core_pub_get
-        name: dart pub get
-        if: "always() && steps.checkout.conclusion == 'success'"
+
+      - run: dart pub get
         working-directory: packages/brick_core
-        run: dart pub get
-      - id: packages_brick_core_analyze
-        name: dart_analyze
-        if: "always() && steps.packages_brick_core_pub_get.conclusion == 'success'"
+
+      - run: dart analyze --fatal-infos
         working-directory: packages/brick_core
-        run: dart analyze --fatal-warnings lib
-      - name: dart test
-        if: "always() && steps.packages_brick_core_analyze.conclusion == 'success'"
+
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed .
         working-directory: packages/brick_core
-        run: dart test
+
+      - run: dart test
+        working-directory: packages/brick_core
