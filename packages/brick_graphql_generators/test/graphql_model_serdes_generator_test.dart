@@ -6,10 +6,8 @@ import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
-import 'graphql_model_serdes_generator/test_enum_as_string.dart'
-    as enum_as_string;
-import 'graphql_model_serdes_generator/test_ignore_from_to.dart'
-    as ignore_from_to;
+import 'graphql_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
+import 'graphql_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 import 'graphql_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
 import 'graphql_model_serdes_generator/test_constructor_member_field_mismatch.dart'
@@ -31,13 +29,13 @@ void main() {
       });
 
       test('fromGenerator toGenerator', () async {
-        await generateExpectation('unserializable_field_with_generator',
-            unserializable_field_with_generator.output);
+        await generateExpectation(
+            'unserializable_field_with_generator', unserializable_field_with_generator.output);
       });
 
       test('GraphQLConstructorMemberFieldMismatch', () async {
-        await generateExpectation('constructor_member_field_mismatch',
-            constructor_member_field_mismatch.output);
+        await generateExpectation(
+            'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
       });
     });
   });
@@ -57,26 +55,21 @@ class TestGenerator extends AnnotationSuperGenerator<GraphQLSerializable> {
 
   /// Given an [element] and an [annotation], scaffold generators
   @override
-  List<SerdesGenerator> buildGenerators(
-      Element element, ConstantReader annotation) {
-    final serializableGenerator = GraphQLModelSerdesGenerator(
-        element, annotation,
-        repositoryName: repositoryName);
+  List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
+    final serializableGenerator =
+        GraphQLModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     return serializableGenerator.generators;
   }
 }
 
-Future<void> generateExpectation(String filename, String output,
-    {TestGenerator? generator}) async {
+Future<void> generateExpectation(String filename, String output, {TestGenerator? generator}) async {
   final reader = await generateReader(filename);
-  final generated =
-      await (generator ?? _generator).generate(reader, MockBuildStep());
+  final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
 Future<void> generateAdapterExpectation(String filename, String output) async {
-  final annotation =
-      await annotationForFile<GraphQLSerializable>(folder, filename);
+  final annotation = await annotationForFile<GraphQLSerializable>(folder, filename);
   final generated = _generator.generateAdapter(
     annotation.element,
     annotation.annotation,

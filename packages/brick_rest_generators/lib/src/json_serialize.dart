@@ -10,10 +10,8 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
   final doesDeserialize = false;
 
   @override
-  String? coderForField(field, checker,
-      {required wrappedInFuture, required fieldAnnotation}) {
-    final fieldValue =
-        serdesValueForField(field, fieldAnnotation.name!, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;
 
     // DateTime
@@ -57,10 +55,8 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
       // RestModel, Future<RestModel>
     } else if (checker.isSibling) {
       final wrappedField = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
-      final isNullableField =
-          checker.unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
-      final wrappedFieldWithSuffix =
-          isNullableField ? '$wrappedField!' : wrappedField;
+      final isNullableField = checker.unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
+      final wrappedFieldWithSuffix = isNullableField ? '$wrappedField!' : wrappedField;
 
       final result =
           'await ${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().to$providerName($wrappedFieldWithSuffix, provider: provider, repository: repository)';

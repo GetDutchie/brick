@@ -3,17 +3,14 @@ import 'package:brick_rest_generators/src/json_serdes_generator.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
 
-mixin JsonDeserialize<_Model extends Model,
-        _Annotation extends FieldSerializable>
+mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializable>
     on JsonSerdesGenerator<_Model, _Annotation> {
   @override
   final doesDeserialize = true;
 
   @override
-  String? coderForField(field, checker,
-      {required wrappedInFuture, required fieldAnnotation}) {
-    final fieldValue =
-        serdesValueForField(field, fieldAnnotation.name!, checker: checker);
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
     if (fieldAnnotation.ignoreFrom) return null;
@@ -27,9 +24,8 @@ mixin JsonDeserialize<_Model extends Model,
 
       // bool, double, int, num, String
     } else if (checker.isDartCoreType) {
-      final wrappedCheckerType = wrappedInFuture
-          ? 'Future<${checker.targetType}>'
-          : checker.targetType.toString();
+      final wrappedCheckerType =
+          wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();
       return '$fieldValue as $wrappedCheckerType$defaultValue';
 
       // Iterable
@@ -47,10 +43,7 @@ mixin JsonDeserialize<_Model extends Model,
       // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
         final fromJsonCast = SerdesGenerator.iterableCast(argType,
-            isSet: checker.isSet,
-            isList: checker.isList,
-            isFuture: true,
-            forceCast: true);
+            isSet: checker.isSet, isList: checker.isList, isFuture: true, forceCast: true);
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>
@@ -61,8 +54,7 @@ mixin JsonDeserialize<_Model extends Model,
         if (wrappedInFuture) {
           deserializeMethod = 'Future.wait<$argType>($deserializeMethod ?? [])';
         } else if (!checker.isArgTypeAFuture && !checker.isFuture) {
-          deserializeMethod =
-              'await Future.wait<$argType>($deserializeMethod ?? [])';
+          deserializeMethod = 'await Future.wait<$argType>($deserializeMethod ?? [])';
         }
 
         if (checker.isSet) {

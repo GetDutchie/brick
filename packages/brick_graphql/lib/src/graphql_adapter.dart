@@ -22,8 +22,7 @@ abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
   /// Returns an enum value based on its string name. For example, given `'POST'`,
   /// and the enum `enum Methods { GET, POST, DELETE }`, `Methods.POST` is returned.
   static T? enumValueFromName<T>(Iterable<T> enumValues, String enumName) {
-    return firstWhereOrNull(
-        enumValues, (e) => e.toString().split('.').last == enumName);
+    return firstWhereOrNull(enumValues, (e) => e.toString().split('.').last == enumName);
   }
 
   /// After Dart 2.12, `firstWhere` can be a non-nullable return value. Instead of an extension,
@@ -31,8 +30,7 @@ abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
   ///
   /// From https://github.com/dart-lang/collection/blob/master/lib/src/iterable_extensions.dart
   /// to avoid importing a package for a single function.
-  static T? firstWhereOrNull<T>(
-      Iterable<T> values, bool Function(T item) test) {
+  static T? firstWhereOrNull<T>(Iterable<T> values, bool Function(T item) test) {
     for (var item in values) {
       if (test(item)) return item;
     }

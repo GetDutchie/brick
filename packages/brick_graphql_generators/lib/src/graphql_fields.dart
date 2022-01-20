@@ -13,8 +13,7 @@ class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
   /// Change serialization key based on the configuration.
   /// `name` defined with a field annotation (`@GraphQL`) take precedence.
   String _renameField(String name) {
-    final renameTo =
-        config?.fieldRename ?? GraphQLSerializable.defaults.fieldRename;
+    final renameTo = config?.fieldRename ?? GraphQLSerializable.defaults.fieldRename;
     switch (renameTo) {
       case FieldRename.none:
         return name;
@@ -46,17 +45,13 @@ class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
 
     return GraphQL(
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
-      enumAsString: obj.getField('enumAsString')?.toBoolValue() ??
-          GraphQL.defaults.enumAsString,
+      enumAsString: obj.getField('enumAsString')?.toBoolValue() ?? GraphQL.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
       ignore: obj.getField('ignore')?.toBoolValue() ?? GraphQL.defaults.ignore,
-      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ??
-          GraphQL.defaults.ignoreFrom,
-      ignoreTo:
-          obj.getField('ignoreTo')?.toBoolValue() ?? GraphQL.defaults.ignoreTo,
+      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? GraphQL.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? GraphQL.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
-      nullable:
-          obj.getField('nullable')?.toBoolValue() ?? GraphQL.defaults.nullable,
+      nullable: obj.getField('nullable')?.toBoolValue() ?? GraphQL.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }

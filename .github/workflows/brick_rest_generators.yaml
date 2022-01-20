@@ -46,7 +46,7 @@ jobs:
       - run: dart analyze --fatal-infos lib
         working-directory: packages/brick_rest_generators
 
-      - run: dart format --output=none --line-length 80 --set-exit-if-changed .
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed .
         working-directory: packages/brick_rest_generators
 
       - run: dart test

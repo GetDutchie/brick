@@ -13,8 +13,7 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
   /// Change serialization key based on the configuration.
   /// `name` defined with a field annotation (`@Rest`) take precedence.
   String _renameField(String name) {
-    final renameTo =
-        config?.fieldRename ?? RestSerializable.defaults.fieldRename;
+    final renameTo = config?.fieldRename ?? RestSerializable.defaults.fieldRename;
     switch (renameTo) {
       case FieldRename.none:
         return name;
@@ -46,18 +45,14 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
 
     return Rest(
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
-      enumAsString: obj.getField('enumAsString')!.toBoolValue() ??
-          Rest.defaults.enumAsString,
+      enumAsString: obj.getField('enumAsString')!.toBoolValue() ?? Rest.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
       ignore: obj.getField('ignore')!.toBoolValue() ?? Rest.defaults.ignore,
-      ignoreFrom:
-          obj.getField('ignoreFrom')!.toBoolValue() ?? Rest.defaults.ignoreFrom,
-      ignoreTo:
-          obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
+      ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Rest.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
       name: obj.getField('name')!.toStringValue() ?? _renameField(element.name),
-      nullable: obj.getField('nullable')!.toBoolValue() ??
-          config?.nullable ??
-          Rest.defaults.nullable,
+      nullable:
+          obj.getField('nullable')!.toBoolValue() ?? config?.nullable ?? Rest.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }
