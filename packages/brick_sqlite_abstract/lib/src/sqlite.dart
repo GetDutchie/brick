@@ -23,10 +23,19 @@ class Sqlite implements FieldSerializable {
   final String? defaultValue;
 
   @override
+  final bool enumAsString;
+
+  @override
   final String? fromGenerator;
 
   @override
   final bool ignore;
+
+  @override
+  final bool ignoreFrom;
+
+  @override
+  final bool ignoreTo;
 
   /// Create an `INDEX` on a single column. A `UNIQUE` index will be created when
   /// [unique] is `true`. When [unique] is `true` and [index] is absent or `false`, an
@@ -92,8 +101,11 @@ class Sqlite implements FieldSerializable {
   const Sqlite({
     this.columnType,
     this.defaultValue,
+    bool? enumAsString,
     this.fromGenerator,
     bool? ignore,
+    bool? ignoreTo,
+    bool? ignoreFrom,
     bool? index,
     this.name,
     bool? nullable,
@@ -101,7 +113,10 @@ class Sqlite implements FieldSerializable {
     bool? onDeleteSetDefault,
     this.toGenerator,
     bool? unique,
-  })  : ignore = ignore ?? false,
+  })  : enumAsString = enumAsString ?? false,
+        ignore = ignore ?? false,
+        ignoreFrom = ignoreFrom ?? false,
+        ignoreTo = ignoreTo ?? false,
         index = index ?? false,
         nullable = nullable ?? true,
         onDeleteCascade = onDeleteCascade ?? false,
