@@ -1,12 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:brick_graphql/src/offline_queue/request_sqlite_cache_graphql.dart';
+import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:meta/meta.dart';
 import 'package:graphql/client.dart';
 
 /// Fetch and delete [RequestGraphqlSqliteCache]s.
-class RequestGrapqQLSqliteCacheManager {
+class RequestGraphqlSqliteCacheManager {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
@@ -37,7 +37,7 @@ class RequestGrapqQLSqliteCacheManager {
   /// Defaults `true`.
   final bool serialProcessing;
 
-  RequestGrapqQLSqliteCacheManager(
+  RequestGraphqlSqliteCacheManager(
     this.databaseName, {
     this.databaseFactory,
     this.processingInterval = const Duration(seconds: 5),

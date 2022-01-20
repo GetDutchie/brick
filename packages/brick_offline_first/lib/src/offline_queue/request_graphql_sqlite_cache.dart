@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:brick_graphql/src/offline_queue/request_sqlite_cache_manager_graphql.dart';
+import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
 import 'package:graphql/client.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';

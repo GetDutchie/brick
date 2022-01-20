@@ -1,5 +1,5 @@
-import 'package:brick_graphql/src/offline_queue/request_sqlite_cache_graphql.dart';
-import 'package:brick_graphql/src/offline_queue/request_sqlite_cache_manager_graphql.dart';
+import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:graphql/client.dart';
 
@@ -9,7 +9,7 @@ class OfflineQueueGraphqlClient {
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
 
-  final RequestGrapqQLSqliteCacheManager requestManager;
+  final RequestGraphqlSqliteCacheManager requestManager;
 
   final Logger _logger;
 
