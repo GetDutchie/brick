@@ -1,11 +1,11 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:brick_graphql/src/offline_queue/request_sqlite_cache_graphql.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:meta/meta.dart';
 import 'package:graphql/client.dart';
 
-/// Fetch and delete [RequestSqliteCache]s.
+/// Fetch and delete [RequestGraphqlSqliteCache]s.
 class RequestGrapqQLSqliteCacheManager {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
@@ -113,7 +113,7 @@ class RequestGrapqQLSqliteCacheManager {
             DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[GRAPHQL_JOB_UPDATED_AT]);
         final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
-          await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
+          await RequestGraphqlSqliteCache.unlockRequest(latestLockedRequests.first, txn);
         }
         if (serialProcessing) return [];
       }
@@ -122,13 +122,13 @@ class RequestGrapqQLSqliteCacheManager {
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests.isEmpty) return [];
       // lock the latest unlocked request
-      await RequestSqliteCache.lockRequest(unlockedRequests.first, txn);
+      await RequestGraphqlSqliteCache.lockRequest(unlockedRequests.first, txn);
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
     });
 
-    final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<Request>();
+    final jobs = unprocessedRequests.map(RequestGraphqlSqliteCache.sqliteToRequest).cast<Request>();
 
     if (jobs.isNotEmpty) return jobs.first;
 

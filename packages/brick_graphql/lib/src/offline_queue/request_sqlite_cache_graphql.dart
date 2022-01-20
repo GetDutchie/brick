@@ -6,10 +6,10 @@ import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Serialize and Deserialize a [http.Request] from SQLite.
-class RequestGraphQLSqliteCache {
+class RequestGraphqlSqliteCache {
   final Request request;
 
-  RequestGraphQLSqliteCache(this.request);
+  RequestGraphqlSqliteCache(this.request);
 
   /// Removes the request from the database and thus the queue
   Future<int> delete(Database db) async {

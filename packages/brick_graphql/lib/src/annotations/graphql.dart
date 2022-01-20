@@ -1,8 +1,8 @@
 import 'package:brick_core/field_serializable.dart';
 
-/// An annotation used to specify how a field is serialized for a [GraphQLAdapter].
+/// An annotation used to specify how a field is serialized for a [GraphqlAdapter].
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
-class GraphQL implements FieldSerializable {
+class Graphql implements FieldSerializable {
   /// The value to use if the source does not contain this key or if the
   /// value is `null`. **Only applicable during deserialization.**
   ///
@@ -11,7 +11,7 @@ class GraphQL implements FieldSerializable {
   @override
   final String? defaultValue;
 
-  /// By default, all enums from GraphQL are assumed to be delivered as `int`. For APIs that
+  /// By default, all enums from Graphql are assumed to be delivered as `int`. For APIs that
   /// deliver enums as `String` (e.g. `{"party", "baseball", ...}`). Works for Iterable and
   /// single field types of `enum`.
   ///
@@ -44,7 +44,7 @@ class GraphQL implements FieldSerializable {
   final String? name;
 
   /// When `true`, `null` fields are handled gracefully when encoding from JSON.
-  /// This indicates that the payload from GraphQL could be `null` and is not related to
+  /// This indicates that the payload from Graphql could be `null` and is not related to
   /// Dart nullability. Defaults to `false`.
   @override
   final bool nullable;
@@ -52,10 +52,10 @@ class GraphQL implements FieldSerializable {
   @override
   final String? toGenerator;
 
-  /// Creates a new [GraphQL] instance.
+  /// Creates a new [Graphql] instance.
   ///
   /// Only required when the default behavior is not desired.
-  const GraphQL({
+  const Graphql({
     this.defaultValue,
     bool? enumAsString,
     this.fromGenerator,
@@ -71,6 +71,6 @@ class GraphQL implements FieldSerializable {
         ignoreTo = ignoreTo ?? false,
         nullable = nullable ?? false;
 
-  /// An instance of [GraphQL] with all fields set to their default values.
-  static const defaults = GraphQL();
+  /// An instance of [Graphql] with all fields set to their default values.
+  static const defaults = Graphql();
 }

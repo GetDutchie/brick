@@ -1,3 +1,3 @@
-# Brick GraphQL
+# Brick Graphql
 
-Core logic for interfacing with a GraphQL server with Brick.
+Core logic for interfacing with a grapql server with Brick.

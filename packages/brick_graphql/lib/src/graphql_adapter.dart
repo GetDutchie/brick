@@ -4,17 +4,17 @@ import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:gql/ast.dart';
 
 /// Constructors that convert app models to and from REST
-abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
-  Future<_Model> fromGraphQL(
+abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
+  Future<_Model> fromGraphql(
     Map<String, dynamic> input, {
-    required GraphQLProvider provider,
-    ModelRepository<GraphQLModel>? repository,
+    required GraphqlProvider provider,
+    ModelRepository<GraphqlModel>? repository,
   });
 
-  Future<Map<String, dynamic>> toGraphQL(
+  Future<Map<String, dynamic>> toGraphql(
     _Model input, {
-    required GraphQLProvider provider,
-    ModelRepository<GraphQLModel>? repository,
+    required GraphqlProvider provider,
+    ModelRepository<GraphqlModel>? repository,
   });
 
   DocumentNode get mututationEndpoint;

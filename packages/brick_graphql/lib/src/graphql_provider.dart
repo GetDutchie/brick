@@ -3,22 +3,22 @@ import 'package:brick_core/src/model.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
 
 /// A [Provider] fetches raw data and creates [Model]s. An app can have many [Provider]s.
-class GraphQLProvider<GraphQLModel> {
+class GraphqlProvider<graphqlModel> {
   /// The translation between [Adapter]s and [Model]s
   final ModelDictionary modelDictionary;
 
-  const GraphQLProvider({
+  const GraphqlProvider({
     required this.modelDictionary,
   });
 
-  Future<bool> delete<T extends GraphQLModel>(instance, {query, repository}) async =>
+  Future<bool> delete<T extends graphqlModel>(instance, {query, repository}) async =>
       throw UnimplementedError();
 
-  Future<bool> exists<T extends GraphQLModel>({query, repository}) async =>
+  Future<bool> exists<T extends graphqlModel>({query, repository}) async =>
       throw UnimplementedError();
 
-  Future<T> get<T extends GraphQLModel>({query, repository}) async => throw UnimplementedError();
+  Future<T> get<T extends graphqlModel>({query, repository}) async => throw UnimplementedError();
 
-  Future<T> upsert<T extends GraphQLModel>(instance, {query, repository}) async =>
+  Future<T> upsert<T extends graphqlModel>(instance, {query, repository}) async =>
       throw UnimplementedError();
 }
