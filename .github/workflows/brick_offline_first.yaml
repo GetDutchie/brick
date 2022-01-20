@@ -47,7 +47,7 @@ jobs:
       - run: dart analyze --fatal-infos lib
         working-directory: packages/brick_offline_first
 
-      - run: dart format --output=none --line-length 100 --set-exit-if-changed .
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed lib
         working-directory: packages/brick_offline_first
 
       - run: flutter test
