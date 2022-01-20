@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 1.1.0
+
 * Add Dart lints
+* Add `enumAsString`
 
 ## 1.0.0+1
 

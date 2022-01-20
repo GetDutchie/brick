@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+* Upgrade `brick_core`
+
 ## 1.2.3
 
 * Allow forced type nullability on `getAssociationMethod` for improved null safety on future internals.

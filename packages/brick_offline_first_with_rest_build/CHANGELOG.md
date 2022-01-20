@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 1.2.0
+
 * Remove unnecessary import in `brick.g.dart`
+* Upgrade `brick_build`, `brick_rest_generators`, `brick_sqlite_generators`, `brick_sqlite_abstract`
 
 ## 1.1.4
 
