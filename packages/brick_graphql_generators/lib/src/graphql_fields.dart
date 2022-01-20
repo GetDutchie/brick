@@ -3,7 +3,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_rest_generators/generators.dart';
 
 /// Find `@GraphQL` given a field
 class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {

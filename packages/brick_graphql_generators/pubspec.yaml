@@ -15,7 +15,8 @@ dependencies:
   build: ^2.0.0
   dart_style: ^2.0.0
   source_gen: ^1.0.0
-  brick_rest_generators: any
+  brick_rest_generators:
+    path: ../brick_rest_generators
   brick_graphql:
     path: ../brick_graphql
 

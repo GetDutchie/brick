@@ -1,18 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_rest/rest.dart';
+import 'package:brick_rest_generators/src/json_serdes_generator.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serdes_generator.dart';
+import 'package:brick_core/field_serializable.dart';
+import 'package:brick_core/core.dart';
 
 /// Generate a function to produce a [ClassElement] from REST data
-class RestDeserialize extends RestSerdesGenerator {
+class RestDeserialize extends RestSerdesGenerator with JsonDeserialize<RestModel, Rest> {
   RestDeserialize(
     ClassElement element,
     RestFields fields, {
     required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
-
-  @override
-  final doesDeserialize = true;
 
   @override
   List<String> get instanceFieldsAndMethods {
@@ -29,6 +30,12 @@ class RestDeserialize extends RestSerdesGenerator {
       '@override\nfinal String? fromKey = $fromKey;',
     ];
   }
+}
+
+mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializable>
+    on JsonSerdesGenerator<_Model, _Annotation> {
+  @override
+  final doesDeserialize = true;
 
   @override
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {

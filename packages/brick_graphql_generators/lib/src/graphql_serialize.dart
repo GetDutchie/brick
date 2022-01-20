@@ -1,10 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
-import 'package:brick_rest/rest.dart';
+import 'package:brick_graphql_generators/src/graphql_serdes_generator.dart';
 import 'package:brick_rest_generators/generators.dart';
 
-/// Generate a function to produce a [ClassElement] to REST data
-class GraphQLSerialize<_Model extends RestModel> extends RestSerialize {
+/// Generate a function to produce a [ClassElement] from GraphQL data
+class GraphQLSerialize extends GraphQLSerdesGenerator with JsonSerialize<GraphQLModel, GraphQL> {
   @override
   // ignore: overridden_fields
   final providerName = 'GraphQL';
