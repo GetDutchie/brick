@@ -22,7 +22,6 @@ abstract class RequestSqliteCache {
   /// outcome that exists in memory (e.g. deserializing to a model). Since callbacks cannot
   /// be stored in SQLite and there's no guarantee of the destination existing (say
   /// disposal or a crash has since occurred), 'pull' requests will be ignored.
-  ///
 
   RequestSqliteCache({
     required this.attemptColumn,
