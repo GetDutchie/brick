@@ -11,15 +11,15 @@
 
 1. Configure your app directory structure to match Brick's expectations:
     ```bash
-    mkdir -p lib/app/adapters lib/app/db lib/app/models;
+    mkdir -p lib/brick/adapters lib/brick/db;
     ```
-1. Add [models](data/models.md) that contain your app logic. Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+1. Add [models](https://greenbits.github.io/brick/#/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
 1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](sqlite.md). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
 1. Extend [an existing repository](data/repositories.md) or create your own:
     ```dart
-    // lib/app/repository.dart
+    // lib/brick/repository.dart
     import 'package:brick_offline_first/offline_first_with_rest.dart';
-    import 'package:my_app/app/brick.g.dart';
+    import 'package:my_app/brick/brick.g.dart';
     export 'package:brick_offline_first/offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
 
     class Repository extends OfflineFirstWithRestRepository {

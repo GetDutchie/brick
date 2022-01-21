@@ -19,10 +19,10 @@ builders:
     defaults:
       generate_for:
         exclude:
-          - lib/app/adapters/*.dart
-          - app/adapters/*.dart
-          - lib/app/db/*.dart
-          - app/db/*.dart
+          - lib/brick/adapters/*.dart
+          - brick/adapters/*.dart
+          - lib/brick/db/*.dart
+          - brick/db/*.dart
   brickAdaptersBuilder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstAdaptersBuilder"]
@@ -33,13 +33,13 @@ builders:
     defaults:
       generate_for:
         include:
-          - lib/app/models/*.dart
-          - app/models/*.dart
+          - lib/brick/models/*.dart
+          - brick/models/*.dart
         exclude:
-          - lib/app/adapters/*.dart
-          - app/adapters/*.dart
-          - lib/app/db/*.dart
-          - app/db/*.dart
+          - lib/brick/adapters/*.dart
+          - brick/adapters/*.dart
+          - lib/brick/db/*.dart
+          - brick/db/*.dart
   brickNewMigrationBuilder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstNewMigrationBuilder"]

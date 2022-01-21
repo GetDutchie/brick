@@ -119,9 +119,9 @@ class RestToOfflineFirstConverter {
   }
 
   /// Save generated class to file.
-  /// Defaults to `app/models/LAST_ENDPOINT_PATH.dart`
+  /// Defaults to `brick/models/LAST_ENDPOINT_PATH.dart`
   Future<File> saveToFile([String? filePath]) async {
-    filePath = filePath ?? 'app/models/${endpoint.split('/').last}.dart';
+    filePath = filePath ?? 'brick/models/${endpoint.split('/').last}.dart';
     final contents = await generate();
     final file = File(filePath);
     return await file.writeAsString(contents);

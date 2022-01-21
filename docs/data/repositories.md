@@ -11,9 +11,9 @@ To use a repository seamlessly with a state management system like BLoCs without
 ```dart
 import 'package:brick_core/core.dart';
 import 'package:brick_rest/rest.dart';
-import 'package:my_app/app/brick.g.dart' show restModelDictionary;
+import 'package:my_app/brick/brick.g.dart' show restModelDictionary;
 
-// app/repository.dart
+// brick/repository.dart
 class MyRepository extends SingleProviderRepository<RestModel> {
   MyRepository._({
     required String baseEndpoint,
@@ -52,7 +52,7 @@ class BootScreenState extends State<BootScreen> {
 End-implementation uses (e.g. a Flutter application) should `extend` an abstract repository and pass arguments to `super`. If custom methods need to be added, they can be written in the application-specific repository and not the abstract one. Application-specific `brick.g.dart` are also imported:
 
 ```dart
-// app/repository.dart
+// brick/repository.dart
 import 'brick.g.dart' show migrations, restModelDictionary;
 class MyRepository extends OfflineFirstRepository {
   MyRepository({

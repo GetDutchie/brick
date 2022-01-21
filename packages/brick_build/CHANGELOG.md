@@ -1,5 +1,8 @@
 ## Unreleased
 
+
+* **BREAKING CHANGE** `brick.g.dart` and `adapters` are now saved to a `brick/` folder. This replaces the `app` folder. Please rename `app` to `brick` to safely migrate.
+* **BREAKING CHANGE** models are now discovered by the `.model.dart` suffix. This permits models to be stored anywhere in a package.
 * Alphabetize methods (internal refactor)
 
 ## 1.3.0

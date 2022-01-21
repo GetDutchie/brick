@@ -35,18 +35,18 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   }
 
   /// Create or write to file.
-  Future<File> manuallyUpsertAppFile(String path, String contents) async {
+  Future<File> manuallyUpsertBrickFile(String path, String contents) async {
     final dirName = path.split('/').first;
 
     if (!dirName.contains('.dart')) {
-      final dir = Directory(p.join('lib', 'app', dirName));
+      final dir = Directory(p.join('lib', 'brick', dirName));
       final dirExists = await dir.exists();
       if (!dirExists) {
         await dir.create();
       }
     }
 
-    final newFile = File(p.join('lib', 'app', path));
+    final newFile = File(p.join('lib', 'brick', path));
     final fileExists = await newFile.exists();
     if (!fileExists) {
       await newFile.create();
@@ -57,7 +57,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
 
   /// Replace contents of file
   Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
-    final file = File(p.join('lib', 'app', path));
+    final file = File(p.join('lib', 'brick', path));
     final fileExists = await file.exists();
     if (!fileExists) return null;
 

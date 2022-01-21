@@ -7,12 +7,18 @@ import 'package:analyzer/dart/constant/value.dart';
 
 /// Find an [_Annotation] per field.
 abstract class AnnotationFinder<_Annotation extends Object> {
-  AnnotationFinder();
-
   final _columnChecker = TypeChecker.fromRuntime(_Annotation);
 
   /// Holder of previously generated [_Annotation]s
   final _columnExpando = Expando<_Annotation>();
+
+  AnnotationFinder();
+
+  /// Given a field element, retrieve the [_Annotation] equivalent
+  _Annotation annotationForField(FieldElement field) => _columnExpando[field] ??= from(field);
+
+  /// Create a [_Annotation] based on a [FieldElement]
+  _Annotation from(FieldElement element);
 
   /// Find annotation for [FieldElement] if one exists
   DartObject? objectForField(FieldElement field) {
@@ -28,12 +34,6 @@ abstract class AnnotationFinder<_Annotation extends Object> {
 
     return _columnChecker.firstAnnotationOfExact(field.getter!);
   }
-
-  /// Given a field element, retrieve the [_Annotation] equivalent
-  _Annotation annotationForField(FieldElement field) => _columnExpando[field] ??= from(field);
-
-  /// Create a [_Annotation] based on a [FieldElement]
-  _Annotation from(FieldElement element);
 
   /// Return the actual value for fields of an element that could be one of any primitive
   dynamic valueForDynamicField(String fieldName, FieldElement element) {
