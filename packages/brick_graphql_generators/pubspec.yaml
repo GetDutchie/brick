@@ -1,0 +1,27 @@
+name: brick_graphql_generators
+description: Code generation library for the GraphQL providers, models, and adapters in Brick
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql_generators
+issue_tracker: https://github.com/GetDutchie/brick/issues
+repository: https://github.com/GetDutchie/brick
+
+version: 1.0.0
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  analyzer: ^1.2.0
+  brick_build: ^1.2.3
+  build: ^2.0.0
+  dart_style: ^2.0.0
+  source_gen: ^1.0.0
+  brick_rest_generators:
+    path: ../brick_rest_generators
+  brick_graphql:
+    path: ../brick_graphql
+
+dev_dependencies:
+  test: ^1.16.8
+  lints: ^1.0.1
+  brick_build_test:
+    path: ../brick_build_test

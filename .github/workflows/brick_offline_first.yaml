@@ -40,17 +40,15 @@ jobs:
             ${{ runner.os }}-brick_offline_first-v1-${{ matrix.flutter_version }}
       - id: checkout
         uses: actions/checkout@v2.3.4
-      - id: packages_brick_offline_first_pub_get
-        name: flutter pub get
-        if: "always() && steps.checkout.conclusion == 'success'"
+
+      - run: flutter pub get
         working-directory: packages/brick_offline_first
-        run: flutter pub get
-      - id: packages_brick_offline_first_analyze
-        name: dart_analyze
-        if: "always() && steps.packages_brick_offline_first_pub_get.conclusion == 'success'"
+
+      - run: dart analyze --fatal-infos lib
         working-directory: packages/brick_offline_first
-        run: dart analyze --fatal-warnings lib
-      - name: flutter test
-        if: "always() && steps.packages_brick_offline_first_analyze.conclusion == 'success'"
+
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed lib
         working-directory: packages/brick_offline_first
-        run: flutter test
+
+      - run: flutter test
+        working-directory: packages/brick_offline_first

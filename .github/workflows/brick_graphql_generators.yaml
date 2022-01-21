@@ -1,12 +1,12 @@
-name: Brick SQLite Abstract
+name: Brick GraphQL Generators
 on:
   push:
     branches:
       - main
   pull_request:
     paths:
-      - "packages/brick_sqlite_abstract/**"
-      - ".github/workflows/brick_sqlite_abstract.yaml"
+      - "packages/brick_graphql_generators/**"
+      - ".github/workflows/brick_graphql_generators.yaml"
 
 defaults:
   run:
@@ -34,20 +34,20 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: "~/.pub-cache/hosted"
-          key: ${{ runner.os }}-brick_sqlite_abstract-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_sqlite_abstract/pubspec.yaml') }}
-          sqliteore-keys: |
-            ${{ runner.os }}-brick_sqlite_abstract-v1-${{ matrix.sdk_version }}
+          key: ${{ runner.os }}-brick_graphql_generators-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_graphql_generators/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-brick_graphql_generators-v1-${{ matrix.sdk_version }}
       - id: checkout
         uses: actions/checkout@v2.3.4
 
       - run: dart pub get
-        working-directory: packages/brick_sqlite_abstract
+        working-directory: packages/brick_graphql_generators
 
       - run: dart analyze --fatal-infos lib
-        working-directory: packages/brick_sqlite_abstract
+        working-directory: packages/brick_graphql_generators
 
       - run: dart format --output=none --line-length 100 --set-exit-if-changed .
-        working-directory: packages/brick_sqlite_abstract
+        working-directory: packages/brick_graphql_generators
 
       - run: dart test
-        working-directory: packages/brick_sqlite_abstract
+        working-directory: packages/brick_graphql_generators
