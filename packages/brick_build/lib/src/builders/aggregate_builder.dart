@@ -21,10 +21,10 @@ class AggregateBuilder implements Builder {
   /// For example: `['import 'package:brick_sqlite_abstract/db.dart';']`
   final List<String> requiredImports;
 
-  static final migrationFiles = Glob('lib/app/db/*.migration.dart');
-  static final modelFiles = Glob('lib/app/models/*.dart');
   static final adapterFiles = Glob('lib/app/adapters/*.g.dart');
   static final importRegex = RegExp(r'(^import\s.*;)', multiLine: true);
+  static final migrationFiles = Glob('lib/app/db/*.migration.dart');
+  static final modelFiles = Glob('lib/app/models/*.dart');
   static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
 
   AggregateBuilder({this.requiredImports = const <String>[]});

@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Add Dart Lints
+* Upgrade `brick_core`
+* Add `ConnectOfflineFirstWithGraphql` annotation
 
 ## 1.0.0+1
 

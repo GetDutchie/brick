@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Expose `SqliteSerdesGenerator` in `generators.dart`
+
 ## 1.2.0
 
 * Supports `ignoreFrom`, `ignoreTo`, and `enumAsString`

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Alphabetize methods (internal refactor)
+
 ## 1.3.0
 
 * Upgrade `brick_core`

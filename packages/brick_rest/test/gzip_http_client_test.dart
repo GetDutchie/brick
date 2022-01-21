@@ -24,7 +24,7 @@ void main() {
           return http.Response('[{"name": "Guy"}]', 200);
         }
 
-        return Future.value(null);
+        return http.Response('', 404);
       });
       final instance = DemoRestModel('Guy');
       final resp = await provider.upsert<DemoRestModel>(instance);

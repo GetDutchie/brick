@@ -9,7 +9,8 @@ import 'package:brick_sqlite_abstract/db.dart' show MigrationManager, Migration;
 import 'package:brick_offline_first_abstract/abstract.dart';
 
 import 'package:brick_sqlite/sqlite.dart';
-import 'package:http/src/exception.dart'; // ignore: implementation_imports
+// ignore: implementation_imports
+import 'package:http/src/exception.dart';
 
 /// A [ModelRepository] that interacts with a [SqliteProvider] first before using a [Provider] from a remote source.
 ///
