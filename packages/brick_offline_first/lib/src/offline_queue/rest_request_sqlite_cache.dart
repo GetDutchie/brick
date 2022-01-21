@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 
-class RestRequestSqliteCache extends RequestSqliteCache {
-  RestRequestSqliteCache({request})
+class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
+  RestRequestSqliteCache(http.Request request)
       : super(
             attemptColumn: HTTP_JOBS_ATTEMPTS_COLUMN,
             createdAtColumn: HTTP_JOBS_CREATED_AT_COLUMN,
