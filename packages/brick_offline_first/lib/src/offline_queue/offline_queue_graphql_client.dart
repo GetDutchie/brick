@@ -35,7 +35,7 @@ class OfflineQueueGraphqlClient {
       // Attempt to make Graphql Request
       final resp = await _inner.request(request).first;
 
-      if (!isAGraphqlErrorsEmpty(resp)) {
+      if (!areGraphqlErrorsEmpty(resp)) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');

@@ -1,5 +1,5 @@
 name: brick_graphql
-description: Graphql connector for Brick, a data persistence library. Includes annotations, adapter, model, and provider.
+description: GraphQL connector for Brick, a data persistence library. Includes annotations, adapter, model, and provider.
 homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
