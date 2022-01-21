@@ -5,22 +5,22 @@ import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 
 // Existing migration
-const List<MigrationCommand> _migration_1_up = [
+const List<MigrationCommand> _migration1up = [
   InsertTable('Serdes'),
   InsertTable('WithSerdes'),
   InsertColumn('name', Column.varchar, onTable: 'Serdes'),
   InsertColumn('serdes_member', Column.varchar, onTable: 'WithSerdes')
 ];
-const List<MigrationCommand> _migration_1_down = [
+const List<MigrationCommand> _migration1down = [
   DropTable('Serdes'),
   DropTable('WithSerdes'),
   DropColumn('name', onTable: 'Serdes'),
   DropColumn('serdes_member', onTable: 'WithSerdes')
 ];
 
-@Migratable(version: '1', up: _migration_1_up, down: _migration_1_down)
+@Migratable(version: '1', up: _migration1up, down: _migration1down)
 class Migration1 extends Migration {
-  const Migration1() : super(version: 1, up: _migration_1_up, down: _migration_1_down);
+  const Migration1() : super(version: 1, up: _migration1up, down: _migration1down);
 }
 
 // serdes definition

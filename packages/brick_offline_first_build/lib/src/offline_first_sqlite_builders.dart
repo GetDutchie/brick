@@ -1,19 +1,7 @@
-import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
+import 'package:brick_offline_first_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite_generators/builders.dart';
 import 'package:brick_sqlite_generators/generators.dart';
-import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
 import 'package:meta/meta.dart';
-
-class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithRest> {
-  @override
-  final schemaGenerator = _schemaGenerator;
-}
-
-class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithRest> {
-  @override
-  final schemaGenerator = _schemaGenerator;
-}
 
 @visibleForTesting
 @protected
@@ -37,5 +25,3 @@ class OfflineFirstSchemaGenerator extends SqliteSchemaGenerator {
     return super.schemaColumn(column, checker: checker);
   }
 }
-
-final _schemaGenerator = OfflineFirstSchemaGenerator();

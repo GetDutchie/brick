@@ -1,13 +1,23 @@
-import 'package:brick_build/src/builders/adapter_builder.dart';
-import 'package:brick_build/src/builders/aggregate_builder.dart';
-import 'package:brick_build/src/builders/model_dictionary_builder.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_sqlite_builders.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_model_dictionary_generator.dart';
+import 'package:brick_build/builders.dart';
+import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
+import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_generator.dart';
 import 'package:build/build.dart';
+import 'package:brick_sqlite_generators/builders.dart';
 
-final offlineFirstGenerator = const OfflineFirstGenerator(
+final _schemaGenerator = OfflineFirstSchemaGenerator();
+
+class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithRest> {
+  @override
+  final schemaGenerator = _schemaGenerator;
+}
+
+class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithRest> {
+  @override
+  final schemaGenerator = _schemaGenerator;
+}
+
+final offlineFirstGenerator = const OfflineFirstWithRestGenerator(
   superAdapterName: 'OfflineFirstWithRest',
   repositoryName: 'OfflineFirstWithRest',
 );
@@ -22,7 +32,7 @@ Builder offlineFirstAdaptersBuilder(options) =>
     AdapterBuilder<ConnectOfflineFirstWithRest>(offlineFirstGenerator);
 Builder offlineFirstModelDictionaryBuilder(options) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithRest>(
-      const OfflineFirstModelDictionaryGenerator(),
+      const OfflineFirstModelDictionaryGenerator('Rest'),
       expectedImportRemovals: [
         "import 'package:brick_offline_first_abstract/annotations.dart';",
         'import "package:brick_offline_first_abstract/annotations.dart";',

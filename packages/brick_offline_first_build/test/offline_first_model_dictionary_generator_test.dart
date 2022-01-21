@@ -1,11 +1,11 @@
 import 'package:test/test.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_model_dictionary_generator.dart';
+import 'package:brick_offline_first_build/src/offline_first_model_dictionary_generator.dart';
 
 void main() {
   group('OfflineFirstModelDictionaryGenerator', () {
     group('#generate', () {
       test('basic', () {
-        final generated = OfflineFirstModelDictionaryGenerator()
+        final generated = OfflineFirstModelDictionaryGenerator('Rest')
             .generate({'Person': 'person.dart', 'User': 'path/user.dart'});
         final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -23,7 +23,7 @@ import 'models/path/user.dart';
 part 'adapters/person_adapter.g.dart';
 part 'adapters/user_adapter.g.dart';
 
-/// REST mappings should only be used when initializing a [RestProvider]
+/// Rest mappings should only be used when initializing a [RestProvider]
 final Map<Type, RestAdapter<RestModel>> restMappings = {
   Person: PersonAdapter(),
   User: UserAdapter()

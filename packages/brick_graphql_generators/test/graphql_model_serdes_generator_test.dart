@@ -41,12 +41,12 @@ void main() {
   });
 }
 
-/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
-/// [GraphQLSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphqlSerializable] annotation.
+/// [GraphqlSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [GraphQLSerializable] was arbitrarily chosen for this test.
+/// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-class TestGenerator extends AnnotationSuperGenerator<GraphQLSerializable> {
+class TestGenerator extends AnnotationSuperGenerator<GraphqlSerializable> {
   @override
   final superAdapterName = 'GraphQLFirst';
   final repositoryName = 'GraphQLFirst';
@@ -69,7 +69,7 @@ Future<void> generateExpectation(String filename, String output, {TestGenerator?
 }
 
 Future<void> generateAdapterExpectation(String filename, String output) async {
-  final annotation = await annotationForFile<GraphQLSerializable>(folder, filename);
+  final annotation = await annotationForFile<GraphqlSerializable>(folder, filename);
   final generated = _generator.generateAdapter(
     annotation.element,
     annotation.annotation,

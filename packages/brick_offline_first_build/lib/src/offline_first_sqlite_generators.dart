@@ -1,14 +1,15 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_offline_first_abstract/abstract.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_checker.dart';
+import 'package:brick_offline_first_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_generators/generators.dart';
-import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
-import 'package:source_gen/source_gen.dart';
-import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 
-class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestModel> {
-  _OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields,
+import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
+// ignore: implementation_imports
+import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
+import 'package:source_gen/source_gen.dart';
+
+class OfflineFirstSqliteSerialize extends SqliteSerialize {
+  OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields,
       {required String repositoryName})
       : super(element, fields, repositoryName: repositoryName);
 
@@ -49,8 +50,8 @@ class _OfflineFirstSqliteSerialize extends SqliteSerialize<OfflineFirstWithRestM
   }
 }
 
-class _OfflineFirstSqliteDeserialize extends SqliteDeserialize {
-  _OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields,
+class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
+  OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields,
       {required String repositoryName})
       : super(element, fields, repositoryName: repositoryName);
 
@@ -113,8 +114,8 @@ class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator 
     final classElement = element as ClassElement;
     final fields = SqliteFields(classElement, config);
     return [
-      _OfflineFirstSqliteDeserialize(classElement, fields, repositoryName: repositoryName),
-      _OfflineFirstSqliteSerialize(classElement, fields, repositoryName: repositoryName),
+      OfflineFirstSqliteDeserialize(classElement, fields, repositoryName: repositoryName),
+      OfflineFirstSqliteSerialize(classElement, fields, repositoryName: repositoryName),
     ];
   }
 }

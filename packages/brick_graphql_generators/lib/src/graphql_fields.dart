@@ -6,14 +6,14 @@ import 'package:brick_build/generators.dart';
 
 /// Find `@GraphQL` given a field
 class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
-  final GraphQLSerializable? config;
+  final GraphqlSerializable? config;
 
   GraphQLAnnotationFinder([this.config]);
 
   /// Change serialization key based on the configuration.
   /// `name` defined with a field annotation (`@GraphQL`) take precedence.
   String _renameField(String name) {
-    final renameTo = config?.fieldRename ?? GraphQLSerializable.defaults.fieldRename;
+    final renameTo = config?.fieldRename ?? GraphqlSerializable.defaults.fieldRename;
     switch (renameTo) {
       case FieldRename.none:
         return name;
@@ -61,7 +61,7 @@ class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
 class GraphQLFields extends FieldsForClass<GraphQL> {
   @override
   final GraphQLAnnotationFinder finder;
-  final GraphQLSerializable? config;
+  final GraphqlSerializable? config;
 
   GraphQLFields(ClassElement element, [this.config])
       : finder = GraphQLAnnotationFinder(config),

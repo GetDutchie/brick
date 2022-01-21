@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-// ignore: implementation_imports
-import 'package:brick_build/src/provider_serializable_generator.dart';
+import 'package:brick_build/generators.dart' show ProviderSerializableGenerator;
 import 'package:brick_sqlite_generators/src/sqlite_deserialize.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';

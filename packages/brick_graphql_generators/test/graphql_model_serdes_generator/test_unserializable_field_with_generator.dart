@@ -20,12 +20,12 @@ Future<Map<String, dynamic>> _$GraphQLUnserializableFieldWithGeneratorToGraphQL(
 }
 ''';
 
-/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
-/// [GraphQLSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphqlSerializable] annotation.
+/// [GraphqlSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [GraphQLSerializable] was arbitrarily chosen for this test.
+/// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@GraphQLSerializable()
+@GraphqlSerializable()
 class GraphQLUnserializableFieldWithGenerator extends GraphQLModel {
   @GraphQL(fromGenerator: '%DATA_PROPERTY%')
   final File withFrom;

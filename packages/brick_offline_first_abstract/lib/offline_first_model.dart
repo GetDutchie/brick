@@ -1,3 +1,4 @@
+import 'package:brick_graphql/graphql.dart';
 import 'package:brick_rest/rest.dart' show RestModel;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 
@@ -8,3 +9,5 @@ import 'package:brick_sqlite_abstract/sqlite_model.dart';
 abstract class OfflineFirstModel extends SqliteModel {}
 
 abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestModel {}
+
+abstract class OfflineFirstWithGraphqlModel extends OfflineFirstModel with GraphQLModel {}
