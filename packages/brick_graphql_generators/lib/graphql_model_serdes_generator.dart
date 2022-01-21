@@ -12,7 +12,7 @@ import 'package:source_gen/source_gen.dart';
 
 /// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
 /// to and from a `GraphQLProvider`.
-class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphQLSerializable> {
+class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
   final String repositoryName;
@@ -24,9 +24,9 @@ class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphQLS
   }) : super(element, reader, configKey: 'graphqlConfig');
 
   @override
-  GraphQLSerializable get config {
+  GraphqlSerializable get config {
     if (reader.peek(configKey) == null) {
-      return GraphQLSerializable.defaults;
+      return GraphqlSerializable.defaults;
     }
 
     final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
@@ -35,8 +35,8 @@ class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphQLS
       (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
     );
 
-    return GraphQLSerializable(
-      fieldRename: fieldRenameByEnumName ?? GraphQLSerializable.defaults.fieldRename,
+    return GraphqlSerializable(
+      fieldRename: fieldRenameByEnumName ?? GraphqlSerializable.defaults.fieldRename,
       mutationDocument: withinConfigKey('mutationDocument')?.literalValue as DocumentNode?,
     );
   }

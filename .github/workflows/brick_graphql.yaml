@@ -16,38 +16,7 @@ env:
   PUB_ENVIRONMENT: bot.github
 
 jobs:
-  analyze_test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        sdk_version: [dev, stable]
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@89f242ee29e10c53a841bfe71cc0ce7b2f065abc
-        with:
-          access_token: ${{ github.token }}
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: ${{ matrix.sdk_version }}
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.6
-        with:
-          path: "~/.pub-cache/hosted"
-          key: ${{ runner.os }}-brick_graphql-v1-${{ matrix.sdk_version }}-${{ hashFiles('packages/brick_graphql/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-brick_graphql-v1-${{ matrix.sdk_version }}
-      - id: checkout
-        uses: actions/checkout@v2.3.4
-
-      - run: dart pub get
-        working-directory: packages/brick_graphql
-
-      - run: dart analyze --fatal-infos lib
-        working-directory: packages/brick_graphql
-
-      - run: dart format --output=none --line-length 100 --set-exit-if-changed .
-        working-directory: packages/brick_graphql
-
-      - run: dart test
-        working-directory: packages/brick_graphql
+  analyze_format_test:
+    uses: GetDutchie/brick/.github/workflows/reusable-dart-analyze-format-test.yaml@main
+    with:
+      package: brick_graphql

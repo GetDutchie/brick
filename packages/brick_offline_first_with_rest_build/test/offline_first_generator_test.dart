@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_generator.dart';
 import 'package:test/test.dart';
-import 'package:brick_offline_first_with_rest_build/src/offline_first_generator.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
 import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields;
@@ -25,22 +25,22 @@ import 'offline_first_generator/test_constructor_arguments.dart' as _$constructo
 import 'offline_first_generator/test_offlne_first_serdes_with_type_argument.dart'
     as _$oflineFirstSerdesWithTypeArgument;
 
-final _generator = OfflineFirstGenerator();
+final _generator = OfflineFirstWithRestGenerator();
 final folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
-  group('OfflineFirstGenerator', () {
+  group('OfflineFirstWithRestGenerator', () {
     group('constructor arguments', () {
       test('repositoryName', () async {
-        final generator = OfflineFirstGenerator(repositoryName: 'MyCustom');
+        final generator = OfflineFirstWithRestGenerator(repositoryName: 'MyCustom');
         await generateAdapterExpectation(
             'constructor_arguments', _$constructorArguments.repositoryNameAdapterExpectation,
             generator: generator);
       });
 
       test('superAdapterName', () async {
-        final generator = OfflineFirstGenerator(superAdapterName: 'SuperDuper');
+        final generator = OfflineFirstWithRestGenerator(superAdapterName: 'SuperDuper');
         await generateAdapterExpectation(
             'constructor_arguments', _$constructorArguments.superAdapterNameAdapterExpectation,
             generator: generator);
@@ -134,14 +134,14 @@ void main() {
 }
 
 Future<void> generateExpectation(String filename, String output,
-    {OfflineFirstGenerator? generator}) async {
+    {OfflineFirstWithRestGenerator? generator}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
 Future<void> generateAdapterExpectation(String filename, String output,
-    {OfflineFirstGenerator? generator}) async {
+    {OfflineFirstWithRestGenerator? generator}) async {
   final annotation = await annotationForFile<ConnectOfflineFirstWithRest>(folder, filename);
   final generated = (generator ?? _generator).generateAdapter(
     annotation.element,
