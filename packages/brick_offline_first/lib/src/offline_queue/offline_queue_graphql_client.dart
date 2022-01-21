@@ -19,7 +19,7 @@ class OfflineQueueGraphqlClient extends Link {
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
-    final cacheItem = RequestGraphqlSqliteCache(request: request);
+    final cacheItem = RequestGraphqlSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     final db = await requestManager.getDb();
