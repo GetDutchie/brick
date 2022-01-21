@@ -2,14 +2,14 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
-Future<IgnoreField> _$IgnoreFieldFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<IgnoreField> _$IgnoreFieldFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return IgnoreField(name: data['name'] as String);
 }
 
-Future<Map<String, dynamic>> _$IgnoreFieldToRest(IgnoreField instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$IgnoreFieldToTest(IgnoreField instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {'name': instance.name};
 }

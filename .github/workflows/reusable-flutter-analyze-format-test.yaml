@@ -36,10 +36,10 @@ jobs:
       - run: flutter pub get
         working-directory: packages/${{ inputs.package }}
 
-      - run: dart analyze --fatal-infos lib
+      - run: dart analyze --fatal-infos lib test
         working-directory: packages/${{ inputs.package }}
 
-      - run: dart format --output=none --line-length 100 --set-exit-if-changed .
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed lib test
         working-directory: packages/${{ inputs.package }}
 
       - run: flutter test

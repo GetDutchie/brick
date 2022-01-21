@@ -57,7 +57,7 @@ class TestGenerator extends AnnotationSuperGenerator<GraphqlSerializable> {
   @override
   List<SerdesGenerator> buildGenerators(Element element, ConstantReader annotation) {
     final serializableGenerator =
-        GraphQLModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
+        GraphqlModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     return serializableGenerator.generators;
   }
 }

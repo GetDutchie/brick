@@ -5,10 +5,10 @@ import 'package:brick_graphql/graphql.dart';
 import 'package:brick_build/generators.dart';
 
 /// Find `@GraphQL` given a field
-class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
+class GraphqlAnnotationFinder extends AnnotationFinder<GraphQL> {
   final GraphqlSerializable? config;
 
-  GraphQLAnnotationFinder([this.config]);
+  GraphqlAnnotationFinder([this.config]);
 
   /// Change serialization key based on the configuration.
   /// `name` defined with a field annotation (`@GraphQL`) take precedence.
@@ -58,12 +58,12 @@ class GraphQLAnnotationFinder extends AnnotationFinder<GraphQL> {
 }
 
 /// Converts all fields to [GraphQL]s for later consumption
-class GraphQLFields extends FieldsForClass<GraphQL> {
-  @override
-  final GraphQLAnnotationFinder finder;
+class GraphqlFields extends FieldsForClass<GraphQL> {
   final GraphqlSerializable? config;
+  @override
+  final GraphqlAnnotationFinder finder;
 
-  GraphQLFields(ClassElement element, [this.config])
-      : finder = GraphQLAnnotationFinder(config),
+  GraphqlFields(ClassElement element, [this.config])
+      : finder = GraphqlAnnotationFinder(config),
         super(element: element);
 }

@@ -7,8 +7,8 @@ final output = r'''
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OfflineFirstWhere(
       assoc:
@@ -31,9 +31,9 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromRest(Map<String, dynamic> data,
           .toList());
 }
 
-Future<Map<String, dynamic>> _$OfflineFirstWhereToRest(
+Future<Map<String, dynamic>> _$OfflineFirstWhereToTest(
     OfflineFirstWhere instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'assoc': (await instance.assoc).id,
@@ -216,16 +216,16 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   }
 
   @override
-  Future<OfflineFirstWhere> fromRest(Map<String, dynamic> input,
+  Future<OfflineFirstWhere> fromTest(Map<String, dynamic> input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstWhereFromRest(input,
+      await _$OfflineFirstWhereFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(OfflineFirstWhere input,
+  Future<Map<String, dynamic>> toTest(OfflineFirstWhere input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstWhereToRest(input,
+      await _$OfflineFirstWhereToTest(input,
           provider: provider, repository: repository);
   @override
   Future<OfflineFirstWhere> fromSqlite(Map<String, dynamic> input,

@@ -2,29 +2,29 @@ import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstSer
 import 'package:brick_offline_first_abstract/annotations.dart';
 
 final output = r'''
-Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromRest(
+Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
-      string: Serializable.fromRest(data['string']),
+      string: Serializable.fromTest(data['string']),
       constructorFieldNullabilityMismatch:
           data['constructor_field_nullability_mismatch'] as bool?,
       strings: data['strings']
-          ?.map((c) => Serializable.fromRest(c as Map<String, dynamic>))
+          ?.map((c) => Serializable.fromTest(c as Map<String, dynamic>))
           .toList()
           .cast<Serializable>());
 }
 
-Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToRest(
+Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToTest(
     CustomOfflineFirstSerdes instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
-    'string': instance.string?.toRest(),
+    'string': instance.string?.toTest(),
     'constructor_field_nullability_mismatch':
         instance.constructorFieldNullabilityMismatch,
-    'strings': instance.strings?.map((Serializable c) => c.toRest()).toList()
+    'strings': instance.strings?.map((Serializable c) => c.toTest()).toList()
   };
 }
 
@@ -62,9 +62,9 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
   final int age;
   Serializable(this.age);
   @override
-  Map<String, dynamic> toRest() => {'age': '$age'};
+  Map<String, dynamic> toTest() => {'age': '$age'};
 
-  factory Serializable.fromRest(Map<String, dynamic> data) {
+  factory Serializable.fromTest(Map<String, dynamic> data) {
     return Serializable(data['age']);
   }
 

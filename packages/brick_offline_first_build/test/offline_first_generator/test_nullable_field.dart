@@ -2,8 +2,8 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_rest/rest.dart' show RestSerializable;
 
 final output = r'''
-Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<NullableField> _$NullableFieldFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return NullableField(
       restFalse: data['rest_false'] as String?,
@@ -17,8 +17,8 @@ Future<NullableField> _$NullableFieldFromRest(Map<String, dynamic> data,
           data['constructor_field_type_mismatch'] as bool);
 }
 
-Future<Map<String, dynamic>> _$NullableFieldToRest(NullableField instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$NullableFieldToTest(NullableField instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'rest_false': instance.restFalse,

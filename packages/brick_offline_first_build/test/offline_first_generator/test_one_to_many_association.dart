@@ -26,38 +26,38 @@ final output = r'''
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<OneToManyAssociation> _$OneToManyAssociationFromRest(
+Future<OneToManyAssociation> _$OneToManyAssociationFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OneToManyAssociation(
       assoc: await Future.wait<SqliteAssoc>(data['assoc']
               ?.map((d) => SqliteAssocAdapter()
-                  .fromRest(d, provider: provider, repository: repository))
+                  .fromTest(d, provider: provider, repository: repository))
               .toList()
               .cast<Future<SqliteAssoc>>() ??
           []),
       nullableAssoc: await Future.wait<SqliteAssoc>(data['nullable_assoc']
               ?.map((d) => SqliteAssocAdapter()
-                  .fromRest(d, provider: provider, repository: repository))
+                  .fromTest(d, provider: provider, repository: repository))
               .toList()
               .cast<Future<SqliteAssoc>>() ??
           []));
 }
 
-Future<Map<String, dynamic>> _$OneToManyAssociationToRest(
+Future<Map<String, dynamic>> _$OneToManyAssociationToTest(
     OneToManyAssociation instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'assoc': await Future.wait<Map<String, dynamic>>(instance.assoc
         .map((s) => SqliteAssocAdapter()
-            .toRest(s, provider: provider, repository: repository))
+            .toTest(s, provider: provider, repository: repository))
         .toList()),
     'nullable_assoc': await Future.wait<Map<String, dynamic>>(instance
             .nullableAssoc
             ?.map((s) => SqliteAssocAdapter()
-                .toRest(s, provider: provider, repository: repository))
+                .toTest(s, provider: provider, repository: repository))
             .toList() ??
         [])
   };
@@ -167,16 +167,16 @@ class OneToManyAssociationAdapter
   }
 
   @override
-  Future<OneToManyAssociation> fromRest(Map<String, dynamic> input,
+  Future<OneToManyAssociation> fromTest(Map<String, dynamic> input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OneToManyAssociationFromRest(input,
+      await _$OneToManyAssociationFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(OneToManyAssociation input,
+  Future<Map<String, dynamic>> toTest(OneToManyAssociation input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OneToManyAssociationToRest(input,
+      await _$OneToManyAssociationToTest(input,
           provider: provider, repository: repository);
   @override
   Future<OneToManyAssociation> fromSqlite(Map<String, dynamic> input,

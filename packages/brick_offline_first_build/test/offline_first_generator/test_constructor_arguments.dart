@@ -9,16 +9,16 @@ final repositoryNameAdapterExpectation = r'''
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<OfflineFirstGeneratorArguments> _$OfflineFirstGeneratorArgumentsFromRest(
+Future<OfflineFirstGeneratorArguments> _$OfflineFirstGeneratorArgumentsFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     MyCustomRepository? repository}) async {
   return OfflineFirstGeneratorArguments();
 }
 
-Future<Map<String, dynamic>> _$OfflineFirstGeneratorArgumentsToRest(
+Future<Map<String, dynamic>> _$OfflineFirstGeneratorArgumentsToTest(
     OfflineFirstGeneratorArguments instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     MyCustomRepository? repository}) async {
   return {};
 }
@@ -67,16 +67,16 @@ class OfflineFirstGeneratorArgumentsAdapter
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   @override
-  Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
+  Future<OfflineFirstGeneratorArguments> fromTest(Map<String, dynamic> input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstGeneratorArgumentsFromRest(input,
+      await _$OfflineFirstGeneratorArgumentsFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(OfflineFirstGeneratorArguments input,
+  Future<Map<String, dynamic>> toTest(OfflineFirstGeneratorArguments input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstGeneratorArgumentsToRest(input,
+      await _$OfflineFirstGeneratorArgumentsToTest(input,
           provider: provider, repository: repository);
   @override
   Future<OfflineFirstGeneratorArguments> fromSqlite(Map<String, dynamic> input,
@@ -98,16 +98,16 @@ final superAdapterNameAdapterExpectation = r'''
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<OfflineFirstGeneratorArguments> _$OfflineFirstGeneratorArgumentsFromRest(
+Future<OfflineFirstGeneratorArguments> _$OfflineFirstGeneratorArgumentsFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OfflineFirstGeneratorArguments();
 }
 
-Future<Map<String, dynamic>> _$OfflineFirstGeneratorArgumentsToRest(
+Future<Map<String, dynamic>> _$OfflineFirstGeneratorArgumentsToTest(
     OfflineFirstGeneratorArguments instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {};
 }
@@ -156,16 +156,16 @@ class OfflineFirstGeneratorArgumentsAdapter
   final String tableName = 'OfflineFirstGeneratorArguments';
 
   @override
-  Future<OfflineFirstGeneratorArguments> fromRest(Map<String, dynamic> input,
+  Future<OfflineFirstGeneratorArguments> fromTest(Map<String, dynamic> input,
           {required provider,
           covariant SuperDuperRepository? repository}) async =>
-      await _$OfflineFirstGeneratorArgumentsFromRest(input,
+      await _$OfflineFirstGeneratorArgumentsFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(OfflineFirstGeneratorArguments input,
+  Future<Map<String, dynamic>> toTest(OfflineFirstGeneratorArguments input,
           {required provider,
           covariant SuperDuperRepository? repository}) async =>
-      await _$OfflineFirstGeneratorArgumentsToRest(input,
+      await _$OfflineFirstGeneratorArgumentsToTest(input,
           provider: provider, repository: repository);
   @override
   Future<OfflineFirstGeneratorArguments> fromSqlite(Map<String, dynamic> input,

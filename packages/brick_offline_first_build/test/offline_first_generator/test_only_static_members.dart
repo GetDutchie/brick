@@ -1,15 +1,15 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 
 final output = r'''
-Future<OnlyStaticMembers> _$OnlyStaticMembersFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<OnlyStaticMembers> _$OnlyStaticMembersFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OnlyStaticMembers();
 }
 
-Future<Map<String, dynamic>> _$OnlyStaticMembersToRest(
+Future<Map<String, dynamic>> _$OnlyStaticMembersToTest(
     OnlyStaticMembers instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {};
 }

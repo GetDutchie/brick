@@ -6,8 +6,8 @@ final output = r'''
 // This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
-Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<Futures> _$FuturesFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return Futures(
       string: data['string'] as Future<String>,
@@ -15,37 +15,37 @@ Future<Futures> _$FuturesFromRest(Map<String, dynamic> data,
       futureStrings:
           data['future_strings'].toList().cast<String>() ?? <Future<String>>[],
       assoc: AssocAdapter()
-          .fromRest(data['assoc'], provider: provider, repository: repository),
+          .fromTest(data['assoc'], provider: provider, repository: repository),
       assocs: Future.wait<Assoc>(data['assocs']
               ?.map((d) => AssocAdapter()
-                  .fromRest(d, provider: provider, repository: repository))
+                  .fromTest(d, provider: provider, repository: repository))
               .toList()
               .cast<Future<Assoc>>() ??
           []),
       futureAssocs: data['future_assocs']
           ?.map((d) => AssocAdapter()
-              .fromRest(d, provider: provider, repository: repository))
+              .fromTest(d, provider: provider, repository: repository))
           .toList()
           .cast<Future<Assoc>>());
 }
 
-Future<Map<String, dynamic>> _$FuturesToRest(Futures instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$FuturesToTest(Futures instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'string': instance.string,
     'strings': instance.strings,
     'future_strings': instance.futureStrings,
-    'assoc': await AssocAdapter().toRest((await instance.assoc),
+    'assoc': await AssocAdapter().toTest((await instance.assoc),
         provider: provider, repository: repository),
     'assocs': await Future.wait<Map<String, dynamic>>(instance.assocs
         .map((s) => AssocAdapter()
-            .toRest(s, provider: provider, repository: repository))
+            .toTest(s, provider: provider, repository: repository))
         .toList()),
     'future_assocs': await Future.wait<Map<String, dynamic>>(instance
             .futureAssocs
             ?.map((s) async => AssocAdapter()
-                .toRest((await s), provider: provider, repository: repository))
+                .toTest((await s), provider: provider, repository: repository))
             .toList() ??
         [])
   };
@@ -181,16 +181,16 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   }
 
   @override
-  Future<Futures> fromRest(Map<String, dynamic> input,
+  Future<Futures> fromTest(Map<String, dynamic> input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$FuturesFromRest(input,
+      await _$FuturesFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(Futures input,
+  Future<Map<String, dynamic>> toTest(Futures input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$FuturesToRest(input, provider: provider, repository: repository);
+      await _$FuturesToTest(input, provider: provider, repository: repository);
   @override
   Future<Futures> fromSqlite(Map<String, dynamic> input,
           {required provider,

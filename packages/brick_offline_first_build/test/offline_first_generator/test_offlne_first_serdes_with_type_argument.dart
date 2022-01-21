@@ -7,15 +7,15 @@ final output = r"""
 part of '../brick.g.dart';
 
 Future<OfflineFirstSerdesWithTypeArgument>
-    _$OfflineFirstSerdesWithTypeArgumentFromRest(Map<String, dynamic> data,
-        {required RestProvider provider,
+    _$OfflineFirstSerdesWithTypeArgumentFromTest(Map<String, dynamic> data,
+        {required TestProvider provider,
         OfflineFirstRepository? repository}) async {
   return OfflineFirstSerdesWithTypeArgument();
 }
 
-Future<Map<String, dynamic>> _$OfflineFirstSerdesWithTypeArgumentToRest(
+Future<Map<String, dynamic>> _$OfflineFirstSerdesWithTypeArgumentToTest(
     OfflineFirstSerdesWithTypeArgument instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {};
 }
@@ -70,17 +70,17 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
   final String tableName = 'OfflineFirstSerdesWithTypeArgument';
 
   @override
-  Future<OfflineFirstSerdesWithTypeArgument> fromRest(
+  Future<OfflineFirstSerdesWithTypeArgument> fromTest(
           Map<String, dynamic> input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentFromRest(input,
+      await _$OfflineFirstSerdesWithTypeArgumentFromTest(input,
           provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(OfflineFirstSerdesWithTypeArgument input,
+  Future<Map<String, dynamic>> toTest(OfflineFirstSerdesWithTypeArgument input,
           {required provider,
           covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentToRest(input,
+      await _$OfflineFirstSerdesWithTypeArgumentToTest(input,
           provider: provider, repository: repository);
   @override
   Future<OfflineFirstSerdesWithTypeArgument> fromSqlite(
