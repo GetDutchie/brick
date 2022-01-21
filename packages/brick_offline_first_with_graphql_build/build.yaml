@@ -33,8 +33,7 @@ builders:
     defaults:
       generate_for:
         include:
-          - lib/brick/models/*.dart
-          - brick/models/*.dart
+          - "*.model.dart"
         exclude:
           - lib/brick/adapters/*.dart
           - brick/adapters/*.dart
