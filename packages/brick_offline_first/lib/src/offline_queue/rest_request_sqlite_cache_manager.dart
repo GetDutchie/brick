@@ -8,7 +8,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
   RestRequestSqliteCacheManager(String databaseName,
-      {DatabaseFactory? databaseFactory, Duration? processingInterval, bool? serialProcessing})
+      {DatabaseFactory? databaseFactory, Duration? processingInterval, bool? serialProcessing,})
       : super(
           databaseName,
           createdAtColumn: HTTP_JOBS_CREATED_AT_COLUMN,
