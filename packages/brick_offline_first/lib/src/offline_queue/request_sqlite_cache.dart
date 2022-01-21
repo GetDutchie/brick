@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 /// Serialize and Deserialize a [Request] from SQLite.
 abstract class RequestSqliteCache<_Request> {
   final _Request request;
-  final List<dynamic> requestColumns;
+  final List<String> requestColumns;
   final String attemptColumn;
   final String createdAtColumn;
   final String lockedColumn;

@@ -54,6 +54,7 @@ class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request
   }
 
   /// Recreate a request from SQLite data
+  @override
   Request sqliteToRequest(Map<String, dynamic> data) {
     final document = gql(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
     final operationName = data[GRAPHQL_JOB_OPERATION_NAME_COLUMN];

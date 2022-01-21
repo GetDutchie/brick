@@ -31,7 +31,7 @@ class Graphql implements FieldSerializable {
   final String? name;
 
   /// When `true`, `null` fields are handled gracefully when encoding from JSON.
-  /// This indicates that the payload from Graphql could be `null` and is not related to
+  /// This indicates that the payload from GraphQL could be `null` and is not related to
   /// Dart nullability. Defaults to `false`.
   @override
   final bool nullable;

@@ -1,10 +1,11 @@
-import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache.dart';
+import 'package:gql_exec/gql_exec.dart';
+import 'package:gql_link/gql_link.dart';
 import 'package:logging/logging.dart';
-import 'package:graphql/client.dart';
 
 /// Stores all requests in a SQLite database
-class OfflineQueueGraphqlClient {
+class OfflineQueueGraphqlClient extends Link {
   /// A DocumentNode GraphQL execution interface
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
@@ -13,13 +14,11 @@ class OfflineQueueGraphqlClient {
 
   final Logger _logger;
 
-  OfflineQueueGraphqlClient(
-    this._inner,
-    this.requestManager, {
-    List<int>? reattemptForStatusCodes,
-  }) : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}');
+  OfflineQueueGraphqlClient(this._inner, this.requestManager)
+      : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}');
 
-  Future<Response> send(Request request) async {
+  @override
+  Stream<Response> request(Request request, [NextLink? forward]) async* {
     final cacheItem = RequestGraphqlSqliteCache(request: request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
@@ -28,21 +27,24 @@ class OfflineQueueGraphqlClient {
     await cacheItem.insertOrUpdate(db, logger: _logger);
 
     /// When the request is null a generic Graphql error needs to be generated
-    final _genericErrorResponse =
-        Response(errors: const [GraphQLError(message: 'Unknown error')], data: null);
+    final _genericErrorResponse = Stream.fromIterable([
+      const Response(errors: [GraphQLError(message: 'Unknown error')], data: null)
+    ]);
 
     try {
-      // Attempt to make Graphql Request
-      final resp = await _inner.request(request).first;
+      // Attempt to make Graphql Request, handle it as a traditional response to do check
+      final response = await _inner.request(request).first;
+      // get it back as a stream so that it can be return
+      final streamAsStream = _inner.request(request).asBroadcastStream();
 
-      if (!areGraphqlErrorsEmpty(resp)) {
+      if (!areGraphqlErrorsEmpty(response)) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       }
 
-      return resp;
+      yield* streamAsStream;
     } catch (e) {
       _logger.warning('#send: $e');
     } finally {
@@ -50,12 +52,12 @@ class OfflineQueueGraphqlClient {
       await cacheItem.unlock(db);
     }
 
-    return _genericErrorResponse;
+    yield* _genericErrorResponse;
   }
 
   /// This method checks if there are any Graphql errors present
   /// TODO need to find a better way to find out how a Link determines a request is offline
-  /// Similar to
+  /// Similar to the _ignoreTunnelException
   static bool areGraphqlErrorsEmpty(Response response) {
     return response.errors == [];
   }

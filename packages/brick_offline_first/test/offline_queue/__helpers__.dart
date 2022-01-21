@@ -10,7 +10,7 @@ MockClient stubResult({String response = 'response', int? statusCode}) {
   });
 }
 
-http.Request restSqliteToRequest(Map<String, dynamic> data) {
+http.Request sqliteToRequest(Map<String, dynamic> data) {
   var _request = http.Request(
     data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
     Uri.parse(data[HTTP_JOBS_URL_COLUMN]),

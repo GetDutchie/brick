@@ -126,10 +126,23 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
     });
   }
 
-  // This abstraction is to find the next job in the queue, if there is a job
-  // return it if not continue
+  // Override to handle conversation from sqlite to request see
+  // example of usage inside request_sqlite_cache
+  _RequestMethod? sqliteToRequest(Map<String, dynamic> e);
 
-  Future<_RequestMethod?> prepareNextRequestToProcess();
+  /// Find the next job and convert it into a request for a client
+  /// to retry.
+
+  Future<_RequestMethod?> prepareNextRequestToProcess() async {
+    final unprocessedRequests = await findNextRequestToProcess();
+    final jobs = unprocessedRequests.map(sqliteToRequest).cast<_RequestMethod?>();
+
+    if (jobs.isNotEmpty) return jobs.first;
+
+    // lock the request for idempotency
+
+    return null;
+  }
 
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.

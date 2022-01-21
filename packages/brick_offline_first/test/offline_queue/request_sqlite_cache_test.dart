@@ -139,7 +139,7 @@ void main() {
     });
     group('.toRequest', () {
       test('basic', () {
-        final request = restSqliteToRequest({
+        final request = sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
@@ -151,7 +151,7 @@ void main() {
       });
 
       test('missing headers', () {
-        final request = restSqliteToRequest(
+        final request = sqliteToRequest(
             {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
 
         expect(request.method, 'GET');
@@ -161,7 +161,7 @@ void main() {
       });
 
       test('with headers', () {
-        final request = restSqliteToRequest({
+        final request = sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
