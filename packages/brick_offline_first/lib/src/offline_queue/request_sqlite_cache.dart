@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.

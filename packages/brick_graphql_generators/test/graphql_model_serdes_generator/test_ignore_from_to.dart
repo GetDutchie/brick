@@ -3,7 +3,7 @@ import 'package:brick_graphql/graphql.dart';
 final output = r'''
 Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphQL(
     Map<String, dynamic> data,
-    {required GraphQLProvider provider,
+    {required GraphqlProvider provider,
     GraphQLFirstRepository? repository}) async {
   return GraphqlIgnoreFromTo(
       ignoredTo: data['ignoredTo'] as bool,
@@ -13,7 +13,7 @@ Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphQL(
 
 Future<Map<String, dynamic>> _$GraphqlIgnoreFromToToGraphQL(
     GraphqlIgnoreFromTo instance,
-    {required GraphQLProvider provider,
+    {required GraphqlProvider provider,
     GraphQLFirstRepository? repository}) async {
   return {'ignoredFrom': instance.ignoredFrom, 'normal': instance.normal};
 }

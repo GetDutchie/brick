@@ -4,7 +4,7 @@ final output = r'''
 Future<GraphQLConstructorMemberFieldMismatch>
     _$GraphQLConstructorMemberFieldMismatchFromGraphQL(
         Map<String, dynamic> data,
-        {required GraphQLProvider provider,
+        {required GraphqlProvider provider,
         GraphQLFirstRepository? repository}) async {
   return GraphQLConstructorMemberFieldMismatch(
       nullableConstructor: data['nullableConstructor'] as String?,
@@ -19,7 +19,7 @@ Future<GraphQLConstructorMemberFieldMismatch>
 
 Future<Map<String, dynamic>> _$GraphQLConstructorMemberFieldMismatchToGraphQL(
     GraphQLConstructorMemberFieldMismatch instance,
-    {required GraphQLProvider provider,
+    {required GraphqlProvider provider,
     GraphQLFirstRepository? repository}) async {
   return {
     'nullableConstructor': instance.nullableConstructor,

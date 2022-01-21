@@ -3,8 +3,6 @@ import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
-import 'request_sqlite_cache.dart';
-
 /// Stores all requests in a SQLite database
 class OfflineQueueHttpClient extends http.BaseClient {
   /// A normal HTTP client, treated like a manual `super`
