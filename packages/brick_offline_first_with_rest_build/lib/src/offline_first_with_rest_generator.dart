@@ -10,8 +10,8 @@ class OfflineFirstWithRestGenerator extends OfflineFirstGenerator<ConnectOffline
     String? repositoryName,
     String? superAdapterName,
   }) : super(
-          repositoryName: repositoryName ?? 'OfflineFirst',
-          superAdapterName: superAdapterName ?? 'OfflineFirst',
+          repositoryName: repositoryName,
+          superAdapterName: superAdapterName,
         );
 
   /// Given an [element] and an [annotation], scaffold generators
