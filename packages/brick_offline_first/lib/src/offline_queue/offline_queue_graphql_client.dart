@@ -56,7 +56,7 @@ class OfflineQueueGraphqlClient {
   /// This method checks if there are any Graphql errors present
   /// TODO need to find a better way to find out how a Link determines a request is offline
   /// Similar to
-  static bool isAGraphqlErrorsEmpty(Response response) {
+  static bool areGraphqlErrorsEmpty(Response response) {
     return response.errors == [];
   }
 }
