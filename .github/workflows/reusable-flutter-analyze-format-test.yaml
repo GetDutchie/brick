@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  analyze_test:
+  flutter_analyze_format_test:
     runs-on: ubuntu-latest
     container:
       image: cirrusci/flutter:${{ matrix.flutter_version }}

@@ -8,10 +8,6 @@ on:
       - "packages/brick_graphql/**"
       - ".github/workflows/brick_graphql.yaml"
 
-defaults:
-  run:
-    shell: bash
-
 env:
   PUB_ENVIRONMENT: bot.github
 

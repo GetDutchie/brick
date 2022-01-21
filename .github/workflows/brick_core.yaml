@@ -8,10 +8,6 @@ on:
       - "packages/brick_core/**"
       - ".github/workflows/brick_core.yaml"
 
-defaults:
-  run:
-    shell: bash
-
 env:
   PUB_ENVIRONMENT: bot.github
 

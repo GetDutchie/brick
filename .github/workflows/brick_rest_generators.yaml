@@ -8,10 +8,6 @@ on:
       - "packages/brick_rest_generators/**"
       - ".github/workflows/brick_rest_generators.yaml"
 
-defaults:
-  run:
-    shell: bash
-
 env:
   PUB_ENVIRONMENT: bot.github
 
