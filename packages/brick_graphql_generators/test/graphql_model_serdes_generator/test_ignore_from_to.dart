@@ -25,7 +25,7 @@ Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(
 /// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 @GraphqlSerializable()
-class GraphQLIgnoreFromTo extends GraphQLModel {
+class GraphQLIgnoreFromTo extends GraphqlModel {
   @GraphQL(ignoreFrom: true)
   final bool ignoredFrom;
 

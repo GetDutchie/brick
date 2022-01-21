@@ -10,13 +10,13 @@ abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
   Future<_Model> fromGraphQL(
     Map<String, dynamic> input, {
     required GraphQLProvider provider,
-    ModelRepository<GraphQLModel>? repository,
+    ModelRepository<GraphqlModel>? repository,
   });
 
   Future<Map<String, dynamic>> toGraphQL(
     _Model input, {
     required GraphQLProvider provider,
-    ModelRepository<GraphQLModel>? repository,
+    ModelRepository<GraphqlModel>? repository,
   });
 
   /// Returns an enum value based on its string name. For example, given `'POST'`,
