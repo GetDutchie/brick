@@ -41,5 +41,5 @@ jobs:
       - run: dart format --output=none --line-length 100 --set-exit-if-changed .
         working-directory: packages/${{ inputs.package }}
 
-      - run: dart test
+      - run: if [ -d "test" ]; then dart test; fi
         working-directory: packages/${{ inputs.package }}
