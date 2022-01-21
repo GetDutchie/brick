@@ -4,6 +4,8 @@ import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_
 import 'package:http/http.dart' as http;
 
 class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
+  bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
+
   RestRequestSqliteCache(http.Request request)
       : super(
             attemptColumn: HTTP_JOBS_ATTEMPTS_COLUMN,
@@ -19,8 +21,6 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
             ],
             tableName: HTTP_JOBS_TABLE_NAME,
             updateAtColumn: HTTP_JOBS_UPDATED_AT);
-
-  bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
 
   @override
   Map<String, dynamic> toSqlite() => {

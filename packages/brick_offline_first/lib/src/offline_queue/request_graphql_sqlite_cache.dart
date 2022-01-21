@@ -8,18 +8,19 @@ import 'package:graphql/client.dart';
 class RequestGraphqlSqliteCache extends RequestSqliteCache {
   RequestGraphqlSqliteCache({request})
       : super(
-            attemptColumn: GRAPHQL_JOB_ATTEMPTS_COLUMN,
-            createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
-            lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
-            primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
-            request: request,
-            requestColumns: [
-              GRAPHQL_JOB_DOCUMENT_COLUMN,
-              GRAPHQL_JOB_VARIABLES_COLUMN,
-              GRAPHQL_JOB_OPERATION_NAME_COLUMN,
-            ],
-            tableName: GRAPHQL_JOB_TABLE_NAME,
-            updateAtColumn: GRAPHQL_JOB_UPDATED_AT);
+          attemptColumn: GRAPHQL_JOB_ATTEMPTS_COLUMN,
+          createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
+          lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
+          primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
+          request: request,
+          requestColumns: [
+            GRAPHQL_JOB_DOCUMENT_COLUMN,
+            GRAPHQL_JOB_VARIABLES_COLUMN,
+            GRAPHQL_JOB_OPERATION_NAME_COLUMN,
+          ],
+          tableName: GRAPHQL_JOB_TABLE_NAME,
+          updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
+        );
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]

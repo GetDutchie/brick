@@ -6,12 +6,14 @@ import 'package:graphql/client.dart';
 
 class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request> {
   RequestGraphqlSqliteCacheManager(String databaseName)
-      : super(databaseName,
-            tableName: GRAPHQL_JOB_TABLE_NAME,
-            createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
-            primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
-            lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
-            updateAtColumn: GRAPHQL_JOB_UPDATED_AT);
+      : super(
+          databaseName,
+          tableName: GRAPHQL_JOB_TABLE_NAME,
+          createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
+          primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
+          lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
+          updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
+        );
 
   @override
   Future<void> migrate() async {
