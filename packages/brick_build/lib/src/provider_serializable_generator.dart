@@ -8,9 +8,6 @@ abstract class ProviderSerializableGenerator<_Config> {
   /// The annotated element
   final Element element;
 
-  /// The reader generated from the annotation
-  final ConstantReader reader;
-
   /// Property under the annotation that contains the serialized config.
   ///
   /// Example, `"restConfig"` here:
@@ -26,6 +23,9 @@ abstract class ProviderSerializableGenerator<_Config> {
 
   /// Produce serializer and deserializer generators
   List<SerdesGenerator> get generators;
+
+  /// The reader generated from the annotation
+  final ConstantReader reader;
 
   ProviderSerializableGenerator(
     this.element,
