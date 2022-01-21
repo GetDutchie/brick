@@ -10,14 +10,14 @@ class SqliteAssoc extends OfflineFirstModel {
 }
 
 final output = r'''
-Future<SqliteAssoc> _$SqliteAssocFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<SqliteAssoc> _$SqliteAssocFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return SqliteAssoc();
 }
 
-Future<Map<String, dynamic>> _$SqliteAssocToRest(SqliteAssoc instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$SqliteAssocToTest(SqliteAssoc instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {};
 }
@@ -34,40 +34,40 @@ Future<Map<String, dynamic>> _$SqliteAssocToSqlite(SqliteAssoc instance,
   return {};
 }
 
-Future<OneToOneAssociation> _$OneToOneAssociationFromRest(
+Future<OneToOneAssociation> _$OneToOneAssociationFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OneToOneAssociation(
-      nullableAssoc: await SqliteAssocAdapter().fromRest(data['nullable_assoc'],
+      nullableAssoc: await SqliteAssocAdapter().fromTest(data['nullable_assoc'],
           provider: provider, repository: repository),
-      nullableAssoc2: await SqliteAssocAdapter().fromRest(
+      nullableAssoc2: await SqliteAssocAdapter().fromTest(
           data['nullable_assoc2'],
           provider: provider,
           repository: repository),
       assoc: await SqliteAssocAdapter()
-          .fromRest(data['assoc'], provider: provider, repository: repository),
-      assoc2: await SqliteAssocAdapter().fromRest(data['assoc2'],
+          .fromTest(data['assoc'], provider: provider, repository: repository),
+      assoc2: await SqliteAssocAdapter().fromTest(data['assoc2'],
           provider: provider, repository: repository));
 }
 
-Future<Map<String, dynamic>> _$OneToOneAssociationToRest(
+Future<Map<String, dynamic>> _$OneToOneAssociationToTest(
     OneToOneAssociation instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'nullable_assoc': instance.nullableAssoc != null
-        ? await SqliteAssocAdapter().toRest(instance.nullableAssoc!,
+        ? await SqliteAssocAdapter().toTest(instance.nullableAssoc!,
             provider: provider, repository: repository)
         : null,
     'nullable_assoc2': instance.nullableAssoc2 != null
-        ? await SqliteAssocAdapter().toRest(instance.nullableAssoc2!,
+        ? await SqliteAssocAdapter().toTest(instance.nullableAssoc2!,
             provider: provider, repository: repository)
         : null,
     'assoc': await SqliteAssocAdapter()
-        .toRest(instance.assoc, provider: provider, repository: repository),
+        .toTest(instance.assoc, provider: provider, repository: repository),
     'assoc2': await SqliteAssocAdapter()
-        .toRest(instance.assoc2, provider: provider, repository: repository)
+        .toTest(instance.assoc2, provider: provider, repository: repository)
   };
 }
 

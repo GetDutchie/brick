@@ -26,7 +26,7 @@ Future<Map<String, dynamic>> _$GraphQLUnserializableFieldWithGeneratorToGraphQL(
 /// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 @GraphqlSerializable()
-class GraphQLUnserializableFieldWithGenerator extends GraphQLModel {
+class GraphQLUnserializableFieldWithGenerator extends GraphqlModel {
   @GraphQL(fromGenerator: '%DATA_PROPERTY%')
   final File withFrom;
 

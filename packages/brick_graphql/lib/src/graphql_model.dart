@@ -1,3 +1,3 @@
 import 'package:brick_core/core.dart';
 
-abstract class GraphQLModel implements Model {}
+abstract class GraphqlModel implements Model {}

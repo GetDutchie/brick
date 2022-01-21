@@ -3,16 +3,16 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 class NonSqliteAssoc {}
 
 final output = r'''
-Future<UnreleatedAssociation> _$UnreleatedAssociationFromRest(
+Future<UnreleatedAssociation> _$UnreleatedAssociationFromTest(
     Map<String, dynamic> data,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return UnreleatedAssociation();
 }
 
-Future<Map<String, dynamic>> _$UnreleatedAssociationToRest(
+Future<Map<String, dynamic>> _$UnreleatedAssociationToTest(
     UnreleatedAssociation instance,
-    {required RestProvider provider,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {};
 }

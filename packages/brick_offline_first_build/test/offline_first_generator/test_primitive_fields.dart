@@ -3,8 +3,8 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 enum Casing { snake, camel }
 
 final output = r'''
-Future<PrimitiveFields> _$PrimitiveFieldsFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
       nullableInteger: data['nullable_integer'] as int?,
@@ -42,8 +42,8 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromRest(Map<String, dynamic> data,
       dateTime: DateTime.parse(data['date_time'] as String));
 }
 
-Future<Map<String, dynamic>> _$PrimitiveFieldsToRest(PrimitiveFields instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$PrimitiveFieldsToTest(PrimitiveFields instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'nullable_integer': instance.nullableInteger,

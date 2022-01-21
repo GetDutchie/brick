@@ -1,16 +1,16 @@
 import 'package:brick_offline_first_abstract/annotations.dart';
 
 final output = r'''
-Future<NoFinalNoConst> _$NoFinalNoConstFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<NoFinalNoConst> _$NoFinalNoConstFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return NoFinalNoConst(
       declaredVar: data['declared_var'] as int,
       regularVar: data['regular_var'] as bool);
 }
 
-Future<Map<String, dynamic>> _$NoFinalNoConstToRest(NoFinalNoConst instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$NoFinalNoConstToTest(NoFinalNoConst instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {
     'declared_var': instance.declaredVar,

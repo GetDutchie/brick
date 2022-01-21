@@ -9,12 +9,12 @@ import 'package:source_gen/source_gen.dart';
 
 /// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
 /// to and from a `GraphQLProvider`.
-class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlSerializable> {
+class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlSerializable> {
   /// Repository prefix passed to the generators. `Repository` will be appended and
   /// should not be included.
   final String repositoryName;
 
-  GraphQLModelSerdesGenerator(
+  GraphqlModelSerdesGenerator(
     Element element,
     ConstantReader reader, {
     required this.repositoryName,
@@ -41,10 +41,10 @@ class GraphQLModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
   @override
   List<SerdesGenerator> get generators {
     final classElement = element as ClassElement;
-    final fields = GraphQLFields(classElement, config);
+    final fields = GraphqlFields(classElement, config);
     return [
-      GraphQLDeserialize(classElement, fields, repositoryName: repositoryName),
-      GraphQLSerialize(classElement, fields, repositoryName: repositoryName),
+      GraphqlDeserialize(classElement, fields, repositoryName: repositoryName),
+      GraphqlSerialize(classElement, fields, repositoryName: repositoryName),
     ];
   }
 }

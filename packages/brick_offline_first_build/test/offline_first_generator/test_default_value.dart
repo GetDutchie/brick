@@ -2,14 +2,14 @@ import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_rest/rest.dart' show Rest;
 
 final output = r'''
-Future<DefaultValue> _$DefaultValueFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<DefaultValue> _$DefaultValueFromTest(Map<String, dynamic> data,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return DefaultValue(string: data['string'] as String? ?? "Thomas");
 }
 
-Future<Map<String, dynamic>> _$DefaultValueToRest(DefaultValue instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$DefaultValueToTest(DefaultValue instance,
+    {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return {'string': instance.string};
 }
