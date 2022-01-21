@@ -11,7 +11,7 @@ abstract class GraphqlSerdesGenerator extends JsonSerdesGenerator<GraphqlModel, 
   }) : super(
           element,
           fields,
-          providerName: 'GraphQL',
+          providerName: 'Graphql',
           repositoryName: repositoryName,
         );
 }

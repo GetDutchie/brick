@@ -9,7 +9,7 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
     with JsonDeserialize<GraphqlModel, Graphql> {
   @override
   // ignore: overridden_fields
-  final providerName = 'GraphQL';
+  final providerName = 'Graphql';
 
   GraphqlDeserialize(
     ClassElement element,
