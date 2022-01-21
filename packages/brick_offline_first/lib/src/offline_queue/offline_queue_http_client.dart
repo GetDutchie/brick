@@ -32,7 +32,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final cacheItem = RestRequestSqliteCache(request: request);
+    final cacheItem = RestRequestSqliteCache(request as http.Request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     // "Pull" requests are ignored. See documentation of `RequestSqliteCache#requestIsPush`.

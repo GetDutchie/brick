@@ -49,7 +49,7 @@ void main() {
       final request = await _requestManager.prepareNextRequestToProcess();
       expect(request!.method, 'POST');
 
-      final asCacheItem = RestRequestSqliteCache(request: request);
+      final asCacheItem = RestRequestSqliteCache(request);
       await asCacheItem.insertOrUpdate(await _requestManager.getDb());
       final req = await _requestManager.prepareNextRequestToProcess();
       expect(req?.method, 'PUT');
@@ -80,7 +80,7 @@ void main() {
         final request = await requestManager.prepareNextRequestToProcess();
         expect(request?.method, 'POST');
 
-        final asCacheItem = RestRequestSqliteCache(request: request!);
+        final asCacheItem = RestRequestSqliteCache(request!);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         // Do not retry request if the row is locked and serial processing is active
         final req = await requestManager.prepareNextRequestToProcess();
@@ -91,7 +91,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/locked_request'));
 
         // prepare unlocked request
-        final asCacheItem = RestRequestSqliteCache(request: request);
+        final asCacheItem = RestRequestSqliteCache(request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
 
         final requests = await requestManager.unprocessedRequests(onlyLocked: true);
@@ -105,7 +105,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/unlocked_request'));
 
         // prepare unlocked request
-        final asCacheItem = RestRequestSqliteCache(request: request);
+        final asCacheItem = RestRequestSqliteCache(request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         await asCacheItem.unlock(await requestManager.getDb());
 
@@ -126,7 +126,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/old_request'));
         final db = await requestManager.getDb();
         // prepare unlocked request
-        final asCacheItem = RestRequestSqliteCache(request: request);
+        final asCacheItem = RestRequestSqliteCache(request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         expect(await requestManager.prepareNextRequestToProcess(), isNull);
 

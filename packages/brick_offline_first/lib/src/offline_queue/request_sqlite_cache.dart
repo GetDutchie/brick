@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
-abstract class RequestSqliteCache {
-  final dynamic request;
+abstract class RequestSqliteCache<_Request> {
+  final _Request request;
   final List<dynamic> requestColumns;
   final String attemptColumn;
   final String createdAtColumn;
@@ -106,27 +106,7 @@ abstract class RequestSqliteCache {
     });
   }
 
-  http.Request sqliteToRequest(Map<String, dynamic> data) {
-    var _request = http.Request(
-      data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
-      Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
-    );
-
-    if (data[HTTP_JOBS_ENCODING_COLUMN] != null) {
-      final encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
-      if (encoding != null) _request.encoding = encoding;
-    }
-
-    if (data[HTTP_JOBS_HEADERS_COLUMN] != null) {
-      _request.headers.addAll(Map<String, String>.from(jsonDecode(data[HTTP_JOBS_HEADERS_COLUMN])));
-    }
-
-    if (data[HTTP_JOBS_BODY_COLUMN] != null) {
-      _request.body = data[HTTP_JOBS_BODY_COLUMN];
-    }
-
-    return _request;
-  }
+  _Request sqliteToRequest(Map<String, dynamic> data);
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]
@@ -139,21 +119,36 @@ abstract class RequestSqliteCache {
     return await db.transaction((txn) async {
       final response = await findRequestInDatabase(txn);
       if (response == null) return null;
-      return await unlockRequest(response, txn);
+      return await unlockRequest(
+        data: response,
+        db: txn,
+        lockedColumn: lockedColumn,
+        primaryKeyColumn: primaryKeyColumn,
+        tableName: tableName,
+      );
     });
   }
 
-  Future<int> lockRequest(Map<String, dynamic> data, DatabaseExecutor db) async =>
-      await _updateLock(true, data, db);
+  static Future<int> lockRequest({
+    required DatabaseExecutor db,
+    required Map<String, dynamic> data,
+    required String lockedColumn,
+    required String primaryKeyColumn,
+    required String tableName,
+  }) async =>
+      await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
 
-  Future<int> unlockRequest(Map<String, dynamic> data, DatabaseExecutor db) async =>
-      await _updateLock(false, data, db);
+  static Future<int> unlockRequest({
+    required DatabaseExecutor db,
+    required Map<String, dynamic> data,
+    required String lockedColumn,
+    required String primaryKeyColumn,
+    required String tableName,
+  }) async =>
+      await _updateLock(false, data, db, tableName, lockedColumn, primaryKeyColumn);
 
-  Future<int> _updateLock(
-    bool shouldLock,
-    Map<String, dynamic> data,
-    DatabaseExecutor db,
-  ) async {
+  static Future<int> _updateLock(bool shouldLock, Map<String, dynamic> data, DatabaseExecutor db,
+      String tableName, String lockedColumn, String primaryKeyColumn) async {
     return await db.update(
       tableName,
       {

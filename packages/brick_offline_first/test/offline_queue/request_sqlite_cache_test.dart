@@ -1,11 +1,15 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import '__helpers__.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -13,15 +17,15 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  group('RequestSqliteCache', () {
+  group('RestRequestSqliteCache', () {
     final getReq = http.Request('GET', Uri.parse('http://example.com'));
-    final getResp = RestRequestSqliteCache(request: getReq);
+    final getResp = RestRequestSqliteCache(getReq);
 
     final postReq = http.Request('POST', Uri.parse('http://example.com'));
-    final postResp = RestRequestSqliteCache(request: postReq);
+    final postResp = RestRequestSqliteCache(postReq);
 
     final putReq = http.Request('PUT', Uri.parse('http://example.com'));
-    final putResp = RestRequestSqliteCache(request: putReq);
+    final putResp = RestRequestSqliteCache(putReq);
 
     final requestManager = RestRequestSqliteCacheManager(
       inMemoryDatabasePath,
@@ -50,7 +54,7 @@ void main() {
     test('#toSqlite', () {
       final request = http.Request('GET', Uri.parse('http://example.com'));
       request.headers.addAll({'Content-Type': 'application/json'});
-      final instance = RestRequestSqliteCache(request: request);
+      final instance = RestRequestSqliteCache(request);
       final asSqlite = instance.toSqlite();
 
       expect(asSqlite, containsPair(HTTP_JOBS_ATTEMPTS_COLUMN, 1));
@@ -76,7 +80,7 @@ void main() {
 
       test('insert', () async {
         final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-        final uninserted = RestRequestSqliteCache(request: uninsertedRequest);
+        final uninserted = RestRequestSqliteCache(uninsertedRequest);
         final db = await requestManager.getDb();
         expect(await requestManager.unprocessedRequests(), isEmpty);
         await uninserted.insertOrUpdate(db, logger: logger);
@@ -98,7 +102,7 @@ void main() {
     test('#unlock', () async {
       final logger = MockLogger();
       final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-      final uninserted = RestRequestSqliteCache(request: uninsertedRequest);
+      final uninserted = RestRequestSqliteCache(uninsertedRequest);
       final db = await requestManager.getDb();
       expect(await requestManager.unprocessedRequests(), isEmpty);
       await uninserted.insertOrUpdate(db, logger: logger);
@@ -109,70 +113,82 @@ void main() {
 
     test('.lockRequest', () async {
       final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-      final uninserted = RestRequestSqliteCache(request: uninsertedRequest);
+      final uninserted = RestRequestSqliteCache(uninsertedRequest);
       final db = await requestManager.getDb();
       await uninserted.insertOrUpdate(db);
       final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
-      await uninserted.unlockRequest(lockedRequests.first, await requestManager.getDb());
+      await RequestSqliteCache.unlockRequest(
+        data: lockedRequests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: HTTP_JOBS_TABLE_NAME,
+      );
 
       var requests = await requestManager.unprocessedRequests();
       expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 0);
-      await uninserted.lockRequest(requests.first, await requestManager.getDb());
+      await RequestSqliteCache.lockRequest(
+        data: requests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: HTTP_JOBS_TABLE_NAME,
+      );
 
       requests = await requestManager.unprocessedRequests();
       expect(requests.first[HTTP_JOBS_LOCKED_COLUMN], 1);
     });
     group('.toRequest', () {
       test('basic', () {
-        final request = http.Request('GET', Uri.parse('http://localhost:3000'));
-        final sqliteCache = RestRequestSqliteCache(request: request);
-        final result = sqliteCache.sqliteToRequest({
+        final request = restSqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
         });
 
-        expect(result.method, 'POST');
-        expect(result.url.toString(), 'http://0.0.0.0:3000');
-        expect(result.body, 'POST body');
+        expect(request.method, 'POST');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
+        expect(request.body, 'POST body');
       });
 
       test('missing headers', () {
-        final request = http.Request('GET', Uri.parse('http://localhost:3000'));
-        final sqliteCache = RestRequestSqliteCache(request: request);
-        final result = sqliteCache.sqliteToRequest(
+        final request = restSqliteToRequest(
             {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
 
-        expect(result.method, 'GET');
-        expect(result.url.toString(), 'http://0.0.0.0:3000');
-        expect(result.headers, {});
-        expect(result.body, '');
+        expect(request.method, 'GET');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
+        expect(request.headers, {});
+        expect(request.body, '');
       });
 
       test('with headers', () {
-        final request = http.Request('GET', Uri.parse('http://localhost:3000'));
-        final sqliteCache = RestRequestSqliteCache(request: request);
-        final result = sqliteCache.sqliteToRequest({
+        final request = restSqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
         });
 
-        expect(result.method, 'GET');
-        expect(result.url.toString(), 'http://0.0.0.0:3000');
-        expect(result.headers, {'Content-Type': 'application/json'});
-        expect(result.body, '');
+        expect(request.method, 'GET');
+        expect(request.url.toString(), 'http://0.0.0.0:3000');
+        expect(request.headers, {'Content-Type': 'application/json'});
+        expect(request.body, '');
       });
     });
 
     test('.unlockRequest', () async {
       final uninsertedRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
-      final uninserted = RestRequestSqliteCache(request: uninsertedRequest);
+      final uninserted = RestRequestSqliteCache(uninsertedRequest);
       final db = await requestManager.getDb();
       await uninserted.insertOrUpdate(db);
       final requests = await requestManager.unprocessedRequests(onlyLocked: true);
       expect(requests, hasLength(1));
-      await uninserted.unlockRequest(requests.first, await requestManager.getDb());
+      await RequestSqliteCache.unlockRequest(
+        data: requests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: HTTP_JOBS_TABLE_NAME,
+      );
       final newLockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
       expect(newLockedRequests, isEmpty);
     });

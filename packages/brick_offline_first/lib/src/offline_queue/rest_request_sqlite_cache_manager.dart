@@ -7,9 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:sqflite_common/sqlite_api.dart';
 
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
-  RestRequestSqliteCacheManager(String databaseName,
-      {DatabaseFactory? databaseFactory, Duration? processingInterval, bool? serialProcessing,})
-      : super(
+  RestRequestSqliteCacheManager(
+    String databaseName, {
+    DatabaseFactory? databaseFactory,
+    Duration? processingInterval,
+    bool? serialProcessing,
+  }) : super(
           databaseName,
           createdAtColumn: HTTP_JOBS_CREATED_AT_COLUMN,
           processingInterval: processingInterval ?? const Duration(seconds: 0),
@@ -50,15 +53,35 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
   @override
   Future<http.Request?> prepareNextRequestToProcess() async {
     final unprocessedRequests = await findNextRequestToProcess();
-    final sqliteCache = RestRequestSqliteCache(request: unprocessedRequests);
-    final jobs =
-        unprocessedRequests.map((data) => sqliteCache.sqliteToRequest(data)).cast<http.Request>();
+    final jobs = unprocessedRequests.map(sqliteToRequest);
 
     if (jobs.isNotEmpty) return jobs.first;
 
     // lock the request for idempotency
 
     return null;
+  }
+
+  http.Request sqliteToRequest(Map<String, dynamic> data) {
+    var _request = http.Request(
+      data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
+      Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
+    );
+
+    if (data[HTTP_JOBS_ENCODING_COLUMN] != null) {
+      final encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
+      if (encoding != null) _request.encoding = encoding;
+    }
+
+    if (data[HTTP_JOBS_HEADERS_COLUMN] != null) {
+      _request.headers.addAll(Map<String, String>.from(jsonDecode(data[HTTP_JOBS_HEADERS_COLUMN])));
+    }
+
+    if (data[HTTP_JOBS_BODY_COLUMN] != null) {
+      _request.body = data[HTTP_JOBS_BODY_COLUMN];
+    }
+
+    return _request;
   }
 }
 

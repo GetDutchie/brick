@@ -1,4 +1,4 @@
-name: Brick Graphql
+name: Brick GraphQL
 on:
   push:
     branches:

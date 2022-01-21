@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names
-import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+import 'package:sqflite/sqflite.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
 abstract class RequestSqliteCacheManager<_RequestMethod> {
@@ -96,11 +98,15 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
       if (latestLockedRequests.isNotEmpty) {
         // ensure that if the request is longer the 2 minutes old it's unlocked automatically
         final request = latestLockedRequests.first;
-        final requestManager = RestRequestSqliteCache(request: request);
         final lastUpdated = DateTime.fromMillisecondsSinceEpoch(request[updateAtColumn]);
         final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
-          await requestManager.unlockRequest(request, txn);
+          await RequestSqliteCache.unlockRequest(
+              data: request,
+              db: txn,
+              primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
+              lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
+              tableName: HTTP_JOBS_TABLE_NAME);
         }
         if (serialProcessing) return [];
       }
@@ -108,14 +114,22 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
       // Find the latest unlocked request
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests.isEmpty) return [];
-      final requestManager = RestRequestSqliteCache(request: unlockedRequests);
+
       // lock the latest unlocked request
-      await requestManager.lockRequest(unlockedRequests.first, txn);
+      await RequestSqliteCache.lockRequest(
+          data: unlockedRequests.first,
+          db: txn,
+          lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
+          primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
+          tableName: HTTP_JOBS_TABLE_NAME);
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
     });
   }
+
+  // This abstraction is to find the next job in the queue, if there is a job
+  // return it if not continue
 
   Future<_RequestMethod?> prepareNextRequestToProcess();
 
