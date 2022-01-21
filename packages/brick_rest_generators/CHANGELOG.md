@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.0
+
+* Separate logic into more agnostic classes `JsonSerdesGenerator`, `JsonDeserialize` and `JsonSerialize`.
+
 ## 1.1.0
 
 * Upgrade `brick_build` and `brick_core`
