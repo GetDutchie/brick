@@ -6,7 +6,7 @@ import 'package:gql/ast.dart';
 /// Constructors that convert app models to and from REST
 abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   DocumentNode get mututationEndpoint;
-  
+
   Future<_Model> fromGraphql(
     Map<String, dynamic> input, {
     required GraphqlProvider provider,
