@@ -1,8 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-// ignore: implementation_imports
-import 'package:brick_build/src/provider_serializable_generator.dart';
-// ignore: implementation_imports
-import 'package:brick_build/src/serdes_generator.dart';
+import 'package:brick_build/generators.dart' show ProviderSerializableGenerator, SerdesGenerator;
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_deserialize.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
