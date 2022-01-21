@@ -1,4 +1,4 @@
-name: Reusable | Flutter Analyze, Dart Format, Dart Test
+name: Reusable | Dart Analyze, Dart Format, Flutter Test
 
 on:
   workflow_call:
