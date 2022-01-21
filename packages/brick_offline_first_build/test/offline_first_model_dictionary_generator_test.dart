@@ -23,7 +23,7 @@ import 'models/path/user.dart';
 part 'adapters/person_adapter.g.dart';
 part 'adapters/user_adapter.g.dart';
 
-/// REST mappings should only be used when initializing a [RestProvider]
+/// Rest mappings should only be used when initializing a [RestProvider]
 final Map<Type, RestAdapter<RestModel>> restMappings = {
   Person: PersonAdapter(),
   User: UserAdapter()
