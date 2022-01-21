@@ -14,6 +14,9 @@
 /// Both use one unnamed arg with a type post-`jsonDecode`.
 abstract class OfflineFirstSerdes<_RemoteSerializeType, _SqliteSerializeType> {
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
+  _RemoteSerializeType? toGraphql() => null;
+
+  /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
   _RemoteSerializeType? toRest() => null;
 
   /// Must be one of the following: `bool`, `DateTime`, `double`, `int`, `num`, `String`,

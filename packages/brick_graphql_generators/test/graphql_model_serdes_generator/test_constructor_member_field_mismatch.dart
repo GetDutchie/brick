@@ -32,13 +32,13 @@ Future<Map<String, dynamic>> _$GraphQLConstructorMemberFieldMismatchToGraphQL(
 }
 ''';
 
-/// Output serializing code for all models with the @[GraphQLSerializable] annotation.
-/// [GraphQLSerializable] **does not** produce code.
+/// Output serializing code for all models with the @[GraphqlSerializable] annotation.
+/// [GraphqlSerializable] **does not** produce code.
 /// A `const` class is required from an non-relative import,
-/// and [GraphQLSerializable] was arbitrarily chosen for this test.
+/// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@GraphQLSerializable()
-class GraphQLConstructorMemberFieldMismatch extends GraphQLModel {
+@GraphqlSerializable()
+class GraphQLConstructorMemberFieldMismatch extends GraphqlModel {
   final String nullableConstructor;
   final String nonNullableConstructor;
 
@@ -52,7 +52,7 @@ class GraphQLConstructorMemberFieldMismatch extends GraphQLModel {
         someField = someField ?? <Assoc>[];
 }
 
-class Assoc extends GraphQLModel {
+class Assoc extends GraphqlModel {
   final String someField;
 
   Assoc(this.someField);

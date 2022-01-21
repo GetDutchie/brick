@@ -18,6 +18,7 @@ class RestException implements Exception {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   String get message =>

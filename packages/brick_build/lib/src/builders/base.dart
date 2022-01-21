@@ -8,17 +8,17 @@ export 'package:brick_build/src/annotation_super_generator.dart';
 final brickLogger = Logger('Brick');
 
 abstract class BaseBuilder<_ClassAnnotation> implements Builder {
-  final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
-
   Logger get logger => brickLogger;
-
-  /// The cached file this will produce
-  String get outputExtension;
 
   @override
   Map<String, List<String>> get buildExtensions => {
         '$aggregateExtension.dart': ['${BaseBuilder.aggregateExtension}$outputExtension']
       };
+
+  /// The cached file this will produce
+  String get outputExtension;
+
+  final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
 
   static const aggregateExtension = '.brick_aggregate';
 
@@ -28,16 +28,10 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
     return libraryReader.annotatedWith(typeChecker);
   }
 
-  /// Replace contents of file
-  Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
-    final file = File(p.join('lib', 'app', path));
-    final fileExists = await file.exists();
-    if (!fileExists) return null;
-
-    final contents = await file.readAsString();
-    final replacedContents = contents.replaceAll(from, to);
-    final writtenFile = await file.writeAsString(replacedContents);
-    return writtenFile;
+  /// After a task has completed, log time to completion.
+  void logStopwatch(String task, Stopwatch stopwatch) {
+    final elapsedSeconds = stopwatchToSeconds(stopwatch);
+    logger.info('$task, took $elapsedSeconds');
   }
 
   /// Create or write to file.
@@ -61,6 +55,18 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
     return writtenFile;
   }
 
+  /// Replace contents of file
+  Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
+    final file = File(p.join('lib', 'app', path));
+    final fileExists = await file.exists();
+    if (!fileExists) return null;
+
+    final contents = await file.readAsString();
+    final replacedContents = contents.replaceAll(from, to);
+    final writtenFile = await file.writeAsString(replacedContents);
+    return writtenFile;
+  }
+
   /// Stop stopwatch and conditionally format elapsed time as seconds or ms
   String stopwatchToSeconds(Stopwatch stopwatch) {
     stopwatch.stop();
@@ -72,11 +78,5 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
     } else {
       return '${milliseconds}ms';
     }
-  }
-
-  /// After a task has completed, log time to completion.
-  void logStopwatch(String task, Stopwatch stopwatch) {
-    final elapsedSeconds = stopwatchToSeconds(stopwatch);
-    logger.info('$task, took $elapsedSeconds');
   }
 }

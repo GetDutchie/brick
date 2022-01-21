@@ -23,7 +23,7 @@ dev_dependencies:
   mockito: ^5.0.0
   sqflite_common: ^2.0.0+1
   sqflite_common_ffi: ^2.0.0
-  flutter_lints: ^1.0.4
+  lints: ^1.0.1
   flutter:
     sdk: flutter
   flutter_test:
