@@ -8,10 +8,6 @@ on:
       - "packages/brick_offline_first_abstract/**"
       - ".github/workflows/brick_offline_first_abstract.yaml"
 
-defaults:
-  run:
-    shell: bash
-
 env:
   PUB_ENVIRONMENT: bot.github
 

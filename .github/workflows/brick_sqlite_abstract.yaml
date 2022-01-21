@@ -8,10 +8,6 @@ on:
       - "packages/brick_sqlite_abstract/**"
       - ".github/workflows/brick_sqlite_abstract.yaml"
 
-defaults:
-  run:
-    shell: bash
-
 env:
   PUB_ENVIRONMENT: bot.github
 
