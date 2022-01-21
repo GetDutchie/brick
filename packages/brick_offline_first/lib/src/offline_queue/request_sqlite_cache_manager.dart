@@ -1,12 +1,11 @@
 // ignore_for_file: constant_identifier_names
-
-import 'package:http/http.dart' as http;
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:meta/meta.dart';
 
 /// Fetch and delete [RequestSqliteCache]s.
-class RequestSqliteCacheManager {
+abstract class RequestSqliteCacheManager<_RequestMethod> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms. If [databaseFactory] is null, the default
   /// Flutter SQFlite will be used.
@@ -18,16 +17,22 @@ class RequestSqliteCacheManager {
   /// When [databaseFactory] is present, this is the **entire** path name.
   /// With [databaseFactory], this is most commonly the
   /// `sqlite_common` constant `inMemoryDatabasePath`.
+  final String createdAtColumn;
   final String databaseName;
+  final String lockedColumn;
+  final String primaryKeyColumn;
+  final String updateAtColumn;
 
   Future<Database>? _db;
 
+  final String tableName;
+
   String get orderByStatement {
     if (!serialProcessing) {
-      return '$HTTP_JOBS_UPDATED_AT ASC';
+      return '$updateAtColumn ASC';
     }
 
-    return '$HTTP_JOBS_CREATED_AT_COLUMN ASC';
+    return '$createdAtColumn ASC';
   }
 
   /// Time between attempts to resubmit a request. Defaults to 5 seconds.
@@ -39,13 +44,18 @@ class RequestSqliteCacheManager {
 
   RequestSqliteCacheManager(
     this.databaseName, {
+    required this.createdAtColumn,
+    required this.lockedColumn,
+    required this.primaryKeyColumn,
+    required this.tableName,
+    required this.updateAtColumn,
     this.databaseFactory,
     this.processingInterval = const Duration(seconds: 5),
     this.serialProcessing = true,
   });
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
-  /// [id] is retrieved from the [HTTP_JOBS_PRIMARY_KEY_COLUMN].
+  /// [id] is retrieved from the [primaryKeyColumn].
   ///
   /// Returns `false` if [id] could not be found;
   /// returns `true` if the request was deleted.
@@ -53,8 +63,8 @@ class RequestSqliteCacheManager {
     final db = await getDb();
 
     final result = await db.delete(
-      HTTP_JOBS_TABLE_NAME,
-      where: '$HTTP_JOBS_PRIMARY_KEY_COLUMN = ?',
+      tableName,
+      where: '$primaryKeyColumn = ?',
       whereArgs: [id],
     );
 
@@ -74,46 +84,23 @@ class RequestSqliteCacheManager {
   }
 
   /// Prepare schema.
-  Future<void> migrate() async {
-    const statement = '''
-      CREATE TABLE IF NOT EXISTS `$HTTP_JOBS_TABLE_NAME` (
-        `$HTTP_JOBS_PRIMARY_KEY_COLUMN` INTEGER PRIMARY KEY AUTOINCREMENT,
-        `$HTTP_JOBS_ATTEMPTS_COLUMN` INTEGER DEFAULT 1,
-        `$HTTP_JOBS_BODY_COLUMN` TEXT,
-        `$HTTP_JOBS_ENCODING_COLUMN` TEXT,
-        `$HTTP_JOBS_HEADERS_COLUMN` TEXT,
-        `$HTTP_JOBS_LOCKED_COLUMN` INTEGER DEFAULT 0,
-        `$HTTP_JOBS_REQUEST_METHOD_COLUMN` TEXT,
-        `$HTTP_JOBS_UPDATED_AT` INTEGER DEFAULT 0,
-        `$HTTP_JOBS_URL_COLUMN` TEXT,
-        `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0
-      );
-    ''';
-    final db = await getDb();
-    await db.execute(statement);
-
-    final tableInfo = await db.rawQuery('PRAGMA table_info("$HTTP_JOBS_TABLE_NAME");');
-    final createdAtHasBeenMigrated = tableInfo.any((c) => c['name'] == HTTP_JOBS_CREATED_AT_COLUMN);
-    if (!createdAtHasBeenMigrated) {
-      await db.execute(
-          'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
-    }
-  }
+  Future<void> migrate();
 
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<http.Request?> prepareNextRequestToProcess() async {
+  Future<List<Map<String, dynamic>>> findNextRequestToProcess() async {
     final db = await getDb();
-    final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
+    return await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final latestLockedRequests = await _latestRequest(txn, whereLocked: true);
 
       if (latestLockedRequests.isNotEmpty) {
         // ensure that if the request is longer the 2 minutes old it's unlocked automatically
-        final lastUpdated =
-            DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[HTTP_JOBS_UPDATED_AT]);
+        final request = latestLockedRequests.first;
+        final requestManager = RestRequestSqliteCache(request: request);
+        final lastUpdated = DateTime.fromMillisecondsSinceEpoch(request[updateAtColumn]);
         final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
-          await RequestSqliteCache.unlockRequest(latestLockedRequests.first, txn);
+          await requestManager.unlockRequest(request, txn);
         }
         if (serialProcessing) return [];
       }
@@ -121,21 +108,16 @@ class RequestSqliteCacheManager {
       // Find the latest unlocked request
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests.isEmpty) return [];
+      final requestManager = RestRequestSqliteCache(request: unlockedRequests);
       // lock the latest unlocked request
-      await RequestSqliteCache.lockRequest(unlockedRequests.first, txn);
+      await requestManager.lockRequest(unlockedRequests.first, txn);
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
     });
-
-    final jobs = unprocessedRequests.map(RequestSqliteCache.sqliteToRequest).cast<http.Request>();
-
-    if (jobs.isNotEmpty) return jobs.first;
-
-    // lock the request for idempotency
-
-    return null;
   }
+
+  Future<_RequestMethod?> prepareNextRequestToProcess();
 
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.
@@ -148,16 +130,16 @@ class RequestSqliteCacheManager {
 
     if (onlyLocked) {
       return await db.query(
-        HTTP_JOBS_TABLE_NAME,
+        tableName,
         distinct: true,
         orderBy: orderByStatement,
-        where: '$HTTP_JOBS_LOCKED_COLUMN = ?',
+        where: '$lockedColumn = ?',
         whereArgs: [1],
       );
     }
 
     return await db.query(
-      HTTP_JOBS_TABLE_NAME,
+      tableName,
       distinct: true,
       orderBy: orderByStatement,
     );
@@ -173,44 +155,12 @@ class RequestSqliteCacheManager {
         DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
 
     return await txn.query(
-      HTTP_JOBS_TABLE_NAME,
+      tableName,
       distinct: true,
-      where: '$HTTP_JOBS_LOCKED_COLUMN = ? AND $HTTP_JOBS_CREATED_AT_COLUMN <= ?',
+      where: '$lockedColumn = ? AND $createdAtColumn <= ?',
       whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
       orderBy: orderByStatement,
       limit: 1,
     );
   }
 }
-
-const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
-
-/// int; autoincrement'd
-const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
-
-/// int
-const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
-
-/// String
-const HTTP_JOBS_BODY_COLUMN = 'body';
-
-/// int; millisecondsSinceEpoch
-const HTTP_JOBS_CREATED_AT_COLUMN = 'created_at';
-
-/// String
-const HTTP_JOBS_ENCODING_COLUMN = 'encoding';
-
-/// json-encoded String
-const HTTP_JOBS_HEADERS_COLUMN = 'headers';
-
-/// int; 1 for true, 0 for false
-const HTTP_JOBS_LOCKED_COLUMN = 'locked';
-
-/// String
-const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
-
-/// int; millisecondsSinceEpoch
-const HTTP_JOBS_UPDATED_AT = 'updated_at';
-
-/// String
-const HTTP_JOBS_URL_COLUMN = 'url';

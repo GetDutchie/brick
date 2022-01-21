@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
@@ -31,7 +32,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final cacheItem = RequestSqliteCache(request as http.Request);
+    final cacheItem = RestRequestSqliteCache(request: request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     // "Pull" requests are ignored. See documentation of `RequestSqliteCache#requestIsPush`.

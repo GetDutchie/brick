@@ -1,6 +1,8 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -11,8 +13,8 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  group('RequestSqliteCacheManager', () {
-    final requestManager = RequestSqliteCacheManager(
+  group('RestRequestSqliteCacheManager', () {
+    final requestManager = RestRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
       processingInterval: const Duration(seconds: 0),
@@ -33,7 +35,7 @@ void main() {
 
     test('#serialProcessing:false', () async {
       final inner = stubResult(statusCode: 501);
-      final _requestManager = RequestSqliteCacheManager(
+      final _requestManager = RestRequestSqliteCacheManager(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
@@ -47,7 +49,7 @@ void main() {
       final request = await _requestManager.prepareNextRequestToProcess();
       expect(request!.method, 'POST');
 
-      final asCacheItem = RequestSqliteCache(request);
+      final asCacheItem = RestRequestSqliteCache(request: request);
       await asCacheItem.insertOrUpdate(await _requestManager.getDb());
       final req = await _requestManager.prepareNextRequestToProcess();
       expect(req?.method, 'PUT');
@@ -78,7 +80,7 @@ void main() {
         final request = await requestManager.prepareNextRequestToProcess();
         expect(request?.method, 'POST');
 
-        final asCacheItem = RequestSqliteCache(request!);
+        final asCacheItem = RestRequestSqliteCache(request: request!);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         // Do not retry request if the row is locked and serial processing is active
         final req = await requestManager.prepareNextRequestToProcess();
@@ -89,7 +91,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/locked_request'));
 
         // prepare unlocked request
-        final asCacheItem = RequestSqliteCache(request);
+        final asCacheItem = RestRequestSqliteCache(request: request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
 
         final requests = await requestManager.unprocessedRequests(onlyLocked: true);
@@ -103,7 +105,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/unlocked_request'));
 
         // prepare unlocked request
-        final asCacheItem = RequestSqliteCache(request);
+        final asCacheItem = RestRequestSqliteCache(request: request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         await asCacheItem.unlock(await requestManager.getDb());
 
@@ -124,7 +126,7 @@ void main() {
         final request = http.Request('POST', Uri.parse('http://localhost:3000/old_request'));
         final db = await requestManager.getDb();
         // prepare unlocked request
-        final asCacheItem = RequestSqliteCache(request);
+        final asCacheItem = RestRequestSqliteCache(request: request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         expect(await requestManager.prepareNextRequestToProcess(), isNull);
 

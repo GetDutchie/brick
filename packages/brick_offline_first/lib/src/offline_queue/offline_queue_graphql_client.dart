@@ -19,9 +19,8 @@ class OfflineQueueGraphqlClient {
     List<int>? reattemptForStatusCodes,
   }) : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}');
 
-  @override
   Future<Response> send(Request request) async {
-    final cacheItem = RequestGraphqlSqliteCache(request);
+    final cacheItem = RequestGraphqlSqliteCache(request: request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     final db = await requestManager.getDb();
@@ -56,7 +55,7 @@ class OfflineQueueGraphqlClient {
 
   /// This method checks if there are any Graphql errors present
   /// TODO need to find a better way to find out how a Link determines a request is offline
-  /// Similar to _ignoreTunnelException
+  /// Similar to
   static bool isAGraphqlErrorsEmpty(Response response) {
     return response.errors == [];
   }

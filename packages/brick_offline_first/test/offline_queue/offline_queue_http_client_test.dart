@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/testing.dart';
 import 'package:sqflite_common/sqlite_api.dart';
@@ -11,7 +12,7 @@ void main() {
   sqfliteFfiInit();
 
   group('OfflineQueueHttpClient', () {
-    final requestManager = RequestSqliteCacheManager(
+    final requestManager = RestRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
     );

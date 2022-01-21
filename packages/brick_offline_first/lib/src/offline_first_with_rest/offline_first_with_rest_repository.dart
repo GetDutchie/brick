@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:meta/meta.dart';
@@ -71,7 +72,7 @@ abstract class OfflineFirstWithRestRepository
     remoteProvider.client = OfflineQueueHttpClient(
       restProvider.client,
       offlineQueueHttpClientRequestSqliteCacheManager ??
-          RequestSqliteCacheManager(_queueDatabaseName),
+          RestRequestSqliteCacheManager(_queueDatabaseName),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = OfflineRequestQueue(
