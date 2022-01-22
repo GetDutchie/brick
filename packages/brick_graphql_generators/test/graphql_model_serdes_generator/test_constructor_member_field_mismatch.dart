@@ -2,7 +2,7 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 Future<GraphQLConstructorMemberFieldMismatch>
-    _$GraphQLConstructorMemberFieldMismatchFromGraphQL(
+    _$GraphQLConstructorMemberFieldMismatchFromGraphql(
         Map<String, dynamic> data,
         {required GraphqlProvider provider,
         GraphQLFirstRepository? repository}) async {
@@ -17,7 +17,7 @@ Future<GraphQLConstructorMemberFieldMismatch>
           []));
 }
 
-Future<Map<String, dynamic>> _$GraphQLConstructorMemberFieldMismatchToGraphQL(
+Future<Map<String, dynamic>> _$GraphQLConstructorMemberFieldMismatchToGraphql(
     GraphQLConstructorMemberFieldMismatch instance,
     {required GraphqlProvider provider,
     GraphQLFirstRepository? repository}) async {
