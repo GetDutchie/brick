@@ -26,7 +26,7 @@ Future<Map<String, dynamic>> _$GraphqlConstructorMemberFieldMismatchToGraphql(
     'nonNullableConstructor': instance.nonNullableConstructor,
     'someField': await Future.wait<Map<String, dynamic>>(instance.someField
         .map((s) => AssocAdapter()
-            .toGraphQL(s, provider: provider, repository: repository))
+            .toGraphql(s, provider: provider, repository: repository))
         .toList())
   };
 }
