@@ -128,7 +128,7 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
 
   // Override to handle conversation from sqlite to request see
   // example of usage inside request_sqlite_cache
-  _RequestMethod? sqliteToRequest(Map<String, dynamic> e);
+  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
 
   /// Find the next job and convert it into a request for a client
   /// to retry.

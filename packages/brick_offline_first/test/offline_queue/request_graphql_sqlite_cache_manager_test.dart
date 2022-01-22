@@ -4,9 +4,6 @@ import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cac
 import 'package:gql_link/gql_link.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:test/test.dart';
-import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
-
-import '__helpers__.dart';
 
 void main() {
   final offlineClient = OfflineQueueGraphqlClient(

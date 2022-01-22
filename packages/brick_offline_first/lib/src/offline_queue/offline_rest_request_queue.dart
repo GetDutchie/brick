@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 
 class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient> {
   /// The client responsible for resending requests
+  @override
+  // ignore: overridden_fields
   final OfflineQueueHttpClient client;
 
   OfflineRestRequestQueue({required this.client})
@@ -16,6 +18,7 @@ class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
             processingInterval: client.requestManager.processingInterval);
 
   /// If the queue is processing
+  @override
   bool get isRunning => _timer?.isActive == true;
 
   /// This mutex ensures that concurrent writes to the DB will

@@ -61,6 +61,7 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
     return null;
   }
 
+  @override
   http.Request sqliteToRequest(Map<String, dynamic> data) {
     var _request = http.Request(
       data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
