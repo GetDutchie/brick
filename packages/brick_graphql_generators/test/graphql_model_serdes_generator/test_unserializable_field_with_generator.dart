@@ -8,14 +8,14 @@ Future<GraphqlUnserializableFieldWithGenerator>
     _$GraphqlUnserializableFieldWithGeneratorFromGraphql(
         Map<String, dynamic> data,
         {required GraphqlProvider provider,
-        GraphQLFirstRepository? repository}) async {
+        GraphqlFirstRepository? repository}) async {
   return GraphqlUnserializableFieldWithGenerator(withFrom: data['withFrom']);
 }
 
 Future<Map<String, dynamic>> _$GraphqlUnserializableFieldWithGeneratorToGraphql(
     GraphqlUnserializableFieldWithGenerator instance,
     {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    GraphqlFirstRepository? repository}) async {
   return {'withTo': instance.withTo};
 }
 ''';

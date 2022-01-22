@@ -4,7 +4,7 @@ final output = r'''
 Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphQL(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    GraphqlFirstRepository? repository}) async {
   return GraphqlIgnoreFromTo(
       ignoredTo: data['ignoredTo'] as bool,
       otherIgnoredTo: data['otherIgnoredTo'] as bool,
@@ -14,7 +14,7 @@ Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphQL(
 Future<Map<String, dynamic>> _$GraphqlIgnoreFromToToGraphQL(
     GraphqlIgnoreFromTo instance,
     {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    GraphqlFirstRepository? repository}) async {
   return {'ignoredFrom': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';

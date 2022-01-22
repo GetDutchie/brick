@@ -20,7 +20,7 @@ Future<GraphqlConstructorMemberFieldMismatch>
 Future<Map<String, dynamic>> _$GraphqlConstructorMemberFieldMismatchToGraphql(
     GraphqlConstructorMemberFieldMismatch instance,
     {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    GraphqlFirstRepository? repository}) async {
   return {
     'nullableConstructor': instance.nullableConstructor,
     'nonNullableConstructor': instance.nonNullableConstructor,

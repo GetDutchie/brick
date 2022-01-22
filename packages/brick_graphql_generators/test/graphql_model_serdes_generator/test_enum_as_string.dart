@@ -2,8 +2,8 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 Future<EnumAsString> _$EnumAsStringFromGraphQL(Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    {required GraphQLProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return EnumAsString(
       hat: GraphqlAdapter.enumValueFromName(Hat.values, data['hat'])!,
       nullableHat: data['nullableHat'] == null
@@ -20,8 +20,8 @@ Future<EnumAsString> _$EnumAsStringFromGraphQL(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToGraphQL(EnumAsString instance,
-    {required GraphqlProvider provider,
-    GraphQLFirstRepository? repository}) async {
+    {required GraphQLProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return {
     'hat': instance.hat.toString().split('.').last,
     'nullableHat': instance.nullableHat?.toString().split('.').last,
