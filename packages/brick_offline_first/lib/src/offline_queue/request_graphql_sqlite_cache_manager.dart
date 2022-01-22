@@ -44,14 +44,16 @@ class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request
 
   @override
   Future<Request?> prepareNextRequestToProcess() async {
-    final unprocessedRequests = await findNextRequestToProcess();
-    final jobs = unprocessedRequests.map(sqliteToRequest).cast<Request?>();
-
-    if (jobs.isNotEmpty) return jobs.first;
-
-    // lock the request for idempotency
-
-    return null;
+    try {
+      // If job throws an error skip it and continue
+      final unprocessedRequests = await findNextRequestToProcess();
+      final jobs = unprocessedRequests.map(sqliteToRequest);
+      if (jobs.isNotEmpty) return jobs.first;
+      // lock the request for idempotency
+      return null;
+    } catch (error) {
+      return null;
+    }
   }
 
   /// Recreate a request from SQLite data

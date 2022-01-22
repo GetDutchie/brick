@@ -52,14 +52,16 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
 
   @override
   Future<http.Request?> prepareNextRequestToProcess() async {
-    final unprocessedRequests = await findNextRequestToProcess();
-    final jobs = unprocessedRequests.map(sqliteToRequest);
-
-    if (jobs.isNotEmpty) return jobs.first;
-
-    // lock the request for idempotency
-
-    return null;
+    try {
+      // If job throws an error skip it and continue
+      final unprocessedRequests = await findNextRequestToProcess();
+      final jobs = unprocessedRequests.map(sqliteToRequest);
+      if (jobs.isNotEmpty) return jobs.first;
+      // lock the request for idempotency
+      return null;
+    } catch (error) {
+      return null;
+    }
   }
 
   @override

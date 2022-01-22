@@ -108,7 +108,6 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
         }
         if (serialProcessing) return [];
       }
-
       // Find the latest unlocked request
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests.isEmpty) return [];
@@ -134,14 +133,16 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
   /// to retry.
 
   Future<_RequestMethod?> prepareNextRequestToProcess() async {
-    final unprocessedRequests = await findNextRequestToProcess();
-    final jobs = unprocessedRequests.map(sqliteToRequest).cast<_RequestMethod?>();
-
-    if (jobs.isNotEmpty) return jobs.first;
-
-    // lock the request for idempotency
-
-    return null;
+    try {
+      // If job throws an error skip it and continue
+      final unprocessedRequests = await findNextRequestToProcess();
+      final jobs = unprocessedRequests.map(sqliteToRequest);
+      if (jobs.isNotEmpty) return jobs.first;
+      // lock the request for idempotency
+      return null;
+    } catch (error) {
+      return null;
+    }
   }
 
   /// Returns row data for all unprocessed job in database.
