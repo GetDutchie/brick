@@ -9,7 +9,7 @@ void main() {
   final offlineClient = OfflineQueueGraphqlClient(
       Link.from([HttpLink("http://localhost:3000")]), RequestGraphqlSqliteCacheManager('db'));
 
-  group('OfflineRequestQueue', () {
+  group('OfflineGraphqlRequestQueue', () {
     test('#start', () {
       final queue = OfflineGraphqlRequestQueue(client: offlineClient);
       queue.start();
