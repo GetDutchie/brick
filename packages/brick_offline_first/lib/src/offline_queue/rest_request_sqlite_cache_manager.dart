@@ -14,6 +14,7 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
   }) : super(
           databaseName,
           createdAtColumn: HTTP_JOBS_CREATED_AT_COLUMN,
+          databaseFactory: databaseFactory,
           lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
           primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
           processingInterval: processingInterval ?? const Duration(seconds: 0),

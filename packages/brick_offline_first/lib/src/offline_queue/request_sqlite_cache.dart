@@ -81,8 +81,8 @@ abstract class RequestSqliteCache<_Request> {
 
       var attemptMessage = '';
 
-      if (response[HTTP_JOBS_REQUEST_METHOD_COLUMN].isEmpty &&
-          response[HTTP_JOBS_URL_COLUMN].isEmpty) {
+      if (response[HTTP_JOBS_REQUEST_METHOD_COLUMN].isNotEmpty &&
+          response[HTTP_JOBS_URL_COLUMN].isNotEmpty) {
         attemptMessage =
             [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
       } else {
