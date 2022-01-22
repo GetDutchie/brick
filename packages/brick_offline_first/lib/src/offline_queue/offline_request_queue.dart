@@ -19,11 +19,13 @@ class OfflineRequestQueue<_Client> {
   /// not occur as the Timer runs in sub routines or isolates
   bool processingInBackground = false;
 
-  Timer? _timer;
+  late Timer? _timer;
 
-  OfflineRequestQueue(
-      {required this.client, required this.databaseName, required this.processingInterval})
-      : _logger = Logger('OfflineRequest#$databaseName');
+  OfflineRequestQueue({
+    required this.client,
+    required this.databaseName,
+    required this.processingInterval,
+  }) : _logger = Logger('OfflineRequest#$databaseName');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.

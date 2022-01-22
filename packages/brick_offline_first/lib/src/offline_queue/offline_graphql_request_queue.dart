@@ -13,19 +13,14 @@ class OfflineGraphqlRequestQueue extends OfflineRequestQueue<OfflineQueueGraphql
 
   OfflineGraphqlRequestQueue({required this.client})
       : super(
-            client: client,
-            databaseName: client.requestManager.databaseName,
-            processingInterval: client.requestManager.processingInterval);
-
-  /// If the queue is processing
-  @override
-  bool get isRunning => _timer?.isActive == true;
+          client: client,
+          databaseName: client.requestManager.databaseName,
+          processingInterval: client.requestManager.processingInterval,
+        );
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
   bool _processingInBackground = false;
-
-  Timer? _timer;
 
   @override
   void process(Timer _timer) async {
