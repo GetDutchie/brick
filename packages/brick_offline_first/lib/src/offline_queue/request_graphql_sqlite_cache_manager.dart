@@ -2,7 +2,8 @@
 
 import 'dart:convert';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
-import 'package:graphql/client.dart';
+import 'package:gql/language.dart';
+import 'package:gql_exec/gql_exec.dart';
 
 class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request> {
   RequestGraphqlSqliteCacheManager(String databaseName)
@@ -56,7 +57,7 @@ class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request
   /// Recreate a request from SQLite data
   @override
   Request sqliteToRequest(Map<String, dynamic> data) {
-    final document = gql(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
+    final document = parseString(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
     final operationName = data[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
     final variables = jsonDecode(data[GRAPHQL_JOB_VARIABLES_COLUMN]);
 

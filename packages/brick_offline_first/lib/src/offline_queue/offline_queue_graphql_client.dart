@@ -1,7 +1,7 @@
 import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database

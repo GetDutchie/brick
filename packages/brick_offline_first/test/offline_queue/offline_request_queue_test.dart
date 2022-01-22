@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/src/offline_queue/offline_rest_request_queue.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:test/test.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
@@ -10,14 +11,14 @@ void main() {
 
   group('OfflineRequestQueue', () {
     test('#start', () {
-      final queue = OfflineRequestQueue(client: offlineClient);
+      final queue = OfflineRestRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
 
     test('#stop', () {
-      final queue = OfflineRequestQueue(client: offlineClient);
+      final queue = OfflineRestRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();

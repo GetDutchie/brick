@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
