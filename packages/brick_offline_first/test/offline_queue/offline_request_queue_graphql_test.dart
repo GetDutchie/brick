@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_graphql_request_queue.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_queue_graphql_client.dart';

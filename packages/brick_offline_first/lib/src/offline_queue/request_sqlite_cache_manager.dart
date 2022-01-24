@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
-import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -100,12 +99,12 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
         final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
           await RequestSqliteCache.unlockRequest(
-              data: request,
-              db: txn,
-              primaryKeyColumn: primaryKeyColumn,
-              lockedColumn: lockedColumn,
-              tableName: tableName,
-            );
+            data: request,
+            db: txn,
+            primaryKeyColumn: primaryKeyColumn,
+            lockedColumn: lockedColumn,
+            tableName: tableName,
+          );
         }
         if (serialProcessing) return [];
       }
@@ -115,12 +114,12 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
 
       // lock the latest unlocked request
       await RequestSqliteCache.lockRequest(
-          data: unlockedRequests.first,
-          db: txn,
-          lockedColumn: lockedColumn,
-          primaryKeyColumn: primaryKeyColumn,
-          tableName: tableName,
-        );
+        data: unlockedRequests.first,
+        db: txn,
+        lockedColumn: lockedColumn,
+        primaryKeyColumn: primaryKeyColumn,
+        tableName: tableName,
+      );
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
