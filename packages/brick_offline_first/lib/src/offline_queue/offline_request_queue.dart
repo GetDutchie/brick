@@ -51,5 +51,5 @@ abstract class OfflineRequestQueue<_Client> {
   }
 
   /// Resend latest unproccessed request to the client.
-  void process(Timer _timer) async {}
+  Future<void> process(Timer _timer);
 }
