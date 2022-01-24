@@ -4,7 +4,6 @@ import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cac
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
-import 'package:logging/logging.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
 class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {

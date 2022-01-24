@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 
 class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
