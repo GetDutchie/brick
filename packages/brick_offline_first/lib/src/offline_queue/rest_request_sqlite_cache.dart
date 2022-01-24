@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
@@ -24,16 +25,15 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
         );
 
   @override
-  Map<String, dynamic> toSqlite() => {
-        HTTP_JOBS_ATTEMPTS_COLUMN: 1,
-        HTTP_JOBS_BODY_COLUMN: request.body,
-        HTTP_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
-        HTTP_JOBS_ENCODING_COLUMN: request.encoding.name,
-        HTTP_JOBS_HEADERS_COLUMN: jsonEncode(request.headers),
-        HTTP_JOBS_REQUEST_METHOD_COLUMN: request.method,
-        HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
-        HTTP_JOBS_URL_COLUMN: request.url.toString(),
-      };
+  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
+    final attemptMessage = [
+      responseFromSqlite[HTTP_JOBS_REQUEST_METHOD_COLUMN],
+      responseFromSqlite[HTTP_JOBS_URL_COLUMN]
+    ].join(' ');
+
+    Logger('GraphqlRequestSqliteCache').warning(
+        'failed, attempt #${responseFromSqlite[HTTP_JOBS_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite');
+  }
 
   @override
   http.Request sqliteToRequest(Map<String, dynamic> data) {
@@ -57,4 +57,16 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
 
     return _request;
   }
+
+  @override
+  Map<String, dynamic> toSqlite() => {
+        HTTP_JOBS_ATTEMPTS_COLUMN: 1,
+        HTTP_JOBS_BODY_COLUMN: request.body,
+        HTTP_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
+        HTTP_JOBS_ENCODING_COLUMN: request.encoding.name,
+        HTTP_JOBS_HEADERS_COLUMN: jsonEncode(request.headers),
+        HTTP_JOBS_REQUEST_METHOD_COLUMN: request.method,
+        HTTP_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+        HTTP_JOBS_URL_COLUMN: request.url.toString(),
+      };
 }

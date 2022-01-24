@@ -4,6 +4,7 @@ import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cac
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
+import 'package:logging/logging.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
 class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
@@ -22,6 +23,15 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
           tableName: GRAPHQL_JOB_TABLE_NAME,
           updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
         );
+
+  @override
+  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
+    final attemptMessage = responseFromSqlite[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
+
+    Logger('GraphqlRequestSqliteCache').warning(
+      'failed, attempt #${responseFromSqlite[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite',
+    );
+  }
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]

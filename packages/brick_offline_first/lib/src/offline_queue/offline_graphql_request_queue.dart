@@ -6,7 +6,7 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 
 class OfflineGraphqlRequestQueue extends OfflineRequestQueue<OfflineQueueGraphqlClient> {
-  OfflineGraphqlRequestQueue({OfflineQueueGraphqlClient this.client})
+  OfflineGraphqlRequestQueue({required OfflineQueueGraphqlClient client})
       : super(
           client: client,
           databaseName: client.requestManager.databaseName,

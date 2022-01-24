@@ -1,5 +1,3 @@
-import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
-import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,6 +9,7 @@ abstract class RequestSqliteCache<_Request> {
   final String lockedColumn;
   final String primaryKeyColumn;
   final _Request request;
+
   /// Columns used to uniquely identify the request (e.g. body, headers, url, method).
   final List<String> requestColumns;
   final String tableName;
@@ -63,6 +62,8 @@ abstract class RequestSqliteCache<_Request> {
     return response.isNotEmpty ? response.first : null;
   }
 
+  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {}
+
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
   Future<int> insertOrUpdate(Database db, {Logger? logger}) async {
@@ -80,17 +81,8 @@ abstract class RequestSqliteCache<_Request> {
         );
       }
 
-      var attemptMessage = '';
+      attemptLogMessage(response);
 
-      if (response[HTTP_JOBS_REQUEST_METHOD_COLUMN].isNotEmpty &&
-          response[HTTP_JOBS_URL_COLUMN].isNotEmpty) {
-        attemptMessage =
-            [response[HTTP_JOBS_REQUEST_METHOD_COLUMN], response[HTTP_JOBS_URL_COLUMN]].join(' ');
-      } else {
-        attemptMessage = response[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
-      }
-
-      logger?.warning('failed, attempt #${response[attemptColumn]} in $attemptMessage : $response');
       return await txn.update(
         tableName,
         {
