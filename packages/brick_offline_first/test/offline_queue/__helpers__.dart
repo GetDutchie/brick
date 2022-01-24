@@ -19,28 +19,6 @@ Stream<Response> stubGraphqResult(Map<String, dynamic> response, errors) {
   ]);
 }
 
-http.Request sqliteToRequest(Map<String, dynamic> data) {
-  var _request = http.Request(
-    data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
-    Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
-  );
-
-  if (data[HTTP_JOBS_ENCODING_COLUMN] != null) {
-    final encoding = Encoding.getByName(data[HTTP_JOBS_ENCODING_COLUMN]);
-    if (encoding != null) _request.encoding = encoding;
-  }
-
-  if (data[HTTP_JOBS_HEADERS_COLUMN] != null) {
-    _request.headers.addAll(Map<String, String>.from(jsonDecode(data[HTTP_JOBS_HEADERS_COLUMN])));
-  }
-
-  if (data[HTTP_JOBS_BODY_COLUMN] != null) {
-    _request.body = data[HTTP_JOBS_BODY_COLUMN];
-  }
-
-  return _request;
-}
-
 class MockLink extends Mock implements Link {
   @override
   Stream<Response> request(Request? request, [NextLink? forward]) => super.noSuchMethod(

@@ -1,4 +1,4 @@
-import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';

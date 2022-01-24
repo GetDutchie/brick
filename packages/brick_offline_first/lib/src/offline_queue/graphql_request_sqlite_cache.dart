@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:brick_offline_first/src/offline_queue/request_graphql_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
-class RequestGraphqlSqliteCache extends RequestSqliteCache<Request> {
-  RequestGraphqlSqliteCache(request)
+class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
+  GraphqlRequestSqliteCache(request)
       : super(
           attemptColumn: GRAPHQL_JOB_ATTEMPTS_COLUMN,
           createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,

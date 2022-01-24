@@ -13,9 +13,10 @@ class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
 
   OfflineRestRequestQueue({required this.client})
       : super(
-            client: client,
-            databaseName: client.requestManager.databaseName,
-            processingInterval: client.requestManager.processingInterval);
+          client: client,
+          databaseName: client.requestManager.databaseName,
+          processingInterval: client.requestManager.processingInterval,
+        );
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates

@@ -6,8 +6,8 @@ import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:sqflite/sqflite.dart';
 
-class RequestGraphqlSqliteCacheManager extends RequestSqliteCacheManager<Request> {
-  RequestGraphqlSqliteCacheManager(String databaseName,
+class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
+  GraphqlRequestSqliteCacheManager(String databaseName,
       {DatabaseFactory? databaseFactory, Duration? processingInterval, bool? serialProcessing})
       : super(
           databaseName,

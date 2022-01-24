@@ -22,7 +22,6 @@ dependencies:
   collection: ^1.15.0
   dart_style: ^2.0.0
   gql_exec: ^0.3.0
-  gql_http_link: ^0.4.0
   gql_link: ^0.4.0
   http: ^0.13.0
   logging: ^1.0.0

@@ -8,8 +8,6 @@ import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart'
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '__helpers__.dart';
-
 class MockLogger extends Mock implements Logger {}
 
 void main() {
@@ -139,7 +137,8 @@ void main() {
     });
     group('.toRequest', () {
       test('basic', () {
-        final request = sqliteToRequest({
+        final tempRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+        final request = RestRequestSqliteCache(tempRequest).sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_BODY_COLUMN: 'POST body'
@@ -151,7 +150,8 @@ void main() {
       });
 
       test('missing headers', () {
-        final request = sqliteToRequest(
+        final tempRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+        final request = RestRequestSqliteCache(tempRequest).sqliteToRequest(
             {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
 
         expect(request.method, 'GET');
@@ -161,7 +161,9 @@ void main() {
       });
 
       test('with headers', () {
-        final request = sqliteToRequest({
+        final tempRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
+
+        final request = RestRequestSqliteCache(tempRequest).sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
           HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
