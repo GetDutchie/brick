@@ -1,4 +1,4 @@
-/// Used to define types in [GraphqlAdapter#fieldsToDocumentNodes]. The build runner package
+/// Used to define types in [GraphqlAdapter#fieldsToRuntimeDefinition]. The build runner package
 /// extracts types and associations that would've been otherwise inaccessible at runtime.
 class RuntimeGraphqlDefinition {
   /// Whether this column relates to another GraphqlModel

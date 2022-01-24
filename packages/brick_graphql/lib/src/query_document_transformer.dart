@@ -40,7 +40,7 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
               ],
               selectionSet: SelectionSetNode(
                 selections: _generateNodes(
-                  adapter.fieldsToDocumentNodes,
+                  adapter.fieldsToRuntimeDefinition,
                   ignoreAssociations: operationType == OperationType.mutation,
                 ),
               ),
@@ -53,10 +53,10 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
 
   final GraphQLModelDictionary modelDictionary;
 
-  /// The `updateJournalEntry` in
+  /// The `upsertPerson` in
   /// ```graphql
-  /// mutation UpdateJournalEntry($input: UpdateJournalEntryInput!) {
-  ///  updateJournalEntry(input: $input) {
+  /// mutation UpsertPerson($input: UpsertPersonInput!) {
+  ///  upsertPerson(input: $input) {
   /// ```
   final String operationFunctionName;
 
@@ -89,10 +89,10 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
   ///
   /// [ignoreAssociations] returns only the immediate models
   List<SelectionNode> _generateNodes(
-    Map<String, RuntimeGraphqlDefinition> fieldsToDocumentNodes, {
+    Map<String, RuntimeGraphqlDefinition> fieldsToRuntimeDefinition, {
     bool ignoreAssociations = false,
   }) {
-    return fieldsToDocumentNodes.entries.fold<List<SelectionNode>>([], (nodes, entry) {
+    return fieldsToRuntimeDefinition.entries.fold<List<SelectionNode>>([], (nodes, entry) {
       nodes.add(FieldNode(
         name: NameNode(value: entry.key),
         alias: null,
@@ -101,7 +101,7 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
         selectionSet: entry.value.association && !ignoreAssociations
             ? SelectionSetNode(
                 selections: _generateNodes(
-                  modelDictionary.adapterFor[entry.value.runtimeType]!.fieldsToDocumentNodes,
+                  modelDictionary.adapterFor[entry.value.runtimeType]!.fieldsToRuntimeDefinition,
                 ),
               )
             : null,

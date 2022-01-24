@@ -34,7 +34,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     }
 
     return [
-      '@override\nfinal Map<String, RuntimeGraphqlDefinition> fieldsToDocumentNodes = {${fieldsToColumns.join(',\n')}};',
+      '@override\nfinal Map<String, RuntimeGraphqlDefinition> fieldsToRuntimeDefinition = {${fieldsToColumns.join(',\n')}};',
     ];
   }
 
