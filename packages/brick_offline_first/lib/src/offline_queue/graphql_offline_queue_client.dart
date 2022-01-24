@@ -15,7 +15,7 @@ class GraphqlOfflineQueueClient extends Link {
   final Logger _logger;
 
   GraphqlOfflineQueueClient(this._inner, this.requestManager)
-      : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}');
+      : _logger = Logger('GraphqlOfflineQueueClient#${requestManager.databaseName}');
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
