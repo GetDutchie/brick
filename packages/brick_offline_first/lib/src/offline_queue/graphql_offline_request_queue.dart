@@ -22,7 +22,7 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue<GraphqlOfflineQueue
             processingInterval: client.requestManager.processingInterval);
 
   @override
-  void process(Timer _timer) async {
+  Future<void> process(Timer _timer) async {
     if (_processingInBackground) return;
 
     _processingInBackground = true;

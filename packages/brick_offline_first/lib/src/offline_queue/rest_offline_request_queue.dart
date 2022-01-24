@@ -24,7 +24,7 @@ class RestOfflineRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
         );
 
   @override
-  void process(Timer _timer) async {
+  Future<void> process(Timer _timer) async {
     if (_processingInBackground) return;
 
     _processingInBackground = true;
