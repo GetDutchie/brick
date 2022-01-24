@@ -8,7 +8,7 @@ import '__helpers__.dart';
 void main() {
   final offlineClient = OfflineQueueHttpClient(stubResult(), RestRequestSqliteCacheManager('db'));
 
-  group('OfflineRestRequestQueue', () {
+  group('RestOfflineRequestQueue', () {
     test('#start', () {
       final queue = RestOfflineRequestQueue(client: offlineClient);
       queue.start();
