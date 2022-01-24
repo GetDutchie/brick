@@ -14,8 +14,8 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
           createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
           databaseFactory: databaseFactory,
           lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
-          processingInterval: processingInterval ?? const Duration(seconds: 0),
           primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
+          processingInterval: processingInterval ?? const Duration(seconds: 0),
           tableName: GRAPHQL_JOB_TABLE_NAME,
           updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
         );
