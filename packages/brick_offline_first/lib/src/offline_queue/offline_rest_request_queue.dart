@@ -6,12 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:http/http.dart' as http;
 
 class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient> {
-  /// The client responsible for resending requests
-  @override
-  // ignore: overridden_fields
-  final OfflineQueueHttpClient client;
-
-  OfflineRestRequestQueue({required this.client})
+  OfflineRestRequestQueue({required OfflineQueueHttpClient client})
       : super(
           client: client,
           databaseName: client.requestManager.databaseName,

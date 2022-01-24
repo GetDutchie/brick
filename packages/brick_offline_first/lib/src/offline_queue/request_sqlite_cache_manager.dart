@@ -102,9 +102,10 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
           await RequestSqliteCache.unlockRequest(
               data: request,
               db: txn,
-              primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
-              lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
-              tableName: HTTP_JOBS_TABLE_NAME);
+              primaryKeyColumn: primaryKeyColumn,
+              lockedColumn: lockedColumn,
+              tableName: tableName,
+            );
         }
         if (serialProcessing) return [];
       }
@@ -116,9 +117,10 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
       await RequestSqliteCache.lockRequest(
           data: unlockedRequests.first,
           db: txn,
-          lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
-          primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
-          tableName: HTTP_JOBS_TABLE_NAME);
+          lockedColumn: lockedColumn,
+          primaryKeyColumn: primaryKeyColumn,
+          tableName: tableName,
+        );
 
       // return the next unlocked request (now locked)
       return unlockedRequests;
@@ -131,7 +133,6 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
 
   /// Find the next job and convert it into a request for a client
   /// to retry.
-
   Future<_RequestMethod?> prepareNextRequestToProcess() async {
     final unprocessedRequests = await findNextRequestToProcess();
     final jobs = unprocessedRequests.map(sqliteToRequest);
