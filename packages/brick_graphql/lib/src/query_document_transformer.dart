@@ -6,27 +6,7 @@ import 'package:gql/ast.dart';
 class QueryDocumentTransformer<_Model extends GraphqlModel> {
   final GraphQLAdapter adapter;
 
-  final GraphQLModelDictionary modelDictionary;
-
-  /// Defaults to [OperationType.query]
-  final OperationType operationType;
-
-  final Query? query;
-
-  /// Generates a document from all unignored properties on the model.
-  DocumentNode get defaultFetchQueryDocument {
-    return DocumentNode(
-      definitions: [
-        OperationDefinitionNode(
-          type: operationType,
-          name: NameNode(value: _Model.toString()),
-          variableDefinitions: [],
-          directives: [],
-          selectionSet: SelectionSetNode(selections: _generateNodes(adapter.fieldsToDocumentNodes)),
-        )
-      ],
-    );
-  }
+  final List<GraphqlArgument> arguments;
 
   /// Generates a document based on the [query]
   DocumentNode get document {
@@ -34,26 +14,76 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
       definitions: [
         OperationDefinitionNode(
           type: operationType,
-          name: NameNode(value: _Model.toString()),
-          variableDefinitions: [VariableDefinitionNode(variable: VariableNode(name: ), type: type)],
+          name: NameNode(value: operationNameNode),
+          variableDefinitions: [
+            for (final variable in variables)
+              VariableDefinitionNode(
+                variable: VariableNode(name: NameNode(value: variable.name)),
+                type: NamedTypeNode(
+                  name: NameNode(value: variable.className),
+                  isNonNull: !variable.nullable,
+                ),
+              ),
+          ],
           directives: [],
-          selectionSet: SelectionSetNode(
-            selections: _generateNodes(
-              adapter.fieldsToDocumentNodes,
-              ignoreAssociations: operationType == OperationType.mutation,
+          selectionSet: SelectionSetNode(selections: [
+            FieldNode(
+              name: NameNode(value: operationFunctionName),
+              arguments: [
+                for (final argument in arguments)
+                  ArgumentNode(
+                    name: NameNode(value: argument.name),
+                    value: VariableNode(
+                      name: NameNode(value: argument.variable.name),
+                    ),
+                  ),
+              ],
+              selectionSet: SelectionSetNode(
+                selections: _generateNodes(
+                  adapter.fieldsToDocumentNodes,
+                  ignoreAssociations: operationType == OperationType.mutation,
+                ),
+              ),
             ),
-          ),
-        )
+          ]),
+        ),
       ],
     );
   }
 
+  final GraphQLModelDictionary modelDictionary;
+
+  /// The `updateJournalEntry` in
+  /// ```graphql
+  /// mutation UpdateJournalEntry($input: UpdateJournalEntryInput!) {
+  ///  updateJournalEntry(input: $input) {
+  /// ```
+  final String operationFunctionName;
+
+  /// The name following `query` or `mutation` (e.g. `mutation UpsertPerson`)
+  final String operationNameNode;
+
+  /// Defaults to [OperationType.query]
+  final OperationType operationType;
+
+  final Query? query;
+
+  /// Defaults to `[]`
+  final List<GraphqlVariable> variables;
+
   QueryDocumentTransformer(
     this.query, {
+    List<GraphqlArgument>? arguments,
     required this.modelDictionary,
+    required this.operationFunctionName,
+    String? operationNameNode,
     OperationType? operationType,
+    List<GraphqlVariable>? variables,
   })  : adapter = modelDictionary.adapterFor[_Model]!,
-        operationType = operationType ?? OperationType.query;
+        arguments = arguments ?? [],
+        operationNameNode = operationNameNode ?? _Model.toString(),
+        operationType = operationType ?? OperationType.query,
+        variables = variables ?? [];
 
   /// Recursively request nodes from GraphQL as well as any deeply-nested associations.
   ///
@@ -80,4 +110,34 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
       return nodes;
     });
   }
+}
+
+class GraphqlArgument {
+  final String name;
+
+  final GraphqlVariable variable;
+
+  const GraphqlArgument({
+    required this.name,
+    required this.variable,
+  });
+}
+
+class GraphqlVariable {
+  /// The `UpdatePersonInput` in `mutation UpdatePerson($input: UpdatePersonInput)`
+  final String className;
+
+  /// The `input` in `mutation UpdatePerson($input: UpdatePersonInput)`
+  final String name;
+
+  /// A `!` in `mutation UpdatePerson($input: UpdatePersonInput!)` indicates that the
+  /// input value cannot be nullable.
+  /// Defaults `false`.
+  final bool nullable;
+
+  const GraphqlVariable({
+    required this.className,
+    required this.name,
+    this.nullable = false,
+  });
 }
