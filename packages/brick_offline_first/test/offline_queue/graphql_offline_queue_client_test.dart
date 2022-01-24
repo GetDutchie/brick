@@ -12,7 +12,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  group('OfflineQueueGraphqlClient', () {
+  group('GraphqlOfflineQueueClient', () {
     final requestManager = GraphqlRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
@@ -33,7 +33,7 @@ void main() {
 
     test('#verify link request made', () async {
       final mockLink = MockLink();
-      final client = OfflineQueueGraphqlClient(mockLink, requestManager);
+      final client = GraphqlOfflineQueueClient(mockLink, requestManager);
 
       await client
           .request(

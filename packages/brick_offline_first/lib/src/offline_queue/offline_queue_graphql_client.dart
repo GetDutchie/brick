@@ -5,7 +5,7 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
-class OfflineQueueGraphqlClient extends Link {
+class GraphqlOfflineQueueClient extends Link {
   /// A DocumentNode GraphQL execution interface
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
@@ -14,7 +14,7 @@ class OfflineQueueGraphqlClient extends Link {
 
   final Logger _logger;
 
-  OfflineQueueGraphqlClient(this._inner, this.requestManager)
+  GraphqlOfflineQueueClient(this._inner, this.requestManager)
       : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}');
 
   @override
@@ -53,12 +53,5 @@ class OfflineQueueGraphqlClient extends Link {
     }
 
     yield* _genericErrorResponse;
-  }
-
-  /// TODO need to find a better way to find out how a Link determines a request is offline
-  /// Similar to the _ignoreTunnelException
-  static bool areGraphqlErrorsEmpty(Response response) {
-    // TODO: implement areGraphqlErrorsEmpty
-    throw UnimplementedError();
   }
 }

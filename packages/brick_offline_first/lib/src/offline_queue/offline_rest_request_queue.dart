@@ -5,9 +5,15 @@ import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart
 import 'package:logging/logging.dart';
 import 'package:http/http.dart' as http;
 
-class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient> {
-  OfflineRestRequestQueue({required OfflineQueueHttpClient client})
-      : super(
+class RestOfflineRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient> {
+  @override
+  // ignore: overridden_fields
+  final Logger logger;
+
+  RestOfflineRequestQueue({
+    required OfflineQueueHttpClient client,
+  })  : logger = Logger('RestOfflineRequestQueue'),
+        super(
           client: client,
           databaseName: client.requestManager.databaseName,
           processingInterval: client.requestManager.processingInterval,
@@ -31,7 +37,7 @@ class OfflineRestRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
     }
 
     if (request != null) {
-      Logger('Processing request ${request.method} ${request.url}');
+      logger.info('Processing request ${request.method} ${request.url}');
       await client.send(request);
     }
   }

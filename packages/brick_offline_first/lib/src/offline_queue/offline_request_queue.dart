@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
 abstract class OfflineRequestQueue<_Client> {
@@ -8,7 +9,8 @@ abstract class OfflineRequestQueue<_Client> {
 
   final String databaseName;
 
-  final Logger _logger;
+  @protected
+  final Logger logger;
 
   final Duration processingInterval;
 
@@ -25,13 +27,13 @@ abstract class OfflineRequestQueue<_Client> {
     required this.client,
     required this.databaseName,
     required this.processingInterval,
-  }) : _logger = Logger('OfflineRequest#$databaseName');
+  }) : logger = Logger('OfflineRequestQueue#$databaseName');
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();
-    _logger.finer('Queue started');
+    logger.finer('Queue started');
     processingInBackground = false;
     _timer = Timer.periodic(processingInterval, process);
   }
@@ -45,7 +47,7 @@ abstract class OfflineRequestQueue<_Client> {
     }
     _timer = null;
     processingInBackground = false;
-    _logger.finer('Queue stopped');
+    logger.finer('Queue stopped');
   }
 
   /// Resend latest unproccessed request to the client.

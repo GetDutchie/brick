@@ -76,7 +76,7 @@ abstract class OfflineFirstWithRestRepository
           RestRequestSqliteCacheManager(_queueDatabaseName),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
-    offlineRequestQueue = OfflineRestRequestQueue(
+    offlineRequestQueue = RestOfflineRequestQueue(
       client: remoteProvider.client as OfflineQueueHttpClient,
     );
   }

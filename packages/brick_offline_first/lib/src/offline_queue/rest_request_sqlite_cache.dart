@@ -30,7 +30,7 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
       responseFromSqlite[HTTP_JOBS_URL_COLUMN]
     ].join(' ');
 
-    return 'failed, attempt #${responseFromSqlite[HTTP_JOBS_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
+    return 'in $attemptMessage : $responseFromSqlite';
   }
 
   @override

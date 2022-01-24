@@ -10,14 +10,14 @@ void main() {
 
   group('OfflineRestRequestQueue', () {
     test('#start', () {
-      final queue = OfflineRestRequestQueue(client: offlineClient);
+      final queue = RestOfflineRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
 
     test('#stop', () {
-      final queue = OfflineRestRequestQueue(client: offlineClient);
+      final queue = RestOfflineRequestQueue(client: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();

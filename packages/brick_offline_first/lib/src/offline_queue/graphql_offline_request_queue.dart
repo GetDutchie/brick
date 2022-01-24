@@ -5,17 +5,21 @@ import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart
 import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 
-class OfflineGraphqlRequestQueue extends OfflineRequestQueue<OfflineQueueGraphqlClient> {
-  OfflineGraphqlRequestQueue({required OfflineQueueGraphqlClient client})
-      : super(
-          client: client,
-          databaseName: client.requestManager.databaseName,
-          processingInterval: client.requestManager.processingInterval,
-        );
+class GraphqlOfflineRequestQueue extends OfflineRequestQueue<GraphqlOfflineQueueClient> {
+  @override
+  // ignore: overridden_fields
+  final Logger logger;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
   bool _processingInBackground = false;
+
+  GraphqlOfflineRequestQueue({required GraphqlOfflineQueueClient client})
+      : logger = Logger('GraphqlOfflineRequestQueue'),
+        super(
+            client: client,
+            databaseName: client.requestManager.databaseName,
+            processingInterval: client.requestManager.processingInterval);
 
   @override
   void process(Timer _timer) async {
@@ -31,7 +35,7 @@ class OfflineGraphqlRequestQueue extends OfflineRequestQueue<OfflineQueueGraphql
     }
 
     if (request != null) {
-      Logger('Processing request ${request.operation.operationName}');
+      logger.info('Processing request ${request.operation.operationName}');
       client.request(request);
     }
   }

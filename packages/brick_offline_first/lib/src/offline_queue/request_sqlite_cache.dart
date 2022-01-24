@@ -62,6 +62,8 @@ abstract class RequestSqliteCache<_Request> {
     return response.isNotEmpty ? response.first : null;
   }
 
+  /// The output before each attempt
+
   String attemptLogMessage(Map<String, dynamic> responseFromSqlite);
 
   /// If the request already exists in the database, increment attemps and
@@ -81,7 +83,7 @@ abstract class RequestSqliteCache<_Request> {
         );
       }
 
-      logger?.warning(attemptLogMessage(response));
+      logger?.warning('failed, attempt #${response[attemptColumn]} ${attemptLogMessage(response)}');
 
       return await txn.update(
         tableName,
