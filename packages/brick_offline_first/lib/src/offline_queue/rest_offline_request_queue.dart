@@ -10,6 +10,10 @@ class RestOfflineRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
   // ignore: overridden_fields
   final Logger logger;
 
+  /// This mutex ensures that concurrent writes to the DB will
+  /// not occur as the Timer runs in sub routines or isolates
+  bool _processingInBackground = false;
+
   RestOfflineRequestQueue({
     required OfflineQueueHttpClient client,
   })  : logger = Logger('RestOfflineRequestQueue'),
@@ -18,10 +22,6 @@ class RestOfflineRequestQueue extends OfflineRequestQueue<OfflineQueueHttpClient
           databaseName: client.requestManager.databaseName,
           processingInterval: client.requestManager.processingInterval,
         );
-
-  /// This mutex ensures that concurrent writes to the DB will
-  /// not occur as the Timer runs in sub routines or isolates
-  bool _processingInBackground = false;
 
   @override
   void process(Timer _timer) async {
