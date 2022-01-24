@@ -9,17 +9,17 @@ abstract class OfflineRequestQueue<_Client> {
 
   final String databaseName;
 
+  /// If the queue is processing
+  bool get isRunning => _timer?.isActive == true;
+
   @protected
   final Logger logger;
-
-  final Duration processingInterval;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
   bool processingInBackground = false;
 
-  /// If the queue is processing
-  bool get isRunning => _timer?.isActive == true;
+  final Duration processingInterval;
 
   late Timer? _timer;
 

@@ -35,7 +35,7 @@ class GraphqlOfflineQueueClient extends Link {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
       final response = await _inner.request(request).first;
       // get it back as a stream so that it can be return
-      final streamAsStream = _inner.request(request).asBroadcastStream();
+      final streamAsStream = _inner.request(request);
 
       if (response.errors!.isEmpty) {
         final db = await requestManager.getDb();
