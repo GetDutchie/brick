@@ -25,14 +25,13 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
         );
 
   @override
-  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
+  String attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
     final attemptMessage = [
       responseFromSqlite[HTTP_JOBS_REQUEST_METHOD_COLUMN],
       responseFromSqlite[HTTP_JOBS_URL_COLUMN]
     ].join(' ');
 
-    Logger('GraphqlRequestSqliteCache').warning(
-        'failed, attempt #${responseFromSqlite[HTTP_JOBS_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite');
+    return 'failed, attempt #${responseFromSqlite[HTTP_JOBS_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
   }
 
   @override

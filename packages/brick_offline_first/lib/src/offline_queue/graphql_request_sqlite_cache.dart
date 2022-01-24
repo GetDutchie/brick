@@ -25,12 +25,10 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
         );
 
   @override
-  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
+  String attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
     final attemptMessage = responseFromSqlite[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
 
-    Logger('GraphqlRequestSqliteCache').warning(
-      'failed, attempt #${responseFromSqlite[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite',
-    );
+    return 'failed, attempt #${responseFromSqlite[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
   }
 
   /// Builds request into a new SQLite-insertable row

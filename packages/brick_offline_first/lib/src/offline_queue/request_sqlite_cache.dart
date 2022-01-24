@@ -62,7 +62,7 @@ abstract class RequestSqliteCache<_Request> {
     return response.isNotEmpty ? response.first : null;
   }
 
-  void attemptLogMessage(Map<String, dynamic> responseFromSqlite) {}
+  String attemptLogMessage(Map<String, dynamic> responseFromSqlite);
 
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
@@ -81,7 +81,7 @@ abstract class RequestSqliteCache<_Request> {
         );
       }
 
-      attemptLogMessage(response);
+      logger?.warning(attemptLogMessage(response));
 
       return await txn.update(
         tableName,
