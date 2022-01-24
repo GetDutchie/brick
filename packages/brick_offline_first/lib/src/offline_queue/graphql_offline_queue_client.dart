@@ -10,9 +10,9 @@ class GraphqlOfflineQueueClient extends Link {
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
 
-  final GraphqlRequestSqliteCacheManager requestManager;
-
   final Logger _logger;
+
+  final GraphqlRequestSqliteCacheManager requestManager;
 
   GraphqlOfflineQueueClient(this._inner, this.requestManager)
       : _logger = Logger('GraphqlOfflineQueueClient#${requestManager.databaseName}');
