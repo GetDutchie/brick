@@ -3,17 +3,14 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
-abstract class OfflineRequestQueue<_Client> {
-  /// The client responsible for resending requests
-  final _Client client;
-
+abstract class OfflineRequestQueue {
   final String databaseName;
 
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
   @protected
-  final Logger logger;
+  Logger get logger => Logger('OfflineRequestQueue#$databaseName');
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
@@ -24,10 +21,9 @@ abstract class OfflineRequestQueue<_Client> {
   late Timer? _timer;
 
   OfflineRequestQueue({
-    required this.client,
     required this.databaseName,
     required this.processingInterval,
-  }) : logger = Logger('OfflineRequestQueue#$databaseName');
+  });
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
@@ -51,5 +47,5 @@ abstract class OfflineRequestQueue<_Client> {
   }
 
   /// Resend latest unproccessed request to the client.
-  Future<void> process(Timer _timer);
+  void process(Timer _timer) async {}
 }

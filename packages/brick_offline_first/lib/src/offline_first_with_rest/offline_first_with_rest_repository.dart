@@ -49,7 +49,7 @@ abstract class OfflineFirstWithRestRepository
   final bool throwTunnelNotFoundExceptions;
 
   @protected
-  late OfflineRequestQueue offlineRequestQueue;
+  late RestOfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
     required RestProvider restProvider,

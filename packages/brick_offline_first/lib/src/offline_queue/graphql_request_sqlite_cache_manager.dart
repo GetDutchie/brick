@@ -16,6 +16,7 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
           lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
           primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
           processingInterval: processingInterval ?? const Duration(seconds: 0),
+          serialProcessing: serialProcessing ?? true,
           tableName: GRAPHQL_JOB_TABLE_NAME,
           updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
         );
@@ -43,20 +44,6 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
     if (!createdAtHasBeenMigrated) {
       await db.execute(
           'ALTER TABLE `$GRAPHQL_JOB_TABLE_NAME` ADD `$GRAPHQL_JOB_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
-    }
-  }
-
-  @override
-  Future<Request?> prepareNextRequestToProcess() async {
-    try {
-      // If job throws an error skip it and continue
-      final unprocessedRequests = await findNextRequestToProcess();
-      final jobs = unprocessedRequests.map(sqliteToRequest);
-      if (jobs.isNotEmpty) return jobs.first;
-      // lock the request for idempotency
-      return null;
-    } catch (error) {
-      return null;
     }
   }
 

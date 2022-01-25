@@ -5,7 +5,7 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
-class GraphqlOfflineQueueClient extends Link {
+class GraphqlOfflineQueueLink extends Link {
   /// A DocumentNode GraphQL execution interface
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
   final Link _inner;
@@ -14,7 +14,7 @@ class GraphqlOfflineQueueClient extends Link {
 
   final GraphqlRequestSqliteCacheManager requestManager;
 
-  GraphqlOfflineQueueClient(this._inner, this.requestManager)
+  GraphqlOfflineQueueLink(this._inner, this.requestManager)
       : _logger = Logger('GraphqlOfflineQueueClient#${requestManager.databaseName}');
 
   @override

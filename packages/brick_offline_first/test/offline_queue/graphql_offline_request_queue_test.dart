@@ -1,11 +1,11 @@
 import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/graphql_offline_request_queue.dart';
-import 'package:brick_offline_first/src/offline_queue/graphql_offline_queue_client.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql_offline_queue_link.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final offlineClient = GraphqlOfflineQueueClient(
+  final offlineClient = GraphqlOfflineQueueLink(
     Link.split(
       (request) => false,
       const PassthroughLink(),

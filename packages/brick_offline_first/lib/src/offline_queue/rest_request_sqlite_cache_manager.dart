@@ -18,7 +18,7 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
           lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
           primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
           processingInterval: processingInterval ?? const Duration(seconds: 0),
-          serialProcessing: serialProcessing ?? false,
+          serialProcessing: serialProcessing ?? true,
           tableName: HTTP_JOBS_TABLE_NAME,
           updateAtColumn: HTTP_JOBS_UPDATED_AT,
         );
@@ -47,20 +47,6 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
     if (!createdAtHasBeenMigrated) {
       await db.execute(
           'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
-    }
-  }
-
-  @override
-  Future<http.Request?> prepareNextRequestToProcess() async {
-    try {
-      // If job throws an error skip it and continue
-      final unprocessedRequests = await findNextRequestToProcess();
-      final jobs = unprocessedRequests.map(sqliteToRequest);
-      if (jobs.isNotEmpty) return jobs.first;
-      // lock the request for idempotency
-      return null;
-    } catch (error) {
-      return null;
     }
   }
 

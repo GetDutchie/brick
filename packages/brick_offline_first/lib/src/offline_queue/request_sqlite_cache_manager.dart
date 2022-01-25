@@ -87,19 +87,19 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
 
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<List<Map<String, dynamic>>> findNextRequestToProcess() async {
+  Future<_RequestMethod?> prepareNextRequestToProcess() async {
     final db = await getDb();
-    return await db.transaction<List<Map<String, dynamic>>>((txn) async {
+    final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final latestLockedRequests = await _latestRequest(txn, whereLocked: true);
 
       if (latestLockedRequests.isNotEmpty) {
         // ensure that if the request is longer the 2 minutes old it's unlocked automatically
-        final request = latestLockedRequests.first;
-        final lastUpdated = DateTime.fromMillisecondsSinceEpoch(request[updateAtColumn]);
+        final lastUpdated =
+            DateTime.fromMillisecondsSinceEpoch(latestLockedRequests.first[updateAtColumn]);
         final twoMinutesAgo = DateTime.now().subtract(const Duration(minutes: 2));
         if (lastUpdated.isBefore(twoMinutesAgo)) {
           await RequestSqliteCache.unlockRequest(
-            data: request,
+            data: latestLockedRequests.first,
             db: txn,
             primaryKeyColumn: primaryKeyColumn,
             lockedColumn: lockedColumn,
@@ -108,10 +108,10 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
         }
         if (serialProcessing) return [];
       }
+
       // Find the latest unlocked request
       final unlockedRequests = await _latestRequest(txn, whereLocked: false);
       if (unlockedRequests.isEmpty) return [];
-
       // lock the latest unlocked request
       await RequestSqliteCache.lockRequest(
         data: unlockedRequests.first,
@@ -120,24 +120,36 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
         primaryKeyColumn: primaryKeyColumn,
         tableName: tableName,
       );
-
       // return the next unlocked request (now locked)
       return unlockedRequests;
     });
-  }
 
-  /// Builds a client-consumable [_RequestMethod] from SQLite row output
-  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
+    final jobs = unprocessedRequests.map(sqliteToRequest).cast<_RequestMethod>();
 
-  /// Find the next job and convert it into a request for a client
-  /// to retry.
-  Future<_RequestMethod?> prepareNextRequestToProcess() async {
-    final unprocessedRequests = await findNextRequestToProcess();
-    final jobs = unprocessedRequests.map(sqliteToRequest);
     if (jobs.isNotEmpty) return jobs.first;
+
     // lock the request for idempotency
 
     return null;
+  }
+
+  Future<List<Map<String, dynamic>>> _latestRequest(
+    DatabaseExecutor txn, {
+    required bool whereLocked,
+  }) async {
+    /// Ensure that a request that's immediately attempted and stored is not immediately
+    /// reattempted by the queue interval before an HTTP response is received.
+    final nowMinusNextPoll =
+        DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
+
+    return await txn.query(
+      tableName,
+      distinct: true,
+      where: '$lockedColumn = ? AND $createdAtColumn <= ?',
+      whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
+      orderBy: orderByStatement,
+      limit: 1,
+    );
   }
 
   /// Returns row data for all unprocessed job in database.
@@ -166,22 +178,6 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
     );
   }
 
-  Future<List<Map<String, dynamic>>> _latestRequest(
-    DatabaseExecutor txn, {
-    required bool whereLocked,
-  }) async {
-    /// Ensure that a request that's immediately attempted and stored is not immediately
-    /// reattempted by the queue interval before an HTTP response is received.
-    final nowMinusNextPoll =
-        DateTime.now().millisecondsSinceEpoch - processingInterval.inMilliseconds;
-
-    return await txn.query(
-      tableName,
-      distinct: true,
-      where: '$lockedColumn = ? AND $createdAtColumn <= ?',
-      whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
-      orderBy: orderByStatement,
-      limit: 1,
-    );
-  }
+  /// Builds a client-consumable [_RequestMethod] from SQLite row output
+  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
 }

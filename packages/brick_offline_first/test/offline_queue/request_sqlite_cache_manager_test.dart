@@ -82,7 +82,7 @@ void main() {
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         // Do not retry request if the row is locked and serial processing is active
         final req = await requestManager.prepareNextRequestToProcess();
-        expect(req, isNotNull);
+        expect(req, isNull);
       });
 
       test('new request is locked and skipped', () async {
@@ -143,7 +143,7 @@ void main() {
         expect(await requestManager.unprocessedRequests(onlyLocked: true), hasLength(1));
         expect(await requestManager.unprocessedRequests(onlyLocked: false), hasLength(1));
 
-        expect(await requestManager.prepareNextRequestToProcess(), isNotNull);
+        expect(await requestManager.prepareNextRequestToProcess(), isNull);
 
         final updatedReq = await requestManager.prepareNextRequestToProcess();
         expect(updatedReq?.url, Uri.parse('http://localhost:3000/old_request'));
