@@ -25,7 +25,7 @@ void main() {
     tearDown(() async {
       final requests = await requestManager.unprocessedRequests();
       final requestsToDelete = requests.map((request) {
-        return requestManager.deleteUnprocessedRequest(request[GRAPHQL_JOB_PRIMARY_KEY_COLUMN]);
+        return requestManager.deleteUnprocessedRequest(request[GRAPHQL_JOBS_PRIMARY_KEY_COLUMN]);
       });
 
       await Future.wait(requestsToDelete);

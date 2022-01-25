@@ -9,32 +9,32 @@ import 'package:gql_exec/gql_exec.dart';
 class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
   GraphqlRequestSqliteCache(request)
       : super(
-          attemptColumn: GRAPHQL_JOB_ATTEMPTS_COLUMN,
-          createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
-          lockedColumn: GRAPHQL_JOB_LOCKED_COLUMN,
-          primaryKeyColumn: GRAPHQL_JOB_PRIMARY_KEY_COLUMN,
+          attemptColumn: GRAPHQL_JOBS_ATTEMPTS_COLUMN,
+          createdAtColumn: GRAPHQL_JOBS_CREATED_AT_COLUMN,
+          lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
+          primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
           request: request,
           requestColumns: [
-            GRAPHQL_JOB_DOCUMENT_COLUMN,
-            GRAPHQL_JOB_VARIABLES_COLUMN,
-            GRAPHQL_JOB_OPERATION_NAME_COLUMN,
+            GRAPHQL_JOBS_DOCUMENT_COLUMN,
+            GRAPHQL_JOBS_VARIABLES_COLUMN,
+            GRAPHQL_JOBS_OPERATION_NAME_COLUMN,
           ],
-          tableName: GRAPHQL_JOB_TABLE_NAME,
-          updateAtColumn: GRAPHQL_JOB_UPDATED_AT,
+          tableName: GRAPHQL_JOBS_TABLE_NAME,
+          updateAtColumn: GRAPHQL_JOBS_UPDATED_AT,
         );
 
   @override
   String attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
-    final attemptMessage = responseFromSqlite[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
+    final attemptMessage = responseFromSqlite[GRAPHQL_JOBS_OPERATION_NAME_COLUMN];
 
-    return 'failed, attempt #${responseFromSqlite[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
+    return 'failed, attempt #${responseFromSqlite[GRAPHQL_JOBS_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
   }
 
   @override
   Request sqliteToRequest(Map<String, dynamic> data) {
-    final document = parseString(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
-    final operationName = data[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
-    final variables = jsonDecode(data[GRAPHQL_JOB_VARIABLES_COLUMN]);
+    final document = parseString(data[GRAPHQL_JOBS_DOCUMENT_COLUMN]);
+    final operationName = data[GRAPHQL_JOBS_OPERATION_NAME_COLUMN];
+    final variables = jsonDecode(data[GRAPHQL_JOBS_VARIABLES_COLUMN]);
 
     final operation = Operation(document: document, operationName: operationName);
     return Request(variables: variables, operation: operation);
@@ -47,12 +47,12 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
   @override
   Map<String, dynamic> toSqlite() {
     return {
-      GRAPHQL_JOB_ATTEMPTS_COLUMN: 1,
-      GRAPHQL_JOB_DOCUMENT_COLUMN: request.operation.document.toString(),
-      GRAPHQL_JOB_VARIABLES_COLUMN: request.variables.toString(),
-      GRAPHQL_JOB_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
-      GRAPHQL_JOB_OPERATION_NAME_COLUMN: request.operation.operationName.toString(),
-      GRAPHQL_JOB_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
+      GRAPHQL_JOBS_ATTEMPTS_COLUMN: 1,
+      GRAPHQL_JOBS_DOCUMENT_COLUMN: request.operation.document.toString(),
+      GRAPHQL_JOBS_VARIABLES_COLUMN: request.variables.toString(),
+      GRAPHQL_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
+      GRAPHQL_JOBS_OPERATION_NAME_COLUMN: request.operation.operationName.toString(),
+      GRAPHQL_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
     };
   }
 }
