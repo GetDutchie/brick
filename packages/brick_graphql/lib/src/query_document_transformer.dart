@@ -23,6 +23,8 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
                   name: NameNode(value: variable.className),
                   isNonNull: !variable.nullable,
                 ),
+                defaultValue: DefaultValueNode(value: null),
+                directives: [],
               ),
           ],
           directives: [],

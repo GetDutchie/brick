@@ -48,7 +48,50 @@ class DemoModelAdapter extends GraphQLAdapter<DemoModel> {
 
   @override
   // TODO: implement fieldsToRuntimeDefinition
-  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition => {};
+  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition => {
+        'primaryKey': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: '_brick_id',
+          iterable: false,
+          type: int,
+        ),
+        'id': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'id',
+          iterable: false,
+          type: int,
+        ),
+        'someField': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'some_field',
+          iterable: false,
+          type: bool,
+        ),
+        'complexFieldName': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'complex_field_name',
+          iterable: false,
+          type: String,
+        ),
+        'lastName': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'last_name',
+          iterable: false,
+          type: String,
+        ),
+        'name': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'full_name',
+          iterable: false,
+          type: String,
+        ),
+        'simpleBool': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: 'simple_bool',
+          iterable: false,
+          type: bool,
+        ),
+      };
 
   @override
   // TODO: implement mututationEndpoint

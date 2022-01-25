@@ -6,7 +6,7 @@ class RuntimeGraphqlDefinition {
   final bool association;
 
   /// The GraphQL document field node, **not** the field name.
-  final String documentFieldName;
+  final String documentNodeName;
 
   /// Whether this column is any subset `Iterable` (e.g. `List`, `Set`).
   /// Defaults to `false`.
@@ -18,7 +18,7 @@ class RuntimeGraphqlDefinition {
 
   const RuntimeGraphqlDefinition({
     this.association = false,
-    required this.documentFieldName,
+    required this.documentNodeName,
     this.iterable = false,
     required this.type,
   });
