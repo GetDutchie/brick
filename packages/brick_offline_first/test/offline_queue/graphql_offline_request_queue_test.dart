@@ -15,14 +15,14 @@ void main() {
 
   group('GraphqlOfflineRequestQueue', () {
     test('#start', () {
-      final queue = GraphqlOfflineRequestQueue(client: offlineClient);
+      final queue = GraphqlOfflineRequestQueue(link: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
 
     test('#stop', () {
-      final queue = GraphqlOfflineRequestQueue(client: offlineClient);
+      final queue = GraphqlOfflineRequestQueue(link: offlineClient);
       queue.start();
       expect(queue.isRunning, isTrue);
       queue.stop();
