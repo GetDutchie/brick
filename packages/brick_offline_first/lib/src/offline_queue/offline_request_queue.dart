@@ -12,6 +12,7 @@ abstract class OfflineRequestQueue {
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
+  @protected
   bool processingInBackground = false;
 
   final Duration processingInterval;
@@ -23,6 +24,7 @@ abstract class OfflineRequestQueue {
   }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
+  @protected
   void process(Timer _timer);
 
   /// Start the processing queue, resending requests every [interval].

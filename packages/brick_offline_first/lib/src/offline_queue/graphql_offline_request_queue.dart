@@ -8,30 +8,26 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue {
   /// The client responsible for resending requests
   GraphqlOfflineQueueLink link;
 
-  /// This mutex ensures that concurrent writes to the DB will
-  /// not occur as the Timer runs in sub routines or isolates
-  bool _processingInBackground = false;
-
   GraphqlOfflineRequestQueue({required this.link})
       : super(
           processingInterval: link.requestManager.processingInterval,
         );
 
   @override
-  Future<void> process(Timer _timer) async {
-    if (_processingInBackground) return;
+  void process(Timer? _timer) async {
+    if (processingInBackground) return;
 
-    _processingInBackground = true;
+    processingInBackground = true;
 
     Request? request;
     try {
       request = await link.requestManager.prepareNextRequestToProcess();
     } finally {
-      _processingInBackground = false;
+      processingInBackground = false;
     }
 
     if (request != null) {
-      logger.info('Processing request ${request.operation.operationName}');
+      logger.finest('Processing request ${request.operation.operationName}');
       link.request(request);
     }
   }

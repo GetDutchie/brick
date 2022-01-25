@@ -10,7 +10,6 @@ class RestOfflineRequestQueue extends OfflineRequestQueue {
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
-  bool _processingInBackground = false;
 
   RestOfflineRequestQueue({
     required this.client,
@@ -19,16 +18,16 @@ class RestOfflineRequestQueue extends OfflineRequestQueue {
         );
 
   @override
-  Future<void> process(Timer _timer) async {
-    if (_processingInBackground) return;
+  void process(Timer _timer) async {
+    if (processingInBackground) return;
 
-    _processingInBackground = true;
+    processingInBackground = true;
 
     http.Request? request;
     try {
       request = await client.requestManager.prepareNextRequestToProcess();
     } finally {
-      _processingInBackground = false;
+      processingInBackground = false;
     }
 
     if (request != null) {
