@@ -25,7 +25,7 @@ abstract class OfflineRequestQueue {
   });
 
   /// Resend latest unproccessed request to the client.
-  void process(Timer _timer) async {}
+  void process(Timer _timer);
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
