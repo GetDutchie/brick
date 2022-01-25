@@ -32,7 +32,6 @@ abstract class RequestSqliteCache<_Request> {
   });
 
   /// The log output before each attempt
-
   String attemptLogMessage(Map<String, dynamic> responseFromSqlite);
 
   /// Removes the request from the database and thus the queue
