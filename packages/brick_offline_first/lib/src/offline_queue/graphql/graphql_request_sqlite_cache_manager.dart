@@ -40,14 +40,6 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
     ''';
     final db = await getDb();
     await db.execute(statement);
-
-    final tableInfo = await db.rawQuery('PRAGMA table_info("$GRAPHQL_JOB_TABLE_NAME");');
-    final createdAtHasBeenMigrated =
-        tableInfo.any((c) => c['name'] == GRAPHQL_JOB_CREATED_AT_COLUMN);
-    if (!createdAtHasBeenMigrated) {
-      await db.execute(
-          'ALTER TABLE `$GRAPHQL_JOB_TABLE_NAME` ADD `$GRAPHQL_JOB_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
-    }
   }
 
   /// Recreate a request from SQLite data
