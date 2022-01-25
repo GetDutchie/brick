@@ -74,11 +74,6 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
   }
 }
 
-const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
-
-/// int; autoincrement'd
-const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
-
 /// int
 const HTTP_JOBS_ATTEMPTS_COLUMN = 'attempts';
 
@@ -97,8 +92,13 @@ const HTTP_JOBS_HEADERS_COLUMN = 'headers';
 /// int; 1 for true, 0 for false
 const HTTP_JOBS_LOCKED_COLUMN = 'locked';
 
+/// int; autoincrement'd
+const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
+
 /// String
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
+
+const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
 
 /// int; millisecondsSinceEpoch
 const HTTP_JOBS_UPDATED_AT = 'updated_at';

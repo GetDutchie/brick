@@ -31,6 +31,10 @@ abstract class RequestSqliteCache<_Request> {
     required this.updateAtColumn,
   });
 
+  /// The log output before each attempt
+
+  String attemptLogMessage(Map<String, dynamic> responseFromSqlite);
+
   /// Removes the request from the database and thus the queue
   Future<int> delete(Database db) async {
     final response = await findRequestInDatabase(db);
@@ -61,10 +65,6 @@ abstract class RequestSqliteCache<_Request> {
 
     return response.isNotEmpty ? response.first : null;
   }
-
-  /// The output before each attempt
-
-  String attemptLogMessage(Map<String, dynamic> responseFromSqlite);
 
   /// If the request already exists in the database, increment attemps and
   /// set `updated_at` to current time.
@@ -98,6 +98,16 @@ abstract class RequestSqliteCache<_Request> {
     });
   }
 
+  static Future<int> lockRequest({
+    required DatabaseExecutor db,
+    required Map<String, dynamic> data,
+    required String lockedColumn,
+    required String primaryKeyColumn,
+    required String tableName,
+  }) async =>
+      await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
+
+  /// Builds SQLite-row into a [request]
   _Request sqliteToRequest(Map<String, dynamic> data);
 
   /// Builds request into a new SQLite-insertable row
@@ -120,15 +130,6 @@ abstract class RequestSqliteCache<_Request> {
       );
     });
   }
-
-  static Future<int> lockRequest({
-    required DatabaseExecutor db,
-    required Map<String, dynamic> data,
-    required String lockedColumn,
-    required String primaryKeyColumn,
-    required String tableName,
-  }) async =>
-      await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
 
   static Future<int> unlockRequest({
     required DatabaseExecutor db,

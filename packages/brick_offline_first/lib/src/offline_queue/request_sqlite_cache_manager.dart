@@ -152,6 +152,9 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
     );
   }
 
+  /// Builds a client-consumable [_RequestMethod] from SQLite row output
+  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
+
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.
   ///
@@ -177,7 +180,4 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
       orderBy: orderByStatement,
     );
   }
-
-  /// Builds a client-consumable [_RequestMethod] from SQLite row output
-  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
 }

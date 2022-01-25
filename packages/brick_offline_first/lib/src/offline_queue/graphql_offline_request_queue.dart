@@ -14,8 +14,9 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue {
 
   GraphqlOfflineRequestQueue({required this.client})
       : super(
-            databaseName: client.requestManager.databaseName,
-            processingInterval: client.requestManager.processingInterval);
+          databaseName: client.requestManager.databaseName,
+          processingInterval: client.requestManager.processingInterval,
+        );
 
   @override
   Future<void> process(Timer _timer) async {

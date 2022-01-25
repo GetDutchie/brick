@@ -59,11 +59,6 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
   }
 }
 
-const GRAPHQL_JOB_TABLE_NAME = 'GraphqlJobs';
-
-/// int; autoincrement'd
-const GRAPHQL_JOB_PRIMARY_KEY_COLUMN = 'id';
-
 /// int
 const GRAPHQL_JOB_ATTEMPTS_COLUMN = 'attempts';
 
@@ -73,14 +68,20 @@ const GRAPHQL_JOB_CREATED_AT_COLUMN = 'created_at';
 /// String
 const GRAPHQL_JOB_DOCUMENT_COLUMN = 'graphql_document';
 
-/// json-encoded String
-const GRAPHQL_JOB_VARIABLES_COLUMN = 'varibles';
-
 /// int; 1 for true, 0 for false
 const GRAPHQL_JOB_LOCKED_COLUMN = 'locked';
 
 /// String
 const GRAPHQL_JOB_OPERATION_NAME_COLUMN = 'name';
+
+/// int; autoincrement'd
+const GRAPHQL_JOB_PRIMARY_KEY_COLUMN = 'id';
+
+/// json-encoded String
+const GRAPHQL_JOB_VARIABLES_COLUMN = 'varibles';
+
+// String
+const GRAPHQL_JOB_TABLE_NAME = 'GraphqlJobs';
 
 /// int; millisecondsSinceEpoch
 const GRAPHQL_JOB_UPDATED_AT = 'updated_at';

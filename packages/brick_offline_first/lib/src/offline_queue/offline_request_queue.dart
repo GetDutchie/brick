@@ -25,6 +25,9 @@ abstract class OfflineRequestQueue {
     required this.processingInterval,
   });
 
+  /// Resend latest unproccessed request to the client.
+  void process(Timer _timer) async {}
+
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
@@ -45,7 +48,4 @@ abstract class OfflineRequestQueue {
     processingInBackground = false;
     logger.finer('Queue stopped');
   }
-
-  /// Resend latest unproccessed request to the client.
-  void process(Timer _timer) async {}
 }

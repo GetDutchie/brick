@@ -30,6 +30,16 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
     return 'failed, attempt #${responseFromSqlite[GRAPHQL_JOB_ATTEMPTS_COLUMN]} in $attemptMessage : $responseFromSqlite';
   }
 
+  @override
+  Request sqliteToRequest(Map<String, dynamic> data) {
+    final document = parseString(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
+    final operationName = data[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
+    final variables = jsonDecode(data[GRAPHQL_JOB_VARIABLES_COLUMN]);
+
+    final operation = Operation(document: document, operationName: operationName);
+    return Request(variables: variables, operation: operation);
+  }
+
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]
   ///
@@ -44,15 +54,5 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
       GRAPHQL_JOB_OPERATION_NAME_COLUMN: request.operation.operationName.toString(),
       GRAPHQL_JOB_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,
     };
-  }
-
-  @override
-  Request sqliteToRequest(Map<String, dynamic> data) {
-    final document = parseString(data[GRAPHQL_JOB_DOCUMENT_COLUMN]);
-    final operationName = data[GRAPHQL_JOB_OPERATION_NAME_COLUMN];
-    final variables = jsonDecode(data[GRAPHQL_JOB_VARIABLES_COLUMN]);
-
-    final operation = Operation(document: document, operationName: operationName);
-    return Request(variables: variables, operation: operation);
   }
 }
