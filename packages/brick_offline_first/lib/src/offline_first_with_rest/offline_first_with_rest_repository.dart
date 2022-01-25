@@ -9,7 +9,7 @@ import 'package:brick_rest/rest.dart' show RestProvider, RestException;
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstWithRestModel;
 import 'package:brick_sqlite_abstract/db.dart' show Migration;
 
-import 'package:brick_offline_first/src/offline_queue/rest/rest_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
 
 /// Ensures the [remoteProvider] is a [RestProvider]. All requests to and
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app
@@ -69,14 +69,14 @@ abstract class OfflineFirstWithRestRepository
           sqliteProvider: sqliteProvider,
           remoteProvider: restProvider,
         ) {
-    remoteProvider.client = OfflineQueueHttpClient(
+    remoteProvider.client = RestOfflineQueueClient(
       restProvider.client,
       offlineQueueHttpClientRequestSqliteCacheManager ??
           RestRequestSqliteCacheManager(_queueDatabaseName),
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = RestOfflineRequestQueue(
-      client: remoteProvider.client as OfflineQueueHttpClient,
+      client: remoteProvider.client as RestOfflineQueueClient,
     );
   }
 
@@ -178,7 +178,7 @@ abstract class OfflineFirstWithRestRepository
   }
 
   bool _ignoreTunnelException(RestException exception) =>
-      OfflineQueueHttpClient.isATunnelNotFoundResponse(exception.response) &&
+      RestOfflineQueueClient.isATunnelNotFoundResponse(exception.response) &&
       !throwTunnelNotFoundExceptions;
 }
 

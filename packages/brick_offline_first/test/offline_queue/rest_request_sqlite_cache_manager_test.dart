@@ -1,4 +1,4 @@
-import 'package:brick_offline_first/src/offline_queue/rest/rest_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
 import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -39,7 +39,7 @@ void main() {
         serialProcessing: false,
         processingInterval: const Duration(seconds: 0),
       );
-      final client = OfflineQueueHttpClient(inner, _requestManager);
+      final client = RestOfflineQueueClient(inner, _requestManager);
 
       await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
       await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
@@ -55,7 +55,7 @@ void main() {
 
     test('#deleteUnprocessedRequest', () async {
       final inner = stubResult(statusCode: 501);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       expect(await requestManager.unprocessedRequests(), isEmpty);
 
       await client.put(Uri.parse('http://0.0.0.0:3000/stored-query'), body: 'existing record');
@@ -70,7 +70,7 @@ void main() {
     group('#prepareNextRequestToProcess', () {
       test('integration', () async {
         final inner = stubResult(statusCode: 501);
-        final client = OfflineQueueHttpClient(inner, requestManager);
+        final client = RestOfflineQueueClient(inner, requestManager);
 
         await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
         await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');

@@ -12,7 +12,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  group('GraphqlOfflineQueueClient', () {
+  group('GraphqlOfflineQueueLink', () {
     final requestManager = GraphqlRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,

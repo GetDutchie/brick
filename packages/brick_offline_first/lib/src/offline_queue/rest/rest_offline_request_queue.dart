@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:brick_offline_first/src/offline_queue/rest/rest_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
 import 'package:http/http.dart' as http;
 
 class RestOfflineRequestQueue extends OfflineRequestQueue<http.Request> {
   /// The client responsible for resending requests
-  final OfflineQueueHttpClient client;
+  final RestOfflineQueueClient client;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates

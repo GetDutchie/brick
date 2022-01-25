@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
-class OfflineQueueHttpClient extends http.BaseClient {
+class RestOfflineQueueClient extends http.BaseClient {
   /// A normal HTTP client, treated like a manual `super`
   /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
   final http.Client _inner;
@@ -21,7 +21,7 @@ class OfflineQueueHttpClient extends http.BaseClient {
 
   final Logger _logger;
 
-  OfflineQueueHttpClient(
+  RestOfflineQueueClient(
     this._inner,
     this.requestManager, {
     List<int>? reattemptForStatusCodes,

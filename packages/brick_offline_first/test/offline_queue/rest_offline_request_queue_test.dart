@@ -1,12 +1,12 @@
 import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_request_queue.dart';
 import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:test/test.dart';
-import 'package:brick_offline_first/src/offline_queue/rest/rest_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
 
 import '__helpers__.dart';
 
 void main() {
-  final offlineClient = OfflineQueueHttpClient(stubResult(), RestRequestSqliteCacheManager('db'));
+  final offlineClient = RestOfflineQueueClient(stubResult(), RestRequestSqliteCacheManager('db'));
 
   group('RestOfflineRequestQueue', () {
     test('#start', () {
