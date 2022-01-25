@@ -25,8 +25,8 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
 
   @override
   Future<void> migrate() async {
-    final statement = '''
-      CREATE TABLE IF NOT EXISTS `$tableName` (
+    const statement = '''
+      CREATE TABLE IF NOT EXISTS `$HTTP_JOBS_TABLE_NAME` (
         `$HTTP_JOBS_PRIMARY_KEY_COLUMN` INTEGER PRIMARY KEY AUTOINCREMENT,
         `$HTTP_JOBS_ATTEMPTS_COLUMN` INTEGER DEFAULT 1,
         `$HTTP_JOBS_BODY_COLUMN` TEXT,
