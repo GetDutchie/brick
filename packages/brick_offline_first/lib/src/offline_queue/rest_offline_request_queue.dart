@@ -15,7 +15,6 @@ class RestOfflineRequestQueue extends OfflineRequestQueue {
   RestOfflineRequestQueue({
     required this.client,
   }) : super(
-          databaseName: client.requestManager.databaseName,
           processingInterval: client.requestManager.processingInterval,
         );
 

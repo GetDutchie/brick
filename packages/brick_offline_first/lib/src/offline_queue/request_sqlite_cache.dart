@@ -97,15 +97,6 @@ abstract class RequestSqliteCache<_Request> {
     });
   }
 
-  static Future<int> lockRequest({
-    required DatabaseExecutor db,
-    required Map<String, dynamic> data,
-    required String lockedColumn,
-    required String primaryKeyColumn,
-    required String tableName,
-  }) async =>
-      await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
-
   /// Builds SQLite-row into a [request]
   _Request sqliteToRequest(Map<String, dynamic> data);
 
@@ -129,6 +120,15 @@ abstract class RequestSqliteCache<_Request> {
       );
     });
   }
+
+  static Future<int> lockRequest({
+    required DatabaseExecutor db,
+    required Map<String, dynamic> data,
+    required String lockedColumn,
+    required String primaryKeyColumn,
+    required String tableName,
+  }) async =>
+      await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
 
   static Future<int> unlockRequest({
     required DatabaseExecutor db,

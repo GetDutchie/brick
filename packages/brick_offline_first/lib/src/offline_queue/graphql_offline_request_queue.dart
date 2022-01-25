@@ -14,8 +14,7 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue {
 
   GraphqlOfflineRequestQueue({required this.link})
       : super(
-          databaseName: client.requestManager.databaseName,
-          processingInterval: client.requestManager.processingInterval,
+          processingInterval: link.requestManager.processingInterval,
         );
 
   @override
@@ -26,14 +25,14 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue {
 
     Request? request;
     try {
-      request = await client.requestManager.prepareNextRequestToProcess();
+      request = await link.requestManager.prepareNextRequestToProcess();
     } finally {
       _processingInBackground = false;
     }
 
     if (request != null) {
       logger.info('Processing request ${request.operation.operationName}');
-      client.request(request);
+      link.request(request);
     }
   }
 }

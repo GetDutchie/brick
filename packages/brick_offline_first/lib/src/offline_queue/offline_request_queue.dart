@@ -4,12 +4,11 @@ import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
 abstract class OfflineRequestQueue {
-
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
   @protected
-  Logger get logger => Logger('OfflineRequestQueue#$databaseName');
+  Logger logger;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
@@ -20,9 +19,8 @@ abstract class OfflineRequestQueue {
   Timer? _timer;
 
   OfflineRequestQueue({
-    required this.databaseName,
     required this.processingInterval,
-  });
+  }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
   void process(Timer _timer);
