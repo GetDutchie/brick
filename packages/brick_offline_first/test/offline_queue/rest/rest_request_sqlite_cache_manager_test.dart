@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:http/http.dart' as http;
-import '__helpers__.dart';
+import '../__helpers__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

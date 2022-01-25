@@ -4,7 +4,8 @@ import 'package:http/testing.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
-import '__helpers__.dart';
+
+import '../__helpers__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
