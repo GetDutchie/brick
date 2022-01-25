@@ -10,7 +10,6 @@ import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstWit
 import 'package:brick_sqlite_abstract/db.dart' show Migration;
 
 import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
-import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
 
 /// Ensures the [remoteProvider] is a [RestProvider]. All requests to and
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app
