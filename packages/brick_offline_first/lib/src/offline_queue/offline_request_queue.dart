@@ -17,7 +17,7 @@ abstract class OfflineRequestQueue {
 
   final Duration processingInterval;
 
-  late Timer? _timer;
+  Timer? _timer;
 
   OfflineRequestQueue({
     required this.databaseName,
