@@ -101,8 +101,8 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
           await RequestSqliteCache.unlockRequest(
             data: latestLockedRequests.first,
             db: txn,
-            primaryKeyColumn: primaryKeyColumn,
             lockedColumn: lockedColumn,
+            primaryKeyColumn: primaryKeyColumn,
             tableName: tableName,
           );
         }

@@ -27,7 +27,6 @@ abstract class OfflineRequestQueue<_Request> {
   }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
-  @protected
   void _process(Timer _timer) async {
     if (_processingInBackground) return;
 
@@ -45,8 +44,6 @@ abstract class OfflineRequestQueue<_Request> {
     }
   }
 
-  Future<void> transmitRequest(_Request request);
-
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
@@ -63,4 +60,8 @@ abstract class OfflineRequestQueue<_Request> {
     _processingInBackground = false;
     logger.finer('Queue stopped');
   }
+
+  /// Send the next available request through the remote interface
+  /// such as an HTTP client.
+  Future<void> transmitRequest(_Request request);
 }

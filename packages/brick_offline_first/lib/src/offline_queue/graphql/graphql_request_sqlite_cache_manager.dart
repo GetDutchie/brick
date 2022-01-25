@@ -7,9 +7,12 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:sqflite/sqflite.dart';
 
 class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
-  GraphqlRequestSqliteCacheManager(String databaseName,
-      {DatabaseFactory? databaseFactory, Duration? processingInterval, bool? serialProcessing})
-      : super(
+  GraphqlRequestSqliteCacheManager(
+    String databaseName, {
+    DatabaseFactory? databaseFactory,
+    Duration? processingInterval,
+    bool? serialProcessing,
+  }) : super(
           databaseName,
           createdAtColumn: GRAPHQL_JOB_CREATED_AT_COLUMN,
           databaseFactory: databaseFactory,

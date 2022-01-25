@@ -52,7 +52,7 @@ class TestRepository extends OfflineFirstWithRestRepository {
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
           offlineQueueHttpClientRequestSqliteCacheManager: RestRequestSqliteCacheManager(
-            inMemoryDatabasePath,
+            '$inMemoryDatabasePath/queue',
             databaseFactory: databaseFactoryFfi,
           ),
         );
@@ -74,7 +74,7 @@ class TestRepository extends OfflineFirstWithRestRepository {
         client: client,
       ),
       SqliteProvider(
-        inMemoryDatabasePath,
+        '$inMemoryDatabasePath/repository',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteDictionary,
       ),
