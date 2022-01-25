@@ -38,11 +38,7 @@ abstract class OfflineRequestQueue {
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.
   void stop() {
-    try {
-      _timer?.cancel();
-    } catch (e) {
-      _timer = null;
-    }
+    _timer?.cancel();
     _timer = null;
     processingInBackground = false;
     logger.finer('Queue stopped');
