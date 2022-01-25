@@ -15,7 +15,7 @@ class GraphqlOfflineQueueLink extends Link {
   final GraphqlRequestSqliteCacheManager requestManager;
 
   GraphqlOfflineQueueLink(this._inner, this.requestManager)
-      : _logger = Logger('GraphqlOfflineQueueClient#${requestManager.databaseName}');
+      : _logger = Logger('GraphqlOfflineQueueLink#${requestManager.databaseName}');
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
