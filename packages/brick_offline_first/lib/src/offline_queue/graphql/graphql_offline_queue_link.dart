@@ -1,5 +1,5 @@
-import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
-import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
@@ -33,9 +33,8 @@ class GraphqlOfflineQueueLink extends Link {
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final response = await _inner.request(request).first;
-      // get it back as a stream so that it can be return
-      final streamAsStream = _inner.request(request);
+      final requestAsStream = _inner.request(request);
+      final response = await requestAsStream.first;
 
       if (response.errors!.isEmpty) {
         final db = await requestManager.getDb();
@@ -44,7 +43,7 @@ class GraphqlOfflineQueueLink extends Link {
         await cacheItem.delete(db);
       }
 
-      yield* streamAsStream;
+      yield* requestAsStream;
     } catch (e) {
       _logger.warning('#send: $e');
     } finally {

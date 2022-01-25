@@ -1,39 +1,59 @@
 import 'dart:async';
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
-abstract class OfflineRequestQueue {
+abstract class OfflineRequestQueue<_Request> {
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
   @protected
-  Logger logger;
+  final Logger logger;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
-  @protected
-  bool processingInBackground = false;
+  bool _processingInBackground = false;
 
   final Duration processingInterval;
+
+  final RequestSqliteCacheManager requestManager;
 
   Timer? _timer;
 
   OfflineRequestQueue({
     required this.processingInterval,
+    required this.requestManager,
   }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
   @protected
-  void process(Timer _timer);
+  void _process(Timer _timer) async {
+    if (_processingInBackground) return;
+
+    _processingInBackground = true;
+
+    _Request? request;
+    try {
+      request = await requestManager.prepareNextRequestToProcess();
+    } finally {
+      _processingInBackground = false;
+    }
+
+    if (request != null) {
+      await transmitRequest(request);
+    }
+  }
+
+  Future<void> transmitRequest(_Request request);
 
   /// Start the processing queue, resending requests every [interval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();
     logger.finer('Queue started');
-    processingInBackground = false;
-    _timer = Timer.periodic(processingInterval, process);
+    _processingInBackground = false;
+    _timer = Timer.periodic(processingInterval, _process);
   }
 
   /// Invalidates timer. This does not stop actively-running recreated jobs.
@@ -44,7 +64,7 @@ abstract class OfflineRequestQueue {
       _timer = null;
     }
     _timer = null;
-    processingInBackground = false;
+    _processingInBackground = false;
     logger.finer('Queue stopped');
   }
 }
