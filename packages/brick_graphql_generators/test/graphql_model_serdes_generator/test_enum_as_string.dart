@@ -1,27 +1,27 @@
 import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<EnumAsString> _$EnumAsStringFromGraphQL(Map<String, dynamic> data,
-    {required GraphQLProvider provider,
-    GraphQLFirstRepository? repository}) async {
+Future<EnumAsString> _$EnumAsStringFromGraphql(Map<String, dynamic> data,
+    {required GraphqlProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return EnumAsString(
-      hat: GraphQLAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      hat: GraphqlAdapter.enumValueFromName(Hat.values, data['hat'])!,
       nullableHat: data['nullableHat'] == null
           ? null
-          : GraphQLAdapter.enumValueFromName(Hat.values, data['nullableHat']),
+          : GraphqlAdapter.enumValueFromName(Hat.values, data['nullableHat']),
       hats: data['hats']
-          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value)!)
+          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value)!)
           .toList()
           .cast<Hat>(),
       nullableHats: data['nullableHats']
-          .map((value) => GraphQLAdapter.enumValueFromName(Hat.values, value))
+          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value))
           ?.toList()
           .cast<Hat?>());
 }
 
-Future<Map<String, dynamic>> _$EnumAsStringToGraphQL(EnumAsString instance,
-    {required GraphQLProvider provider,
-    GraphQLFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$EnumAsStringToGraphql(EnumAsString instance,
+    {required GraphqlProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return {
     'hat': instance.hat.toString().split('.').last,
     'nullableHat': instance.nullableHat?.toString().split('.').last,
@@ -48,15 +48,15 @@ class EnumAsString {
     required this.nullableHats,
   });
 
-  @GraphQL(enumAsString: true)
+  @Graphql(enumAsString: true)
   final Hat hat;
 
-  @GraphQL(enumAsString: true, nullable: true)
+  @Graphql(enumAsString: true, nullable: true)
   final Hat? nullableHat;
 
-  @GraphQL(enumAsString: true)
+  @Graphql(enumAsString: true)
   final List<Hat> hats;
 
-  @GraphQL(enumAsString: true)
+  @Graphql(enumAsString: true)
   final List<Hat?> nullableHats;
 }

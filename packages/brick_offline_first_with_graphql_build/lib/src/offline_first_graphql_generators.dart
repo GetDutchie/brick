@@ -7,7 +7,7 @@ import 'package:brick_graphql_generators/graphql_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
-    with OfflineFirstJsonSerialize<GraphqlModel, GraphQL> {
+    with OfflineFirstJsonSerialize<GraphqlModel, Graphql> {
   @override
   final OfflineFirstFields offlineFirstFields;
 
@@ -18,7 +18,7 @@ class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
 }
 
 class _OfflineFirstGraphqlDeserialize extends GraphqlDeserialize
-    with OfflineFirstJsonDeserialize<GraphqlModel, GraphQL> {
+    with OfflineFirstJsonDeserialize<GraphqlModel, Graphql> {
   @override
   final OfflineFirstFields offlineFirstFields;
 

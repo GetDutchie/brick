@@ -6,10 +6,10 @@ import 'package:brick_rest_generators/generators.dart' show JsonDeserialize;
 
 /// Generate a function to produce a [ClassElement] from GraphQL data
 class GraphqlDeserialize extends GraphqlSerdesGenerator
-    with JsonDeserialize<GraphqlModel, GraphQL> {
+    with JsonDeserialize<GraphqlModel, Graphql> {
   @override
   // ignore: overridden_fields
-  final providerName = 'GraphQL';
+  final providerName = 'Graphql';
 
   GraphqlDeserialize(
     ClassElement element,

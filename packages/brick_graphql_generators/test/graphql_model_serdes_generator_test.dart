@@ -18,8 +18,8 @@ final folder = 'graphql_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
-  group('GraphQLModelSerdesGenerator', () {
-    group('@GraphQL', () {
+  group('GraphqlModelSerdesGenerator', () {
+    group('@Graphql', () {
       test('enum_as_string', () async {
         await generateExpectation('enum_as_string', enum_as_string.output);
       });
@@ -33,7 +33,7 @@ void main() {
             'unserializable_field_with_generator', unserializable_field_with_generator.output);
       });
 
-      test('GraphQLConstructorMemberFieldMismatch', () async {
+      test('GraphqlConstructorMemberFieldMismatch', () async {
         await generateExpectation(
             'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
       });
@@ -48,8 +48,8 @@ void main() {
 /// This will do nothing outside of this exact test suite.
 class TestGenerator extends AnnotationSuperGenerator<GraphqlSerializable> {
   @override
-  final superAdapterName = 'GraphQLFirst';
-  final repositoryName = 'GraphQLFirst';
+  final superAdapterName = 'GraphqlFirst';
+  final repositoryName = 'GraphqlFirst';
 
   TestGenerator();
 
