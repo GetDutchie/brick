@@ -1,5 +1,5 @@
 import 'package:brick_offline_first/offline_first_with_rest.dart';
-import 'package:brick_offline_first/src/offline_queue/rest_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
