@@ -6,13 +6,13 @@ import 'package:gql_exec/gql_exec.dart';
 
 class GraphqlOfflineRequestQueue extends OfflineRequestQueue {
   /// The client responsible for resending requests
-  GraphqlOfflineQueueLink client;
+  GraphqlOfflineQueueLink link;
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
   bool _processingInBackground = false;
 
-  GraphqlOfflineRequestQueue({required this.client})
+  GraphqlOfflineRequestQueue({required this.link})
       : super(
           databaseName: client.requestManager.databaseName,
           processingInterval: client.requestManager.processingInterval,
