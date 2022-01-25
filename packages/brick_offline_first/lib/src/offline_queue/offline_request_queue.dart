@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
 abstract class OfflineRequestQueue {
-  final String databaseName;
 
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
