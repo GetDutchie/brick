@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:brick_offline_first/src/offline_queue/rest/offline_queue_http_client.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_queue_http_client.dart';
 import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
 import 'package:http/http.dart' as http;
 

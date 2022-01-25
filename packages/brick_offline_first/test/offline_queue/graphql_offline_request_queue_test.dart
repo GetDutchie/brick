@@ -1,6 +1,6 @@
-import 'package:brick_offline_first/src/offline_queue/graphql_request_sqlite_cache_manager.dart';
-import 'package:brick_offline_first/src/offline_queue/graphql_offline_request_queue.dart';
-import 'package:brick_offline_first/src/offline_queue/graphql_offline_queue_link.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql/graphql_offline_request_queue.dart';
+import 'package:brick_offline_first/src/offline_queue/graphql/graphql_offline_queue_link.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:test/test.dart';
 
