@@ -18,10 +18,10 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
     final upsertHeader = config?.defaultUpsertOperation?.trim();
 
     return [
-      "@override\nfinal defaultDeleteOperation = lang.parseString('''$deleteHeader''')",
-      "@override\nfinal defaultGetUnfilteredOperation = lang.parseString('''$getCollectionHeader''')",
-      "@override\nfinal defaultGetFilteredOperation = lang.parseString('''$getMemberHeader''')",
-      "@override\nfinal defaultUpsertOperation = lang.parseString('''$upsertHeader''')",
+      "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''')",
+      "@override\nfinal defaultGetUnfilteredOperation = lang.parseString(r'''$getCollectionHeader''')",
+      "@override\nfinal defaultGetFilteredOperation = lang.parseString(r'''$getMemberHeader''')",
+      "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''')",
     ];
   }
 

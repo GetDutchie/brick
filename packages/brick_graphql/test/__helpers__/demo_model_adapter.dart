@@ -38,20 +38,32 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
 /// Construct a [DemoModel]
 class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   @override
-  // TODO: implement defaultDeleteOperation
-  final DocumentNode defaultDeleteOperation = parseString('source');
+  final defaultDeleteOperation = parseString(
+    r'''mutation DeleteDemoModel($input: DemoModel!) {
+      deleteDemoModel(input: $input) {}
+    }''',
+  );
 
   @override
-  // TODO: implement defaultGetUnfilteredOperation
-  DocumentNode get defaultGetUnfilteredOperation => throw UnimplementedError();
+  final defaultGetUnfilteredOperation = parseString(
+    r'''mutation GetDemoModels() {
+      getDemoModel() {}
+    }''',
+  );
 
   @override
-  // TODO: implement defaultGetFilteredOperation
-  DocumentNode get defaultGetFilteredOperation => throw UnimplementedError();
+  final defaultGetFilteredOperation = parseString(
+    r'''mutation GetDemoModels($input: DemoModelFilter) {
+      getDemoModel(filter: $input) {}
+    }''',
+  );
 
   @override
-  // TODO: implement defaultUpsertOperation
-  DocumentNode get defaultUpsertOperation => throw UnimplementedError();
+  final defaultUpsertOperation = parseString(
+    r'''mutation UpsertDemoModels($input: DemoModel) {
+      upsertDemoModel(input: $input) {}
+    }''',
+  );
 
   DemoModelAdapter();
 

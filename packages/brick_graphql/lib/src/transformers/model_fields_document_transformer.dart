@@ -121,7 +121,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     GraphqlModelDictionary modelDictionary,
   ) {
     final node = document.definitions.first as OperationDefinitionNode;
-    return ModelFieldsDocumentTransformer(
+    return ModelFieldsDocumentTransformer<_Model>(
       arguments: GraphqlArgument.fromOperationNode(node),
       modelDictionary: modelDictionary,
       operationFunctionName: (node.selectionSet.selections.first as FieldNode).name.value,
