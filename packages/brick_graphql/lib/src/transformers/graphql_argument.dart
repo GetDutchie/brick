@@ -1,6 +1,5 @@
 import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:gql/ast.dart';
-import 'package:gql/operation.dart';
 
 class GraphqlArgument {
   final String name;
