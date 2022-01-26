@@ -1,20 +1,20 @@
 import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<GraphQLIgnoreFromTo> _$GraphQLIgnoreFromToFromGraphQL(
+Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphql(
     Map<String, dynamic> data,
-    {required GraphQLProvider provider,
-    GraphQLFirstRepository? repository}) async {
-  return GraphQLIgnoreFromTo(
+    {required GraphqlProvider provider,
+    GraphqlFirstRepository? repository}) async {
+  return GraphqlIgnoreFromTo(
       ignoredTo: data['ignoredTo'] as bool,
       otherIgnoredTo: data['otherIgnoredTo'] as bool,
       normal: data['normal'] as bool);
 }
 
-Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(
-    GraphQLIgnoreFromTo instance,
-    {required GraphQLProvider provider,
-    GraphQLFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$GraphqlIgnoreFromToToGraphql(
+    GraphqlIgnoreFromTo instance,
+    {required GraphqlProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return {'ignoredFrom': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';
@@ -25,22 +25,22 @@ Future<Map<String, dynamic>> _$GraphQLIgnoreFromToToGraphQL(
 /// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 @GraphqlSerializable()
-class GraphQLIgnoreFromTo extends GraphqlModel {
-  @GraphQL(ignoreFrom: true)
+class GraphqlIgnoreFromTo extends GraphqlModel {
+  @Graphql(ignoreFrom: true)
   final bool ignoredFrom;
 
-  @GraphQL(ignoreTo: true)
+  @Graphql(ignoreTo: true)
   final bool ignoredTo;
 
-  @GraphQL(ignoreTo: true, ignoreFrom: false)
+  @Graphql(ignoreTo: true, ignoreFrom: false)
   final bool otherIgnoredTo;
 
-  @GraphQL(ignore: true, ignoreTo: false, ignoreFrom: false)
+  @Graphql(ignore: true, ignoreTo: false, ignoreFrom: false)
   final bool ignorePrecedence;
 
   final bool normal;
 
-  GraphQLIgnoreFromTo(
+  GraphqlIgnoreFromTo(
     this.ignoredFrom,
     this.ignoredTo,
     this.otherIgnoredTo,

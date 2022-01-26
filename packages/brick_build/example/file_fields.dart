@@ -33,6 +33,18 @@ class File implements FieldSerializable {
     this.toGenerator,
     this.nullable = false,
   });
+
+  @override
+  // TODO: implement enumAsString
+  bool get enumAsString => throw UnimplementedError();
+
+  @override
+  // TODO: implement ignoreFrom
+  bool get ignoreFrom => throw UnimplementedError();
+
+  @override
+  // TODO: implement ignoreTo
+  bool get ignoreTo => throw UnimplementedError();
 }
 
 /// Convert `@File` annotations into digestible code

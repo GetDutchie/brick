@@ -27,7 +27,7 @@ void main() {
     test('instantiates', () {
       // isA matcher didn't work
       expect(
-          TestRepository().remoteProvider.client.runtimeType.toString(), 'OfflineQueueHttpClient');
+          TestRepository().remoteProvider.client.runtimeType.toString(), 'RestOfflineQueueClient');
     });
 
     test('#delete', () {}, skip: 'Is this worth testing because of all the stubbing?');

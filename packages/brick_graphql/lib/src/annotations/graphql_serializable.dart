@@ -26,7 +26,7 @@ class GraphqlSerializable {
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
   ///
-  /// The value for `@GraphQL(name:)` will override this convention.
+  /// The value for `@Graphql(name:)` will override this convention.
   final FieldRename fieldRename;
 
   /// The query for transmitting a mutated payload.

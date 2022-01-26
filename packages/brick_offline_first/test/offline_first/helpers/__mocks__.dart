@@ -1,5 +1,5 @@
 import 'package:brick_offline_first/offline_first_with_rest.dart';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
@@ -51,8 +51,8 @@ class TestRepository extends OfflineFirstWithRestRepository {
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineQueueHttpClientRequestSqliteCacheManager: RequestSqliteCacheManager(
-            inMemoryDatabasePath,
+          offlineQueueHttpClientRequestSqliteCacheManager: RestRequestSqliteCacheManager(
+            '$inMemoryDatabasePath/queue',
             databaseFactory: databaseFactoryFfi,
           ),
         );
@@ -74,7 +74,7 @@ class TestRepository extends OfflineFirstWithRestRepository {
         client: client,
       ),
       SqliteProvider(
-        inMemoryDatabasePath,
+        '$inMemoryDatabasePath/repository',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteDictionary,
       ),

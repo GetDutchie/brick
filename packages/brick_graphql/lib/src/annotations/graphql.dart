@@ -1,8 +1,8 @@
 import 'package:brick_core/field_serializable.dart';
 
-/// An annotation used to specify how a field is serialized for a [GraphQLAdapter].
+/// An annotation used to specify how a field is serialized for a [GraphqlAdapter].
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
-class GraphQL implements FieldSerializable {
+class Graphql implements FieldSerializable {
   @override
   final String? defaultValue;
 
@@ -39,10 +39,10 @@ class GraphQL implements FieldSerializable {
   @override
   final String? toGenerator;
 
-  /// Creates a new [GraphQL] instance.
+  /// Creates a new [Graphql] instance.
   ///
   /// Only required when the default behavior is not desired.
-  const GraphQL({
+  const Graphql({
     this.defaultValue,
     bool? enumAsString,
     this.fromGenerator,
@@ -58,6 +58,6 @@ class GraphQL implements FieldSerializable {
         ignoreTo = ignoreTo ?? false,
         nullable = nullable ?? false;
 
-  /// An instance of [GraphQL] with all fields set to their default values.
-  static const defaults = GraphQL();
+  /// An instance of [Graphql] with all fields set to their default values.
+  static const defaults = Graphql();
 }

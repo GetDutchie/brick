@@ -35,7 +35,7 @@ Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
 @ConnectOfflineFirstWithGraphql()
 class SpecifyFieldName {
   @Sqlite(name: 'email_address')
-  @GraphQL(name: 'email_address')
+  @Graphql(name: 'email_address')
   final String? email;
 
   SpecifyFieldName({this.email});

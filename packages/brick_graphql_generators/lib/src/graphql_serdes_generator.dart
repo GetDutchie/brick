@@ -3,7 +3,7 @@ import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_rest_generators/generators.dart' show JsonSerdesGenerator;
 
-abstract class GraphqlSerdesGenerator extends JsonSerdesGenerator<GraphqlModel, GraphQL> {
+abstract class GraphqlSerdesGenerator extends JsonSerdesGenerator<GraphqlModel, Graphql> {
   GraphqlSerdesGenerator(
     ClassElement element,
     GraphqlFields fields, {
@@ -11,7 +11,7 @@ abstract class GraphqlSerdesGenerator extends JsonSerdesGenerator<GraphqlModel, 
   }) : super(
           element,
           fields,
-          providerName: 'GraphQL',
+          providerName: 'Graphql',
           repositoryName: repositoryName,
         );
 }
