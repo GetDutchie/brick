@@ -4,7 +4,6 @@ import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_deserialize.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_graphql_generators/src/graphql_serialize.dart';
-import 'package:gql/ast.dart' show DocumentNode;
 import 'package:source_gen/source_gen.dart';
 
 /// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
@@ -34,7 +33,12 @@ class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
 
     return GraphqlSerializable(
       fieldRename: fieldRenameByEnumName ?? GraphqlSerializable.defaults.fieldRename,
-      mutationDocument: withinConfigKey('mutationDocument')?.literalValue as DocumentNode?,
+      defaultDeleteOperationHeader: withinConfigKey('defaultDeleteOperationHeader')?.stringValue,
+      defaultGetCollectionOperationHeader:
+          withinConfigKey('defaultGetCollectionOperationHeader')?.stringValue,
+      defaultGetMemberOperationHeader:
+          withinConfigKey('defaultGetMemberOperationHeader')?.stringValue,
+      defaultUpsertOperationHeader: withinConfigKey('defaultUpsertOperationHeader')?.stringValue,
     );
   }
 

@@ -1,5 +1,4 @@
 import 'package:brick_graphql/graphql.dart';
-import 'package:gql/src/ast/ast.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 
 import 'demo_model.dart';
@@ -91,8 +90,4 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
           type: bool,
         ),
       };
-
-  @override
-  // TODO: implement mututationEndpoint
-  DocumentNode get mututationEndpoint => throw UnimplementedError();
 }

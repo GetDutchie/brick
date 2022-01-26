@@ -101,7 +101,7 @@ class GraphqlConfigEndpointAdapter
 
 @ConnectOfflineFirstWithGraphql(
   graphqlConfig: GraphqlSerializable(
-    mutationDocument: null, // TODO
+    defaultDeleteOperationHeader: null, // TODO
   ),
 )
 class GraphqlConfigEndpoint extends OfflineFirstModel {

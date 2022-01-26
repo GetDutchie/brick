@@ -6,9 +6,43 @@ import 'package:gql/ast.dart';
 
 /// Constructors that convert app models to and from REST
 abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
-  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
+  /// The mutation used to remove data.
+  /// For example
+  /// ```graphql
+  /// mutation DeletePerson($input: DeletePersonInput!) {
+  ///   deletePerson(input: $input) {}
+  /// }
+  /// ```
+  DocumentNode get defaultDeleteOperation;
 
-  DocumentNode get mututationEndpoint;
+  /// The query used to fetch multiple member.
+  /// For example
+  /// ```graphql
+  /// query GetPeople() {
+  ///   getPerson() {}
+  /// }
+  /// ```
+  DocumentNode get defaultGetCollectionOperation;
+
+  /// The query used to fetch a member.
+  /// For example
+  /// ```graphql
+  /// query GetPerson($input: GetPersonInput!) {
+  ///   getPerson(input: $input) {}
+  /// }
+  /// ```
+  DocumentNode get defaultGetMemberOperation;
+
+  /// The mutation used to create or update a member.
+  /// For example
+  /// ```graphql
+  /// query UpsertPerson($input: PersonInput!) {
+  ///   upsertPerson(input: $input) {}
+  /// }
+  /// ```
+  String get defaultUpsertOperation;
+
+  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
 
   Future<_Model> fromGraphql(
     Map<String, dynamic> input, {
