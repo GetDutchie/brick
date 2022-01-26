@@ -14,7 +14,7 @@ class DemoModel extends GraphqlModel {
 
   List<DemoModelAssoc>? manyAssoc;
 
-  @GraphQL(name: 'full_name')
+  @Graphql(name: 'full_name')
   final String? name;
 
   final bool? simpleBool;

@@ -1,14 +1,15 @@
 import 'package:brick_graphql/graphql.dart';
-import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
+import 'package:brick_graphql/src/transformers/graphql_argument.dart';
+import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:gql/ast.dart';
 
-class QueryDocumentTransformer<_Model extends GraphqlModel> {
-  final GraphQLAdapter adapter;
+class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
+  final GraphqlAdapter adapter;
 
   final List<GraphqlArgument> arguments;
 
-  /// Generates a document based on the [query]
+  /// Generates a document based on the [GraphqlAdapter#fieldsToRuntimeDefinition]
   DocumentNode get document {
     return DocumentNode(
       definitions: [
@@ -53,7 +54,7 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
     );
   }
 
-  final GraphQLModelDictionary modelDictionary;
+  final GraphqlModelDictionary modelDictionary;
 
   /// The `upsertPerson` in
   /// ```graphql
@@ -68,13 +69,12 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
   /// Defaults to [OperationType.query]
   final OperationType operationType;
 
-  final Query? query;
-
   /// Defaults to `[]`
   final List<GraphqlVariable> variables;
 
-  QueryDocumentTransformer(
-    this.query, {
+  /// Convert an adapter's `#fieldsToRuntimeDefinition` to a
+  /// GraphQL document
+  ModelFieldsDocumentTransformer({
     List<GraphqlArgument>? arguments,
     required this.modelDictionary,
     required this.operationFunctionName,
@@ -112,34 +112,4 @@ class QueryDocumentTransformer<_Model extends GraphqlModel> {
       return nodes;
     });
   }
-}
-
-class GraphqlArgument {
-  final String name;
-
-  final GraphqlVariable variable;
-
-  const GraphqlArgument({
-    required this.name,
-    required this.variable,
-  });
-}
-
-class GraphqlVariable {
-  /// The `UpdatePersonInput` in `mutation UpdatePerson($input: UpdatePersonInput)`
-  final String className;
-
-  /// The `input` in `mutation UpdatePerson($input: UpdatePersonInput)`
-  final String name;
-
-  /// A `!` in `mutation UpdatePerson($input: UpdatePersonInput!)` indicates that the
-  /// input value cannot be nullable.
-  /// Defaults `false`.
-  final bool nullable;
-
-  const GraphqlVariable({
-    required this.className,
-    required this.name,
-    this.nullable = false,
-  });
 }

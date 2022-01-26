@@ -6,7 +6,7 @@ import 'demo_model.dart';
 import 'package:brick_core/core.dart' show Query;
 
 Future<DemoModel> _$DemoModelFromGraphql(Map<String, dynamic> data,
-    {GraphQLProvider? provider, repository}) async {
+    {GraphqlProvider? provider, repository}) async {
   return DemoModel(
       name: data['full_name'] == null ? null : data['full_name'] as String,
       assoc: data['assoc_DemoModelAssoc_brick_id'] == null
@@ -25,7 +25,7 @@ Future<DemoModel> _$DemoModelFromGraphql(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
-    {required GraphQLProvider provider, repository}) async {
+    {required GraphqlProvider provider, repository}) async {
   return {
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
@@ -35,19 +35,18 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
 }
 
 /// Construct a [DemoModel]
-class DemoModelAdapter extends GraphQLAdapter<DemoModel> {
+class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   DemoModelAdapter();
 
   @override
-  Future<DemoModel> fromGraphQL(Map<String, dynamic> input,
+  Future<DemoModel> fromGraphql(Map<String, dynamic> input,
           {required provider, repository}) async =>
       await _$DemoModelFromGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toGraphQL(DemoModel input, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toGraphql(DemoModel input, {required provider, repository}) async =>
       await _$DemoModelToGraphql(input, provider: provider, repository: repository);
 
   @override
-  // TODO: implement fieldsToRuntimeDefinition
   Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition => {
         'primaryKey': const RuntimeGraphqlDefinition(
           association: false,

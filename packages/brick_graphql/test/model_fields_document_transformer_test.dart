@@ -1,4 +1,6 @@
-import 'package:brick_graphql/src/query_document_transformer.dart';
+import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
+import 'package:brick_graphql/src/transformers/graphql_variable.dart';
+import 'package:brick_graphql/src/transformers/graphql_argument.dart';
 import 'package:test/test.dart';
 import 'package:gql/language.dart' as lang;
 
@@ -6,10 +8,9 @@ import '__helpers__/demo_model.dart';
 import '__mocks__.dart';
 
 void main() {
-  group('QueryDocumentTransformer', () {
+  group('ModelFieldsDocumentTransformer', () {
     test('simple', () {
-      final transformer = QueryDocumentTransformer<DemoModel>(
-        null,
+      final transformer = ModelFieldsDocumentTransformer<DemoModel>(
         modelDictionary: dictionary,
         operationFunctionName: 'upsertPerson',
         operationNameNode: 'UpsertPerson',
@@ -32,8 +33,7 @@ void main() {
 
     test('single argument', () {
       final variable = GraphqlVariable(className: 'UpsertPersonInput', name: 'input');
-      final transformer = QueryDocumentTransformer<DemoModel>(
-        null,
+      final transformer = ModelFieldsDocumentTransformer<DemoModel>(
         modelDictionary: dictionary,
         operationFunctionName: 'upsertPerson',
         operationNameNode: 'UpsertPerson',
