@@ -22,7 +22,7 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   ///   getPerson() {}
   /// }
   /// ```
-  DocumentNode get defaultGetCollectionOperation;
+  DocumentNode get defaultGetUnfilteredOperation;
 
   /// The query used to fetch a member.
   /// For example
@@ -31,7 +31,7 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   ///   getPerson(input: $input) {}
   /// }
   /// ```
-  DocumentNode get defaultGetMemberOperation;
+  DocumentNode get defaultGetFilteredOperation;
 
   /// The mutation used to create or update a member.
   /// For example
@@ -40,7 +40,7 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   ///   upsertPerson(input: $input) {}
   /// }
   /// ```
-  String get defaultUpsertOperation;
+  DocumentNode get defaultUpsertOperation;
 
   Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
 

@@ -29,11 +29,29 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       throw UnimplementedError();
 
   @override
-  Future<_Model> get<_Model extends GraphqlModel>({query, repository}) async {
+  Future<List<_Model>> get<_Model extends GraphqlModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model]!;
-    final request = Request(operation: Operation(document: ));
+    final request = Request(
+      operation: Operation(
+        document: query == null
+            ? adapter.defaultGetUnfilteredOperation
+            : adapter.defaultGetFilteredOperation,
+      ),
+    );
     final resp = await link.request(request).first;
-    return await adapter.fromGraphql(resp.data, provider: this, repository: repository);
+    if (resp.data == null) return [];
+    if (resp.data?.keys.first is Iterable) {
+      final results = resp.data?.values.first
+          .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
+          .toList()
+          .cast<Future<_Model>>();
+
+      return await Future.wait<_Model>(results);
+    }
+
+    return [
+      await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as _Model
+    ];
   }
 
   @override

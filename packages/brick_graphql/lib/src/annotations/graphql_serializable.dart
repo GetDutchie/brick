@@ -22,40 +22,40 @@ enum FieldRename {
 /// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_serializable.dart)
 class GraphqlSerializable {
   /// The mutation used to remove data.
-  /// For example
+  /// Only the header of the operation is required. For example
   /// ```graphql
   /// mutation DeletePerson($input: DeletePersonInput!) {
   ///   deletePerson(input: $input) {}
   /// }
   /// ```
-  final String? defaultDeleteOperationHeader;
+  final String? defaultDeleteOperation;
 
   /// The query used to fetch multiple member.
-  /// For example
+  /// Only the header of the operation is required. For example
   /// ```graphql
   /// query GetPeople() {
   ///   getPerson() {}
   /// }
   /// ```
-  final String? defaultGetCollectionOperationHeader;
+  final String? defaultGetUnfilteredOperation;
 
   /// The query used to fetch a member.
-  /// For example
+  /// Only the header of the operation is required. For example
   /// ```graphql
   /// query GetPerson($input: GetPersonInput!) {
   ///   getPerson(input: $input) {}
   /// }
   /// ```
-  final String? defaultGetMemberOperationHeader;
+  final String? defaultGetFilteredOperation;
 
   /// The mutation used to create or update a member.
-  /// For example
+  /// Only the header of the operation is required. For example
   /// ```graphql
   /// query UpsertPerson($input: PersonInput!) {
   ///   upsertPerson(input: $input) {}
   /// }
   /// ```
-  final String? defaultUpsertOperationHeader;
+  final String? defaultUpsertOperation;
 
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
@@ -65,10 +65,10 @@ class GraphqlSerializable {
 
   /// Creates a new [GraphqlSerializable] instance.
   const GraphqlSerializable({
-    this.defaultDeleteOperationHeader,
-    this.defaultGetCollectionOperationHeader,
-    this.defaultGetMemberOperationHeader,
-    this.defaultUpsertOperationHeader,
+    this.defaultDeleteOperation,
+    this.defaultGetUnfilteredOperation,
+    this.defaultGetFilteredOperation,
+    this.defaultUpsertOperation,
     FieldRename? fieldRename,
   }) : fieldRename = fieldRename ?? FieldRename.none;
 

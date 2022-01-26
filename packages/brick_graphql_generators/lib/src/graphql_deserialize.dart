@@ -12,15 +12,15 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
   @override
   List<String> get instanceFieldsAndMethods {
     final config = (fields as GraphqlFields).config;
-    final deleteHeader = config?.defaultDeleteOperationHeader?.trim();
-    final getCollectionHeader = config?.defaultGetCollectionOperationHeader?.trim();
-    final getMemberHeader = config?.defaultGetMemberOperationHeader?.trim();
-    final upsertHeader = config?.defaultUpsertOperationHeader?.trim();
+    final deleteHeader = config?.defaultDeleteOperation?.trim();
+    final getCollectionHeader = config?.defaultGetUnfilteredOperation?.trim();
+    final getMemberHeader = config?.defaultGetFilteredOperation?.trim();
+    final upsertHeader = config?.defaultUpsertOperation?.trim();
 
     return [
       "@override\nfinal defaultDeleteOperation = lang.parseString('''$deleteHeader''')",
-      "@override\nfinal defaultGetCollectionOperation = lang.parseString('''$getCollectionHeader''')",
-      "@override\nfinal defaultGetMemberOperation = lang.parseString('''$getMemberHeader''')",
+      "@override\nfinal defaultGetUnfilteredOperation = lang.parseString('''$getCollectionHeader''')",
+      "@override\nfinal defaultGetFilteredOperation = lang.parseString('''$getMemberHeader''')",
       "@override\nfinal defaultUpsertOperation = lang.parseString('''$upsertHeader''')",
     ];
   }

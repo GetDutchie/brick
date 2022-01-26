@@ -1,5 +1,7 @@
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
+import 'package:gql/language.dart';
+import 'package:gql/src/ast/ast.dart';
 
 import 'demo_model.dart';
 import 'package:brick_core/core.dart' show Query;
@@ -35,6 +37,22 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
 
 /// Construct a [DemoModel]
 class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
+  @override
+  // TODO: implement defaultDeleteOperation
+  final DocumentNode defaultDeleteOperation = parseString('source');
+
+  @override
+  // TODO: implement defaultGetUnfilteredOperation
+  DocumentNode get defaultGetUnfilteredOperation => throw UnimplementedError();
+
+  @override
+  // TODO: implement defaultGetFilteredOperation
+  DocumentNode get defaultGetFilteredOperation => throw UnimplementedError();
+
+  @override
+  // TODO: implement defaultUpsertOperation
+  DocumentNode get defaultUpsertOperation => throw UnimplementedError();
+
   DemoModelAdapter();
 
   @override
