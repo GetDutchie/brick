@@ -1,10 +1,13 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
+import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:gql/ast.dart';
 
 /// Constructors that convert app models to and from REST
 abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
+  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
+
   DocumentNode get mututationEndpoint;
 
   Future<_Model> fromGraphql(
