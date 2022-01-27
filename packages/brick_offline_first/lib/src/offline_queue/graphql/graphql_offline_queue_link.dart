@@ -24,19 +24,17 @@ class GraphqlOfflineQueueLink extends Link {
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     // Ignore "mutation" and "subscription" request
-    if (!isMutation(cacheItem.request)) {
+    if (isMutation(cacheItem.request)) {
       final db = await requestManager.getDb();
       // Log immediately before we make the request
       await cacheItem.insertOrUpdate(db, logger: _logger);
     }
 
-    /// When the request is null a generic Graphql error needs to be generated
-    const _genericErrorResponse =
-        Response(errors: [GraphQLError(message: 'Unknown error')], data: null);
+    Response response;
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final response = await _inner.request(request).first;
+      response = await _inner.request(request).first;
 
       if (response.errors == null) {
         final db = await requestManager.getDb();
@@ -44,22 +42,23 @@ class GraphqlOfflineQueueLink extends Link {
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       }
-
-      yield response;
     } catch (e) {
       _logger.warning('#send: $e');
+
+      /// When the request is null a generic Graphql error needs to be generated
+      response = const Response(errors: [GraphQLError(message: 'Unknown error')], data: null);
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
     }
 
-    yield _genericErrorResponse;
+    yield response;
   }
 
   /// Parse a request and determines what [OperationType] it is
   /// If the statement evaluates to true it is a query or subscription
   static bool isMutation(Request request) {
     final node = request.operation.document.definitions.first;
-    return node is OperationDefinitionNode && node.type != OperationType.mutation;
+    return node is OperationDefinitionNode && node.type == OperationType.mutation;
   }
 }
