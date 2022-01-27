@@ -34,7 +34,7 @@ class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
     return GraphqlSerializable(
       fieldRename: fieldRenameByEnumName ?? GraphqlSerializable.defaults.fieldRename,
       defaultDeleteOperation: withinConfigKey('defaultDeleteOperation')?.stringValue,
-      defaultGetUnfilteredOperation: withinConfigKey('defaultGetUnfilteredOperation')?.stringValue,
+      defaultGetOperation: withinConfigKey('defaultGetOperation')?.stringValue,
       defaultGetFilteredOperation: withinConfigKey('defaultGetFilteredOperation')?.stringValue,
       defaultUpsertOperation: withinConfigKey('defaultUpsertOperation')?.stringValue,
     );

@@ -45,7 +45,7 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   );
 
   @override
-  final defaultGetUnfilteredOperation = parseString(
+  final defaultGetOperation = parseString(
     r'''mutation GetDemoModels() {
       getDemoModel() {}
     }''',

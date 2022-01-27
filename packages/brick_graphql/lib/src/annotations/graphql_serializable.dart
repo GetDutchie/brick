@@ -37,7 +37,7 @@ class GraphqlSerializable {
   ///   getPerson() {}
   /// }
   /// ```
-  final String? defaultGetUnfilteredOperation;
+  final String? defaultGetOperation;
 
   /// The query used to fetch a member.
   /// Only the header of the operation is required. For example
@@ -66,7 +66,7 @@ class GraphqlSerializable {
   /// Creates a new [GraphqlSerializable] instance.
   const GraphqlSerializable({
     this.defaultDeleteOperation,
-    this.defaultGetUnfilteredOperation,
+    this.defaultGetOperation,
     this.defaultGetFilteredOperation,
     this.defaultUpsertOperation,
     FieldRename? fieldRename,

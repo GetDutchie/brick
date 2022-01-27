@@ -160,7 +160,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     }
 
     if (query == null) {
-      return concat<_Model>(adapter.defaultGetUnfilteredOperation, modelDictionary);
+      return concat<_Model>(adapter.defaultGetOperation, modelDictionary);
     }
 
     return concat<_Model>(adapter.defaultGetFilteredOperation, modelDictionary);
