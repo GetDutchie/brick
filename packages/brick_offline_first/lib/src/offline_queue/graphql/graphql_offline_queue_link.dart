@@ -33,7 +33,7 @@ class GraphqlOfflineQueueLink extends Link {
     Response? response;
 
     /// When the request is null a generic Graphql error needs to be generated
-    final _genericErrorResponse =
+    const _genericErrorResponse =
         Response(errors: [GraphQLError(message: 'Unknown error')], data: null);
 
     try {
