@@ -46,7 +46,7 @@ class GraphqlOfflineQueueLink extends Link {
       _logger.warning('#send: $e');
 
       /// When the request is null a generic Graphql error needs to be generated
-      response = const Response(errors: [GraphQLError(message: 'Unknown error')], data: null);
+      response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
