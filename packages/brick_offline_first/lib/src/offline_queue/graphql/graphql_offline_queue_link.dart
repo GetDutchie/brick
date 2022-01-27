@@ -1,9 +1,9 @@
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
-import 'package:gql_link/gql_link.dart';
 import 'package:gql_exec/gql_exec.dart';
-import 'package:logging/logging.dart';
+import 'package:gql_link/gql_link.dart';
 import 'package:gql/ast.dart';
+import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
 class GraphqlOfflineQueueLink extends Link {
