@@ -30,7 +30,7 @@ class GraphqlSerializable {
   /// ```
   final String? defaultDeleteOperation;
 
-  /// The query used to fetch multiple member.
+  /// The query used to fetch multiple members.
   /// Only the header of the operation is required. For example
   /// ```graphql
   /// query GetPeople() {
