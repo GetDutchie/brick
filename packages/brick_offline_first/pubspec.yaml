@@ -13,7 +13,8 @@ environment:
 
 dependencies:
   brick_core: ^1.0.0+1
-  brick_offline_first_abstract: ^1.0.0+1
+  brick_offline_first_abstract:
+    path: ../brick_offline_first_abstract
   brick_rest: ^1.1.0
   brick_graphql:
     path: ../brick_graphql
