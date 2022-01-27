@@ -123,21 +123,21 @@ class Query {
 
 /// How the query interacts with the provider
 enum QueryAction {
-  /// Remove from provider
-  delete,
-
   /// Retrieve from provider (the default)
   get,
 
   /// Create in the provider
   insert,
 
-  /// Listen for streaming changes
-  subscribe,
-
   /// Modify existing data in the provider
   update,
 
   /// Insert or update from provider
   upsert,
+
+  /// Remove from provider
+  delete,
+
+  /// Listen for streaming changes
+  subscribe,
 }
