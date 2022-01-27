@@ -1,6 +1,7 @@
 import 'package:brick_graphql/graphql.dart';
-import 'package:gql/src/ast/ast.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
+import 'package:gql/language.dart';
+import 'package:gql/src/ast/ast.dart';
 
 import 'demo_model.dart';
 import 'package:brick_core/core.dart' show Query;
@@ -36,6 +37,34 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
 
 /// Construct a [DemoModel]
 class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
+  @override
+  final defaultDeleteOperation = parseString(
+    r'''mutation DeleteDemoModel($input: DemoModel!) {
+      deleteDemoModel(input: $input) {}
+    }''',
+  );
+
+  @override
+  final defaultGetOperation = parseString(
+    r'''mutation GetDemoModels() {
+      getDemoModel() {}
+    }''',
+  );
+
+  @override
+  final defaultGetFilteredOperation = parseString(
+    r'''mutation GetDemoModels($input: DemoModelFilter) {
+      getDemoModel(filter: $input) {}
+    }''',
+  );
+
+  @override
+  final defaultUpsertOperation = parseString(
+    r'''mutation UpsertDemoModels($input: DemoModel) {
+      upsertDemoModel(input: $input) {}
+    }''',
+  );
+
   DemoModelAdapter();
 
   @override
@@ -91,8 +120,4 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
           type: bool,
         ),
       };
-
-  @override
-  // TODO: implement mututationEndpoint
-  DocumentNode get mututationEndpoint => throw UnimplementedError();
 }
