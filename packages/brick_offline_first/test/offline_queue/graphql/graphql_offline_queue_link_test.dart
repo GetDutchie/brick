@@ -12,14 +12,32 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
+  const query = '''query UpsertPerson {
+        upsertPerson {
+          firstName
+        }
+      }''';
+
+  const response = Response(
+    data: <String, dynamic>{'firstName': 'Beavis'},
+  );
+
+  final request = Request(
+    operation: Operation(document: parseString(query), operationName: 'UpsertPerson'),
+    variables: const <String, dynamic>{'firstName': 'Beavis'},
+  );
+
   group('GraphqlOfflineQueueLink', () {
     final requestManager = GraphqlRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
     );
 
+    MockLink? mockLink;
+
     setUpAll(() async {
       await requestManager.migrate();
+      mockLink = MockLink();
     });
 
     tearDown(() async {
@@ -32,55 +50,202 @@ void main() {
     });
 
     test('#verify link request made', () async {
-      final mockLink = MockLink();
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+
+      await client.request(request).first;
+
+      verify(
+        mockLink!.request(request),
+      ).called(1);
+    });
+
+    test('#send forwards to inner client', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+
+      when(
+        mockLink!.request(request),
+      ).thenAnswer(
+        (_) => Stream.fromIterable([response]),
+      );
+
+      expect(await client.request(request).first, response);
+    });
+
+    test('Query / Subscriptions are not tracked', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
 
       await client
           .request(
             Request(
               operation: Operation(
-                document: parseString(""""""),
+                document: parseString('''query {
+                  helloWorld {
+                    name
+                  }
+                }'''),
               ),
-              variables: const <String, dynamic>{"i": 12},
             ),
           )
           .first;
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+    });
 
-      verify(
-        mockLink.request(
-          Request(
-            operation: Operation(
-              document: parseString(""""""),
+    test('request is stored in SQLite', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+
+      await client
+          .request(
+            Request(
+              operation: Operation(
+                document: parseString('''mutation {}'''),
+              ),
             ),
-            variables: const <String, dynamic>{"i": 12},
-          ),
-          null,
+          )
+          .first;
+      expect(await requestManager.unprocessedRequests(), hasLength(1));
+    });
+
+    test('.isNotMutation', () async {
+      final request1 = Request(
+        operation: Operation(
+          document: parseString('''mutation {}'''),
         ),
-      ).called(1);
+      );
+
+      final request2 = Request(
+        operation: Operation(
+          document: parseString('''query {}'''),
+        ),
+      );
+
+      final request3 = Request(
+        operation: Operation(
+          document: parseString('''subscription {}'''),
+        ),
+      );
+      expect(GraphqlOfflineQueueLink.isNotMutation(request1), isFalse);
+      expect(GraphqlOfflineQueueLink.isNotMutation(request2), isTrue);
+      expect(GraphqlOfflineQueueLink.isNotMutation(request3), isTrue);
+    });
+
+    test('request deletes after a successful response', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+
+      when(
+        mockLink!.request(request),
+      ).thenAnswer(
+        (_) => Stream.fromIterable([response]),
+      );
+
+      client.request(
+        Request(
+          operation: Operation(
+            document: parseString('''mutation {}'''),
+          ),
+        ),
+      );
+
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+    });
+
+    test('request increments after a unsuccessful response', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mutationRequest = Request(
+        operation: Operation(
+          document: parseString('''mutation {}'''),
+          operationName: 'fakeMutate',
+        ),
+      );
+      await client
+          .request(
+            mutationRequest,
+          )
+          .first;
+
+      client.request(mutationRequest);
+
+      var unprocessedRequests = await requestManager.unprocessedRequests();
+
+      expect(unprocessedRequests.first[GRAPHQL_JOBS_ATTEMPTS_COLUMN], 1);
+
+      await client.request(mutationRequest).first;
+
+      unprocessedRequests = await requestManager.unprocessedRequests();
+      expect(unprocessedRequests.first[GRAPHQL_JOBS_ATTEMPTS_COLUMN], 2);
+    });
+
+    test('request creates and does not delete after an unsuccessful response', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mutationRequest = Request(
+        operation: Operation(
+          document: parseString('''mutation {}'''),
+          operationName: 'fakeMutate',
+        ),
+      );
+      await client
+          .request(
+            mutationRequest,
+          )
+          .first;
+
+      client.request(mutationRequest);
+
+      expect(await requestManager.unprocessedRequests(), hasLength(1));
+    });
+
+    test('request is not deleted after sending to a misconfigured client', () async {
+      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      const document = '''mutation {
+            hello{
+              hi
+            }
+          }''';
+      final request1 = Request(
+        operation: Operation(
+          document: parseString(document),
+          operationName: 'fakeMutate',
+        ),
+      );
+
+      final request2 = Request(
+        operation: Operation(
+          document: parseString(document),
+          operationName: 'fakeMutate',
+        ),
+        variables: const <String, dynamic>{'j': 16},
+      );
+
+      final request3 = Request(
+        operation: Operation(
+          document: parseString(document),
+          operationName: 'fakeMutate',
+        ),
+        variables: const <String, dynamic>{'k': 14},
+      );
+
+      await client
+          .request(
+            request1,
+          )
+          .first;
+
+      expect(await requestManager.unprocessedRequests(), hasLength(1));
+
+      await client
+          .request(
+            request2,
+          )
+          .first;
+
+      expect(await requestManager.unprocessedRequests(), hasLength(2));
+
+      await client
+          .request(
+            request3,
+          )
+          .first;
+
+      expect(await requestManager.unprocessedRequests(), hasLength(3));
     });
   });
-
-  test('#send forwards to inner client', () async {}, skip: 'Needs to be implemented');
-
-  test('requests are not tracked', () async {}, skip: 'Needs to be implemented');
-
-  test('request is stored in SQLite', () async {}, skip: 'Needs to be implemented');
-
-  test('request deletes after a successful response', () async {}, skip: 'Needs to be implemented');
-
-  test('request increments after a unsuccessful response', () async {},
-      skip: 'Needs to be implemented');
-
-  test('request creates and does not delete after an unsuccessful response', () async {},
-      skip: 'Needs to be implemented');
-
-  test('request is not deleted after sending to a misconfigured client', () async {},
-      skip: 'Needs to be implemented');
-
-  test('request is not deleted after sending to an inaccessible endpoint', () async {},
-      skip: 'Needs to be implemented');
-
-  test('request is not deleted after receiving a status code that should be reattempted',
-      () async {},
-      skip: 'Needs to be implemented');
 }

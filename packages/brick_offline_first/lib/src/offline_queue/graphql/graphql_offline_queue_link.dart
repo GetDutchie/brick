@@ -3,6 +3,7 @@ import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sq
 import 'package:gql_link/gql_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
+import 'package:gql/ast.dart';
 
 /// Stores all requests in a SQLite database
 class GraphqlOfflineQueueLink extends Link {
@@ -22,28 +23,38 @@ class GraphqlOfflineQueueLink extends Link {
     final cacheItem = GraphqlRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
-    final db = await requestManager.getDb();
-    // Log immediately before we make the request
-    await cacheItem.insertOrUpdate(db, logger: _logger);
+    // Ignore "query" and "subscription" request
+    if (!isNotMutation(cacheItem.request)) {
+      final db = await requestManager.getDb();
+      // Log immediately before we make the request
+      await cacheItem.insertOrUpdate(db, logger: _logger);
+    }
+
+    Response? response;
 
     /// When the request is null a generic Graphql error needs to be generated
-    final _genericErrorResponse = Stream.fromIterable([
-      const Response(errors: [GraphQLError(message: 'Unknown error')], data: null)
-    ]);
+    final _genericErrorResponse =
+        Response(errors: [GraphQLError(message: 'Unknown error')], data: null);
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final requestAsStream = _inner.request(request);
-      final response = await requestAsStream.first;
+      final requestAsStream = _inner.request(request).first;
 
-      if (response.errors!.isEmpty) {
-        final db = await requestManager.getDb();
-        // request was successfully sent and can be removed
-        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-        await cacheItem.delete(db);
+      try {
+        response = await requestAsStream;
+
+        if (response.errors == null) {
+          final db = await requestManager.getDb();
+          // request was successfully sent and can be removed
+          _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
+          await cacheItem.delete(db);
+        }
+
+        yield response;
+      } catch (e) {
+        _logger.warning('Error retrieving response');
+        response = _genericErrorResponse;
       }
-
-      yield* requestAsStream;
     } catch (e) {
       _logger.warning('#send: $e');
     } finally {
@@ -51,6 +62,13 @@ class GraphqlOfflineQueueLink extends Link {
       await cacheItem.unlock(db);
     }
 
-    yield* _genericErrorResponse;
+    yield _genericErrorResponse;
+  }
+
+  /// Parse a request and determines what [OperationType] it is
+  /// If the statement evaluates to true it is a query or mutation
+  static bool isNotMutation(Request request) {
+    final node = request.operation.document.definitions.first;
+    return node is OperationDefinitionNode && node.type != OperationType.mutation;
   }
 }
