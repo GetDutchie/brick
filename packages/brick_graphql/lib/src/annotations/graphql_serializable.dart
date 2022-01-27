@@ -39,7 +39,7 @@ class GraphqlSerializable {
   /// ```
   final String? defaultGetOperation;
 
-  /// The query used to fetch a member.
+  /// The query used to fetch a member or specific members.
   /// Only the header of the operation is required. For example
   /// ```graphql
   /// query GetPerson($input: GetPersonInput!) {
@@ -47,6 +47,24 @@ class GraphqlSerializable {
   /// }
   /// ```
   final String? defaultGetFilteredOperation;
+
+  /// The subscription used to listen to all models
+  /// Only the header of the operation is required. For example
+  /// ```graphql
+  /// subscription GetPeople() {
+  ///   getPerson() {}
+  /// }
+  /// ```
+  final String? defaultSubscriptionOperation;
+
+  /// The query used to fetch a member or specific members.
+  /// Only the header of the operation is required. For example
+  /// ```graphql
+  /// subscription GetPerson($input: GetPersonInput!) {
+  ///   getPerson(input: $input) {}
+  /// }
+  /// ```
+  final String? defaultSubscriptionFilteredOperation;
 
   /// The mutation used to create or update a member.
   /// Only the header of the operation is required. For example
@@ -68,6 +86,8 @@ class GraphqlSerializable {
     this.defaultDeleteOperation,
     this.defaultGetOperation,
     this.defaultGetFilteredOperation,
+    this.defaultSubscriptionOperation,
+    this.defaultSubscriptionFilteredOperation,
     this.defaultUpsertOperation,
     FieldRename? fieldRename,
   }) : fieldRename = fieldRename ?? FieldRename.none;

@@ -159,6 +159,14 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       return concat<_Model>(adapter.defaultUpsertOperation, modelDictionary);
     }
 
+    if (action == QueryAction.subscribe) {
+      if (query == null) {
+        return concat<_Model>(adapter.defaultSubscriptionOperation, modelDictionary);
+      }
+
+      return concat<_Model>(adapter.defaultSubscriptionFilteredOperation, modelDictionary);
+    }
+
     if (query == null) {
       return concat<_Model>(adapter.defaultGetOperation, modelDictionary);
     }

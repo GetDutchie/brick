@@ -15,12 +15,16 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
     final deleteHeader = config?.defaultDeleteOperation?.trim();
     final getCollectionHeader = config?.defaultGetOperation?.trim();
     final getMemberHeader = config?.defaultGetFilteredOperation?.trim();
+    final getSubscribeHeader = config?.defaultSubscriptionOperation?.trim();
+    final getSubscribeFilteredHeader = config?.defaultSubscriptionFilteredOperation?.trim();
     final upsertHeader = config?.defaultUpsertOperation?.trim();
 
     return [
       "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''')",
       "@override\nfinal defaultGetOperation = lang.parseString(r'''$getCollectionHeader''')",
       "@override\nfinal defaultGetFilteredOperation = lang.parseString(r'''$getMemberHeader''')",
+      "@override\nfinal defaultSubscriptionOperation = lang.parseString(r'''$getSubscribeHeader''')",
+      "@override\nfinal defaultSubscriptionFilteredOperation = lang.parseString(r'''$getSubscribeFilteredHeader''')",
       "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''')",
     ];
   }

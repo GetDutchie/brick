@@ -36,6 +36,9 @@ class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
       defaultDeleteOperation: withinConfigKey('defaultDeleteOperation')?.stringValue,
       defaultGetOperation: withinConfigKey('defaultGetOperation')?.stringValue,
       defaultGetFilteredOperation: withinConfigKey('defaultGetFilteredOperation')?.stringValue,
+      defaultSubscriptionOperation: withinConfigKey('defaultSubscriptionOperation')?.stringValue,
+      defaultSubscriptionFilteredOperation:
+          withinConfigKey('defaultSubscriptionFilteredOperation')?.stringValue,
       defaultUpsertOperation: withinConfigKey('defaultUpsertOperation')?.stringValue,
     );
   }

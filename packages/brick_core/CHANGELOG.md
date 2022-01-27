@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add `subscribe` to `QueryAction`
+
 ## 1.1.0
 
 * Add Dart lints
