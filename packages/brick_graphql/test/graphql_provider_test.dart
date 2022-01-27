@@ -1,5 +1,6 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/graphql.dart';
+import 'package:gql/language.dart';
 import 'package:test/test.dart';
 
 import '__helpers__/demo_model.dart';
@@ -17,7 +18,46 @@ GraphqlProvider generateProvider(Map<String, dynamic> response, {List<String>? e
 
 void main() {
   group('GraphqlProvider', () {
-    group('#createRequest', () {}, skip: true);
+    group('#createRequest', () {
+      test('simple', () {
+        final provider = generateProvider({});
+        final request = provider.createRequest<DemoModel>(action: QueryAction.get);
+        expect(printNode(request.operation.document), startsWith(r'''query GetDemoModels {
+  getDemoModel {'''));
+      });
+
+      test('with variables', () {
+        final provider = generateProvider({});
+        final variables = {'name': 'Thomas'};
+        final request =
+            provider.createRequest<DemoModel>(action: QueryAction.upsert, variables: variables);
+        expect(printNode(request.operation.document),
+            startsWith(r'''mutation UpsertDemoModels($input: DemoModel!) {
+  upsertDemoModel(input: $input) {'''));
+        expect(request.variables, variables);
+      });
+
+      test('with variables from providerArgs', () {
+        final provider = generateProvider({});
+        final variables = {'name': 'Thomas'};
+        final request = provider.createRequest<DemoModel>(
+            action: QueryAction.upsert, query: Query(providerArgs: {'variables': variables}));
+        expect(request.variables, variables);
+      });
+
+      test('use passed variables before providerArgs', () {
+        final provider = generateProvider({});
+        final variables = {'name': 'Thomas'};
+        final request = provider.createRequest<DemoModel>(
+          action: QueryAction.upsert,
+          query: Query(providerArgs: {
+            'variables': {'name': 'Guy'}
+          }),
+          variables: variables,
+        );
+        expect(request.variables, variables);
+      });
+    });
 
     group('#get', () {
       test('simple', () async {
@@ -30,13 +70,17 @@ void main() {
     });
 
     test('#upsert', () async {
-      final provider = generateProvider({'full_name': 'Guy'});
+      final payload = {'full_name': 'Guy'};
+      final provider = generateProvider(payload);
 
-      final instance = DemoModel(name: 'Guy');
+      final instance = DemoModel(name: payload['full_name']);
       final resp = await provider.upsert<DemoModel>(instance);
 
-      expect(resp.name, instance.name);
-    }, skip: true);
+      expect(resp.data, {
+        'upsertPerson': [payload]
+      });
+      expect(resp.errors, isNull);
+    });
 
     group('#delete', () {
       test('success', () async {
@@ -50,9 +94,23 @@ void main() {
       test('with errors', () async {
         final provider = generateProvider({'full_name': 'Thomas'}, errors: ['Already exists']);
 
-        final instance = DemoModel(name: 'Guy');
+        final instance = DemoModel(name: 'Thomas');
         final didDelete = await provider.delete<DemoModel>(instance);
         expect(didDelete, false);
+      });
+    });
+
+    group('#exists', () {
+      test('success', () async {
+        final provider = generateProvider({'full_name': 'Thomas'});
+
+        expect(await provider.exists<DemoModel>(), true);
+      });
+
+      test('with errors', () async {
+        final provider = generateProvider({'full_name': 'Thomas'}, errors: ['Already exists']);
+
+        expect(await provider.exists<DemoModel>(), false);
       });
     });
 

@@ -1,8 +1,8 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:brick_graphql/src/transformers/graphql_argument.dart';
 import 'package:gql/ast.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:test/test.dart';
 import 'package:gql/language.dart' as lang;
 
@@ -130,6 +130,48 @@ void main() {
       });
     });
 
-    group('.defaultOperation', () {}, skip: true);
+    group('.defaultOperation', () {
+      test('with specified document', () {
+        final query = Query(providerArgs: {'document': upsertPersonWithNodes});
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+            action: QueryAction.get, query: query);
+        expect(lang.printNode(transformer.document),
+            startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
+  upsertPerson(filter: $input) {'''));
+      });
+
+      test('with delete action', () {
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+            action: QueryAction.delete);
+        expect(lang.printNode(transformer.document),
+            startsWith(r'''mutation DeleteDemoModel($input: DemoModel!) {
+  deleteDemoModel(input: $input) {'''));
+      });
+
+      test('with upsert action', () {
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+            action: QueryAction.upsert);
+        expect(lang.printNode(transformer.document),
+            startsWith(r'''mutation UpsertDemoModels($input: DemoModel!) {
+  upsertDemoModel(input: $input) {'''));
+      });
+
+      group('QueryAction.get', () {
+        test('without query', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.get);
+          expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
+  getDemoModel {'''));
+        });
+
+        test('with query', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.get, query: Query.where('name', 'Thomas'));
+          expect(lang.printNode(transformer.document),
+              startsWith(r'''query GetDemoModels($input: DemoModelFilter!) {
+  getDemoModel(filter: $input) {'''));
+        });
+      });
+    });
   });
 }
