@@ -1,7 +1,8 @@
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
-import 'package:gql_link/gql_link.dart';
 import 'package:gql_exec/gql_exec.dart';
+import 'package:gql_link/gql_link.dart';
+import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
@@ -22,35 +23,42 @@ class GraphqlOfflineQueueLink extends Link {
     final cacheItem = GraphqlRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
-    final db = await requestManager.getDb();
-    // Log immediately before we make the request
-    await cacheItem.insertOrUpdate(db, logger: _logger);
+    // Ignore "mutation" and "subscription" request
+    if (isMutation(cacheItem.request)) {
+      final db = await requestManager.getDb();
+      // Log immediately before we make the request
+      await cacheItem.insertOrUpdate(db, logger: _logger);
+    }
 
-    /// When the request is null a generic Graphql error needs to be generated
-    final _genericErrorResponse = Stream.fromIterable([
-      const Response(errors: [GraphQLError(message: 'Unknown error')], data: null)
-    ]);
+    Response response;
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final requestAsStream = _inner.request(request);
-      final response = await requestAsStream.first;
+      response = await _inner.request(request).first;
 
-      if (response.errors!.isEmpty) {
+      if (response.errors == null) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       }
-
-      yield* requestAsStream;
     } catch (e) {
       _logger.warning('#send: $e');
+
+      /// When the request is null a generic Graphql error needs to be generated
+      response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
     }
 
-    yield* _genericErrorResponse;
+    yield response;
+  }
+
+  /// Parse a request and determines what [OperationType] it is
+  /// If the statement evaluates to true it is a mutation
+  static bool isMutation(Request request) {
+    final node = request.operation.document.definitions.first;
+    return node is OperationDefinitionNode && node.type == OperationType.mutation;
   }
 }
