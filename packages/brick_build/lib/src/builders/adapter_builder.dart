@@ -3,7 +3,7 @@ import 'package:brick_build/src/utils/string_helpers.dart';
 import 'package:build/build.dart';
 
 /// Writes adapter code (model serialization/deserialization).
-/// Outputs to app/adapters/<MODEL>_adapter.g.dart
+/// Outputs to brick/adapters/<MODEL>_adapter.g.dart
 class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
   final AnnotationSuperGenerator generator;
 
@@ -17,7 +17,7 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
     final annotatedElements = await getAnnotatedElements(buildStep);
 
     final allOutputs = <String>[];
-    for (var annotatedElement in annotatedElements) {
+    for (final annotatedElement in annotatedElements) {
       final stopwatch = Stopwatch();
       stopwatch.start();
 
@@ -28,9 +28,9 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
       );
 
       // Since the generator must be aware of all classes and LibraryElement only targets
-      // a single file, this must expaned the serialization output into its own file.
+      // a single file, this must expand the serialization output into its own file.
       final snakedName = StringHelpers.snakeCase(annotatedElement.element.name!);
-      await manuallyUpsertAppFile('adapters/${snakedName}_adapter.g.dart', output);
+      await manuallyUpsertBrickFile('adapters/${snakedName}_adapter.g.dart', output);
       allOutputs.add(output);
       logStopwatch(
           'Generated ${snakedName}_adapter.g.dart (${annotatedElement.element.name})', stopwatch);

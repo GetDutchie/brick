@@ -3,11 +3,11 @@ import 'package:brick_sqlite_abstract/db.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_offline_first/offline_first_with_rest.dart';
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first_example/app/models/mounty.dart';
+import 'package:brick_offline_first_example/brick/models/mounty.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstSerdes;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first_example/app/models/hat.dart';// GENERATED CODE DO NOT EDIT
+import 'package:brick_offline_first_example/brick/models/hat.dart';// GENERATED CODE DO NOT EDIT
 // This file should NOT be version controlled and should not be manually edited.
 // ignore: unused_import
 import 'dart:convert';

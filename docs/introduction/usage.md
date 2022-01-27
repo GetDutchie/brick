@@ -3,7 +3,7 @@
 Create a model as the app's business logic:
 
 ```dart
-// app/models/user.dart
+// brick/models/user.dart
 @ConnectOfflineFirstWithRest()
 class User extends OfflineFirstWithRestModel {}
 ```
@@ -68,6 +68,6 @@ final query = Query.where('hats', Where('color').isExactly('brown'));
 final usersWithBrownHats = repository.get<User>(query: query);
 ```
 
-Brick natively [serializes primitives, associations, and more](packages/brick_offline_first/example/lib/app/models/kitchen_sink.dart).
+Brick natively [serializes primitives, associations, and more](packages/brick_offline_first/example/lib/brick/models/kitchen_sink.model.dart).
 
 If it's still murky, [check out Learn](home.md#learn) for videos, tutorials, and examples that break down Brick.

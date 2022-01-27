@@ -40,7 +40,7 @@ class UserAdapter extends SqliteAdapter<User> {
 
 /// This value is always generated.
 /// It is included here as an illustration.
-/// Import it from `lib/app/brick.g.dart` in your application.
+/// Import it from `lib/brick/brick.g.dart` in your application.
 final dictionary = SqliteModelDictionary({
   User: UserAdapter(),
 });

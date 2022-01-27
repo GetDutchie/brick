@@ -29,5 +29,5 @@ abstract class ModelDictionaryGenerator {
 
   /// Model imports
   String modelsFromFiles(Map<String, String> classNamesToFileNames) =>
-      classNamesToFileNames.values.map((k) => "import 'models/$k';").join('\n');
+      classNamesToFileNames.values.map((k) => "import '$k';").join('\n');
 }

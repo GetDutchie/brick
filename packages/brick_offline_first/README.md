@@ -158,7 +158,7 @@ Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For c
 
 // test/models/user_test.dart
 import 'package:brick_sqlite/testing.dart';
-import 'package:my_app/app/repository.dart';
+import 'package:my_app/brick/repository.dart';
 
 void main() {
   group("MySqliteProvider", () {
