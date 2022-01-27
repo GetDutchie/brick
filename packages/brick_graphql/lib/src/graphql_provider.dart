@@ -26,6 +26,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   Request createRequest<_Model extends GraphqlModel>({
     Query? query,
     required QueryAction action,
+    Map<String, dynamic>? variables,
   }) {
     final defaultOperation = ModelFieldsDocumentTransformer.defaultOperation<_Model>(
       modelDictionary,
@@ -35,7 +36,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
     return Request(
       operation: Operation(document: defaultOperation.document),
-      variables: query?.providerArgs['variables'] ?? queryToVariables<_Model>(query),
+      variables: variables ?? query?.providerArgs['variables'] ?? queryToVariables<_Model>(query),
     );
   }
 
@@ -47,8 +48,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<bool> exists<_Model extends GraphqlModel>({query, repository}) async =>
-      throw UnimplementedError();
+  Future<bool> exists<_Model extends GraphqlModel>({query, repository}) async {
+    final request = createRequest<_Model>(action: QueryAction.get, query: query);
+    final resp = await link.request(request).first;
+    return resp.data != null && (resp.errors?.isEmpty ?? true);
+  }
 
   @override
   Future<List<_Model>> get<_Model extends GraphqlModel>({query, repository}) async {
@@ -88,6 +92,14 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<_Model> upsert<_Model extends GraphqlModel>(instance, {query, repository}) async =>
-      throw UnimplementedError();
+  Future<Response> upsert<_Model extends GraphqlModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[_Model]!;
+    final variables = await adapter.toGraphql(instance, provider: this, repository: repository);
+    final request = createRequest<_Model>(
+      action: QueryAction.upsert,
+      query: query,
+      variables: variables,
+    );
+    return await link.request(request).first;
+  }
 }
