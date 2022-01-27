@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.1
+
 * Add `subscribe` to `QueryAction`
 
 ## 1.1.0
