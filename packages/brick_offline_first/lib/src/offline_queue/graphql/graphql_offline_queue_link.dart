@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
 import 'package:gql_exec/gql_exec.dart';
@@ -42,11 +44,14 @@ class GraphqlOfflineQueueLink extends Link {
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       }
-    } catch (e) {
-      _logger.warning('#send: $e');
+    } on ServerException catch (e) {
+      if (e.originalException is SocketException) {
+        _logger.warning('#send: $e');
 
-      /// When the request is null a generic Graphql error needs to be generated
-      response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
+        /// When the request is null a generic Graphql error needs to be generated
+        response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
+      }
+      rethrow;
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
