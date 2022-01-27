@@ -105,27 +105,27 @@ void main() {
       expect(await requestManager.unprocessedRequests(), hasLength(1));
     });
 
-    test('.isNotMutation', () async {
-      final request1 = Request(
+    test('.isMutation', () async {
+      final mutationRequest = Request(
         operation: Operation(
           document: parseString('''mutation {}'''),
         ),
       );
 
-      final request2 = Request(
+      final queryRequest = Request(
         operation: Operation(
           document: parseString('''query {}'''),
         ),
       );
 
-      final request3 = Request(
+      final subscriptionRequest = Request(
         operation: Operation(
           document: parseString('''subscription {}'''),
         ),
       );
-      expect(GraphqlOfflineQueueLink.isNotMutation(request1), isFalse);
-      expect(GraphqlOfflineQueueLink.isNotMutation(request2), isTrue);
-      expect(GraphqlOfflineQueueLink.isNotMutation(request3), isTrue);
+      expect(GraphqlOfflineQueueLink.isMutation(mutationRequest), isFalse);
+      expect(GraphqlOfflineQueueLink.isMutation(queryRequest), isTrue);
+      expect(GraphqlOfflineQueueLink.isMutation(subscriptionRequest), isTrue);
     });
 
     test('request deletes after a successful response', () async {
@@ -156,11 +156,7 @@ void main() {
           operationName: 'fakeMutate',
         ),
       );
-      await client
-          .request(
-            mutationRequest,
-          )
-          .first;
+      await client.request(mutationRequest).first;
 
       client.request(mutationRequest);
 
@@ -182,11 +178,18 @@ void main() {
           operationName: 'fakeMutate',
         ),
       );
-      await client
-          .request(
-            mutationRequest,
+
+      when(
+        mockLink!.request(request),
+      ).thenAnswer(
+        (_) => Stream.fromIterable([
+          const Response(
+            data: null,
+            errors: [GraphQLError(message: 'Unknown error')],
           )
-          .first;
+        ]),
+      );
+      await client.request(mutationRequest).first;
 
       client.request(mutationRequest);
 
@@ -200,14 +203,14 @@ void main() {
               hi
             }
           }''';
-      final request1 = Request(
+      final mutationRequest1 = Request(
         operation: Operation(
           document: parseString(document),
           operationName: 'fakeMutate',
         ),
       );
 
-      final request2 = Request(
+      final mutationRequest2 = Request(
         operation: Operation(
           document: parseString(document),
           operationName: 'fakeMutate',
@@ -215,7 +218,7 @@ void main() {
         variables: const <String, dynamic>{'j': 16},
       );
 
-      final request3 = Request(
+      final mutationRequest3 = Request(
         operation: Operation(
           document: parseString(document),
           operationName: 'fakeMutate',
@@ -223,27 +226,15 @@ void main() {
         variables: const <String, dynamic>{'k': 14},
       );
 
-      await client
-          .request(
-            request1,
-          )
-          .first;
+      await client.request(mutationRequest1).first;
 
       expect(await requestManager.unprocessedRequests(), hasLength(1));
 
-      await client
-          .request(
-            request2,
-          )
-          .first;
+      await client.request(mutationRequest2).first;
 
       expect(await requestManager.unprocessedRequests(), hasLength(2));
 
-      await client
-          .request(
-            request3,
-          )
-          .first;
+      await client.request(mutationRequest3).first;
 
       expect(await requestManager.unprocessedRequests(), hasLength(3));
     });

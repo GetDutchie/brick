@@ -23,14 +23,12 @@ class GraphqlOfflineQueueLink extends Link {
     final cacheItem = GraphqlRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
-    // Ignore "query" and "subscription" request
-    if (!isNotMutation(cacheItem.request)) {
+    // Ignore "mutation" and "subscription" request
+    if (!isMutation(cacheItem.request)) {
       final db = await requestManager.getDb();
       // Log immediately before we make the request
       await cacheItem.insertOrUpdate(db, logger: _logger);
     }
-
-    Response? response;
 
     /// When the request is null a generic Graphql error needs to be generated
     const _genericErrorResponse =
@@ -38,23 +36,16 @@ class GraphqlOfflineQueueLink extends Link {
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final requestAsStream = _inner.request(request).first;
+      final response = await _inner.request(request).first;
 
-      try {
-        response = await requestAsStream;
-
-        if (response.errors == null) {
-          final db = await requestManager.getDb();
-          // request was successfully sent and can be removed
-          _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-          await cacheItem.delete(db);
-        }
-
-        yield response;
-      } catch (e) {
-        _logger.warning('Error retrieving response');
-        response = _genericErrorResponse;
+      if (response.errors == null) {
+        final db = await requestManager.getDb();
+        // request was successfully sent and can be removed
+        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
+        await cacheItem.delete(db);
       }
+
+      yield response;
     } catch (e) {
       _logger.warning('#send: $e');
     } finally {
@@ -67,7 +58,7 @@ class GraphqlOfflineQueueLink extends Link {
 
   /// Parse a request and determines what [OperationType] it is
   /// If the statement evaluates to true it is a query or subscription
-  static bool isNotMutation(Request request) {
+  static bool isMutation(Request request) {
     final node = request.operation.document.definitions.first;
     return node is OperationDefinitionNode && node.type != OperationType.mutation;
   }
