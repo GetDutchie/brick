@@ -126,6 +126,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       modelDictionary: modelDictionary,
       operationFunctionName: (node.selectionSet.selections.first as FieldNode).name.value,
       operationNameNode: node.name!.value,
+      operationType: node.type,
       variables: GraphqlVariable.fromOperationNode(node),
     );
   }
@@ -146,22 +147,22 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     Query? query,
   }) {
     if (query?.providerArgs['document'] != null) {
-      return concatFromString(query!.providerArgs['document'], modelDictionary);
+      return concatFromString<_Model>(query!.providerArgs['document'], modelDictionary);
     }
 
     final adapter = modelDictionary.adapterFor[_Model]!;
     if (action == QueryAction.delete) {
-      return concat(adapter.defaultDeleteOperation, modelDictionary);
+      return concat<_Model>(adapter.defaultDeleteOperation, modelDictionary);
     }
 
     if (action == QueryAction.upsert) {
-      return concat(adapter.defaultUpsertOperation, modelDictionary);
+      return concat<_Model>(adapter.defaultUpsertOperation, modelDictionary);
     }
 
     if (query == null) {
-      return concat(adapter.defaultGetUnfilteredOperation, modelDictionary);
+      return concat<_Model>(adapter.defaultGetUnfilteredOperation, modelDictionary);
     }
 
-    return concat(adapter.defaultGetFilteredOperation, modelDictionary);
+    return concat<_Model>(adapter.defaultGetFilteredOperation, modelDictionary);
   }
 }

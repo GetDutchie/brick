@@ -56,7 +56,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
     final resp = await link.request(request).first;
     if (resp.data == null) return [];
-    if (resp.data?.keys.first is Iterable) {
+    if (resp.data?.values.first is Iterable) {
       final results = resp.data?.values.first
           .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
           .toList()
@@ -75,13 +75,12 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @protected
   @visibleForTesting
   Map<String, dynamic> queryToVariables<_Model extends GraphqlModel>(Query? query) {
-    if (query?.where == null) {}
-    ;
+    if (query?.where == null) return {};
     final adapter = modelDictionary.adapterFor[_Model]!;
 
     return query!.where!.fold<Map<String, dynamic>>(<String, dynamic>{}, (allVariables, where) {
-      final definition = adapter.fieldsToRuntimeDefinition[where.evaluatedField]!;
-      if (allVariables[definition.documentNodeName] != null && !definition.association) {
+      final definition = adapter.fieldsToRuntimeDefinition[where.evaluatedField];
+      if (definition != null && !definition.association) {
         allVariables[definition.documentNodeName] = where.value;
       }
       return allVariables;
