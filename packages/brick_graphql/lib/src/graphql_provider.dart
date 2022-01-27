@@ -36,7 +36,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
     return Request(
       operation: Operation(document: defaultOperation.document),
-      variables: variables ?? query?.providerArgs['variables'] ?? queryToVariables<_Model>(query),
+      variables: query?.providerArgs['variables'] ?? variables ?? queryToVariables<_Model>(query),
     );
   }
 
@@ -76,8 +76,6 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
   /// Remove associations from variables and transform them from field names
   /// to document node names.
-  @protected
-  @visibleForTesting
   Map<String, dynamic> queryToVariables<_Model extends GraphqlModel>(Query? query) {
     if (query?.where == null) return {};
     final adapter = modelDictionary.adapterFor[_Model]!;
@@ -89,6 +87,24 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       }
       return allVariables;
     });
+  }
+
+  Stream<_Model> subscribe<_Model extends GraphqlModel>(
+      {Query? query, ModelRepository<GraphqlModel>? repository}) async* {
+    final adapter = modelDictionary.adapterFor[_Model]!;
+    final request = createRequest<_Model>(action: QueryAction.subscribe, query: query);
+    await for (final response in link.request(request)) {
+      if (response.data?.values.first is Iterable) {
+        for (final value in response.data!.values.first) {
+          final result = await adapter.fromGraphql(value, provider: this, repository: repository);
+          yield result as _Model;
+        }
+      } else if (response.data != null) {
+        final result =
+            await adapter.fromGraphql(response.data!, provider: this, repository: repository);
+        yield result as _Model;
+      }
+    }
   }
 
   @override

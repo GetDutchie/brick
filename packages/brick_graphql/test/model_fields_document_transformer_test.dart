@@ -172,6 +172,23 @@ void main() {
   getDemoModel(filter: $input) {'''));
         });
       });
+
+      group('QueryAction.subscribe', () {
+        test('without query', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.subscribe);
+          expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
+  getDemoModel {'''));
+        });
+
+        test('with query', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.subscribe, query: Query.where('name', 'Thomas'));
+          expect(lang.printNode(transformer.document),
+              startsWith(r'''subscription GetDemoModels($input: DemoModel!) {
+  getDemoModel(input: $input) {'''));
+        });
+      });
     });
   });
 }

@@ -45,41 +45,17 @@ void main() {
         expect(request.variables, variables);
       });
 
-      test('use passed variables before providerArgs', () {
+      test('use providerArgs before passed variables', () {
         final provider = generateProvider({});
         final variables = {'name': 'Thomas'};
+        final providerVariables = {'name': 'Guy'};
         final request = provider.createRequest<DemoModel>(
           action: QueryAction.upsert,
-          query: Query(providerArgs: {
-            'variables': {'name': 'Guy'}
-          }),
+          query: Query(providerArgs: {'variables': providerVariables}),
           variables: variables,
         );
-        expect(request.variables, variables);
+        expect(request.variables, providerVariables);
       });
-    });
-
-    group('#get', () {
-      test('simple', () async {
-        final provider = generateProvider({'full_name': 'Thomas'});
-
-        final m = await provider.get<DemoModel>();
-        final testable = m.first;
-        expect(testable.name, 'Thomas');
-      });
-    });
-
-    test('#upsert', () async {
-      final payload = {'full_name': 'Guy'};
-      final provider = generateProvider(payload);
-
-      final instance = DemoModel(name: payload['full_name']);
-      final resp = await provider.upsert<DemoModel>(instance);
-
-      expect(resp.data, {
-        'upsertPerson': [payload]
-      });
-      expect(resp.errors, isNull);
     });
 
     group('#delete', () {
@@ -114,6 +90,14 @@ void main() {
       });
     });
 
+    test('#get', () async {
+      final provider = generateProvider({'full_name': 'Thomas'});
+
+      final m = await provider.get<DemoModel>();
+      final testable = m.first;
+      expect(testable.name, 'Thomas');
+    });
+
     group('#queryToVariables', () {
       test('simple', () {
         final provider = generateProvider({});
@@ -141,6 +125,30 @@ void main() {
         ]);
         expect(provider.queryToVariables<DemoModel>(query), {'last_name': 1});
       });
+    });
+
+    test('#subscribe', () async {
+      final payload = {'full_name': 'Guy'};
+      final provider = generateProvider(payload);
+
+      final resp = provider.subscribe<DemoModel>();
+
+      await for (final instance in resp) {
+        expect(instance.name, 'Guy');
+      }
+    });
+
+    test('#upsert', () async {
+      final payload = {'full_name': 'Guy'};
+      final provider = generateProvider(payload);
+
+      final instance = DemoModel(name: payload['full_name']);
+      final resp = await provider.upsert<DemoModel>(instance);
+
+      expect(resp.data, {
+        'upsertPerson': [payload]
+      });
+      expect(resp.errors, isNull);
     });
   });
 }

@@ -137,4 +137,7 @@ enum QueryAction {
 
   /// Remove from provider
   delete,
+
+  /// Listen for streaming changes
+  subscribe,
 }

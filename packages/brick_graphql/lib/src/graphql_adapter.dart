@@ -15,6 +15,12 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   /// The query used to fetch a member.
   DocumentNode get defaultGetFilteredOperation;
 
+  /// The subscription used to fetch all members.
+  DocumentNode get defaultSubscriptionOperation;
+
+  /// The subscription used to fetch a member or specific members.
+  DocumentNode get defaultSubscriptionFilteredOperation;
+
   /// The mutation used to create or update a member.
   DocumentNode get defaultUpsertOperation;
 

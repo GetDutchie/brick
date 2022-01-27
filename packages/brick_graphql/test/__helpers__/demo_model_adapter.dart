@@ -1,7 +1,6 @@
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:gql/language.dart';
-import 'package:gql/src/ast/ast.dart';
 
 import 'demo_model.dart';
 import 'package:brick_core/core.dart' show Query;
@@ -55,6 +54,20 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   final defaultGetFilteredOperation = parseString(
     r'''query GetDemoModels($input: DemoModelFilter) {
       getDemoModel(filter: $input) {}
+    }''',
+  );
+
+  @override
+  final defaultSubscriptionOperation = parseString(
+    r'''subscription GetDemoModels() {
+      getDemoModel() {}
+    }''',
+  );
+
+  @override
+  final defaultSubscriptionFilteredOperation = parseString(
+    r'''subscription GetDemoModels($input: DemoModel) {
+      getDemoModel(input: $input) {}
     }''',
   );
 
