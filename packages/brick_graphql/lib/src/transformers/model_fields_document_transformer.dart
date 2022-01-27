@@ -105,7 +105,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
         selectionSet: entry.value.association && !ignoreAssociations
             ? SelectionSetNode(
                 selections: _generateNodes(
-                  modelDictionary.adapterFor[entry.value.runtimeType]!.fieldsToRuntimeDefinition,
+                  modelDictionary.adapterFor[entry.value.type]!.fieldsToRuntimeDefinition,
                 ),
               )
             : null,

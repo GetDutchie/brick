@@ -102,6 +102,12 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
           iterable: false,
           type: int,
         ),
+        'assoc': const RuntimeGraphqlDefinition(
+          association: true,
+          documentNodeName: 'assoc',
+          iterable: false,
+          type: DemoModelAssoc,
+        ),
         'someField': const RuntimeGraphqlDefinition(
           association: false,
           documentNodeName: 'some_field',

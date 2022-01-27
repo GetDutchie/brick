@@ -73,6 +73,34 @@ void main() {
           upsertPersonWithNodes,
         );
       });
+
+      test('association', () {
+        final transformer = ModelFieldsDocumentTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          operationFunctionName: 'upsertPerson',
+          operationNameNode: 'UpsertPerson',
+          operationType: OperationType.query,
+        );
+
+        expect(
+          lang.printNode(transformer.document),
+          r'''query UpsertPerson {
+  upsertPerson {
+    primaryKey
+    id
+    assoc {
+      primaryKey
+      name
+    }
+    someField
+    complexFieldName
+    lastName
+    name
+    simpleBool
+  }
+}''',
+        );
+      });
     });
 
     group('.concat', () {
