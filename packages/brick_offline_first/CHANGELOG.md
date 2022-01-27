@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Add `GraphqlOfflineRequestQueue` to support offline caching within the `GraphqlProvider`
+* Rename `RequestSqliteCacheManager` to `RestRequestSqliteCacheManager`
+* Rename `OfflineQueueHttpClient` to `RestOfflineQueueClient`
+* Rename `OfflineRequestQueue` to `RestOfflineRequestQueue`
+
 ## 1.1.0
 
 * Carry `providerArgs` from query when using `getBatched` (#200)

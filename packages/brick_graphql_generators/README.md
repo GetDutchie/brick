@@ -2,7 +2,7 @@
 
 # Brick GraphQL Build
 
-Code generator that provides (de)serializing functions for Brick adapters using GraphQLProvider. This package **does not** produce code. It can be imported into other Brick build domains.
+Code generator that provides (de)serializing functions for Brick adapters using GraphqlProvider. This package **does not** produce code. It can be imported into other Brick build domains.
 
 This package should not be imported into an end application as it does not generate code.
 

@@ -1,17 +1,18 @@
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/testing.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:brick_offline_first/src/offline_queue/offline_queue_http_client.dart';
-import '__helpers__.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_offline_queue_client.dart';
+
+import '../__helpers__.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  group('OfflineQueueHttpClient', () {
-    final requestManager = RequestSqliteCacheManager(
+  group('RestOfflineQueueClient', () {
+    final requestManager = RestRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
     );
@@ -31,7 +32,7 @@ void main() {
 
     test('#send forwards to inner client', () async {
       final inner = stubResult(response: 'hello from inner');
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
 
       final resp = await client.get(Uri.parse('http://0.0.0.0:3000'));
       expect(resp.body, 'hello from inner');
@@ -39,7 +40,7 @@ void main() {
 
     test('GET requests are not tracked', () async {
       final inner = stubResult(statusCode: 404);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       await client.get(Uri.parse('http://0.0.0.0:3000'));
 
       expect(await requestManager.unprocessedRequests(), isEmpty);
@@ -47,7 +48,7 @@ void main() {
 
     test('request is stored in SQLite', () async {
       final inner = stubResult(statusCode: 501);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'new record');
 
       expect(resp.statusCode, 501);
@@ -56,7 +57,7 @@ void main() {
 
     test('request deletes after a successful response', () async {
       final inner = stubResult();
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       expect(await requestManager.unprocessedRequests(), isEmpty);
@@ -65,7 +66,7 @@ void main() {
 
     test('request increments after a unsuccessful response', () async {
       final inner = stubResult(statusCode: 501);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
       var requests = await requestManager.unprocessedRequests();
 
@@ -83,7 +84,7 @@ void main() {
         throw StateError('server not found');
       });
 
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       expect(await requestManager.unprocessedRequests(), hasLength(1));
@@ -93,7 +94,7 @@ void main() {
     test('request is not deleted after sending to a misconfigured client', () async {
       final inner = stubResult(statusCode: 501);
 
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
       expect(await requestManager.unprocessedRequests(), hasLength(1));
@@ -103,7 +104,7 @@ void main() {
     test('request is not deleted after sending to an inaccessible endpoint', () async {
       const body = 'Tunnel http://0.0.0.0:3000 not found';
       final inner = stubResult(response: body, statusCode: 404);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
 
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'new record');
       expect(await requestManager.unprocessedRequests(), hasLength(1));
@@ -124,7 +125,7 @@ void main() {
         () async {
       const body = 'Too many requests';
       final inner = stubResult(response: body, statusCode: 429);
-      final client = OfflineQueueHttpClient(inner, requestManager, reattemptForStatusCodes: [429]);
+      final client = RestOfflineQueueClient(inner, requestManager, reattemptForStatusCodes: [429]);
 
       final resp = await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'new record');
       expect(await requestManager.unprocessedRequests(), hasLength(1));
@@ -144,9 +145,9 @@ void main() {
     test('.isATunnelNotFoundResponse', () async {
       const body = 'Tunnel http://0.0.0.0:3000 not found';
       final inner = stubResult(response: body, statusCode: 404);
-      final client = OfflineQueueHttpClient(inner, requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
       final resp = await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'new record');
-      expect(OfflineQueueHttpClient.isATunnelNotFoundResponse(resp), isTrue);
+      expect(RestOfflineQueueClient.isATunnelNotFoundResponse(resp), isTrue);
     });
   });
 }

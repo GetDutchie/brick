@@ -32,7 +32,7 @@ Future<Map<String, dynamic>> _$CustomSerdesToSqlite(CustomSerdes instance,
 
 @ConnectOfflineFirstWithGraphql()
 class CustomSerdes {
-  @GraphQL(fromGenerator: r"data['string'].split('').map((s) => '$s.1').join('')")
+  @Graphql(fromGenerator: r"data['string'].split('').map((s) => '$s.1').join('')")
   @Sqlite(toGenerator: r'instance.string.substring(0, 1)')
   final String? string;
 

@@ -4,14 +4,14 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_build/generators.dart';
 
-/// Find `@GraphQL` given a field
-class GraphqlAnnotationFinder extends AnnotationFinder<GraphQL> {
+/// Find `@Graphql` given a field
+class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
   final GraphqlSerializable? config;
 
   GraphqlAnnotationFinder([this.config]);
 
   /// Change serialization key based on the configuration.
-  /// `name` defined with a field annotation (`@GraphQL`) take precedence.
+  /// `name` defined with a field annotation (`@Graphql`) take precedence.
   String _renameField(String name) {
     final renameTo = config?.fieldRename ?? GraphqlSerializable.defaults.fieldRename;
     switch (renameTo) {
@@ -29,36 +29,36 @@ class GraphqlAnnotationFinder extends AnnotationFinder<GraphQL> {
   }
 
   @override
-  GraphQL from(element) {
+  Graphql from(element) {
     final obj = objectForField(element);
 
     if (obj == null) {
-      return GraphQL(
-        ignore: GraphQL.defaults.ignore,
-        ignoreFrom: GraphQL.defaults.ignoreFrom,
-        ignoreTo: GraphQL.defaults.ignoreTo,
+      return Graphql(
+        ignore: Graphql.defaults.ignore,
+        ignoreFrom: Graphql.defaults.ignoreFrom,
+        ignoreTo: Graphql.defaults.ignoreTo,
         name: _renameField(element.name),
-        nullable: GraphQL.defaults.nullable,
-        enumAsString: GraphQL.defaults.enumAsString,
+        nullable: Graphql.defaults.nullable,
+        enumAsString: Graphql.defaults.enumAsString,
       );
     }
 
-    return GraphQL(
+    return Graphql(
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
-      enumAsString: obj.getField('enumAsString')?.toBoolValue() ?? GraphQL.defaults.enumAsString,
+      enumAsString: obj.getField('enumAsString')?.toBoolValue() ?? Graphql.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
-      ignore: obj.getField('ignore')?.toBoolValue() ?? GraphQL.defaults.ignore,
-      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? GraphQL.defaults.ignoreFrom,
-      ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? GraphQL.defaults.ignoreTo,
+      ignore: obj.getField('ignore')?.toBoolValue() ?? Graphql.defaults.ignore,
+      ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? Graphql.defaults.ignoreFrom,
+      ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
-      nullable: obj.getField('nullable')?.toBoolValue() ?? GraphQL.defaults.nullable,
+      nullable: obj.getField('nullable')?.toBoolValue() ?? Graphql.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }
 }
 
-/// Converts all fields to [GraphQL]s for later consumption
-class GraphqlFields extends FieldsForClass<GraphQL> {
+/// Converts all fields to [Graphql]s for later consumption
+class GraphqlFields extends FieldsForClass<Graphql> {
   final GraphqlSerializable? config;
   @override
   final GraphqlAnnotationFinder finder;

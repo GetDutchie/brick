@@ -6,10 +6,28 @@ import 'package:brick_rest_generators/generators.dart' show JsonDeserialize;
 
 /// Generate a function to produce a [ClassElement] from GraphQL data
 class GraphqlDeserialize extends GraphqlSerdesGenerator
-    with JsonDeserialize<GraphqlModel, GraphQL> {
+    with JsonDeserialize<GraphqlModel, Graphql> {
+  /// Requires `import 'package:gql/language.dart' as lang` to be listed
+  /// within `requiredImports` on the `AggregateBuilder`
   @override
-  // ignore: overridden_fields
-  final providerName = 'GraphQL';
+  List<String> get instanceFieldsAndMethods {
+    final config = (fields as GraphqlFields).config;
+    final deleteHeader = config?.defaultDeleteOperation?.trim();
+    final getCollectionHeader = config?.defaultGetOperation?.trim();
+    final getMemberHeader = config?.defaultGetFilteredOperation?.trim();
+    final getSubscribeHeader = config?.defaultSubscriptionOperation?.trim();
+    final getSubscribeFilteredHeader = config?.defaultSubscriptionFilteredOperation?.trim();
+    final upsertHeader = config?.defaultUpsertOperation?.trim();
+
+    return [
+      "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''')",
+      "@override\nfinal defaultGetOperation = lang.parseString(r'''$getCollectionHeader''')",
+      "@override\nfinal defaultGetFilteredOperation = lang.parseString(r'''$getMemberHeader''')",
+      "@override\nfinal defaultSubscriptionOperation = lang.parseString(r'''$getSubscribeHeader''')",
+      "@override\nfinal defaultSubscriptionFilteredOperation = lang.parseString(r'''$getSubscribeFilteredHeader''')",
+      "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''')",
+    ];
+  }
 
   GraphqlDeserialize(
     ClassElement element,

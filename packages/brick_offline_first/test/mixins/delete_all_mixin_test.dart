@@ -1,8 +1,8 @@
 import 'package:brick_offline_first/mixins.dart';
+import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:brick_rest/rest.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_sqlite/memory_cache_provider.dart';
@@ -29,7 +29,7 @@ class DeleteAllRepository extends OfflineFirstWithRestRepository
           ),
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineQueueHttpClientRequestSqliteCacheManager: RequestSqliteCacheManager(
+          offlineQueueHttpClientRequestSqliteCacheManager: RestRequestSqliteCacheManager(
             inMemoryDatabasePath,
             databaseFactory: databaseFactoryFfi,
           ),

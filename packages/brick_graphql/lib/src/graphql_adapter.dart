@@ -1,21 +1,40 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
+import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:gql/ast.dart';
 
 /// Constructors that convert app models to and from REST
-abstract class GraphQLAdapter<_Model extends Model> implements Adapter<_Model> {
-  DocumentNode get mututationEndpoint;
+abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
+  /// The mutation used to remove data.
+  DocumentNode get defaultDeleteOperation;
 
-  Future<_Model> fromGraphQL(
+  /// The query used to fetch multiple members.
+  DocumentNode get defaultGetOperation;
+
+  /// The query used to fetch a member.
+  DocumentNode get defaultGetFilteredOperation;
+
+  /// The subscription used to fetch all members.
+  DocumentNode get defaultSubscriptionOperation;
+
+  /// The subscription used to fetch a member or specific members.
+  DocumentNode get defaultSubscriptionFilteredOperation;
+
+  /// The mutation used to create or update a member.
+  DocumentNode get defaultUpsertOperation;
+
+  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
+
+  Future<_Model> fromGraphql(
     Map<String, dynamic> input, {
-    required GraphQLProvider provider,
+    required GraphqlProvider provider,
     ModelRepository<GraphqlModel>? repository,
   });
 
-  Future<Map<String, dynamic>> toGraphQL(
+  Future<Map<String, dynamic>> toGraphql(
     _Model input, {
-    required GraphQLProvider provider,
+    required GraphqlProvider provider,
     ModelRepository<GraphqlModel>? repository,
   });
 

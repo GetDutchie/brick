@@ -4,18 +4,18 @@ import 'dart:io';
 import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
-Future<GraphQLUnserializableFieldWithGenerator>
-    _$GraphQLUnserializableFieldWithGeneratorFromGraphQL(
+Future<GraphqlUnserializableFieldWithGenerator>
+    _$GraphqlUnserializableFieldWithGeneratorFromGraphql(
         Map<String, dynamic> data,
-        {required GraphQLProvider provider,
-        GraphQLFirstRepository? repository}) async {
-  return GraphQLUnserializableFieldWithGenerator(withFrom: data['withFrom']);
+        {required GraphqlProvider provider,
+        GraphqlFirstRepository? repository}) async {
+  return GraphqlUnserializableFieldWithGenerator(withFrom: data['withFrom']);
 }
 
-Future<Map<String, dynamic>> _$GraphQLUnserializableFieldWithGeneratorToGraphQL(
-    GraphQLUnserializableFieldWithGenerator instance,
-    {required GraphQLProvider provider,
-    GraphQLFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$GraphqlUnserializableFieldWithGeneratorToGraphql(
+    GraphqlUnserializableFieldWithGenerator instance,
+    {required GraphqlProvider provider,
+    GraphqlFirstRepository? repository}) async {
   return {'withTo': instance.withTo};
 }
 ''';
@@ -26,14 +26,14 @@ Future<Map<String, dynamic>> _$GraphQLUnserializableFieldWithGeneratorToGraphQL(
 /// and [GraphqlSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
 @GraphqlSerializable()
-class GraphQLUnserializableFieldWithGenerator extends GraphqlModel {
-  @GraphQL(fromGenerator: '%DATA_PROPERTY%')
+class GraphqlUnserializableFieldWithGenerator extends GraphqlModel {
+  @Graphql(fromGenerator: '%DATA_PROPERTY%')
   final File withFrom;
 
-  @GraphQL(toGenerator: '%INSTANCE_PROPERTY%')
+  @Graphql(toGenerator: '%INSTANCE_PROPERTY%')
   final Uint8List withTo;
 
-  GraphQLUnserializableFieldWithGenerator(
+  GraphqlUnserializableFieldWithGenerator(
     this.withFrom,
     this.withTo,
   );
