@@ -112,10 +112,11 @@ void main() {
       test('new request is locked and skipped', () async {
         final request = Request(
             operation: Operation(
-                document: parseString(
-                  '''mutation {}''',
-                ),
-                operationName: 'lockedUp',));
+          document: parseString(
+            '''mutation {}''',
+          ),
+          operationName: 'lockedUp',
+        ));
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -131,10 +132,11 @@ void main() {
       test('unlocked request is locked', () async {
         final request = Request(
             operation: Operation(
-                document: parseString(
-                  '''mutation {}''',
-                ),
-                operationName: 'unlocked',));
+          document: parseString(
+            '''mutation {}''',
+          ),
+          operationName: 'unlocked',
+        ));
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -157,10 +159,11 @@ void main() {
       test('locked request older than 2 minutes is unlocked', () async {
         final request = Request(
             operation: Operation(
-                document: parseString(
-                  '''mutation {}''',
-                ),
-                operationName: 'unlocked',));
+          document: parseString(
+            '''mutation {}''',
+          ),
+          operationName: 'unlocked',
+        ));
         final db = await requestManager.getDb();
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
