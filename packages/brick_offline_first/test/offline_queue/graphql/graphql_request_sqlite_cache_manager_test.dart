@@ -115,7 +115,7 @@ void main() {
                 document: parseString(
                   '''mutation {}''',
                 ),
-                operationName: 'lockedUp'));
+                operationName: 'lockedUp',));
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -134,7 +134,7 @@ void main() {
                 document: parseString(
                   '''mutation {}''',
                 ),
-                operationName: 'unlocked'));
+                operationName: 'unlocked',));
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -160,7 +160,7 @@ void main() {
                 document: parseString(
                   '''mutation {}''',
                 ),
-                operationName: 'unlocked'));
+                operationName: 'unlocked',));
         final db = await requestManager.getDb();
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
