@@ -56,7 +56,7 @@ class GraphqlOfflineQueueLink extends Link {
   }
 
   /// Parse a request and determines what [OperationType] it is
-  /// If the statement evaluates to true it is a query or subscription
+  /// If the statement evaluates to true it is a mutation
   static bool isMutation(Request request) {
     final node = request.operation.document.definitions.first;
     return node is OperationDefinitionNode && node.type == OperationType.mutation;
