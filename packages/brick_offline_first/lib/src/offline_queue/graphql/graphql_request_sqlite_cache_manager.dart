@@ -73,7 +73,7 @@ const GRAPHQL_JOBS_OPERATION_NAME_COLUMN = 'name';
 const GRAPHQL_JOBS_PRIMARY_KEY_COLUMN = 'id';
 
 /// json-encoded String
-const GRAPHQL_JOBS_VARIABLES_COLUMN = 'varibles';
+const GRAPHQL_JOBS_VARIABLES_COLUMN = 'variables';
 
 // String
 const GRAPHQL_JOBS_TABLE_NAME = 'GraphqlJobs';
