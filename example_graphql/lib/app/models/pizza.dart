@@ -15,7 +15,7 @@ class Pizza extends OfflineFirstWithGraphqlModel {
   @Sqlite(unique: true)
   final int? id;
 
-  /// Read more about `@Rest`: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest#fields
+  /// Read more about `@Graphql`: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql#fields
   @Rest(enumAsString: true)
   final List<Topping>? toppings;
 
