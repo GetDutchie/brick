@@ -10,9 +10,30 @@ MockClient stubResult({String response = 'response', int? statusCode}) {
   });
 }
 
-Stream<Response> stubGraphqResult(Map<String, dynamic> response, errors) {
+Link stubGraphqlLink(Map<String, dynamic> response, {List<String>? errors}) {
+  final link = MockLink();
+
+  when(
+    link.request(any),
+  ).thenAnswer(
+    (_) => Stream.fromIterable([
+      Response(
+        data: response,
+        errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
+        context: const Context(),
+      ),
+    ]),
+  );
+
+  return link;
+}
+
+Stream<Response> stubGraphqResult(Map<String, dynamic> response, List<String>? errors) {
   return Stream.fromIterable([
-    Response(data: response, errors: errors),
+    Response(
+      data: response,
+      errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
+    ),
   ]);
 }
 

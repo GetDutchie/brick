@@ -33,11 +33,8 @@ void main() {
       databaseFactory: databaseFactoryFfi,
     );
 
-    MockLink? mockLink;
-
     setUpAll(() async {
       await requestManager.migrate();
-      mockLink = MockLink();
     });
 
     tearDown(() async {
@@ -49,21 +46,24 @@ void main() {
       await Future.wait(requestsToDelete);
     });
 
-    test('#verify link request made', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+    test('verify link request made', () async {
+      final mockLink = stubGraphqlLink({});
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       await client.request(request).first;
 
       verify(
-        mockLink!.request(request),
+        mockLink.request(request),
       ).called(1);
     });
 
     test('#send forwards to inner client', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = MockLink();
+
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       when(
-        mockLink!.request(request),
+        mockLink.request(request),
       ).thenAnswer(
         (_) => Stream.fromIterable([response]),
       );
@@ -72,7 +72,8 @@ void main() {
     });
 
     test('Query / Subscriptions are not tracked', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = stubGraphqlLink({});
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       await client
           .request(
@@ -91,7 +92,8 @@ void main() {
     });
 
     test('request is stored in SQLite', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = stubGraphqlLink({}, errors: ['Unavailable']);
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       await client
           .request(
@@ -129,10 +131,12 @@ void main() {
     });
 
     test('request deletes after a successful response', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = MockLink();
+
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       when(
-        mockLink!.request(request),
+        mockLink.request(request),
       ).thenAnswer(
         (_) => Stream.fromIterable([response]),
       );
@@ -149,7 +153,9 @@ void main() {
     });
 
     test('request increments after a unsuccessful response', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = stubGraphqlLink({}, errors: ['Unsuccessful']);
+
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
       final mutationRequest = Request(
         operation: Operation(
           document: parseString('''mutation {}'''),
@@ -171,7 +177,8 @@ void main() {
     });
 
     test('request creates and does not delete after an unsuccessful response', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final mockLink = stubGraphqlLink({}, errors: ['Unknown error']);
+      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
       final mutationRequest = Request(
         operation: Operation(
           document: parseString('''mutation {}'''),
@@ -179,16 +186,6 @@ void main() {
         ),
       );
 
-      when(
-        mockLink!.request(request),
-      ).thenAnswer(
-        (_) => Stream.fromIterable([
-          const Response(
-            data: null,
-            errors: [GraphQLError(message: 'Unknown error')],
-          )
-        ]),
-      );
       await client.request(mutationRequest).first;
 
       client.request(mutationRequest);
@@ -197,7 +194,9 @@ void main() {
     });
 
     test('request is not deleted after sending to a misconfigured client', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final link = stubGraphqlLink({}, errors: ['Misconfigured']);
+
+      final client = GraphqlOfflineQueueLink(link, requestManager);
       const document = '''mutation {
             hello{
               hi
