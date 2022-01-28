@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var migrated = false;
   @override
   void initState() {
-    // be sure to run `dart server.dart` before using this example
+    // be sure to run `node server.js` before using this example
     Repository.configure('http://localhost:4000');
     // Note that subsequent boots of the app will use cached data
     // To clear this, wipe data on android or tap-press on iOS and delete the app
