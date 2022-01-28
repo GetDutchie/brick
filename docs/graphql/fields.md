@@ -21,7 +21,7 @@ enum Hat { baseball, bowler, birthday }
 
 ...
 
-@Rest(enumAsString: true)
+@Graphql(enumAsString: true)
 final List<Hat> hats;
 ```
 
