@@ -16,7 +16,7 @@ class Pizza extends OfflineFirstWithGraphqlModel {
   final int? id;
 
   /// Read more about `@Graphql`: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql#fields
-  @Rest(enumAsString: true)
+  @Graphql(enumAsString: true)
   final List<Topping>? toppings;
 
   final bool? frozen;
