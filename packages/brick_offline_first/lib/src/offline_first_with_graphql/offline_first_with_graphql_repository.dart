@@ -63,9 +63,6 @@ abstract class OfflineFirstWithGraphqlRepository
       {Query? query}) async {
     try {
       return await super.delete<_Model>(instance, query: query);
-    } on LinkException catch (e) {
-      logger.warning('#delete link failure: $e');
-      throw OfflineFirstException(e);
     } on GraphQLError catch (e) {
       logger.warning('#delete graphql failure: $e');
 
@@ -89,9 +86,6 @@ abstract class OfflineFirstWithGraphqlRepository
         requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
-    } on LinkException catch (e) {
-      logger.warning('#get link failure: $e');
-      throw OfflineFirstException(e);
     } on GraphQLError catch (e) {
       logger.warning('#get graphql failure: $e');
 
@@ -117,17 +111,11 @@ abstract class OfflineFirstWithGraphqlRepository
     await offlineRequestQueue.link.requestManager.migrate();
   }
 
-  /// [throwOnReattemptStatusCodes] - when `true`, the repository will throw an
-  /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
-  /// Defaults `false`.
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
       {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       return await super.upsert<_Model>(instance, query: query);
-    } on LinkException catch (e) {
-      logger.warning('#upsert link failure: $e');
-      throw OfflineFirstException(e);
     } on GraphQLError catch (e) {
       logger.warning('#upsert graphql failure: $e');
 
@@ -143,8 +131,6 @@ abstract class OfflineFirstWithGraphqlRepository
   }) async {
     try {
       return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
-    } on LinkException catch (e) {
-      logger.warning('#hydrate link failure: $e');
     } on GraphQLError catch (e) {
       logger.warning('#hydrate graphql failure: $e');
     }

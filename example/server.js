@@ -2,8 +2,8 @@ const { ApolloServer } = require("apollo-server");
 
 const typeDefs = gql`
   type Customer {
-    id: Int
     firstName: String
+    id: Int
     lastName: String
     pizzas: [Pizza]
   }

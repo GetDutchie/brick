@@ -21,6 +21,7 @@ const upsertPersonWithNodes = r'''mutation UpsertPerson($input: UpsertPersonInpu
   upsertPerson(filter: $input) {
     primaryKey
     id
+    assoc
     someField
     complexFieldName
     lastName
@@ -33,6 +34,7 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
   upsertPerson {
     primaryKey
     id
+    assoc
     someField
     complexFieldName
     lastName
