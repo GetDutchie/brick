@@ -4,8 +4,6 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:meta/meta.dart';
 import 'package:gql_exec/gql_exec.dart';
-// ignore: implementation_imports
-import 'package:gql_link/src/exceptions.dart';
 
 import 'package:brick_graphql/graphql.dart' show GraphqlProvider;
 import 'package:brick_sqlite_abstract/db.dart' show Migration;
