@@ -1,4 +1,4 @@
-# Testing
+# Testing (OfflineFirstWithRest)
 
 Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For convenience, file data can be used to stub JSON responses from an API:
 

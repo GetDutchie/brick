@@ -1,13 +1,23 @@
+import 'dart:io';
+
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
-import 'package:gql_link/gql_link.dart';
 import 'package:gql_exec/gql_exec.dart';
+import 'package:gql_link/gql_link.dart';
+import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';
 
-/// Stores all requests in a SQLite database
+/// Stores all mutation requests in a SQLite database
 class GraphqlOfflineQueueLink extends Link {
   /// A DocumentNode GraphQL execution interface
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
+  ///
+  /// Instead of the proscribed [Link] series with the links calling `#forward`
+  /// [_inner] is composed. Storing the request must occur before an HTTPLink
+  /// and validating the request occurred with a SocketException must occur
+  /// after the request. Therefore, `forward` can't be called because it's
+  /// needed on both ends of the request. HTTPLink also doesn't invoke `#forward`
+  /// and can only be used last in a `Link.from([])` invocation.
   final Link _inner;
 
   final Logger _logger;
@@ -22,35 +32,46 @@ class GraphqlOfflineQueueLink extends Link {
     final cacheItem = GraphqlRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
-    final db = await requestManager.getDb();
-    // Log immediately before we make the request
-    await cacheItem.insertOrUpdate(db, logger: _logger);
+    // Ignore "query" and "subscription" request
+    if (isMutation(cacheItem.request)) {
+      final db = await requestManager.getDb();
+      // Log immediately before we make the request
+      await cacheItem.insertOrUpdate(db, logger: _logger);
+    }
 
-    /// When the request is null a generic Graphql error needs to be generated
-    final _genericErrorResponse = Stream.fromIterable([
-      const Response(errors: [GraphQLError(message: 'Unknown error')], data: null)
-    ]);
+    Response response;
 
     try {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
-      final requestAsStream = _inner.request(request);
-      final response = await requestAsStream.first;
+      response = await _inner.request(request).first;
 
-      if (response.errors!.isEmpty) {
+      if (response.errors?.isEmpty ?? true) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       }
+    } on ServerException catch (e) {
+      if (e.originalException is SocketException) {
+        _logger.warning('#send: $e');
 
-      yield* requestAsStream;
-    } catch (e) {
-      _logger.warning('#send: $e');
+        /// When the request is null a generic Graphql error needs to be generated
+        response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
+      } else {
+        rethrow;
+      }
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
     }
 
-    yield* _genericErrorResponse;
+    yield response;
+  }
+
+  /// Parse a request and determines what [OperationType] it is
+  /// If the statement evaluates to true it is a mutation
+  static bool isMutation(Request request) {
+    final node = request.operation.document.definitions.first;
+    return node is OperationDefinitionNode && node.type == OperationType.mutation;
   }
 }

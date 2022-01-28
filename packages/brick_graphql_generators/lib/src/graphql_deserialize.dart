@@ -12,20 +12,26 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
   @override
   List<String> get instanceFieldsAndMethods {
     final config = (fields as GraphqlFields).config;
-    final deleteHeader = config?.defaultDeleteOperation?.trim();
-    final getCollectionHeader = config?.defaultGetOperation?.trim();
-    final getMemberHeader = config?.defaultGetFilteredOperation?.trim();
-    final getSubscribeHeader = config?.defaultSubscriptionOperation?.trim();
-    final getSubscribeFilteredHeader = config?.defaultSubscriptionFilteredOperation?.trim();
-    final upsertHeader = config?.defaultUpsertOperation?.trim();
+    final deleteHeader = config?.defaultDeleteOperation;
+    final getCollectionHeader = config?.defaultQueryOperation;
+    final getMemberHeader = config?.defaultQueryFilteredOperation;
+    final getSubscribeHeader = config?.defaultSubscriptionOperation;
+    final getSubscribeFilteredHeader = config?.defaultSubscriptionFilteredOperation;
+    final upsertHeader = config?.defaultUpsertOperation;
 
     return [
-      "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''')",
-      "@override\nfinal defaultGetOperation = lang.parseString(r'''$getCollectionHeader''')",
-      "@override\nfinal defaultGetFilteredOperation = lang.parseString(r'''$getMemberHeader''')",
-      "@override\nfinal defaultSubscriptionOperation = lang.parseString(r'''$getSubscribeHeader''')",
-      "@override\nfinal defaultSubscriptionFilteredOperation = lang.parseString(r'''$getSubscribeFilteredHeader''')",
-      "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''')",
+      if (deleteHeader != null)
+        "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''');",
+      if (getCollectionHeader != null)
+        "@override\nfinal defaultQueryOperation = lang.parseString(r'''$getCollectionHeader''');",
+      if (getMemberHeader != null)
+        "@override\nfinal defaultQueryFilteredOperation = lang.parseString(r'''$getMemberHeader''');",
+      if (getSubscribeHeader != null)
+        "@override\nfinal defaultSubscriptionOperation = lang.parseString(r'''$getSubscribeHeader''');",
+      if (getSubscribeFilteredHeader != null)
+        "@override\nfinal defaultSubscriptionFilteredOperation = lang.parseString(r'''$getSubscribeFilteredHeader''');",
+      if (upsertHeader != null)
+        "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''');",
     ];
   }
 

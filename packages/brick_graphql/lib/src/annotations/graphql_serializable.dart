@@ -37,7 +37,7 @@ class GraphqlSerializable {
   ///   getPerson() {}
   /// }
   /// ```
-  final String? defaultGetOperation;
+  final String? defaultQueryOperation;
 
   /// The query used to fetch a member or specific members.
   /// Only the header of the operation is required. For example
@@ -46,7 +46,7 @@ class GraphqlSerializable {
   ///   getPerson(input: $input) {}
   /// }
   /// ```
-  final String? defaultGetFilteredOperation;
+  final String? defaultQueryFilteredOperation;
 
   /// The subscription used to listen to all models
   /// Only the header of the operation is required. For example
@@ -84,8 +84,8 @@ class GraphqlSerializable {
   /// Creates a new [GraphqlSerializable] instance.
   const GraphqlSerializable({
     this.defaultDeleteOperation,
-    this.defaultGetOperation,
-    this.defaultGetFilteredOperation,
+    this.defaultQueryOperation,
+    this.defaultQueryFilteredOperation,
     this.defaultSubscriptionOperation,
     this.defaultSubscriptionFilteredOperation,
     this.defaultUpsertOperation,

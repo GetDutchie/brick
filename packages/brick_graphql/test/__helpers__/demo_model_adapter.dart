@@ -44,14 +44,14 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   );
 
   @override
-  final defaultGetOperation = parseString(
+  final defaultQueryOperation = parseString(
     r'''query GetDemoModels() {
       getDemoModel() {}
     }''',
   );
 
   @override
-  final defaultGetFilteredOperation = parseString(
+  final defaultQueryFilteredOperation = parseString(
     r'''query GetDemoModels($input: DemoModelFilter) {
       getDemoModel(filter: $input) {}
     }''',
@@ -101,6 +101,12 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
           documentNodeName: 'id',
           iterable: false,
           type: int,
+        ),
+        'assoc': const RuntimeGraphqlDefinition(
+          association: true,
+          documentNodeName: 'assoc',
+          iterable: false,
+          type: DemoModelAssoc,
         ),
         'someField': const RuntimeGraphqlDefinition(
           association: false,

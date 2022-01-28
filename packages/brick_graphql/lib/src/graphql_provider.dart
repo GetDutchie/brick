@@ -11,7 +11,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   /// The translation between [Adapter]s and [Model]s
   final GraphqlModelDictionary modelDictionary;
 
-  final Link link;
+  Link link;
 
   @protected
   final Logger logger;

@@ -8,11 +8,25 @@ Offline First combines SQLite and a remote provider into one unified repository.
 
 ## Models
 
+### ConnectOfflineFirstWithRest
+
 `@ConnectOfflineFirstWithRest` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
 
 ```dart
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(),
+  sqliteConfig: SqliteSerializable(),
+)
+class MyModel extends OfflineFirstModel {}
+```
+
+### ConnectOfflineFirstWithGraphql
+
+`@ConnectOfflineFirstWithGraphql` decorates the model that can be serialized by GraphQL and SQLite. Offline First does not have configuration at the class level and only extends configuration held by its providers:
+
+```dart
+@ConnectOfflineFirstWithGraphql(
+  graphqlConfig: GraphqlSerializable(),
   sqliteConfig: SqliteSerializable(),
 )
 class MyModel extends OfflineFirstModel {}
@@ -99,6 +113,33 @@ import 'package:brick_offline_first/mixins.dart';
 class MyRepository extends OfflineFirstRepository with DeleteAllMixin {}
 ```
 
+## RequestSqliteCacheManager
+
+All requests to the remote provider in the repository first pass through a queue that tracks unsuccessful requests in a SQLite database separate from the one that maintains application models. Should the application ever lose connectivity, the queue will resend all `upsert`ed requests that occurred while the app was offline. All requests are forwarded to an inner client.
+
+The queue is automatically added to all `OfflineFirstWithGraphqlRepository`s and `OfflineFirstWithRestRepository`s. This means that a queue **should not be used as the `RestProvider`'s client or `GraphqlProvider`'s link**, however, the queue will use the remote provider's client as its inner client:
+
+```dart
+final client = RestOfflineQueueClient(
+  restProvider.client, // or http.Client()
+  "OfflineQueue",
+);
+final link = GraphqlOfflineQueueLink(
+  graphqlProvider.link, // or HttpLink()
+  "OfflineQueue",
+);
+```
+
+![OfflineQueue logic flow](https://user-images.githubusercontent.com/865897/72175823-f44a3580-3391-11ea-8961-bbeccd74fe7b.jpg)
+
+:warning: The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT` for REST. In GraphQL, `query` and `subscription` operations are ignored. Fetching requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
+
+# Offline First With GraphQL Repository
+
+`OfflineFirstWithGraphqlRepository` streamlines the GraphQL integration with an `OfflineFirstRepository`. A serial queue is included to track GraphQL mutations in a separate SQLite database, only removing requests when a response is returned from the host (i.e. the device has lost internet connectivity).
+
+The `OfflineFirstWithGraphql` domain uses all the same configurations and annotations as `OfflineFirst`.
+
 # Offline First With Rest Repository
 
 `OfflineFirstWithRestRepository` streamlines the REST integration with an `OfflineFirstRepository`. A serial queue is included to track REST requests in a separate SQLite database, only removing requests when a response is returned from the host (i.e. the device has lost internet connectivity). See `OfflineFirstWithRest#reattemptForStatusCodes`.
@@ -128,23 +169,6 @@ void main() {
 ```
 
 After the model is generated, double check for `List<dynamic>` and `null` types. While the converter is smart, it's not smarter than you.
-
-## OfflineQueueHttpClient
-
-All requests to the REST provider in the repository first pass through a queue that tracks unsuccessful requests in a SQLite database separate from the one that maintains application models. Should the application ever lose connectivity, the queue will resend all `upsert`ed requests that occurred while the app was offline. All requests are forwarded to an inner client.
-
-The queue is automatically added to all `OfflineFirstWithRestRepository`s. This means that a queue **should not be used as the `RestProvider`'s client**, however, the queue should use the RestProvider's client as its inner client:
-
-```dart
-final client = OfflineQueueHttpClient(
-  restProvider.client, // or http.Client()
-  "OfflineQueue",
-);
-```
-
-![OfflineQueue logic flow](https://user-images.githubusercontent.com/865897/72175823-f44a3580-3391-11ea-8961-bbeccd74fe7b.jpg)
-
-:warning: The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT`. `get` requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
 
 ## Testing
 
@@ -249,5 +273,5 @@ Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a 
 
 ## Unsupported Field Types
 
-* Any unsupported field types from `RestProvider` and `SqliteProvider`
+* Any unsupported field types from `RestProvider`, `GraphqlProvider, or `SqliteProvider`
 * Future iterables of future models (i.e. `Future<List<Future<Model>>>`.

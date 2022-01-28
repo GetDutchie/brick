@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
-import 'package:gql/language.dart';
+import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
@@ -32,7 +32,7 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
 
   @override
   Request sqliteToRequest(Map<String, dynamic> data) {
-    final document = parseString(data[GRAPHQL_JOBS_DOCUMENT_COLUMN]);
+    final document = lang.parseString(data[GRAPHQL_JOBS_DOCUMENT_COLUMN]);
     final operationName = data[GRAPHQL_JOBS_OPERATION_NAME_COLUMN];
     final variables = jsonDecode(data[GRAPHQL_JOBS_VARIABLES_COLUMN]);
 
@@ -48,8 +48,8 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
   Map<String, dynamic> toSqlite() {
     return {
       GRAPHQL_JOBS_ATTEMPTS_COLUMN: 1,
-      GRAPHQL_JOBS_DOCUMENT_COLUMN: request.operation.document.toString(),
-      GRAPHQL_JOBS_VARIABLES_COLUMN: request.variables.toString(),
+      GRAPHQL_JOBS_DOCUMENT_COLUMN: lang.printNode(request.operation.document),
+      GRAPHQL_JOBS_VARIABLES_COLUMN: jsonEncode(request.variables),
       GRAPHQL_JOBS_CREATED_AT_COLUMN: DateTime.now().millisecondsSinceEpoch,
       GRAPHQL_JOBS_OPERATION_NAME_COLUMN: request.operation.operationName.toString(),
       GRAPHQL_JOBS_UPDATED_AT: DateTime.now().millisecondsSinceEpoch,

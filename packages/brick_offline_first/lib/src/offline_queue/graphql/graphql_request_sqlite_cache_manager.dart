@@ -1,8 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
-import 'package:gql/language.dart';
+import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -45,7 +46,7 @@ class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request
   /// Recreate a request from SQLite data
   @override
   Request sqliteToRequest(Map<String, dynamic> data) {
-    final document = parseString(data[GRAPHQL_JOBS_DOCUMENT_COLUMN]);
+    final document = lang.parseString(data[GRAPHQL_JOBS_DOCUMENT_COLUMN]);
     final operationName = data[GRAPHQL_JOBS_OPERATION_NAME_COLUMN];
     final variables = jsonDecode(data[GRAPHQL_JOBS_VARIABLES_COLUMN]);
 
@@ -73,7 +74,7 @@ const GRAPHQL_JOBS_OPERATION_NAME_COLUMN = 'name';
 const GRAPHQL_JOBS_PRIMARY_KEY_COLUMN = 'id';
 
 /// json-encoded String
-const GRAPHQL_JOBS_VARIABLES_COLUMN = 'varibles';
+const GRAPHQL_JOBS_VARIABLES_COLUMN = 'variables';
 
 // String
 const GRAPHQL_JOBS_TABLE_NAME = 'GraphqlJobs';
