@@ -169,12 +169,12 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       }
     }
 
-    if (query == null && adapter.defaultGetOperation != null) {
-      return concat<_Model>(adapter.defaultGetOperation!, modelDictionary);
+    if (query == null && adapter.defaultQueryOperation != null) {
+      return concat<_Model>(adapter.defaultQueryOperation!, modelDictionary);
     }
 
-    if (adapter.defaultGetFilteredOperation != null) {
-      return concat<_Model>(adapter.defaultGetFilteredOperation!, modelDictionary);
+    if (adapter.defaultQueryFilteredOperation != null) {
+      return concat<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
     }
 
     throw ArgumentError('No GraphQL document specified or inferrred');

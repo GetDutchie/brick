@@ -44,14 +44,14 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   );
 
   @override
-  final defaultGetOperation = parseString(
+  final defaultQueryOperation = parseString(
     r'''query GetDemoModels() {
       getDemoModel() {}
     }''',
   );
 
   @override
-  final defaultGetFilteredOperation = parseString(
+  final defaultQueryFilteredOperation = parseString(
     r'''query GetDemoModels($input: DemoModelFilter) {
       getDemoModel(filter: $input) {}
     }''',
