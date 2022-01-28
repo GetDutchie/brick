@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  gql_http_link: any
 
 dev_dependencies:
   brick_offline_first_with_rest_build:
