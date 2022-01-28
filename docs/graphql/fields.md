@@ -31,7 +31,7 @@ GraphQL keys can be renamed per field. This will override the default set by `Gr
 
 ```dart
 @Graphql(
-  name: "full_name"  // "full_name" is used in from and to requests to GraphQL instead of "last_name"
+  name: "full_name"  // "full_name" is used in ***fromGraphql*** and ***toGraphql*** requests instead of "last_name"
 )
 final String lastName;
 ```
