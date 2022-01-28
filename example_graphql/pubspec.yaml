@@ -12,10 +12,10 @@ environment:
 dependencies:
   brick_offline_first:
     path: ../packages/brick_offline_first
-  flutter:
-    sdk: flutter
   cupertino_icons: ^1.0.2
   gql_http_link: any
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   brick_offline_first_with_rest_build:
