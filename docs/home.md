@@ -43,6 +43,7 @@
 
 * Video: [Brick Architecture](https://www.youtube.com/watch?v=2noLcro9iIw). An explanation of Brick parlance with a supplemental analogy.
 * Video: [Brick Basics](https://www.youtube.com/watch?v=jm5i7e_BQq0). An overview of essential Brick mechanics.
+* Example: [Simple Associations using the OfflineFirstWithGraphql domain](https://github.com/GetDutchie/brick/blob/main/example_graphql)
 * Example: [Simple Associations using the OfflineFirstWithRest domain](https://github.com/GetDutchie/brick/blob/main/example)
 * Tutorial: [Setting up a simple app with Brick](http://www.flutterbyexample.com/#/posts/2_adding_a_repository)
 

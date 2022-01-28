@@ -8,9 +8,9 @@ An intuitive way to work with persistent data in Dart.
 
 * Out-of-the-box [offline access](packages/brick_offline_first) to data
 * [Handle and hide](packages/brick_build) complex serialization/deserialization logic
-* Single [access point](https://greenbits.github.io/brick/#/data/repositories) and opinionated DSL
+* Single [access point](https://engineering.dutchie.com/brick/#/data/repositories) and opinionated DSL
 * Automatic, [intelligently-generated migrations](packages/brick_sqlite)
-* Legible [querying interface](https://greenbits.github.io/brick/#/data/query)
+* Legible [querying interface](https://engineering.dutchie.com/brick/#/data/query)
 
 ## What is Brick?
 
@@ -23,6 +23,7 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     dependencies:
       brick_offline_first: any
     dev_dependencies:
+      # Or brick_offline_first_with_graphql_build: any
       brick_offline_first_with_rest_build: any
       build_runner: any
     ```
@@ -30,9 +31,9 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     ```bash
     mkdir -p lib/app/adapters lib/app/db lib/app/models;
     ```
-1. Add [models](https://greenbits.github.io/brick/#/data/models) that contain your app logic. Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
-1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](https://greenbits.github.io/brick/#/sqlite?id=intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
-1. Extend [an existing repository](https://greenbits.github.io/brick/#/data/repositories) or create your own:
+1. Add [models](https://engineering.dutchie.com/brick/#/data/models) that contain your app logic. Models **must be** saved in `lib/app/models/<class_as_snake_name>.dart`.
+1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](https://engineering.dutchie.com/brick/#/sqlite?id=intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
+1. Extend [an existing repository](https://engineering.dutchie.com/brick/#/data/repositories) or create your own:
     ```dart
     // lib/app/repository.dart
     import 'package:brick_offline_first/offline_first_with_rest.dart';
