@@ -78,9 +78,9 @@ abstract class OfflineFirstWithGraphqlRepository
   }) async {
     try {
       return await super.get(
-        query: query,
         alwaysHydrate: alwaysHydrate,
         hydrateUnexisting: hydrateUnexisting,
+        query: query,
         requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
