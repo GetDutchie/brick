@@ -10,10 +10,10 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   DocumentNode? get defaultDeleteOperation => null;
 
   /// The query used to fetch multiple members.
-  DocumentNode? get defaultGetOperation => null;
+  DocumentNode? get defaultQueryOperation => null;
 
   /// The query used to fetch a member.
-  DocumentNode? get defaultGetFilteredOperation => null;
+  DocumentNode? get defaultQueryFilteredOperation => null;
 
   /// The subscription used to fetch all members.
   DocumentNode? get defaultSubscriptionOperation => null;

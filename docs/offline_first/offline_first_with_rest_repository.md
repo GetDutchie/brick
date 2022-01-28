@@ -33,17 +33,4 @@ After the model is generated, double check for `List<dynamic>` and `null` types.
 
 ## OfflineQueueHttpClient
 
-All requests to the REST provider in the repository first pass through a queue that tracks unsuccessful requests in a SQLite database separate from the one that maintains application models. Should the application ever lose connectivity, the queue will resend all `upsert`ed requests that occurred while the app was offline. All requests are forwarded to an inner client.
-
-The queue is automatically added to all `OfflineFirstWithRestRepository`s. This means that a queue **should not be used as the `RestProvider`'s client**, however, the queue should use the RestProvider's client as its inner client:
-
-```dart
-final client = OfflineQueueHttpClient(
-  restProvider.client, // or http.Client()
-  "OfflineQueue",
-);
-```
-
-![OfflineQueue logic flow](https://user-images.githubusercontent.com/865897/72175823-f44a3580-3391-11ea-8961-bbeccd74fe7b.jpg)
-
-!> The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT`. `get` requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
+This content has been moved to [Offline Queue](offline_queue.md).

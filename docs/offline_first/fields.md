@@ -34,5 +34,5 @@ final List<Assoc> assoc;
 
 ## Unsupported Field Types
 
-* Any unsupported field types from `RestProvider` and `SqliteProvider`
+* Any unsupported field types from `RestProvider`, `GraphqlProvider`, and `SqliteProvider`
 * Future iterables of future models (i.e. `Future<List<Future<Model>>>`.

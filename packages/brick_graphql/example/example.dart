@@ -10,7 +10,7 @@ import 'package:gql/language.dart' as lang;
 /// such as brick_offline_first_with_graphql_build
 class UserAdapter extends GraphqlAdapter<User> {
   @override
-  final defaultGetOperation = lang.parseString(r'''query AllUsers {
+  final defaultQueryOperation = lang.parseString(r'''query AllUsers {
     allUsers {}
   }''');
 
