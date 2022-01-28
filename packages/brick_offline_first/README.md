@@ -132,7 +132,7 @@ final link = GraphqlOfflineQueueLink(
 
 ![OfflineQueue logic flow](https://user-images.githubusercontent.com/865897/72175823-f44a3580-3391-11ea-8961-bbeccd74fe7b.jpg)
 
-:warning: The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT` for REST and `query` and `subscription` for GraphQL. Fetching requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
+:warning: The queue ignores requests that are not `DELETE`, `PATCH`, `POST`, and `PUT` for REST. In GraphQL, `query` and `subscription` operations are ignored. Fetching requests are not worth tracking as the caller may have been disposed by the time the app regains connectivity.
 
 # Offline First With GraphQL Repository
 
