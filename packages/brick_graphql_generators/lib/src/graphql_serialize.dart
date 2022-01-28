@@ -27,7 +27,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
       fieldsToColumns.add('''
           '${field.name}': const RuntimeGraphqlDefinition(
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
-            remoteName: '$remoteName',
+            documentNodeName: '$remoteName',
             iterable: ${checker.isIterable},
             type: $columnInsertionType,
           )''');

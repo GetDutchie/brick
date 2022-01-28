@@ -105,7 +105,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
         selectionSet: entry.value.association && !ignoreAssociations
             ? SelectionSetNode(
                 selections: _generateNodes(
-                  modelDictionary.adapterFor[entry.value.runtimeType]!.fieldsToRuntimeDefinition,
+                  modelDictionary.adapterFor[entry.value.type]!.fieldsToRuntimeDefinition,
                 ),
               )
             : null,
@@ -151,26 +151,32 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     }
 
     final adapter = modelDictionary.adapterFor[_Model]!;
-    if (action == QueryAction.delete) {
-      return concat<_Model>(adapter.defaultDeleteOperation, modelDictionary);
+    if (action == QueryAction.delete && adapter.defaultDeleteOperation != null) {
+      return concat<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
     }
 
-    if (action == QueryAction.upsert) {
-      return concat<_Model>(adapter.defaultUpsertOperation, modelDictionary);
+    if (action == QueryAction.upsert && adapter.defaultUpsertOperation != null) {
+      return concat<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
     }
 
     if (action == QueryAction.subscribe) {
-      if (query == null) {
-        return concat<_Model>(adapter.defaultSubscriptionOperation, modelDictionary);
+      if (query == null && adapter.defaultSubscriptionOperation != null) {
+        return concat<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
       }
 
-      return concat<_Model>(adapter.defaultSubscriptionFilteredOperation, modelDictionary);
+      if (adapter.defaultSubscriptionFilteredOperation != null) {
+        return concat<_Model>(adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
+      }
     }
 
-    if (query == null) {
-      return concat<_Model>(adapter.defaultGetOperation, modelDictionary);
+    if (query == null && adapter.defaultGetOperation != null) {
+      return concat<_Model>(adapter.defaultGetOperation!, modelDictionary);
     }
 
-    return concat<_Model>(adapter.defaultGetFilteredOperation, modelDictionary);
+    if (adapter.defaultGetFilteredOperation != null) {
+      return concat<_Model>(adapter.defaultGetFilteredOperation!, modelDictionary);
+    }
+
+    throw ArgumentError('No GraphQL document specified or inferrred');
   }
 }

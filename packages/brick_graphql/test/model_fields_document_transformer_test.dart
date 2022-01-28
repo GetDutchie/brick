@@ -21,6 +21,7 @@ const upsertPersonWithNodes = r'''mutation UpsertPerson($input: UpsertPersonInpu
   upsertPerson(filter: $input) {
     primaryKey
     id
+    assoc
     someField
     complexFieldName
     lastName
@@ -33,6 +34,7 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
   upsertPerson {
     primaryKey
     id
+    assoc
     someField
     complexFieldName
     lastName
@@ -71,6 +73,34 @@ void main() {
         expect(
           lang.printNode(transformer.document),
           upsertPersonWithNodes,
+        );
+      });
+
+      test('association', () {
+        final transformer = ModelFieldsDocumentTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          operationFunctionName: 'upsertPerson',
+          operationNameNode: 'UpsertPerson',
+          operationType: OperationType.query,
+        );
+
+        expect(
+          lang.printNode(transformer.document),
+          r'''query UpsertPerson {
+  upsertPerson {
+    primaryKey
+    id
+    assoc {
+      primaryKey
+      name
+    }
+    someField
+    complexFieldName
+    lastName
+    name
+    simpleBool
+  }
+}''',
         );
       });
     });
