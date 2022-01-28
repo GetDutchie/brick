@@ -20,4 +20,4 @@ dev_dependencies:
 
 dependency_overrides:
   brick_offline_first_abstract:
-    path: ../brick_offline_first_abstract
+    path: ../../brick_offline_first_abstract
