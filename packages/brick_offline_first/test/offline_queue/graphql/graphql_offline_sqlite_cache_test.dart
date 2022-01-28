@@ -56,7 +56,7 @@ void main() {
       expect(asSqlite, containsPair(GRAPHQL_JOBS_CREATED_AT_COLUMN, isA<int>()));
       expect(asSqlite, containsPair(GRAPHQL_JOBS_DOCUMENT_COLUMN, isA<String>()));
       expect(asSqlite, containsPair(GRAPHQL_JOBS_OPERATION_NAME_COLUMN, 'fakeQuery'));
-      expect(asSqlite, containsPair(GRAPHQL_JOBS_VARIABLES_COLUMN, variables.toString()));
+      expect(asSqlite, containsPair(GRAPHQL_JOBS_VARIABLES_COLUMN, isA<String>()));
       expect(asSqlite, containsPair(GRAPHQL_JOBS_UPDATED_AT, isA<int>()));
     });
 
