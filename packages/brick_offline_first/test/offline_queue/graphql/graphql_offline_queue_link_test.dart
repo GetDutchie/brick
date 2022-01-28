@@ -92,7 +92,7 @@ void main() {
     });
 
     test('request is stored in SQLite', () async {
-      final mockLink = stubGraphqlLink({});
+      final mockLink = stubGraphqlLink({}, errors: ['Unavailable']);
       final client = GraphqlOfflineQueueLink(mockLink, requestManager);
 
       await client
