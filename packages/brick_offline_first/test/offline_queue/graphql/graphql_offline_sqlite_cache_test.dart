@@ -90,74 +90,73 @@ void main() {
 
         expect(request.first[GRAPHQL_JOBS_ATTEMPTS_COLUMN], 2);
       });
+    });
 
-      test('#unlock', () async {
-        final logger = MockLogger();
-        final uninserted = GraphqlRequestSqliteCache(queryRequest);
-        final db = await requestManager.getDb();
-        expect(await requestManager.unprocessedRequests(), isEmpty);
-        await uninserted.insertOrUpdate(db, logger: logger);
-        await uninserted.unlock(db);
-        final request = await requestManager.unprocessedRequests();
-        expect(request.first[GRAPHQL_JOBS_LOCKED_COLUMN], 0);
+    test('#unlock', () async {
+      final logger = MockLogger();
+      final uninserted = GraphqlRequestSqliteCache(queryRequest);
+      final db = await requestManager.getDb();
+      expect(await requestManager.unprocessedRequests(), isEmpty);
+      await uninserted.insertOrUpdate(db, logger: logger);
+      await uninserted.unlock(db);
+      final request = await requestManager.unprocessedRequests();
+      expect(request.first[GRAPHQL_JOBS_LOCKED_COLUMN], 0);
+    });
+
+    test('.lockRequest', () async {
+      final uninserted = GraphqlRequestSqliteCache(queryRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      await RequestSqliteCache.unlockRequest(
+        data: lockedRequests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: GRAPHQL_JOBS_TABLE_NAME,
+      );
+
+      var requests = await requestManager.unprocessedRequests();
+      expect(requests.first[GRAPHQL_JOBS_LOCKED_COLUMN], 0);
+      await RequestSqliteCache.lockRequest(
+        data: requests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: GRAPHQL_JOBS_TABLE_NAME,
+      );
+
+      requests = await requestManager.unprocessedRequests();
+      expect(requests.first[GRAPHQL_JOBS_LOCKED_COLUMN], 1);
+    });
+
+    test('.toRequest', () {
+      final request = GraphqlRequestSqliteCache(queryRequest).sqliteToRequest({
+        GRAPHQL_JOBS_DOCUMENT_COLUMN: printNode(queryRequest.operation.document),
+        GRAPHQL_JOBS_OPERATION_NAME_COLUMN: queryRequest.operation.operationName,
+        GRAPHQL_JOBS_VARIABLES_COLUMN: jsonEncode(queryRequest.variables),
       });
 
-      test('.lockRequest', () async {
-        final uninserted = GraphqlRequestSqliteCache(queryRequest);
-        final db = await requestManager.getDb();
-        await uninserted.insertOrUpdate(db);
-        final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
-        await RequestSqliteCache.unlockRequest(
-          data: lockedRequests.first,
-          db: await requestManager.getDb(),
-          lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
-          primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
-          tableName: GRAPHQL_JOBS_TABLE_NAME,
-        );
+      expect(request.operation.document, queryRequest.operation.document);
+      expect(request.variables, variables);
+      expect(request.operation.operationName, 'fakeQuery');
+    });
 
-        var requests = await requestManager.unprocessedRequests();
-        expect(requests.first[GRAPHQL_JOBS_LOCKED_COLUMN], 0);
-        await RequestSqliteCache.lockRequest(
-          data: requests.first,
-          db: await requestManager.getDb(),
-          lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
-          primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
-          tableName: GRAPHQL_JOBS_TABLE_NAME,
-        );
-
-        requests = await requestManager.unprocessedRequests();
-        expect(requests.first[GRAPHQL_JOBS_LOCKED_COLUMN], 1);
-      });
-      group('.toRequest', () {
-        test('basic', () {
-          final request = GraphqlRequestSqliteCache(queryRequest).sqliteToRequest({
-            GRAPHQL_JOBS_DOCUMENT_COLUMN: printNode(queryRequest.operation.document),
-            GRAPHQL_JOBS_OPERATION_NAME_COLUMN: queryRequest.operation.operationName,
-            GRAPHQL_JOBS_VARIABLES_COLUMN: jsonEncode(queryRequest.variables),
-          });
-
-          expect(request.operation.document, queryRequest.operation.document);
-          expect(request.variables, variables);
-          expect(request.operation.operationName, 'fakeQuery');
-        });
-
-        test('.unlockRequest', () async {
-          final uninserted = GraphqlRequestSqliteCache(queryRequest);
-          final db = await requestManager.getDb();
-          await uninserted.insertOrUpdate(db);
-          final requests = await requestManager.unprocessedRequests(onlyLocked: true);
-          expect(requests, hasLength(1));
-          await RequestSqliteCache.unlockRequest(
-            data: requests.first,
-            db: await requestManager.getDb(),
-            lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
-            primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
-            tableName: GRAPHQL_JOBS_TABLE_NAME,
-          );
-          final newLockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
-          expect(newLockedRequests, isEmpty);
-        });
-      });
+    test('.unlockRequest', () async {
+      final uninserted = GraphqlRequestSqliteCache(queryRequest);
+      final db = await requestManager.getDb();
+      await uninserted.insertOrUpdate(db);
+      final requests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(requests, hasLength(1));
+      await RequestSqliteCache.unlockRequest(
+        data: requests.first,
+        db: await requestManager.getDb(),
+        lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
+        primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
+        tableName: GRAPHQL_JOBS_TABLE_NAME,
+      );
+      final newLockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
+      expect(newLockedRequests, isEmpty);
     });
   });
 }
