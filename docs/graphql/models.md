@@ -28,11 +28,11 @@ class User extends OfflineFirstModel {}
 | `defaultSubscriptionFilteredOperation` | Fetch instances of a model(s) **with** an argument or variable |
 | `defaultUpsertOperation` | Add or update an instance of the model. |
 
-!> Documents can be provided within `Query(providerArgs:)`. See [the GraphQL query docs](query.md) for more information.
+!> Documents provided within `Query(providerArgs:)` will override any set default operations. See [the GraphQL query docs](query.md) for more information.
 
 ### `@GraphqlSerializable(fieldRename:)`
 
-By default, Brick assumes the field name maps to the GraphQL node name. However, this can be changed to rename all fields (this can be overriden with `@Graphql(name:)`). For example:
+By default, Brick assumes the Dart field name is the same as the GraphQL node name (i.e. `final String lastName => 'lastName'`). However, this can be changed to rename all fields (this can be overriden with `@Graphql(name:)`). For example:
 
 ```dart
 GraphqlSerializable(fieldRename: FieldRename.snake_case)

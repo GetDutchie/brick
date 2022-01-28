@@ -117,14 +117,14 @@ class MyRepository extends OfflineFirstRepository with DeleteAllMixin {}
 
 All requests to the remote provider in the repository first pass through a queue that tracks unsuccessful requests in a SQLite database separate from the one that maintains application models. Should the application ever lose connectivity, the queue will resend all `upsert`ed requests that occurred while the app was offline. All requests are forwarded to an inner client.
 
-The queue is automatically added to all `OfflineFirstWithGraphqlRepository`s and `OfflineFirstWithRestRepository`s. This means that a queue **should not be used as the `RestProvider`'s or `GraphqlProvider`'s client**, however, the queue will use the remote provider's client as its inner client:
+The queue is automatically added to all `OfflineFirstWithGraphqlRepository`s and `OfflineFirstWithRestRepository`s. This means that a queue **should not be used as the `RestProvider`'s client or `GraphqlProvider`'s link**, however, the queue will use the remote provider's client as its inner client:
 
 ```dart
 final client = RestOfflineQueueClient(
   restProvider.client, // or http.Client()
   "OfflineQueue",
 );
-final client = GraphqlOfflineQueueLink(
+final link = GraphqlOfflineQueueLink(
   graphqlProvider.link, // or HttpLink()
   "OfflineQueue",
 );

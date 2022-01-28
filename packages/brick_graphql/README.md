@@ -36,7 +36,7 @@ final variables = {
 };
 ```
 
-:warning: Association values within `Where` **are not** converted to variables
+:warning: Association values within `Where` **are not** converted to variables.
 
 ## Models
 
