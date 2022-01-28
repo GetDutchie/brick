@@ -50,8 +50,9 @@ class GraphqlOfflineQueueLink extends Link {
 
         /// When the request is null a generic Graphql error needs to be generated
         response = Response(errors: [GraphQLError(message: 'Unknown error: $e')], data: null);
+      } else {
+        rethrow;
       }
-      rethrow;
     } finally {
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
