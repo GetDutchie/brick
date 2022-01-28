@@ -1,10 +1,24 @@
 # Models
 
+## ConnectOfflineFirstWithRest
+
 `@ConnectOfflineFirstWithRest` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
 
 ```dart
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(),
+  sqliteConfig: SqliteSerializable(),
+)
+class MyModel extends OfflineFirstModel {}
+```
+
+## ConnectOfflineFirstWithGraphql
+
+`@ConnectOfflineFirstWithGraphql` decorates the model that can be serialized by GraphQL and SQLite. Offline First does not have configuration at the class level and only extends configuration held by its providers:
+
+```dart
+@ConnectOfflineFirstWithGraphql(
+  graphqlConfig: GraphqlSerializable(),
   sqliteConfig: SqliteSerializable(),
 )
 class MyModel extends OfflineFirstModel {}
