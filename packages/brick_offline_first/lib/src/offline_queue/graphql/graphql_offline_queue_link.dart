@@ -7,10 +7,17 @@ import 'package:gql_link/gql_link.dart';
 import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';
 
-/// Stores all requests in a SQLite database
+/// Stores all mutation requests in a SQLite database
 class GraphqlOfflineQueueLink extends Link {
   /// A DocumentNode GraphQL execution interface
   /// https://pub.dev/documentation/gql_link/latest/link/Link-class.html
+  ///
+  /// Instead of the proscribed [Link] series with the links calling `#forward`
+  /// [_inner] is composed. Storing the request must occur before an HTTPLink
+  /// and validating the request occurred with a SocketException must occur
+  /// after the request. Therefore, `forward` can't be called because it's
+  /// needed on both ends of the request. HTTPLink also doesn't invoke `#forward`
+  /// and can only be used last in a `Link.from([])` invocation.
   final Link _inner;
 
   final Logger _logger;
@@ -25,7 +32,7 @@ class GraphqlOfflineQueueLink extends Link {
     final cacheItem = GraphqlRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
-    // Ignore "mutation" and "subscription" request
+    // Ignore "query" and "subscription" request
     if (isMutation(cacheItem.request)) {
       final db = await requestManager.getDb();
       // Log immediately before we make the request
@@ -38,7 +45,7 @@ class GraphqlOfflineQueueLink extends Link {
       // Attempt to make Graphql Request, handle it as a traditional response to do check
       response = await _inner.request(request).first;
 
-      if (response.errors == null) {
+      if (response.errors?.isEmpty ?? true) {
         final db = await requestManager.getDb();
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');

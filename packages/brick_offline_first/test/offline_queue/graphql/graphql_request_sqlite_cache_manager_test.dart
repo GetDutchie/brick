@@ -20,8 +20,6 @@ void main() {
         }
       }''';
 
-    MockLink? mockLink;
-
     const mutation = '''mutation DeletePerson {
         deletePerson {
           firstName
@@ -30,12 +28,12 @@ void main() {
 
     final deleteMutation = Request(
       operation: Operation(document: parseString(mutation), operationName: 'DeletePerson'),
-      variables: const <String, dynamic>{'firstName': 'Beavis'},
+      variables: const <String, dynamic>{'firstName': 'Guy'},
     );
 
     final upsertMutation = Request(
       operation: Operation(document: parseString(query), operationName: 'UpsertPerson'),
-      variables: const <String, dynamic>{'firstName': 'Beavis'},
+      variables: const <String, dynamic>{'firstName': 'Guy'},
     );
 
     final requestManager = GraphqlRequestSqliteCacheManager(
@@ -45,7 +43,6 @@ void main() {
     );
 
     setUpAll(() async {
-      mockLink = MockLink();
       await requestManager.migrate();
     });
 
@@ -65,7 +62,10 @@ void main() {
         serialProcessing: false,
         processingInterval: const Duration(seconds: 0),
       );
-      final client = GraphqlOfflineQueueLink(mockLink!, _requestManager);
+      final client = GraphqlOfflineQueueLink(
+        stubGraphqlLink({}, errors: ['Unable to connect']),
+        _requestManager,
+      );
 
       await client.request(upsertMutation).first;
       await client.request(deleteMutation).first;
@@ -80,7 +80,10 @@ void main() {
     });
 
     test('#deleteUnprocessedRequest', () async {
-      final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+      final client = GraphqlOfflineQueueLink(
+        stubGraphqlLink({}, errors: ['Unable to connect']),
+        requestManager,
+      );
       expect(await requestManager.unprocessedRequests(), isEmpty);
 
       await client.request(upsertMutation).first;
@@ -94,7 +97,10 @@ void main() {
 
     group('#prepareNextRequestToProcess', () {
       test('integration', () async {
-        final client = GraphqlOfflineQueueLink(mockLink!, requestManager);
+        final client = GraphqlOfflineQueueLink(
+          stubGraphqlLink({}, errors: ['Unable to connect']),
+          requestManager,
+        );
 
         await client.request(upsertMutation).first;
         await client.request(deleteMutation).first;
