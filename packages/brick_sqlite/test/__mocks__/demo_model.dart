@@ -20,6 +20,8 @@ class DemoModel extends SqliteModel {
 
   final bool? simpleBool;
 
+  final DateTime? simpleTime;
+
   DemoModel({
     this.name,
     this.assoc,
@@ -27,5 +29,6 @@ class DemoModel extends SqliteModel {
     this.lastName,
     this.manyAssoc,
     this.simpleBool,
+    this.simpleTime,
   });
 }
