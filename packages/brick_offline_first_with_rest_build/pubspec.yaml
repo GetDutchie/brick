@@ -32,7 +32,3 @@ dev_dependencies:
   lints: ^1.0.1
   brick_build_test:
     path: ../brick_build_test
-
-dependency_overrides:
-  brick_offline_first_abstract:
-    path: ../brick_offline_first_abstract
