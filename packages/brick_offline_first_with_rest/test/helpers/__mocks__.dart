@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_rest/offline_first_with_rest.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;

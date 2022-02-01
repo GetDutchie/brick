@@ -23,10 +23,11 @@ class TestProvider extends Provider<TestModel> {
     final data = [
       {'name': 'SqliteName'}
     ];
-    return data
+    final results = data
         .map((e) => adapter.fromTest(e, provider: this, repository: repository))
         .toList()
-        .cast<T>();
+        .cast<Future<T>>();
+    return await Future.wait<T>(results);
   }
 
   @override
