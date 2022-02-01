@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 2.0.0-rc.2
+
+* **BREAKING CHANGE** This package no longer includes the `OfflineFirstWithRest` domain. Please add `brick_offline_first_with_rest: any` to your `pubspec.yaml` and update package imports appropriately.
+* Use forked `brick_offline_first_with_PROVIDER_abstract` packages
+* **BREAKING CHANGE** `rest` properties have been removed from `OfflineFirstException`. Use `OfflineFirstWithRestException` instead from `brick_offline_first_with_rest`.
+
 ## 2.0.0-rc.1
 
 * Add `GraphqlOfflineRequestQueue` to support offline caching within the `GraphqlProvider`

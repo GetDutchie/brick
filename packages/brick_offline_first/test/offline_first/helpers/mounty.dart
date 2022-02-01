@@ -1,6 +1,6 @@
 part of '__mocks__.dart';
 
-class Mounty extends OfflineFirstWithRestModel {
+class Mounty extends OfflineFirstWithTestModel {
   final String? name;
 
   Mounty({
