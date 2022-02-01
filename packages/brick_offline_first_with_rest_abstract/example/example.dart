@@ -1,5 +1,4 @@
 import 'package:brick_rest/rest.dart';
-import 'dart:convert';
 
 import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
@@ -38,34 +37,7 @@ class Person extends OfflineFirstWithRestModel {
   @Rest(name: 'hat_id')
   final Hat? hat;
 
-  final Horse? horse;
-
   Person({
     this.hat,
-    this.horse,
   });
-}
-
-/// When we don't want to make a separate association but have complex data that can be stored in a single column
-/// Serdes classes cannot be queried like model members.
-class Horse extends OfflineFirstSerdes<Map<String, dynamic>, String> {
-  final String? breed;
-
-  Horse({
-    this.breed,
-  });
-
-  factory Horse.fromRest(Map<String, dynamic> data) {
-    return Horse(breed: data['breed']);
-  }
-
-  factory Horse.fromSqlite(String data) => Horse.fromRest(jsonDecode(data));
-
-  @override
-  Map<String, dynamic> toRest() {
-    return {'breed': breed};
-  }
-
-  @override
-  String toSqlite() => jsonEncode(toRest());
 }

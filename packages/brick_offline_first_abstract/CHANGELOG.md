@@ -1,6 +1,11 @@
 ## Unreleased
 
-## 2.0.0
+## 2.0.0-rc.2
+
+* **BREAKING CHANGE** This package no longer manages the `OfflineFirstWithRest` domain. Please add `brick_offline_first_with_rest: any` to your `pubspec.yaml` and update package imports to use this new package.
+* **BREAKING CHANGE** This package no longer manages the `OfflineFirstWithGraphql` domain. Please add `brick_offline_first_with_graphql: any` to your `pubspec.yaml` and update package imports to use this new package.
+
+## 2.0.0-rc.1
 
 * Add Dart Lints
 * Upgrade `brick_core`
