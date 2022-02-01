@@ -1,3 +1,4 @@
+import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:meta/meta.dart';
