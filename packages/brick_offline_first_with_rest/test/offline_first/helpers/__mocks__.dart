@@ -1,12 +1,14 @@
-import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first_with_rest/offline_first_with_rest.dart';
+import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first_with_rest_abstract/offline_first_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:brick_rest/rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
 
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-import 'test_domain.dart';
 export 'package:brick_offline_first/offline_first.dart';
 
 part 'horse_adapter.dart';
@@ -39,29 +41,39 @@ class DemoModelMigration extends Migration {
         );
 }
 
-class TestRepository extends OfflineFirstWithTestRepository {
+class TestRepository extends OfflineFirstWithRestRepository {
   static TestRepository? _singleton;
 
   TestRepository._(
-    TestProvider testProvider,
-    SqliteProvider sqliteProvider,
+    RestProvider _restProvider,
+    SqliteProvider _sqliteProvider,
   ) : super(
-          testProvider: testProvider,
-          sqliteProvider: sqliteProvider,
-          cacheProvider: MemoryCacheProvider([MemoryDemoModel]),
+          restProvider: _restProvider,
+          sqliteProvider: _sqliteProvider,
+          memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
+          offlineQueueHttpClientRequestSqliteCacheManager: RestRequestSqliteCacheManager(
+            '$inMemoryDatabasePath/queue',
+            databaseFactory: databaseFactoryFfi,
+          ),
         );
-
   factory TestRepository() => _singleton!;
 
-  factory TestRepository.withProviders(TestProvider testProvider, SqliteProvider sqliteProvider) =>
-      TestRepository._(testProvider, sqliteProvider);
+  factory TestRepository.withProviders(RestProvider restProvider, SqliteProvider sqliteProvider) =>
+      TestRepository._(restProvider, sqliteProvider);
 
   factory TestRepository.configure({
+    required String baseUrl,
+    required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
+    http.Client? client,
   }) {
     return _singleton = TestRepository._(
-      TestProvider(testModelDictionary),
+      RestProvider(
+        baseUrl,
+        modelDictionary: restDictionary,
+        client: client,
+      ),
       SqliteProvider(
         '$inMemoryDatabasePath/repository',
         databaseFactory: databaseFactoryFfi,
@@ -71,13 +83,13 @@ class TestRepository extends OfflineFirstWithTestRepository {
   }
 }
 
-/// Test mappings should only be used when initializing a [TestProvider]
-final Map<Type, TestAdapter<TestModel>> testMappings = {
+/// REST mappings should only be used when initializing a [RestProvider]
+final Map<Type, RestAdapter<RestModel>> restMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
   Mounty: MountyAdapter()
 };
-final testModelDictionary = TestModelDictionary(testMappings);
+final restModelDictionary = RestModelDictionary(restMappings);
 
 /// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {

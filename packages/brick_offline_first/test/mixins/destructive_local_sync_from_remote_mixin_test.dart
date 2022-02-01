@@ -1,38 +1,27 @@
 import 'package:brick_offline_first/mixins.dart';
-import 'package:brick_offline_first/src/offline_queue/rest/rest_request_sqlite_cache_manager.dart';
-import 'package:brick_offline_first/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:brick_rest/rest.dart';
-import 'package:http/http.dart' as http;
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_offline_first/offline_first_with_rest.dart';
 import 'package:brick_sqlite/sqlite.dart';
 
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../offline_first/helpers/__mocks__.dart';
+import '../offline_first/helpers/test_domain.dart';
 
-class MyRepository extends OfflineFirstWithRestRepository
-    with DestructiveLocalSyncFromRemoteMixin<OfflineFirstWithRestModel> {
+class MyRepository extends OfflineFirstWithTestRepository
+    with DestructiveLocalSyncFromRemoteMixin<OfflineFirstWithTestModel> {
   MyRepository({
-    required String baseUrl,
-    required RestModelDictionary restDictionary,
     required SqliteModelDictionary sqliteDictionary,
-    http.Client? client,
   }) : super(
-          restProvider: RestProvider(baseUrl, client: client, modelDictionary: restDictionary),
+          testProvider: TestProvider(testModelDictionary),
           sqliteProvider: SqliteProvider(
             inMemoryDatabasePath,
             databaseFactory: databaseFactoryFfi,
             modelDictionary: sqliteDictionary,
           ),
-          memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
+          cacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineQueueHttpClientRequestSqliteCacheManager: RestRequestSqliteCacheManager(
-            inMemoryDatabasePath,
-            databaseFactory: databaseFactoryFfi,
-          ),
         );
 }
 
@@ -42,12 +31,7 @@ void main() {
 
   group('DestructiveLocalSyncFromRemoteMixin', () {
     final repository = MyRepository(
-      baseUrl: 'http://0.0.0.0:3000',
-      restDictionary: restModelDictionary,
       sqliteDictionary: sqliteModelDictionary,
-      client: StubOfflineFirstWithRest.fromFiles('http://0.0.0.0:3000', {
-        'mounties': 'offline_first/api/mounties.json',
-      }).client,
     );
 
     setUpAll(() async {

@@ -1,11 +1,11 @@
-name: brick_offline_first
+name: brick_offline_first_with_graphql
 description: A Brick domain that routes data fetching through local providers
-  before remote providers.
-homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_first
+  before a GraphQL provider.
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_first_with_graphql
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.0.0-rc.1
+version: 0.0.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -14,15 +14,21 @@ environment:
 dependencies:
   brick_core: ^1.0.0+1
   brick_offline_first_abstract: ^2.0.0-rc.2
+  brick_offline_first:
+    path: ../brick_offline_first
+  brick_offline_first_with_graphql_abstract:
+    path: ../brick_offline_first_with_graphql_abstract
+  brick_graphql: ^0.0.1
   brick_sqlite: ^1.1.0
   brick_sqlite_abstract: ^1.0.0+3
   collection: ^1.15.0
   dart_style: ^2.0.0
-  http: any
+  gql: ^0.13.0
+  gql_exec: ^0.3.0
+  gql_link: ^0.4.0
   logging: ^1.0.0
   meta: ^1.3.0
   path: ^1.8.0
-  sqflite: ^2.0.0+1
 
 dev_dependencies:
   mockito: ^5.0.0

@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first_abstract/abstract.dart';
 
 /// Provides an extended `get` method to support remote syncs that override local data.
 /// For example, if two models exist in the `remoteProvider` but three exist in `sqliteProvider`

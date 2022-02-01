@@ -1,30 +1,36 @@
 part of '__mocks__.dart';
 
-Future<Mounty> _$MountyFromTest(Map<String, dynamic> data,
-    {required TestProvider provider, OfflineFirstWithTestRepository? repository}) async {
+Future<Mounty> _$MountyFromRest(Map<String, dynamic> data,
+    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Mounty(name: data['name'] as String?);
 }
 
-Future<Map<String, dynamic>> _$MountyToTest(Mounty instance,
-    {required TestProvider provider, OfflineFirstWithTestRepository? repository}) async {
+Future<Map<String, dynamic>> _$MountyToRest(Mounty instance,
+    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {'name': instance.name};
 }
 
 Future<Mounty> _$MountyFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider, OfflineFirstWithTestRepository? repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Mounty(name: data['name'] == null ? null : data['name'] as String?)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
-    {required SqliteProvider provider, OfflineFirstWithTestRepository? repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {'name': instance.name};
 }
 
 /// Construct a [Mounty]
-class MountyAdapter extends OfflineFirstWithTestAdapter<Mounty> {
+class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
+  @override
+  String? restEndpoint({query, instance}) => '/mounties';
+  @override
+  final String? fromKey = null;
+  @override
+  final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -47,19 +53,19 @@ class MountyAdapter extends OfflineFirstWithTestAdapter<Mounty> {
   final String tableName = 'Mounty';
 
   @override
-  Future<Mounty> fromTest(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithTestRepository? repository}) async =>
-      await _$MountyFromTest(input, provider: provider, repository: repository);
+  Future<Mounty> fromRest(Map<String, dynamic> input,
+          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
+      await _$MountyFromRest(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toTest(Mounty input,
-          {required provider, covariant OfflineFirstWithTestRepository? repository}) async =>
-      await _$MountyToTest(input, provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toRest(Mounty input,
+          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
+      await _$MountyToRest(input, provider: provider, repository: repository);
   @override
   Future<Mounty> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithTestRepository? repository}) async =>
+          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$MountyFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(Mounty input,
-          {required provider, covariant OfflineFirstWithTestRepository? repository}) async =>
+          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$MountyToSqlite(input, provider: provider, repository: repository);
 }

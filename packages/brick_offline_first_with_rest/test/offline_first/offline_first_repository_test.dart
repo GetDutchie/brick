@@ -1,3 +1,4 @@
+import 'package:brick_offline_first_with_rest/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -8,13 +9,28 @@ void main() {
   sqfliteFfiInit();
 
   group('OfflineFirstRepository', () {
+    const baseUrl = 'http://0.0.0.0:3000';
+
     setUpAll(() async {
       TestRepository.configure(
+        baseUrl: baseUrl,
+        restDictionary: restModelDictionary,
         sqliteDictionary: sqliteModelDictionary,
+        client: StubOfflineFirstWithRest.fromFiles(baseUrl, {
+          'mounties': 'offline_first/api/mounties.json',
+        }).client,
       );
 
       await TestRepository().initialize();
     });
+
+    test('instantiates', () {
+      // isA matcher didn't work
+      expect(
+          TestRepository().remoteProvider.client.runtimeType.toString(), 'RestOfflineQueueClient');
+    });
+
+    test('#delete', () {}, skip: 'Is this worth testing because of all the stubbing?');
 
     group('#get', () {
       test('simple', () async {

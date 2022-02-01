@@ -1,4 +1,5 @@
 import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first_abstract/abstract.dart';
 
 /// Adds functions [deleteAll] and [deleteAllExcept]
 mixin DeleteAllMixin<T extends OfflineFirstModel> on OfflineFirstRepository<T> {
