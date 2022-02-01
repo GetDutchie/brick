@@ -16,7 +16,8 @@ class TestProvider extends Provider<TestModel> {
       true;
 
   @override
-  List<T> get<T extends TestModel>({Query? query, ModelRepository<TestModel>? repository}) {
+  Future<List<T>> get<T extends TestModel>(
+      {Query? query, ModelRepository<TestModel>? repository}) async {
     final adapter = modelDictionary.adapterFor[T]!;
     final data = [
       {'name': 'SqliteName'}
@@ -28,8 +29,8 @@ class TestProvider extends Provider<TestModel> {
   }
 
   @override
-  T upsert<T extends TestModel>(T instance,
-          {Query? query, ModelRepository<TestModel>? repository}) =>
+  Future<T> upsert<T extends TestModel>(T instance,
+          {Query? query, ModelRepository<TestModel>? repository}) async =>
       instance;
 }
 
