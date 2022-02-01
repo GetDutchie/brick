@@ -31,8 +31,8 @@ class TestProvider extends Provider<TestModel> {
 
   @override
   Future<T> upsert<T extends TestModel>(T instance,
-          {Query? query, ModelRepository<TestModel>? repository}) async =>
-      instance;
+          {Query? query, ModelRepository<TestModel>? repository}) =>
+      Future<T>.value(instance);
 }
 
 /// Constructors that convert app models to and from REST
