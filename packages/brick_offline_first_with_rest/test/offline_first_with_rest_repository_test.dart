@@ -18,7 +18,7 @@ void main() {
         restDictionary: restModelDictionary,
         sqliteDictionary: sqliteModelDictionary,
         client: StubOfflineFirstWithRest.fromFiles(baseUrl, {
-          'mounties': 'offline_first/api/mounties.json',
+          'mounties': 'api/mounties.json',
         }).client,
       );
 
