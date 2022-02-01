@@ -1,5 +1,5 @@
 import 'package:brick_graphql/graphql.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
 final output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromRest(Map<String, dynamic> data,
