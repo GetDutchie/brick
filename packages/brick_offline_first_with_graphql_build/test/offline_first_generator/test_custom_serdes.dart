@@ -1,6 +1,3 @@
-// ignore_for_file: unnecessary_import
-
-import 'package:brick_offline_first_abstract/annotations.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
