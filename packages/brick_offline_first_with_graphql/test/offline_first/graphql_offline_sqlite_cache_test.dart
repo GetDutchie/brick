@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:brick_offline_first/src/offline_queue/graphql/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gql_exec/gql_exec.dart';
