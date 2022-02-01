@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 2.0.0-rc.1
+
 * Add `GraphqlOfflineRequestQueue` to support offline caching within the `GraphqlProvider`
 * Rename `RequestSqliteCacheManager` to `RestRequestSqliteCacheManager`
 * Rename `OfflineQueueHttpClient` to `RestOfflineQueueClient`
