@@ -1,4 +1,4 @@
-name: brick_offline_first_with_rest_abstract_example
+name: brick_offline_first_with_graphql_abstract_example
 
 publish_to: none
 
@@ -8,5 +8,5 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  brick_offline_first_with_rest_abstract:
+  brick_offline_first_with_graphql_abstract:
     path: ../
