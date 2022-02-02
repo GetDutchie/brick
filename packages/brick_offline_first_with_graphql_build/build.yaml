@@ -26,14 +26,12 @@ builders:
   brickAdaptersBuilder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstAdaptersBuilder"]
-    build_extensions: {".dart": [".adapter_build_offline_first.dart"]}
+    build_extensions: {".model.dart": [".adapter_build_offline_first.dart"]}
     build_to: cache
     auto_apply: root_package
     applies_builders: ["source_gen|combining_builder"]
     defaults:
       generate_for:
-        include:
-          - "*.model.dart"
         exclude:
           - lib/brick/adapters/*.dart
           - brick/adapters/*.dart

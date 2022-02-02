@@ -1,9 +1,8 @@
 // ignore_for_file: constant_identifier_names
-// ignore_for_file: implementation_imports
 
 import 'dart:convert';
 
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first/offline_queue.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
 import 'package:sqflite/sqflite.dart';

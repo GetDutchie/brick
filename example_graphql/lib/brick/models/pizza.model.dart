@@ -1,8 +1,9 @@
-import 'package:brick_offline_first/offline_first_with_graphql.dart';
+import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
+import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
 @ConnectOfflineFirstWithGraphql(
   graphqlConfig: GraphqlSerializable(
-    defaultGetOperation: r'''
+    defaultQueryOperation: r'''
       query GetPizzas {
         getPizzas {}
       }

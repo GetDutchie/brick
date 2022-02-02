@@ -1,4 +1,3 @@
-// ignore_for_file: constant_identifier_names
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';

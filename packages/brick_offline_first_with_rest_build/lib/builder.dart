@@ -1,6 +1,7 @@
 import 'package:brick_build/builders.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:brick_offline_first_abstract/annotations.dart' show ConnectOfflineFirstWithRest;
+import 'package:brick_offline_first_with_rest_abstract/annotations.dart'
+    show ConnectOfflineFirstWithRest;
 import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_generator.dart';
 import 'package:build/build.dart';
 import 'package:brick_sqlite_generators/builders.dart';

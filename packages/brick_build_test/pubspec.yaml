@@ -4,13 +4,13 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_build_tes
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 1.0.0
+version: 2.0.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  brick_build: ^1.2.3
+  brick_build: ">=1.2.0 <3.0.0"
   build: ^2.0.0
   path: ^1.8.0
   source_gen: ^1.0.0
