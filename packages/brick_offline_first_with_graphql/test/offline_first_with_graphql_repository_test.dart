@@ -19,6 +19,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
         await repository.initialize();
         await repository.migrate();
+
         final results = await repository.get<Mounty>();
         expect(results, hasLength(1));
         expect(results.first.name, 'SqliteName');
@@ -52,14 +53,18 @@ void main() {
       final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
       await repository.initialize();
       await repository.migrate();
+
       final results = await repository.getBatched<Mounty>(requireRemote: false);
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });
 
     group('#subscribe', () {
-      test('adds controller and query to #subscriptions', () {
+      test('adds controller and query to #subscriptions', () async {
         final repository = TestRepository.configure(link: stubGraphqlLink({}));
+        await repository.initialize();
+        await repository.migrate();
+
         expect(repository.subscriptions, hasLength(0));
         final query = Query.where('name', 'Thomas');
         repository.subscribe<Mounty>(query: query);
@@ -69,8 +74,11 @@ void main() {
         expect(repository.subscriptions[Mounty]!.entries.first.value, isNotNull);
       });
 
-      test('adds controller and null query to #subscriptions', () {
+      test('adds controller and null query to #subscriptions', () async {
         final repository = TestRepository.configure(link: stubGraphqlLink({}));
+        await repository.initialize();
+        await repository.migrate();
+
         expect(repository.subscriptions, hasLength(0));
         repository.subscribe<Mounty>();
         expect(repository.subscriptions, hasLength(1));
@@ -83,6 +91,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({}));
         await repository.initialize();
         await repository.migrate();
+
         expect(repository.subscriptions, hasLength(0));
         final subscription = repository.subscribe<Mounty>().listen((event) {});
         expect(repository.subscriptions[Mounty], hasLength(1));
@@ -92,6 +101,9 @@ void main() {
 
       test('pausing does not remove from #subscriptions', () async {
         final repository = TestRepository.configure(link: stubGraphqlLink({}));
+        await repository.initialize();
+        await repository.migrate();
+
         expect(repository.subscriptions, hasLength(0));
         final subscription = repository.subscribe<Mounty>().listen((event) {});
         expect(repository.subscriptions, hasLength(1));
@@ -104,6 +116,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
         await repository.initialize();
         await repository.migrate();
+
         final sqliteResults = await repository.sqliteProvider.get<Mounty>();
         expect(sqliteResults, hasLength(0));
         repository.subscribe<Mounty>();
@@ -119,6 +132,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
         await repository.initialize();
         await repository.migrate();
+
         var eventReceived = false;
         final subscription =
             repository.subscribe<Mounty>(query: Query.where('name', 'Thomas')).listen((event) {
@@ -134,6 +148,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
         await repository.initialize();
         await repository.migrate();
+
         var eventReceived = false;
         final subscription = repository.subscribe<Mounty>().listen((event) {
           eventReceived = event.first.name == 'Thomas';
@@ -147,6 +162,7 @@ void main() {
         final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
         await repository.initialize();
         await repository.migrate();
+
         final instance = await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
         var noEvents = true;
         final subscription =
