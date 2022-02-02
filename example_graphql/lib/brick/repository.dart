@@ -4,6 +4,7 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:pizza_shoppe/brick/db/schema.g.dart';
 import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
+import 'package:brick_sqlite/sqlite.dart';
 
 class Repository extends OfflineFirstWithGraphqlRepository {
   Repository._(String endpoint)

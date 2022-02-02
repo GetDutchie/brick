@@ -14,17 +14,10 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    print('HEY IM LOOKING FOR ADAPTERS HERE');
-    print('HEY IM LOOKING FOR ADAPTERS HERE');
-    print('HEY IM LOOKING FOR ADAPTERS HERE');
-    print('HEY IM LOOKING FOR ADAPTERS HERE');
     final annotatedElements = await getAnnotatedElements(buildStep);
 
     final allOutputs = <String>[];
     for (final annotatedElement in annotatedElements) {
-      print('!!!!');
-      print('!!!!');
-      print(annotatedElement.element.name);
       final stopwatch = Stopwatch();
       stopwatch.start();
 
@@ -49,6 +42,6 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.model.dart': [outputExtension]
+        '.dart': [outputExtension]
       };
 }

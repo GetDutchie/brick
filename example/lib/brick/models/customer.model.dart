@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_with_rest/offline_first_with_rest.dart';
-import 'package:pizza_shoppe/brick/models/pizza.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(

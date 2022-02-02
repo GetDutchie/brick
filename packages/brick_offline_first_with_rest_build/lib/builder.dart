@@ -27,6 +27,8 @@ final offlineFirstGenerator = const OfflineFirstWithRestGenerator(
 Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
       "import 'package:brick_offline_first_abstract/annotations.dart';",
       "import 'package:brick_offline_first/offline_first.dart';",
+      "import 'package:brick_sqlite/sqlite.dart' show SqliteProvider;",
+      "import 'package:brick_core/query.dart';",
       "import 'package:brick_sqlite_abstract/db.dart';",
     ]);
 Builder offlineFirstAdaptersBuilder(options) =>

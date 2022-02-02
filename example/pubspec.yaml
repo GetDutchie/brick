@@ -19,12 +19,15 @@ dependencies:
 dev_dependencies:
   brick_offline_first_with_rest_build:
     path: ../packages/brick_offline_first_with_rest_build
+  brick_sqlite_generators: ^2.0.0-rc.2
   build_runner: any
   shelf: ^1.1.0
 
 dependency_overrides:
-  brick_offline_first_abstract:
-    path: ../packages/brick_offline_first_abstract
+  brick_build:
+    path: ../packages/brick_build
+  brick_offline_first_with_rest_abstract:
+    path: ../packages/brick_offline_first_with_rest_abstract
 
 flutter:
   uses-material-design: true

@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 2.0.0-rc.2
+
+* Fix adapters builder
+* Fix `brick.g.dart` imports
+
 ## 2.0.0-rc.1
 
 * **BREAKING CHANGE** `brick.g.dart` and `adapters` are now saved to a `brick/` folder. This replaces the `app` folder. Please rename `app` to `brick` to safely migrate.
