@@ -1,5 +1,4 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

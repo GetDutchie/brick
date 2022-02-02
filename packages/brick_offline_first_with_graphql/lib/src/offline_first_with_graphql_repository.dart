@@ -44,7 +44,7 @@ abstract class OfflineFirstWithGraphqlRepository
     required Set<Migration> migrations,
     bool? autoHydrate,
     String? loggerName,
-    required GraphqlRequestSqliteCacheManager offlineQueueLinkSqliteCacheManager,
+    GraphqlRequestSqliteCacheManager? offlineQueueLinkSqliteCacheManager,
   })  : remoteProvider = graphqlProvider,
         super(
           autoHydrate: autoHydrate,
@@ -56,7 +56,7 @@ abstract class OfflineFirstWithGraphqlRepository
         ) {
     remoteProvider.link = GraphqlOfflineQueueLink(
       graphqlProvider.link,
-      offlineQueueLinkSqliteCacheManager,
+      offlineQueueLinkSqliteCacheManager ?? GraphqlRequestSqliteCacheManager(_queueDatabaseName),
     );
     offlineRequestQueue = GraphqlOfflineRequestQueue(
       link: remoteProvider.link as GraphqlOfflineQueueLink,
