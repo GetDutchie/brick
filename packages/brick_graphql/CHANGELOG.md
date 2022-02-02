@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.0.1+2
+
+* Rename `fieldsToRuntimeDefinition` to `fieldsToGraphqlRuntimeDefinition`
+
 ## 0.0.1+1
 
 * Return `List<_Model>` when invoking `subscribe`

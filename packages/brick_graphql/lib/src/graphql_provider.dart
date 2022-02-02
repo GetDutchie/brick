@@ -81,7 +81,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     final adapter = modelDictionary.adapterFor[_Model]!;
 
     return query!.where!.fold<Map<String, dynamic>>(<String, dynamic>{}, (allVariables, where) {
-      final definition = adapter.fieldsToRuntimeDefinition[where.evaluatedField];
+      final definition = adapter.fieldsToGraphqlRuntimeDefinition[where.evaluatedField];
       if (definition != null && !definition.association) {
         allVariables[definition.documentNodeName] = where.value;
       }

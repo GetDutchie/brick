@@ -15,7 +15,7 @@ class UserAdapter extends GraphqlAdapter<User> {
   }''');
 
   @override
-  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition => {
+  Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition => {
         'name': const RuntimeGraphqlDefinition(
           association: false,
           documentNodeName: 'full_name',

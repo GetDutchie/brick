@@ -33,6 +33,7 @@ abstract class OfflineFirstWithGraphqlRepository
   late final GraphqlOfflineRequestQueue offlineRequestQueue;
 
   @protected
+  @visibleForTesting
   final Map<Type, Map<Query?, StreamController<List<OfflineFirstWithGraphqlModel>>>> subscriptions =
       {};
 
@@ -108,6 +109,21 @@ abstract class OfflineFirstWithGraphqlRepository
     }
   }
 
+  @protected
+  @override
+  Future<List<_Model>> hydrate<_Model extends OfflineFirstWithGraphqlModel>({
+    bool deserializeSqlite = true,
+    Query? query,
+  }) async {
+    try {
+      return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
+    } on GraphQLError catch (e) {
+      logger.warning('#hydrate graphql failure: $e');
+    }
+
+    return <_Model>[];
+  }
+
   @override
   @mustCallSuper
   Future<void> initialize() async {
@@ -126,27 +142,11 @@ abstract class OfflineFirstWithGraphqlRepository
     await offlineRequestQueue.link.requestManager.migrate();
   }
 
-  /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
-  /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
-  /// invocation. For more, see [updateSubscriptionsAfterUpsert].
-  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
-    final controller = StreamController<List<_Model>>(
-      onCancel: () {
-        subscriptions[_Model]?[query]?.close();
-        subscriptions[_Model]?.remove(query);
-      },
-    );
-
-    subscriptions[_Model] ??= {};
-    subscriptions[_Model]?[query] = controller;
-    controller.addStream(remoteProvider.subscribe<_Model>(query: query, repository: this));
-    return controller.stream;
-  }
-
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
   @protected
   @visibleForTesting
-  Future<void> updateSubscriptionsAfterUpsert<_Model extends OfflineFirstWithGraphqlModel>() async {
+  Future<void>
+      notifySubscriptionsWithLocalData<_Model extends OfflineFirstWithGraphqlModel>() async {
     final queriesControllers = subscriptions[_Model]?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
@@ -168,33 +168,47 @@ abstract class OfflineFirstWithGraphqlRepository
     }
   }
 
+  /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
+  /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
+  /// invocation. For more, see [notifySubscriptionsWithLocalData].
+  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+    // Remote results are never returned directly;
+    // after the remote results are fetched they're stored
+    // and memory/SQLite is reported to the subscribers
+    final remoteSubscription = remoteProvider
+        .subscribe<_Model>(query: query, repository: this)
+        .listen((modelsFromRemote) async {
+      final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+      memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
+      await notifySubscriptionsWithLocalData();
+    });
+
+    final controller = StreamController<List<_Model>>(
+      onCancel: () async {
+        await subscriptions[_Model]?[query]?.close();
+        subscriptions[_Model]?.remove(query);
+        await remoteSubscription.cancel();
+      },
+    );
+
+    subscriptions[_Model] ??= {};
+    subscriptions[_Model]?[query] = controller;
+
+    return controller.stream;
+  }
+
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
       {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
       final result = await super.upsert<_Model>(instance, query: query);
-      await updateSubscriptionsAfterUpsert();
+      await notifySubscriptionsWithLocalData();
       return result;
     } on GraphQLError catch (e) {
       logger.warning('#upsert graphql failure: $e');
 
       throw OfflineFirstException(_GraphqlException(e));
     }
-  }
-
-  @protected
-  @override
-  Future<List<_Model>> hydrate<_Model extends OfflineFirstWithGraphqlModel>({
-    bool deserializeSqlite = true,
-    Query? query,
-  }) async {
-    try {
-      return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
-    } on GraphQLError catch (e) {
-      logger.warning('#hydrate graphql failure: $e');
-    }
-
-    return <_Model>[];
   }
 }
 
