@@ -51,7 +51,7 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
           offlineQueueLinkSqliteCacheManager: GraphqlRequestSqliteCacheManager(
-            '$inMemoryDatabasePath/queue',
+            '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
             databaseFactory: databaseFactoryFfi,
           ),
         );
@@ -69,7 +69,7 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
         link: link,
       ),
       SqliteProvider(
-        '$inMemoryDatabasePath/repository',
+        '$inMemoryDatabasePath/repository${DateTime.now().millisecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteModelDictionary,
       ),
