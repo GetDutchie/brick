@@ -19,14 +19,11 @@ dependencies:
   brick_offline_first_with_graphql_abstract: ^0.0.2+1
   brick_sqlite: ^1.1.0
   brick_sqlite_abstract: ^1.0.0+3
-  collection: ^1.15.0
-  dart_style: ^2.0.0
   gql: ^0.13.0
   gql_exec: ^0.3.0
   gql_link: ^0.4.0
   logging: ^1.0.0
   meta: ^1.3.0
-  path: ^1.8.0
   sqflite: ^2.0.2
 
 dev_dependencies:
