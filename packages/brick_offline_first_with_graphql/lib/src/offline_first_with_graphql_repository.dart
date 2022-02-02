@@ -178,6 +178,10 @@ abstract class OfflineFirstWithGraphqlRepository
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
   Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+    if (subscriptions[_Model]?[query] != null) {
+      return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
+    }
+
     // Remote results are never returned directly;
     // after the remote results are fetched they're stored
     // and memory/SQLite is reported to the subscribers
