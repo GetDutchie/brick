@@ -89,20 +89,22 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     });
   }
 
-  Stream<_Model> subscribe<_Model extends GraphqlModel>(
+  Stream<List<_Model>> subscribe<_Model extends GraphqlModel>(
       {Query? query, ModelRepository<GraphqlModel>? repository}) async* {
     final adapter = modelDictionary.adapterFor[_Model]!;
     final request = createRequest<_Model>(action: QueryAction.subscribe, query: query);
     await for (final response in link.request(request)) {
       if (response.data?.values.first is Iterable) {
-        for (final value in response.data!.values.first) {
-          final result = await adapter.fromGraphql(value, provider: this, repository: repository);
-          yield result as _Model;
-        }
+        final results = response.data?.values.first
+            .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
+            .toList()
+            .cast<Future<_Model>>();
+
+        yield await Future.wait<_Model>(results);
       } else if (response.data != null) {
         final result =
             await adapter.fromGraphql(response.data!, provider: this, repository: repository);
-        yield result as _Model;
+        yield [result as _Model];
       }
     }
   }

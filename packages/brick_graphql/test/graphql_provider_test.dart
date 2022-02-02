@@ -134,7 +134,7 @@ void main() {
       final resp = provider.subscribe<DemoModel>();
 
       await for (final instance in resp) {
-        expect(instance.name, 'Guy');
+        expect(instance.first.name, 'Guy');
       }
     });
 

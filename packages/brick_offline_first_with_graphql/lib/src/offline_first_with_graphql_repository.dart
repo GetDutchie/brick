@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
@@ -29,6 +31,10 @@ abstract class OfflineFirstWithGraphqlRepository
 
   @protected
   late final GraphqlOfflineRequestQueue offlineRequestQueue;
+
+  @protected
+  final Map<Type, Map<Query?, StreamController<List<OfflineFirstWithGraphqlModel>>>> subscriptions =
+      {};
 
   OfflineFirstWithGraphqlRepository({
     required GraphqlProvider graphqlProvider,
@@ -92,6 +98,17 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
+  Future<bool> exists<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+    try {
+      return super.exists(query: query);
+    } on GraphQLError catch (e) {
+      logger.warning('#get graphql failure: $e');
+
+      throw OfflineFirstException(_GraphqlException(e));
+    }
+  }
+
+  @override
   @mustCallSuper
   Future<void> initialize() async {
     await super.initialize();
@@ -109,11 +126,55 @@ abstract class OfflineFirstWithGraphqlRepository
     await offlineRequestQueue.link.requestManager.migrate();
   }
 
+  /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
+  /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
+  /// invocation. For more, see [updateSubscriptionsAfterUpsert].
+  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+    final controller = StreamController<List<_Model>>(
+      onCancel: () {
+        subscriptions[_Model]?[query]?.close();
+        subscriptions[_Model]?.remove(query);
+      },
+    );
+
+    subscriptions[_Model] ??= {};
+    subscriptions[_Model]?[query] = controller;
+    controller.addStream(remoteProvider.subscribe<_Model>(query: query, repository: this));
+    return controller.stream;
+  }
+
+  /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
+  @protected
+  @visibleForTesting
+  Future<void> updateSubscriptionsAfterUpsert<_Model extends OfflineFirstWithGraphqlModel>() async {
+    final queriesControllers = subscriptions[_Model]?.entries;
+    if (queriesControllers?.isEmpty ?? true) return;
+
+    for (final queryController in queriesControllers!) {
+      final query = queryController.key;
+      final controller = queryController.value;
+      if (controller.isClosed || controller.isPaused) continue;
+
+      if (memoryCacheProvider.canFind<_Model>(query)) {
+        final results = memoryCacheProvider.get<_Model>(query: query);
+        if (results?.isNotEmpty ?? false) controller.add(results!);
+      }
+
+      final existsInSqlite = await sqliteProvider.exists<_Model>(query: query, repository: this);
+      if (existsInSqlite) {
+        final results = await sqliteProvider.get<_Model>(query: query, repository: this);
+        controller.add(results);
+      }
+    }
+  }
+
   @override
   Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
       {Query? query, bool throwOnReattemptStatusCodes = false}) async {
     try {
-      return await super.upsert<_Model>(instance, query: query);
+      final result = await super.upsert<_Model>(instance, query: query);
+      await updateSubscriptionsAfterUpsert();
+      return result;
     } on GraphQLError catch (e) {
       logger.warning('#upsert graphql failure: $e');
 
