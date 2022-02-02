@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_shoppe/app/models/customer.dart';
-import 'package:pizza_shoppe/app/repository.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.dart';
+import 'package:pizza_shoppe/brick/repository.dart';
 
 void main() => runApp(MyApp());
 

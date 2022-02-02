@@ -44,7 +44,7 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
       'show Migratable;',
       newPart,
     );
-    await manuallyUpsertAppFile('db/$version.migration.dart', output);
+    await manuallyUpsertBrickFile('db/$version.migration.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
     await replaceWithinFile(
       'db/schema.g.dart',

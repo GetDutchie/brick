@@ -10,8 +10,8 @@ environment:
   flutter: ">=2.0.0"
 
 dependencies:
-  brick_offline_first:
-    path: ../packages/brick_offline_first
+  brick_offline_first_with_rest:
+    path: ../packages/brick_offline_first_with_rest
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
@@ -19,12 +19,17 @@ dependencies:
 dev_dependencies:
   brick_offline_first_with_rest_build:
     path: ../packages/brick_offline_first_with_rest_build
+  brick_sqlite_generators: ^2.0.0-rc.2
   build_runner: any
   shelf: ^1.1.0
 
 dependency_overrides:
-  brick_offline_first_abstract:
-    path: ../packages/brick_offline_first_abstract
+  brick_build:
+    path: ../packages/brick_build
+  brick_offline_first_build:
+    path: ../packages/brick_offline_first_build
+  brick_offline_first_with_rest_abstract:
+    path: ../packages/brick_offline_first_with_rest_abstract
 
 flutter:
   uses-material-design: true

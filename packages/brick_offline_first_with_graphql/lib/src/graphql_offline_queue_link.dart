@@ -1,5 +1,3 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:io';
 
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';

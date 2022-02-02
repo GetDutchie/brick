@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.1
+
+* Loosen pubspec restrictions
+
 ## 1.0.0+2
 
 * Permit v1 and v2 of `brick_offline_first_abstract`

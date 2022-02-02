@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0-rc.1
+
+* Prepare for 2.0.0 launch
+
 ## 1.2.0
 
 * Separate logic into more agnostic classes `JsonSerdesGenerator`, `JsonDeserialize` and `JsonSerialize`.

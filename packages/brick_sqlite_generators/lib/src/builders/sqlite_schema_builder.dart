@@ -18,7 +18,7 @@ class SchemaBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final output = schemaGenerator.generate(libraryReader, fieldses);
 
-    await manuallyUpsertAppFile('db/schema.g.dart', output);
+    await manuallyUpsertBrickFile('db/schema.g.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
     logStopwatch('Generated db/schema.g.dart', stopwatch);
   }

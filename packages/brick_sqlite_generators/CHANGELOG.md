@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 2.0.0-rc.2
+
+* Use `brick_build`s new `manuallyUpsertBrickFile` method instead of `manuallyUpsertAppFile`
+
+## 2.0.0-rc.1
+
 * Expose `SqliteSerdesGenerator` in `generators.dart`
 
 ## 1.2.0

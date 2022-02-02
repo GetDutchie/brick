@@ -12,13 +12,13 @@ void main() {
 // This file should NOT be version controlled and should not be manually edited.
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition;
+import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
 import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
-import 'models/person.dart';
-import 'models/path/user.dart';
+import 'person.dart';
+import 'path/user.dart';
 
 part 'adapters/person_adapter.g.dart';
 part 'adapters/user_adapter.g.dart';

@@ -8,7 +8,7 @@ class OfflineFirstModelDictionaryGenerator extends ModelDictionaryGenerator {
   String get requiredImports => """
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition;
+import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
 import 'package:brick_${remoteProviderName.toLowerCase()}/${remoteProviderName.toLowerCase()}.dart' show ${remoteProviderName}Provider, ${remoteProviderName}Model, ${remoteProviderName}Adapter, ${remoteProviderName}ModelDictionary;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;""";

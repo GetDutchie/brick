@@ -1,8 +1,6 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:async';
 
-import 'package:brick_offline_first/src/offline_queue/offline_request_queue.dart';
+import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 

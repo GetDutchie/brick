@@ -21,7 +21,8 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
 1. Add the packages:
     ```yaml
     dependencies:
-      brick_offline_first: any
+      # Or brick_offline_first_with_graphql
+      brick_offline_first_with_rest: any
     dev_dependencies:
       # Or brick_offline_first_with_graphql_build: any
       brick_offline_first_with_rest_build: any
