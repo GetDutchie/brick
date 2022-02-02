@@ -24,7 +24,7 @@ abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
   /// The mutation used to create or update a member.
   DocumentNode? get defaultUpsertOperation => null;
 
-  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition;
+  Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition;
 
   Future<_Model> fromGraphql(
     Map<String, dynamic> input, {

@@ -2,8 +2,21 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:mockito/mockito.dart';
 
-Link stubGraphqlLink(Map<String, dynamic> response, {List<String>? errors}) {
+Link stubGraphqlLink(
+  Map<String, dynamic> response, {
+  List<String>? errors,
+
+  /// Mirrors GraphQL's typical data structure - the function name as the key - that
+  /// wraps the result data
+  bool wrapInTopLevelKeyAndArray = true,
+}) {
   final link = MockLink();
+
+  if (wrapInTopLevelKeyAndArray) {
+    response = {
+      'result': [response]
+    };
+  }
 
   when(
     link.request(any),

@@ -19,7 +19,7 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
   DemoModelAssocAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToRuntimeDefinition = {
+  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
     'primaryKey': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: '_brick_id',

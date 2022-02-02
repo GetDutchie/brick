@@ -11,7 +11,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
 
   final List<GraphqlArgument> arguments;
 
-  /// Generates a document based on the [GraphqlAdapter#fieldsToRuntimeDefinition]
+  /// Generates a document based on the [GraphqlAdapter#fieldsToGraphqlRuntimeDefinition]
   DocumentNode get document {
     return DocumentNode(
       definitions: [
@@ -45,7 +45,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
               ],
               selectionSet: SelectionSetNode(
                 selections: _generateNodes(
-                  adapter.fieldsToRuntimeDefinition,
+                  adapter.fieldsToGraphqlRuntimeDefinition,
                   ignoreAssociations: operationType == OperationType.mutation,
                 ),
               ),
@@ -74,7 +74,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   /// Defaults to `[]`
   final List<GraphqlVariable> variables;
 
-  /// Convert an adapter's `#fieldsToRuntimeDefinition` to a
+  /// Convert an adapter's `#fieldsToGraphqlRuntimeDefinition` to a
   /// GraphQL document
   ModelFieldsDocumentTransformer({
     List<GraphqlArgument>? arguments,
@@ -93,10 +93,10 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   ///
   /// [ignoreAssociations] returns only the immediate models
   List<SelectionNode> _generateNodes(
-    Map<String, RuntimeGraphqlDefinition> fieldsToRuntimeDefinition, {
+    Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition, {
     bool ignoreAssociations = false,
   }) {
-    return fieldsToRuntimeDefinition.entries.fold<List<SelectionNode>>([], (nodes, entry) {
+    return fieldsToGraphqlRuntimeDefinition.entries.fold<List<SelectionNode>>([], (nodes, entry) {
       nodes.add(FieldNode(
         name: NameNode(value: entry.key),
         alias: null,
@@ -105,7 +105,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
         selectionSet: entry.value.association && !ignoreAssociations
             ? SelectionSetNode(
                 selections: _generateNodes(
-                  modelDictionary.adapterFor[entry.value.type]!.fieldsToRuntimeDefinition,
+                  modelDictionary.adapterFor[entry.value.type]!.fieldsToGraphqlRuntimeDefinition,
                 ),
               )
             : null,

@@ -89,7 +89,7 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
       await _$DemoModelToGraphql(input, provider: provider, repository: repository);
 
   @override
-  Map<String, RuntimeGraphqlDefinition> get fieldsToRuntimeDefinition => {
+  Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition => {
         'primaryKey': const RuntimeGraphqlDefinition(
           association: false,
           documentNodeName: '_brick_id',
