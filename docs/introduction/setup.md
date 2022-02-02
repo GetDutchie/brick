@@ -3,8 +3,10 @@
 1. Add the packages:
     ```yaml
     dependencies:
-      brick_offline_first: any
+      # or brick_offline_first_with_graphql: any
+      brick_offline_first_with_rest: any
     dev_dependencies:
+      # or brick_offline_first_with_graphql_build: any
       brick_offline_first_with_rest_build: any
       build_runner: any
     ```
