@@ -101,7 +101,7 @@ abstract class OfflineFirstWithGraphqlRepository
   @override
   Future<bool> exists<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
     try {
-      return super.exists(query: query);
+      return super.exists<_Model>(query: query);
     } on GraphQLError catch (e) {
       logger.warning('#get graphql failure: $e');
 
