@@ -26,6 +26,8 @@ dev_dependencies:
 dependency_overrides:
   brick_build:
     path: ../packages/brick_build
+  brick_offline_first_build:
+    path: ../packages/brick_offline_first_build
   brick_offline_first_with_rest_abstract:
     path: ../packages/brick_offline_first_with_rest_abstract
 
