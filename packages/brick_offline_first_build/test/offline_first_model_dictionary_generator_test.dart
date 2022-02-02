@@ -17,8 +17,8 @@ import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter,
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 
-import 'models/person.dart';
-import 'models/path/user.dart';
+import 'person.dart';
+import 'path/user.dart';
 
 part 'adapters/person_adapter.g.dart';
 part 'adapters/user_adapter.g.dart';
