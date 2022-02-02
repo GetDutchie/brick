@@ -8,12 +8,14 @@ Link stubGraphqlLink(
 
   /// Mirrors GraphQL's typical data structure - the function name as the key - that
   /// wraps the result data
-  bool wrapInTopLevelKey = true,
+  bool wrapInTopLevelKeyAndArray = true,
 }) {
   final link = MockLink();
 
-  if (wrapInTopLevelKey) {
-    response = {'result': response};
+  if (wrapInTopLevelKeyAndArray) {
+    response = {
+      'result': [response]
+    };
   }
 
   when(

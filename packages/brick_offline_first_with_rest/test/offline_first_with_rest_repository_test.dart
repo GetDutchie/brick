@@ -77,7 +77,7 @@ void main() {
       //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
     }, skip: 'Client is no longer a Mockito instance');
 
-    test('#storeRestResults', () async {
+    test('#storeRemoteResults', () async {
       final instance = Mounty(name: 'SqliteName');
       final results = await TestRepository().storeRemoteResults([instance]);
 
