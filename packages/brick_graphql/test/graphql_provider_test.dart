@@ -23,6 +23,15 @@ void main() {
         final provider = generateProvider({});
         final request = provider.createRequest<DemoModel>(action: QueryAction.get);
         expect(printNode(request.operation.document), startsWith(r'''query GetDemoModels {
+  getDemoModels {'''));
+      });
+      test('filtered', () {
+        final provider = generateProvider({});
+        final variables = {'name': 'Thomas'};
+        final request =
+            provider.createRequest<DemoModel>(action: QueryAction.get, variables: variables);
+        expect(printNode(request.operation.document),
+            startsWith(r'''query GetDemoModel($input: {"name": "Thomas}) {
   getDemoModel {'''));
       });
 
