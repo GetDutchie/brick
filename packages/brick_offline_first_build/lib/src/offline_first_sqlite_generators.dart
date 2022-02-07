@@ -4,8 +4,6 @@ import 'package:brick_offline_first_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
-// ignore: implementation_imports
-import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 class OfflineFirstSqliteSerialize extends SqliteSerialize {
