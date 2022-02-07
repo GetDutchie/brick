@@ -73,11 +73,9 @@ class MigrationGenerator extends Generator {
           reader.read('name').stringValue,
         );
       } else if (_insertColumnChecker.isExactlyType(object.type!)) {
-        final definitionObject =
-            reader.read('definitionType').isNull ? null : reader.read('definitionType').objectValue;
-        final definitionValue = Column.values.firstWhere(
-          (f) => definitionObject?.getField(f.toString().split('.')[1]) != null,
-        );
+        final definitionObject = reader.read('definitionType').objectValue;
+        final columnIndex = definitionObject.getField('index')!.toIntValue()!;
+        final definitionValue = Column.values[columnIndex];
         return InsertColumn(
           reader.read('name').stringValue,
           definitionValue,

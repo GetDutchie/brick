@@ -33,13 +33,8 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
       );
     }
 
-    final columnTypeObject = obj.getField('columnType');
-    // a hacky way around getting the value because `.fields` is not
-    // exposed in DartObjectImpl
-    final columnType = _firstWhereOrNull(Column.values, (c) {
-      final asString = c.toString().split('.').last;
-      return columnTypeObject?.getField(asString) != null;
-    });
+    final columnTypeValue = obj.getField('columnType')?.getField('index')?.toIntValue();
+    final columnType = columnTypeValue != null ? Column.values[columnTypeValue] : null;
 
     return Sqlite(
       columnType: columnType,
@@ -72,12 +67,4 @@ class SqliteFields extends FieldsForClass<Sqlite> {
   SqliteFields(ClassElement element, [this.config])
       : finder = SqliteAnnotationFinder(config),
         super(element: element);
-}
-
-// from dart:collection instead of importing the whole package
-T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-  for (var item in items) {
-    if (test(item)) return item;
-  }
-  return null;
 }
