@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.4.0+1
+
+* Fix field sorting and discovery error
+
 ## 1.4.0
 
 * Alphabetize methods (internal refactor)
