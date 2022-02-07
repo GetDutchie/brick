@@ -51,11 +51,3 @@ class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
     ];
   }
 }
-
-// from dart:collections, instead of importing a whole package
-T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-  for (var item in items) {
-    if (test(item)) return item;
-  }
-  return null;
-}
