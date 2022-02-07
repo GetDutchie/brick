@@ -25,15 +25,13 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
       return RestSerializable.defaults;
     }
 
-    final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
-    final fieldRenameByEnumName = _firstWhereOrNull(
-      FieldRename.values,
-      (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
-    );
+    final fieldRenameIndex =
+        withinConfigKey('fieldRename')?.objectValue.getField('index')?.toIntValue();
+    final fieldRename = fieldRenameIndex != null ? FieldRename.values[fieldRenameIndex] : null;
 
     return RestSerializable(
       nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
-      fieldRename: fieldRenameByEnumName ?? RestSerializable.defaults.fieldRename,
+      fieldRename: fieldRename ?? RestSerializable.defaults.fieldRename,
       endpoint: withinConfigKey('endpoint')?.stringValue ?? RestSerializable.defaults.endpoint,
       fromKey: withinConfigKey('fromKey')?.stringValue ?? RestSerializable.defaults.fromKey,
       toKey: withinConfigKey('toKey')?.stringValue ?? RestSerializable.defaults.toKey,
@@ -49,12 +47,4 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
       RestSerialize(classElement, fields, repositoryName: repositoryName!),
     ];
   }
-}
-
-// from dart:collections, instead of importing a whole package
-T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-  for (var item in items) {
-    if (test(item)) return item;
-  }
-  return null;
 }

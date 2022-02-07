@@ -7,6 +7,14 @@
 ## 2.0.0-rc.1
 
 * Expose `SqliteSerdesGenerator` in `generators.dart`
+* Upgrade `analyzer` dependency to `3.2.0`
+* Update enum discovery from `ConstantReader` to utilize new Analyzer methods (index instead of string)
+
+## 1.3.0
+
+* Expose `SqliteSerdesGenerator` in `generators.dart`
+* Upgrade `analyzer` dependency to `3.2.0`
+* Update enum discovery from `ConstantReader` to utilize new Analyzer methods (index instead of string)
 
 ## 1.2.0
 
