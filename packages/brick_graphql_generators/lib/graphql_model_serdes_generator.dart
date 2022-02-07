@@ -25,14 +25,12 @@ class GraphqlModelSerdesGenerator extends ProviderSerializableGenerator<GraphqlS
       return GraphqlSerializable.defaults;
     }
 
-    final fieldRenameObject = withinConfigKey('fieldRename')?.objectValue;
-    final fieldRenameByEnumName = _firstWhereOrNull(
-      FieldRename.values,
-      (f) => fieldRenameObject?.getField(f.toString().split('.')[1]) != null,
-    );
+    final fieldRenameIndex =
+        withinConfigKey('fieldRename')?.objectValue.getField('index')?.toIntValue();
+    final fieldRename = fieldRenameIndex != null ? FieldRename.values[fieldRenameIndex] : null;
 
     return GraphqlSerializable(
-      fieldRename: fieldRenameByEnumName ?? GraphqlSerializable.defaults.fieldRename,
+      fieldRename: fieldRename ?? GraphqlSerializable.defaults.fieldRename,
       defaultDeleteOperation: withinConfigKey('defaultDeleteOperation')?.stringValue,
       defaultQueryOperation: withinConfigKey('defaultQueryOperation')?.stringValue,
       defaultQueryFilteredOperation: withinConfigKey('defaultQueryFilteredOperation')?.stringValue,

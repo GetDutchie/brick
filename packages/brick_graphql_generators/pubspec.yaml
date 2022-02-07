@@ -4,13 +4,13 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql_g
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  analyzer: ^1.2.0
+  analyzer: ^3.2.0
   brick_build: ">=1.0.0 <3.0.0"
   brick_graphql: ^0.0.1+2
   brick_rest_generators: ">=1.0.0 <3.0.0"

@@ -1,5 +1,14 @@
 ## Unreleased
 
+## 2.0.0-rc.1
+
+* Include release candidates of build dependencies
+
+## 1.1.0
+
+* Upgrade `analyzer` dependency to `3.2.0`
+* Bump `brick_rest_generators` and `brick_sqlite_generators` to `1.3.0`
+
 ## 1.0.1
 
 * Loosen pubspec restrictions
@@ -7,10 +16,6 @@
 ## 1.0.0+2
 
 * Permit v1 and v2 of `brick_offline_first_abstract`
-## 1.1.0
-
-* Upgrade `analyzer` dependency to `3.2.0`
-* Bump `brick_rest_generators` and `brick_sqlite_generators` to `1.3.0`
 
 ## 1.0.0+1
 

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0-rc.2
+
+* Include `1.3.0` updates
+
 ## 2.0.0-rc.1
 
 * Prepare for 2.0.0 launch

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0-rc.3
+
+* Include `1.4.0+1` changes
+
 ## 2.0.0-rc.2
 
 * Fix adapters builder
