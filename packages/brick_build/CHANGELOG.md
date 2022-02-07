@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.4.0
+
 * Alphabetize methods (internal refactor)
 
 ## 1.3.0
