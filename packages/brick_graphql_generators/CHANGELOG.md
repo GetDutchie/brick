@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.0.2
+
+* Upgrade Analyzer to 3.2.0
+* Revise `FieldRename` enum discovery to use Analyzer's new API
+
 ## 1.0.1
 
 * Loosen restriction for `brick_build`

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0-rc.3
+
+* Include `1.3.0` changes
+
 ## 2.0.0-rc.2
 
 * Use `brick_build`s new `manuallyUpsertBrickFile` method instead of `manuallyUpsertAppFile`
