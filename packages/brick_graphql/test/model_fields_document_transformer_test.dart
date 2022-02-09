@@ -62,7 +62,7 @@ void main() {
       test('single argument', () {
         final variable = GraphqlVariable(className: 'UpsertPersonInput', name: 'input');
         final transformer = ModelFieldsDocumentTransformer<DemoModel>(
-          arguments: [GraphqlArgument(name: 'filter', variable: variable)],
+          arguments: [GraphqlArgument(name: 'input', variable: variable)],
           modelDictionary: dictionary,
           operationFunctionName: 'upsertPerson',
           operationNameNode: 'UpsertPerson',
@@ -191,14 +191,14 @@ void main() {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get);
           expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
-  getDemoModel {'''));
+  getDemoModels {'''));
         });
 
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get, query: Query.where('name', 'Thomas'));
           expect(lang.printNode(transformer.document),
-              startsWith(r'''query GetDemoModels($input: DemoModelFilterInput!) {
+              startsWith(r'''query GetDemoModel($input: DemoModelFilterInput!) {
   getDemoModel(input: $input) {'''));
         });
       });

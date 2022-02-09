@@ -25,15 +25,6 @@ void main() {
         expect(printNode(request.operation.document), startsWith(r'''query GetDemoModels {
   getDemoModels {'''));
       });
-      test('filtered', () {
-        final provider = generateProvider({});
-        final variables = {'name': 'Thomas'};
-        final request =
-            provider.createRequest<DemoModel>(action: QueryAction.get, variables: variables);
-        expect(printNode(request.operation.document),
-            startsWith(r'''query GetDemoModel($input: {"name": "Thomas}) {
-  getDemoModel {'''));
-      });
 
       test('with variables', () {
         final provider = generateProvider({});
@@ -41,7 +32,7 @@ void main() {
         final request =
             provider.createRequest<DemoModel>(action: QueryAction.upsert, variables: variables);
         expect(printNode(request.operation.document),
-            startsWith(r'''mutation UpsertDemoModels($input: DemoModel!) {
+            startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
         expect(request.variables, variables);
       });
