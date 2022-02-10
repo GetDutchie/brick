@@ -79,8 +79,8 @@ Fetch instances of a model **with** an argument or variable.
 ```dart
 @ConnectOfflineFirstWithGraphql(
   graphqlConfig: GraphqlSerializable(
-    defaultQueryFilteredOperation: r'''query GetFilteredUsers($input: UserFilter) {
-      getFilteredUsers(filter: $input) {}
+    defaultQueryFilteredOperation: r'''query GetFilteredUsers($input: UserFilterInput) {
+      getFilteredUsers(input: $input) {}
     }''',
   )
 )

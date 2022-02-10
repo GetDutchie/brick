@@ -1,9 +1,9 @@
+import 'package:brick_core/core.dart' show Query;
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:gql/language.dart';
 
 import 'demo_model.dart';
-import 'package:brick_core/core.dart' show Query;
 
 Future<DemoModel> _$DemoModelFromGraphql(Map<String, dynamic> data,
     {GraphqlProvider? provider, repository}) async {
@@ -38,7 +38,7 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
 class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   @override
   final defaultDeleteOperation = parseString(
-    r'''mutation DeleteDemoModel($input: DemoModel!) {
+    r'''mutation DeleteDemoModel($input: DemoModelInput!) {
       deleteDemoModel(input: $input) {}
     }''',
   );
@@ -46,34 +46,34 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   @override
   final defaultQueryOperation = parseString(
     r'''query GetDemoModels() {
-      getDemoModel() {}
+      getDemoModels() {}
     }''',
   );
 
   @override
   final defaultQueryFilteredOperation = parseString(
-    r'''query GetDemoModels($input: DemoModelFilter) {
-      getDemoModel(filter: $input) {}
+    r'''query GetDemoModel($input: DemoModelFilterInput) {
+      getDemoModel(input: $input) {}
     }''',
   );
 
   @override
   final defaultSubscriptionOperation = parseString(
     r'''subscription GetDemoModels() {
-      getDemoModel() {}
+      getDemoModels() {}
     }''',
   );
 
   @override
   final defaultSubscriptionFilteredOperation = parseString(
-    r'''subscription GetDemoModels($input: DemoModel) {
-      getDemoModel(input: $input) {}
+    r'''subscription GetDemoModels($input: DemoModelInput) {
+      getDemoModels(input: $input) {}
     }''',
   );
 
   @override
   final defaultUpsertOperation = parseString(
-    r'''mutation UpsertDemoModels($input: DemoModel) {
+    r'''mutation UpsertDemoModels($input: DemoModelInput) {
       upsertDemoModel(input: $input) {}
     }''',
   );

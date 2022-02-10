@@ -1,9 +1,10 @@
-import 'demo_model.dart';
+import 'package:brick_core/core.dart' show Query;
+import 'package:brick_sqlite/sqlite.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite/sqlite.dart';
-import 'package:brick_core/core.dart' show Query;
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
+
+import 'demo_model.dart';
 
 Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
     {SqliteProvider? provider, repository}) async {
