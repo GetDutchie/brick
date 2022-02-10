@@ -23,7 +23,7 @@ void main() {
         final provider = generateProvider({});
         final request = provider.createRequest<DemoModel>(action: QueryAction.get);
         expect(printNode(request.operation.document), startsWith(r'''query GetDemoModels {
-  getDemoModel {'''));
+  getDemoModels {'''));
       });
 
       test('with variables', () {
@@ -32,7 +32,7 @@ void main() {
         final request =
             provider.createRequest<DemoModel>(action: QueryAction.upsert, variables: variables);
         expect(printNode(request.operation.document),
-            startsWith(r'''mutation UpsertDemoModels($input: DemoModel!) {
+            startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
         expect(request.variables, variables);
       });

@@ -1,16 +1,16 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
-import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:brick_graphql/src/transformers/graphql_argument.dart';
+import 'package:brick_graphql/src/transformers/graphql_variable.dart';
+import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql/ast.dart';
-import 'package:test/test.dart';
 import 'package:gql/language.dart' as lang;
+import 'package:test/test.dart';
 
 import '__helpers__/demo_model.dart';
 import '__mocks__.dart';
 
 const upsertPersonWithoutNodesHeader = r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-  upsertPerson(filter: $input) {}
+  upsertPerson(input: $input) {}
 }''';
 
 const upsertPersonWithoutArgumentsHeader = r'''mutation UpsertPerson {
@@ -18,7 +18,7 @@ const upsertPersonWithoutArgumentsHeader = r'''mutation UpsertPerson {
 }''';
 
 const upsertPersonWithNodes = r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-  upsertPerson(filter: $input) {
+  upsertPerson(input: $input) {
     primaryKey
     id
     assoc
@@ -62,7 +62,7 @@ void main() {
       test('single argument', () {
         final variable = GraphqlVariable(className: 'UpsertPersonInput', name: 'input');
         final transformer = ModelFieldsDocumentTransformer<DemoModel>(
-          arguments: [GraphqlArgument(name: 'filter', variable: variable)],
+          arguments: [GraphqlArgument(name: 'input', variable: variable)],
           modelDictionary: dictionary,
           operationFunctionName: 'upsertPerson',
           operationNameNode: 'UpsertPerson',
@@ -146,7 +146,7 @@ void main() {
       test('with other nodes', () {
         final transformer = ModelFieldsDocumentTransformer.concatFromString<DemoModel>(
           r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-            upsertPerson(filter: $input) {
+            upsertPerson(input: $input) {
               id
               horse
               hat
@@ -167,14 +167,14 @@ void main() {
             action: QueryAction.get, query: query);
         expect(lang.printNode(transformer.document),
             startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-  upsertPerson(filter: $input) {'''));
+  upsertPerson(input: $input) {'''));
       });
 
       test('with delete action', () {
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.delete);
         expect(lang.printNode(transformer.document),
-            startsWith(r'''mutation DeleteDemoModel($input: DemoModel!) {
+            startsWith(r'''mutation DeleteDemoModel($input: DemoModelInput!) {
   deleteDemoModel(input: $input) {'''));
       });
 
@@ -182,7 +182,7 @@ void main() {
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.upsert);
         expect(lang.printNode(transformer.document),
-            startsWith(r'''mutation UpsertDemoModels($input: DemoModel!) {
+            startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
       });
 
@@ -191,15 +191,15 @@ void main() {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get);
           expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
-  getDemoModel {'''));
+  getDemoModels {'''));
         });
 
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get, query: Query.where('name', 'Thomas'));
           expect(lang.printNode(transformer.document),
-              startsWith(r'''query GetDemoModels($input: DemoModelFilter!) {
-  getDemoModel(filter: $input) {'''));
+              startsWith(r'''query GetDemoModel($input: DemoModelFilterInput!) {
+  getDemoModel(input: $input) {'''));
         });
       });
 
@@ -208,15 +208,15 @@ void main() {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe);
           expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
-  getDemoModel {'''));
+  getDemoModels {'''));
         });
 
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe, query: Query.where('name', 'Thomas'));
           expect(lang.printNode(transformer.document),
-              startsWith(r'''subscription GetDemoModels($input: DemoModel!) {
-  getDemoModel(input: $input) {'''));
+              startsWith(r'''subscription GetDemoModels($input: DemoModelInput!) {
+  getDemoModels(input: $input) {'''));
         });
       });
     });
