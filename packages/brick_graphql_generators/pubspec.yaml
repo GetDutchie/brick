@@ -16,8 +16,7 @@ dependencies:
   dart_style: ^2.0.0
   source_gen: ^1.0.0
   brick_rest_generators: ^1.2.0
-  brick_graphql:
-    path: ../brick_graphql
+  brick_graphql: ^0.0.1
 
 dev_dependencies:
   test: ^1.16.8
