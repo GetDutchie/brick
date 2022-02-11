@@ -1,6 +1,5 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
-import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -45,34 +44,33 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
   TestRepository._(
     GraphqlProvider _graphqlProvider,
     SqliteProvider _sqliteProvider,
+    GraphqlRequestSqliteCacheManager _manager,
   ) : super(
           graphqlProvider: _graphqlProvider,
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineQueueLinkSqliteCacheManager: GraphqlRequestSqliteCacheManager(
-            '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
-            databaseFactory: databaseFactoryFfi,
-          ),
+          offlineRequestManager: _manager,
         );
-
-  factory TestRepository.withProviders(
-          GraphqlProvider graphqlProvider, SqliteProvider sqliteProvider) =>
-      TestRepository._(graphqlProvider, sqliteProvider);
 
   factory TestRepository.configure({
     required Link link,
   }) {
+    final manager = GraphqlRequestSqliteCacheManager(
+      '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
+      databaseFactory: databaseFactoryFfi,
+    );
     return TestRepository._(
       GraphqlProvider(
         modelDictionary: graphqlModelDictionary,
-        link: link,
+        link: GraphqlOfflineQueueLink(manager).concat(link),
       ),
       SqliteProvider(
         '$inMemoryDatabasePath/repository${DateTime.now().millisecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteModelDictionary,
       ),
+      manager,
     );
   }
 }

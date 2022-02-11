@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
-import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
-import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -38,14 +36,18 @@ abstract class OfflineFirstWithGraphqlRepository
       {};
 
   OfflineFirstWithGraphqlRepository({
+    bool? autoHydrate,
     required GraphqlProvider graphqlProvider,
     required SqliteProvider sqliteProvider,
+    String? loggerName,
     MemoryCacheProvider? memoryCacheProvider,
     required Set<Migration> migrations,
-    bool? autoHydrate,
-    String? loggerName,
-    GraphqlRequestSqliteCacheManager? offlineQueueLinkSqliteCacheManager,
+    required GraphqlRequestSqliteCacheManager offlineRequestManager,
   })  : remoteProvider = graphqlProvider,
+        offlineRequestQueue = GraphqlOfflineRequestQueue(
+          link: graphqlProvider.link,
+          requestManager: offlineRequestManager,
+        ),
         super(
           autoHydrate: autoHydrate,
           loggerName: loggerName,
@@ -53,15 +55,7 @@ abstract class OfflineFirstWithGraphqlRepository
           migrations: migrations,
           sqliteProvider: sqliteProvider,
           remoteProvider: graphqlProvider,
-        ) {
-    remoteProvider.link = GraphqlOfflineQueueLink(
-      graphqlProvider.link,
-      offlineQueueLinkSqliteCacheManager ?? GraphqlRequestSqliteCacheManager(_queueDatabaseName),
-    );
-    offlineRequestQueue = GraphqlOfflineRequestQueue(
-      link: remoteProvider.link as GraphqlOfflineQueueLink,
-    );
-  }
+        );
 
   @override
   Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
@@ -141,7 +135,7 @@ abstract class OfflineFirstWithGraphqlRepository
     await super.migrate();
 
     // Migrate cached jobs schema
-    await offlineRequestQueue.link.requestManager.migrate();
+    await offlineRequestQueue.requestManager.migrate();
   }
 
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
@@ -221,8 +215,6 @@ abstract class OfflineFirstWithGraphqlRepository
     }
   }
 }
-
-const _queueDatabaseName = 'brick_offline_queue.sqlite';
 
 /// Subclass [GraphQLError] as an [Exception]
 class _GraphqlException implements Exception {

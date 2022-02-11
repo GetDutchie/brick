@@ -125,7 +125,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       arguments: GraphqlArgument.fromOperationNode(node),
       modelDictionary: modelDictionary,
       operationFunctionName: (node.selectionSet.selections.first as FieldNode).name.value,
-      operationNameNode: node.name!.value,
+      operationNameNode: node.name?.value,
       operationType: node.type,
       variables: GraphqlVariable.fromOperationNode(node),
     );

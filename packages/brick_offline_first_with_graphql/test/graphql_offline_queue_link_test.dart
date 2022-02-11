@@ -48,7 +48,7 @@ void main() {
 
     test('verify link request made', () async {
       final mockLink = stubGraphqlLink({});
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
       await client.request(request).first;
 
@@ -59,8 +59,7 @@ void main() {
 
     test('#send forwards to inner client', () async {
       final mockLink = MockLink();
-
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
       when(
         mockLink.request(request),
@@ -73,7 +72,7 @@ void main() {
 
     test('Query / Subscriptions are not tracked', () async {
       final mockLink = stubGraphqlLink({});
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
       await client
           .request(
@@ -93,7 +92,7 @@ void main() {
 
     test('request is stored in SQLite', () async {
       final mockLink = stubGraphqlLink({}, errors: ['Unavailable']);
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
       await client
           .request(
@@ -132,8 +131,7 @@ void main() {
 
     test('request deletes after a successful response', () async {
       final mockLink = MockLink();
-
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
       when(
         mockLink.request(request),
@@ -154,8 +152,8 @@ void main() {
 
     test('request increments after a unsuccessful response', () async {
       final mockLink = stubGraphqlLink({}, errors: ['Unsuccessful']);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
       final mutationRequest = Request(
         operation: Operation(
           document: parseString('''mutation {}'''),
@@ -178,7 +176,8 @@ void main() {
 
     test('request creates and does not delete after an unsuccessful response', () async {
       final mockLink = stubGraphqlLink({}, errors: ['Unknown error']);
-      final client = GraphqlOfflineQueueLink(mockLink, requestManager);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
+
       final mutationRequest = Request(
         operation: Operation(
           document: parseString('''mutation {}'''),
@@ -194,9 +193,9 @@ void main() {
     });
 
     test('request is not deleted after sending to a misconfigured client', () async {
-      final link = stubGraphqlLink({}, errors: ['Misconfigured']);
+      final mockLink = stubGraphqlLink({}, errors: ['Misconfigured']);
+      final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);
 
-      final client = GraphqlOfflineQueueLink(link, requestManager);
       const document = '''mutation {
             hello{
               hi

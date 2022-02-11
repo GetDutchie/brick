@@ -62,10 +62,8 @@ void main() {
         serialProcessing: false,
         processingInterval: const Duration(seconds: 0),
       );
-      final client = GraphqlOfflineQueueLink(
-        stubGraphqlLink({}, errors: ['Unable to connect']),
-        _requestManager,
-      );
+      final client = GraphqlOfflineQueueLink(_requestManager)
+          .concat(stubGraphqlLink({}, errors: ['Unable to connect']));
 
       await client.request(upsertMutation).first;
       await client.request(deleteMutation).first;
@@ -80,10 +78,8 @@ void main() {
     });
 
     test('#deleteUnprocessedRequest', () async {
-      final client = GraphqlOfflineQueueLink(
-        stubGraphqlLink({}, errors: ['Unable to connect']),
-        requestManager,
-      );
+      final client = GraphqlOfflineQueueLink(requestManager)
+          .concat(stubGraphqlLink({}, errors: ['Unable to connect']));
       expect(await requestManager.unprocessedRequests(), isEmpty);
 
       await client.request(upsertMutation).first;
@@ -97,10 +93,8 @@ void main() {
 
     group('#prepareNextRequestToProcess', () {
       test('integration', () async {
-        final client = GraphqlOfflineQueueLink(
-          stubGraphqlLink({}, errors: ['Unable to connect']),
-          requestManager,
-        );
+        final client = GraphqlOfflineQueueLink(requestManager)
+            .concat(stubGraphqlLink({}, errors: ['Unable to connect']));
 
         await client.request(upsertMutation).first;
         await client.request(deleteMutation).first;
