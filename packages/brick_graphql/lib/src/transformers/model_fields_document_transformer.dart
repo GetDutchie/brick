@@ -160,7 +160,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     }
 
     if (action == QueryAction.subscribe) {
-      if (query == null && adapter.defaultSubscriptionOperation != null) {
+      if (query?.where == null && adapter.defaultSubscriptionOperation != null) {
         return concat<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
       }
 
@@ -169,7 +169,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       }
     }
 
-    if (query == null && adapter.defaultQueryOperation != null) {
+    if (query?.where == null && adapter.defaultQueryOperation != null) {
       return concat<_Model>(adapter.defaultQueryOperation!, modelDictionary);
     }
 

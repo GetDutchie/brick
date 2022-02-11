@@ -194,6 +194,13 @@ void main() {
   getDemoModels {'''));
         });
 
+        test('without query.where', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.get, query: Query(action: QueryAction.get));
+          expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
+  getDemoModels {'''));
+        });
+
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get, query: Query.where('name', 'Thomas'));
@@ -207,6 +214,13 @@ void main() {
         test('without query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe);
+          expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
+  getDemoModels {'''));
+        });
+
+        test('without query.where', () {
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+              action: QueryAction.subscribe, query: Query(action: QueryAction.get));
           expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
   getDemoModels {'''));
         });
