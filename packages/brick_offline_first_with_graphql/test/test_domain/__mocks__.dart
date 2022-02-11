@@ -49,7 +49,7 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineQueueLinkSqliteCacheManager: GraphqlRequestSqliteCacheManager(
+          offlineRequestManager: GraphqlRequestSqliteCacheManager(
             '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
             databaseFactory: databaseFactoryFfi,
           ),

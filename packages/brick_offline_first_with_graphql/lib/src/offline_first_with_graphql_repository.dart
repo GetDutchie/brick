@@ -36,14 +36,18 @@ abstract class OfflineFirstWithGraphqlRepository
       {};
 
   OfflineFirstWithGraphqlRepository({
+    bool? autoHydrate,
     required GraphqlProvider graphqlProvider,
     required SqliteProvider sqliteProvider,
+    String? loggerName,
     MemoryCacheProvider? memoryCacheProvider,
     required Set<Migration> migrations,
-    bool? autoHydrate,
-    String? loggerName,
-    GraphqlRequestSqliteCacheManager? offlineQueueLinkSqliteCacheManager,
+    required GraphqlRequestSqliteCacheManager offlineRequestManager,
   })  : remoteProvider = graphqlProvider,
+        offlineRequestQueue = GraphqlOfflineRequestQueue(
+          link: graphqlProvider.link,
+          requestManager: offlineRequestManager,
+        ),
         super(
           autoHydrate: autoHydrate,
           loggerName: loggerName,
@@ -131,7 +135,7 @@ abstract class OfflineFirstWithGraphqlRepository
     await super.migrate();
 
     // Migrate cached jobs schema
-    await offlineRequestQueue.link.requestManager.migrate();
+    await offlineRequestQueue.requestManager.migrate();
   }
 
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
