@@ -86,7 +86,7 @@ abstract class OfflineFirstWithGraphqlRepository
     bool seedOnly = false,
   }) async {
     try {
-      return await super.get(
+      return await super.get<_Model>(
         alwaysHydrate: alwaysHydrate,
         hydrateUnexisting: hydrateUnexisting,
         query: query,
@@ -118,7 +118,7 @@ abstract class OfflineFirstWithGraphqlRepository
     Query? query,
   }) async {
     try {
-      return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
+      return await super.hydrate<_Model>(deserializeSqlite: deserializeSqlite, query: query);
     } on GraphQLError catch (e) {
       logger.warning('#hydrate graphql failure: $e');
     }
