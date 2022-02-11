@@ -4,6 +4,21 @@
 
 The `OfflineFirstWithGraphql` domain uses all the same configurations and annotations as `OfflineFirst`.
 
+## GraphqlOfflineQueueLink
+
+To cache outbound requests, apply `GraphqlOfflineQueueLink` in your GraphqlProvider:
+
+```dart
+GraphqlProvider(
+  link: Link.from([
+    GraphqlOfflineQueueLink(GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite')),
+    HttpLink(endpoint)
+  ]),
+);
+```
+
+:warning: Be sure to place the queue above `HttpLink` or `WebSocketLink` or any other outbound `Link`s.
+
 ## Models
 
 ### ConnectOfflineFirstWithGraphql

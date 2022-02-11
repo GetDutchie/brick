@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
-import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
-import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -53,15 +51,7 @@ abstract class OfflineFirstWithGraphqlRepository
           migrations: migrations,
           sqliteProvider: sqliteProvider,
           remoteProvider: graphqlProvider,
-        ) {
-    remoteProvider.link = GraphqlOfflineQueueLink(
-      graphqlProvider.link,
-      offlineQueueLinkSqliteCacheManager ?? GraphqlRequestSqliteCacheManager(_queueDatabaseName),
-    );
-    offlineRequestQueue = GraphqlOfflineRequestQueue(
-      link: remoteProvider.link as GraphqlOfflineQueueLink,
-    );
-  }
+        );
 
   @override
   Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
@@ -221,8 +211,6 @@ abstract class OfflineFirstWithGraphqlRepository
     }
   }
 }
-
-const _queueDatabaseName = 'brick_offline_queue.sqlite';
 
 /// Subclass [GraphQLError] as an [Exception]
 class _GraphqlException implements Exception {

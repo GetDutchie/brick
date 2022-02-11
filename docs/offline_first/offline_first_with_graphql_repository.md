@@ -5,3 +5,18 @@
 `OfflineFirstWithGraphqlRepository` streamlines the GraphQL integration with an `OfflineFirstRepository`. A serial queue is included to track GraphQL mutations in a separate SQLite database, only removing requests when a response is returned from the host (i.e. the device has lost internet connectivity).
 
 The `OfflineFirstWithGraphql` domain uses all the same configurations and annotations as `OfflineFirst`.
+
+## GraphqlOfflineQueueLink
+
+To cache outbound requests, apply `GraphqlOfflineQueueLink` in your GraphqlProvider:
+
+```dart
+GraphqlProvider(
+  link: Link.from([
+    GraphqlOfflineQueueLink(GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite')),
+    HttpLink(endpoint)
+  ]),
+);
+```
+
+!> Be sure to place the queue above `HttpLink` or `WebSocketLink` or any other outbound `Link`s.
