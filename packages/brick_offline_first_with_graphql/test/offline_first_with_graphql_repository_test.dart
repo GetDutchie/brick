@@ -11,7 +11,7 @@ void main() {
   group('OfflineFirstWithGraphqlRepository', () {
     test('instantiates', () {
       final repository = TestRepository.configure(link: stubGraphqlLink({}));
-      expect(repository.remoteProvider.link.runtimeType.toString(), 'GraphqlOfflineQueueLink');
+      expect(repository.remoteProvider.link.runtimeType.toString(), '_LinkChain');
     });
 
     group('#get', () {

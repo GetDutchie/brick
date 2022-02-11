@@ -44,34 +44,33 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
   TestRepository._(
     GraphqlProvider _graphqlProvider,
     SqliteProvider _sqliteProvider,
+    GraphqlRequestSqliteCacheManager _manager,
   ) : super(
           graphqlProvider: _graphqlProvider,
           sqliteProvider: _sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineRequestManager: GraphqlRequestSqliteCacheManager(
-            '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
-            databaseFactory: databaseFactoryFfi,
-          ),
+          offlineRequestManager: _manager,
         );
-
-  factory TestRepository.withProviders(
-          GraphqlProvider graphqlProvider, SqliteProvider sqliteProvider) =>
-      TestRepository._(graphqlProvider, sqliteProvider);
 
   factory TestRepository.configure({
     required Link link,
   }) {
+    final manager = GraphqlRequestSqliteCacheManager(
+      '$inMemoryDatabasePath/queue${DateTime.now().millisecondsSinceEpoch}',
+      databaseFactory: databaseFactoryFfi,
+    );
     return TestRepository._(
       GraphqlProvider(
         modelDictionary: graphqlModelDictionary,
-        link: link,
+        link: GraphqlOfflineQueueLink(manager).concat(link),
       ),
       SqliteProvider(
         '$inMemoryDatabasePath/repository${DateTime.now().millisecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteModelDictionary,
       ),
+      manager,
     );
   }
 }
