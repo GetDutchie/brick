@@ -16,10 +16,37 @@ void main() {
       await TestRepository().initialize();
     });
 
+    tearDown(() {
+      TestRepository.throwOnNextRemoteMutation = false;
+    });
+
     test('#applyPolicyToQuery', () async {
       const policy = OfflineFirstGetPolicy.localOnly;
       final query = TestRepository().applyPolicyToQuery(Query(), get: policy);
       expect(query?.providerArgs, {'policy': policy.index});
+    });
+
+    group('#delete', () {
+      test('OfflineFirstDeletePolicy.optimisticLocal', () async {
+        final instance = Mounty(name: 'SqliteName');
+        final upserted = await TestRepository().upsert<Mounty>(instance);
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
+
+        TestRepository.throwOnNextRemoteMutation = true;
+        await TestRepository().delete<Mounty>(upserted);
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), isEmpty);
+      });
+
+      test('OfflineFirstDeletePolicy.requireRemote', () async {
+        final instance = Mounty(name: 'SqliteName');
+        final upserted = await TestRepository().upsert<Mounty>(instance);
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
+
+        TestRepository.throwOnNextRemoteMutation = true;
+        await TestRepository()
+            .delete<Mounty>(upserted, policy: OfflineFirstDeletePolicy.requireRemote);
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
+      });
     });
 
     group('#get', () {
@@ -49,6 +76,19 @@ void main() {
 
         expect(findByName.first.name, horse.name);
       });
+
+      test('OfflineFirstGetPolicy.localOnly', () async {
+        final results = await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.localOnly);
+
+        expect(results, isEmpty);
+      });
+
+      test('OfflineFirstGetPolicy.awaitRemoteWhenNoneExist', () async {
+        final results = await TestRepository()
+            .get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist);
+
+        expect(results, isNotEmpty);
+      });
     });
 
     test('#hydrateSqlite / #get requireRest:true', () async {
@@ -76,12 +116,24 @@ void main() {
       expect(results.first.primaryKey, greaterThanOrEqualTo(1));
     });
 
-    test('#upsert', () async {
-      final instance = Mounty(name: 'SqliteName');
-      final results = await TestRepository().upsert<Mounty>(instance);
+    group('#upsert', () {
+      test('OfflineFirstUpsertPolicy.optimisticLocal', () async {
+        final instance = Mounty(name: 'SqliteName');
+        final results = await TestRepository().upsert<Mounty>(instance);
 
-      expect(results.name, 'SqliteName');
-      expect(results.primaryKey, greaterThanOrEqualTo(1));
+        expect(results.name, 'SqliteName');
+        expect(results.primaryKey, greaterThanOrEqualTo(1));
+      });
+
+      test('OfflineFirstUpsertPolicy.requireRemote', () async {
+        final instance = Mounty(name: 'SqliteName');
+        TestRepository.throwOnNextRemoteMutation = true;
+        final results = await TestRepository()
+            .upsert<Mounty>(instance, policy: OfflineFirstUpsertPolicy.requireRemote);
+
+        expect(results.name, 'SqliteName');
+        expect(results.primaryKey, greaterThanOrEqualTo(1));
+      });
     });
 
     test('#reset', () async {

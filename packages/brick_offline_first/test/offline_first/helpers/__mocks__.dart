@@ -42,6 +42,9 @@ class DemoModelMigration extends Migration {
 class TestRepository extends OfflineFirstWithTestRepository {
   static TestRepository? _singleton;
 
+  /// A hack to similuate a failure in the remote provider
+  static bool throwOnNextRemoteMutation = false;
+
   TestRepository._(
     TestProvider testProvider,
     SqliteProvider sqliteProvider,
