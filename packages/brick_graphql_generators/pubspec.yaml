@@ -13,7 +13,7 @@ dependencies:
   analyzer: ^3.2.0
   brick_build: ">=1.0.0 <3.0.0"
   brick_graphql: ^0.0.1+2
-  brick_rest_generators: ">=1.0.0 <3.0.0"
+  brick_json_generators: ^0.0.1
   build: ^2.0.0
   dart_style: ^2.0.0
   source_gen: ^1.0.0

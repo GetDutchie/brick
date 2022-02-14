@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
-import 'package:brick_rest_generators/generators.dart' show JsonSerdesGenerator;
+import 'package:brick_json_generators/json_serdes_generator.dart';
 
 abstract class GraphqlSerdesGenerator extends JsonSerdesGenerator<GraphqlModel, Graphql> {
   GraphqlSerdesGenerator(
