@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:brick_offline_first/src/offline_first_policy.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:logging/logging.dart';
@@ -79,30 +80,48 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   @override
   Future<bool> delete<_Model extends _RepositoryModel>(
     _Model instance, {
+    OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
   }) async {
     query = (query ?? Query()).copyWith(action: QueryAction.delete);
     logger.finest('#delete: $query');
 
-    final rowsDeleted = await sqliteProvider.delete<_Model>(
-      instance,
-      query: query,
-      repository: this,
-    );
-    memoryCacheProvider.delete<_Model>(instance, query: query);
+    final optimisticLocal = policy == OfflineFirstDeletePolicy.optimisticLocal;
+    final requireRemote = policy == OfflineFirstDeletePolicy.requireRemote;
+
+    var rowsDeleted = 0;
+
+    if (optimisticLocal) {
+      rowsDeleted = await _deleteLocal<_Model>(instance, query: query);
+    }
 
     try {
       await remoteProvider.delete<_Model>(instance, query: query, repository: this);
+      if (requireRemote) {
+        rowsDeleted = await _deleteLocal<_Model>(instance, query: query);
+      }
     } on ClientException catch (e) {
       logger.warning('#delete client failure: $e');
+      if (requireRemote) rethrow;
     } on SocketException catch (e) {
       logger.warning('#delete socket failure: $e');
+      if (requireRemote) rethrow;
     }
 
     // ignore: unawaited_futures
     if (autoHydrate) hydrate<_Model>(query: query);
 
     return rowsDeleted > 0;
+  }
+
+  Future<int> _deleteLocal<_Model extends _RepositoryModel>(_Model instance, {Query? query}) async {
+    final rowsDeleted = await sqliteProvider.delete<_Model>(
+      instance,
+      query: query,
+      repository: this,
+    );
+    memoryCacheProvider.delete<_Model>(instance, query: query);
+    return rowsDeleted;
   }
 
   /// Check if a [_Model] is accessible locally.
@@ -124,24 +143,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// fetch it from [remoteProvider] and hydrate SQLite.
   /// For available query providerArgs see [remoteProvider#get] [SqliteProvider.get].
   ///
-  /// [alwaysHydrate] ensures data is fetched from the [remoteProvider] for each invocation.
-  /// This often **negatively affects performance** when enabled. Defaults to `false`.
-  ///
-  /// [hydrateUnexisting] retrieves from the [remoteProvider] if the query returns no results from SQLite.
-  /// If an empty response can be expected (such as a search page), set to `false`. Defaults to `true`.
-  ///
-  /// [requireRemote] ensures data must be updated from the [remoteProvider] before returning if the app is online.
-  /// An empty array will be returned if the app is offline. Defaults to `false`.
-  ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
   Future<List<_Model>> get<_Model extends _RepositoryModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
-    bool alwaysHydrate = false,
-    bool hydrateUnexisting = true,
-    bool requireRemote = false,
     bool seedOnly = false,
   }) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
@@ -154,6 +162,11 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     }
 
     final modelExists = await exists<_Model>(query: query);
+
+    final requireRemote = policy == OfflineFirstGetPolicy.awaitRemote;
+    final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
+    final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
+
     if (requireRemote || (hydrateUnexisting && !modelExists)) {
       return await hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
     } else if (alwaysHydrate) {
@@ -171,7 +184,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
   Future<List<_Model>?> getAssociation<_Model extends _RepositoryModel>(Query query) async {
     logger.finest('#getAssociation: $_Model $query');
-    final results = await get<_Model>(query: query, alwaysHydrate: false);
+    final results = await get<_Model>(query: query);
     if (results.isEmpty) return null;
     return results;
   }
@@ -183,16 +196,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// incremented in `query.providerArgs['offset']`. The endpoint for [_Model] should expect these
   /// arguments. The stream will recurse until the return size does not equal [batchSize].
   ///
-  /// [requireRemote] ensures the data is fresh at the expense of increased execution time.
-  /// Defaults to `false`.
-  ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   Future<List<_Model>> getBatched<_Model extends _RepositoryModel>({
-    Query? query,
     int batchSize = 50,
-    bool requireRemote = false,
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    Query? query,
     bool seedOnly = false,
   }) async {
     query = query ?? Query();
@@ -211,7 +221,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
       final results = await get<_Model>(
         query: recursiveQuery,
-        requireRemote: requireRemote,
+        policy: policy,
         seedOnly: seedOnly,
       );
       total.addAll(results);
@@ -258,12 +268,42 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   Future<_Model> upsert<_Model extends _RepositoryModel>(
     _Model instance, {
     Query? query,
+    OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
   }) async {
     if (query?.action == null) {
       query = (query ?? Query()).copyWith(action: QueryAction.upsert);
     }
     logger.finest('#upsert: $query $instance');
 
+    final optimisticLocal = policy == OfflineFirstUpsertPolicy.optimisticLocal;
+    final requireRemote = policy == OfflineFirstUpsertPolicy.requireRemote;
+
+    if (optimisticLocal) {
+      instance.primaryKey = await _upsertLocal(instance, query: query);
+    }
+
+    try {
+      await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
+
+      if (requireRemote) {
+        instance.primaryKey = await _upsertLocal(instance, query: query);
+      }
+    } on ClientException catch (e) {
+      logger.warning('#upsert client failure: $e');
+      if (requireRemote) rethrow;
+    } on SocketException catch (e) {
+      logger.warning('#upsert socket failure: $e');
+      if (requireRemote) rethrow;
+    }
+
+    // ignore: unawaited_futures
+    if (autoHydrate) hydrate<_Model>(query: query);
+
+    return instance;
+  }
+
+  Future<int?> _upsertLocal<_Model extends _RepositoryModel>(_Model instance,
+      {Query? query}) async {
     final modelId = await sqliteProvider.upsert<_Model>(
       instance,
       query: query,
@@ -271,19 +311,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     );
     instance.primaryKey = modelId;
     memoryCacheProvider.upsert<_Model>(instance, query: query);
-
-    try {
-      await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
-    } on ClientException catch (e) {
-      logger.warning('#upsert client failure: $e');
-    } on SocketException catch (e) {
-      logger.warning('#upsert socket failure: $e');
-    }
-
-    // ignore: unawaited_futures
-    if (autoHydrate) hydrate<_Model>(query: query);
-
-    return instance;
+    return modelId;
   }
 
   /// Fetch and store results from [remoteProvider] into SQLite and the memory cache.

@@ -12,22 +12,17 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
     on OfflineFirstRepository<T> {
   @override
   Future<List<_Model>> get<_Model extends T>({
-    bool alwaysHydrate = false,
-    bool hydrateUnexisting = true,
-
     /// When [forceLocalSyncFromRemote] is `true`, local instances that do not exist in the [remoteProvider]
     /// are destroyed. Further, when `true`, all values from other parameters except [query] are ignored.
     bool forceLocalSyncFromRemote = false,
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
-    bool requireRemote = false,
     bool seedOnly = false,
   }) async {
     if (!forceLocalSyncFromRemote) {
       return await super.get<_Model>(
-        alwaysHydrate: alwaysHydrate,
-        hydrateUnexisting: hydrateUnexisting,
         query: query,
-        requireRemote: requireRemote,
+        policy: policy,
         seedOnly: seedOnly,
       );
     }

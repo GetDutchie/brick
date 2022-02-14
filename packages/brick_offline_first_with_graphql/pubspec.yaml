@@ -15,7 +15,7 @@ dependencies:
   brick_core: ^1.0.0+1
   brick_graphql: ^0.0.1+2
   brick_offline_first_abstract: ^2.0.0-rc.2
-  brick_offline_first: ^2.0.0-rc.2
+  brick_offline_first: ^2.0.0-rc.3+1
   brick_offline_first_with_graphql_abstract: ^0.0.2+1
   brick_sqlite: ^1.1.0
   brick_sqlite_abstract: ^1.0.0+3

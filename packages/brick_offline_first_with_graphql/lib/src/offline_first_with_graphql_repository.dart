@@ -58,10 +58,13 @@ abstract class OfflineFirstWithGraphqlRepository
         );
 
   @override
-  Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
-      {Query? query}) async {
+  Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(
+    _Model instance, {
+    Query? query,
+    OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
+  }) async {
     try {
-      final result = await super.delete<_Model>(instance, query: query);
+      final result = await super.delete<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {
@@ -73,18 +76,14 @@ abstract class OfflineFirstWithGraphqlRepository
 
   @override
   Future<List<_Model>> get<_Model extends OfflineFirstWithGraphqlModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     query,
-    bool alwaysHydrate = false,
-    bool hydrateUnexisting = true,
-    bool requireRemote = false,
     bool seedOnly = false,
   }) async {
     try {
       return await super.get<_Model>(
-        alwaysHydrate: alwaysHydrate,
-        hydrateUnexisting: hydrateUnexisting,
+        policy: policy,
         query: query,
-        requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
     } on GraphQLError catch (e) {
@@ -202,10 +201,13 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
-      {Query? query, bool throwOnReattemptStatusCodes = false}) async {
+  Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(
+    _Model instance, {
+    OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
+    Query? query,
+  }) async {
     try {
-      final result = await super.upsert<_Model>(instance, query: query);
+      final result = await super.upsert<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {

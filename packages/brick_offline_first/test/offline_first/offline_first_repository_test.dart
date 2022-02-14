@@ -8,7 +8,7 @@ void main() {
   sqfliteFfiInit();
 
   group('OfflineFirstRepository', () {
-    setUpAll(() async {
+    setUp(() async {
       TestRepository.configure(
         sqliteDictionary: sqliteModelDictionary,
       );
@@ -46,19 +46,12 @@ void main() {
     });
 
     test('#getBatched', () async {
-      final results = await TestRepository().getBatched<Mounty>(requireRemote: false);
+      final results = await TestRepository().getBatched<Mounty>(
+        policy: OfflineFirstGetPolicy.localOnly,
+      );
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });
-
-    test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>(requireRemote: true);
-
-      // verify(TestRepository()
-      //     .remoteProvider
-      //     .client
-      //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
-    }, skip: 'Client is no longer a Mockito instance');
 
     test('#storeRestResults', () async {
       final instance = Mounty(name: 'SqliteName');

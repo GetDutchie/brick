@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:gql/ast.dart';
@@ -22,7 +24,7 @@ class GraphqlOfflineQueueLink extends Link {
     _logger.finest('sending: ${cacheItem.toSqlite()}');
 
     // Ignore "query" and "subscription" request
-    if (isMutation(cacheItem.request)) {
+    if (shouldCache(cacheItem.request)) {
       final db = await requestManager.getDb();
       // Log immediately before we make the request
       await cacheItem.insertOrUpdate(db, logger: _logger);
@@ -52,8 +54,10 @@ class GraphqlOfflineQueueLink extends Link {
 
   /// Parse a request and determines what [OperationType] it is
   /// If the statement evaluates to true it is a mutation
-  static bool isMutation(Request request) {
+  static bool shouldCache(Request request) {
     final node = request.operation.document.definitions.first;
-    return node is OperationDefinitionNode && node.type == OperationType.mutation;
+    final policy = request.context.entry<OfflineFirstPolicy>()?.upsert;
+    final isMutation = node is OperationDefinitionNode && node.type == OperationType.mutation;
+    return isMutation && policy != OfflineFirstUpsertPolicy.requireRemote;
   }
 }

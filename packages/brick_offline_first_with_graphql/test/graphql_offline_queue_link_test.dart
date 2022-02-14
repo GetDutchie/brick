@@ -124,9 +124,9 @@ void main() {
           document: parseString('''subscription {}'''),
         ),
       );
-      expect(GraphqlOfflineQueueLink.isMutation(mutationRequest), isTrue);
-      expect(GraphqlOfflineQueueLink.isMutation(queryRequest), isFalse);
-      expect(GraphqlOfflineQueueLink.isMutation(subscriptionRequest), isFalse);
+      expect(GraphqlOfflineQueueLink.shouldCache(mutationRequest), isTrue);
+      expect(GraphqlOfflineQueueLink.shouldCache(queryRequest), isFalse);
+      expect(GraphqlOfflineQueueLink.shouldCache(subscriptionRequest), isFalse);
     });
 
     test('request deletes after a successful response', () async {

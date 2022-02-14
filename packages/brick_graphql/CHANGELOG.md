@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.1+3
+
 * Support supplying `context` in `Query#providerArgs`
 
 ## 0.0.1+2

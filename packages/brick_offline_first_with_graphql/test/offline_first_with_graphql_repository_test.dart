@@ -54,7 +54,7 @@ void main() {
       await repository.initialize();
       await repository.migrate();
 
-      final results = await repository.getBatched<Mounty>(requireRemote: false);
+      final results = await repository.getBatched<Mounty>();
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });

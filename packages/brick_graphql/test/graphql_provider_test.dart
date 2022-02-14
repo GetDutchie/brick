@@ -72,10 +72,10 @@ void main() {
         final request = provider.createRequest<DemoModel>(
           action: QueryAction.upsert,
           query: Query(providerArgs: {
-            'context': {SampleContextEntry, SampleContextEntry('myValue')}
+            'context': {SampleContextEntry: SampleContextEntry('myValue')}
           }),
         );
-        expect(request.context.entry<SampleContextEntry>(), 'myValue');
+        expect(request.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
     });
 
