@@ -8,6 +8,8 @@
 |---|---|---|
 | `'document'` | `String` | apply this document as the query when sending to GraphQL. This will override any defaults set by `GraphqlSerializable` |
 | `'variables'` | `Map<String, String>` | use these variables instead of a generated TLD query value when composing a request. By default, Brick will use the `toGraphql` output from the adapter |
+| `'context'` | `Map<String, ContextEntry>` | apply this as the context to the request instead of an empty object. Useful for subsequent consumers/`Link`s of the request. The key should be the runtime type of the `ContextEntry`. |
+
 
 ## `where:`
 
