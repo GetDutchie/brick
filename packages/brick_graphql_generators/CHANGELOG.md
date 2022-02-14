@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Use `brick_json_generators` instead of `brick_rest_generators`
+
 ## 1.0.2
 
 * Upgrade Analyzer to 3.2.0

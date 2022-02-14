@@ -1,5 +1,5 @@
 import 'package:brick_build/generators.dart';
-import 'package:brick_rest_generators/src/json_serdes_generator.dart';
+import 'package:brick_json_generators/json_serdes_generator.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
 

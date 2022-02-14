@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Separate JSON generators to their own package in `brick_json_generators`
+
 ## 2.0.0-rc.2
 
 * Include `1.3.0` updates

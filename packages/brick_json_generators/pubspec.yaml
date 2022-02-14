@@ -1,10 +1,10 @@
-name: brick_rest_generators
-description: Code generation library for the REST providers, models, and adapters in Brick
-homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest_generators
+name: brick_json_generators
+description: Code generation library for the JSON-like providers, models, and adapters in Brick
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_json_generators
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.0.0-rc.2
+version: 0.0.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -12,8 +12,6 @@ environment:
 dependencies:
   analyzer: ^3.2.0
   brick_core: ^1.1.0
-  brick_rest: ^1.1.0
-  brick_json_generators: ^0.0.1
   brick_build: ^2.0.0-rc.3
   build: ^2.0.0
   dart_style: ^2.0.0
