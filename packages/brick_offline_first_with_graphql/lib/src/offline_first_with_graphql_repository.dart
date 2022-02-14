@@ -69,13 +69,13 @@ abstract class OfflineFirstWithGraphqlRepository
   }) {
     return query?.copyWith(providerArgs: {
       ...query.providerArgs,
-      'context': {
-        OfflineFirstGraphqlPolicy: OfflineFirstGraphqlPolicy(
+      'context': <String, ContextEntry>{
+        'OfflineFirstGraphqlPolicy': OfflineFirstGraphqlPolicy(
           delete: delete,
           get: get,
           upsert: upsert,
         ),
-        ...?query.providerArgs['context'] as Map<Type, ContextEntry>?,
+        ...?query.providerArgs['context'] as Map<String, ContextEntry>?,
       }
     });
   }

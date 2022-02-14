@@ -38,7 +38,8 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       operation: Operation(document: defaultOperation.document),
       variables: query?.providerArgs['variables'] ?? variables ?? queryToVariables<_Model>(query),
       context: query?.providerArgs['context'] != null
-          ? Context.fromMap(Map<Type, ContextEntry>.from(query?.providerArgs['context']))
+          ? Context.fromMap(Map<String, ContextEntry>.from(query?.providerArgs['context'])
+              .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)))
           : Context(),
     );
   }

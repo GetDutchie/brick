@@ -8,6 +8,7 @@ import 'test_domain/__mocks__.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
+
   group('OfflineFirstWithGraphqlRepository', () {
     test('instantiates', () {
       final repository = TestRepository.configure(link: stubGraphqlLink({}));
