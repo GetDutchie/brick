@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
 import 'package:flutter_test/flutter_test.dart';

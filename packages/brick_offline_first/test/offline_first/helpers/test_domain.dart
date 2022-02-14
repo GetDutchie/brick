@@ -1,5 +1,4 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
