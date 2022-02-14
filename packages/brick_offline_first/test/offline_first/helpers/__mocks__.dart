@@ -60,15 +60,13 @@ class TestRepository extends OfflineFirstWithTestRepository {
   factory TestRepository.withProviders(TestProvider testProvider, SqliteProvider sqliteProvider) =>
       TestRepository._(testProvider, sqliteProvider);
 
-  factory TestRepository.configure({
-    required SqliteModelDictionary sqliteDictionary,
-  }) {
+  factory TestRepository.configure() {
     return _singleton = TestRepository._(
       TestProvider(testModelDictionary),
       SqliteProvider(
-        '$inMemoryDatabasePath/repository',
+        '$inMemoryDatabasePath/${DateTime.now().microsecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
-        modelDictionary: sqliteDictionary,
+        modelDictionary: sqliteModelDictionary,
       ),
     );
   }

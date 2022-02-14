@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
@@ -15,7 +17,7 @@ class TestProvider extends Provider<TestModel> {
   @override
   bool delete<T extends TestModel>(T instance,
       {Query? query, ModelRepository<TestModel>? repository}) {
-    if (TestRepository.throwOnNextRemoteMutation) throw StateError('Remote failed');
+    if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return true;
   }
 
@@ -36,7 +38,7 @@ class TestProvider extends Provider<TestModel> {
   @override
   Future<T> upsert<T extends TestModel>(T instance,
       {Query? query, ModelRepository<TestModel>? repository}) {
-    if (TestRepository.throwOnNextRemoteMutation) throw StateError('Remote failed');
+    if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return Future<T>.value(instance);
   }
 }

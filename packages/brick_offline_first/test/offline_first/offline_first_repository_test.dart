@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -9,9 +11,7 @@ void main() {
 
   group('OfflineFirstRepository', () {
     setUp(() async {
-      TestRepository.configure(
-        sqliteDictionary: sqliteModelDictionary,
-      );
+      TestRepository.configure();
 
       await TestRepository().initialize();
     });
@@ -40,12 +40,13 @@ void main() {
       test('OfflineFirstDeletePolicy.requireRemote', () async {
         final instance = Mounty(name: 'SqliteName');
         final upserted = await TestRepository().upsert<Mounty>(instance);
-        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
 
         TestRepository.throwOnNextRemoteMutation = true;
-        await TestRepository()
-            .delete<Mounty>(upserted, policy: OfflineFirstDeletePolicy.requireRemote);
-        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
+        expect(
+          () async => await TestRepository()
+              .delete<Mounty>(upserted, policy: OfflineFirstDeletePolicy.requireRemote),
+          throwsA(const TypeMatcher<SocketException>()),
+        );
       });
     });
 
@@ -78,7 +79,7 @@ void main() {
       });
 
       test('OfflineFirstGetPolicy.localOnly', () async {
-        final results = await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.localOnly);
+        final results = await TestRepository().get<Horse>(policy: OfflineFirstGetPolicy.localOnly);
 
         expect(results, isEmpty);
       });
@@ -101,11 +102,13 @@ void main() {
     }, skip: 'Client is no longer a Mockito instance');
 
     test('#getBatched', () async {
+      final instance = Mounty(name: 'SqliteName');
+      await TestRepository().upsert<Mounty>(instance);
       final results = await TestRepository().getBatched<Mounty>(
         policy: OfflineFirstGetPolicy.localOnly,
       );
       expect(results.first, isA<Mounty>());
-      expect(results.first.name, 'SqliteName');
+      expect(results.first.name, instance.name);
     });
 
     test('#storeRestResults', () async {
@@ -128,11 +131,11 @@ void main() {
       test('OfflineFirstUpsertPolicy.requireRemote', () async {
         final instance = Mounty(name: 'SqliteName');
         TestRepository.throwOnNextRemoteMutation = true;
-        final results = await TestRepository()
-            .upsert<Mounty>(instance, policy: OfflineFirstUpsertPolicy.requireRemote);
-
-        expect(results.name, 'SqliteName');
-        expect(results.primaryKey, greaterThanOrEqualTo(1));
+        expect(
+          () async => await TestRepository()
+              .upsert<Mounty>(instance, policy: OfflineFirstUpsertPolicy.requireRemote),
+          throwsA(const TypeMatcher<SocketException>()),
+        );
       });
     });
 
