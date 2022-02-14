@@ -1,4 +1,5 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -69,7 +70,7 @@ void main() {
     });
 
     test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>();
+      await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
 
       // verify(TestRepository()
       //     .remoteProvider

@@ -51,6 +51,15 @@ void main() {
       });
     });
 
+    test('#hydrateSqlite / #get requireRest:true', () async {
+      await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
+
+      // verify(TestRepository()
+      //     .remoteProvider
+      //     .client
+      //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
+    }, skip: 'Client is no longer a Mockito instance');
+
     test('#getBatched', () async {
       final results = await TestRepository().getBatched<Mounty>(
         policy: OfflineFirstGetPolicy.localOnly,

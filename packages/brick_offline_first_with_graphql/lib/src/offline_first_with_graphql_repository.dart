@@ -60,22 +60,22 @@ abstract class OfflineFirstWithGraphqlRepository
 
   /// As some links may consume [OfflineFirstGraphqlPolicy] from the request's
   /// context, this adds the policy to the `providerArgs#context`
-  Query _applyPolicyToQuery(
+  @override
+  Query? applyPolicyToQuery(
     Query? query, {
     OfflineFirstDeletePolicy? delete,
     OfflineFirstGetPolicy? get,
     OfflineFirstUpsertPolicy? upsert,
   }) {
-    final _query = query ?? Query();
-    return _query.copyWith(providerArgs: {
-      ...?query?.providerArgs,
+    return query?.copyWith(providerArgs: {
+      ...query.providerArgs,
       'context': {
         OfflineFirstGraphqlPolicy: OfflineFirstGraphqlPolicy(
           delete: delete,
           get: get,
           upsert: upsert,
         ),
-        ...?query?.providerArgs['context'] as Map<Type, ContextEntry>?,
+        ...?query.providerArgs['context'] as Map<Type, ContextEntry>?,
       }
     });
   }
@@ -86,10 +86,8 @@ abstract class OfflineFirstWithGraphqlRepository
     Query? query,
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
   }) async {
-    final withPolicy = _applyPolicyToQuery(query, delete: policy);
-
     try {
-      final result = await super.delete<_Model>(instance, policy: policy, query: withPolicy);
+      final result = await super.delete<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {
@@ -105,11 +103,10 @@ abstract class OfflineFirstWithGraphqlRepository
     query,
     bool seedOnly = false,
   }) async {
-    final withPolicy = _applyPolicyToQuery(query, get: policy);
     try {
       return await super.get<_Model>(
         policy: policy,
-        query: withPolicy,
+        query: query,
         seedOnly: seedOnly,
       );
     } on GraphQLError catch (e) {
@@ -204,7 +201,7 @@ abstract class OfflineFirstWithGraphqlRepository
       return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
     }
 
-    final withPolicy = _applyPolicyToQuery(query, get: policy);
+    final withPolicy = applyPolicyToQuery(query, get: policy);
 
     // Remote results are never returned directly;
     // after the remote results are fetched they're stored
@@ -237,9 +234,8 @@ abstract class OfflineFirstWithGraphqlRepository
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,
   }) async {
-    final withPolicy = _applyPolicyToQuery(query, upsert: policy);
     try {
-      final result = await super.upsert<_Model>(instance, policy: policy, query: withPolicy);
+      final result = await super.upsert<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {

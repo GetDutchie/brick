@@ -87,7 +87,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     OfflineFirstGetPolicy? get,
     OfflineFirstUpsertPolicy? upsert,
   }) =>
-      null;
+      query;
 
   /// Remove a model from SQLite and the [remoteProvider]
   @override
