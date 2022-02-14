@@ -63,13 +63,13 @@ void main() {
     });
 
     test('#getBatched', () async {
-      final results = await TestRepository().getBatched<Mounty>(requireRemote: false);
+      final results = await TestRepository().getBatched<Mounty>();
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });
 
     test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>(requireRemote: true);
+      await TestRepository().get<Mounty>();
 
       // verify(TestRepository()
       //     .remoteProvider
