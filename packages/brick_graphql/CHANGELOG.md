@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Support supplying `context` in `Query#providerArgs`
+
 ## 0.0.1+2
 
 * Rename `fieldsToRuntimeDefinition` to `fieldsToGraphqlRuntimeDefinition`

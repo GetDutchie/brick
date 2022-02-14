@@ -14,6 +14,7 @@ Since Dart is the source of truth, it may not map 1:1 to the GraphQL contract. B
 
 * `'document'` (`String`) apply this document query instead of one of the defaults
 * `'variables'` (`Map<String, dynamic>`) use these variables instead of a generated TLD query value when composing a request. By default, Brick will use the `toGraphql` output from the adapter
+* `'context'` (`Map<Type, ContextEntry>`) apply this as the context to the request instead of an empty object. Useful for subsequent consumers/`Link`s of the request
 
 ## `where:`
 

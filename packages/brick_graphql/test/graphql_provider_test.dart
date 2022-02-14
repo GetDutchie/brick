@@ -1,6 +1,7 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:gql/language.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:test/test.dart';
 
 import '__helpers__/demo_model.dart';
@@ -16,6 +17,15 @@ GraphqlProvider generateProvider(Map<String, dynamic> response, {List<String>? e
   );
 }
 
+class SampleContextEntry extends ContextEntry {
+  final String useEntry;
+
+  const SampleContextEntry(this.useEntry);
+
+  @override
+  List<Object> get fieldsForEquality => [useEntry];
+}
+
 void main() {
   group('GraphqlProvider', () {
     group('#createRequest', () {
@@ -26,7 +36,7 @@ void main() {
   getDemoModels {'''));
       });
 
-      test('with variables', () {
+      test('variables:', () {
         final provider = generateProvider({});
         final variables = {'name': 'Thomas'};
         final request =
@@ -37,7 +47,7 @@ void main() {
         expect(request.variables, variables);
       });
 
-      test('with variables from providerArgs', () {
+      test('providerArgs#variables:', () {
         final provider = generateProvider({});
         final variables = {'name': 'Thomas'};
         final request = provider.createRequest<DemoModel>(
@@ -55,6 +65,17 @@ void main() {
           variables: variables,
         );
         expect(request.variables, providerVariables);
+      });
+
+      test('providerArgs#context:', () {
+        final provider = generateProvider({});
+        final request = provider.createRequest<DemoModel>(
+          action: QueryAction.upsert,
+          query: Query(providerArgs: {
+            'context': {SampleContextEntry, SampleContextEntry('myValue')}
+          }),
+        );
+        expect(request.context.entry<SampleContextEntry>(), 'myValue');
       });
     });
 
