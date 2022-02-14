@@ -76,6 +76,19 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
         migrationManager = MigrationManager(migrations),
         memoryCacheProvider = memoryCacheProvider ?? MemoryCacheProvider();
 
+  /// As some remote provider's may utilize an `OfflineFirstPolicy` from the request,
+  /// this composes the policy to the query (such as in the `providerArgs`).
+  @protected
+  @visibleForOverriding
+  @visibleForTesting
+  Query? applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) =>
+      null;
+
   /// Remove a model from SQLite and the [remoteProvider]
   @override
   Future<bool> delete<_Model extends _RepositoryModel>(
@@ -83,7 +96,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
   }) async {
-    query = (query ?? Query()).copyWith(action: QueryAction.delete);
+    final withPolicy = applyPolicyToQuery(query, delete: policy);
+    query = (withPolicy ?? Query()).copyWith(action: QueryAction.delete);
     logger.finest('#delete: $query');
 
     final optimisticLocal = policy == OfflineFirstDeletePolicy.optimisticLocal;
@@ -152,7 +166,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Query? query,
     bool seedOnly = false,
   }) async {
-    query = (query ?? Query()).copyWith(action: QueryAction.get);
+    final withPolicy = applyPolicyToQuery(query, get: policy);
+    query = (withPolicy ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $_Model $query');
 
     if (memoryCacheProvider.canFind<_Model>(query)) {
@@ -205,7 +220,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Query? query,
     bool seedOnly = false,
   }) async {
-    query = query ?? Query();
+    final withPolicy = applyPolicyToQuery(query, get: policy);
+    query = withPolicy ?? Query();
     final queryWithLimit = query.copyWith(
       providerArgs: {...query.providerArgs, 'limit': batchSize},
     );
@@ -270,8 +286,9 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     Query? query,
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
   }) async {
+    final withPolicy = applyPolicyToQuery(query, upsert: policy);
     if (query?.action == null) {
-      query = (query ?? Query()).copyWith(action: QueryAction.upsert);
+      query = (withPolicy ?? Query()).copyWith(action: QueryAction.upsert);
     }
     logger.finest('#upsert: $query $instance');
 

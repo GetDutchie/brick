@@ -56,7 +56,7 @@ class GraphqlOfflineQueueLink extends Link {
   /// If the statement evaluates to true it is a mutation
   static bool shouldCache(Request request) {
     final node = request.operation.document.definitions.first;
-    final policy = request.context.entry<OfflineFirstPolicy>()?.upsert;
+    final policy = request.context.entry<OfflineFirstGraphqlPolicy>()?.upsert;
     final isMutation = node is OperationDefinitionNode && node.type == OperationType.mutation;
     return isMutation && policy != OfflineFirstUpsertPolicy.requireRemote;
   }

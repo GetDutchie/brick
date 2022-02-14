@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0-rc.4
+
+* Add `applyPolicyToQuery` to `OfflineFirstRepository` to add the policy before requests are made to remote providers.
+
 ## 2.0.0-rc.3
 
 * Add `OfflineFirstDeletePolicy`, `OfflineFirstGetPolicy`, and `OfflineFirstUpsertPolicy` to override default behavior

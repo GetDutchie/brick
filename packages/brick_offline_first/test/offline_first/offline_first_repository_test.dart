@@ -16,6 +16,12 @@ void main() {
       await TestRepository().initialize();
     });
 
+    test('#applyPolicyToQuery', () async {
+      const policy = OfflineFirstGetPolicy.localOnly;
+      final query = TestRepository().applyPolicyToQuery(Query(), get: policy);
+      expect(query?.providerArgs, {'policy': policy.index});
+    });
+
     group('#get', () {
       test('simple', () async {
         final results = await TestRepository().get<Mounty>();

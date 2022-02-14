@@ -69,6 +69,16 @@ class TestRepository extends OfflineFirstWithTestRepository {
       ),
     );
   }
+
+  @override
+  Query? applyPolicyToQuery(Query? query,
+      {OfflineFirstDeletePolicy? delete,
+      OfflineFirstGetPolicy? get,
+      OfflineFirstUpsertPolicy? upsert}) {
+    return query?.copyWith(providerArgs: {
+      'policy': get?.index,
+    });
+  }
 }
 
 /// Test mappings should only be used when initializing a [TestProvider]

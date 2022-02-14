@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
+import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -57,14 +58,38 @@ abstract class OfflineFirstWithGraphqlRepository
           remoteProvider: graphqlProvider,
         );
 
+  /// As some links may consume [OfflineFirstGraphqlPolicy] from the request's
+  /// context, this adds the policy to the `providerArgs#context`
+  Query _applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) {
+    final _query = query ?? Query();
+    return _query.copyWith(providerArgs: {
+      ...?query?.providerArgs,
+      'context': {
+        OfflineFirstGraphqlPolicy: OfflineFirstGraphqlPolicy(
+          delete: delete,
+          get: get,
+          upsert: upsert,
+        ),
+        ...?query?.providerArgs['context'] as Map<Type, ContextEntry>?,
+      }
+    });
+  }
+
   @override
   Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(
     _Model instance, {
     Query? query,
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
   }) async {
+    final withPolicy = _applyPolicyToQuery(query, delete: policy);
+
     try {
-      final result = await super.delete<_Model>(instance, policy: policy, query: query);
+      final result = await super.delete<_Model>(instance, policy: policy, query: withPolicy);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {
@@ -80,10 +105,11 @@ abstract class OfflineFirstWithGraphqlRepository
     query,
     bool seedOnly = false,
   }) async {
+    final withPolicy = _applyPolicyToQuery(query, get: policy);
     try {
       return await super.get<_Model>(
         policy: policy,
-        query: query,
+        query: withPolicy,
         seedOnly: seedOnly,
       );
     } on GraphQLError catch (e) {
@@ -170,16 +196,21 @@ abstract class OfflineFirstWithGraphqlRepository
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
-  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    Query? query,
+  }) {
     if (subscriptions[_Model]?[query] != null) {
       return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
     }
+
+    final withPolicy = _applyPolicyToQuery(query, get: policy);
 
     // Remote results are never returned directly;
     // after the remote results are fetched they're stored
     // and memory/SQLite is reported to the subscribers
     final remoteSubscription = remoteProvider
-        .subscribe<_Model>(query: query, repository: this)
+        .subscribe<_Model>(query: withPolicy, repository: this)
         .listen((modelsFromRemote) async {
       final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
       memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
@@ -206,8 +237,9 @@ abstract class OfflineFirstWithGraphqlRepository
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,
   }) async {
+    final withPolicy = _applyPolicyToQuery(query, upsert: policy);
     try {
-      final result = await super.upsert<_Model>(instance, policy: policy, query: query);
+      final result = await super.upsert<_Model>(instance, policy: policy, query: withPolicy);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {
