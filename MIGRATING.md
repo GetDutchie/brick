@@ -10,19 +10,19 @@ Brick 2 focused on Brick problems encountered at scale. While the primary refact
     ```shell
     mv -r lib/app lib/brick
     ```
-* Models are no longer discovered in `lib/models`; they are now discovered via `*.model.dart`.
+* Models are no longer discovered in `lib/models`; they are now discovered via `*.model.dart`. They can live in any directory within `lib` and have any prefix. (#38)
     ```shell
-    for FILENAME in lib/brick/models/*; do mv $FILENAME "${FILENAME/dart/"model.dart"}" done
+    for FILENAME in lib/brick/models/*; do mv $FILENAME "${FILENAME/dart/model.dart}" done
     ```
 * `brick_offline_first` is now, fundamentally, `brick_offline_first_with_rest`. `brick_offline_first` now serves as an abstract bedrock for offline domains.
     ```shell
     sed -i '' 's/brick_offline_first:/brick_offline_first_with_rest:/g' pubspec.yaml
-    for FILE in **/*.dart; do sed -i '' 's/package:brick_offline_first\//brick_offline_first_with_rest\//g' $FILE done
+    for FILE in $(find "lib" -type f -name "*.dart"); do sed -i '' 's/package:brick_offline_first/package:brick_offline_first_with_rest/g' $FILE; done
     ```
 * `brick_offline_first_abstract` is now `brick_offline_first_with_rest_abstract`
     ```shell
     sed -i '' 's/brick_offline_first_abstract:/brick_offline_first_with_rest_abstract:/g' pubspec.yaml
-    for FILE in **/*.dart; do sed -i '' 's/package:brick_offline_first_abstract\//brick_offline_first_with_rest_abstract\//g' $FILE done
+    for FILE in $(find "lib" -type f -name "*.dart"); do sed -i '' 's/package:brick_offline_first_abstract/package:brick_offline_first_with_rest_abstract/g' $FILE; done
     ```
 * `rest` properties have been removed from `OfflineFirstException`. Use `OfflineFirstWithRestException` instead from `brick_offline_first_with_rest`.
 * `OfflineFirstRepository#get(requireRemote:` and `OfflineFirstRepository#getBatched(requireRemote:` has been removed. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`
