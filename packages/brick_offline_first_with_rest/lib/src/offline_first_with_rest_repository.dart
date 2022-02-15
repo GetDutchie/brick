@@ -96,7 +96,7 @@ abstract class OfflineFirstWithRestRepository
       ...query.providerArgs,
       'headers': {
         // This header is removed by the [RestOfflineQueueClient]
-        if (headerValue != null) 'X-Brick-OfflineFirstPolicy': headerValue,
+        if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
         ...?query.providerArgs['headers'] as Map<String, String>?,
       }
     });
