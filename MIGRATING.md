@@ -10,9 +10,9 @@ Brick 2 focused on Brick problems encountered at scale. While the primary refact
     ```shell
     mv -r lib/app lib/brick
     ```
-* Models are no longer discovered in `lib/models`; they are now discovered via `*.model.dart`. They can live in any directory within `lib` and have any prefix. (#38)
+* Models are no longer discovered in `lib/app/models`; they are now discovered via `*.model.dart`. They can live in any directory within `lib` and have any prefix. (#38)
     ```shell
-    for FILENAME in lib/brick/models/*; do mv $FILENAME "${FILENAME/dart/model.dart}" done
+    for FILENAME in lib/brick/models/*; do mv $FILENAME "${FILENAME/dart/model.dart}"; done
     ```
 * `brick_offline_first` is now, fundamentally, `brick_offline_first_with_rest`. `brick_offline_first` now serves as an abstract bedrock for offline domains.
     ```shell
