@@ -2,7 +2,7 @@
 
 ## Migrating from Brick 1 to Brick 2
 
-Brick 2 focused on Brick problems encountered at scale. While the primary refactor was the abstraction of domain-specific code from generalized domains, this major release also includes a new GraphQL domain, resolution of community pain points, and a few neat tricks.
+Brick 2 focuses on Brick problems encountered at scale. While the primary refactor was the abstraction of domain-specific code from generalized domains, this major release also includes a new GraphQL domain, resolution of community pain points, and a few neat tricks.
 
 ### Breaking Changes
 
