@@ -6,6 +6,8 @@ Offline First combines SQLite and a remote provider into one unified repository.
 
 ![OfflineFirst#get](https://user-images.githubusercontent.com/865897/72176226-cdd8ca00-3392-11ea-867d-42f5f4620153.jpg)
 
+:bulb: You can change default behavior on a per-request basis using `policy:` (e.g. `get<Person>(policy: OfflineFirstUpsertPolicy.localOnly)`). This is available for `delete`, `get`, `getBatched`, and `upsert`.
+
 ## Fields
 
 ### `@OfflineFirst(where:)`
@@ -96,10 +98,6 @@ The queue is automatically added to all `OfflineFirstWithGraphqlRepository`s and
 ```dart
 final client = RestOfflineQueueClient(
   restProvider.client, // or http.Client()
-  "OfflineQueue",
-);
-final link = GraphqlOfflineQueueLink(
-  graphqlProvider.link, // or HttpLink()
   "OfflineQueue",
 );
 ```
