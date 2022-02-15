@@ -1,5 +1,18 @@
 ## Unreleased
 
+## 2.0.0-rc.4
+
+* Add `applyPolicyToQuery` to `OfflineFirstRepository` to add the policy before requests are made to remote providers.
+
+## 2.0.0-rc.3
+
+* Add `OfflineFirstDeletePolicy`, `OfflineFirstGetPolicy`, and `OfflineFirstUpsertPolicy` to override default behavior
+* `delete` now supports requiring a successful remote with `OfflineFirstDeletePolicy.requireRemote`. If the app is offline, normally handled exceptions (`ClientException` and `SocketException`) are `rethrow`n. (#182)
+* `upsert` now supports requiring a successful remote with `OfflineFirstUpsertPolicy.requireRemote`. If the app is offline, normally handled exceptions (`ClientException` and `SocketException`) are `rethrow`n.
+* **BREAKING CHANGE** `requireRemote` has been removed from `get()` and `getBatched()`. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`
+* **BREAKING CHANGE** `hydrateUnexisting` has been removed from `get()`. Instead, use `policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist` (this is the default).
+* **BREAKING CHANGE** `alwaysHydrate` has been removed from `get()`. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`.
+
 ## 2.0.0-rc.2
 
 * **BREAKING CHANGE** This package no longer includes the `OfflineFirstWithRest` domain. Please add `brick_offline_first_with_rest: any` to your `pubspec.yaml` and update package imports appropriately.

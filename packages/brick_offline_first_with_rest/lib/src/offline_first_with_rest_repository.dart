@@ -82,10 +82,34 @@ abstract class OfflineFirstWithRestRepository
   }
 
   @override
-  Future<bool> delete<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query? query}) async {
+  Query? applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) {
+    // The header value must be stringified because of how `http.Client` accepts the `headers` Map
+    final headerValue = delete?.toString().split('.').last ??
+        get?.toString().split('.').last ??
+        upsert?.toString().split('.').last;
+    return query?.copyWith(providerArgs: {
+      ...query.providerArgs,
+      'headers': {
+        // This header is removed by the [RestOfflineQueueClient]
+        if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
+        ...?query.providerArgs['headers'] as Map<String, String>?,
+      }
+    });
+  }
+
+  @override
+  Future<bool> delete<_Model extends OfflineFirstWithRestModel>(
+    _Model instance, {
+    OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
+    Query? query,
+  }) async {
     try {
-      return await super.delete<_Model>(instance, query: query);
+      return await super.delete<_Model>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
       if (_ignoreTunnelException(e)) {
@@ -98,18 +122,14 @@ abstract class OfflineFirstWithRestRepository
 
   @override
   Future<List<_Model>> get<_Model extends OfflineFirstWithRestModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     query,
-    bool alwaysHydrate = false,
-    bool hydrateUnexisting = true,
-    bool requireRemote = false,
     bool seedOnly = false,
   }) async {
     try {
       return await super.get(
+        policy: policy,
         query: query,
-        alwaysHydrate: alwaysHydrate,
-        hydrateUnexisting: hydrateUnexisting,
-        requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
     } on RestException catch (e) {
@@ -144,10 +164,14 @@ abstract class OfflineFirstWithRestRepository
   /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
   /// Defaults `false`.
   @override
-  Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(_Model instance,
-      {Query? query, bool throwOnReattemptStatusCodes = false}) async {
+  Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(
+    _Model instance, {
+    OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
+    Query? query,
+    bool throwOnReattemptStatusCodes = false,
+  }) async {
     try {
-      return await super.upsert<_Model>(instance, query: query);
+      return await super.upsert<_Model>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#upsert rest failure: $e');
       if (_ignoreTunnelException(e)) {

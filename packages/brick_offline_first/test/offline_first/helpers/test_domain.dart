@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_abstract/abstract.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:brick_sqlite_abstract/db.dart';
+
+import '__mocks__.dart';
 
 class TestProvider extends Provider<TestModel> {
   @override
@@ -13,8 +16,10 @@ class TestProvider extends Provider<TestModel> {
 
   @override
   bool delete<T extends TestModel>(T instance,
-          {Query? query, ModelRepository<TestModel>? repository}) =>
-      true;
+      {Query? query, ModelRepository<TestModel>? repository}) {
+    if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
+    return true;
+  }
 
   @override
   Future<List<T>> get<T extends TestModel>(
@@ -32,8 +37,10 @@ class TestProvider extends Provider<TestModel> {
 
   @override
   Future<T> upsert<T extends TestModel>(T instance,
-          {Query? query, ModelRepository<TestModel>? repository}) =>
-      Future<T>.value(instance);
+      {Query? query, ModelRepository<TestModel>? repository}) {
+    if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
+    return Future<T>.value(instance);
+  }
 }
 
 /// Constructors that convert app models to and from REST

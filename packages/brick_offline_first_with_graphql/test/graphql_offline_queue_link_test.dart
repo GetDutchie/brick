@@ -1,5 +1,7 @@
+import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:mockito/mockito.dart';
@@ -106,27 +108,45 @@ void main() {
       expect(await requestManager.unprocessedRequests(), hasLength(1));
     });
 
-    test('.isMutation', () async {
-      final mutationRequest = Request(
-        operation: Operation(
-          document: parseString('''mutation {}'''),
-        ),
-      );
+    group('.shouldCache', () {
+      test('mutations', () {
+        final mutationRequest = Request(
+          operation: Operation(
+            document: parseString('''mutation {}'''),
+          ),
+        );
+        expect(GraphqlOfflineQueueLink.shouldCache(mutationRequest), isTrue);
+      });
 
-      final queryRequest = Request(
-        operation: Operation(
-          document: parseString('''query {}'''),
-        ),
-      );
+      test('mutations with requireRemote policy are ignored', () {
+        final context = const Context().withEntry<OfflineFirstGraphqlPolicy>(
+            const OfflineFirstGraphqlPolicy(upsert: OfflineFirstUpsertPolicy.requireRemote));
+        final mutationRequest = Request(
+          operation: Operation(
+            document: parseString('''mutation {}'''),
+          ),
+          context: context,
+        );
+        expect(GraphqlOfflineQueueLink.shouldCache(mutationRequest), isFalse);
+      });
 
-      final subscriptionRequest = Request(
-        operation: Operation(
-          document: parseString('''subscription {}'''),
-        ),
-      );
-      expect(GraphqlOfflineQueueLink.isMutation(mutationRequest), isTrue);
-      expect(GraphqlOfflineQueueLink.isMutation(queryRequest), isFalse);
-      expect(GraphqlOfflineQueueLink.isMutation(subscriptionRequest), isFalse);
+      test('queries', () {
+        final queryRequest = Request(
+          operation: Operation(
+            document: parseString('''query {}'''),
+          ),
+        );
+        expect(GraphqlOfflineQueueLink.shouldCache(queryRequest), isFalse);
+      });
+
+      test('subscriptions', () {
+        final subscriptionRequest = Request(
+          operation: Operation(
+            document: parseString('''subscription {}'''),
+          ),
+        );
+        expect(GraphqlOfflineQueueLink.shouldCache(subscriptionRequest), isFalse);
+      });
     });
 
     test('request deletes after a successful response', () async {

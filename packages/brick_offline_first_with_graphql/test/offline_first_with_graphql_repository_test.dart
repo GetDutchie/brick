@@ -8,6 +8,7 @@ import 'test_domain/__mocks__.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
+
   group('OfflineFirstWithGraphqlRepository', () {
     test('instantiates', () {
       final repository = TestRepository.configure(link: stubGraphqlLink({}));
@@ -54,7 +55,7 @@ void main() {
       await repository.initialize();
       await repository.migrate();
 
-      final results = await repository.getBatched<Mounty>(requireRemote: false);
+      final results = await repository.getBatched<Mounty>();
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });

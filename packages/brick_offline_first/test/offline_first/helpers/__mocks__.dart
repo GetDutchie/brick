@@ -42,6 +42,9 @@ class DemoModelMigration extends Migration {
 class TestRepository extends OfflineFirstWithTestRepository {
   static TestRepository? _singleton;
 
+  /// A hack to similuate a failure in the remote provider
+  static bool throwOnNextRemoteMutation = false;
+
   TestRepository._(
     TestProvider testProvider,
     SqliteProvider sqliteProvider,
@@ -57,17 +60,25 @@ class TestRepository extends OfflineFirstWithTestRepository {
   factory TestRepository.withProviders(TestProvider testProvider, SqliteProvider sqliteProvider) =>
       TestRepository._(testProvider, sqliteProvider);
 
-  factory TestRepository.configure({
-    required SqliteModelDictionary sqliteDictionary,
-  }) {
+  factory TestRepository.configure() {
     return _singleton = TestRepository._(
       TestProvider(testModelDictionary),
       SqliteProvider(
-        '$inMemoryDatabasePath/repository',
+        '$inMemoryDatabasePath/${DateTime.now().microsecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
-        modelDictionary: sqliteDictionary,
+        modelDictionary: sqliteModelDictionary,
       ),
     );
+  }
+
+  @override
+  Query? applyPolicyToQuery(Query? query,
+      {OfflineFirstDeletePolicy? delete,
+      OfflineFirstGetPolicy? get,
+      OfflineFirstUpsertPolicy? upsert}) {
+    return query?.copyWith(providerArgs: {
+      'policy': get?.index,
+    });
   }
 }
 

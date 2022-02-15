@@ -5,7 +5,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -13,7 +13,7 @@ environment:
 
 dependencies:
   brick_core: ^1.0.0+1
-  brick_offline_first: ^2.0.0-rc.2
+  brick_offline_first: ^2.0.0-rc.4
   brick_offline_first_with_rest_abstract: ^0.0.2
   brick_offline_first_abstract: ^2.0.0-rc.2
   brick_rest: ^1.1.0

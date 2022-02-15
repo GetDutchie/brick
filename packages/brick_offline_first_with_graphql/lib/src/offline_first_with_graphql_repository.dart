@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
+import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_sqlite/sqlite.dart';
@@ -57,11 +58,36 @@ abstract class OfflineFirstWithGraphqlRepository
           remoteProvider: graphqlProvider,
         );
 
+  /// As some links may consume [OfflineFirstGraphqlPolicy] from the request's
+  /// context, this adds the policy to the `providerArgs#context`
   @override
-  Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
-      {Query? query}) async {
+  Query? applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) {
+    return query?.copyWith(providerArgs: {
+      ...query.providerArgs,
+      'context': <String, ContextEntry>{
+        'OfflineFirstGraphqlPolicy': OfflineFirstGraphqlPolicy(
+          delete: delete,
+          get: get,
+          upsert: upsert,
+        ),
+        ...?query.providerArgs['context'] as Map<String, ContextEntry>?,
+      }
+    });
+  }
+
+  @override
+  Future<bool> delete<_Model extends OfflineFirstWithGraphqlModel>(
+    _Model instance, {
+    Query? query,
+    OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
+  }) async {
     try {
-      final result = await super.delete<_Model>(instance, query: query);
+      final result = await super.delete<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {
@@ -73,18 +99,14 @@ abstract class OfflineFirstWithGraphqlRepository
 
   @override
   Future<List<_Model>> get<_Model extends OfflineFirstWithGraphqlModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     query,
-    bool alwaysHydrate = false,
-    bool hydrateUnexisting = true,
-    bool requireRemote = false,
     bool seedOnly = false,
   }) async {
     try {
       return await super.get<_Model>(
-        alwaysHydrate: alwaysHydrate,
-        hydrateUnexisting: hydrateUnexisting,
+        policy: policy,
         query: query,
-        requireRemote: requireRemote,
         seedOnly: seedOnly,
       );
     } on GraphQLError catch (e) {
@@ -171,16 +193,21 @@ abstract class OfflineFirstWithGraphqlRepository
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
-  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({Query? query}) {
+  Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    Query? query,
+  }) {
     if (subscriptions[_Model]?[query] != null) {
       return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
     }
+
+    final withPolicy = applyPolicyToQuery(query, get: policy);
 
     // Remote results are never returned directly;
     // after the remote results are fetched they're stored
     // and memory/SQLite is reported to the subscribers
     final remoteSubscription = remoteProvider
-        .subscribe<_Model>(query: query, repository: this)
+        .subscribe<_Model>(query: withPolicy, repository: this)
         .listen((modelsFromRemote) async {
       final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
       memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
@@ -202,10 +229,13 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(_Model instance,
-      {Query? query, bool throwOnReattemptStatusCodes = false}) async {
+  Future<_Model> upsert<_Model extends OfflineFirstWithGraphqlModel>(
+    _Model instance, {
+    OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
+    Query? query,
+  }) async {
     try {
-      final result = await super.upsert<_Model>(instance, query: query);
+      final result = await super.upsert<_Model>(instance, policy: policy, query: query);
       await notifySubscriptionsWithLocalData<_Model>();
       return result;
     } on GraphQLError catch (e) {

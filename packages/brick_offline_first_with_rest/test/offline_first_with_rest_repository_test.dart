@@ -1,4 +1,4 @@
-import 'package:brick_core/core.dart';
+import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -63,13 +63,13 @@ void main() {
     });
 
     test('#getBatched', () async {
-      final results = await TestRepository().getBatched<Mounty>(requireRemote: false);
+      final results = await TestRepository().getBatched<Mounty>();
       expect(results.first, isA<Mounty>());
       expect(results.first.name, 'SqliteName');
     });
 
     test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>(requireRemote: true);
+      await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
 
       // verify(TestRepository()
       //     .remoteProvider
