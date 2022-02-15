@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Integrate new `OfflineFirstPolicy`s to the `RestOfflineQueueClient`
+
 ## 0.0.2
 
 * Support new policies for skipping cache or requesting data. See [brick_offline_first's change notes](https://github.com/GetDutchie/brick/blob/main/packages/brick_offline_first/CHANGELOG.md) for how to migrate the breaking changes.
