@@ -30,8 +30,13 @@ class RestOfflineQueueClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final cacheItem = RestRequestSqliteCache(request as http.Request);
+    final cachePolicy = (request as http.Request).headers.remove('X-Brick-OfflineFirstPolicy');
+    final skipCache = cachePolicy == 'requireRemote';
+    final cacheItem = RestRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
+
+    // Process the request immediately and forward any warnings to the caller
+    if (skipCache) return await _inner.send(request);
 
     // "Pull" requests are ignored. See documentation of `RequestSqliteCache#requestIsPush`.
     if (cacheItem.requestIsPush) {

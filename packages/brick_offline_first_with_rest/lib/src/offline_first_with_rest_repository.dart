@@ -82,6 +82,27 @@ abstract class OfflineFirstWithRestRepository
   }
 
   @override
+  Query? applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) {
+    // The header value must be stringified because of how `http.Client` accepts the `headers` Map
+    final headerValue = delete?.toString().split('.').last ??
+        get?.toString().split('.').last ??
+        upsert?.toString().split('.').last;
+    return query?.copyWith(providerArgs: {
+      ...query.providerArgs,
+      'headers': {
+        // This header is removed by the [RestOfflineQueueClient]
+        if (headerValue != null) 'X-Brick-OfflineFirstPolicy': headerValue,
+        ...?query.providerArgs['headers'] as Map<String, String>?,
+      }
+    });
+  }
+
+  @override
   Future<bool> delete<_Model extends OfflineFirstWithRestModel>(
     _Model instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
