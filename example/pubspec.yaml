@@ -23,13 +23,5 @@ dev_dependencies:
   build_runner: any
   shelf: ^1.1.0
 
-dependency_overrides:
-  brick_build:
-    path: ../packages/brick_build
-  brick_offline_first_build:
-    path: ../packages/brick_offline_first_build
-  brick_offline_first_with_rest_abstract:
-    path: ../packages/brick_offline_first_with_rest_abstract
-
 flutter:
   uses-material-design: true
