@@ -166,10 +166,10 @@ void main() {
       final instance = DemoModel(name: payload['full_name']);
       final resp = await provider.upsert<DemoModel>(instance);
 
-      expect(resp.data, {
+      expect(resp?.data, {
         'upsertPerson': [payload]
       });
-      expect(resp.errors, isNull);
+      expect(resp?.errors, isNull);
     });
   });
 }

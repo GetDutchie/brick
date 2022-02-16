@@ -47,35 +47,41 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @override
   Future<bool> delete<_Model extends GraphqlModel>(instance, {query, repository}) async {
     final request = createRequest<_Model>(action: QueryAction.delete, query: query);
-    final resp = await link.request(request).first;
-    return resp.errors?.isEmpty ?? true;
+    await for (final resp in link.request(request)) {
+      return resp.errors?.isEmpty ?? true;
+    }
+    return false;
   }
 
   @override
   Future<bool> exists<_Model extends GraphqlModel>({query, repository}) async {
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
-    final resp = await link.request(request).first;
-    return resp.data != null && (resp.errors?.isEmpty ?? true);
+    await for (final resp in link.request(request)) {
+      return resp.data != null && (resp.errors?.isEmpty ?? true);
+    }
+    return false;
   }
 
   @override
   Future<List<_Model>> get<_Model extends GraphqlModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model]!;
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
-    final resp = await link.request(request).first;
-    if (resp.data == null) return [];
-    if (resp.data?.values.first is Iterable) {
-      final results = resp.data?.values.first
-          .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
-          .toList()
-          .cast<Future<_Model>>();
+    await for (final resp in link.request(request)) {
+      if (resp.data == null) return [];
+      if (resp.data?.values.first is Iterable) {
+        final results = resp.data?.values.first
+            .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
+            .toList()
+            .cast<Future<_Model>>();
 
-      return await Future.wait<_Model>(results);
+        return await Future.wait<_Model>(results);
+      }
+
+      return [
+        await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as _Model
+      ];
     }
-
-    return [
-      await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as _Model
-    ];
+    return <_Model>[];
   }
 
   /// Remove associations from variables and transform them from field names
@@ -114,7 +120,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<Response> upsert<_Model extends GraphqlModel>(instance, {query, repository}) async {
+  Future<Response?> upsert<_Model extends GraphqlModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model]!;
     final variables = await adapter.toGraphql(instance, provider: this, repository: repository);
     final request = createRequest<_Model>(
@@ -122,6 +128,9 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       query: query,
       variables: variables,
     );
-    return await link.request(request).first;
+    await for (final resp in link.request(request)) {
+      return resp;
+    }
+    return null;
   }
 }
