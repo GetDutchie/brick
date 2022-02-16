@@ -20,7 +20,7 @@ dependencies:
 dev_dependencies:
   brick_offline_first_with_graphql_build:
     path: ../packages/brick_offline_first_with_graphql_build
-  brick_sqlite_generators: ^2.0.0-rc.2
+  brick_sqlite_generators: ^2.0.0
   build_runner: any
   shelf: ^1.1.0
 
