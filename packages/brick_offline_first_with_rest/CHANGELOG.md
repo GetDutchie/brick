@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.0.0
+
 * Integrate new `OfflineFirstPolicy`s to the `RestOfflineQueueClient`
 
 ## 0.0.2

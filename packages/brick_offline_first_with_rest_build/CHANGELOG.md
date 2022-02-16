@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0
+
+* Update brick packages to 2.0.0
+
 ## 1.3.0
 
 * Upgrade `analyzer` dependency to `3.2.0`

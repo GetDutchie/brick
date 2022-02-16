@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstSerdes;
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
 
 final output = r'''
 Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
