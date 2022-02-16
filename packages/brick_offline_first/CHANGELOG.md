@@ -1,5 +1,22 @@
 ## Unreleased
 
+## 2.0.0
+
+* **BREAKING CHANGE** `requireRemote` has been removed from `get()` and `getBatched()`. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`
+* **BREAKING CHANGE** `hydrateUnexisting` has been removed from `get()`. Instead, use `policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist` (this is the default).
+* **BREAKING CHANGE** `alwaysHydrate` has been removed from `get()`. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`.
+* **BREAKING CHANGE** This package no longer includes the `OfflineFirstWithRest` domain. Please add `brick_offline_first_with_rest: any` to your `pubspec.yaml` and update package imports appropriately.
+* Use forked `brick_offline_first_with_PROVIDER_abstract` packages
+* **BREAKING CHANGE** `rest` properties have been removed from `OfflineFirstException`. Use `OfflineFirstWithRestException` instead from `brick_offline_first_with_rest`.
+* Add `GraphqlOfflineRequestQueue` to support offline caching within the `GraphqlProvider`
+* Add `applyPolicyToQuery` to `OfflineFirstRepository` to add the policy before requests are made to remote providers.
+* Add `OfflineFirstDeletePolicy`, `OfflineFirstGetPolicy`, and `OfflineFirstUpsertPolicy` to override default behavior
+* `delete` now supports requiring a successful remote with `OfflineFirstDeletePolicy.requireRemote`. If the app is offline, normally handled exceptions (`ClientException` and `SocketException`) are `rethrow`n. (#182)
+* `upsert` now supports requiring a successful remote with `OfflineFirstUpsertPolicy.requireRemote`. If the app is offline, normally handled exceptions (`ClientException` and `SocketException`) are `rethrow`n.
+* Rename `RequestSqliteCacheManager` to `RestRequestSqliteCacheManager`
+* Rename `OfflineQueueHttpClient` to `RestOfflineQueueClient`
+* Rename `OfflineRequestQueue` to `RestOfflineRequestQueue`
+
 ## 2.0.0-rc.4
 
 * Add `applyPolicyToQuery` to `OfflineFirstRepository` to add the policy before requests are made to remote providers.

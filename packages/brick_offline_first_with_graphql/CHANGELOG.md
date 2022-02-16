@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.0.0
+
 * Add `subscribe` for streaming updates of all models
 * Do not use `GraphqlOfflineQueueLink` automatically in Offline First Repository
 

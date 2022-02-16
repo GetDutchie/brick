@@ -1,6 +1,6 @@
 // ignore_for_file: overridden_fields
 
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
 import 'package:brick_rest_generators/generators.dart';
 import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
 import 'package:test/test.dart';

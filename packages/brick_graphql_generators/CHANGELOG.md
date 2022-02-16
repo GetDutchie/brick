@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0
+
+* Stable release
+
 ## 1.0.3
 
 * Use `brick_json_generators` instead of `brick_rest_generators`

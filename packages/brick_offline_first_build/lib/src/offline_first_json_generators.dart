@@ -1,7 +1,8 @@
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:brick_rest_generators/generators.dart';
+import 'package:brick_json_generators/json_serialize.dart';
+import 'package:brick_json_generators/json_deserialize.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
 

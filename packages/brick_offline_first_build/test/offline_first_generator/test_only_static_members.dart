@@ -1,4 +1,4 @@
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
 
 final output = r'''
 Future<OnlyStaticMembers> _$OnlyStaticMembersFromTest(Map<String, dynamic> data,
