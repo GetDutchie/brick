@@ -8,12 +8,10 @@ import '__helpers__/demo_model.dart';
 import '__helpers__/stub_response.dart';
 import '__mocks__.dart';
 
-GraphqlProvider generateProvider(Map<String, dynamic> response, {List<String>? errors}) {
+GraphqlProvider generateProvider(dynamic response, {List<String>? errors}) {
   return GraphqlProvider(
     modelDictionary: dictionary,
-    link: stubResponse({
-      'upsertPerson': [response]
-    }, errors: errors),
+    link: stubResponse({'upsertPerson': response}, errors: errors),
   );
 }
 
@@ -111,12 +109,24 @@ void main() {
       });
     });
 
-    test('#get', () async {
-      final provider = generateProvider({'full_name': 'Thomas'});
+    group('#get', () {
+      test('array', () async {
+        final provider = generateProvider([
+          {'full_name': 'Thomas'}
+        ]);
 
-      final m = await provider.get<DemoModel>();
-      final testable = m.first;
-      expect(testable.name, 'Thomas');
+        final m = await provider.get<DemoModel>();
+        final testable = m.first;
+        expect(testable.name, 'Thomas');
+      });
+
+      test('single map', () async {
+        final provider = generateProvider({'full_name': 'Thomas'});
+
+        final m = await provider.get<DemoModel>();
+        final testable = m.first;
+        expect(testable.name, 'Thomas');
+      });
     });
 
     group('#queryToVariables', () {
@@ -149,7 +159,9 @@ void main() {
     });
 
     test('#subscribe', () async {
-      final payload = {'full_name': 'Guy'};
+      final payload = [
+        {'full_name': 'Guy'}
+      ];
       final provider = generateProvider(payload);
 
       final resp = provider.subscribe<DemoModel>();
@@ -161,7 +173,7 @@ void main() {
 
     test('#upsert', () async {
       final payload = {'full_name': 'Guy'};
-      final provider = generateProvider(payload);
+      final provider = generateProvider([payload]);
 
       final instance = DemoModel(name: payload['full_name']);
       final resp = await provider.upsert<DemoModel>(instance);

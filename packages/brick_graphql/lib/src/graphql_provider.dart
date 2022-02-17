@@ -77,6 +77,13 @@ class GraphqlProvider extends Provider<GraphqlModel> {
         return await Future.wait<_Model>(results);
       }
 
+      if (resp.data?.values.first is Map) {
+        return [
+          await adapter.fromGraphql(resp.data?.values.first!,
+              provider: this, repository: repository) as _Model
+        ];
+      }
+
       return [
         await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as _Model
       ];
