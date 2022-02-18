@@ -35,9 +35,11 @@ class GraphqlOfflineQueueLink extends Link {
         _logger.warning('#send: $e');
         final db = await requestManager.getDb();
         await cacheItem.unlock(db);
-        return;
       },
-      test: (e) => e is ServerException && e.originalException is SocketException,
+      test: (e) {
+        return e is SocketException ||
+            (e is ServerException && e.originalException is SocketException);
+      },
     ).asyncMap((response) async {
       if (response.errors?.isEmpty ?? true) {
         final db = await requestManager.getDb();
