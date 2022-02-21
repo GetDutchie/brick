@@ -55,6 +55,10 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
                 databaseFactory: databaseFactory,
                 modelDictionary: sqliteModelDictionary,
               ),
+              offlineQueueManager: RestRequestSqliteCacheManager(
+                'brick_offline_queue.sqlite',
+                databaseFactory: databaseFactory,
+              ),
             );
     }
     ```

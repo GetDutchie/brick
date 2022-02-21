@@ -19,6 +19,10 @@ class Repository extends OfflineFirstWithGraphqlRepository {
             databaseFactory: databaseFactory,
             modelDictionary: sqliteModelDictionary,
           ),
+          offlineRequestManager: GraphqlRequestSqliteCacheManager(
+            'brick_offline_queue.sqlite',
+            databaseFactory: databaseFactory,
+          ),
           // as both models store each other as associations, we should
           // cache neither
           memoryCacheProvider: MemoryCacheProvider(),

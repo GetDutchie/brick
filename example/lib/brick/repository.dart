@@ -18,6 +18,10 @@ class Repository extends OfflineFirstWithRestRepository {
             databaseFactory: databaseFactory,
             modelDictionary: sqliteModelDictionary,
           ),
+          offlineQueueManager: RestRequestSqliteCacheManager(
+            'brick_offline_queue.sqlite',
+            databaseFactory: databaseFactory,
+          ),
           // as both models store each other as associations, we should
           // cache neither
           memoryCacheProvider: MemoryCacheProvider(),
