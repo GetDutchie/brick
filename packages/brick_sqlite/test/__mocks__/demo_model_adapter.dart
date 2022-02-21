@@ -33,7 +33,12 @@ Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
             ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
       }))
           ?.toList(),
-      simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1)
+      simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
+      simpleTime: data['simple_time'] == null
+          ? null
+          : data['simple_time'] == null
+              ? null
+              : DateTime.tryParse(data['simple_time'] as String))
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -47,7 +52,8 @@ Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
     'full_name': instance.name,
-    'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0)
+    'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0),
+    'simple_time': instance.simpleTime?.toIso8601String(),
   };
 }
 
@@ -110,6 +116,12 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
       columnName: 'simple_bool',
       iterable: false,
       type: bool,
+    ),
+    'simpleTime': RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'simple_time',
+      iterable: false,
+      type: DateTime,
     ),
   };
 

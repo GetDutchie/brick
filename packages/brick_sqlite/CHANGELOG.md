@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When using a DateTime field with an operator (`ORDER BY`, `HAVING`, `GROUP BY`, etc), wrap the `ORDER BY` queries in `datetime`
+
 ## 1.1.0
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
