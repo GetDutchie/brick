@@ -36,7 +36,7 @@ void main() {
   group('QuerySqlTransformer', () {
     late Database db;
     var sqliteLogs = <_FakeMethodCall>[];
-    final fctory = buildDatabaseFactory(invokeMethod: (String method, [dynamic arguments]) async {
+    final stub = buildDatabaseFactory(invokeMethod: (String method, [dynamic arguments]) async {
       sqliteLogs.add(_FakeMethodCall.fromFactory(method, arguments));
 
       if (method == 'getDatabasesPath') return 'db.sqlite';
@@ -45,7 +45,7 @@ void main() {
     });
 
     setUpAll(() async {
-      db = await fctory.openDatabase('db.sqlite');
+      db = await stub.openDatabase('db.sqlite');
     });
 
     tearDown(sqliteLogs.clear);
