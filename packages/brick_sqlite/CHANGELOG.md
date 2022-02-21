@@ -5,6 +5,10 @@
 * Privatize `SqliteProvider.MIGRATION_VERSIONS_TABLE_NAME` to `_migrationVersionsTableName`
 * **BREAKING CHANGE** Use `sqflite_common` instead of `sqflite`, permitting this package to be used without Flutter.
 
+## 1.2.0
+
+* When using a DateTime field with an operator (`ORDER BY`, `HAVING`, `GROUP BY`, etc), wrap the `ORDER BY` queries in `datetime`
+
 ## 1.1.0
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
