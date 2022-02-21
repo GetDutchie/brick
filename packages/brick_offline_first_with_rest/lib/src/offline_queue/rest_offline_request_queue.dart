@@ -8,9 +8,6 @@ class RestOfflineRequestQueue extends OfflineRequestQueue<http.Request> {
   /// The client responsible for resending requests
   final RestOfflineQueueClient client;
 
-  /// This mutex ensures that concurrent writes to the DB will
-  /// not occur as the Timer runs in sub routines or isolates
-
   RestOfflineRequestQueue({
     required this.client,
   }) : super(

@@ -24,7 +24,11 @@ class StubOfflineFirstRestResponse {
   final String response;
 
   static String get currentDirectory {
-    final directory = p.dirname(Platform.script.path);
+    // `flutter test` and `dart test` resolve with different values
+    // https://github.com/flutter/flutter/issues/20907
+    final directory = Platform.script.path.contains('/dart_test')
+        ? Directory.current.path
+        : p.dirname(Platform.script.path);
     // when running this script from the project (i.e. `flutter test`),
     // the directory is where main.dart lives. We want the test directory.
     if (directory.contains('/test')) {
