@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 
 class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
   GraphqlRequestSqliteCacheManager(

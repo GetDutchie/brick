@@ -1,12 +1,11 @@
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'helpers/__mocks__.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
   group('OfflineFirstRepository', () {

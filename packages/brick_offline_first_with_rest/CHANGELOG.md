@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Import from `sqflite_common` instead of `sqflite` to avoid a Flutter dependency
+
 ## 1.0.0
 
 * Integrate new `OfflineFirstPolicy`s to the `RestOfflineQueueClient`

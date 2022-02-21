@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:http/http.dart' as http;
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
   RestRequestSqliteCacheManager(

@@ -2,7 +2,7 @@ import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite_common/sqlite_api.dart';
@@ -11,7 +11,6 @@ import 'package:gql/language.dart';
 import '__helpers__.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
   const query = '''query UpsertPerson {

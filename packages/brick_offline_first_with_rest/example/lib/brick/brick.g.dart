@@ -16,7 +16,7 @@ import 'package:brick_sqlite/sqlite.dart'
 import 'package:brick_rest/rest.dart'
     show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
+import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 import 'package:brick_sqlite/sqlite.dart' show SqliteProvider;
 import 'package:brick_core/query.dart';
 

@@ -1,14 +1,13 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:meta/meta.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseFactory, DatabaseExecutor;
 
 /// Fetch and delete [RequestSqliteCache]s.
 abstract class RequestSqliteCacheManager<_RequestMethod> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
-  /// instance agnostically across platforms. If [databaseFactory] is null, the default
-  /// Flutter SQFlite will be used.
+  /// instance agnostically across platforms.
   @protected
-  final DatabaseFactory? databaseFactory;
+  final DatabaseFactory databaseFactory;
 
   /// The file name for the database used.
   ///
@@ -43,13 +42,13 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
   RequestSqliteCacheManager(
     this.databaseName, {
     required this.createdAtColumn,
+    required this.databaseFactory,
     required this.lockedColumn,
     required this.primaryKeyColumn,
-    required this.tableName,
-    required this.updateAtColumn,
-    this.databaseFactory,
     this.processingInterval = const Duration(seconds: 5),
     this.serialProcessing = true,
+    required this.tableName,
+    required this.updateAtColumn,
   });
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
@@ -70,13 +69,7 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
   }
 
   Future<Database> getDb() {
-    if (_db == null) {
-      if (databaseFactory != null) {
-        _db = databaseFactory?.openDatabase(databaseName);
-      } else {
-        _db = openDatabase(databaseName);
-      }
-    }
+    _db ??= databaseFactory.openDatabase(databaseName);
 
     return _db!;
   }

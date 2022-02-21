@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 2.0.0-rc.1
+
+* Privatize `SqliteProvider.MIGRATION_VERSIONS_TABLE_NAME` to `_migrationVersionsTableName`
+* **BREAKING CHANGE** Use `sqflite_common` instead of `sqflite`, permitting this package to be used without Flutter.
+
 ## 1.1.0
 
 * Fix edge case where 'ambiguous column name' was thrown on `exists` queries with an association constraint and declared `OFFSET`
