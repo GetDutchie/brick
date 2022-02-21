@@ -36,6 +36,10 @@
                 _DB_NAME,
                 modelDictionary: sqliteModelDictionary,
               ),
+              offlineQueueManager: RestRequestSqliteCacheManager(
+                'brick_offline_queue.sqlite',
+                databaseFactory: databaseFactory,
+              ),
             );
     }
     ```

@@ -1,43 +1,59 @@
 import 'package:brick_core/query.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart' show isMethodCall;
-import 'package:sqflite/sqflite.dart' show Database, openDatabase;
 import 'package:test/test.dart';
-import 'package:flutter_test/flutter_test.dart' as ft;
+import 'package:sqflite_common/src/mixin/factory.dart';
+import 'package:sqflite_common/sqlite_api.dart';
 
 import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
 import '__mocks__.dart';
 
-void main() {
-  ft.TestWidgetsFlutterBinding.ensureInitialized();
+class _FakeMethodCall {
+  final String method;
+  final String? sqlStatement;
+  final dynamic arguments;
+  final int? id;
+  final bool rawFactory;
 
+  _FakeMethodCall(
+    this.method,
+    this.arguments, {
+    this.sqlStatement,
+    this.id,
+    this.rawFactory = false,
+  });
+
+  factory _FakeMethodCall.fromFactory(String method, dynamic arguments) {
+    return _FakeMethodCall(method, arguments, rawFactory: true);
+  }
+
+  @override
+  String toString() {
+    if (rawFactory) return '$method $arguments';
+    return '$method {sql: $sqlStatement, arguments: $arguments, id: $id}';
+  }
+}
+
+void main() {
   group('QuerySqlTransformer', () {
     late Database db;
-    var sqliteLogs = <MethodCall>[];
+    var sqliteLogs = <_FakeMethodCall>[];
+    final stub = buildDatabaseFactory(invokeMethod: (String method, [dynamic arguments]) async {
+      sqliteLogs.add(_FakeMethodCall.fromFactory(method, arguments));
 
-    const MethodChannel('com.tekartik.sqflite').setMockMethodCallHandler((methodCall) {
-      if (methodCall.method == 'query') sqliteLogs.add(methodCall);
-
-      if (methodCall.method == 'getDatabasesPath') {
-        return Future.value('db');
-      }
-
-      if (methodCall.method == 'openDatabase') return Future.value(1);
-
-      return Future.value([]);
+      if (method == 'getDatabasesPath') return 'db.sqlite';
+      if (method == 'openDatabase') return Future.value(1);
+      return [];
     });
 
     setUpAll(() async {
-      db = await openDatabase('db.sqlite');
+      db = await stub.openDatabase('db.sqlite');
     });
 
     tearDown(sqliteLogs.clear);
 
     void sqliteStatementExpectation(String statement, [List<dynamic>? arguments]) {
-      final matcher = isMethodCall('query',
-          arguments: {'sql': statement, 'arguments': arguments ?? [], 'id': 1});
+      final matcher = _FakeMethodCall('query', arguments ?? [], sqlStatement: statement, id: 1);
 
-      return expect(sqliteLogs, contains(matcher));
+      return expect(sqliteLogs.map((l) => l.toString()), contains(matcher.toString()));
     }
 
     test('empty', () async {

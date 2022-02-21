@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:http/testing.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -8,7 +8,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '__helpers__.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
   group('RestOfflineQueueClient', () {

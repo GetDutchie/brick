@@ -13,6 +13,6 @@ env:
 
 jobs:
   analyze_format_test:
-    uses: GetDutchie/brick/.github/workflows/reusable-flutter-analyze-format-test.yaml@main
+    uses: GetDutchie/brick/.github/workflows/reusable-dart-analyze-format-test.yaml@main
     with:
       package: brick_sqlite

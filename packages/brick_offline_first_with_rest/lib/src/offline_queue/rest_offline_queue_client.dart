@@ -9,7 +9,7 @@ class RestOfflineQueueClient extends http.BaseClient {
   /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
   final http.Client _inner;
 
-  final RequestSqliteCacheManager requestManager;
+  final RequestSqliteCacheManager<http.Request> requestManager;
 
   /// If the response returned from the client is one of these error codes, the request
   /// **will not** be removed from the queue. For example, if the result of a request produces a

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.0-rc.1
+
+* Remove Flutter dependency by upgrading `brick_sqlite`
+
 ## 2.0.0
 
 * **BREAKING CHANGE** `requireRemote` has been removed from `get()` and `getBatched()`. Instead, use `policy: OfflineFirstGetPolicy.alwaysHydrate`

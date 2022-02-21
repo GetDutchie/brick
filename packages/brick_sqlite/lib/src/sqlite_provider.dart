@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:logging/logging.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/db.dart';
@@ -16,25 +17,17 @@ import 'package:meta/meta.dart';
 
 /// Retrieves from a Sqlite database
 class SqliteProvider implements Provider<SqliteModel> {
-  // ignore: constant_identifier_names
-  static const String MIGRATION_VERSIONS_TABLE_NAME = 'MigrationVersions';
-
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
-  /// instance agnostically across platforms. If [databaseFactory] is null, the default
-  /// Flutter SQFlite will be used.
+  /// instance agnostically across platforms.
   @protected
-  final DatabaseFactory? databaseFactory;
+  final DatabaseFactory databaseFactory;
 
   /// The file name for the database used.
   ///
-  /// When [databaseFactory] is present, this is the **entire** path name.
-  /// With [databaseFactory], this is most commonly the
-  /// `sqlite_common` constant `inMemoryDatabasePath`.
+  /// File names are encouraged unless the path exists (e.g. `myDb.sqlite`).
+  /// When testing, consider using the `sqlite_common` constant
+  /// `inMemoryDatabasePath`.
   final String dbName;
-
-  /// The glue between app models and generated adapters
-  @override
-  final SqliteModelDictionary modelDictionary;
 
   /// Ensure commands are run synchronously. This significantly benefits stability while
   /// preventing database lockups (has a very, very minor performance expense).
@@ -42,11 +35,17 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   final Logger _logger;
 
+  /// The glue between app models and generated adapters
+  @override
+  final SqliteModelDictionary modelDictionary;
+
   Future<Database>? _openDb;
+
+  static const _migrationVersionsTableName = 'MigrationVersions';
 
   SqliteProvider(
     this.dbName, {
-    this.databaseFactory,
+    required this.databaseFactory,
     required this.modelDictionary,
   })  : _lock = Lock(reentrant: true),
         _logger = Logger('SqliteProvider');
@@ -99,7 +98,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     }
 
     final countQuery = await (await getDb()).rawQuery(statement, sqlQuery.values);
-    final count = offsetIsPresent ? countQuery.length : Sqflite.firstIntValue(countQuery);
+    final count = offsetIsPresent ? countQuery.length : sqlite_utils.firstIntValue(countQuery);
 
     return (count ?? 0) > 0;
   }
@@ -139,13 +138,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// Access the latest instantiation of the database [safely](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue).
   @protected
   Future<Database> getDb() {
-    if (_openDb == null) {
-      if (databaseFactory != null) {
-        _openDb = databaseFactory!.openDatabase(dbName);
-      } else {
-        _openDb = openDatabase(dbName);
-      }
-    }
+    _openDb ??= databaseFactory.openDatabase(dbName);
     return _openDb!;
   }
 
@@ -154,10 +147,10 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     // ensure migrations table exists
     await db.execute(
-        'CREATE TABLE IF NOT EXISTS $MIGRATION_VERSIONS_TABLE_NAME(version INTEGER PRIMARY KEY)');
+        'CREATE TABLE IF NOT EXISTS $_migrationVersionsTableName(version INTEGER PRIMARY KEY)');
 
     final sqliteVersions = await db.query(
-      MIGRATION_VERSIONS_TABLE_NAME,
+      _migrationVersionsTableName,
       distinct: true,
       orderBy: 'version DESC',
       limit: 1,
@@ -203,7 +196,7 @@ class SqliteProvider implements Provider<SqliteModel> {
       }
 
       await db.rawInsert(
-        'INSERT INTO $MIGRATION_VERSIONS_TABLE_NAME(version) VALUES(?)',
+        'INSERT INTO $_migrationVersionsTableName(version) VALUES(?)',
         [migration.version],
       );
     }
@@ -256,11 +249,7 @@ class SqliteProvider implements Provider<SqliteModel> {
     try {
       await (await getDb()).close();
 
-      if (databaseFactory == null) {
-        await deleteDatabase(dbName);
-      } else {
-        await databaseFactory?.deleteDatabase(dbName);
-      }
+      await databaseFactory.deleteDatabase(dbName);
 
       // recreate
       _openDb = null;

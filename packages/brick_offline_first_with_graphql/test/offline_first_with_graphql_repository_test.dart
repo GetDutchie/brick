@@ -1,12 +1,11 @@
 import 'package:brick_core/core.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__helpers__.dart';
 import 'test_domain/__mocks__.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
   group('OfflineFirstWithGraphqlRepository', () {

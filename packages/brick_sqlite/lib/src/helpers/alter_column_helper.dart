@@ -1,5 +1,5 @@
 import 'package:brick_sqlite_abstract/db.dart';
-import 'package:sqflite/sqflite.dart' show Database;
+import 'package:sqflite_common/sqlite_api.dart' show Database;
 
 /// Workaround for SQLite commands that require altering the table instead of the column.
 ///

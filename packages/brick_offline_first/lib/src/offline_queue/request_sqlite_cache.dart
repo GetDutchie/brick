@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseExecutor;
 
 /// Serialize and Deserialize a [Request] from SQLite.
 abstract class RequestSqliteCache<_Request> {

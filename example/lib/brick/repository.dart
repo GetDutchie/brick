@@ -4,6 +4,7 @@ import 'package:pizza_shoppe/brick/db/schema.g.dart';
 import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/sqlite.dart';
+import 'package:sqflite/sqflite.dart' show databaseFactory;
 
 class Repository extends OfflineFirstWithRestRepository {
   Repository._(String endpoint)
@@ -14,7 +15,12 @@ class Repository extends OfflineFirstWithRestRepository {
           ),
           sqliteProvider: SqliteProvider(
             'pizzaShoppe.sqlite',
+            databaseFactory: databaseFactory,
             modelDictionary: sqliteModelDictionary,
+          ),
+          offlineQueueManager: RestRequestSqliteCacheManager(
+            'brick_offline_queue.sqlite',
+            databaseFactory: databaseFactory,
           ),
           // as both models store each other as associations, we should
           // cache neither

@@ -2,7 +2,6 @@ import 'package:brick_core/core.dart';
 import 'package:brick_sqlite_abstract/db.dart';
 import 'package:brick_sqlite/sqlite.dart';
 import 'package:test/test.dart';
-import 'package:flutter_test/flutter_test.dart' as ft;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -10,7 +9,6 @@ import '__mocks__.dart';
 import '__mocks__/demo_model_adapter.dart';
 
 void main() {
-  ft.TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
   group('SqliteProvider', () {

@@ -11,7 +11,7 @@ import 'dart:convert';
 import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
 import 'package:brick_${remoteProviderName.toLowerCase()}/${remoteProviderName.toLowerCase()}.dart' show ${remoteProviderName}Provider, ${remoteProviderName}Model, ${remoteProviderName}Adapter, ${remoteProviderName}ModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:sqflite/sqflite.dart' show DatabaseExecutor;""";
+import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;""";
 
   /// All classes annotated with `@ConnectOfflineFirstWith$remoteProviderName`
   const OfflineFirstModelDictionaryGenerator(this.remoteProviderName);
