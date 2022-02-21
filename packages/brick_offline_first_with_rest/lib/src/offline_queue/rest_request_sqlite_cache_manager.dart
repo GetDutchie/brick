@@ -8,7 +8,7 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
   RestRequestSqliteCacheManager(
     String databaseName, {
-    DatabaseFactory? databaseFactory,
+    required DatabaseFactory databaseFactory,
     Duration? processingInterval,
     bool? serialProcessing,
   }) : super(

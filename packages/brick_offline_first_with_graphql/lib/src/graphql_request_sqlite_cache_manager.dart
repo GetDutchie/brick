@@ -10,7 +10,7 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
   GraphqlRequestSqliteCacheManager(
     String databaseName, {
-    DatabaseFactory? databaseFactory,
+    required DatabaseFactory databaseFactory,
     Duration? processingInterval,
     bool? serialProcessing,
   }) : super(

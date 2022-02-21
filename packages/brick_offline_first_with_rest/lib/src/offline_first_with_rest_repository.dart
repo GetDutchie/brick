@@ -1,10 +1,10 @@
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_request_queue.dart';
-import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_offline_first/offline_first.dart';
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_sqlite/sqlite.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import 'package:brick_rest/rest.dart' show RestProvider, RestException;
@@ -52,15 +52,22 @@ abstract class OfflineFirstWithRestRepository
   late RestOfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
-    required RestProvider restProvider,
-    required SqliteProvider sqliteProvider,
-    MemoryCacheProvider? memoryCacheProvider,
-    required Set<Migration> migrations,
     bool? autoHydrate,
     String? loggerName,
-    RequestSqliteCacheManager? offlineQueueHttpClientRequestSqliteCacheManager,
-    this.throwTunnelNotFoundExceptions = false,
+    MemoryCacheProvider? memoryCacheProvider,
+    required Set<Migration> migrations,
+
+    /// This property was added in 2.0.0
+    ///
+    /// To migrate without creating a new the queue database,
+    /// import `package:sqflite/sqflite.dart' show databaseFactory;` and
+    /// pass `RestRequestSqliteCacheManager('brick_offline_queue.sqlite', databaseFactory)`
+    /// as the value for `offlineQueueManager`
+    required RequestSqliteCacheManager<http.Request> offlineQueueManager,
     this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
+    required RestProvider restProvider,
+    required SqliteProvider sqliteProvider,
+    this.throwTunnelNotFoundExceptions = false,
   })  : remoteProvider = restProvider,
         super(
           autoHydrate: autoHydrate,
@@ -72,8 +79,7 @@ abstract class OfflineFirstWithRestRepository
         ) {
     remoteProvider.client = RestOfflineQueueClient(
       restProvider.client,
-      offlineQueueHttpClientRequestSqliteCacheManager ??
-          RestRequestSqliteCacheManager(_queueDatabaseName),
+      offlineQueueManager,
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = RestOfflineRequestQueue(
@@ -206,5 +212,3 @@ abstract class OfflineFirstWithRestRepository
       RestOfflineQueueClient.isATunnelNotFoundResponse(exception.response) &&
       !throwTunnelNotFoundExceptions;
 }
-
-const _queueDatabaseName = 'brick_offline_queue.sqlite';
