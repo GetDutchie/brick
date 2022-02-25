@@ -44,6 +44,18 @@ class SharedChecker<_SiblingModel extends Model> {
     return checker.isSerializable;
   }
 
+  /// Retrieves the `fromJson` factory element.
+  /// If the constructor can't be found, `null` is returned.
+  ConstructorElement? get fromJsonConstructor {
+    if (targetType.element is ClassElement) {
+      for (final constructor in (targetType.element as ClassElement).constructors) {
+        if (constructor.name == 'fromJson') return constructor;
+      }
+    }
+
+    return null;
+  }
+
   bool get isArgTypeAFuture {
     return argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
   }
@@ -143,6 +155,18 @@ class SharedChecker<_SiblingModel extends Model> {
     }
 
     return classElement.supertype!.typeArguments;
+  }
+
+  /// Retrieves the `toJson` method element.
+  /// If the method can't be found, `null` is returned.
+  MethodElement? get toJsonMethod {
+    if (targetType.element is ClassElement) {
+      for (final method in (targetType.element as ClassElement).methods) {
+        if (method.name == 'toJson') return method;
+      }
+    }
+
+    return null;
   }
 
   /// [argType] without `Future` if it is a `Future`.

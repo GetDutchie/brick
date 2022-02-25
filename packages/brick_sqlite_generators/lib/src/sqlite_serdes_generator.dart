@@ -31,18 +31,6 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   @override
   SharedChecker checkerForField(FieldElement field) => checkerForType(field.type);
 
-  /// Generate foreign key column if the type is a sibling;
-  /// otherwise, return the field's annotated name;
-  @override
-  String providerNameForField(annotatedName, {required checker}) {
-    if (checker.isSibling) {
-      return InsertForeignKey.foreignKeyColumnName(
-          checker.unFuturedType.getDisplayString(withNullability: false), annotatedName);
-    }
-
-    return annotatedName ?? '';
-  }
-
   @override
   bool ignoreCoderForField(field, annotation, checker) {
     if (annotation.columnType != null) {
@@ -62,6 +50,24 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
 
       return false;
     }
+
+    if (doesDeserialize) {
+      if (checker.fromJsonConstructor != null) return false;
+    } else {
+      if (checker.toJsonMethod != null) return false;
+    }
     return super.ignoreCoderForField(field, annotation, checker);
+  }
+
+  /// Generate foreign key column if the type is a sibling;
+  /// otherwise, return the field's annotated name;
+  @override
+  String providerNameForField(annotatedName, {required checker}) {
+    if (checker.isSibling) {
+      return InsertForeignKey.foreignKeyColumnName(
+          checker.unFuturedType.getDisplayString(withNullability: false), annotatedName);
+    }
+
+    return annotatedName ?? '';
   }
 }

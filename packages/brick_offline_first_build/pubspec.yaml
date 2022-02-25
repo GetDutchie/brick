@@ -14,9 +14,9 @@ dependencies:
   brick_build: ^2.0.0
   brick_core: ^1.1.0
   brick_offline_first_abstract: ^2.0.0
-  brick_json_generators: ^1.0.0
+  brick_json_generators: ^1.0.1
   brick_sqlite_abstract: ^1.1.0
-  brick_sqlite_generators: ^2.0.0
+  brick_sqlite_generators: ^2.0.1
   build: ^2.0.0
   dart_style: ^2.0.0
   logging: ^1.0.0

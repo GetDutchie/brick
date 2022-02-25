@@ -42,9 +42,32 @@ final List<Assoc> assoc;
 
 :warning: When `@OfflineFirst(where:)` is defined, the `@Rest|Graphql(toGenerator:)` generator will not feature the field **unless** a `toRest` custom generator is defined OR only one pair is defined in the map.
 
+## `.fromJson` and `.toJson`
+
+When storing raw data is more optimal than storing it as an association, use the factory `fromJson` or the method `toJson`:
+
+```dart
+import 'dart:convert';
+class Weight {
+  final int size;
+  final String unit;
+
+  Weight(this.size, this.unit);
+
+  factory Weight.fromJson(Map<String, dynamic> data) {
+    if (data == null || data.isEmpty) return null;
+
+    final size = double.parse(data.keys.first.toString() ?? '0');
+    return Weight(size, data.values.first);
+  }
+
+  Map<String, dynamic> toJson() => {'size': size, 'unit': unit};
+}
+```
+
 ## OfflineFirstSerdes
 
-When storing raw data is more optimal than storing it as an association, an `OfflineFirstSerdes` can be used. For example, a child model has only a few properties but hosts a significant number of computed members and methods:
+When `fromJson` and `toJson` are too heavy handed, provider-specific factories or provider-specific functions can be used via `OfflineFirstSerdes`. Instead of `toJson`, specify the provider (such as `toRest`). Instead of `fromJson`, specify the provider (such as `fromRest`).
 
 ```dart
 import 'dart:convert';

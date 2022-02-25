@@ -176,6 +176,8 @@ class SqliteSchemaGenerator {
         return schemaColumn(column, checker: checker);
       }
 
+      if (checker.toJsonMethod != null) return schemaColumn(column, checker: checker);
+
       if (column.ignore ||
           !checker.isSerializable ||
           (checker.isIterable && checker.isArgTypeASibling)) return null;
@@ -238,6 +240,13 @@ class SqliteSchemaGenerator {
       );
     } else if (checker.isMap || checker.isIterable) {
       // Iterables and Maps are stored as JSON
+      return SchemaColumn(
+        column.name!,
+        Column.varchar,
+        nullable: column.nullable,
+        unique: column.unique,
+      );
+    } else if (checker.toJsonMethod != null) {
       return SchemaColumn(
         column.name!,
         Column.varchar,
