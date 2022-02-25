@@ -88,7 +88,7 @@ abstract class OfflineFirstWithGraphqlRepository
   }) async {
     try {
       final result = await super.delete<_Model>(instance, policy: policy, query: query);
-      await notifySubscriptionsWithLocalData<_Model>();
+      await notifySubscriptionsWithLocalData<_Model>(notifyWhenEmpty: true);
       return result;
     } on GraphQLError catch (e) {
       logger.warning('#delete graphql failure: $e');
@@ -163,8 +163,8 @@ abstract class OfflineFirstWithGraphqlRepository
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
   @protected
   @visibleForTesting
-  Future<void>
-      notifySubscriptionsWithLocalData<_Model extends OfflineFirstWithGraphqlModel>() async {
+  Future<void> notifySubscriptionsWithLocalData<_Model extends OfflineFirstWithGraphqlModel>(
+      {bool notifyWhenEmpty = true}) async {
     final queriesControllers = subscriptions[_Model]?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
@@ -182,6 +182,8 @@ abstract class OfflineFirstWithGraphqlRepository
       if (existsInSqlite) {
         final results = await sqliteProvider.get<_Model>(query: query, repository: this);
         controller.add(results);
+      } else if (notifyWhenEmpty) {
+        controller.add(<_Model>[]);
       }
     }
   }
@@ -224,6 +226,11 @@ abstract class OfflineFirstWithGraphqlRepository
 
     subscriptions[_Model] ??= {};
     subscriptions[_Model]?[query] = controller;
+
+    // Seed initial data from local when opening a new subscription
+    get<_Model>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((_) {
+      controller.add(_);
+    });
 
     return controller.stream;
   }

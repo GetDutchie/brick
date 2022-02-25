@@ -120,7 +120,10 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
       final klass = (checker.targetType.element as ClassElement);
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
-      return '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
+      final output =
+          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
+      if (checker.isNullable) return '$fieldValue != null ? $output : null';
+      return output;
     }
 
     return null;
