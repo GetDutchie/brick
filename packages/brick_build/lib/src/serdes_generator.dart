@@ -119,7 +119,8 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
 
-      return !annotation.ignore && checker.isSerializable;
+      return (!annotation.ignore && checker.isSerializable) ||
+          checker.isSerializableViaJson(doesDeserialize);
     });
   }
 
@@ -325,13 +326,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
         doesDeserialize ? annotation.fromGenerator != null : annotation.toGenerator != null;
     if (!checker.isSerializable && hasGenerator) return false;
 
-    if (doesDeserialize) {
-      if (checker.fromJsonConstructor != null) return false;
-    } else {
-      if (checker.toJsonMethod != null) return false;
-    }
-
-    return !checker.isSerializable;
+    return !(checker.isSerializable || checker.isSerializableViaJson(doesDeserialize));
   }
 
   /// The field's name when being serialized to a provider. Optionally, a checker can reveal

@@ -45,6 +45,10 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
       return _finalTypeForField(checker.argType);
     }
 
+    if (checker.toJsonMethod != null) {
+      return checker.toJsonMethod!.returnType.getDisplayString(withNullability: false);
+    }
+
     // remove arg types as they can't be declared in final fields
     return type.getDisplayString(withNullability: false).replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
   }

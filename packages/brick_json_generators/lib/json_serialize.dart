@@ -50,6 +50,12 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
         )''';
       }
 
+      // Iterable<toJson>
+      if (argTypeChecker.toJsonMethod != null) {
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        return '$fieldValue$nullabilitySuffix.map((s) => s.toJson()).toList()';
+      }
+
       return fieldValue;
 
       // RestModel, Future<RestModel>

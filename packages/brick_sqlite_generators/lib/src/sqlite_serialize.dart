@@ -36,7 +36,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         type: int,
       )''');
 
-    for (var field in unignoredFields) {
+    for (final field in unignoredFields) {
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
@@ -147,6 +147,13 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         final nullableSuffix = argTypeChecker.isNullable ? ' ?? []' : '';
         return 'jsonEncode($fieldValue$nullableSuffix)';
       }
+
+      // Iterable<toJson>
+      if (argTypeChecker.toJsonMethod != null) {
+        final nullabilitySuffix = checker.isNullable ? '?' : '';
+        return '$fieldValue$nullabilitySuffix.map((s) => s.toJson()).toList()';
+      }
+
       // SqliteModel, Future<SqliteModel>
     } else if (checker.isSibling) {
       final instance = wrappedInFuture ? '(await $fieldValue)' : fieldValue;
@@ -181,7 +188,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       final nullableSuffix = checker.isNullable ? ' ?? {}' : '';
       return 'jsonEncode($fieldValue$nullableSuffix)';
     } else if (checker.toJsonMethod != null) {
-      final output = 'jsonEncode($fieldValue!.toJson())';
+      final nullableSuffix = checker.isNullable ? '!' : '';
+      final output = 'jsonEncode($fieldValue$nullableSuffix.toJson())';
       if (checker.isNullable) {
         return '$fieldValue != null ? $output : null';
       }
@@ -201,7 +209,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final valuesStatement = <String>[];
     final selectStatement = <String>[];
 
-    for (var entry in uniqueFields.entries) {
+    for (final entry in uniqueFields.entries) {
       whereStatement.add('${entry.value} = ?');
       valuesStatement.add('instance.${entry.key}');
       selectStatement.add(entry.value);
@@ -292,6 +300,10 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
       return _finalTypeForField(checker.argType);
+    }
+
+    if (checker.toJsonMethod != null) {
+      return checker.toJsonMethod!.returnType.getDisplayString(withNullability: false);
     }
 
     // remove arg types as they can't be declared in final fields

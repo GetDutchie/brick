@@ -116,6 +116,16 @@ class SharedChecker<_SiblingModel extends Model> {
     return isDartCoreType || isEnum || isMap || isSibling || (isFuture && canSerializeArgType);
   }
 
+  bool isSerializableViaJson(bool doesDeserialize) {
+    if (isIterable) {
+      final argTypeChecker = SharedChecker<_SiblingModel>(argType);
+      return doesDeserialize
+          ? argTypeChecker.fromJsonConstructor != null
+          : argTypeChecker.toJsonMethod != null;
+    }
+    return doesDeserialize ? fromJsonConstructor != null : toJsonMethod != null;
+  }
+
   bool get isSet => _setChecker.isExactlyType(targetType);
 
   /// If this is a class similarly annotated by the current generator.
