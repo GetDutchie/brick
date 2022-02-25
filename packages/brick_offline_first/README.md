@@ -44,7 +44,7 @@ final List<Assoc> assoc;
 
 ## `.fromJson` and `.toJson`
 
-When storing raw data is more optimal than storing it as an association, using the factory `fromJson` or the method `toJson`:
+When storing raw data is more optimal than storing it as an association, use the factory `fromJson` or the method `toJson`:
 
 ```dart
 import 'dart:convert';
@@ -67,7 +67,7 @@ class Weight {
 
 ## OfflineFirstSerdes
 
-When `fromJson` and `toJson` are too heavy handed, provider-specific factories or provider-specific functions can be used via `OfflineFirstSerdes`. Instead of `toJson`, specify the provider such as `toRest`. Instead of `fromJson`, specify the provider such as `fromRest`.
+When `fromJson` and `toJson` are too heavy handed, provider-specific factories or provider-specific functions can be used via `OfflineFirstSerdes`. Instead of `toJson`, specify the provider (such as `toRest`). Instead of `fromJson`, specify the provider (such as `fromRest`).
 
 ```dart
 import 'dart:convert';

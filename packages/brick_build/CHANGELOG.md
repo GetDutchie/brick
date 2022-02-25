@@ -2,7 +2,7 @@
 
 ## 2.0.1
 
-* Add `fromJsonConstructor` and `toJsonMethod` to `SharedChecker`, adding easy discovery of standard methods that can be used by `jsonEncode` and other generators.
+* Add `fromJsonConstructor` and `toJsonMethod` to `SharedChecker`, supporting easy discovery of standard methods `factory fromJson` and `#toJson`.
 
 ## 2.0.0
 

@@ -2,7 +2,8 @@
 
 ## 1.0.1
 
-* Serialize using `fromJson` or `toJson` when defined on classes of specific fields
+* If `.fromJson` is defined on a field's class, the field will be recognized in the adapter and `.fromJson` will be used when deserializing.
+* If `#toJson` is defined on a field's class, the field will be recognized in the adapter and `#toJson` will be used when serializing.
 
 ## 1.0.0
 
