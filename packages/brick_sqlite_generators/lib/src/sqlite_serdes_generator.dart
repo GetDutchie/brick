@@ -4,7 +4,6 @@ import 'package:brick_sqlite_abstract/annotations.dart';
 import 'package:brick_sqlite_abstract/db.dart' show InsertForeignKey;
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:meta/meta.dart';
 
 import 'sqlite_fields.dart';
 
@@ -31,15 +30,6 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   /// by the class member.
   @override
   SharedChecker checkerForField(FieldElement field) => checkerForType(field.type);
-
-  /// from dart:collections, instead of importing a whole package
-  @protected
-  T? firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-    for (var item in items) {
-      if (test(item)) return item;
-    }
-    return null;
-  }
 
   @override
   bool ignoreCoderForField(field, annotation, checker) {
