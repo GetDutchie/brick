@@ -225,6 +225,9 @@ abstract class OfflineFirstWithGraphqlRepository
     subscriptions[_Model] ??= {};
     subscriptions[_Model]?[query] = controller;
 
+    // Seed initial data from local when opening a new subscription
+    get<_Model>(query: query, policy: OfflineFirstGetPolicy.localOnly).then(controller.add);
+
     return controller.stream;
   }
 

@@ -76,7 +76,8 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
         return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
       }
     } else if (checker.toJsonMethod != null) {
-      return '$fieldValue.toJson()';
+      final nullabilitySuffix = checker.isNullable ? '?' : '';
+      return '$fieldValue$nullabilitySuffix.toJson()';
     }
 
     return null;

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When opening a new `OfflineFirstWithGraphqlRepository#subscribe`, add one event of existing local data to the stream
+
 ## 1.0.0
 
 * Add `subscribe` for streaming updates of all models
