@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 1.2.0
+
 * Loosen dependency restrictions to major versions
+* Support `fromJson` and `toJson` methods
 
 ## 1.1.0
 

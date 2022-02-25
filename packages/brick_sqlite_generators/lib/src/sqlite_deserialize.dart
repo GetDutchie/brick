@@ -142,6 +142,17 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         return 'jsonDecode($fieldValue).map((d) => d == 1)$castIterable';
       }
 
+      // Iterable<fromJson>
+      if (argTypeChecker.fromJsonConstructor != null) {
+        final klass = (argTypeChecker.targetType.element as ClassElement);
+        final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
+        final nullableSuffix = checker.isNullable ? " ?? '[]'" : '';
+
+        return '''jsonDecode($fieldValue$nullableSuffix).map(
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
+        )$castIterable$defaultValue''';
+      }
+
       // Iterable<double>, Iterable<int>, Iterable<num>, Iterable<Map>, Iterable<String>
       return 'jsonDecode($fieldValue)$castIterable';
 

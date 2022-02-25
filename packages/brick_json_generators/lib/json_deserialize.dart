@@ -78,6 +78,17 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
         }
       }
 
+      // Iterable<fromJson>
+      if (argTypeChecker.fromJsonConstructor != null) {
+        final klass = (argTypeChecker.targetType.element as ClassElement);
+        final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
+        final nullableSuffix = checker.isNullable ? '?' : '';
+
+        return '''$fieldValue$nullableSuffix.map(
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
+        )$castIterable$defaultValue''';
+      }
+
       // List
       if (checker.isList) {
         final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>[]';

@@ -40,7 +40,7 @@ void main() {
       });
 
       test('FromJsonToJson', () async {
-        await generateExpectation('from_json_to_json', from_json_to_json.output);
+        await generateAdapterExpectation('from_json_to_json', from_json_to_json.output);
       });
     });
   });
@@ -80,5 +80,7 @@ Future<void> generateAdapterExpectation(String filename, String output) async {
     annotation.annotation,
     null,
   );
+  print(generated);
+
   expect(generated.trim(), output.trim());
 }

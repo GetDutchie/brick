@@ -9,10 +9,22 @@ Future<ToFromJson> _$ToFromJsonFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return ToFromJson(
-      assoc: data['assoc'] == null
+      assoc: ToFromJsonAssoc.fromJson(
+          jsonDecode(data['assoc'] as String) as String),
+      assocNullable: data['assoc_nullable'] == null
           ? null
           : ToFromJsonAssoc.fromJson(
-              jsonDecode(data['assoc'] as String) as String))
+              jsonDecode(data['assoc_nullable'] as String) as String),
+      assocIterable: jsonDecode(data['assoc_iterable'])
+          .map((d) => ToFromJsonAssoc.fromJson(d as String))
+          .toList()
+          .cast<ToFromJsonAssoc>(),
+      assocIterableNullable: data['assoc_iterable_nullable'] == null
+          ? null
+          : jsonDecode(data['assoc_iterable_nullable'] ?? '[]')
+              .map((d) => ToFromJsonAssoc.fromJson(d as String))
+              .toList()
+              .cast<ToFromJsonAssoc>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -20,8 +32,13 @@ Future<Map<String, dynamic>> _$ToFromJsonToSqlite(ToFromJson instance,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return {
-    'assoc':
-        instance.assoc != null ? jsonEncode(instance.assoc!.toJson()) : null
+    'assoc': jsonEncode(instance.assoc.toJson()),
+    'assoc_nullable': instance.assocNullable != null
+        ? jsonEncode(instance.assocNullable!.toJson())
+        : null,
+    'assoc_iterable': instance.assocIterable.map((s) => s.toJson()).toList(),
+    'assoc_iterable_nullable':
+        instance.assocIterableNullable?.map((s) => s.toJson()).toList()
   };
 }
 
@@ -36,6 +53,30 @@ class ToFromJsonAdapter extends SqliteAdapter<ToFromJson> {
       columnName: '_brick_id',
       iterable: false,
       type: int,
+    ),
+    'assoc': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assoc',
+      iterable: false,
+      type: String,
+    ),
+    'assocNullable': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assoc_nullable',
+      iterable: false,
+      type: String,
+    ),
+    'assocIterable': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assoc_iterable',
+      iterable: true,
+      type: String,
+    ),
+    'assocIterableNullable': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'assoc_iterable_nullable',
+      iterable: true,
+      type: String,
     )
   };
   @override
@@ -72,9 +113,15 @@ class ToFromJsonAssoc {
 
 @SqliteSerializable()
 class ToFromJson {
-  final ToFromJsonAssoc? assoc;
+  final ToFromJsonAssoc assoc;
+  final ToFromJsonAssoc? assocNullable;
+  final List<ToFromJsonAssoc> assocIterable;
+  final List<ToFromJsonAssoc>? assocIterableNullable;
 
   ToFromJson({
-    this.assoc,
+    required this.assoc,
+    required this.assocNullable,
+    required this.assocIterable,
+    required this.assocIterableNullable,
   });
 }
