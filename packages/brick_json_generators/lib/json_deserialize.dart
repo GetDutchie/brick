@@ -118,7 +118,9 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
       return '$fieldValue$defaultValue';
     } else if (checker.fromJsonConstructor != null) {
       final klass = (checker.targetType.element as ClassElement);
-      return '${klass.displayName}.fromJson($fieldValue)';
+      final parameterType = checker.fromJsonConstructor!.parameters.first.type;
+
+      return '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
     }
 
     return null;

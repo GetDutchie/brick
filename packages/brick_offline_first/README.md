@@ -65,6 +65,8 @@ class Weight {
 }
 ```
 
+:warning: `.fromJson` always expects a single, unnamed parameter and a type for that parameter. Multiple parameters and not declaring a type are both unsupported.
+
 ## OfflineFirstSerdes
 
 When `fromJson` and `toJson` are too heavy handed, provider-specific factories or provider-specific functions can be used via `OfflineFirstSerdes`. Instead of `toJson`, specify the provider (such as `toRest`). Instead of `fromJson`, specify the provider (such as `fromRest`).

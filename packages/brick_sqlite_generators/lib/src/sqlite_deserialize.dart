@@ -190,7 +190,8 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       return 'jsonDecode($fieldValue)';
     } else if (checker.fromJsonConstructor != null) {
       final klass = checker.targetType.element as ClassElement;
-      return '${klass.displayName}.fromJson(jsonDecode($fieldValue))';
+      final parameterType = checker.fromJsonConstructor!.parameters.first.type;
+      return '${klass.displayName}.fromJson(jsonDecode($fieldValue) as ${parameterType.getDisplayString(withNullability: true)})';
     }
 
     return null;

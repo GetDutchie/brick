@@ -4,7 +4,7 @@ final output = r'''
 Future<ToFromJson> _$ToFromJsonFromGraphql(Map<String, dynamic> data,
     {required GraphqlProvider provider,
     GraphqlFirstRepository? repository}) async {
-  return ToFromJson(assoc: ToFromJsonAssoc.fromJson(data['assoc']));
+  return ToFromJson(assoc: ToFromJsonAssoc.fromJson(data['assoc'] as String));
 }
 
 Future<Map<String, dynamic>> _$ToFromJsonToGraphql(ToFromJson instance,

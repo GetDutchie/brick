@@ -11,7 +11,7 @@ Future<ToFromJson> _$ToFromJsonFromSqlite(Map<String, dynamic> data,
   return ToFromJson(
       assoc: data['assoc'] == null
           ? null
-          : ToFromJsonAssoc.fromJson(jsonDecode(data['assoc'])))
+          : ToFromJsonAssoc.fromJson(jsonDecode(data['assoc']) as String))
     ..primaryKey = data['_brick_id'] as int;
 }
 
