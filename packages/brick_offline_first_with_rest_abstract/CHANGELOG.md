@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 0.0.2
 
 * Rename `offline_first_model.dart` to `offline_first_with_rest_model.dart`

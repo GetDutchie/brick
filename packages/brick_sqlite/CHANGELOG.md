@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 2.0.0-rc.1
 
 * Privatize `SqliteProvider.MIGRATION_VERSIONS_TABLE_NAME` to `_migrationVersionsTableName`

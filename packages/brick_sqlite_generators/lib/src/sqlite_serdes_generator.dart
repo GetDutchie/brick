@@ -51,11 +51,6 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
       return false;
     }
 
-    if (doesDeserialize) {
-      if (checker.fromJsonConstructor != null) return false;
-    } else {
-      if (checker.toJsonMethod != null) return false;
-    }
     return super.ignoreCoderForField(field, annotation, checker);
   }
 

@@ -13,9 +13,10 @@ dependencies:
   brick_offline_first_with_graphql:
     path: ../packages/brick_offline_first_with_graphql
   cupertino_icons: ^1.0.2
-  gql_http_link: any
   flutter:
     sdk: flutter
+  gql_http_link: any
+  sqflite: any
 
 dev_dependencies:
   brick_offline_first_with_graphql_build:
