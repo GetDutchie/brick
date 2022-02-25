@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 2.0.1
 
 * Add `fromJsonConstructor` and `toJsonMethod` to `SharedChecker`, supporting easy discovery of standard methods `factory fromJson` and `#toJson`.

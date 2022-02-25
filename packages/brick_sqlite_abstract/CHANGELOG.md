@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 1.1.0
 
 * Upgrade `brick_core`

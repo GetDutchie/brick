@@ -325,6 +325,12 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
         doesDeserialize ? annotation.fromGenerator != null : annotation.toGenerator != null;
     if (!checker.isSerializable && hasGenerator) return false;
 
+    if (doesDeserialize) {
+      if (checker.fromJsonConstructor != null) return false;
+    } else {
+      if (checker.toJsonMethod != null) return false;
+    }
+
     return !checker.isSerializable;
   }
 

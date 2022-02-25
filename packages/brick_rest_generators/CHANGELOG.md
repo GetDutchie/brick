@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 2.0.0
 
 * Separate JSON generators to their own package in `brick_json_generators`

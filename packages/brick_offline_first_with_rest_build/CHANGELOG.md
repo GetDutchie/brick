@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 2.0.0
 
 * Update brick packages to 2.0.0

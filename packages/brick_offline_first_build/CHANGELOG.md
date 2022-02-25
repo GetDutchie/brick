@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Import `DatabaseExecutor` from `sqflite_common` instead of `sqflite` to avoid the Flutter dependency
+* Loosen dependency restrictions to major versions
 
 ## 2.0.0
 

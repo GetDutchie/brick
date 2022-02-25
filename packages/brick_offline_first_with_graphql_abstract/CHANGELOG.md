@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Loosen dependency restrictions to major versions
+
 ## 0.0.2+1
 
 * Include the proper export
