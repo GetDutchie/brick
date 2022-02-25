@@ -181,7 +181,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       final nullableSuffix = checker.isNullable ? ' ?? {}' : '';
       return 'jsonEncode($fieldValue$nullableSuffix)';
     } else if (checker.toJsonMethod != null) {
-      final output = 'jsonEncode($fieldValue!.toJson())';
+      final nullableSuffix = checker.isNullable ? '!' : '';
+      final output = 'jsonEncode($fieldValue$nullableSuffix.toJson())';
       if (checker.isNullable) {
         return '$fieldValue != null ? $output : null';
       }
