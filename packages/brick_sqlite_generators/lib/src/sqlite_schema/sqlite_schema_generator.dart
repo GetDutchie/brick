@@ -176,6 +176,8 @@ class SqliteSchemaGenerator {
         return schemaColumn(column, checker: checker);
       }
 
+      if (checker.toJsonMethod != null) return schemaColumn(column, checker: checker);
+
       if (column.ignore ||
           !checker.isSerializable ||
           (checker.isIterable && checker.isArgTypeASibling)) return null;

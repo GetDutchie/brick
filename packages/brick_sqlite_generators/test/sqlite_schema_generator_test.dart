@@ -13,6 +13,7 @@ import 'sqlite_schema/test_one_to_one_association.dart' as _$oneToOneAssociation
 import 'sqlite_schema/test_one_to_many_association.dart' as _$oneToManyAssociation;
 import 'sqlite_schema/test_index_annotation.dart' as _$indexAnnotation;
 import 'sqlite_schema/test_all_field_types.dart' as _$allFieldTypes;
+import 'sqlite_schema/test_from_to_json.dart' as _$fromToJson;
 
 const generator = SqliteSchemaGenerator();
 final generateReader = generateLibraryForFolder('sqlite_schema');
@@ -53,6 +54,11 @@ void main() {
       test('Simple', () async {
         final input = await generateInput('simple');
         expect(input, _$simple.output);
+      });
+
+      test('FromToJson', () async {
+        final input = await generateInput('from_to_json');
+        expect(input, _$fromToJson.output);
       });
     });
 
