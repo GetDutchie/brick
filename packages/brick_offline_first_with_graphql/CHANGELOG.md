@@ -1,6 +1,7 @@
 ## Unreleased
 
 * When opening a new `OfflineFirstWithGraphqlRepository#subscribe`, add one event of existing local data to the stream
+* Notify subscribers of an empty payload after deleting
 
 ## 1.0.0
 

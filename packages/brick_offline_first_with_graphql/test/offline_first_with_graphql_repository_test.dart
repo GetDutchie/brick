@@ -164,14 +164,15 @@ void main() {
         await repository.migrate();
 
         final instance = await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
-        var noEvents = true;
+        var eventCount = 0;
         final subscription =
             repository.subscribe<Mounty>(query: Query.where('name', 'Thomas')).listen((event) {
-          noEvents = false;
+          eventCount++;
         });
         await repository.delete<Mounty>(instance);
         await subscription.cancel();
-        expect(noEvents, isTrue);
+
+        expect(eventCount, 2);
       });
     });
 

@@ -1,5 +1,7 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/src/graphql_adapter.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
+import 'package:brick_graphql/src/graphql_model_dictionary.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_argument.dart';
 import 'package:brick_graphql/src/transformers/graphql_variable.dart';
