@@ -11,14 +11,18 @@ Future<ToFromJson> _$ToFromJsonFromSqlite(Map<String, dynamic> data,
   return ToFromJson(
       assoc: data['assoc'] == null
           ? null
-          : ToFromJsonAssoc.fromJson(jsonDecode(data['assoc']) as String))
+          : ToFromJsonAssoc.fromJson(
+              jsonDecode(data['assoc'] as String) as String))
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$ToFromJsonToSqlite(ToFromJson instance,
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
-  return {'assoc': jsonEncode(instance.assoc.toJson())};
+  return {
+    'assoc':
+        instance.assoc != null ? jsonEncode(instance.assoc!.toJson()) : null
+  };
 }
 
 /// Construct a [ToFromJson]
