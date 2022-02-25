@@ -17,6 +17,7 @@ import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
 import 'sqlite_model_serdes_generator/test_after_save_with_non_final_association.dart'
     as _$afterSaveWithNonFinalAssociation;
 import 'sqlite_model_serdes_generator/test_all_field_types.dart' as _$allFieldTypes;
+import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as _$toJsonFromJson;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -84,6 +85,10 @@ void main() {
 
     test('AllFieldTypes', () async {
       await generateAdapterExpectation('all_field_types', _$allFieldTypes.output);
+    });
+
+    test('ToJsonFromJson', () async {
+      await generateAdapterExpectation('to_json_from_json', _$toJsonFromJson.output);
     });
   });
 }

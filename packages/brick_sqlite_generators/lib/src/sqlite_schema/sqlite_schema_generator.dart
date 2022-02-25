@@ -244,6 +244,13 @@ class SqliteSchemaGenerator {
         nullable: column.nullable,
         unique: column.unique,
       );
+    } else if (checker.toJsonMethod != null) {
+      return SchemaColumn(
+        column.name!,
+        Column.varchar,
+        nullable: column.nullable,
+        unique: column.unique,
+      );
     }
 
     return null;

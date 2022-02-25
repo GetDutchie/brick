@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 2.0.1
+
+* If `.fromJson` is defined on a field's class, the field will be recognized in the adapter and `.fromJson` will be used when deserializing.
+* If `#toJson` is defined on a field's class, the field will be recognized in the adapter and `#toJson` will be used when serializing. The column created to hold the field's value will be a varchar.
+
 ## 2.0.0
 
 * Use `brick_build`s new `manuallyUpsertBrickFile` method instead of `manuallyUpsertAppFile`

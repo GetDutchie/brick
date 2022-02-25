@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_json_generators/json_serdes_generator.dart';
 import 'package:brick_core/field_serializable.dart';
@@ -115,6 +116,9 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
       // Map
     } else if (checker.isMap) {
       return '$fieldValue$defaultValue';
+    } else if (checker.fromJsonConstructor != null) {
+      final klass = (checker.targetType.element as ClassElement);
+      return '${klass.displayName}.fromJson($fieldValue)';
     }
 
     return null;

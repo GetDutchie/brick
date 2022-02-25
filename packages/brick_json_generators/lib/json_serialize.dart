@@ -76,19 +76,10 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
         }
         return '${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue)';
       }
-    } else if (checker.targetType.element is ClassElement) {
-      final methods = (checker.targetType.element as ClassElement).methods;
-      final method = _firstWhereOrNull<MethodElement>(methods, (m) => m.name == 'toJson');
-      if (method != null) return '$fieldValue.toJson()';
+    } else if (checker.toJsonMethod != null) {
+      return '$fieldValue.toJson()';
     }
 
     return null;
   }
-}
-// from dart:collections, instead of importing a whole package
-T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-  for (var item in items) {
-    if (test(item)) return item;
-  }
-  return null;
 }

@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart' show ClassElement;
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_sqlite_abstract/sqlite_model.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
@@ -188,6 +188,9 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       // Map
     } else if (checker.isMap) {
       return 'jsonDecode($fieldValue)';
+    } else if (checker.fromJsonConstructor != null) {
+      final klass = checker.targetType.element as ClassElement;
+      return '${klass.displayName}.fromJson(jsonDecode($fieldValue))';
     }
 
     return null;
