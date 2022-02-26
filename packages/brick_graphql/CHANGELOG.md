@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When a field's type declares a `toJson` method that returns a map, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
+
 # 1.0.1
 
 * Loosen dependency restrictions to major versions

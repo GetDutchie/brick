@@ -39,6 +39,42 @@ final variables = {
 
 :warning: Association values within `Where` **are not** converted to variables.
 
+## `toJson` and subfields
+
+When a field's type declares a `toJson` method that returns a map, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
+
+```dart
+class Hat {
+  final String fabric;
+  final int width;
+
+  Hat({this.fabric, this.width});
+
+  Map<String, dynamic> toJson() => {'fabric': fabric, 'width': width};
+}
+
+class Mounty {
+  final Hat hat;
+  final String horseName
+  final String name;
+}
+```
+
+Produces the following GraphQL document on `query` or `subscription`:
+
+```graphql
+query {
+  myQueryName {
+    hat {
+      fabric
+      width
+    }
+    horseName
+    name
+  }
+}
+```
+
 ## Models
 
 To reduce copypasta-ing the same GraphQL document and variables, defaults can be set on a per-model basis. Only the header is required.

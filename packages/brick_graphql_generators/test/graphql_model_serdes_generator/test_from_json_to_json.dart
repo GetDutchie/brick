@@ -46,28 +46,28 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assoc',
       iterable: false,
-      subfields: {integer},
+      subfields: <String>{'integer'},
       type: String,
     ),
     'assocNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocNullable',
       iterable: false,
-      subfields: {integer},
+      subfields: <String>{'integer'},
       type: String,
     ),
     'assocIterable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterable',
       iterable: true,
-      subfields: {integer},
+      subfields: <String>{'integer'},
       type: String,
     ),
     'assocIterableNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterableNullable',
       iterable: true,
-      subfields: {integer},
+      subfields: <String>{'integer'},
       type: String,
     )
   };
@@ -88,7 +88,13 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
 ''';
 
 class ToFromJsonAssoc {
+  String get ignoreComputedGetter => integer.toString();
+
+  String? ignoreNonFinal;
+
   final int? integer;
+
+  static const ignoreStatic = 1;
 
   ToFromJsonAssoc({
     this.integer,
