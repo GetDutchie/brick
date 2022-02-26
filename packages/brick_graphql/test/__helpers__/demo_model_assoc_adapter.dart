@@ -43,3 +43,33 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
           {required provider, repository}) async =>
       await _$DemoModelAssocToGraphql(input, provider: provider, repository: repository);
 }
+
+class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> {
+  DemoModelAssocWithSubfieldsAdapter();
+
+  @override
+  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
+    'primaryKey': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: '_brick_id',
+      iterable: false,
+      type: int,
+    ),
+    'name': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'full_name',
+      iterable: false,
+      subfields: {'first', 'last'},
+      type: String,
+    ),
+  };
+
+  @override
+  Future<DemoModelAssoc> fromGraphql(Map<String, dynamic> input,
+          {required provider, repository}) async =>
+      await _$DemoModelAssocFromGraphql(input, provider: provider, repository: repository);
+  @override
+  Future<Map<String, dynamic>> toGraphql(DemoModelAssoc input,
+          {required provider, repository}) async =>
+      await _$DemoModelAssocToGraphql(input, provider: provider, repository: repository);
+}

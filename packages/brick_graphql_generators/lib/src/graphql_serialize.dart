@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_graphql_generators/src/graphql_serdes_generator.dart';
@@ -22,6 +23,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
       final checker = checkerForType(field.type);
       final remoteName = providerNameForField(annotation.name, checker: checker);
       final columnInsertionType = _finalTypeForField(field.type);
+      final subfields = _subfieldsForType(field.type).map((f) => "'$f'").join(',');
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
@@ -29,6 +31,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
             documentNodeName: '$remoteName',
             iterable: ${checker.isIterable},
+            subfields: <String>{$subfields},
             type: $columnInsertionType,
           )''');
     }
@@ -39,6 +42,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
   }
 
   String _finalTypeForField(DartType type) {
+    final typeRemover = RegExp(r'\<[,\s\w]+\>');
     final checker = checkerForType(type);
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
@@ -46,10 +50,35 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     }
 
     if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType.getDisplayString(withNullability: false);
+      return checker.toJsonMethod!.returnType
+          .getDisplayString(withNullability: false)
+          .replaceAll(typeRemover, '');
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString(withNullability: false).replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
+    return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
+  }
+
+  Set<String> _subfieldsForType(DartType type) {
+    final checker = checkerForType(type);
+    // Future<?>, Iterable<?>
+    if (checker.isFuture || checker.isIterable) {
+      return _subfieldsForType(checker.argType);
+    }
+
+    if (checker.toJsonMethod != null && checker.toJsonMethod!.returnType.isDartCoreMap) {
+      if (type.element is ClassElement) {
+        final klass = type.element as ClassElement;
+        final subfields = klass.fields.where((field) {
+          return field.isPublic &&
+              ((field.isFinal || field.isConst) && field.getter != null) &&
+              !field.isStatic &&
+              !field.type.isDartCoreFunction;
+        }).where((field) => !FieldsForClass.isComputedGetter(field));
+        return subfields.map((field) => field.name).toSet();
+      }
+    }
+
+    return <String>{};
   }
 }

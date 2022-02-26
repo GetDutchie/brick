@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.2.1
+
+* Generate `subfields` from the return type `toJson` methods
+* Strip arg type arguments from `toJson` return types to maintain support for Dart <2.15
+
 ## 1.2.0
 
 * Loosen dependency restrictions to major versions

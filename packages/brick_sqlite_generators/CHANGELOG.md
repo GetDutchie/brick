@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 2.0.2
+
 * Loosen dependency restrictions to major versions
+* Remove type from `Map` on `toJson` fields
 
 ## 2.0.1
 

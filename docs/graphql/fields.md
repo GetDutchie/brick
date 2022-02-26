@@ -40,6 +40,42 @@ final String lastName;
 
 When true, the field will be ignored by the (de)serializing function in the adapter.
 
+## `#toJson` and subfields
+
+When a field's type's class has a `#toJson` method that returns a `Map`, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
+
+```dart
+class Hat {
+  final String fabric;
+  final int width;
+
+  Hat({this.fabric, this.width});
+
+  Map<String, dynamic> toJson() => {'fabric': fabric, 'width': width};
+}
+
+class Mounty {
+  final Hat hat;
+  final String horseName
+  final String name;
+}
+```
+
+Produces the following GraphQL document on `query` or `subscription`:
+
+```graphql
+query {
+  myQueryName {
+    hat {
+      fabric
+      width
+    }
+    horseName
+    name
+  }
+}
+```
+
 ## Unsupported Field Types
 
 The following are not serialized to GraphQL. However, unsupported types can still be accessed in the model as non-final fields.

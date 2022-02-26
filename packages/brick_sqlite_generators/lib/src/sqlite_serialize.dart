@@ -297,17 +297,21 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
   String _finalTypeForField(DartType type) {
     final checker = checkerForType(type);
+    final typeRemover = RegExp(r'\<[,\s\w]+\>');
+
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
       return _finalTypeForField(checker.argType);
     }
 
     if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType.getDisplayString(withNullability: false);
+      return checker.toJsonMethod!.returnType
+          .getDisplayString(withNullability: false)
+          .replaceAll(typeRemover, '');
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString(withNullability: false).replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
+    return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
   }
 
   String _boolForField(String fieldValue, bool nullable) {

@@ -7,5 +7,6 @@ import '__helpers__/demo_model_assoc_adapter.dart';
 final Map<Type, GraphqlAdapter<GraphqlModel>> _mappings = {
   DemoModel: DemoModelAdapter(),
   DemoModelAssoc: DemoModelAssocAdapter(),
+  DemoModelAssocWithSubfields: DemoModelAssocWithSubfieldsAdapter(),
 };
 final dictionary = GraphqlModelDictionary(_mappings);

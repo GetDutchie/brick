@@ -103,6 +103,28 @@ void main() {
 }''',
         );
       });
+
+      test('subfields', () {
+        final transformer = ModelFieldsDocumentTransformer<DemoModelAssocWithSubfields>(
+          modelDictionary: dictionary,
+          operationFunctionName: 'upsertPerson',
+          operationNameNode: 'UpsertPerson',
+          operationType: OperationType.query,
+        );
+
+        expect(
+          lang.printNode(transformer.document),
+          r'''query UpsertPerson {
+  upsertPerson {
+    primaryKey
+    name {
+      first
+      last
+    }
+  }
+}''',
+        );
+      });
     });
 
     group('.concat', () {
