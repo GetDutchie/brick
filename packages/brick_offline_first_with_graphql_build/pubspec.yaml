@@ -18,7 +18,7 @@ dependencies:
   brick_offline_first_build: ">=2.0.0 <3.0.0"
   brick_offline_first_with_graphql_abstract: ^1.0.0
   brick_sqlite_abstract: ">=1.1.0 <2.0.0"
-  brick_sqlite_generators: ">=2.0.1+5 <3.0.0"
+  brick_sqlite_generators: ">=2.0.2 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
