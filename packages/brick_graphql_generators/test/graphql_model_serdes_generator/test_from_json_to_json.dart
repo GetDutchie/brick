@@ -47,28 +47,28 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       documentNodeName: 'assoc',
       iterable: false,
       subfields: <String>{'integer'},
-      type: String,
+      type: Map,
     ),
     'assocNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocNullable',
       iterable: false,
       subfields: <String>{'integer'},
-      type: String,
+      type: Map,
     ),
     'assocIterable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterable',
       iterable: true,
       subfields: <String>{'integer'},
-      type: String,
+      type: Map,
     ),
     'assocIterableNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterableNullable',
       iterable: true,
       subfields: <String>{'integer'},
-      type: String,
+      type: Map,
     )
   };
 
