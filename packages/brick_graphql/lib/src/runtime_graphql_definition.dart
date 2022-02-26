@@ -12,6 +12,10 @@ class RuntimeGraphqlDefinition {
   /// Defaults to `false`.
   final bool iterable;
 
+  /// For fields that are not strictly associations but have nested attributes,
+  /// [subfields] needs to be defined for the GraphQL query to resolve.
+  final Set<String> subfields;
+
   /// The type accessed after the result is retrieved, **not** the GraphQL column type.
   /// In other words, the runtime type.
   final Type type;
@@ -20,6 +24,7 @@ class RuntimeGraphqlDefinition {
     this.association = false,
     required this.documentNodeName,
     this.iterable = false,
+    this.subfields = const <String>{},
     required this.type,
   });
 }
