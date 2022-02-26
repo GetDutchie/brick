@@ -41,7 +41,7 @@ final variables = {
 
 ## `toJson` and subfields
 
-When a field's type declares a `toJson` method that returns a map, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
+When a field's type declares a `toJson` method that returns a `Map`, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
 
 ```dart
 class Hat {

@@ -100,7 +100,7 @@ class ToFromJsonAssoc {
     this.integer,
   });
 
-  String toJson() => integer.toString();
+  Map<String, int?> toJson() => {'integer': integer};
 
   factory ToFromJsonAssoc.fromJson(String data) => ToFromJsonAssoc(integer: int.tryParse(data));
 }

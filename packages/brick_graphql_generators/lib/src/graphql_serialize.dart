@@ -42,6 +42,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
   }
 
   String _finalTypeForField(DartType type) {
+    final typeRemover = RegExp(r'\<[,\s\w]+\>');
     final checker = checkerForType(type);
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
@@ -49,11 +50,13 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     }
 
     if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType.getDisplayString(withNullability: false);
+      return checker.toJsonMethod!.returnType
+          .getDisplayString(withNullability: false)
+          .replaceAll(typeRemover, '');
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString(withNullability: false).replaceAll(RegExp(r'\<[,\s\w]+\>'), '');
+    return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
   }
 
   Set<String> _subfieldsForType(DartType type) {
