@@ -217,8 +217,8 @@ abstract class OfflineFirstWithGraphqlRepository
     });
 
     final controller = StreamController<List<_Model>>(
-      onCancel: () {
-        remoteSubscription.cancel();
+      onCancel: () async {
+        await remoteSubscription.cancel();
         subscriptions[_Model]?[query]?.close();
         subscriptions[_Model]?.remove(query);
       },
