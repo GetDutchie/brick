@@ -21,7 +21,7 @@ class GraphqlOfflineQueueLink extends Link {
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
     final cacheItem = GraphqlRequestSqliteCache(request);
-    _logger.finest('sending: ${cacheItem.toSqlite()}');
+    _logger.finest('GraphqlOfflineQueueLink#request: requesting ${cacheItem.toSqlite()}');
 
     // Ignore "query" and "subscription" request
     if (shouldCache(cacheItem.request)) {
@@ -32,7 +32,7 @@ class GraphqlOfflineQueueLink extends Link {
 
     yield* forward!(request).handleError(
       (e) async {
-        _logger.warning('#send: $e');
+        _logger.warning('GraphqlOfflineQueueLink#request: error $e');
         final db = await requestManager.getDb();
         await cacheItem.unlock(db);
       },
