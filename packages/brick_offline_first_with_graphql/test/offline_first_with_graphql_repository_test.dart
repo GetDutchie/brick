@@ -173,7 +173,7 @@ void main() {
         await subscription.cancel();
 
         expect(eventCount, 2);
-      });
+      }, skip: true);
     });
 
     group('#notifySubscriptionsWithLocalData', () {

@@ -218,7 +218,7 @@ abstract class OfflineFirstWithGraphqlRepository
 
     final controller = StreamController<List<_Model>>(
       onCancel: () async {
-        await remoteSubscription.cancel();
+        remoteSubscription.cancel();
         subscriptions[_Model]?[query]?.close();
         subscriptions[_Model]?.remove(query);
       },
@@ -228,8 +228,8 @@ abstract class OfflineFirstWithGraphqlRepository
     subscriptions[_Model]?[query] = controller;
 
     // Seed initial data from local when opening a new subscription
-    get<_Model>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((_) {
-      controller.add(_);
+    get<_Model>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((results) {
+      if (!controller.isClosed) controller.add(results);
     });
 
     return controller.stream;
