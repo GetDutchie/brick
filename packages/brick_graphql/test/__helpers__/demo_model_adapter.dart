@@ -1,6 +1,5 @@
 import 'package:brick_core/core.dart' show Query;
 import 'package:brick_graphql/graphql.dart';
-import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:gql/language.dart';
 
 import 'demo_model.dart';

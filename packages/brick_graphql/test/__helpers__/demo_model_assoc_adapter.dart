@@ -1,5 +1,3 @@
-import 'package:brick_graphql/src/runtime_graphql_definition.dart';
-
 import 'demo_model.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_graphql/graphql.dart';
