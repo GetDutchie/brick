@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.3
+
+* Return `null` if no GraphQL document can be inferred in `ModelFieldsDocumentTransformer` instead of throwing an `ArgumentError`. This mirrors behavior in `brick_rest`.
+
 ## 1.0.2
 
 * Add `subfields` to `RuntimeGraphqlDefinition`; support `subfields` in `ModelFieldsDocumentTransformer`

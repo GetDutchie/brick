@@ -24,7 +24,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
   @protected
   @visibleForTesting
-  Request createRequest<_Model extends GraphqlModel>({
+  Request? createRequest<_Model extends GraphqlModel>({
     Query? query,
     required QueryAction action,
     Map<String, dynamic>? variables,
@@ -34,6 +34,8 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       action: action,
       query: query,
     );
+
+    if (defaultOperation == null) return null;
 
     return Request(
       operation: Operation(document: defaultOperation.document),
@@ -48,6 +50,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @override
   Future<bool> delete<_Model extends GraphqlModel>(instance, {query, repository}) async {
     final request = createRequest<_Model>(action: QueryAction.delete, query: query);
+    if (request == null) return false;
     await for (final resp in link.request(request)) {
       return resp.errors?.isEmpty ?? true;
     }
@@ -57,6 +60,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @override
   Future<bool> exists<_Model extends GraphqlModel>({query, repository}) async {
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
+    if (request == null) return false;
     await for (final resp in link.request(request)) {
       return resp.data != null && (resp.errors?.isEmpty ?? true);
     }
@@ -67,6 +71,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   Future<List<_Model>> get<_Model extends GraphqlModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[_Model]!;
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
+    if (request == null) return <_Model>[];
     await for (final resp in link.request(request)) {
       if (resp.data == null) return [];
       if (resp.data?.values.first is Iterable) {
@@ -111,6 +116,10 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       {Query? query, ModelRepository<GraphqlModel>? repository}) async* {
     final adapter = modelDictionary.adapterFor[_Model]!;
     final request = createRequest<_Model>(action: QueryAction.subscribe, query: query);
+    if (request == null) {
+      yield <_Model>[];
+      return;
+    }
     await for (final response in link.request(request)) {
       if (response.data?.values.first is Iterable) {
         final results = response.data?.values.first
@@ -136,6 +145,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
       query: query,
       variables: variables,
     );
+    if (request == null) return null;
     await for (final resp in link.request(request)) {
       return resp;
     }
