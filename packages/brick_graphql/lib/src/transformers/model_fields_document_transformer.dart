@@ -162,7 +162,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       concat<_Model>(lang.parseString(existingOperation), modelDictionary);
 
   /// Assign and determine what operation to make against the request
-  static ModelFieldsDocumentTransformer defaultOperation<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer? defaultOperation<_Model extends GraphqlModel>(
     GraphqlModelDictionary modelDictionary, {
     required QueryAction action,
     Query? query,
@@ -198,6 +198,6 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       return concat<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
     }
 
-    throw ArgumentError('No GraphQL document specified or inferrred');
+    return null;
   }
 }

@@ -30,7 +30,7 @@ void main() {
       test('simple', () {
         final provider = generateProvider({});
         final request = provider.createRequest<DemoModel>(action: QueryAction.get);
-        expect(printNode(request.operation.document), startsWith(r'''query GetDemoModels {
+        expect(printNode(request!.operation.document), startsWith(r'''query GetDemoModels {
   getDemoModels {'''));
       });
 
@@ -39,7 +39,7 @@ void main() {
         final variables = {'name': 'Thomas'};
         final request =
             provider.createRequest<DemoModel>(action: QueryAction.upsert, variables: variables);
-        expect(printNode(request.operation.document),
+        expect(printNode(request!.operation.document),
             startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
         expect(request.variables, variables);
@@ -50,7 +50,7 @@ void main() {
         final variables = {'name': 'Thomas'};
         final request = provider.createRequest<DemoModel>(
             action: QueryAction.upsert, query: Query(providerArgs: {'variables': variables}));
-        expect(request.variables, variables);
+        expect(request!.variables, variables);
       });
 
       test('use providerArgs before passed variables', () {
@@ -62,7 +62,7 @@ void main() {
           query: Query(providerArgs: {'variables': providerVariables}),
           variables: variables,
         );
-        expect(request.variables, providerVariables);
+        expect(request!.variables, providerVariables);
       });
 
       test('providerArgs#context:', () {
@@ -73,7 +73,7 @@ void main() {
             'context': {'SampleContextEntry': SampleContextEntry('myValue')}
           }),
         );
-        expect(request.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+        expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
     });
 

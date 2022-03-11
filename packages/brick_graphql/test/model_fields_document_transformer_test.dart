@@ -187,7 +187,7 @@ void main() {
         final query = Query(providerArgs: {'document': upsertPersonWithNodes});
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.get, query: query);
-        expect(lang.printNode(transformer.document),
+        expect(lang.printNode(transformer!.document),
             startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
   upsertPerson(input: $input) {'''));
       });
@@ -195,7 +195,7 @@ void main() {
       test('with delete action', () {
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.delete);
-        expect(lang.printNode(transformer.document),
+        expect(lang.printNode(transformer!.document),
             startsWith(r'''mutation DeleteDemoModel($input: DemoModelInput!) {
   deleteDemoModel(input: $input) {'''));
       });
@@ -203,7 +203,7 @@ void main() {
       test('with upsert action', () {
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.upsert);
-        expect(lang.printNode(transformer.document),
+        expect(lang.printNode(transformer!.document),
             startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
       });
@@ -212,21 +212,21 @@ void main() {
         test('without query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get);
-          expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
+          expect(lang.printNode(transformer!.document), startsWith(r'''query GetDemoModels {
   getDemoModels {'''));
         });
 
         test('without query.where', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get, query: Query(action: QueryAction.get));
-          expect(lang.printNode(transformer.document), startsWith(r'''query GetDemoModels {
+          expect(lang.printNode(transformer!.document), startsWith(r'''query GetDemoModels {
   getDemoModels {'''));
         });
 
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.get, query: Query.where('name', 'Thomas'));
-          expect(lang.printNode(transformer.document),
+          expect(lang.printNode(transformer!.document),
               startsWith(r'''query GetDemoModel($input: DemoModelFilterInput!) {
   getDemoModel(input: $input) {'''));
         });
@@ -236,21 +236,21 @@ void main() {
         test('without query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe);
-          expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
+          expect(lang.printNode(transformer!.document), startsWith(r'''subscription GetDemoModels {
   getDemoModels {'''));
         });
 
         test('without query.where', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe, query: Query(action: QueryAction.get));
-          expect(lang.printNode(transformer.document), startsWith(r'''subscription GetDemoModels {
+          expect(lang.printNode(transformer!.document), startsWith(r'''subscription GetDemoModels {
   getDemoModels {'''));
         });
 
         test('with query', () {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
               action: QueryAction.subscribe, query: Query.where('name', 'Thomas'));
-          expect(lang.printNode(transformer.document),
+          expect(lang.printNode(transformer!.document),
               startsWith(r'''subscription GetDemoModels($input: DemoModelInput!) {
   getDemoModels(input: $input) {'''));
         });
