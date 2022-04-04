@@ -1,9 +1,8 @@
 ## Unreleased
 
+## 2.1.0
+
 * Loosen dependency restrictions to major versions
-
-## 2.1.0-rc.1
-
 * Remove Flutter dependency by upgrading `brick_sqlite`
 
 ## 2.0.0

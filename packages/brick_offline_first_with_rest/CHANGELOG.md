@@ -1,8 +1,10 @@
 ## Unreleased
 
+## 1.1.0
+
 * Loosen dependency restrictions to major versions
 * Import from `sqflite_common` instead of `sqflite` to avoid a Flutter dependency
-* **BREAKING CHANGE** `OfflineFirstWithRestRepository#offlineQueueHttpClientRequestSqliteCacheManager` is now `offlineQueueManager`
+* **BREAKING CHANGE** `OfflineFirstWithRestRepository#offlineQueueHttpClientRequestSqliteCacheManager` is now `OfflineFirstWithRestRepository#offlineQueueManager`
 * **BREAKING_CHANGE** `offlineQueueManager` is required to create `BrickOfflineFirstWithRestRepository`. To migrate without recreating the queue database, pass RestRequestSqliteCacheManager('brick_offline_queue.sqlite', databaseFactory)
 
 ## 1.0.0
