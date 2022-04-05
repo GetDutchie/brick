@@ -150,8 +150,10 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
       // Iterable<toJson>
       if (argTypeChecker.toJsonMethod != null) {
-        final nullabilitySuffix = checker.isNullable ? '?' : '';
-        return '$fieldValue$nullabilitySuffix.map((s) => s.toJson()).toList()';
+        final serializedValue = 'jsonEncode($fieldValue)';
+        return checker.isNullable
+            ? '$fieldValue != null ? $serializedValue : null'
+            : serializedValue;
       }
 
       // SqliteModel, Future<SqliteModel>
