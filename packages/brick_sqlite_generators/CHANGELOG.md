@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 2.0.3
+
 * Fix serializing iterable `toJson` classes to SQLite
 * Fix migration generation for iterable `toJson` classes
 
