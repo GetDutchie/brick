@@ -24,11 +24,15 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 /// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class AllFieldTypes {
+  final ToFromJsonAssoc? assoc;
+  final List<ToFromJsonAssoc> iterableAssoc;
+  final List<ToFromJsonAssoc>? nullableIterableAssoc;
+
   AllFieldTypes({
     this.assoc,
+    required this.iterableAssoc,
+    this.nullableIterableAssoc,
   });
-
-  final ToFromJsonAssoc? assoc;
 }
 
 class ToFromJsonAssoc {
