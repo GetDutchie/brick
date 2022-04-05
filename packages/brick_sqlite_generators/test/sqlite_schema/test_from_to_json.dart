@@ -13,7 +13,9 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
   SchemaTable('AllFieldTypes', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('assoc', Column.varchar)
+    SchemaColumn('assoc', Column.varchar),
+    SchemaColumn('iterable_assoc', Column.varchar),
+    SchemaColumn('nullable_iterable_assoc', Column.varchar)
   }, indices: <SchemaIndex>{})
 });
 ''';
@@ -24,11 +26,15 @@ final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
 /// This will do nothing outside of this exact test suite.
 @SqliteSerializable()
 class AllFieldTypes {
+  final ToFromJsonAssoc? assoc;
+  final List<ToFromJsonAssoc> iterableAssoc;
+  final List<ToFromJsonAssoc>? nullableIterableAssoc;
+
   AllFieldTypes({
     this.assoc,
+    required this.iterableAssoc,
+    this.nullableIterableAssoc,
   });
-
-  final ToFromJsonAssoc? assoc;
 }
 
 class ToFromJsonAssoc {

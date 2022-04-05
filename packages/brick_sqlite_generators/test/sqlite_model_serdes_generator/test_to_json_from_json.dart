@@ -36,9 +36,10 @@ Future<Map<String, dynamic>> _$ToFromJsonToSqlite(ToFromJson instance,
     'assoc_nullable': instance.assocNullable != null
         ? jsonEncode(instance.assocNullable!.toJson())
         : null,
-    'assoc_iterable': instance.assocIterable.map((s) => s.toJson()).toList(),
-    'assoc_iterable_nullable':
-        instance.assocIterableNullable?.map((s) => s.toJson()).toList()
+    'assoc_iterable': jsonEncode(instance.assocIterable),
+    'assoc_iterable_nullable': instance.assocIterableNullable != null
+        ? jsonEncode(instance.assocIterableNullable)
+        : null
   };
 }
 

@@ -134,12 +134,9 @@ class MigrationGenerator extends Generator {
     final allMigrations = expandAllMigrations(library);
     final oldSchema = Schema.fromMigrations(allMigrations.toSet());
 
-    SchemaDifference difference;
-    if (newSchema == null) {
-      difference = SchemaDifference(emptySchema, oldSchema);
-    } else {
-      difference = SchemaDifference(oldSchema, newSchema);
-    }
+    final difference = newSchema == null
+        ? SchemaDifference(emptySchema, oldSchema)
+        : SchemaDifference(oldSchema, newSchema);
 
     if (!difference.hasDifference || difference.toMigrationCommands().isEmpty) {
       return null;
@@ -155,7 +152,7 @@ class MigrationGenerator extends Generator {
   static Map<String, String> allMigrationsByFilePath(LibraryReader library) {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
     return {
-      for (var annotation in annotations)
+      for (final annotation in annotations)
         '${annotation.element.name}': annotation.element.source!.shortName,
     };
   }
