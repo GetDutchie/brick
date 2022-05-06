@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add `variablesNamespace` to wrap all variables from all requests. Variables passed from `providerArgs` will not be wrapped within the namespace.
+
 ## 1.0.3
 
 * Return `null` if no GraphQL document can be inferred in `ModelFieldsDocumentTransformer` instead of throwing an `ArgumentError`. This mirrors behavior in `brick_rest`.
