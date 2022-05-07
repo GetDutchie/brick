@@ -11,14 +11,31 @@ import 'package:gql/language.dart' as lang;
 class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   final GraphqlAdapter adapter;
 
-  final List<GraphqlArgument> arguments;
-
   /// Generates a document based on the [GraphqlAdapter#fieldsToGraphqlRuntimeDefinition]
   DocumentNode get document {
+    final node = sourceDocument.definitions.first as OperationDefinitionNode;
+    final hasSubfields =
+        (node.selectionSet.selections.first as FieldNode).selectionSet?.selections.isNotEmpty ??
+            false;
+    if (hasSubfields) return sourceDocument;
+
+    final arguments = GraphqlArgument.fromOperationNode(node);
+
+    /// The `upsertPerson` in
+    /// ```graphql
+    /// mutation UpsertPerson($input: UpsertPersonInput!) {
+    ///  upsertPerson(input: $input) {
+    /// ```
+    final operationFunctionName = (node.selectionSet.selections.first as FieldNode).name.value;
+
+    /// The name following `query` or `mutation` (e.g. `mutation UpsertPerson`)
+    final operationNameNode = node.name?.value ?? _Model.toString();
+    final variables = GraphqlVariable.fromOperationNode(node);
+
     return DocumentNode(
       definitions: [
         OperationDefinitionNode(
-          type: operationType,
+          type: node.type,
           name: NameNode(value: operationNameNode),
           variableDefinitions: [
             for (final variable in variables)
@@ -48,7 +65,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
               selectionSet: SelectionSetNode(
                 selections: _generateNodes(
                   adapter.fieldsToGraphqlRuntimeDefinition,
-                  ignoreAssociations: operationType == OperationType.mutation,
+                  ignoreAssociations: node.type == OperationType.mutation,
                 ),
               ),
             ),
@@ -60,36 +77,15 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
 
   final GraphqlModelDictionary modelDictionary;
 
-  /// The `upsertPerson` in
-  /// ```graphql
-  /// mutation UpsertPerson($input: UpsertPersonInput!) {
-  ///  upsertPerson(input: $input) {
-  /// ```
-  final String operationFunctionName;
-
-  /// The name following `query` or `mutation` (e.g. `mutation UpsertPerson`)
-  final String operationNameNode;
-
-  /// Defaults to [OperationType.query]
-  final OperationType operationType;
-
-  /// Defaults to `[]`
-  final List<GraphqlVariable> variables;
+  final DocumentNode sourceDocument;
 
   /// Convert an adapter's `#fieldsToGraphqlRuntimeDefinition` to a
   /// GraphQL document
   ModelFieldsDocumentTransformer({
-    List<GraphqlArgument>? arguments,
     required this.modelDictionary,
-    required this.operationFunctionName,
-    String? operationNameNode,
-    OperationType? operationType,
-    List<GraphqlVariable>? variables,
+    required DocumentNode document,
   })  : adapter = modelDictionary.adapterFor[_Model]!,
-        arguments = arguments ?? [],
-        operationNameNode = operationNameNode ?? _Model.toString(),
-        operationType = operationType ?? OperationType.query,
-        variables = variables ?? [];
+        sourceDocument = document;
 
   /// Recursively request nodes from GraphQL as well as any deeply-nested associations.
   ///
@@ -137,29 +133,24 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   }
 
   /// Merge the operation headers from [document] and the generated `#document` nodes.
-  static ModelFieldsDocumentTransformer concat<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer fromDocument<_Model extends GraphqlModel>(
     DocumentNode document,
     GraphqlModelDictionary modelDictionary,
   ) {
-    final node = document.definitions.first as OperationDefinitionNode;
     return ModelFieldsDocumentTransformer<_Model>(
-      arguments: GraphqlArgument.fromOperationNode(node),
+      document: document,
       modelDictionary: modelDictionary,
-      operationFunctionName: (node.selectionSet.selections.first as FieldNode).name.value,
-      operationNameNode: node.name?.value,
-      operationType: node.type,
-      variables: GraphqlVariable.fromOperationNode(node),
     );
   }
 
   /// Instead of a [DocumentNode], the raw document is used.
   /// Only the operation information is retrieved from the supplied document;
   /// field nodes are ignored.
-  static ModelFieldsDocumentTransformer concatFromString<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer fromString<_Model extends GraphqlModel>(
     String existingOperation,
     GraphqlModelDictionary modelDictionary,
   ) =>
-      concat<_Model>(lang.parseString(existingOperation), modelDictionary);
+      fromDocument<_Model>(lang.parseString(existingOperation), modelDictionary);
 
   /// Assign and determine what operation to make against the request
   static ModelFieldsDocumentTransformer? defaultOperation<_Model extends GraphqlModel>(
@@ -168,34 +159,34 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     Query? query,
   }) {
     if (query?.providerArgs['document'] != null) {
-      return concatFromString<_Model>(query!.providerArgs['document'], modelDictionary);
+      return fromString<_Model>(query!.providerArgs['document'], modelDictionary);
     }
 
     final adapter = modelDictionary.adapterFor[_Model]!;
     if (action == QueryAction.delete && adapter.defaultDeleteOperation != null) {
-      return concat<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
+      return fromDocument<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
     }
 
     if (action == QueryAction.upsert && adapter.defaultUpsertOperation != null) {
-      return concat<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
+      return fromDocument<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
     }
 
     if (action == QueryAction.subscribe) {
       if (query?.where == null && adapter.defaultSubscriptionOperation != null) {
-        return concat<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
+        return fromDocument<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
       }
 
       if (adapter.defaultSubscriptionFilteredOperation != null) {
-        return concat<_Model>(adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
+        return fromDocument<_Model>(adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
       }
     }
 
     if (query?.where == null && adapter.defaultQueryOperation != null) {
-      return concat<_Model>(adapter.defaultQueryOperation!, modelDictionary);
+      return fromDocument<_Model>(adapter.defaultQueryOperation!, modelDictionary);
     }
 
     if (adapter.defaultQueryFilteredOperation != null) {
-      return concat<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
+      return fromDocument<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
     }
 
     return null;

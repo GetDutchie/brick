@@ -17,7 +17,7 @@ Every GraphQL is built differently, and with a fair amount of technical debt. Wh
 class User extends OfflineFirstModel {}
 ```
 
-?> Only headers need to be supplied; nodes can be supplied but they will be ignored. Nodes are autopopulated by the model fields that aren't ignored by the GraphQL provider.
+?> Only headers need to be supplied; nodes can be supplied to override default behavior of fetching all fields requested by the model. To use autopopulated nodes provided by the model (with respect to `@Graphql` configuration), use an empty node selection (e.g. `deleteUser(vars: $vars) {}`).
 
 | Name | Description |
 |---|---|
@@ -28,7 +28,7 @@ class User extends OfflineFirstModel {}
 | `defaultSubscriptionFilteredOperation` | Fetch instances of a model(s) **with** an argument or variable |
 | `defaultUpsertOperation` | Add or update an instance of the model. |
 
-!> Documents provided within `Query(providerArgs:)` will override any set default operations. See [the GraphQL query docs](query.md) for more information.
+!> Documents provided within `Query(providerArgs:)` will override any declared default operations. See [the GraphQL query docs](query.md) for more information.
 
 ### `@GraphqlSerializable(fieldRename:)`
 

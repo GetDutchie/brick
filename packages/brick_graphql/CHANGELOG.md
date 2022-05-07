@@ -1,5 +1,7 @@
 ## Unreleased
 
+* If a document is declared without subfields, do not overwrite this definition with subfields from the model.
+
 ## 1.0.3
 
 * Return `null` if no GraphQL document can be inferred in `ModelFieldsDocumentTransformer` instead of throwing an `ArgumentError`. This mirrors behavior in `brick_rest`.

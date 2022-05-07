@@ -1,8 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/transformers/graphql_argument.dart';
-import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
-import 'package:gql/ast.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:test/test.dart';
 
@@ -45,101 +42,22 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
 
 void main() {
   group('ModelFieldsDocumentTransformer', () {
-    group('default constructor', () {
-      test('simple', () {
-        final transformer = ModelFieldsDocumentTransformer<DemoModel>(
-          modelDictionary: dictionary,
-          operationFunctionName: 'upsertPerson',
-          operationNameNode: 'UpsertPerson',
-          operationType: OperationType.mutation,
-        );
-        expect(
-          lang.printNode(transformer.document),
-          upsertPersonWithoutArguments,
-        );
-      });
-
-      test('single argument', () {
-        final variable = GraphqlVariable(className: 'UpsertPersonInput', name: 'input');
-        final transformer = ModelFieldsDocumentTransformer<DemoModel>(
-          arguments: [GraphqlArgument(name: 'input', variable: variable)],
-          modelDictionary: dictionary,
-          operationFunctionName: 'upsertPerson',
-          operationNameNode: 'UpsertPerson',
-          operationType: OperationType.mutation,
-          variables: [variable],
-        );
-
-        expect(
-          lang.printNode(transformer.document),
-          upsertPersonWithNodes,
-        );
-      });
-
-      test('association', () {
-        final transformer = ModelFieldsDocumentTransformer<DemoModel>(
-          modelDictionary: dictionary,
-          operationFunctionName: 'upsertPerson',
-          operationNameNode: 'UpsertPerson',
-          operationType: OperationType.query,
-        );
-
-        expect(
-          lang.printNode(transformer.document),
-          r'''query UpsertPerson {
-  upsertPerson {
-    primaryKey
-    id
-    assoc {
-      primaryKey
-      name
-    }
-    someField
-    complexFieldName
-    lastName
-    name
-    simpleBool
-  }
-}''',
-        );
-      });
-
-      test('subfields', () {
-        final transformer = ModelFieldsDocumentTransformer<DemoModelAssocWithSubfields>(
-          modelDictionary: dictionary,
-          operationFunctionName: 'upsertPerson',
-          operationNameNode: 'UpsertPerson',
-          operationType: OperationType.query,
-        );
-
-        expect(
-          lang.printNode(transformer.document),
-          r'''query UpsertPerson {
-  upsertPerson {
-    primaryKey
-    name {
-      first
-      last
-    }
-  }
-}''',
-        );
-      });
-    });
-
-    group('.concat', () {
+    group('.fromDocument', () {
       test('without arguments', () {
         final nodes = lang.parseString(upsertPersonWithoutArgumentsHeader);
-        final transformer = ModelFieldsDocumentTransformer.concat<DemoModel>(nodes, dictionary);
+        final transformer =
+            ModelFieldsDocumentTransformer.fromDocument<DemoModel>(nodes, dictionary);
         final linesFromTransformer = lang.printNode(transformer.document).split('\n');
         final linesFromSource = upsertPersonWithoutArgumentsHeader.split('\n');
         expect(linesFromTransformer[0], linesFromSource[0]);
+        final boop = lang.printNode(transformer.document);
         expect(lang.printNode(transformer.document), upsertPersonWithoutArguments);
       });
 
       test('without nodes', () {
         final nodes = lang.parseString(upsertPersonWithoutNodesHeader);
-        final transformer = ModelFieldsDocumentTransformer.concat<DemoModel>(nodes, dictionary);
+        final transformer =
+            ModelFieldsDocumentTransformer.fromDocument<DemoModel>(nodes, dictionary);
         final linesFromTransformer = lang.printNode(transformer.document).split('\n');
         final linesFromSource = upsertPersonWithoutNodesHeader.split('\n');
         expect(linesFromTransformer[0], linesFromSource[0]);
@@ -148,7 +66,8 @@ void main() {
 
       test('with nodes', () {
         final nodes = lang.parseString(upsertPersonWithoutNodesHeader);
-        final transformer = ModelFieldsDocumentTransformer.concat<DemoModel>(nodes, dictionary);
+        final transformer =
+            ModelFieldsDocumentTransformer.fromDocument<DemoModel>(nodes, dictionary);
         final linesFromTransformer = lang.printNode(transformer.document).split('\n');
         final linesFromSource = upsertPersonWithoutNodesHeader.split('\n');
         expect(linesFromTransformer[0], linesFromSource[0]);
@@ -156,9 +75,9 @@ void main() {
       });
     });
 
-    group('.concatFromString', () {
+    group('.fromString', () {
       test('without nodes', () {
-        final transformer = ModelFieldsDocumentTransformer.concatFromString<DemoModel>(
+        final transformer = ModelFieldsDocumentTransformer.fromString<DemoModel>(
           upsertPersonWithoutNodesHeader,
           dictionary,
         );
@@ -166,19 +85,21 @@ void main() {
       });
 
       test('with other nodes', () {
-        final transformer = ModelFieldsDocumentTransformer.concatFromString<DemoModel>(
-          r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-            upsertPerson(input: $input) {
-              id
-              horse
-              hat
-              car
-            }
-          }''',
+        const document = r'''
+mutation UpsertPerson($input: UpsertPersonInput!) {
+  upsertPerson(input: $input) {
+    id
+    horse
+    hat
+    car
+  }
+}''';
+        final transformer = ModelFieldsDocumentTransformer.fromString<DemoModel>(
+          document,
           dictionary,
         );
 
-        expect(lang.printNode(transformer.document), upsertPersonWithNodes);
+        expect(lang.printNode(transformer.document), document);
       });
     });
 
