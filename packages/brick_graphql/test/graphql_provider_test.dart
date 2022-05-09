@@ -8,10 +8,15 @@ import '__helpers__/demo_model.dart';
 import '__helpers__/stub_response.dart';
 import '__mocks__.dart';
 
-GraphqlProvider generateProvider(dynamic response, {List<String>? errors}) {
+GraphqlProvider generateProvider(
+  dynamic response, {
+  List<String>? errors,
+  String? variablesNamespace,
+}) {
   return GraphqlProvider(
     modelDictionary: dictionary,
     link: stubResponse({'upsertPerson': response}, errors: errors),
+    variableNamespace: variablesNamespace,
   );
 }
 
@@ -74,6 +79,26 @@ void main() {
           }),
         );
         expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+      });
+
+      test('without variablesNamespace', () {
+        final provider = generateProvider({});
+        final request = provider.createRequest<DemoModel>(
+          action: QueryAction.get,
+          variables: {'myVar': 1234},
+        );
+        expect(request!.variables, {'myVar': 1234});
+      });
+
+      test('with variablesNamespace', () {
+        final provider = generateProvider({}, variablesNamespace: 'vars');
+        final request = provider.createRequest<DemoModel>(
+          action: QueryAction.get,
+          variables: {'myVar': 1234},
+        );
+        expect(request!.variables, {
+          'vars': {'myVar': 1234}
+        });
       });
     });
 
