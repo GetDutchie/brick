@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.1
+
+* Loosen `brick_graphql` restriction
+
 ## 1.1.0
 
 * Use public release versions of `brick_offline_first` and `brick_sqlite`

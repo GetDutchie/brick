@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.0.0
+
 * Loosen dependency restrictions to major versions
 
 ## 0.0.2+1
