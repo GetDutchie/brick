@@ -1,6 +1,7 @@
 ## Unreleased
 
 * If a document is declared without subfields, do not overwrite this definition with subfields from the model.
+* Add `variablesNamespace` to wrap all variables from all requests. Variables passed from `providerArgs` will not be wrapped within the namespace.
 
 ## 1.0.3
 

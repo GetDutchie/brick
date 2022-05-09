@@ -17,9 +17,22 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @protected
   final Logger logger;
 
+  /// Include all variables within a top-level key.
+  ///
+  /// For example, `vars` in the following instance:
+  /// ```graphql
+  /// query MyOperation($vars: MyInputClass!) {
+  ///   myOperation(vars: $vars) {}
+  /// }
+  /// ```
+  ///
+  /// This **does not** affect variables passed via `providerArgs`.
+  final String? variableNamespace;
+
   GraphqlProvider({
     required this.modelDictionary,
     required this.link,
+    this.variableNamespace,
   }) : logger = Logger('GraphqlProvider');
 
   @protected
@@ -37,9 +50,14 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
     if (defaultOperation == null) return null;
 
+    var requestVariables = variables ?? queryToVariables<_Model>(query);
+    if (variableNamespace != null) {
+      requestVariables = {variableNamespace!: requestVariables};
+    }
+
     return Request(
       operation: Operation(document: defaultOperation.document),
-      variables: query?.providerArgs['variables'] ?? variables ?? queryToVariables<_Model>(query),
+      variables: query?.providerArgs['variables'] ?? requestVariables,
       context: query?.providerArgs['context'] != null
           ? Context.fromMap(Map<String, ContextEntry>.from(query?.providerArgs['context'])
               .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)))
