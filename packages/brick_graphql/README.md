@@ -12,7 +12,7 @@ Since Dart is the source of truth, it may not map 1:1 to the GraphQL contract. B
 
 ### `providerArgs:`
 
-* `'document'` (`String`) apply this document query instead of one of the defaults
+* `'document'` (`String`) apply this document query instead of one of the defaults. The document subfields **will not** be populated by the model.
 * `'variables'` (`Map<String, dynamic>`) use these variables instead of a generated TLD query value when composing a request. By default, Brick will use the `toGraphql` output from the adapter
 * `'context'` (`Map<String, ContextEntry>`) apply this as the context to the request instead of an empty object. Useful for subsequent consumers/`Link`s of the request. The key should be the runtime type of the `ContextEntry`.
 
@@ -55,7 +55,7 @@ final variables = {
 
 ## `#toJson` and subfields
 
-When a field's type's class has a `#toJson` method that returns a `Map`, subfields will be automatically populated on fetch requests based on the `final` instance fields of that field's type.
+When a field's type's class has a `#toJson` method that returns a `Map`, subfields will be automatically populated on requests based on the `final` instance fields of that field's type.
 
 ```dart
 class Hat {
@@ -92,6 +92,8 @@ query {
 ## Models
 
 To reduce copypasta-ing the same GraphQL document and variables, defaults can be set on a per-model basis. Only the header is required.
+
+:bulb: Only headers need to be supplied; nodes can be supplied to override default behavior of fetching all fields requested by the model. To use autopopulated nodes provided by the model (with respect to `@Graphql` configuration), use an empty node selection (e.g. `deleteUser(vars: $vars) {}`).
 
 ### `@GraphqlSerializable(defaultDeleteOperation:)`
 
