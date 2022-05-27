@@ -1,8 +1,12 @@
 ## Unreleased
 
+## 1.1.2
+
+* Loosen `gql`, `gql_exec`, and `gql_link` restriction
+
 ## 1.1.1
 
-* Loosen `brick_graphql` restriction
+* Loosen `brick_graphql`, `brick_offline_first_with_graphql_abstract`, and `brick_offline_first_abstract` restriction
 
 ## 1.1.0
 
