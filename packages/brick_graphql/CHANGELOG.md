@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.1
+
+* Loosen `gql`, `gql_exec`, and `gql_link` restriction
+
 ## 1.1.0
 
 * If a document is declared without subfields, do not overwrite this definition with subfields from the model.
