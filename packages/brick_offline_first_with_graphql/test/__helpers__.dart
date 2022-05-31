@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:mockito/mockito.dart';
@@ -24,6 +25,7 @@ Link stubGraphqlLink(
     (_) => Stream.fromIterable([
       Response(
         data: response,
+        response: {'body': jsonEncode(response)},
         errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
         context: const Context(),
       ),
@@ -37,6 +39,7 @@ Stream<Response> stubGraphqResult(Map<String, dynamic> response, List<String>? e
   return Stream.fromIterable([
     Response(
       data: response,
+      response: {'body': jsonEncode(response)},
       errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
     ),
   ]);
