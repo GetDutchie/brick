@@ -6,7 +6,6 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__mocks__.dart';
-import '__mocks__/demo_model_adapter.dart';
 
 void main() {
   sqfliteFfiInit();
@@ -49,14 +48,22 @@ void main() {
         expect(primaryKey, 2);
       });
 
-      test('update associations', () async {
+      test('append associations', () async {
+        final newModel = DemoModel(
+          name: 'Guy',
+          manyAssoc: [DemoModelAssoc(name: 'Thomas'), DemoModelAssoc(name: 'Alice')],
+        );
+        await provider.upsert<DemoModel>(newModel);
+        final associationCount = await provider.get<DemoModelAssoc>();
+        expect(associationCount, hasLength(2));
+      });
+
+      test('remove associations', () async {
         final newModel = DemoModel(
           name: 'Guy',
           manyAssoc: [DemoModelAssoc(name: 'Thomas'), DemoModelAssoc(name: 'Alice')],
         );
         final model = newModel..primaryKey = await provider.upsert<DemoModel>(newModel);
-        final associationCount = await provider.get<DemoModelAssoc>();
-        expect(associationCount, hasLength(2));
         model.manyAssoc?.clear();
         await provider.upsert<DemoModel>(model);
         final withClearedAssociations = await provider.get<DemoModel>(
@@ -137,32 +144,6 @@ void main() {
           .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
       final doesExistWithModel = await provider.exists<DemoModel>(query: query);
       expect(doesExistWithModel, isTrue);
-    });
-  });
-
-  group('SqliteModel', () {
-    test('#primaryKey', () {
-      final m = DemoModel(name: 'Thomas');
-      expect(m.primaryKey, NEW_RECORD_ID);
-
-      m.primaryKey = 2;
-      expect(m.primaryKey, 2);
-    });
-
-    test('#isNewRecord', () {
-      final m = DemoModel(name: 'Thomas');
-      expect(m.isNewRecord, isTrue);
-    });
-
-    test('#beforeSave', () {}, skip: 'add test');
-    test('#afterSave', () {}, skip: 'add test');
-  });
-
-  group('SqliteAdapter', () {
-    final a = DemoModelAdapter();
-
-    test('#tableName', () {
-      expect(a.tableName, 'DemoModel');
     });
   });
 }
