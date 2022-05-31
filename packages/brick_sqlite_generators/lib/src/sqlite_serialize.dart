@@ -272,7 +272,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
           's.${InsertTable.PRIMARY_KEY_FIELD} ?? await provider.upsert<${SharedChecker.withoutNullability(checker.unFuturedArgType)}>(s, repository: repository)';
     }
 
-    final removeStaleAssociations = field.isPublic && !field.isFinal
+    final removeStaleAssociations = field.isPublic
         ? _removeStaleAssociations(
             field.name,
             joinsForeignColumn,

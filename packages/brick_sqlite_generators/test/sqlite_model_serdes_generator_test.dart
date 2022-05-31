@@ -14,8 +14,6 @@ import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
 import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as _$booleanFields;
 import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
     as _$afterSaveWithAssociation;
-import 'sqlite_model_serdes_generator/test_after_save_with_non_final_association.dart'
-    as _$afterSaveWithNonFinalAssociation;
 import 'sqlite_model_serdes_generator/test_all_field_types.dart' as _$allFieldTypes;
 import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as _$toJsonFromJson;
 
@@ -76,11 +74,6 @@ void main() {
     test('AfterSaveWithAssociation', () async {
       await generateAdapterExpectation(
           'after_save_with_association', _$afterSaveWithAssociation.output);
-    });
-
-    test('AfterSaveWithNonFinalAssociation', () async {
-      await generateAdapterExpectation(
-          'after_save_with_non_final_association', _$afterSaveWithNonFinalAssociation.output);
     });
 
     test('AllFieldTypes', () async {

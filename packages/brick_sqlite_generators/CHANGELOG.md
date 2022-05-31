@@ -1,5 +1,7 @@
 ## Unreleased
 
+* When updating associations from a parent, remove the association in the joins table but do not delete the instance. **This now applies to final fields as well**. (modifies addition from #119)
+
 ## 2.0.3
 
 * Fix serializing iterable `toJson` classes to SQLite
