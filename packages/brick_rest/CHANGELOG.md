@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Use Dart 2.15's `.byName` accessor for iterable enum values and remove `RestAdapter.enumValueFromName`
+
 ## 1.1.1
 
 * Upgrade `brick_core`

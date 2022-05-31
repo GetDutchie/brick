@@ -4,16 +4,16 @@ final output = r'''
 Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return EnumAsString(
-      hat: RestAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      hat: Hat.values.byName(data['hat']),
       nullableHat: data['nullable_hat'] == null
           ? null
-          : RestAdapter.enumValueFromName(Hat.values, data['nullable_hat']),
+          : Hat.values.byName(data['nullable_hat']),
       hats: data['hats']
-          .map((value) => RestAdapter.enumValueFromName(Hat.values, value)!)
+          .map(Hat.values.byName)
           .toList()
           .cast<Hat>(),
       nullableHats: data['nullable_hats']
-          .map((value) => RestAdapter.enumValueFromName(Hat.values, value))
+          .map(Hat.values.byName)
           ?.toList()
           .cast<Hat?>());
 }

@@ -5,16 +5,16 @@ Future<EnumAsString> _$EnumAsStringFromGraphql(Map<String, dynamic> data,
     {required GraphqlProvider provider,
     GraphqlFirstRepository? repository}) async {
   return EnumAsString(
-      hat: GraphqlAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      hat: Hat.values.byName(data['hat']),
       nullableHat: data['nullableHat'] == null
           ? null
-          : GraphqlAdapter.enumValueFromName(Hat.values, data['nullableHat']),
+          : Hat.values.byName(data['nullableHat']),
       hats: data['hats']
-          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value)!)
+          .map(Hat.values.byName)
           .toList()
           .cast<Hat>(),
       nullableHats: data['nullableHats']
-          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value))
+          .map(Hat.values.byName)
           ?.toList()
           .cast<Hat?>());
 }
