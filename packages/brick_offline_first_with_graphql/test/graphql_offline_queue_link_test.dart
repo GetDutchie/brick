@@ -21,7 +21,9 @@ void main() {
 
   const response = Response(
     data: <String, dynamic>{'firstName': 'Thomas'},
-    response: {'body': <String, dynamic>{'firstName': 'Thomas'}},
+    response: {
+      'body': <String, dynamic>{'firstName': 'Thomas'}
+    },
   );
 
   final request = Request(

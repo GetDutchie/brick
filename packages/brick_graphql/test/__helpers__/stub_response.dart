@@ -23,7 +23,7 @@ Link stubResponse(Map<String, dynamic> response, {List<String>? errors}) {
     (_) => Stream.fromIterable([
       Response(
         data: response,
-        response: {'body': jsonEncode(response) },
+        response: {'body': jsonEncode(response)},
         errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
         context: const Context(),
       ),
