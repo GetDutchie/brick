@@ -50,7 +50,6 @@ void main() {
         final linesFromTransformer = lang.printNode(transformer.document).split('\n');
         final linesFromSource = upsertPersonWithoutArgumentsHeader.split('\n');
         expect(linesFromTransformer[0], linesFromSource[0]);
-        final boop = lang.printNode(transformer.document);
         expect(lang.printNode(transformer.document), upsertPersonWithoutArguments);
       });
 

@@ -20,12 +20,15 @@ void main() {
       }''';
 
   const response = Response(
-    data: <String, dynamic>{'firstName': 'Beavis'},
+    data: <String, dynamic>{'firstName': 'Thomas'},
+    response: {
+      'body': <String, dynamic>{'firstName': 'Thomas'}
+    },
   );
 
   final request = Request(
     operation: Operation(document: parseString(query), operationName: 'UpsertPerson'),
-    variables: const <String, dynamic>{'firstName': 'Beavis'},
+    variables: const <String, dynamic>{'firstName': 'Thomas'},
   );
 
   group('GraphqlOfflineQueueLink', () {
