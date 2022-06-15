@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.1
+
+* Include type argument on `_upsertLocal` within `#upsert` 
+
 ## 2.1.0
 
 * Loosen dependency restrictions to major versions
