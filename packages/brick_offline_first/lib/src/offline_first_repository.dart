@@ -296,14 +296,14 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     final requireRemote = policy == OfflineFirstUpsertPolicy.requireRemote;
 
     if (optimisticLocal) {
-      instance.primaryKey = await _upsertLocal(instance, query: query);
+      instance.primaryKey = await _upsertLocal<_Model>(instance, query: query);
     }
 
     try {
       await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
 
       if (requireRemote) {
-        instance.primaryKey = await _upsertLocal(instance, query: query);
+        instance.primaryKey = await _upsertLocal<_Model>(instance, query: query);
       }
     } on ClientException catch (e) {
       logger.warning('#upsert client failure: $e');
