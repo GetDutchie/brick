@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 2.1.0
+
 * When updating associations from a parent, remove the association in the joins table but do not delete the instance. **This now applies to final fields as well**. (modifies addition from #119)
+* Respect declared non-nullability for Dart-primitive `Set`s when serializing
 
 ## 2.0.3
 
