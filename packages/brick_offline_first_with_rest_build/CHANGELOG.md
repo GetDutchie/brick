@@ -1,5 +1,6 @@
-## Unreleased
+## 2.1.0
 
+* Permit using `part` and `part of` files outside of models
 * Loosen dependency restrictions to major versions
 
 ## 2.0.0
