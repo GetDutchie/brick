@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.0+1
+
+* Fix migration and model discovery
+
 ## 1.2.0
 
 * Permit using `part` and `part of` files outside of models

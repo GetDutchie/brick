@@ -1,3 +1,7 @@
+## 2.0.1+1
+
+* Fix migration and model discovery
+
 ## 2.0.1
 
 * Permit using `part` and `part of` files outside of models

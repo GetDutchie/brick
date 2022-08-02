@@ -18,11 +18,6 @@ builders:
     auto_apply: root_package
     defaults:
       generate_for:
-        include:
-          - lib/**/*.model.dart
-          - lib/brick/db/*.migration.dart
-          - lib/brick/db/schema.g.dart
-          - lib/brick/brick.g.dart
         exclude:
           - lib/brick/adapters/*.dart
           - brick/adapters/*.dart
