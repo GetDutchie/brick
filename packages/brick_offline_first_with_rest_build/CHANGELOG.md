@@ -1,4 +1,6 @@
-## Unreleased
+## 2.0.1
+
+* Permit using `part` and `part of` files outside of models
 
 ## 2.0.0
 
