@@ -1,10 +1,10 @@
-## 2.1.0
+## 2.0.1
 
 * Permit using `part` and `part of` files outside of models
-* Loosen dependency restrictions to major versions
 
 ## 2.0.0
 
+* Loosen dependency restrictions to major versions
 * Update brick packages to 2.0.0
 
 ## 1.3.0

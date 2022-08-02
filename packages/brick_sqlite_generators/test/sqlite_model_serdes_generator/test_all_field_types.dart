@@ -30,7 +30,8 @@ Future<AllFieldTypes> _$AllFieldTypesFromSqlite(Map<String, dynamic> data,
       longerCamelizedVariable: data['longer_camelized_variable'] == null
           ? null
           : data['longer_camelized_variable'] as String?,
-      string: data['string'] == null ? null : data['string'] as String?)
+      string: data['string'] == null ? null : data['string'] as String?,
+      stringSet: jsonDecode(data['string_set']).toSet().cast<String>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -48,7 +49,8 @@ Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(AllFieldTypes instance,
         instance.enumList.map((s) => Casing.values.indexOf(s)).toList()),
     'nullable_list': jsonEncode(instance.nullableList),
     'longer_camelized_variable': instance.longerCamelizedVariable,
-    'string': instance.string
+    'string': instance.string,
+    'string_set': jsonEncode(instance.stringSet.toList())
   };
 }
 
@@ -111,6 +113,12 @@ class AllFieldTypesAdapter extends SqliteAdapter<AllFieldTypes> {
       columnName: 'string',
       iterable: false,
       type: String,
+    ),
+    'stringSet': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'string_set',
+      iterable: true,
+      type: String,
     )
   };
   @override
@@ -148,6 +156,7 @@ class AllFieldTypes {
     this.nullableList,
     this.longerCamelizedVariable,
     this.string,
+    required this.stringSet,
   });
 
   final int? integer;
@@ -158,4 +167,5 @@ class AllFieldTypes {
   final List<int>? nullableList;
   final String? longerCamelizedVariable;
   final String? string;
+  final Set<String> stringSet;
 }
