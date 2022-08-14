@@ -205,20 +205,25 @@ abstract class OfflineFirstWithGraphqlRepository
 
     final withPolicy = applyPolicyToQuery(query, get: policy);
 
-    // Remote results are never returned directly;
-    // after the remote results are fetched they're stored
-    // and memory/SQLite is reported to the subscribers
-    final remoteSubscription = remoteProvider
-        .subscribe<_Model>(query: withPolicy, repository: this)
-        .listen((modelsFromRemote) async {
-      final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
-      memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
-      await notifySubscriptionsWithLocalData<_Model>();
-    });
+    StreamSubscription<List<_Model>>? remoteSubscription;
+    final adapter = remoteProvider.modelDictionary.adapterFor[_Model];
+    if (adapter?.defaultSubscriptionOperation != null ||
+        adapter?.defaultSubscriptionFilteredOperation != null) {
+      remoteSubscription = remoteProvider
+          .subscribe<_Model>(query: withPolicy, repository: this)
+          .listen((modelsFromRemote) async {
+        // Remote results are never returned directly;
+        // after the remote results are fetched they're stored
+        // and memory/SQLite is reported to the subscribers
+        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+        memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
+        await notifySubscriptionsWithLocalData<_Model>();
+      });
+    }
 
     final controller = StreamController<List<_Model>>(
       onCancel: () async {
-        remoteSubscription.cancel();
+        remoteSubscription?.cancel();
         subscriptions[_Model]?[query]?.close();
         subscriptions[_Model]?.remove(query);
       },
