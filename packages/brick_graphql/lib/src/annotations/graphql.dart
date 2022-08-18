@@ -36,6 +36,14 @@ class Graphql implements FieldSerializable {
   @override
   final bool nullable;
 
+  /// Supply subfields that should be requested from the server.
+  ///
+  /// When blank, if the annotated field is not a Dart primitive, the class will be crawled
+  /// and its fields generated in the adapter.
+  ///
+  /// A supplied value will override the generated fields.
+  final Set<String>? subfields;
+
   @override
   final String? toGenerator;
 
@@ -51,6 +59,7 @@ class Graphql implements FieldSerializable {
     bool? ignoreTo,
     this.name,
     bool? nullable,
+    this.subfields,
     this.toGenerator,
   })  : enumAsString = enumAsString ?? false,
         ignore = ignore ?? false,

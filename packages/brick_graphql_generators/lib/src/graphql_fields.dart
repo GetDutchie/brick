@@ -52,6 +52,12 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
       ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
       nullable: obj.getField('nullable')?.toBoolValue() ?? Graphql.defaults.nullable,
+      subfields: obj
+          .getField('subfields')
+          ?.toSetValue()
+          ?.map((e) => e.toStringValue())
+          .whereType<String>()
+          .toSet(),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }

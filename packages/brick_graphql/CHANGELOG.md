@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Override `subfields` generation by supplying the necessary subfields with `@Graphql`
+
 ## 1.1.1
 
 * Loosen `gql`, `gql_exec`, and `gql_link` restriction
