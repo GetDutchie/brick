@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 2.0.2
+
 * Loosen dependency restrictions to major versions
+* Fix duplicate imports to `brick.g.dart` when class names start with the same prefix
 
 ## 2.0.1
 
