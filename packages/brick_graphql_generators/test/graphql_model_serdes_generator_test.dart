@@ -9,6 +9,7 @@ import 'package:brick_build_test/brick_build_test.dart';
 import 'graphql_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
 import 'graphql_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 import 'graphql_model_serdes_generator/test_from_json_to_json.dart' as from_json_to_json;
+import 'graphql_model_serdes_generator/test_annotation_subfields.dart' as annotation_subfields;
 import 'graphql_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
 import 'graphql_model_serdes_generator/test_constructor_member_field_mismatch.dart'
@@ -41,6 +42,10 @@ void main() {
 
       test('FromJsonToJson', () async {
         await generateAdapterExpectation('from_json_to_json', from_json_to_json.output);
+      });
+
+      test('subfields', () async {
+        await generateAdapterExpectation('annotation_subfields', annotation_subfields.output);
       });
     });
   });

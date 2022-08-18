@@ -23,7 +23,8 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
       final checker = checkerForType(field.type);
       final remoteName = providerNameForField(annotation.name, checker: checker);
       final columnInsertionType = _finalTypeForField(field.type);
-      final subfields = _subfieldsForType(field.type).map((f) => "'$f'").join(',');
+      final subfields =
+          (annotation.subfields ?? _subfieldsForType(field.type)).map((f) => "'$f'").join(',');
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
