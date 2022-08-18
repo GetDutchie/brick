@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.2
+
 * Override `subfields` generation by supplying the necessary subfields with `@Graphql`
 
 ## 1.1.1
