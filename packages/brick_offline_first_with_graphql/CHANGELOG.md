@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Do not invoke `remoteProvider.subscribe` if no subscription query exists.
+
 ## 1.1.2
 
 * Loosen `gql`, `gql_exec`, and `gql_link` restriction
