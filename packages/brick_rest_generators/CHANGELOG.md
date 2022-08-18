@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Loosen dependency restrictions to major versions
+* Use Dart 2.15's `.byName` accessor for iterable enum values and remove `RestAdapter.enumValueFromName`
 
 ## 2.0.0
 
