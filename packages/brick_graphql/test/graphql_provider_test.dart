@@ -158,7 +158,7 @@ void main() {
       test('simple', () {
         final provider = generateProvider({});
         final query = Query.where('lastName', 1);
-        expect(provider.queryToVariables<DemoModel>(query), {'last_name': 1});
+        expect(provider.queryToVariables<DemoModel>(query), {'lastName': 1});
       });
 
       test('nonexistent field', () {
@@ -170,7 +170,7 @@ void main() {
       test('different graph name than field name', () {
         final provider = generateProvider({});
         final query = Query.where('name', 1);
-        expect(provider.queryToVariables<DemoModel>(query), {'full_name': 1});
+        expect(provider.queryToVariables<DemoModel>(query), {'fullName': 1});
       });
 
       test('skips associations', () {
@@ -179,7 +179,7 @@ void main() {
           Where('lastName').isExactly(1),
           Where('assoc').isExactly(Where('name').isExactly(1)),
         ]);
-        expect(provider.queryToVariables<DemoModel>(query), {'last_name': 1});
+        expect(provider.queryToVariables<DemoModel>(query), {'lastName': 1});
       });
     });
 
