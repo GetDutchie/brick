@@ -229,7 +229,7 @@ void main() {
 
         expect(sqliteQuery.statement, statement);
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
-        sqliteStatementExpectation(statement, [1]);
+        sqliteStatementExpectation(statement, [1, 1]);
       });
 
       test('without any where arguments', () async {
