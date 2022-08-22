@@ -169,6 +169,23 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   @override
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
+      final futureAssocsOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_Futures_future_assocs` WHERE `l_Futures_brick_id` = ?',
+          [instance.primaryKey]);
+      final futureAssocsOldIds =
+          futureAssocsOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final futureAssocsNewIds =
+          instance.futureAssocs?.map((s) => s.primaryKey)?.whereType<int>() ??
+              [];
+      final futureAssocsIdsToDelete =
+          futureAssocsOldIds.where((id) => !futureAssocsNewIds.contains(id));
+
+      await Future.wait<void>(futureAssocsIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_Futures_future_assocs` WHERE `l_Futures_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(instance.futureAssocs?.map((s) async {
             final id = (await s).primaryKey ??
                 await provider.upsert<Assoc>((await s), repository: repository);

@@ -180,6 +180,21 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   @override
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
+      final assocsOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE `l_OfflineFirstWhere_brick_id` = ?',
+          [instance.primaryKey]);
+      final assocsOldIds = assocsOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final assocsNewIds =
+          instance.assocs?.map((s) => s.primaryKey)?.whereType<int>() ?? [];
+      final assocsIdsToDelete =
+          assocsOldIds.where((id) => !assocsNewIds.contains(id));
+
+      await Future.wait<void>(assocsIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_OfflineFirstWhere_assocs` WHERE `l_OfflineFirstWhere_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(instance.assocs?.map((s) async {
             final id = (await s).primaryKey ??
                 await provider.upsert<Assoc>((await s), repository: repository);
@@ -191,6 +206,23 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
     }
 
     if (instance.primaryKey != null) {
+      final loadedAssocsOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE `l_OfflineFirstWhere_brick_id` = ?',
+          [instance.primaryKey]);
+      final loadedAssocsOldIds =
+          loadedAssocsOldColumns.map((a) => a['f_Assoc_brick_id']);
+      final loadedAssocsNewIds =
+          instance.loadedAssocs?.map((s) => s.primaryKey)?.whereType<int>() ??
+              [];
+      final loadedAssocsIdsToDelete =
+          loadedAssocsOldIds.where((id) => !loadedAssocsNewIds.contains(id));
+
+      await Future.wait<void>(loadedAssocsIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE `l_OfflineFirstWhere_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(instance.loadedAssocs?.map((s) async {
             final id = s.primaryKey ??
                 await provider.upsert<Assoc>(s, repository: repository);
@@ -202,6 +234,28 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
     }
 
     if (instance.primaryKey != null) {
+      final multiLookupCustomGeneratorOldColumns = await provider.rawQuery(
+          'SELECT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE `l_OfflineFirstWhere_brick_id` = ?',
+          [instance.primaryKey]);
+      final multiLookupCustomGeneratorOldIds =
+          multiLookupCustomGeneratorOldColumns
+              .map((a) => a['f_Assoc_brick_id']);
+      final multiLookupCustomGeneratorNewIds = instance
+              .multiLookupCustomGenerator
+              ?.map((s) => s.primaryKey)
+              ?.whereType<int>() ??
+          [];
+      final multiLookupCustomGeneratorIdsToDelete =
+          multiLookupCustomGeneratorOldIds
+              .where((id) => !multiLookupCustomGeneratorNewIds.contains(id));
+
+      await Future.wait<void>(
+          multiLookupCustomGeneratorIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE `l_OfflineFirstWhere_brick_id` = ? AND `f_Assoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(
           instance.multiLookupCustomGenerator?.map((s) async {
                 final id = (await s).primaryKey ??
