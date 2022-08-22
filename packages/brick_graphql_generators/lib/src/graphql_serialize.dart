@@ -16,26 +16,11 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
 
   @override
   List<String> get instanceFieldsAndMethods {
-    final fieldsToColumns = <String>[];
-
-    for (final field in unignoredFields) {
-      final annotation = fields.annotationForField(field);
-      final checker = checkerForType(field.type);
-      final remoteName = providerNameForField(annotation.name, checker: checker);
-      final columnInsertionType = _finalTypeForField(field.type);
-      final subfields =
-          (annotation.subfields ?? _subfieldsForType(field.type)).map((f) => "'$f'").join(',');
-
-      // T0D0 support List<Future<Sibling>> for 'association'
-      fieldsToColumns.add('''
-          '${field.name}': const RuntimeGraphqlDefinition(
-            association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
-            documentNodeName: '$remoteName',
-            iterable: ${checker.isIterable},
-            subfields: <String>{$subfields},
-            type: $columnInsertionType,
-          )''');
-    }
+    final fieldsToColumns = unignoredFields.fold<List<String>>([], (fields, field) {
+      final definition = generateGraphqlDefinition(field);
+      fields.add(definition);
+      return fields;
+    });
 
     return [
       '@override\nfinal Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {${fieldsToColumns.join(',\n')}};',
@@ -58,6 +43,26 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
 
     // remove arg types as they can't be declared in final fields
     return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
+  }
+
+  String generateGraphqlDefinition(FieldElement field) {
+    final annotation = fields.annotationForField(field);
+    final checker = checkerForType(field.type);
+    final remoteName = providerNameForField(annotation.name, checker: checker);
+    final columnInsertionType = _finalTypeForField(field.type);
+    final subfields =
+        (annotation.subfields ?? _subfieldsForType(field.type)).map((f) => "'$f'").join(',');
+
+    // T0D0 support List<Future<Sibling>> for 'association'
+    return '''
+      '${field.name}': const RuntimeGraphqlDefinition(
+        association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
+        documentNodeName: '$remoteName',
+        iterable: ${checker.isIterable},
+        subfields: <String>{$subfields},
+        type: $columnInsertionType,
+      )
+    ''';
   }
 
   Set<String> _subfieldsForType(DartType type) {

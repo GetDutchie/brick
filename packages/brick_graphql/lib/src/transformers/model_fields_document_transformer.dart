@@ -96,7 +96,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   }) {
     return fieldsToGraphqlRuntimeDefinition.entries.fold<List<SelectionNode>>([], (nodes, entry) {
       nodes.add(FieldNode(
-        name: NameNode(value: entry.key),
+        name: NameNode(value: entry.value.documentNodeName),
         alias: null,
         arguments: [],
         directives: [],

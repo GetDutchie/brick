@@ -91,7 +91,7 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition => {
         'primaryKey': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: '_brick_id',
+          documentNodeName: 'primaryKey',
           iterable: false,
           type: int,
         ),
@@ -109,31 +109,31 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
         ),
         'someField': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: 'some_field',
+          documentNodeName: 'someField',
           iterable: false,
           type: bool,
         ),
         'complexFieldName': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: 'complex_field_name',
+          documentNodeName: 'complexFieldName',
           iterable: false,
           type: String,
         ),
         'lastName': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: 'last_name',
+          documentNodeName: 'lastName',
           iterable: false,
           type: String,
         ),
         'name': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: 'full_name',
+          documentNodeName: 'fullName',
           iterable: false,
           type: String,
         ),
         'simpleBool': const RuntimeGraphqlDefinition(
           association: false,
-          documentNodeName: 'simple_bool',
+          documentNodeName: 'simpleBool',
           iterable: false,
           type: bool,
         ),

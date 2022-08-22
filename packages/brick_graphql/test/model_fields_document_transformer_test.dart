@@ -22,7 +22,7 @@ const upsertPersonWithNodes = r'''mutation UpsertPerson($input: UpsertPersonInpu
     someField
     complexFieldName
     lastName
-    name
+    fullName
     simpleBool
   }
 }''';
@@ -35,7 +35,7 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
     someField
     complexFieldName
     lastName
-    name
+    fullName
     simpleBool
   }
 }''';
