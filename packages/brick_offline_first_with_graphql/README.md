@@ -39,7 +39,13 @@ class MyModel extends OfflineFirstModel {}
 
 Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a custom model cannot be passed to the repository as a type argument.
 
-## Unsupported Field Types
+## Unsupported
+
+### Field Types
 
 * Any unsupported field types from `GraphqlProvider` or `SqliteProvider`
 * Future iterables of future models (i.e. `Future<List<Future<Model>>>`.
+
+### Configuration
+
+* `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.

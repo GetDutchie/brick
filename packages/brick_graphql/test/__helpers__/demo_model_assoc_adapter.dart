@@ -20,13 +20,13 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
   final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
     'primaryKey': const RuntimeGraphqlDefinition(
       association: false,
-      documentNodeName: '_brick_id',
+      documentNodeName: 'primaryKey',
       iterable: false,
       type: int,
     ),
     'name': const RuntimeGraphqlDefinition(
       association: false,
-      documentNodeName: 'full_name',
+      documentNodeName: 'fullName',
       iterable: false,
       type: String,
     ),

@@ -15,6 +15,27 @@ class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
       {required String repositoryName})
       : offlineFirstFields = OfflineFirstFields(element),
         super(element, fields, repositoryName: repositoryName);
+
+  @override
+  String generateGraphqlDefinition(FieldElement field) {
+    final checker = checkerForType(field.type);
+    final graphqlAnnotation = fields.annotationForField(field);
+    final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
+    if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where!.isNotEmpty) {
+      final remoteName = providerNameForField(graphqlAnnotation.name, checker: checker);
+      return '''
+        '${field.name}': const RuntimeGraphqlDefinition(
+          association: false,
+          documentNodeName: '$remoteName',
+          iterable: false,
+          subfields: <String>{},
+          type: Object,
+        )
+      ''';
+    }
+
+    return super.generateGraphqlDefinition(field);
+  }
 }
 
 class _OfflineFirstGraphqlDeserialize extends GraphqlDeserialize

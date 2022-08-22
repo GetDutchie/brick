@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.2
+
+* Abstract the logic for `GraphqlSerialize#instanceFieldsAndMethods` to be populated by overrideable method `generateGraphqlDefinition`
+
 ## 1.2.1
 
 * Generate `subfields` from the return type `toJson` methods

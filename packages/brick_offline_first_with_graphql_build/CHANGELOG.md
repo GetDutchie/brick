@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Apply `@OfflineFirst(where:)` params to GraphQL document configuration. Note that the current implementation ignores multiple `where` properties (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) and nested values (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`).
+
 ## 1.2.0+1
 
 * Fix migration and model discovery
