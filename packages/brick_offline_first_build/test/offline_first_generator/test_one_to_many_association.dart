@@ -145,6 +145,22 @@ class OneToManyAssociationAdapter
   @override
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
+      final assocOldColumns = await provider.rawQuery(
+          'SELECT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE `l_OneToManyAssociation_brick_id` = ?',
+          [instance.primaryKey]);
+      final assocOldIds =
+          assocOldColumns.map((a) => a['f_SqliteAssoc_brick_id']);
+      final assocNewIds =
+          instance.assoc.map((s) => s.primaryKey).whereType<int>();
+      final assocIdsToDelete =
+          assocOldIds.where((id) => !assocNewIds.contains(id));
+
+      await Future.wait<void>(assocIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_OneToManyAssociation_assoc` WHERE `l_OneToManyAssociation_brick_id` = ? AND `f_SqliteAssoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(instance.assoc.map((s) async {
         final id = s.primaryKey ??
             await provider.upsert<SqliteAssoc>(s, repository: repository);
@@ -155,6 +171,23 @@ class OneToManyAssociationAdapter
     }
 
     if (instance.primaryKey != null) {
+      final nullableAssocOldColumns = await provider.rawQuery(
+          'SELECT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_nullable_assoc` WHERE `l_OneToManyAssociation_brick_id` = ?',
+          [instance.primaryKey]);
+      final nullableAssocOldIds =
+          nullableAssocOldColumns.map((a) => a['f_SqliteAssoc_brick_id']);
+      final nullableAssocNewIds =
+          instance.nullableAssoc?.map((s) => s.primaryKey)?.whereType<int>() ??
+              [];
+      final nullableAssocIdsToDelete =
+          nullableAssocOldIds.where((id) => !nullableAssocNewIds.contains(id));
+
+      await Future.wait<void>(nullableAssocIdsToDelete.map((id) async {
+        return await provider.rawExecute(
+            'DELETE FROM `_brick_OneToManyAssociation_nullable_assoc` WHERE `l_OneToManyAssociation_brick_id` = ? AND `f_SqliteAssoc_brick_id` = ?',
+            [instance.primaryKey, id]).catchError((e) => null);
+      }));
+
       await Future.wait<int?>(instance.nullableAssoc?.map((s) async {
             final id = s.primaryKey ??
                 await provider.upsert<SqliteAssoc>(s, repository: repository);

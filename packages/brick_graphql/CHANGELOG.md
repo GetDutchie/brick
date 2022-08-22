@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Handle edge case where GraphQL response is null and an empty iterable
+
 ## 1.1.2
 
 * Override `subfields` generation by supplying the necessary subfields with `@Graphql`

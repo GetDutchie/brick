@@ -13,6 +13,6 @@ env:
 
 jobs:
   analyze_format_test:
-    uses: GetDutchie/brick/.github/workflows/reusable-dart-analyze-format-test.yaml@main
+    uses: ./.github/workflows/reusable-dart-analyze-format-test.yaml
     with:
       package: brick_offline_first_with_rest_abstract
