@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Use the table name prefix in SQL queries for identically-named association columns
+
 ## 2.0.0
 
 * Loosen dependency restrictions to major versions
