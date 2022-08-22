@@ -215,6 +215,23 @@ void main() {
         sqliteStatementExpectation(statement, [1]);
       });
 
+      test('same-named fields on associations', () async {
+        const statement =
+            'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ? AND `DemoModel`.id = ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(where: [
+            Where.exact('assoc', Where.exact('id', 1)),
+            Where.exact('id', 1),
+          ]),
+          selectStatement: false,
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1, 1]);
+      });
+
       test('without any where arguments', () async {
         const statement = 'SELECT COUNT(*) FROM `DemoModel`';
         String? nilValue;

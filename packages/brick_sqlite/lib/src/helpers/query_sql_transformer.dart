@@ -145,7 +145,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     }
 
     /// Finally add the column to the complete phrase
-    final sqliteColumn = _adapter.tableName != adapter.tableName
+    final sqliteColumn = _adapter.tableName != adapter.tableName || _innerJoins.isNotEmpty
         ? '`${_adapter.tableName}`.${definition.columnName}'
         : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
@@ -210,7 +210,7 @@ class WhereColumnFragment {
   final List values = [];
 
   /// Computed once after initialization by [generate]
-  String? _statement;
+  late final String? _statement;
 
   WhereColumnFragment(
     this.condition,
@@ -304,7 +304,7 @@ class AllOtherClausesFragment {
   final Map<String, dynamic> providerArgs;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
-  static const Map<String, String> _supportedOperators = {
+  static const _supportedOperators = <String, String>{
     'collate': 'COLLATE',
     'orderBy': 'ORDER BY',
     'groupBy': 'GROUP BY',
@@ -316,7 +316,7 @@ class AllOtherClausesFragment {
   /// These operators declare a column to compare against. The fields provided in [providerArgs]
   /// will have to be converted to their column name.
   /// For example, `'orderBy': 'createdAt ASC'` must become `ORDER BY created_at ASC`.
-  static const Set<String> _operatorsDeclaringFields = {'ORDER BY', 'GROUP BY', 'HAVING'};
+  static const _operatorsDeclaringFields = <String>{'ORDER BY', 'GROUP BY', 'HAVING'};
 
   AllOtherClausesFragment(
     Map<String, dynamic>? providerArgs, {
