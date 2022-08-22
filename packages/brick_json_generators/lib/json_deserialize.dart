@@ -104,11 +104,12 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
         return '$fieldValue$castIterable$defaultValue';
       }
 
-      // RestModel
+      // sibling
     } else if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
+      final nullableSuffix = checker.isNullable ? '$fieldValue == null ? null : ' : '';
 
-      return '''$shouldAwait${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().from$providerName(
+      return '''$nullableSuffix$shouldAwait${SharedChecker.withoutNullability(checker.unFuturedType)}Adapter().from$providerName(
           $fieldValue, provider: provider, repository: repository
         )''';
 
