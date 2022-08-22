@@ -48,3 +48,4 @@ final variables = {
 !> Association values within `Where` **are not** converted to variables
 
 !> Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will not generate.
+* `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.

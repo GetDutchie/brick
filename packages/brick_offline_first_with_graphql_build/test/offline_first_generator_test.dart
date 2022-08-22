@@ -46,26 +46,6 @@ void main() {
         await generateAdapterExpectation(
             'offline_first_where_rename', _$offlineFirstWhereRename.output);
       });
-
-      test('throws on nested keys', () async {
-        final annotation = await annotationForFile<ConnectOfflineFirstWithGraphql>(
-            folder, 'offline_first_where_no_nested_values');
-        expect(
-          () => _generator.generateAdapter(
-              annotation.element, annotation.annotation, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
-
-      test('throws on multiple keys', () async {
-        final annotation = await annotationForFile<ConnectOfflineFirstWithGraphql>(
-            folder, 'offline_first_where_no_multiple_keys');
-        expect(
-          () => _generator.generateAdapter(
-              annotation.element, annotation.annotation, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
-        );
-      });
     });
   });
 }
