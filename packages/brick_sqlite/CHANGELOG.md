@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 2.0.1
+
 * Use the table name prefix in SQL queries for identically-named association columns
 
 ## 2.0.0
