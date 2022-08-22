@@ -1,5 +1,6 @@
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 import 'package:brick_offline_first_with_graphql_build/src/offline_first_with_graphql_generator.dart';
+import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
@@ -9,6 +10,7 @@ import 'offline_first_generator/test_graphql_config_field_rename.dart'
     as _$graphqlConfigFieldRename;
 import 'offline_first_generator/test_custom_serdes.dart' as _$customSerdes;
 import 'offline_first_generator/test_specify_field_name.dart' as _$specifyFieldName;
+import 'offline_first_generator/test_offline_first_where_rename.dart' as _$offlineFirstWhereRename;
 
 final _generator = OfflineFirstWithGraphqlGenerator();
 final folder = 'offline_first_generator';
@@ -36,6 +38,33 @@ void main() {
     group('FieldSerializable', () {
       test('name', () async {
         await generateExpectation('specify_field_name', _$specifyFieldName.output);
+      });
+    });
+
+    group('OfflineFirst(where:)', () {
+      test('renames the definition', () async {
+        await generateAdapterExpectation(
+            'offline_first_where_rename', _$offlineFirstWhereRename.output);
+      });
+
+      test('throws on nested keys', () async {
+        final annotation = await annotationForFile<ConnectOfflineFirstWithGraphql>(
+            folder, 'offline_first_where_no_nested_values');
+        expect(
+          () => _generator.generateAdapter(
+              annotation.element, annotation.annotation, MockBuildStep()),
+          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+        );
+      });
+
+      test('throws on multiple keys', () async {
+        final annotation = await annotationForFile<ConnectOfflineFirstWithGraphql>(
+            folder, 'offline_first_where_no_multiple_keys');
+        expect(
+          () => _generator.generateAdapter(
+              annotation.element, annotation.annotation, MockBuildStep()),
+          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+        );
       });
     });
   });

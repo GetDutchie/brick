@@ -19,7 +19,24 @@ class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
   @override
   String generateGraphqlDefinition(FieldElement field) {
     final annotation = offlineFirstFields.annotationForField(field);
-    if (annotation.where != null && annotation.where!.length > 1) {
+    if (annotation.where != null && annotation.where!.isNotEmpty) {
+      final location = '${element.name}#${field.name}';
+      if (annotation.where!.length > 1) {
+        throw InvalidGenerationSourceError(
+          'Only one property is supported for @OfflineFirst(where:) with GraphQL ($location)',
+          todo: 'Use one key on the field $location',
+          element: field,
+        );
+      }
+
+      if (annotation.where!.values.first.contains('][')) {
+        throw InvalidGenerationSourceError(
+          'Nested values are not supported for @OfflineFirst(where:) with GraphQL ($location)',
+          todo: 'Access only the first value on the field $location',
+          element: field,
+        );
+      }
+
       final remoteName = RegExp(r'''data\[["|']([\w+\d+\-]+)["|']\]''')
           .firstMatch(annotation.where!.values.first)
           ?.group(1);

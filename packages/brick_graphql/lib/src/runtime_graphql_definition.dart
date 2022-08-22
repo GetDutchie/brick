@@ -16,7 +16,7 @@ class RuntimeGraphqlDefinition {
   /// [subfields] needs to be defined for the GraphQL query to resolve.
   final Set<String> subfields;
 
-  /// The type accessed after the result is retrieved, **not** the GraphQL column type.
+  /// The type accessed after the result is retrieved, **not** the GraphQL type.
   /// In other words, the runtime type.
   final Type type;
 
