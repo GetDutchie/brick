@@ -3,6 +3,7 @@
 ## 1.2.2
 
 * Abstract the logic for `GraphqlSerialize#instanceFieldsAndMethods` to be populated by overrideable method `generateGraphqlDefinition`
+* Remove ignored fields from `fieldsToGraphqlRuntimeDefinition` if they are `@Graphql(ignore:)`
 
 ## 1.2.1
 

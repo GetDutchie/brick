@@ -8,6 +8,17 @@ import 'package:brick_json_generators/json_serialize.dart';
 
 /// Generate a function to produce a [ClassElement] from GraphQL data
 class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<GraphqlModel, Graphql> {
+  @override
+  Iterable<FieldElement> get unignoredFields {
+    return fields.stableInstanceFields.where((field) {
+      final annotation = fields.annotationForField(field);
+      final checker = checkerForType(field.type);
+
+      return !annotation.ignore &&
+          (checker.isSerializable || checker.isSerializableViaJson(doesDeserialize));
+    });
+  }
+
   GraphqlSerialize(
     ClassElement element,
     GraphqlFields fields, {
