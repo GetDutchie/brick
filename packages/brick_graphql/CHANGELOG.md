@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.2.0
+
 * Handle edge case where GraphQL response is null and an empty iterable
 * Use specified `@Graphql(name:)` when generating the document request
 
