@@ -91,7 +91,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     final request = createRequest<_Model>(action: QueryAction.get, query: query);
     if (request == null) return <_Model>[];
     await for (final resp in link.request(request)) {
-      if (resp.data == null) return [];
+      if (resp.data?.values == null) return <_Model>[];
+      if (resp.data?.values is Iterable && resp.data?.values.first == null) {
+        return <_Model>[];
+      }
+
       if (resp.data?.values.first is Iterable) {
         final results = resp.data?.values.first
             .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
