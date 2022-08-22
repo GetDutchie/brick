@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 1.0.2
+
 * Loosen dependency restrictions to major versions
+* Check for nullability before deserializing single associations
 
 ## 1.0.1
 
