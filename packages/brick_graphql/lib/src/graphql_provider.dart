@@ -92,7 +92,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     if (request == null) return <_Model>[];
     await for (final resp in link.request(request)) {
       if (resp.data?.values == null) return <_Model>[];
-      if (resp.data?.values is Iterable && resp.data?.values.first == null) {
+      if (resp.data!.values.isEmpty || resp.data!.values.first == null) {
         return <_Model>[];
       }
 
