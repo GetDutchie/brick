@@ -40,34 +40,45 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
   ToFromJsonAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition =
-      {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'assoc': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assoc',
       iterable: false,
-      subfields: <String>{'integer'},
+      subfields: <Map<String, Map<String, dynamic>>>{
+        'integer': {},
+        'sub': {'prop': {}, 'subProp': {}}
+      },
       type: Map,
     ),
     'assocNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocNullable',
       iterable: false,
-      subfields: <String>{'integer'},
+      subfields: <Map<String, Map<String, dynamic>>>{
+        'integer': {},
+        'sub': {'prop': {}, 'subProp': {}}
+      },
       type: Map,
     ),
     'assocIterable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterable',
       iterable: true,
-      subfields: <String>{'integer'},
+      subfields: <Map<String, Map<String, dynamic>>>{
+        'integer': {},
+        'sub': {'prop': {}, 'subProp': {}}
+      },
       type: Map,
     ),
     'assocIterableNullable': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assocIterableNullable',
       iterable: true,
-      subfields: <String>{'integer'},
+      subfields: <Map<String, Map<String, dynamic>>>{
+        'integer': {},
+        'sub': {'prop': {}, 'subProp': {}}
+      },
       type: Map,
     )
   };
@@ -87,6 +98,23 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
 }
 ''';
 
+class SubClass {
+  final String prop;
+  final int? subProp;
+
+  SubClass({
+    required this.prop,
+    required this.subProp,
+  });
+
+  factory SubClass.fromJson(Map<String, dynamic> data) => SubClass(
+        prop: data['prop'],
+        subProp: int.tryParse(data['subProp']),
+      );
+
+  Map<String, dynamic> toJson() => {'prop': prop, 'subProp': subProp};
+}
+
 class ToFromJsonAssoc {
   String get ignoreComputedGetter => integer.toString();
 
@@ -94,10 +122,13 @@ class ToFromJsonAssoc {
 
   final int? integer;
 
+  final SubClass? sub;
+
   static const ignoreStatic = 1;
 
   ToFromJsonAssoc({
     this.integer,
+    this.sub,
   });
 
   Map<String, int?> toJson() => {'integer': integer};

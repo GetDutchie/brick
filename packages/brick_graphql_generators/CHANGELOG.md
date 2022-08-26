@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+* Generate `RuntimeGraphqlDefinitions#subfields` as `Map<String, Map<String, dynamic>>` to support nested properties of JSON-encoded fields.
+
 ## 1.2.2
 
 * Abstract the logic for `GraphqlSerialize#instanceFieldsAndMethods` to be populated by overrideable method `generateGraphqlDefinition`

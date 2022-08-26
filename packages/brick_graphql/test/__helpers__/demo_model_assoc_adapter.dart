@@ -1,6 +1,7 @@
 import 'demo_model.dart';
 // ignore: unused_import, unused_shown_name
 import 'package:brick_graphql/graphql.dart';
+import 'package:gql/language.dart';
 
 Future<DemoModelAssoc> _$DemoModelAssocFromGraphql(Map<String, dynamic> data,
     {GraphqlProvider? provider, repository}) async {
@@ -44,6 +45,12 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
 
 class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> {
   DemoModelAssocWithSubfieldsAdapter();
+  @override
+  final defaultQueryOperation = parseString(
+    r'''query GetDemoAssocModels() {
+      getDemoAssocModels() {}
+    }''',
+  );
 
   @override
   final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
@@ -57,7 +64,10 @@ class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> 
       association: false,
       documentNodeName: 'full_name',
       iterable: false,
-      subfields: {'first', 'last'},
+      subfields: {
+        'first': {'subfield1': {}},
+        'last': {}
+      },
       type: String,
     ),
   };
