@@ -22,8 +22,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
   ToFromJsonAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition =
-      {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'assoc': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assoc',
