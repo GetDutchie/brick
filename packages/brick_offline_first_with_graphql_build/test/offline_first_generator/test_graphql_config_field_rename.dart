@@ -36,7 +36,8 @@ Future<GraphqlConfigSnakeRename> _$GraphqlConfigSnakeRenameFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return GraphqlConfigSnakeRename(someLongField: data['some_long_field'] as int);
+  return GraphqlConfigSnakeRename(
+      someLongField: data['some_long_field'] as int);
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigSnakeRenameToGraphql(
@@ -65,7 +66,8 @@ Future<GraphqlConfigKebabRename> _$GraphqlConfigKebabRenameFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return GraphqlConfigKebabRename(someLongField: data['some-long-field'] as int);
+  return GraphqlConfigKebabRename(
+      someLongField: data['some-long-field'] as int);
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigKebabRenameToGraphql(
@@ -108,7 +110,8 @@ Future<GraphqlConfigPascalRename> _$GraphqlConfigPascalRenameFromSqlite(
     Map<String, dynamic> data,
     {required SqliteProvider provider,
     OfflineFirstRepository? repository}) async {
-  return GraphqlConfigPascalRename(someLongField: data['some_long_field'] as int)
+  return GraphqlConfigPascalRename(
+      someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 

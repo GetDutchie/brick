@@ -55,13 +55,12 @@ class GraphqlConfigEndpointAdapter
   GraphqlConfigEndpointAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition =
-      {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'someField': const RuntimeGraphqlDefinition(
       association: false,
-      documentNodeName: 'name',
+      documentNodeName: 'someField',
       iterable: false,
-      subfields: <String>{},
+      subfields: <String, Map<String, dynamic>>{},
       type: Object,
     )
   };

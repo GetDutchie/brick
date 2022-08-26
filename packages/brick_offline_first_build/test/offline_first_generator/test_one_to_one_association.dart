@@ -39,12 +39,14 @@ Future<OneToOneAssociation> _$OneToOneAssociationFromTest(
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OneToOneAssociation(
-      nullableAssoc: await SqliteAssocAdapter().fromTest(data['nullable_assoc'],
-          provider: provider, repository: repository),
-      nullableAssoc2: await SqliteAssocAdapter().fromTest(
-          data['nullable_assoc2'],
-          provider: provider,
-          repository: repository),
+      nullableAssoc: data['nullable_assoc'] == null
+          ? null
+          : await SqliteAssocAdapter().fromTest(data['nullable_assoc'],
+              provider: provider, repository: repository),
+      nullableAssoc2: data['nullable_assoc2'] == null
+          ? null
+          : await SqliteAssocAdapter().fromTest(data['nullable_assoc2'],
+              provider: provider, repository: repository),
       assoc: await SqliteAssocAdapter()
           .fromTest(data['assoc'], provider: provider, repository: repository),
       assoc2: await SqliteAssocAdapter().fromTest(data['assoc2'],

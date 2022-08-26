@@ -1,6 +1,5 @@
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 import 'package:brick_offline_first_with_graphql_build/src/offline_first_with_graphql_generator.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
@@ -27,7 +26,7 @@ void main() {
     group('@ConnectOfflineFirstWithGraphql', () {
       test('graphqlSerializable#mutationDocument', () async {
         await generateAdapterExpectation(
-            'graphql_config_endpoint', _$graphqlMutationDocument.output);
+            'graphql_config_mutation_document', _$graphqlMutationDocument.output);
       });
 
       test('graphqlSerializable#fieldRename', () async {
