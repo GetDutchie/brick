@@ -47,7 +47,7 @@ class GraphqlConfigEndpointAdapter
       association: false,
       documentNodeName: 'someField',
       iterable: false,
-      subfields: <Map<String, Map<String, dynamic>>>{},
+      subfields: <String, Map<String, dynamic>>{},
       type: int,
     )
   };

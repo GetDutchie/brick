@@ -74,7 +74,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
         association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
         documentNodeName: '$remoteName',
         iterable: ${checker.isIterable},
-        subfields: <Map<String, Map<String, dynamic>>>{$subfields},
+        subfields: <String, Map<String, dynamic>>{$subfields},
         type: $columnInsertionType,
       )
     ''';

@@ -27,7 +27,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assoc',
       iterable: false,
-      subfields: <Map<String, Map<String, dynamic>>>{
+      subfields: <String, Map<String, dynamic>>{
         'subfield1': {},
         'subfield2': {'nestedSubfield': {}}
       },

@@ -45,7 +45,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assoc',
       iterable: false,
-      subfields: <Map<String, Map<String, dynamic>>>{
+      subfields: <String, Map<String, dynamic>>{
         'integer': {},
         'sub': {'prop': {}, 'subProp': {}}
       },
@@ -55,7 +55,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assocNullable',
       iterable: false,
-      subfields: <Map<String, Map<String, dynamic>>>{
+      subfields: <String, Map<String, dynamic>>{
         'integer': {},
         'sub': {'prop': {}, 'subProp': {}}
       },
@@ -65,7 +65,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assocIterable',
       iterable: true,
-      subfields: <Map<String, Map<String, dynamic>>>{
+      subfields: <String, Map<String, dynamic>>{
         'integer': {},
         'sub': {'prop': {}, 'subProp': {}}
       },
@@ -75,7 +75,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       association: false,
       documentNodeName: 'assocIterableNullable',
       iterable: true,
-      subfields: <Map<String, Map<String, dynamic>>>{
+      subfields: <String, Map<String, dynamic>>{
         'integer': {},
         'sub': {'prop': {}, 'subProp': {}}
       },
