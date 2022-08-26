@@ -13,7 +13,6 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
-
     if (fieldAnnotation.ignoreFrom) return null;
 
     // DateTime
@@ -89,20 +88,10 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
         )$castIterable$defaultValue''';
       }
 
-      // List
-      if (checker.isList) {
-        final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>[]';
-        return '$fieldValue$castIterable ?? $addon';
-
-        // Set
-      } else if (checker.isSet) {
-        final addon = fieldAnnotation.defaultValue ?? '<${checker.argType}>{}';
-        return '$fieldValue$castIterable ?? $addon';
-
-        // other Iterable
-      } else {
-        return '$fieldValue$castIterable$defaultValue';
-      }
+      // List, Set, other iterable
+      return fieldAnnotation.defaultValue == null
+          ? '$fieldValue$castIterable'
+          : '$fieldValue$castIterable ?? ${fieldAnnotation.defaultValue}';
 
       // sibling
     } else if (checker.isSibling) {

@@ -134,8 +134,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // Set<any>
       // jsonEncode can't convert LinkedHashSet
       if (checker.isSet && !checker.isArgTypeASibling) {
-        final nullableSuffix = argTypeChecker.isNullable ? '?.toList() ?? []' : '.toList()';
-        return 'jsonEncode($fieldValue$nullableSuffix)';
+        return checker.isNullable
+            ? '$fieldValue == null ? null : jsonEncode($fieldValue.toList())'
+            : 'jsonEncode($fieldValue.toList())';
       }
 
       // Iterable<bool>

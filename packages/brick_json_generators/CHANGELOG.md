@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Do not auto assign values for nullable iterables when deserializing
+
 ## 1.0.2
 
 * Loosen dependency restrictions to major versions

@@ -2,8 +2,7 @@ import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
 
 enum Casing { snake, camel }
 
-final output = r'''
-Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
+final output = r'''Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
@@ -151,7 +150,9 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
     'nullable_dub': instance.nullableDub,
     'nullable_string': instance.nullableString,
     'nullable_list': jsonEncode(instance.nullableList),
-    'nullable_set': jsonEncode(instance.nullableSet?.toList() ?? []),
+    'nullable_set': instance.nullableSet == null
+        ? null
+        : jsonEncode(instance.nullableSet.toList()),
     'nullable_map': jsonEncode(instance.nullableMap ?? {}),
     'nullable_longer_camelized_variable':
         instance.nullableLongerCamelizedVariable,

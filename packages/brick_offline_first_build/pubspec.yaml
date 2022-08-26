@@ -16,13 +16,18 @@ dependencies:
   brick_offline_first_abstract: ^2.0.0
   brick_json_generators: ">=1.0.0 <2.0.0"
   brick_sqlite_abstract: ">=1.1.0 <2.0.0"
-  brick_sqlite_generators: ">=2.0.2 <3.0.0"
+  brick_sqlite_generators:
+    path: ../brick_sqlite_generators
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
   meta: ">=1.3.0 <2.0.0"
   path: ^1.8.0
   source_gen: ^1.0.0
+
+override_dependencies:
+  brick_json_generators:
+    path: ../brick_json_generators
 
 dev_dependencies:
   brick_build_test:
