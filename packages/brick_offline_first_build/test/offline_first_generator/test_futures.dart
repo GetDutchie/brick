@@ -11,9 +11,8 @@ Future<Futures> _$FuturesFromTest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return Futures(
       string: data['string'] as Future<String>,
-      strings: data['strings'].toList().cast<Future<String>>() ?? <String>[],
-      futureStrings:
-          data['future_strings'].toList().cast<String>() ?? <Future<String>>[],
+      strings: data['strings'].toList().cast<Future<String>>(),
+      futureStrings: data['future_strings']?.toList().cast<String>(),
       assoc: AssocAdapter()
           .fromTest(data['assoc'], provider: provider, repository: repository),
       assocs: Future.wait<Assoc>(data['assocs']

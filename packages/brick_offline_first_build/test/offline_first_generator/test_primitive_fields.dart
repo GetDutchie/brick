@@ -11,8 +11,8 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
       nullableBoolean: data['nullable_boolean'] as bool?,
       nullableDub: data['nullable_dub'] as double?,
       nullableString: data['nullable_string'] as String?,
-      nullableList: data['nullable_list'].toList().cast<int>(),
-      nullableSet: data['nullable_set'].toSet().cast<int>(),
+      nullableList: data['nullable_list']?.toList().cast<int>(),
+      nullableSet: data['nullable_set']?.toSet().cast<int>(),
       nullableMap: data['nullable_map'],
       nullableLongerCamelizedVariable:
           data['nullable_longer_camelized_variable'] as String?,
@@ -150,7 +150,9 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
         : (instance.nullableBoolean! ? 1 : 0),
     'nullable_dub': instance.nullableDub,
     'nullable_string': instance.nullableString,
-    'nullable_list': jsonEncode(instance.nullableList),
+    'nullable_list': instance.nullableList == null
+        ? null
+        : jsonEncode(instance.nullableList),
     'nullable_set': instance.nullableSet == null
         ? null
         : jsonEncode(instance.nullableSet.toList()),
