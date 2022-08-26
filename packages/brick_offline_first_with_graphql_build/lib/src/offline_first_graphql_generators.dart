@@ -28,7 +28,7 @@ class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
           association: false,
           documentNodeName: '$remoteName',
           iterable: false,
-          subfields: <String>{},
+          subfields: <String, Map<String, dynamic>>{},
           type: Object,
         )
       ''';

@@ -40,6 +40,18 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
   }
 }''';
 
+const subfields = r'''query GetDemoAssocModels {
+  getDemoAssocModels {
+    _brick_id
+    full_name {
+      first {
+        subfield1
+      }
+      last
+    }
+  }
+}''';
+
 void main() {
   group('ModelFieldsDocumentTransformer', () {
     group('.fromDocument', () {
@@ -126,6 +138,13 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
         expect(lang.printNode(transformer!.document),
             startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
   upsertDemoModel(input: $input) {'''));
+      });
+
+      test('with nested subfields', () {
+        final transformer =
+            ModelFieldsDocumentTransformer.defaultOperation<DemoModelAssocWithSubfields>(dictionary,
+                action: QueryAction.get);
+        expect(lang.printNode(transformer!.document), subfields);
       });
 
       group('QueryAction.get', () {

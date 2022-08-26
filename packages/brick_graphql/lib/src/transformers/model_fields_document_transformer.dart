@@ -115,20 +115,19 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     });
   }
 
-  SelectionSetNode _generateSubFields(Set<String> subfields) {
+  SelectionSetNode _generateSubFields(Map<String, dynamic> subfields) {
     return SelectionSetNode(
-      selections: subfields
-          .map<SelectionNode>((subfield) {
-            return FieldNode(
-              name: NameNode(value: subfield),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null,
-            );
-          })
-          .toList()
-          .cast<SelectionNode>(),
+      selections: subfields.entries.fold<List<SelectionNode>>(<SelectionNode>[], (acc, entry) {
+        acc.add(FieldNode(
+          name: NameNode(value: entry.key),
+          alias: null,
+          arguments: [],
+          directives: [],
+          selectionSet: entry.value.isEmpty ? null : _generateSubFields(entry.value),
+        ));
+
+        return acc;
+      }),
     );
   }
 

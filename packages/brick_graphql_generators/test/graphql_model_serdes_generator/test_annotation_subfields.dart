@@ -22,13 +22,15 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
   ToFromJsonAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition =
-      {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'assoc': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'assoc',
       iterable: false,
-      subfields: <String>{'subfield1', 'subfield2'},
+      subfields: <Map<String, Map<String, dynamic>>>{
+        'subfield1': {},
+        'subfield2': {'nestedSubfield': {}}
+      },
       type: Map,
     )
   };
@@ -62,7 +64,14 @@ class ToFromJsonAssoc {
 
 @GraphqlSerializable()
 class ToFromJson {
-  @Graphql(subfields: {'subfield1', 'subfield2'})
+  @Graphql(
+    subfields: {
+      'subfield1': {},
+      'subfield2': {
+        'nestedSubfield': {},
+      }
+    },
+  )
   final ToFromJsonAssoc assoc;
 
   ToFromJson({

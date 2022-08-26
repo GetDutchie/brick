@@ -3,6 +3,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_build/generators.dart';
+import 'package:analyzer/dart/constant/value.dart';
 
 /// Find `@Graphql` given a field
 class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
@@ -52,14 +53,19 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
       ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
       nullable: obj.getField('nullable')?.toBoolValue() ?? Graphql.defaults.nullable,
-      subfields: obj
-          .getField('subfields')
-          ?.toSetValue()
-          ?.map((e) => e.toStringValue())
-          .whereType<String>()
-          .toSet(),
+      subfields: _convertMapToMap(obj.getField('subfields')?.toMapValue()),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
+  }
+
+  static Map<String, Map<String, dynamic>> _convertMapToMap(
+      Map<DartObject?, DartObject?>? unconvertedMap) {
+    if (unconvertedMap == null) return {};
+    return {
+      for (final entry in unconvertedMap.entries)
+        entry.key!.toStringValue()!:
+            entry.value?.toStringValue() == null ? _convertMapToMap(entry.value!.toMapValue()!) : {}
+    };
   }
 }
 
