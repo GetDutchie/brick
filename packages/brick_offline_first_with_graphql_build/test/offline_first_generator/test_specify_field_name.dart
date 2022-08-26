@@ -2,14 +2,16 @@ import 'package:brick_graphql/graphql.dart';
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
 final output = r'''
-Future<SpecifyFieldName> _$SpecifyFieldNameFromRest(Map<String, dynamic> data,
-    {required RestProvider provider,
+Future<SpecifyFieldName> _$SpecifyFieldNameFromGraphql(
+    Map<String, dynamic> data,
+    {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
   return SpecifyFieldName(email: data['email_address'] as String?);
 }
 
-Future<Map<String, dynamic>> _$SpecifyFieldNameToRest(SpecifyFieldName instance,
-    {required RestProvider provider,
+Future<Map<String, dynamic>> _$SpecifyFieldNameToGraphql(
+    SpecifyFieldName instance,
+    {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
   return {'email_address': instance.email};
 }

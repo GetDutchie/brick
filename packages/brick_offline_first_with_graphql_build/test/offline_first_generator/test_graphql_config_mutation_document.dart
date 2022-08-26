@@ -11,14 +11,14 @@ Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return GraphqlConfigEndpoint(someField: data['some_field'] as int);
+  return GraphqlConfigEndpoint(someField: data['someField'] as int);
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigEndpointToGraphql(
     GraphqlConfigEndpoint instance,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return {'some_field': instance.someField};
+  return {'someField': instance.someField};
 }
 
 Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromSqlite(
@@ -42,14 +42,15 @@ class GraphqlConfigEndpointAdapter
   GraphqlConfigEndpointAdapter();
 
   @override
-  String? graphqlEndpoint({query, instance}) {
-    return 'anEndpoint';
-  }
-
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
+    'someField': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'someField',
+      iterable: false,
+      subfields: <Map<String, Map<String, dynamic>>>{},
+      type: int,
+    )
+  };
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(

@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_abstract/abstract.dart';
-import 'package:brick_graphql/graphql.dart' show GraphqlSerializable;
+import 'package:brick_graphql/graphql.dart' show GraphqlSerializable, Graphql;
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
 final output = r'''
@@ -55,13 +55,12 @@ class GraphqlConfigEndpointAdapter
   GraphqlConfigEndpointAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition =
-      {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'someField': const RuntimeGraphqlDefinition(
       association: false,
       documentNodeName: 'name',
       iterable: false,
-      subfields: <String>{},
+      subfields: <String, Map<String, dynamic>>{},
       type: Object,
     )
   };
@@ -121,6 +120,7 @@ class GraphqlConfigEndpointAdapter
 )
 class GraphqlConfigEndpoint extends OfflineFirstModel {
   @OfflineFirst(where: {'name': "data['name']"})
+  @Graphql(name: 'name')
   final Assoc someField;
 
   GraphqlConfigEndpoint(this.someField);

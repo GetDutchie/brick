@@ -47,7 +47,9 @@ Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(AllFieldTypes instance,
         : null,
     'enum_list': jsonEncode(
         instance.enumList.map((s) => Casing.values.indexOf(s)).toList()),
-    'nullable_list': jsonEncode(instance.nullableList),
+    'nullable_list': instance.nullableList == null
+        ? null
+        : jsonEncode(instance.nullableList),
     'longer_camelized_variable': instance.longerCamelizedVariable,
     'string': instance.string,
     'string_set': jsonEncode(instance.stringSet.toList())
