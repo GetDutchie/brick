@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+* Convert `@Graphql(subfields:)` to accept a `Map<String, Map<String, dynamic>>` to permit nested subfields from JSON-encoded field types.
+
 ## 1.2.0
 
 * Handle edge case where GraphQL response is null and an empty iterable

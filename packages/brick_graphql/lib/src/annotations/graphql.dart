@@ -42,7 +42,7 @@ class Graphql implements FieldSerializable {
   /// and its fields generated in the adapter.
   ///
   /// A supplied value will override the generated fields.
-  final Set<String>? subfields;
+  final Map<String, Map<String, dynamic>>? subfields;
 
   @override
   final String? toGenerator;

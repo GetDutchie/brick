@@ -34,7 +34,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     });
 
     return [
-      '@override\nfinal Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {${fieldsToColumns.join(',\n')}};',
+      '@override\nfinal fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{${fieldsToColumns.join(',\n')}};',
     ];
   }
 
@@ -61,8 +61,12 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     final checker = checkerForType(field.type);
     final remoteName = providerNameForField(annotation.name, checker: checker);
     final columnInsertionType = _finalTypeForField(field.type);
-    final subfields =
-        (annotation.subfields ?? _subfieldsForType(field.type)).map((f) => "'$f'").join(',');
+    final subfields = (annotation.subfields ?? _subfieldsForType(field.type))
+        .entries
+        .fold<List<String>>(<String>[], (acc, entry) {
+      acc.add(_convertMapToString(entry));
+      return acc;
+    }).join(',');
 
     // T0D0 support List<Future<Sibling>> for 'association'
     return '''
@@ -70,13 +74,13 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
         association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
         documentNodeName: '$remoteName',
         iterable: ${checker.isIterable},
-        subfields: <String>{$subfields},
+        subfields: <Map<String, Map<String, dynamic>>>{$subfields},
         type: $columnInsertionType,
       )
     ''';
   }
 
-  Set<String> _subfieldsForType(DartType type) {
+  Map<String, Map<String, dynamic>> _subfieldsForType(DartType type) {
     final checker = checkerForType(type);
     // Future<?>, Iterable<?>
     if (checker.isFuture || checker.isIterable) {
@@ -90,12 +94,25 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
           return field.isPublic &&
               ((field.isFinal || field.isConst) && field.getter != null) &&
               !field.isStatic &&
-              !field.type.isDartCoreFunction;
-        }).where((field) => !FieldsForClass.isComputedGetter(field));
-        return subfields.map((field) => field.name).toSet();
+              !field.type.isDartCoreFunction &&
+              !FieldsForClass.isComputedGetter(field);
+        }).whereType<FieldElement>();
+
+        return subfields.fold<Map<String, Map<String, dynamic>>>({}, (acc, field) {
+          final fieldChecker = checkerForField(field);
+          final isSerializable =
+              fieldChecker.toJsonMethod != null && checker.toJsonMethod!.returnType.isDartCoreMap;
+          acc[field.name] = isSerializable ? _subfieldsForType(field.type) : {};
+          return acc;
+        });
       }
     }
 
-    return <String>{};
+    return {};
+  }
+
+  static String _convertMapToString(MapEntry entry) {
+    if ((entry.value as Map).isEmpty) return "'${entry.key}': {}";
+    return "'${entry.key}': {${entry.value.entries.map(_convertMapToString).join(',')}}";
   }
 }
