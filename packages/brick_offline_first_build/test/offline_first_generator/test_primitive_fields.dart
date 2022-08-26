@@ -2,7 +2,8 @@ import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
 
 enum Casing { snake, camel }
 
-final output = r'''Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
+final output = r'''
+Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
@@ -10,8 +11,8 @@ final output = r'''Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String,
       nullableBoolean: data['nullable_boolean'] as bool?,
       nullableDub: data['nullable_dub'] as double?,
       nullableString: data['nullable_string'] as String?,
-      nullableList: data['nullable_list'].toList().cast<int>() ?? <int>[],
-      nullableSet: data['nullable_set'].toSet().cast<int>() ?? <int>{},
+      nullableList: data['nullable_list'].toList().cast<int>(),
+      nullableSet: data['nullable_set'].toSet().cast<int>(),
       nullableMap: data['nullable_map'],
       nullableLongerCamelizedVariable:
           data['nullable_longer_camelized_variable'] as String?,
@@ -29,8 +30,8 @@ final output = r'''Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String,
       boolean: data['boolean'] as bool,
       dub: data['dub'] as double,
       string: data['string'] as String,
-      list: data['list'].toList().cast<int>() ?? <int>[],
-      aSet: data['a_set'].toSet().cast<int>() ?? <int>{},
+      list: data['list'].toList().cast<int>(),
+      aSet: data['a_set'].toSet().cast<int>(),
       map: data['map'],
       longerCamelizedVariable: data['longer_camelized_variable'] as String,
       casing: Casing.values[data['casing'] as int],
@@ -150,9 +151,7 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
     'nullable_dub': instance.nullableDub,
     'nullable_string': instance.nullableString,
     'nullable_list': jsonEncode(instance.nullableList),
-    'nullable_set': instance.nullableSet == null
-        ? null
-        : jsonEncode(instance.nullableSet.toList()),
+    'nullable_set': jsonEncode(instance.nullableSet.toList()),
     'nullable_map': jsonEncode(instance.nullableMap ?? {}),
     'nullable_longer_camelized_variable':
         instance.nullableLongerCamelizedVariable,

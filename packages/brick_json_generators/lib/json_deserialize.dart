@@ -89,9 +89,11 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
       }
 
       // List, Set, other iterable
+      final deserializeMethod =
+          checker.isNullable ? '$fieldValue?$castIterable' : '$fieldValue$castIterable';
       return fieldAnnotation.defaultValue == null
-          ? '$fieldValue$castIterable'
-          : '$fieldValue$castIterable ?? ${fieldAnnotation.defaultValue}';
+          ? deserializeMethod
+          : '$deserializeMethod ?? ${fieldAnnotation.defaultValue}';
 
       // sibling
     } else if (checker.isSibling) {
