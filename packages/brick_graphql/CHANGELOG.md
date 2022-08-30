@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.1
+
+* Only return `get` documents for `get` operations when constructing the GraphQL document
+
 ## 1.3.0
 
 * Convert `@Graphql(subfields:)` to accept a `Map<String, Map<String, dynamic>>` to permit nested subfields from JSON-encoded field types.

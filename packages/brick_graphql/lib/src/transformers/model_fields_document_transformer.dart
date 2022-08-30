@@ -162,32 +162,39 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     }
 
     final adapter = modelDictionary.adapterFor[_Model]!;
-    if (action == QueryAction.delete && adapter.defaultDeleteOperation != null) {
-      return fromDocument<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
+
+    switch (action) {
+      case QueryAction.get:
+        if (query?.where == null && adapter.defaultQueryOperation != null) {
+          return fromDocument<_Model>(adapter.defaultQueryOperation!, modelDictionary);
+        }
+
+        if (adapter.defaultQueryFilteredOperation != null) {
+          return fromDocument<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
+        }
+        return null;
+      case QueryAction.insert:
+      case QueryAction.update:
+      case QueryAction.upsert:
+        if (adapter.defaultUpsertOperation != null) {
+          return fromDocument<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
+        }
+        return null;
+      case QueryAction.delete:
+        if (adapter.defaultDeleteOperation != null) {
+          return fromDocument<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
+        }
+        return null;
+      case QueryAction.subscribe:
+        if (query?.where == null && adapter.defaultSubscriptionOperation != null) {
+          return fromDocument<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
+        }
+
+        if (adapter.defaultSubscriptionFilteredOperation != null) {
+          return fromDocument<_Model>(
+              adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
+        }
+        return null;
     }
-
-    if (action == QueryAction.upsert && adapter.defaultUpsertOperation != null) {
-      return fromDocument<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
-    }
-
-    if (action == QueryAction.subscribe) {
-      if (query?.where == null && adapter.defaultSubscriptionOperation != null) {
-        return fromDocument<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
-      }
-
-      if (adapter.defaultSubscriptionFilteredOperation != null) {
-        return fromDocument<_Model>(adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
-      }
-    }
-
-    if (query?.where == null && adapter.defaultQueryOperation != null) {
-      return fromDocument<_Model>(adapter.defaultQueryOperation!, modelDictionary);
-    }
-
-    if (adapter.defaultQueryFilteredOperation != null) {
-      return fromDocument<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
-    }
-
-    return null;
   }
 }
