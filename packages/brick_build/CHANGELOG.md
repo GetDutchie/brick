@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.3
+
+* Loosen analyzer restrictions
+
 ## 2.0.2
 
 * Loosen dependency restrictions to major versions

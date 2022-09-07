@@ -13,7 +13,16 @@ class File implements FieldSerializable {
   final String? defaultValue;
 
   @override
+  final bool enumAsString;
+
+  @override
   final bool ignore;
+
+  @override
+  final bool ignoreFrom;
+
+  @override
+  final bool ignoreTo;
 
   @override
   final String? fromGenerator;
@@ -28,7 +37,10 @@ class File implements FieldSerializable {
     this.path,
     required this.name,
     this.defaultValue,
+    this.enumAsString = false,
     this.ignore = false,
+    this.ignoreFrom = false,
+    this.ignoreTo = false,
     this.fromGenerator,
     this.toGenerator,
     this.nullable = false,

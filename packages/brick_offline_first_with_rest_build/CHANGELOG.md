@@ -1,3 +1,7 @@
+## 2.0.2
+
+* Loosen analyzer restrictions
+
 ## 2.0.1+1
 
 * Fix migration and model discovery

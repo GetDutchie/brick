@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.2
+
+* Loosen analyzer restrictions
+
 ## 2.1.1
 
 * Return `null` for nullable iterable fields instead of defaulting to an empty list or set
