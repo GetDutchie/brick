@@ -83,7 +83,7 @@ void main() {
         repository.subscribe<Mounty>();
         expect(repository.subscriptions, hasLength(1));
         expect(repository.subscriptions[Mounty], hasLength(1));
-        expect(repository.subscriptions[Mounty]!.entries.first.key, isNull);
+        expect(repository.subscriptions[Mounty]!.entries.first.key, isNotNull);
         expect(repository.subscriptions[Mounty]!.entries.first.value, isNotNull);
       });
 
