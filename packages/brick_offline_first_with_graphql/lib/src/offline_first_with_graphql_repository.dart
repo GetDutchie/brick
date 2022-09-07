@@ -199,6 +199,7 @@ abstract class OfflineFirstWithGraphqlRepository
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
   }) {
+    query ??= Query();
     if (subscriptions[_Model]?[query] != null) {
       return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
     }
@@ -226,6 +227,9 @@ abstract class OfflineFirstWithGraphqlRepository
         remoteSubscription?.cancel();
         subscriptions[_Model]?[query]?.close();
         subscriptions[_Model]?.remove(query);
+        if (subscriptions[_Model]?.isEmpty ?? false) {
+          subscriptions.remove(_Model);
+        }
       },
     );
 

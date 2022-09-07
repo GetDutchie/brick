@@ -96,7 +96,7 @@ void main() {
         final subscription = repository.subscribe<Mounty>().listen((event) {});
         expect(repository.subscriptions[Mounty], hasLength(1));
         await subscription.cancel();
-        expect(repository.subscriptions[Mounty], hasLength(0));
+        expect(repository.subscriptions, hasLength(0));
       });
 
       test('pausing does not remove from #subscriptions', () async {
