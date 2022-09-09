@@ -16,7 +16,7 @@ dependencies:
   brick_offline_first_abstract: ^2.0.0
   brick_json_generators: ">=1.1.0 <2.0.0"
   brick_sqlite_abstract: ">=1.1.0 <2.0.0"
-  brick_sqlite_generators: ">=2.0.2 <3.0.0"
+  brick_sqlite_generators: ">=2.1.0 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
