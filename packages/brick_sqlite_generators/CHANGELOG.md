@@ -2,7 +2,7 @@
 
 ## 2.1.2
 
-* Loosen analyzer restrictions
+* Upgrade analyzer to version 4
 
 ## 2.1.1
 

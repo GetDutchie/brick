@@ -2,7 +2,7 @@
 
 ## 1.3.1
 
-* Loosen analyzer restrictions
+* Upgrade analyzer to version 4
 
 ## 1.3.0
 

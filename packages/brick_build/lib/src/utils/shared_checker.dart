@@ -47,8 +47,8 @@ class SharedChecker<_SiblingModel extends Model> {
   /// Retrieves the `fromJson` factory element.
   /// If the constructor can't be found, `null` is returned.
   ConstructorElement? get fromJsonConstructor {
-    if (targetType.element is ClassElement) {
-      for (final constructor in (targetType.element as ClassElement).constructors) {
+    if (targetType.element2 is ClassElement) {
+      for (final constructor in (targetType.element2 as ClassElement).constructors) {
         if (constructor.name == 'fromJson') return constructor;
       }
     }
@@ -82,7 +82,7 @@ class SharedChecker<_SiblingModel extends Model> {
   bool get isDouble => targetType.isDartCoreDouble;
 
   bool get isEnum {
-    return targetType is InterfaceType && (targetType as InterfaceType).element.isEnum;
+    return targetType is InterfaceType && (targetType as InterfaceType).element2 is EnumElement;
   }
 
   bool get isFuture => targetType.isDartAsyncFuture || targetType.isDartAsyncFutureOr;
@@ -153,14 +153,14 @@ class SharedChecker<_SiblingModel extends Model> {
   /// For example, a field `final Currency amount` with a type definition
   /// `class Currency extends OfflineFirstSerdes<T, X, Y> {}` would return `[T, X, Y]`.
   List<DartType> get superClassTypeArgs {
-    final classElement = targetType.element as ClassElement;
+    final classElement = targetType.element2 as ClassElement;
     if (classElement.supertype?.typeArguments == null ||
         classElement.supertype!.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
         'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString(withNullability: false)}<int>`',
-        element: targetType.element,
+            'Define the type on class ${targetType.element2}, e.g. `extends ${classElement.supertype!.getDisplayString(withNullability: false)}<int>`',
+        element: targetType.element2,
       );
     }
 
@@ -170,8 +170,8 @@ class SharedChecker<_SiblingModel extends Model> {
   /// Retrieves the `toJson` method element.
   /// If the method can't be found, `null` is returned.
   MethodElement? get toJsonMethod {
-    if (targetType.element is ClassElement) {
-      for (final method in (targetType.element as ClassElement).methods) {
+    if (targetType.element2 is ClassElement) {
+      for (final method in (targetType.element2 as ClassElement).methods) {
         if (method.name == 'toJson') return method;
       }
     }

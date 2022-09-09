@@ -1,8 +1,8 @@
 ## Unreleased
 
-## 2.0.3
+## 2.1.0
 
-* Loosen analyzer restrictions
+* Upgrade analyzer to version 4
 
 ## 2.0.2
 
