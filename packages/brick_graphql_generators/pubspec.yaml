@@ -16,7 +16,7 @@ dependencies:
   brick_json_generators: ">=1.0.1+4 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
-  source_gen: ^1.0.0
+  source_gen: ">=1.2.2 <2.0.0"
 
 dev_dependencies:
   test: ^1.20.1

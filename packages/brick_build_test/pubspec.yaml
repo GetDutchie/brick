@@ -13,5 +13,5 @@ dependencies:
   brick_build: ">=1.2.0 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   path: ^1.8.0
-  source_gen: ^1.0.0
+  source_gen: ">=1.2.2 <2.0.0"
   source_gen_test: ^1.0.0
