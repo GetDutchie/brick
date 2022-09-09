@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 2.1.0
+
 * Loosen dependency restrictions to major versions
 * Upgrade analyzer to version 4
 

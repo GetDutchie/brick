@@ -1,6 +1,6 @@
 ## Unreleased
 
-## 1.3.1
+## 1.4.0
 
 * Upgrade analyzer to version 4
 
