@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.4.0
+
+* Upgrade analyzer to version 4
+
 ## 1.3.0
 
 * Generate `RuntimeGraphqlDefinitions#subfields` as `Map<String, Map<String, dynamic>>` to support nested properties of JSON-encoded fields.

@@ -1,3 +1,9 @@
+## Unreleased
+
+## 2.1.0
+
+* Upgrade analyzer to version 4
+
 ## 2.0.1+1
 
 * Fix migration and model discovery

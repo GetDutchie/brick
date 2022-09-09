@@ -4,25 +4,25 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.0.0+1
+version: 2.1.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  analyzer: ^3.2.0
-  brick_build: ">=2.0.1+1 <3.0.0"
+  analyzer: ">=4.3.1 <5.0.0"
+  brick_build: ">=2.1.0 <3.0.0"
   brick_core: ^1.1.1
   brick_offline_first_abstract: ^2.0.0
-  brick_json_generators: ">=1.0.0 <2.0.0"
+  brick_json_generators: ">=1.1.0 <2.0.0"
   brick_sqlite_abstract: ">=1.1.0 <2.0.0"
-  brick_sqlite_generators: ">=2.0.2 <3.0.0"
+  brick_sqlite_generators: ">=2.1.0 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
   meta: ">=1.3.0 <2.0.0"
   path: ^1.8.0
-  source_gen: ^1.0.0
+  source_gen: ">=1.2.2 <2.0.0"
 
 dev_dependencies:
   brick_build_test:

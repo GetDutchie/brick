@@ -88,8 +88,8 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     }
 
     if (checker.toJsonMethod != null && checker.toJsonMethod!.returnType.isDartCoreMap) {
-      if (type.element is ClassElement) {
-        final klass = type.element as ClassElement;
+      if (type.element2 is ClassElement) {
+        final klass = type.element2 as ClassElement;
         final subfields = klass.fields.where((field) {
           return field.isPublic &&
               ((field.isFinal || field.isConst) && field.getter != null) &&
