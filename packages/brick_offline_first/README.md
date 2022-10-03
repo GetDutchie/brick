@@ -69,7 +69,7 @@ class Weight {
 
 ### Enums
 
-[Dart's enhanced enums](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) can also be used to do custom serdes work. Instead of `fromJson` and `toJson`, the enum relies on the provider name:
+[Dart's enhanced enums](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) can also be used to do custom serdes work. In addition to `fromJson` and `toJson`, the enum relies on the provider name:
 
 ```dart
 enum Direction {
@@ -82,7 +82,7 @@ enum Direction {
 }
 ```
 
-:bulb: `from<ProviderName>` or `to<ProviderName>` will be prioritized over the provider annotation's `enumAsString: true`.
+:bulb: `from<ProviderName>` or `to<ProviderName>` will be prioritized over `fromJson` or `toJson` which are prioritized over the provider annotation's `enumAsString: true`.
 
 ## OfflineFirstSerdes
 

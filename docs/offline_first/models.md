@@ -64,7 +64,7 @@ enum Direction {
 }
 ```
 
-?> `from<ProviderName>` or `to<ProviderName>` will be prioritized over the provider annotation's `enumAsString: true`.
+?> `from<ProviderName>` or `to<ProviderName>` will be prioritized over `fromJson` or `toJson` which are prioritized over the provider annotation's `enumAsString: true`.
 
 ## OfflineFirstSerdes
 

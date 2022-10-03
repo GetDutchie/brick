@@ -127,6 +127,11 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
+        final deserializeFactory = argTypeChecker.enumDeserializeFactory(providerName);
+        if (deserializeFactory != null) {
+          return 'jsonDecode($fieldValue ?? []).map(${SharedChecker.withoutNullability(argType)}.$deserializeFactory)';
+        }
+
         if (fieldAnnotation.enumAsString) {
           return "jsonDecode($fieldValue ?? []).map((d) => ${SharedChecker.withoutNullability(argType)}.values.firstWhere((v) => v.toString().split('.').last == d as String))";
         }
@@ -184,8 +189,9 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
-      if (checker.hasEnumDeserializeFactory(providerName)) {
-        return '${checker.isNullable ? "$fieldValue == null ? null :" : ""} ${SharedChecker.withoutNullability(field.type)}.from$providerName($fieldValue)';
+      final deserializeFactory = checker.enumDeserializeFactory(providerName);
+      if (deserializeFactory != null) {
+        return '${checker.isNullable ? "$fieldValue == null ? null :" : ""} ${SharedChecker.withoutNullability(field.type)}.$deserializeFactory($fieldValue)';
       }
 
       if (fieldAnnotation.enumAsString) {

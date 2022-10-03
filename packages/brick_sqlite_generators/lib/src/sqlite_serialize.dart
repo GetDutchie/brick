@@ -109,8 +109,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       if (argTypeChecker.isEnum) {
         final nullablePrefix = checker.isNullable ? '?' : '';
         final nullableDefault = checker.isNullable ? ' ?? []' : '';
-        final serializedValue = argTypeChecker.hasEnumSerializeMethod(providerName)
-            ? 's.to$providerName()'
+        final serializeMethod = argTypeChecker.enumSerializeMethod(providerName);
+        final serializedValue = serializeMethod != null
+            ? 's.$serializeMethod()'
             : fieldAnnotation.enumAsString
                 ? "s.toString().split('.').last"
                 : '${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)';
@@ -181,8 +182,9 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       // enum
     } else if (checker.isEnum) {
       final nullabilitySuffix = checker.isNullable ? '?' : '';
-      if (checker.hasEnumSerializeMethod(providerName)) {
-        return "$fieldValue$nullabilitySuffix.to$providerName()";
+      final serializeMethod = checker.enumSerializeMethod(providerName);
+      if (serializeMethod != null) {
+        return "$fieldValue$nullabilitySuffix.$serializeMethod()";
       }
 
       if (fieldAnnotation.enumAsString) {
