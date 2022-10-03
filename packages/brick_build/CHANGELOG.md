@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 2.1.1
+
 * Add `#hasEnumDeserializeFactory` and `#hasEnumSerializeMethod` to `SharedChecker`
 
 ## 2.1.0
