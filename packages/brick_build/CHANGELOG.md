@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Add `#hasEnumDeserializeFactory` and `#hasEnumSerializeMethod` to `SharedChecker`
+
 ## 2.1.0
 
 * Upgrade analyzer to version 4

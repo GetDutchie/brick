@@ -184,6 +184,10 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // enum
     } else if (checker.isEnum) {
+      if (checker.hasEnumDeserializeFactory(providerName)) {
+        return '${checker.isNullable ? "$fieldValue == null ? null :" : ""} ${SharedChecker.withoutNullability(field.type)}.from$providerName($fieldValue)';
+      }
+
       if (fieldAnnotation.enumAsString) {
         final nullablePrefix = checker.isNullable
             ? "$fieldValue == null ? ${fieldAnnotation.defaultValue ?? 'null'} : "

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Use enum `from<Provider>` constructors and `to<Provider>` methods
+
 ## 1.1.0
 
 * Upgrade analyzer to version 4

@@ -56,6 +56,24 @@ class SharedChecker<_SiblingModel extends Model> {
     return null;
   }
 
+  bool hasEnumDeserializeFactory(String providerName) {
+    if (!isEnum) return false;
+    final element = (targetType as InterfaceType).element2 as EnumElement;
+    for (final constructor in element.constructors) {
+      if (constructor.name == 'from$providerName') return true;
+    }
+    return false;
+  }
+
+  bool hasEnumSerializeMethod(String providerName) {
+    if (!isEnum) return false;
+    final element = (targetType as InterfaceType).element2 as EnumElement;
+    for (final method in element.methods) {
+      if (method.name == 'to$providerName') return true;
+    }
+    return false;
+  }
+
   bool get isArgTypeAFuture {
     return argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
   }
