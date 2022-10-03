@@ -67,6 +67,23 @@ class Weight {
 
 :warning: `.fromJson` always expects a single, unnamed parameter and a type for that parameter. Multiple parameters and not declaring a type are both unsupported.
 
+### Enums
+
+[Dart's enhanced enums](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) can also be used to do custom serdes work. Instead of `fromJson` and `toJson`, the enum relies on the provider name:
+
+```dart
+enum Direction {
+  up,
+  down;
+
+  factory Direction.fromRest(String direction) => direction == up.name ? up : down;
+
+  int toSqlite() => Direction.values.indexOf(this);
+}
+```
+
+:bulb: `from<ProviderName>` or `to<ProviderName>` will be prioritized over `enumAsString: true` in the provider annotation.
+
 ## OfflineFirstSerdes
 
 When `fromJson` and `toJson` are too heavy handed, provider-specific factories or provider-specific functions can be used via `OfflineFirstSerdes`. Instead of `toJson`, specify the provider (such as `toRest`). Instead of `fromJson`, specify the provider (such as `fromRest`).
