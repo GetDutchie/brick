@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.1
+
 * Respect enum `from<Provider>` constructors and `to<Provider>` methods
 
 ## 1.1.0
