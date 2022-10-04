@@ -7,6 +7,7 @@ import 'offline_first_generator/test_offline_first_where.dart' as _$offlineFirst
 import 'offline_first_generator/test_custom_offline_first_serdes.dart'
     as _$customOfflineFirstSerdes;
 import 'offline_first_generator/test_default_value.dart' as _$defaultValue;
+import 'offline_first_generator/test_enum_factory_serialize.dart' as _$enumFactorySerialize;
 import 'offline_first_generator/test_ignore_field.dart' as _$ignoreField;
 import 'offline_first_generator/test_no_final_no_const.dart' as _$noFinalNoConst;
 import 'offline_first_generator/test_one_to_many_association.dart' as _$oneToManyAssociation;
@@ -40,6 +41,10 @@ void main() {
     group('#generate', () {
       test('CustomOfflineFirstSerdes', () async {
         await generateExpectation('custom_offline_first_serdes', _$customOfflineFirstSerdes.output);
+      });
+
+      test('EnumFactorySerialize', () async {
+        await generateExpectation('enum_factory_serialize', _$enumFactorySerialize.output);
       });
 
       test('NoFinalNoConst', () async {

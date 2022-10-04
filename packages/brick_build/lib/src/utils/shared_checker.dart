@@ -44,6 +44,30 @@ class SharedChecker<_SiblingModel extends Model> {
     return checker.isSerializable;
   }
 
+  String? enumDeserializeFactory(String providerName) {
+    if (!isEnum) return null;
+    final element = (targetType as InterfaceType).element2 as EnumElement;
+    for (final constructor in element.constructors) {
+      if (constructor.name == 'from$providerName') return 'from$providerName';
+    }
+    for (final constructor in element.constructors) {
+      if (constructor.name == 'fromJson') return 'fromJson';
+    }
+    return null;
+  }
+
+  String? enumSerializeMethod(String providerName) {
+    if (!isEnum) return null;
+    final element = (targetType as InterfaceType).element2 as EnumElement;
+    for (final method in element.methods) {
+      if (method.name == 'to$providerName') return 'to$providerName';
+    }
+    for (final method in element.methods) {
+      if (method.name == 'toJson') return 'toJson';
+    }
+    return null;
+  }
+
   /// Retrieves the `fromJson` factory element.
   /// If the constructor can't be found, `null` is returned.
   ConstructorElement? get fromJsonConstructor {

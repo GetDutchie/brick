@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.3
+
+* Respect enum `fromSqlite` constructors and `toSqlite` methods
+
 ## 2.1.2
 
 * Upgrade analyzer to version 4

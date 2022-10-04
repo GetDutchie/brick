@@ -30,6 +30,11 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
         final nullabilitySuffix = checker.isNullable ? '?' : '';
+        final serializeMethod = argTypeChecker.enumSerializeMethod(providerName);
+        if (serializeMethod != null) {
+          return '$fieldValue$nullabilitySuffix.map((e) => e.$serializeMethod())';
+        }
+
         if (fieldAnnotation.enumAsString) {
           return "$fieldValue$nullabilitySuffix.map((e) => e.toString().split('.').last).toList()";
         } else {
@@ -72,8 +77,13 @@ mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
 
       // enum
     } else if (checker.isEnum) {
+      final nullabilitySuffix = checker.isNullable ? '?' : '';
+      final serializeMethod = checker.enumSerializeMethod(providerName);
+      if (serializeMethod != null) {
+        return "$fieldValue$nullabilitySuffix.$serializeMethod()";
+      }
+
       if (fieldAnnotation.enumAsString) {
-        final nullabilitySuffix = checker.isNullable ? '?' : '';
         return "$fieldValue$nullabilitySuffix.toString().split('.').last";
       } else {
         if (checker.isNullable) {
