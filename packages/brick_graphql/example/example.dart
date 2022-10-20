@@ -1,14 +1,14 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:gql_http_link/gql_http_link.dart';
-import 'package:gql/language.dart' as lang;
 
 class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {
   GraphqlOperation get get => GraphqlOperation(document: '''query AllUsers {
       allUsers {}
     }''');
 
-  const UserQueryOperationTransformer(super.query, super.instance);
+  const UserQueryOperationTransformer(Query? query, GraphqlModel? instance)
+      : super(query, instance);
 }
 
 /// This class and code is always generated.

@@ -1,5 +1,6 @@
 import 'package:brick_core/core.dart' show Query;
 import 'package:brick_graphql/src/graphql_adapter.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
@@ -78,7 +79,8 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const DemoModelOperationTransformer(super.query, super.instance);
+  const DemoModelOperationTransformer(Query? query, GraphqlModel? instance)
+      : super(query, instance);
 }
 
 /// Construct a [DemoModel]

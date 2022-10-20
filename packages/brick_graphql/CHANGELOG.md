@@ -3,7 +3,7 @@
 ## 2.0.0
 
 * **BREAKING CHANGE** `GraphqlProvider#queryToVariables` has been moved to internal class `GraphqlRequest`
-* Update minimum Dart to `2.17`
+* Update minimum Dart to `2.15`
 
 **BREAKING CHANGE**
 

@@ -114,9 +114,7 @@ class GraphqlConfigEndpointAdapter
 ''';
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultDeleteOperation: null,
-  ),
+  graphqlConfig: GraphqlSerializable(),
 )
 class GraphqlConfigEndpoint extends OfflineFirstModel {
   @OfflineFirst(where: {'name': "data['name']"})

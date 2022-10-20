@@ -3,9 +3,7 @@ import 'package:brick_graphql/graphql.dart' show GraphqlSerializable;
 import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultDeleteOperation: null,
-  ),
+  graphqlConfig: GraphqlSerializable(),
 )
 class GraphqlConfigEndpoint extends OfflineFirstModel {
   @OfflineFirst(where: {'otherField': "data['value']", 'id': "data['id']"})
