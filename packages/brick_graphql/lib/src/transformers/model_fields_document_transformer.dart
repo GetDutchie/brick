@@ -197,7 +197,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       case QueryAction.subscribe:
         if (operationTransformer?.subscribe?.document != null) {
           return fromDocument<_Model>(
-            lang.parseString(operationTransformer!.delete!.document!),
+            lang.parseString(operationTransformer!.subscribe!.document!),
             modelDictionary,
           );
         }

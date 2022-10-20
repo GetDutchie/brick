@@ -1,5 +1,7 @@
 import 'package:brick_core/core.dart' show Query;
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/src/graphql_adapter.dart';
+import 'package:brick_graphql/src/graphql_provider.dart';
+import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 
 import 'demo_model.dart';
@@ -47,7 +49,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
       getDemoModels() {}
     }''';
 
-    if (query != null) {
+    if (query?.where != null) {
       document = r'''query GetDemoModel($input: DemoModelFilterInput) {
         getDemoModel(input: $input) {}
       }''';
@@ -61,7 +63,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
       getDemoModels() {}
     }''';
 
-    if (query != null) {
+    if (query?.where != null) {
       document = r'''subscription GetDemoModels($input: DemoModelInput) {
       getDemoModels(input: $input) {}
     }''';
