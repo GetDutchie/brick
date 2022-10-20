@@ -24,7 +24,7 @@ Some GraphQL systems may utilize a single variable property for all operations. 
 # GraphqlProvider(variablesNamespace: 'vars')
 
 query MyOperation($vars: MyInputClass!) {
-   myOperation(vars: $vars) {}
+  myOperation(vars: $vars) {}
 }
 ```
 
@@ -91,98 +91,53 @@ query {
 
 ## Models
 
-To reduce copypasta-ing the same GraphQL document and variables, defaults can be set on a per-model basis. Only the header is required.
+To reduce copypasta-ing the same GraphQL document and variables, all operations can be set in a single place alongside the model configuration.
+
+1. Create a new class that extends `GraphqlQueryOperationTransformer`:
+    ```dart
+    class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {}
+    ```
+1. This class has access to every request's `query`, and for `delete` and `upsert`, `instance`. You can use these properties to tell Brick which GraphQL operation to use.
+    ```dart
+    class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {
+      GraphqlOperation get upsert {
+        if (query.where != null) {
+          return GraphqlOperation(document: r'''
+            mutation UpdateUserName($name: String!) {
+              updateUserName(input: $input) {}
+            }
+          ''');
+        }
+        return GraphqlOperation(document: r'''
+          mutation CreateUser($input: UserInput!) {
+            createUser(input: $input) {}
+          }
+        ''');
+      }
+    }
+    ```
+1. In complex cases where the entire model is not being transmitted, `variables` can also be supplied.
+    ```dart
+    class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {
+      GraphqlOperation get upsert {
+        if (query.where != null) {
+          return GraphqlOperation(
+            document: r'''
+              mutation UpdateUserName($name: String!) {
+                updateUserName(input: $input) {}
+              }
+            ''',
+            variables: {'name': Where.firstByField('name', query.where)});
+        }
+        return null;
+      }
+    }
+    ```
+1. Use the class in `GraphqlSerializable`:
+    ```dart
+    @GraphqlSerializable(
+      queryOperationTransformer: UserQueryOperationTransformer.new
+    )
+    ```
 
 :bulb: Only headers need to be supplied; nodes can be supplied to override default behavior of fetching all fields requested by the model. To use autopopulated nodes provided by the model (with respect to `@Graphql` configuration), use an empty node selection (e.g. `deleteUser(vars: $vars) {}`).
-
-### `@GraphqlSerializable(defaultDeleteOperation:)`
-
-Used to remove a specific instance.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultDeleteOperation: r'''mutation DeleteUser($input: DeleteUserInput!) {
-      deleteUser(input: $input) {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-### `@GraphqlSerializable(defaultQueryOperation:)`
-
-Used for fetching all instances of a model **without** any arguments or variables.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultQueryOperation: r'''query GetUsers() {
-      getUsers() {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-### `@GraphqlSerializable(defaultQueryFilteredOperation:)`
-
-Fetch instances of a model **with** an argument or variable.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultQueryFilteredOperation: r'''query GetFilteredUsers($input: UserFilterInput) {
-      getFilteredUsers(input: $input) {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-### `@GraphqlSerializable(defaultSubscriptionOperation:)`
-
-Listen for all updates to all instances of the model.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultSubscriptionOperation: r'''subscription SubscribeToUsers() {
-      getUsers() {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-### `@GraphqlSerializable(defaultSubscriptionFilteredOperation:)`
-
-Fetch instances of a model(s) **with** an argument or variable.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultSubscriptionFilteredOperation: r'''subscription SubscribeToUser($input: UserModel) {
-      getUser(input: $input) {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-### `@GraphqlSerializable(defaultUpsertOperation:)`
-
-Add or update an instance of the model.
-
-```dart
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultUpsertOperation: r'''mutation UpsertUser($input: UserModel) {
-      upsertUser(input: $input) {}
-    }''',
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-:warning: Nodes can be supplied for all operations but they will be ignored.

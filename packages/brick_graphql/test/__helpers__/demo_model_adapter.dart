@@ -1,6 +1,6 @@
 import 'package:brick_core/core.dart' show Query;
 import 'package:brick_graphql/graphql.dart';
-import 'package:gql/language.dart';
+import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 
 import 'demo_model.dart';
 
@@ -33,49 +33,56 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
   };
 }
 
+class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
+  @override
+  GraphqlOperation get delete => GraphqlOperation(
+        document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
+      deleteDemoModel(input: $input) {}
+    }''',
+      );
+
+  @override
+  GraphqlOperation get get {
+    var document = r'''query GetDemoModels() {
+      getDemoModels() {}
+    }''';
+
+    if (query != null) {
+      document = r'''query GetDemoModel($input: DemoModelFilterInput) {
+        getDemoModel(input: $input) {}
+      }''';
+    }
+    return GraphqlOperation(document: document);
+  }
+
+  @override
+  GraphqlOperation get subscribe {
+    var document = r'''subscription GetDemoModels() {
+      getDemoModels() {}
+    }''';
+
+    if (query != null) {
+      document = r'''subscription GetDemoModels($input: DemoModelInput) {
+      getDemoModels(input: $input) {}
+    }''';
+    }
+    return GraphqlOperation(document: document);
+  }
+
+  @override
+  GraphqlOperation get upsert => GraphqlOperation(
+        document: r'''mutation UpsertDemoModels($input: DemoModelInput) {
+      upsertDemoModel(input: $input) {}
+    }''',
+      );
+
+  const DemoModelOperationTransformer(super.query, super.instance);
+}
+
 /// Construct a [DemoModel]
 class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   @override
-  final defaultDeleteOperation = parseString(
-    r'''mutation DeleteDemoModel($input: DemoModelInput!) {
-      deleteDemoModel(input: $input) {}
-    }''',
-  );
-
-  @override
-  final defaultQueryOperation = parseString(
-    r'''query GetDemoModels() {
-      getDemoModels() {}
-    }''',
-  );
-
-  @override
-  final defaultQueryFilteredOperation = parseString(
-    r'''query GetDemoModel($input: DemoModelFilterInput) {
-      getDemoModel(input: $input) {}
-    }''',
-  );
-
-  @override
-  final defaultSubscriptionOperation = parseString(
-    r'''subscription GetDemoModels() {
-      getDemoModels() {}
-    }''',
-  );
-
-  @override
-  final defaultSubscriptionFilteredOperation = parseString(
-    r'''subscription GetDemoModels($input: DemoModelInput) {
-      getDemoModels(input: $input) {}
-    }''',
-  );
-
-  @override
-  final defaultUpsertOperation = parseString(
-    r'''mutation UpsertDemoModels($input: DemoModelInput) {
-      upsertDemoModel(input: $input) {}
-    }''',
-  );
+  final queryOperationTransformer = DemoModelOperationTransformer.new;
 
   DemoModelAdapter();
 
