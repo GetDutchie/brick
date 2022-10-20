@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.0
+
+* Breaking Change upgrade to support `brick_graphql` v2
+
 ## 1.4.0
 
 * Upgrade analyzer to version 4
