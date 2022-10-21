@@ -26,11 +26,8 @@ dependencies:
   path: ^1.8.0
   source_gen: ">=1.2.2 <2.0.0"
 
-dependency_overrides:
-  brick_graphql:
-    path: ../brick_graphql
-
 dev_dependencies:
+  brick_core: ^1.1.1
   build_verify: ^2.0.0
   lints: ^1.0.1
   source_gen_test: ^1.0.0
