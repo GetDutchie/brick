@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.2.0
+
 * Do not invoke `remoteProvider.subscribe` if no subscription query exists.
 * Ensure `query` is never non-null in the `subscriptions` mapping of the repository. If `query` is `null`, `controller` is assigned to the Model type and subscriptions cannot be regenerated after cancelling all listeners.
 * Expand dependency restriction to include `brick_graphql` v2
