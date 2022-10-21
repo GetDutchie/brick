@@ -12,26 +12,10 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
   @override
   List<String> get instanceFieldsAndMethods {
     final config = (fields as GraphqlFields).config;
-    final deleteHeader = config?.defaultDeleteOperation;
-    final getCollectionHeader = config?.defaultQueryOperation;
-    final getMemberHeader = config?.defaultQueryFilteredOperation;
-    final getSubscribeHeader = config?.defaultSubscriptionOperation;
-    final getSubscribeFilteredHeader = config?.defaultSubscriptionFilteredOperation;
-    final upsertHeader = config?.defaultUpsertOperation;
 
     return [
-      if (deleteHeader != null)
-        "@override\nfinal defaultDeleteOperation = lang.parseString(r'''$deleteHeader''');",
-      if (getCollectionHeader != null)
-        "@override\nfinal defaultQueryOperation = lang.parseString(r'''$getCollectionHeader''');",
-      if (getMemberHeader != null)
-        "@override\nfinal defaultQueryFilteredOperation = lang.parseString(r'''$getMemberHeader''');",
-      if (getSubscribeHeader != null)
-        "@override\nfinal defaultSubscriptionOperation = lang.parseString(r'''$getSubscribeHeader''');",
-      if (getSubscribeFilteredHeader != null)
-        "@override\nfinal defaultSubscriptionFilteredOperation = lang.parseString(r'''$getSubscribeFilteredHeader''');",
-      if (upsertHeader != null)
-        "@override\nfinal defaultUpsertOperation = lang.parseString(r'''$upsertHeader''');",
+      if (config?.queryOperationTransformerName != null)
+        '@override\nfinal queryOperationTransformer = ${config!.queryOperationTransformerName};'
     ];
   }
 

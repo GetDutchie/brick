@@ -1,3 +1,7 @@
+import 'package:brick_core/core.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
+import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
+
 /// Values for the automatic field renaming behavior for [GraphqlSerializable].
 ///
 /// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/a581e5cc9ee25bf4ad61e8f825a311289ade905c/json_serializable/lib/src/json_key_utils.dart#L164-L179)
@@ -21,75 +25,24 @@ enum FieldRename {
 ///
 /// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_serializable.dart)
 class GraphqlSerializable {
-  /// The mutation used to remove data.
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// mutation DeletePerson($input: DeletePersonInput!) {
-  ///   deletePerson(input: $input) {}
-  /// }
-  /// ```
-  final String? defaultDeleteOperation;
-
-  /// The query used to fetch multiple members.
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// query GetPeople() {
-  ///   getPerson() {}
-  /// }
-  /// ```
-  final String? defaultQueryOperation;
-
-  /// The query used to fetch a member or specific members.
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// query GetPerson($input: GetPersonInput!) {
-  ///   getPerson(input: $input) {}
-  /// }
-  /// ```
-  final String? defaultQueryFilteredOperation;
-
-  /// The subscription used to listen to all models
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// subscription GetPeople() {
-  ///   getPerson() {}
-  /// }
-  /// ```
-  final String? defaultSubscriptionOperation;
-
-  /// The query used to fetch a member or specific members.
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// subscription GetPerson($input: GetPersonInput!) {
-  ///   getPerson(input: $input) {}
-  /// }
-  /// ```
-  final String? defaultSubscriptionFilteredOperation;
-
-  /// The mutation used to create or update a member.
-  /// Only the header of the operation is required. For example
-  /// ```graphql
-  /// query UpsertPerson($input: PersonInput!) {
-  ///   upsertPerson(input: $input) {}
-  /// }
-  /// ```
-  final String? defaultUpsertOperation;
-
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
   ///
   /// The value for `@Graphql(name:)` will override this convention.
   final FieldRename fieldRename;
 
+  /// The interface used to determine the document to send GraphQL. This class
+  /// will be accessed for all provider and repository operations.
+  ///
+  /// Implementing classes of [GraphqlQueryOperationTransformer] must be a `const`
+  /// constructor. For simplicity, the default constructor tearoff can be provided
+  /// as a value (`queryOperationTransformer: MyTransformer.new`).
+  final GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? queryOperationTransformer;
+
   /// Creates a new [GraphqlSerializable] instance.
   const GraphqlSerializable({
-    this.defaultDeleteOperation,
-    this.defaultQueryOperation,
-    this.defaultQueryFilteredOperation,
-    this.defaultSubscriptionOperation,
-    this.defaultSubscriptionFilteredOperation,
-    this.defaultUpsertOperation,
     FieldRename? fieldRename,
+    this.queryOperationTransformer,
   }) : fieldRename = fieldRename ?? FieldRename.none;
 
   /// An instance of [GraphqlSerializable] with all fields set to their default

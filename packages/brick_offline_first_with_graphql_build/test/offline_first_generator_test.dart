@@ -3,10 +3,10 @@ import 'package:brick_offline_first_with_graphql_build/src/offline_first_with_gr
 import 'package:test/test.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
-import 'offline_first_generator/test_graphql_config_mutation_document.dart'
-    as _$graphqlMutationDocument;
 import 'offline_first_generator/test_graphql_config_field_rename.dart'
     as _$graphqlConfigFieldRename;
+import 'offline_first_generator/test_graphql_config_query_operation_transformer.dart'
+    as _$graphqlConfigQueryOperationTransformer;
 import 'offline_first_generator/test_custom_serdes.dart' as _$customSerdes;
 import 'offline_first_generator/test_specify_field_name.dart' as _$specifyFieldName;
 import 'offline_first_generator/test_offline_first_where_rename.dart' as _$offlineFirstWhereRename;
@@ -24,13 +24,15 @@ void main() {
     });
 
     group('@ConnectOfflineFirstWithGraphql', () {
-      test('graphqlSerializable#mutationDocument', () async {
-        await generateAdapterExpectation(
-            'graphql_config_mutation_document', _$graphqlMutationDocument.output);
-      });
-
       test('graphqlSerializable#fieldRename', () async {
         await generateExpectation('graphql_config_field_rename', _$graphqlConfigFieldRename.output);
+      });
+
+      test('graphqlSerializable#queryOperationTransformer', () async {
+        await generateAdapterExpectation(
+          'graphql_config_query_operation_transformer',
+          _$graphqlConfigQueryOperationTransformer.output,
+        );
       });
     });
 

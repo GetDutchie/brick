@@ -132,7 +132,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   }
 
   /// Merge the operation headers from [document] and the generated `#document` nodes.
-  static ModelFieldsDocumentTransformer fromDocument<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<_Model> fromDocument<_Model extends GraphqlModel>(
     DocumentNode document,
     GraphqlModelDictionary modelDictionary,
   ) {
@@ -145,16 +145,17 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   /// Instead of a [DocumentNode], the raw document is used.
   /// Only the operation information is retrieved from the supplied document;
   /// field nodes are ignored.
-  static ModelFieldsDocumentTransformer fromString<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<_Model> fromString<_Model extends GraphqlModel>(
     String existingOperation,
     GraphqlModelDictionary modelDictionary,
   ) =>
       fromDocument<_Model>(lang.parseString(existingOperation), modelDictionary);
 
   /// Assign and determine what operation to make against the request
-  static ModelFieldsDocumentTransformer? defaultOperation<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<_Model>? defaultOperation<_Model extends GraphqlModel>(
     GraphqlModelDictionary modelDictionary, {
     required QueryAction action,
+    _Model? instance,
     Query? query,
   }) {
     if (query?.providerArgs['document'] != null) {
@@ -162,37 +163,43 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     }
 
     final adapter = modelDictionary.adapterFor[_Model]!;
+    final operationTransformer = adapter.queryOperationTransformer == null
+        ? null
+        : adapter.queryOperationTransformer!(query, instance);
 
     switch (action) {
       case QueryAction.get:
-        if (query?.where == null && adapter.defaultQueryOperation != null) {
-          return fromDocument<_Model>(adapter.defaultQueryOperation!, modelDictionary);
-        }
-
-        if (adapter.defaultQueryFilteredOperation != null) {
-          return fromDocument<_Model>(adapter.defaultQueryFilteredOperation!, modelDictionary);
+        if (operationTransformer?.get?.document != null) {
+          return fromDocument<_Model>(
+            lang.parseString(operationTransformer!.get!.document!),
+            modelDictionary,
+          );
         }
         return null;
       case QueryAction.insert:
       case QueryAction.update:
       case QueryAction.upsert:
-        if (adapter.defaultUpsertOperation != null) {
-          return fromDocument<_Model>(adapter.defaultUpsertOperation!, modelDictionary);
+        if (operationTransformer?.upsert?.document != null) {
+          return fromDocument<_Model>(
+            lang.parseString(operationTransformer!.upsert!.document!),
+            modelDictionary,
+          );
         }
         return null;
       case QueryAction.delete:
-        if (adapter.defaultDeleteOperation != null) {
-          return fromDocument<_Model>(adapter.defaultDeleteOperation!, modelDictionary);
+        if (operationTransformer?.delete?.document != null) {
+          return fromDocument<_Model>(
+            lang.parseString(operationTransformer!.delete!.document!),
+            modelDictionary,
+          );
         }
         return null;
       case QueryAction.subscribe:
-        if (query?.where == null && adapter.defaultSubscriptionOperation != null) {
-          return fromDocument<_Model>(adapter.defaultSubscriptionOperation!, modelDictionary);
-        }
-
-        if (adapter.defaultSubscriptionFilteredOperation != null) {
+        if (operationTransformer?.subscribe?.document != null) {
           return fromDocument<_Model>(
-              adapter.defaultSubscriptionFilteredOperation!, modelDictionary);
+            lang.parseString(operationTransformer!.subscribe!.document!),
+            modelDictionary,
+          );
         }
         return null;
     }

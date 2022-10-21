@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.1
+
+* Loosen `brick_graphql` restriction to permit `2+` versions
+
 ## 1.0.0
 
 * Loosen dependency restrictions to major versions

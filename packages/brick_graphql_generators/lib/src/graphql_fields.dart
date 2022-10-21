@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_build/generators.dart';
 import 'package:analyzer/dart/constant/value.dart';
+import 'package:brick_graphql_generators/src/graphql_serializable_query_transformer_extended.dart';
 
 /// Find `@Graphql` given a field
 class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
@@ -71,7 +72,8 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
 
 /// Converts all fields to [Graphql]s for later consumption
 class GraphqlFields extends FieldsForClass<Graphql> {
-  final GraphqlSerializable? config;
+  final GraphqlSerializableExtended? config;
+
   @override
   final GraphqlAnnotationFinder finder;
 

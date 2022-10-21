@@ -1,8 +1,11 @@
 ## Unreleased
 
+## 1.3.0
+
 * Upgrade analyzer to version 4
 * Generate `RuntimeGraphqlDefinitions#subfields` as `Map<String, Map<String, dynamic>>` to support nested properties of JSON-encoded fields.
 * Apply `@OfflineFirst(where:)` params to GraphQL document configuration. Note that the current implementation ignores multiple `where` properties (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) and nested values (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`).
+* Support `brick_graphql` v2
 
 ## 1.2.0+1
 

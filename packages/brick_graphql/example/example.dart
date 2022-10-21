@@ -1,7 +1,15 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_graphql/graphql.dart';
 import 'package:gql_http_link/gql_http_link.dart';
-import 'package:gql/language.dart' as lang;
+
+class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {
+  GraphqlOperation get get => GraphqlOperation(document: '''query AllUsers {
+      allUsers {}
+    }''');
+
+  const UserQueryOperationTransformer(Query? query, GraphqlModel? instance)
+      : super(query, instance);
+}
 
 /// This class and code is always generated.
 /// It is included here as an illustration.
@@ -9,9 +17,7 @@ import 'package:gql/language.dart' as lang;
 /// such as brick_offline_first_with_graphql_build
 class UserAdapter extends GraphqlAdapter<User> {
   @override
-  final defaultQueryOperation = lang.parseString(r'''query AllUsers {
-    allUsers {}
-  }''');
+  final queryOperationTransformer = UserQueryOperationTransformer.new;
 
   @override
   Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition => {
