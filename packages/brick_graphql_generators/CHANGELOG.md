@@ -2,7 +2,7 @@
 
 ## 2.0.0
 
-* Breaking Change upgrade to support `brick_graphql` v2
+* Breaking Change upgrade to support `brick_graphql` v2. Please [review the migration guide](https://github.com/GetDutchie/brick/blob/main/packages/brick_graphql/CHANGELOG.md#200).
 
 ## 1.4.0
 
