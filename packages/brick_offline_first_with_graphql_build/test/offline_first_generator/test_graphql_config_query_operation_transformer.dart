@@ -122,7 +122,8 @@ class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationT
 
 @ConnectOfflineFirstWithGraphql(
   graphqlConfig: GraphqlSerializable(
-      queryOperationTransformer: QueryOperationTransformerExampleTransformer.new),
+    queryOperationTransformer: QueryOperationTransformerExampleTransformer.new,
+  ),
 )
 class QueryOperationTransformerExample extends GraphqlModel {
   final String name;
