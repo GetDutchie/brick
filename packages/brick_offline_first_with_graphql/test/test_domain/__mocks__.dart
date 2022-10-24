@@ -8,7 +8,6 @@ import 'package:brick_sqlite_abstract/db.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:gql_link/gql_link.dart';
-import 'package:gql/language.dart' show parseString;
 
 part 'horse_adapter.dart';
 part 'horse.dart';

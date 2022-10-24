@@ -208,8 +208,8 @@ abstract class OfflineFirstWithGraphqlRepository
 
     StreamSubscription<List<_Model>>? remoteSubscription;
     final adapter = remoteProvider.modelDictionary.adapterFor[_Model];
-    if (adapter?.defaultSubscriptionOperation != null ||
-        adapter?.defaultSubscriptionFilteredOperation != null) {
+    if (adapter?.queryOperationTransformer != null &&
+        adapter?.queryOperationTransformer!(query, null).subscribe != null) {
       remoteSubscription = remoteProvider
           .subscribe<_Model>(query: withPolicy, repository: this)
           .listen((modelsFromRemote) async {

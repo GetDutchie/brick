@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+* Upgrade to support `brick_graphql` v2
+
 ## 1.2.0
 
 * Do not invoke `remoteProvider.subscribe` if no subscription query exists.

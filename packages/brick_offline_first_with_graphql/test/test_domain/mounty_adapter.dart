@@ -21,50 +21,58 @@ Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
   return {'name': instance.name};
 }
 
-/// Construct a [Mounty]
-class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
-  MountyAdapter();
+class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
   @override
-  final defaultDeleteOperation = parseString(
-    r'''mutation DeleteDemoModel($input: DemoModel!) {
+  GraphqlOperation get delete => GraphqlOperation(
+        document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
       deleteDemoModel(input: $input) {}
     }''',
-  );
+      );
 
   @override
-  final defaultQueryOperation = parseString(
-    r'''query GetDemoModels() {
-      getDemoModel() {}
-    }''',
-  );
+  GraphqlOperation get get {
+    var document = r'''query GetDemoModels() {
+      getDemoModels() {}
+    }''';
+
+    if (query?.where != null) {
+      document = r'''query GetDemoModel($input: DemoModelFilterInput) {
+        getDemoModel(input: $input) {}
+      }''';
+    }
+    return GraphqlOperation(document: document);
+  }
 
   @override
-  final defaultQueryFilteredOperation = parseString(
-    r'''query GetDemoModels($input: DemoModelFilter) {
-      getDemoModel(filter: $input) {}
-    }''',
-  );
+  GraphqlOperation get subscribe {
+    var document = r'''subscription GetDemoModels() {
+      getDemoModels() {}
+    }''';
+
+    if (query?.where != null) {
+      document = r'''subscription GetDemoModels($input: DemoModelInput) {
+      getDemoModels(input: $input) {}
+    }''';
+    }
+    return GraphqlOperation(document: document);
+  }
 
   @override
-  final defaultSubscriptionOperation = parseString(
-    r'''subscription GetDemoModels() {
-      getDemoModel() {}
-    }''',
-  );
-
-  @override
-  final defaultSubscriptionFilteredOperation = parseString(
-    r'''subscription GetDemoModels($input: DemoModel) {
-      getDemoModel(input: $input) {}
-    }''',
-  );
-
-  @override
-  final defaultUpsertOperation = parseString(
-    r'''mutation UpsertDemoModels($input: DemoModel) {
+  GraphqlOperation get upsert => GraphqlOperation(
+        document: r'''mutation UpsertDemoModels($input: DemoModelInput) {
       upsertDemoModel(input: $input) {}
     }''',
-  );
+      );
+
+  const MountyOperationTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+}
+
+/// Construct a [Mounty]
+class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
+  @override
+  final queryOperationTransformer = MountyOperationTransformer.new;
+
+  MountyAdapter();
 
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
