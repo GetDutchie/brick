@@ -4,9 +4,14 @@ import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 
+class _DefaultGraphqlTransformer extends GraphqlQueryOperationTransformer {
+  const _DefaultGraphqlTransformer(Query? query, GraphqlModel? instance) : super(null, null);
+}
+
 /// Constructors that convert app models to and from REST
 abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
-  GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? get queryOperationTransformer;
+  GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? get queryOperationTransformer =>
+      _DefaultGraphqlTransformer.new;
 
   Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition;
 
