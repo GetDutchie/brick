@@ -45,11 +45,11 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
     required this.databaseFactory,
     required this.lockedColumn,
     required this.primaryKeyColumn,
-    this.processingInterval = const Duration(seconds: 5),
+    Duration? processingInterval,
     this.serialProcessing = true,
     required this.tableName,
     required this.updateAtColumn,
-  });
+  }) : processingInterval = processingInterval ?? const Duration(seconds: 5);
 
   /// Delete job in queue. **This is a destructive action and cannot be undone**.
   /// [id] is retrieved from the [primaryKeyColumn].

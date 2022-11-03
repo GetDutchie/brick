@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Update default of offline queue from 0 seconds to 5 seconds
+
 ## 1.3.0
 
 * Upgrade to support `brick_graphql` v2

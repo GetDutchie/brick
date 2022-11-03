@@ -1,8 +1,12 @@
 ## Unreleased
 
+## 2.1.2
+
+* Set default of 5 seconds for `RequestSqliteCacheManager#processingInterval`
+
 ## 2.1.1
 
-* Include type argument on `_upsertLocal` within `#upsert` 
+* Include type argument on `_upsertLocal` within `#upsert`
 
 ## 2.1.0
 
