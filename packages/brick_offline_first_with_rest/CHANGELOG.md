@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Update default of offline queue from 0 seconds to 5 seconds
+
 ## 1.1.0
 
 * Loosen dependency restrictions to major versions
