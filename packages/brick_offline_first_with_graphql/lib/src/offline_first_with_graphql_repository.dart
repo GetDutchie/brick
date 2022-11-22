@@ -175,17 +175,27 @@ abstract class OfflineFirstWithGraphqlRepository
 
       if (query == null || memoryCacheProvider.canFind<_Model>(query)) {
         final results = memoryCacheProvider.get<_Model>(query: query);
-        if (results?.isNotEmpty ?? false) controller.add(results!);
+        if (!controller.isClosed && (results?.isNotEmpty ?? false)) controller.add(results!);
       }
 
       final existsInSqlite = await sqliteProvider.exists<_Model>(query: query, repository: this);
       if (existsInSqlite) {
         final results = await sqliteProvider.get<_Model>(query: query, repository: this);
-        controller.add(results);
+        if (!controller.isClosed) controller.add(results);
       } else if (notifyWhenEmpty) {
-        controller.add(<_Model>[]);
+        if (!controller.isClosed) controller.add(<_Model>[]);
       }
     }
+  }
+
+  @override
+  Future<List<_Model>> storeRemoteResults<_Model extends OfflineFirstWithGraphqlModel>(
+    List<_Model> models, {
+    bool shouldNotify = true,
+  }) async {
+    final results = await super.storeRemoteResults<_Model>(models);
+    if (shouldNotify) await notifySubscriptionsWithLocalData<_Model>();
+    return results;
   }
 
   /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
@@ -216,9 +226,9 @@ abstract class OfflineFirstWithGraphqlRepository
         // Remote results are never returned directly;
         // after the remote results are fetched they're stored
         // and memory/SQLite is reported to the subscribers
-        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+        final modelsIntoSqlite =
+            await storeRemoteResults<_Model>(modelsFromRemote, shouldNotify: false);
         memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
-        await notifySubscriptionsWithLocalData<_Model>();
       });
     }
 

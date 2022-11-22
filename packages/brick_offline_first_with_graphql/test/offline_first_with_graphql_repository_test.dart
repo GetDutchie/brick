@@ -136,10 +136,24 @@ void main() {
         var eventReceived = false;
         final subscription =
             repository.subscribe<Mounty>(query: Query.where('name', 'Thomas')).listen((event) {
-          eventReceived = event.first.name == 'Thomas';
+          eventReceived = !eventReceived && event.first.name == 'Thomas';
         });
         expect(repository.subscriptions[Mounty], hasLength(1));
         await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
+        await subscription.cancel();
+        expect(eventReceived, isTrue);
+      });
+
+      test('notifies when storeRemoteResults is invoked', () async {
+        final repository = TestRepository.configure(link: stubGraphqlLink({'name': 'SqliteName'}));
+        await repository.initialize();
+        await repository.migrate();
+
+        var eventReceived = false;
+        final subscription = repository.subscribe<Mounty>().listen((event) {
+          eventReceived = !eventReceived && event.first.name == 'Thomas';
+        });
+        await repository.storeRemoteResults<Mounty>([Mounty(name: 'Thomas')]);
         await subscription.cancel();
         expect(eventReceived, isTrue);
       });
@@ -151,7 +165,7 @@ void main() {
 
         var eventReceived = false;
         final subscription = repository.subscribe<Mounty>().listen((event) {
-          eventReceived = event.first.name == 'Thomas';
+          eventReceived = !eventReceived && event.first.name == 'Thomas';
         });
         await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
         await subscription.cancel();
@@ -164,16 +178,17 @@ void main() {
         await repository.migrate();
 
         final instance = await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
-        var eventCount = 0;
+        var eventReceived = false;
         final subscription =
             repository.subscribe<Mounty>(query: Query.where('name', 'Thomas')).listen((event) {
-          eventCount++;
+          // only want this to change once
+          eventReceived = eventReceived == false;
         });
         await repository.delete<Mounty>(instance);
         await subscription.cancel();
 
-        expect(eventCount, 2);
-      }, skip: true);
+        expect(eventReceived, isTrue);
+      });
     });
 
     group('#notifySubscriptionsWithLocalData', () {
