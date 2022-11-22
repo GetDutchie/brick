@@ -188,6 +188,14 @@ abstract class OfflineFirstWithGraphqlRepository
     }
   }
 
+  @override
+  Future<List<_Model>> storeRemoteResults<_Model extends OfflineFirstWithGraphqlModel>(
+      List<_Model> models) async {
+    final results = await super.storeRemoteResults<_Model>(models);
+    await notifySubscriptionsWithLocalData<_Model>();
+    return results;
+  }
+
   /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData].
