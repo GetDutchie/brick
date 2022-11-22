@@ -175,15 +175,15 @@ abstract class OfflineFirstWithGraphqlRepository
 
       if (query == null || memoryCacheProvider.canFind<_Model>(query)) {
         final results = memoryCacheProvider.get<_Model>(query: query);
-        if (results?.isNotEmpty ?? false) controller.add(results!);
+        if (!controller.isClosed && (results?.isNotEmpty ?? false)) controller.add(results!);
       }
 
       final existsInSqlite = await sqliteProvider.exists<_Model>(query: query, repository: this);
       if (existsInSqlite) {
         final results = await sqliteProvider.get<_Model>(query: query, repository: this);
-        controller.add(results);
+        if (!controller.isClosed) controller.add(results);
       } else if (notifyWhenEmpty) {
-        controller.add(<_Model>[]);
+        if (!controller.isClosed) controller.add(<_Model>[]);
       }
     }
   }

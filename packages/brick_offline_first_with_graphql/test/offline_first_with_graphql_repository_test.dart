@@ -200,7 +200,7 @@ void main() {
 
         var eventReceived = false;
         final subscription = repository.subscribe<Mounty>().listen((event) {
-          eventReceived = !eventReceived && event.first.name == 'Guy';
+          eventReceived = event.first.name == 'Guy';
         });
         await repository.sqliteProvider.upsert<Mounty>(Mounty(name: 'Guy'));
         await repository.notifySubscriptionsWithLocalData<Mounty>();
