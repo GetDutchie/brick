@@ -190,9 +190,11 @@ abstract class OfflineFirstWithGraphqlRepository
 
   @override
   Future<List<_Model>> storeRemoteResults<_Model extends OfflineFirstWithGraphqlModel>(
-      List<_Model> models) async {
+    List<_Model> models, {
+    bool shouldNotify = true,
+  }) async {
     final results = await super.storeRemoteResults<_Model>(models);
-    await notifySubscriptionsWithLocalData<_Model>();
+    if (shouldNotify) await notifySubscriptionsWithLocalData<_Model>();
     return results;
   }
 
@@ -224,9 +226,9 @@ abstract class OfflineFirstWithGraphqlRepository
         // Remote results are never returned directly;
         // after the remote results are fetched they're stored
         // and memory/SQLite is reported to the subscribers
-        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
+        final modelsIntoSqlite =
+            await storeRemoteResults<_Model>(modelsFromRemote, shouldNotify: false);
         memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
-        await notifySubscriptionsWithLocalData<_Model>();
       });
     }
 

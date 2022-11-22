@@ -178,16 +178,17 @@ void main() {
         await repository.migrate();
 
         final instance = await repository.upsert<Mounty>(Mounty(name: 'Thomas'));
-        var eventCount = 0;
+        var eventReceived = false;
         final subscription =
             repository.subscribe<Mounty>(query: Query.where('name', 'Thomas')).listen((event) {
-          eventCount++;
+          // only want this to change once
+          eventReceived = eventReceived == false;
         });
         await repository.delete<Mounty>(instance);
         await subscription.cancel();
 
-        expect(eventCount, 2);
-      }, skip: true);
+        expect(eventReceived, isTrue);
+      });
     });
 
     group('#notifySubscriptionsWithLocalData', () {
