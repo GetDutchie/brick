@@ -202,12 +202,6 @@ class RestProvider implements Provider<RestModel> {
       }
     }
 
-    if ((query?.providerArgs ?? {})['request'] == 'PATCH') {
-      logger.fine('PATCH $url');
-      logger.finer('method=PUT url=$url headers=$headers body=$wrappedBody');
-      return await client.put(url, body: wrappedBody, headers: headers);
-    }
-
     logger.fine('POST $url');
     logger.finer('method=POST url=$url headers=$headers body=$wrappedBody');
     return await client.post(url, body: wrappedBody, headers: headers);
