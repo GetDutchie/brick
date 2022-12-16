@@ -54,6 +54,18 @@ const subfields = r'''query GetDemoAssocModels {
 
 void main() {
   group('ModelFieldsDocumentTransformer', () {
+    test('#hasSubfields', () {
+      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+          action: QueryAction.subscribe);
+      expect(transformer?.hasSubfields, isFalse);
+    });
+
+    test('#operationName', () {
+      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
+          action: QueryAction.subscribe);
+      expect(transformer?.operationName, 'getDemoModels');
+    });
+
     group('.fromDocument', () {
       test('without arguments', () {
         final nodes = lang.parseString(upsertPersonWithoutArgumentsHeader);
