@@ -84,7 +84,6 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     final node = sourceDocument.definitions.first as OperationDefinitionNode;
     if (hasSubfields) return null;
     return (node.selectionSet.selections.first as FieldNode).name.value;
-    ;
   }
 
   final DocumentNode sourceDocument;
