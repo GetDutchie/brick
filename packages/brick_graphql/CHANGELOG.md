@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Include `operationName` when programmatically generating operations
+
 ## 2.0.0
 
 * **BREAKING CHANGE** `GraphqlProvider#queryToVariables` has been moved to internal class `GraphqlRequest`

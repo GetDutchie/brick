@@ -37,7 +37,10 @@ class GraphqlRequest<_Model extends GraphqlModel> {
     if (defaultOperation == null) return null;
 
     return Request(
-      operation: Operation(document: defaultOperation.document),
+      operation: Operation(
+        document: defaultOperation.document,
+        operationName: defaultOperation.operationName,
+      ),
       variables: requestVariables ?? {},
       context: query?.providerArgs['context'] != null
           ? Context.fromMap(Map<String, ContextEntry>.from(query?.providerArgs['context'])

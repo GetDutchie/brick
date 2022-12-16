@@ -14,9 +14,6 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   /// Generates a document based on the [GraphqlAdapter#fieldsToGraphqlRuntimeDefinition]
   DocumentNode get document {
     final node = sourceDocument.definitions.first as OperationDefinitionNode;
-    final hasSubfields =
-        (node.selectionSet.selections.first as FieldNode).selectionSet?.selections.isNotEmpty ??
-            false;
     if (hasSubfields) return sourceDocument;
 
     final arguments = GraphqlArgument.fromOperationNode(node);
@@ -75,7 +72,20 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     );
   }
 
+  bool get hasSubfields {
+    final node = sourceDocument.definitions.first as OperationDefinitionNode;
+    return (node.selectionSet.selections.first as FieldNode).selectionSet?.selections.isNotEmpty ??
+        false;
+  }
+
   final GraphqlModelDictionary modelDictionary;
+
+  String? get operationName {
+    final node = sourceDocument.definitions.first as OperationDefinitionNode;
+    if (hasSubfields) return null;
+    return (node.selectionSet.selections.first as FieldNode).name.value;
+    ;
+  }
 
   final DocumentNode sourceDocument;
 
