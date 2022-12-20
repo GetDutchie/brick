@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.2
+
+* Remove `operationName`. This isn't exactly what it appears to be.
+
 ## 2.0.1
 
 * Include `operationName` when programmatically generating operations
