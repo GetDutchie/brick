@@ -39,7 +39,6 @@ class GraphqlRequest<_Model extends GraphqlModel> {
     return Request(
       operation: Operation(
         document: defaultOperation.document,
-        operationName: defaultOperation.operationName,
       ),
       variables: requestVariables ?? {},
       context: query?.providerArgs['context'] != null
