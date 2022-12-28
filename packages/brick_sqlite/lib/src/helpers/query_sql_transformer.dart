@@ -139,7 +139,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       // Determining if the prior table is required for this operation can be done by
       // ensuring the column definition does exist on the queried adapter (otherwise it
       // would be declared on the source, primary queried table)
-      // Check for null to avoid potentially-costly firstWhere operation
+      // Check for prior table to minimize potentially-costly firstWhere operation
       final column = priorTable != null
           ? adapter.fieldsToSqliteColumns.values
               .firstWhereOrNull((e) => e.columnName == definition.columnName)
