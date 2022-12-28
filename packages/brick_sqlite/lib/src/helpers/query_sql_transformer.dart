@@ -130,10 +130,24 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       }
 
       final associationAdapter = modelDictionary.adapterFor[definition.type]!;
+
+      // For nested associations, discover the prior nest based on the table within
+      // the last generated statement
+      final priorTable = _innerJoins.isEmpty
+          ? null
+          : RegExp(r'^INNER JOIN `(\w+)`').firstMatch(_innerJoins.last)?.group(1);
+      // Determining if the prior table is required for this operation can be done by
+      // ensuring the column definition does exist on the queried adapter (otherwise it
+      // would be declared on the source, primary queried table)
+      // Check for null to avoid potentially-costly firstWhere operation
+      final column = priorTable != null
+          ? adapter.fieldsToSqliteColumns.values
+              .firstWhereOrNull((e) => e.columnName == definition.columnName)
+          : null;
       final association = AssociationFragment(
         definition: definition,
         foreignTableName: associationAdapter.tableName,
-        localTableName: adapter.tableName,
+        localTableName: column != null ? adapter.tableName : (priorTable ?? adapter.tableName),
       );
       _innerJoins.addAll(association.toJoinFragment());
       return _expandCondition(condition.value as WhereCondition, associationAdapter);
@@ -355,5 +369,17 @@ class AllOtherClausesFragment {
 
       return acc;
     }).join(' ');
+  }
+}
+
+// Taken directly from the Dart collection package
+// Copied here to avoid the extra dependency
+extension _CollectionClone<T> on Iterable<T> {
+  /// The first element satisfying [test], or `null` if there are none.
+  T? firstWhereOrNull(bool Function(T element) test) {
+    for (final element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

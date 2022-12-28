@@ -1,5 +1,20 @@
 ## Unreleased
 
+## 2.1.0
+
+* Support deeply-nested association querying:
+    ```dart
+    Where('pizza').isExactly(
+      Where('customer').isExactly(
+        Where('name', name)
+      ),
+    )
+    // In this example, Car, Pizza, and Customer are all independent Brick models.
+    // Car has `final List<Pizza> pizzas`
+    // Pizza has `final Person customer`
+    // Customer has `final String name`
+    ```
+
 ## 2.0.1
 
 * Use the table name prefix in SQL queries for identically-named association columns
