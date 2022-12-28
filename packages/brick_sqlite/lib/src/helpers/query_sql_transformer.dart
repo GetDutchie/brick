@@ -149,7 +149,10 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
         foreignTableName: associationAdapter.tableName,
         localTableName: column != null ? adapter.tableName : (priorTable ?? adapter.tableName),
       );
-      _innerJoins.addAll(association.toJoinFragment());
+      // Avoid duplicate INNER JOIN declarations
+      if (priorTable != associationAdapter.tableName) {
+        _innerJoins.addAll(association.toJoinFragment());
+      }
       return _expandCondition(condition.value as WhereCondition, associationAdapter);
     }
 
