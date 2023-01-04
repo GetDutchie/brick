@@ -123,7 +123,7 @@ class MigrationGenerator extends Generator {
           reader.read('newName').stringValue,
         );
       } else {
-        throw FallThroughError();
+        throw UnimplementedError('Cannot create migration line for ${object.type}');
       }
     }).toList();
   }
