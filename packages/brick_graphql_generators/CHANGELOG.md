@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.0.1
+
+* Remove `FallThroughError` after Dart beta deprecation
+
 ## 2.0.0
 
 * Breaking Change upgrade to support `brick_graphql` v2. Please [review the migration guide](https://github.com/GetDutchie/brick/blob/main/packages/brick_graphql/CHANGELOG.md#200).

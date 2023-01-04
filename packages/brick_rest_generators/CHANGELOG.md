@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.1
+
+* Remove `FallThroughError` after Dart beta deprecation
+
 ## 2.1.0
 
 * Loosen dependency restrictions to major versions

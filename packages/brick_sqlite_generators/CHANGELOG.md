@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.1.4
+
+* Remove `FallThroughError` after Dart beta deprecation
+
 ## 2.1.3
 
 * Respect enum `fromSqlite` constructors and `toSqlite` methods

@@ -151,7 +151,7 @@ class Schema {
       );
       table.indices.removeWhere((i) => i.name == command.name);
     } else {
-      throw FallThroughError();
+      throw UnimplementedError('Cannot create Dart class for ${command.statement}');
     }
 
     return tables;

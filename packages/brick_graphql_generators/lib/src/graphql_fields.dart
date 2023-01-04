@@ -25,8 +25,6 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
         return StringHelpers.kebabCase(name);
       case FieldRename.pascal:
         return StringHelpers.pascalCase(name);
-      default:
-        throw FallThroughError();
     }
   }
 

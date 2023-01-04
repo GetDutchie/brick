@@ -23,8 +23,6 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
         return StringHelpers.kebabCase(name);
       case FieldRename.pascal:
         return StringHelpers.pascalCase(name);
-      default:
-        throw FallThroughError();
     }
   }
 
