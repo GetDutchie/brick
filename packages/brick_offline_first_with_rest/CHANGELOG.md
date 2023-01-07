@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Remove extraneous properties and rely on remote policy
+
+## 1.1.1
+
 * Update default of offline queue from 0 seconds to 5 seconds
 
 ## 1.1.0
