@@ -1,6 +1,6 @@
 import 'package:brick_build_test/brick_build_test.dart';
 import 'package:test/test.dart';
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
 
 import 'migration_generator/test_from_new_schema.dart' as _$fromNewSchema;

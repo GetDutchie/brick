@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:brick_offline_first/src/models/offline_first_model.dart';
 import 'package:brick_offline_first/src/offline_first_policy.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:logging/logging.dart';
 
 import 'package:brick_core/core.dart' show Query, ModelRepository, QueryAction, Provider;
-import 'package:brick_sqlite_abstract/db.dart' show MigrationManager, Migration;
-import 'package:brick_offline_first_abstract/abstract.dart';
 
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_sqlite/db.dart';
+
 // ignore: implementation_imports
 import 'package:http/src/exception.dart';
 

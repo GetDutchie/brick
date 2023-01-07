@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_build/src/offline_first_checker.dart';
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:meta/meta.dart';
 

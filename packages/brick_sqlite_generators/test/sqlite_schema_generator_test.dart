@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:source_gen/source_gen.dart';

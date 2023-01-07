@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'dart:io';
 
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 
 final output = r'''
 Future<RestUnserializableFieldWithGenerator>

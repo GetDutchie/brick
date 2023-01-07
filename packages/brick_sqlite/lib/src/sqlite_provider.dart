@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/migration_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 
 import 'package:brick_core/core.dart';
-import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
-export 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
 
 import 'package:brick_sqlite/src/helpers/alter_column_helper.dart';
 import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';

@@ -1,5 +1,4 @@
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 final migrationOutput = r'''
 // GENERATED CODE EDIT WITH CAUTION
@@ -45,7 +44,7 @@ class Migration1 extends Migration {
 final output = r'''
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{};

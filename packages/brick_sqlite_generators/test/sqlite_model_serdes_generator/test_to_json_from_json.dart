@@ -1,4 +1,4 @@
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT

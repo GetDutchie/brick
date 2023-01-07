@@ -1,4 +1,4 @@
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_generator.dart';
 import 'package:test/test.dart';
 import 'package:brick_build_test/brick_build_test.dart';

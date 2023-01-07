@@ -1,4 +1,4 @@
-import 'package:brick_rest/rest.dart' show RestException;
+import 'package:brick_rest/brick_rest.dart' show RestException;
 
 class OfflineFirstException implements Exception {
   /// The producing error from either [RestProvider] or [SqliteProvider].

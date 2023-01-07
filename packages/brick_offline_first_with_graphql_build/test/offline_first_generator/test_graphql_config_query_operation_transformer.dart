@@ -1,6 +1,6 @@
 import 'package:brick_graphql/graphql.dart';
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
+import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT

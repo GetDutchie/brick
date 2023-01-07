@@ -593,8 +593,8 @@ Any imports used within adapters must also be imported:
 ```dart
 return """
 import 'dart:convert';
-import 'package:brick_sqlite/sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary;
-import 'package:brick_rest/rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
+import 'package:brick_sqlite/db.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary;
+import 'package:brick_rest/brick_rest.dart' show RestProvider, RestModel, RestAdapter, RestModelDictionary;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite/sqflite.dart' show DatabaseExecutor;
 """;
@@ -613,9 +613,8 @@ final offlineFirstGenerator = const OfflineFirstGenerator();
 
 // all models must be aggregated to one file to check associations
 Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
-      "import 'package:brick_offline_first_abstract/annotations.dart';",
-      "import 'package:brick_offline_first/offline_first.dart';",
-      "import 'package:brick_sqlite_abstract/db.dart';",
+      "import 'package:brick_offline_first/brick_offline_first.dart';",
+      "import 'package:brick_sqlite/db.dart';",
     ]);
 
 // The Adapter builder uses the same annotation declared in OfflineFirstGenerator
@@ -629,10 +628,8 @@ Builder offlineFirstModelDictionaryBuilder(options) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithRest>(
       const OfflineFirstModelDictionaryGenerator(),
       expectedImportRemovals: [
-        "import 'package:brick_offline_first_abstract/annotations.dart';",
-        'import "package:brick_offline_first_abstract/annotations.dart";',
-        "import 'package:brick_offline_first/offline_first.dart';",
-        'import "package:brick_offline_first/offline_first.dart";',
+        "import 'package:brick_offline_first/brick_offline_first.dart';",
+        'import "package:brick_offline_first/brick_offline_first.dart";',
       ],
     );
 ```

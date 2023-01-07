@@ -97,7 +97,7 @@ class RestToOfflineFirstConverter {
     final fromKey = topLevelKey != null ? "fromKey: '$topLevelKey'," : '';
 
     final output = '''
-      import 'package:brick_offline_first/offline_first.dart';
+      import 'package:brick_offline_first/brick_offline_first.dart';
       import 'package:brick_offline_first_abstract/annotations.dart';
 
       @ConnectOfflineFirstWithRest(

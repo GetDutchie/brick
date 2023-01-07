@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build_test/brick_build_test.dart';
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';

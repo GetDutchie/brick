@@ -1,7 +1,7 @@
 // Generously inspired by JsonSerializable
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart' show SqliteSerializable, Sqlite, Column;
 import 'package:brick_build/generators.dart';
 
 /// Find `@Sqlite` given a field

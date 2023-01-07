@@ -1,4 +1,4 @@
-import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:gql_exec/gql_exec.dart';
 
 class OfflineFirstGraphqlPolicy extends ContextEntry {

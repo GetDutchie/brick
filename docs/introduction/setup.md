@@ -20,9 +20,9 @@
 1. Extend [an existing repository](data/repositories.md) or create your own:
     ```dart
     // lib/brick/repository.dart
-    import 'package:brick_offline_first/offline_first_with_rest.dart';
+    import 'package:brick_offline_first/brick_offline_first_with_rest.dart';
     import 'package:my_app/brick/brick.g.dart';
-    export 'package:brick_offline_first/offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
+    export 'package:brick_offline_first/brick_offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
 
     class Repository extends OfflineFirstWithRestRepository {
       Repository()

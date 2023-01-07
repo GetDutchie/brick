@@ -3,8 +3,8 @@ import 'package:brick_build/generators.dart';
 import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable, InsertForeignKey;
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 

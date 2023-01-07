@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:brick_offline_first_with_rest/offline_first_with_rest.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';

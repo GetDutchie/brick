@@ -14,10 +14,13 @@ dependencies:
   brick_build: ">=2.1.0 <3.0.0"
   brick_graphql: ">=1.3.0 <3.0.0"
   brick_graphql_generators: ">=1.4.0 <3.0.0"
-  brick_offline_first_abstract: ">=2.0.0 <3.0.0"
+  brick_offline_first:
+    path: ../brick_offline_first
   brick_offline_first_build: ">=2.0.0 <3.0.0"
-  brick_offline_first_with_graphql_abstract: ">=1.0.0 <2.0.0"
-  brick_sqlite_abstract: ">=1.1.0 <2.0.0"
+  brick_offline_first_with_graphql:
+    path: ../brick_offline_first_with_graphql
+  brick_sqlite:
+    path: ../brick_sqlite
   brick_sqlite_generators: ">=2.0.2 <3.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"

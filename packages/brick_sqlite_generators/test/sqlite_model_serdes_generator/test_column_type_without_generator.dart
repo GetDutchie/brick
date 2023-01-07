@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:brick_sqlite_abstract/annotations.dart';
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 @SqliteSerializable()
 class ColumnTypeWithoutGenerator extends SqliteModel {

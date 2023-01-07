@@ -10,7 +10,7 @@ To use a repository seamlessly with a state management system like BLoCs without
 
 ```dart
 import 'package:brick_core/core.dart';
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 import 'package:my_app/brick/brick.g.dart' show restModelDictionary;
 
 // brick/repository.dart
