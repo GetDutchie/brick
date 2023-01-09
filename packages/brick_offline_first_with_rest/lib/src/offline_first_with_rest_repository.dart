@@ -24,29 +24,11 @@ import 'package:brick_sqlite_abstract/db.dart' show Migration;
 /// compiler/analyzer.
 abstract class OfflineFirstWithRestRepository
     extends OfflineFirstRepository<OfflineFirstWithRestModel> {
-  /// If the response returned from the client is one of these error codes, the request
-  /// **will not** be removed from the queue. For example, if the result of a request produces a
-  /// 404 status code response (such as in a Tunnel not found exception), the request will
-  /// be reattempted. If [upsert] response matches this status code, it **will not** throw
-  /// an exception.
-  ///
-  /// Defaults to `[404, 501, 502, 503, 504]`.
-  @protected
-  final List<int> reattemptForStatusCodes;
-
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
   @override
   // ignore: overridden_fields
   final RestProvider remoteProvider;
-
-  /// When the device is connected but the URL is unreachable, the response will
-  /// begin with "Tunnel" and ends with "not found".
-  ///
-  /// As this may be irrelevant to an offline first application, the end implementation may choose
-  /// to ignore the warning as the request will eventually be reattempted by the queue.
-  /// Defaults `false`.
-  final bool throwTunnelNotFoundExceptions;
 
   @protected
   late RestOfflineRequestQueue offlineRequestQueue;
@@ -64,10 +46,12 @@ abstract class OfflineFirstWithRestRepository
     /// pass `RestRequestSqliteCacheManager('brick_offline_queue.sqlite', databaseFactory)`
     /// as the value for `offlineQueueManager`
     required RequestSqliteCacheManager<http.Request> offlineQueueManager,
-    this.reattemptForStatusCodes = const [404, 501, 502, 503, 504],
+
+    /// This property is forwarded to `RestOfflineQueueClient` and assumes
+    /// its defaults
+    List<int>? reattemptForStatusCodes,
     required RestProvider restProvider,
     required SqliteProvider sqliteProvider,
-    this.throwTunnelNotFoundExceptions = false,
   })  : remoteProvider = restProvider,
         super(
           autoHydrate: autoHydrate,
@@ -118,11 +102,13 @@ abstract class OfflineFirstWithRestRepository
       return await super.delete<_Model>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
-      if (_ignoreTunnelException(e)) {
-        return false;
+
+      if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
+          policy == OfflineFirstDeletePolicy.requireRemote) {
+        throw OfflineFirstException(e);
       }
 
-      throw OfflineFirstException(e);
+      return false;
     }
   }
 
@@ -140,7 +126,9 @@ abstract class OfflineFirstWithRestRepository
       );
     } on RestException catch (e) {
       logger.warning('#get rest failure: $e');
-      if (_ignoreTunnelException(e)) {
+
+      if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
+          policy != OfflineFirstGetPolicy.awaitRemote) {
         return <_Model>[];
       }
 
@@ -180,16 +168,12 @@ abstract class OfflineFirstWithRestRepository
       return await super.upsert<_Model>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#upsert rest failure: $e');
-      if (_ignoreTunnelException(e)) {
-        return instance;
-      }
-
       // since we know we'll reattempt this request, an exception does not need to be reported
-      if (reattemptForStatusCodes.contains(e.response.statusCode) && !throwOnReattemptStatusCodes) {
-        return instance;
+      if (policy == OfflineFirstUpsertPolicy.requireRemote) {
+        throw OfflineFirstException(e);
       }
 
-      throw OfflineFirstException(e);
+      return instance;
     }
   }
 
@@ -207,8 +191,4 @@ abstract class OfflineFirstWithRestRepository
 
     return <_Model>[];
   }
-
-  bool _ignoreTunnelException(RestException exception) =>
-      RestOfflineQueueClient.isATunnelNotFoundResponse(exception.response) &&
-      !throwTunnelNotFoundExceptions;
 }
