@@ -102,9 +102,11 @@ abstract class OfflineFirstWithRestRepository
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
 
-      if (policy == OfflineFirstDeletePolicy.requireRemote) {
+      if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
+          policy == OfflineFirstDeletePolicy.requireRemote) {
         throw OfflineFirstException(e);
       }
+
       return false;
     }
   }
@@ -123,6 +125,7 @@ abstract class OfflineFirstWithRestRepository
       );
     } on RestException catch (e) {
       logger.warning('#get rest failure: $e');
+
       if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
           policy != OfflineFirstGetPolicy.awaitRemote) {
         return <_Model>[];
