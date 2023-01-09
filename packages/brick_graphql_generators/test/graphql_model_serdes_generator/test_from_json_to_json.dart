@@ -2,7 +2,6 @@ import 'package:brick_graphql/graphql.dart';
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
 Future<ToFromJson> _$ToFromJsonFromGraphql(Map<String, dynamic> data,

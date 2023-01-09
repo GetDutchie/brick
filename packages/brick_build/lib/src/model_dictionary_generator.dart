@@ -9,9 +9,7 @@ abstract class ModelDictionaryGenerator {
   final requiredImports = '';
 
   // ignore: constant_identifier_names
-  static const HEADER = '''
-// GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.''';
+  static const HEADER = '// GENERATED CODE DO NOT EDIT';
 
   const ModelDictionaryGenerator();
 
