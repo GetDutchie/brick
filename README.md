@@ -33,7 +33,7 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     mkdir -p lib/brick/adapters lib/brick/db;
     ```
 1. Add [models](docs/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
-1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
+1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner build` if you're not using Flutter) and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
 1. Extend [an existing repository](docs/data/repositories) or create your own:
     ```dart
     // lib/brick/repository.dart
