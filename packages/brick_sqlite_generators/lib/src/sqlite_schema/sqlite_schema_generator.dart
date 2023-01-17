@@ -25,14 +25,12 @@ class SqliteSchemaGenerator {
     final newSchema = _createNewSchema(library, fieldses);
     final existingMigrations = migrationGenerator.expandAllMigrations(library);
 
-    final parts =
-        existingMigrations.map((m) => "part '${m.version}.migration.dart';");
-    final migrationClasses =
-        existingMigrations.map((m) => 'const Migration${m.version}()');
+    final parts = existingMigrations.map((m) => "part '${m.version}.migration.dart';");
+    final migrationClasses = existingMigrations.map((m) => 'const Migration${m.version}()');
 
     final output = """
       // GENERATED CODE DO NOT EDIT
-      // This file should be version controlled
+      // This file should be version controlled mmmmm
       import 'package:brick_sqlite_abstract/db.dart';
       ${parts.join("\n")}
 
@@ -46,8 +44,7 @@ class SqliteSchemaGenerator {
   }
 
   /// Produce a migration from the difference between existing migrations and the latest schema
-  String? createMigration(LibraryReader library, List<SqliteFields> fieldses,
-      {int? version}) {
+  String? createMigration(LibraryReader library, List<SqliteFields> fieldses, {int? version}) {
     final newSchema = _createNewSchema(library, fieldses, version: version);
 
     return migrationGenerator.generate(
@@ -60,24 +57,19 @@ class SqliteSchemaGenerator {
 
   /// Create a schema from the contents of all annotated models.
   /// The schema version is incremented from the largest version of all annotated migrations.
-  Schema _createNewSchema(LibraryReader library, List<SqliteFields> fieldses,
-      {int? version}) {
-    final tables =
-        fieldses.fold<Set<SchemaTable>>(<SchemaTable>{}, (acc, fields) {
+  Schema _createNewSchema(LibraryReader library, List<SqliteFields> fieldses, {int? version}) {
+    final tables = fieldses.fold<Set<SchemaTable>>(<SchemaTable>{}, (acc, fields) {
       final iterableAssociations = fields.stableInstanceFields.where((f) {
         final checker = checkerForField(f);
         final annotation = fields.finder.annotationForField(f);
-        return checker.isIterable &&
-            checker.isArgTypeASibling &&
-            !annotation.ignore;
+        return checker.isIterable && checker.isArgTypeASibling && !annotation.ignore;
       });
 
       if (iterableAssociations.isNotEmpty) {
         for (final iterableSibling in iterableAssociations) {
           acc.add(_createJoinsTable(
             localTableName: fields.element.name,
-            foreignTableColumnDefinition:
-                fields.finder.annotationForField(iterableSibling),
+            foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
             checker: checkerForField(iterableSibling),
           ));
         }
@@ -98,8 +90,7 @@ class SqliteSchemaGenerator {
     required Sqlite foreignTableColumnDefinition,
     required SharedChecker checker,
   }) {
-    final foreignTableName =
-        checker.unFuturedArgType.getDisplayString(withNullability: false);
+    final foreignTableName = checker.unFuturedArgType.getDisplayString(withNullability: false);
 
     return SchemaTable(
         InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name!,
@@ -137,8 +128,7 @@ class SqliteSchemaGenerator {
               InsertForeignKey.joinsTableLocalColumnName(localTableName),
               InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
             ],
-            tableName: InsertForeignKey.joinsTableName(
-                foreignTableColumnDefinition.name!,
+            tableName: InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name!,
                 localTableName: localTableName),
             unique: true,
           )
@@ -186,8 +176,7 @@ class SqliteSchemaGenerator {
         return schemaColumn(column, checker: checker);
       }
 
-      if (checker.isSerializableViaJson(false))
-        return schemaColumn(column, checker: checker);
+      if (checker.isSerializableViaJson(false)) return schemaColumn(column, checker: checker);
 
       if (column.ignore ||
           !checker.isSerializable ||
@@ -211,8 +200,7 @@ class SqliteSchemaGenerator {
   }
 
   @visibleForOverriding
-  SharedChecker<SqliteModel> checkerForType(DartType type) =>
-      SharedChecker<SqliteModel>(type);
+  SharedChecker<SqliteModel> checkerForType(DartType type) => SharedChecker<SqliteModel>(type);
 
   @mustCallSuper
   SchemaColumn? schemaColumn(Sqlite column, {required SharedChecker checker}) {
@@ -242,12 +230,10 @@ class SqliteSchemaGenerator {
     } else if (checker.isSibling) {
       return SchemaColumn(
         InsertForeignKey.foreignKeyColumnName(
-            checker.unFuturedType.getDisplayString(withNullability: false),
-            column.name),
+            checker.unFuturedType.getDisplayString(withNullability: false), column.name),
         Column.integer,
         isForeignKey: true,
-        foreignTableName:
-            checker.unFuturedType.getDisplayString(withNullability: false),
+        foreignTableName: checker.unFuturedType.getDisplayString(withNullability: false),
         nullable: column.nullable,
         onDeleteCascade: column.onDeleteCascade,
         onDeleteSetDefault: column.onDeleteSetDefault,
@@ -274,14 +260,12 @@ class SqliteSchemaGenerator {
 
   @visibleForOverriding
   SchemaIndex? schemaIndex(Sqlite column, {required SharedChecker checker}) {
-    final isIterableAssociation =
-        (checker.isIterable && checker.isArgTypeASibling);
+    final isIterableAssociation = (checker.isIterable && checker.isArgTypeASibling);
 
     if (!column.ignore && column.index && !isIterableAssociation) {
       final name = checker.isSibling
           ? InsertForeignKey.foreignKeyColumnName(
-              checker.unFuturedType.getDisplayString(withNullability: false),
-              column.name)
+              checker.unFuturedType.getDisplayString(withNullability: false), column.name)
           : column.name!;
       return SchemaIndex(
         columns: [name],

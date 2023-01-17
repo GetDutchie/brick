@@ -3,8 +3,7 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Create a new [Migration] from the contents of all [ConnectOfflineFirstWithRest] models
-class NewMigrationBuilder<_ClassAnnotation>
-    extends SqliteBaseBuilder<_ClassAnnotation> {
+class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation> {
   @override
   final outputExtension = '.migration_builder.dart';
 
@@ -12,20 +11,20 @@ class NewMigrationBuilder<_ClassAnnotation>
 
   @override
   Future<void> build(BuildStep buildStep) async {
+    logger.info('******* TEST ********');
+
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final now = DateTime.now().toUtc();
-    final timestamp = [now.month, now.day, now.hour, now.minute, now.second]
-        .map(_padToTwo)
-        .toList()
-        .join('');
+    final timestamp =
+        [now.month, now.day, now.hour, now.minute, now.second].map(_padToTwo).toList().join('');
     final version = int.parse('${now.year}$timestamp');
-    final output = schemaGenerator.createMigration(libraryReader, fieldses,
-        version: version);
+    final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 
     if (output == null) {
       return;
     }
+    logger.info('******* TEST ********');
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -35,9 +34,10 @@ class NewMigrationBuilder<_ClassAnnotation>
     // because it uses the LibraryReader from before the migration is created.
     // this should be revisited in a few build versions to make this flow less brittle
     // and more predictable by using the same schema generator to do all the heavy lifting
-    final newSetPiece =
-        'final migrations = <Migration>{\n  Migration$version(),';
-    final newPart = "show Migratable;\npart '$version.migration.dart';";
+    final newSetPiece = 'final migrations = <Migration>{\n  Migration$version(),';
+    final newPart = "/db.dart';\npart '$version.migration.dart';";
+
+    logger.info('******* TEST ********');
 
     await replaceWithinFile(
       'db/schema.g.dart',
@@ -46,19 +46,19 @@ class NewMigrationBuilder<_ClassAnnotation>
     );
     await replaceWithinFile(
       'db/schema.g.dart',
-      'show Migratable;',
+      "/db.dart';\n",
       newPart,
     );
     await manuallyUpsertBrickFile('db/$version.migration.dart', output);
-    await buildStep.writeAsString(
-        buildStep.inputId.changeExtension(outputExtension), output);
+    await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
     await replaceWithinFile(
       'db/schema.g.dart',
       RegExp(r'final schema = Schema\(([\d]+|null),'),
       'final schema = Schema($version,',
     );
-    logStopwatch(
-        'Generated new migration (db/$version.migration.dart)', stopwatch);
+    logger.info('******* TEST ********');
+
+    logStopwatch('Generated new migration (db/$version.migration.dart)', stopwatch);
   }
 }
 
