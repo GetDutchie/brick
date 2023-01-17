@@ -1,6 +1,6 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart';

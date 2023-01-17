@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Remove `brick_sqlite_abstract`; import `brick_sqlite` directly
+* Remove `brick_offline_first_abstract`
+* Remove `brick_offline_first_with_rest_abstract`
+* Update references to renamed v3 files like `brick_rest/brick_rest.dart`
+
 ## 2.1.0
 
 * Upgrade analyzer to version 4

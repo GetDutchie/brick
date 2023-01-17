@@ -1,4 +1,4 @@
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 
 final output = r'''
 Future<GraphqlConstructorMemberFieldMismatch>

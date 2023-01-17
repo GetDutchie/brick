@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Remove `brick_sqlite_abstract`
+* Remove `brick_offline_first_abstract`
+* Remove `brick_offline_first_with_graphql_abstract`
+
 ## 1.3.0
 
 * Upgrade analyzer to version 4

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Rename `graphql.dart` to `brick_graphql.dart`
+
 ## 2.0.2
 
 * Remove `operationName`. This isn't exactly what it appears to be.

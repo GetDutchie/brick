@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 
 class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {

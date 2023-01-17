@@ -28,7 +28,7 @@ Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImport
       "import 'package:brick_offline_first/brick_offline_first.dart';",
       "import 'package:brick_sqlite/db.dart';",
       "import 'package:brick_core/query.dart';",
-      "import 'package:brick_graphql/graphql.dart' show RuntimeGraphqlDefinition;",
+      "import 'package:brick_graphql/brick_graphql.dart' show RuntimeGraphqlDefinition;",
       "import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart' show OfflineFirstWithGraphqlRepository, OfflineFirstWithGraphqlAdapter;",
     ]);
 Builder offlineFirstAdaptersBuilder(options) =>

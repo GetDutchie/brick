@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Rename main export file to `brick_rest.dart`
+
 ## 1.1.1
 
 * Upgrade `brick_core`

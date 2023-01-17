@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first_with_graphql/src/models/offline_first_with_graphql_model.dart';

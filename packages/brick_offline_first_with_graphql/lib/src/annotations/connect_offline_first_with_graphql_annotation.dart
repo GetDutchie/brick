@@ -1,4 +1,4 @@
-import 'package:brick_graphql/graphql.dart' show GraphqlSerializable;
+import 'package:brick_graphql/brick_graphql.dart' show GraphqlSerializable;
 import 'package:brick_sqlite/brick_sqlite.dart' show SqliteSerializable;
 
 /// An annotation used to specify a class to generate code for.

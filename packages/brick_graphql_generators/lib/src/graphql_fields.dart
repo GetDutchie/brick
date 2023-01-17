@@ -1,7 +1,7 @@
 // Generously inspired by JsonSerializable
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_build/generators.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:brick_graphql_generators/src/graphql_serializable_query_transformer_extended.dart';

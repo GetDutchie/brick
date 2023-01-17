@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Update `AggregateBuilder#requiredImports` docs
+
 ## 2.1.2
 
 * Remove `// This file should NOT be version controlled and should not be manually edited.` from adapter generator and model dictionary generator. Both file types can be version controlled; `manually edited` is redundant givent the preceding `GENERATED CODE DO NOT EDIT` warning

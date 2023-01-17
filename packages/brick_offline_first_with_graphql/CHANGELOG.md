@@ -1,5 +1,12 @@
 ## Unreleased
 
+* Remove `brick_sqlite_abstract`
+* Remove `brick_offline_first_abstract`
+* Remove `brick_offline_first_with_graphql_abstract`; add annotation `ConnectOfflineFirstWithGraphql` and class `OfflineFirstWithGraphqlModel` to this package
+* Rename main export file to `brick_offline_first_with_graphql.dart`; remove forwarded exports from other packages: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_graphql` package
+
+## 1.4.0
+
 * Update default of offline queue from 0 seconds to 5 seconds
 * Notify SQLite subscribers when a remote update has occurred.
 
