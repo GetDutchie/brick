@@ -1,5 +1,4 @@
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
 Future<KitchenSink> _$KitchenSinkFromRest(Map<String, dynamic> data,

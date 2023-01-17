@@ -3,7 +3,6 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 
 final output = r"""
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
 Future<OfflineFirstSerdesWithTypeArgument>

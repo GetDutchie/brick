@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   analyzer: ">=4.3.1 <5.0.0"
-  brick_build: ">=2.1.0 <3.0.0"
+  brick_build: ">=2.1.2 <3.0.0"
   brick_core: ^1.1.1
   brick_json_generators: ">=1.1.1 <2.0.0"
   brick_offline_first:

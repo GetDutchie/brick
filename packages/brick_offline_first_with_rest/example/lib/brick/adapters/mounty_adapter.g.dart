@@ -1,5 +1,4 @@
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
 Future<Mounty> _$MountyFromRest(Map<String, dynamic> data,

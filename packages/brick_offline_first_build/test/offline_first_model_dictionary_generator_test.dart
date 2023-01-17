@@ -9,7 +9,6 @@ void main() {
             .generate({'Person': 'person.dart', 'User': 'path/user.dart'});
         final output = r'''
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 // ignore: unused_import
 import 'dart:convert';
 import 'package:brick_sqlite/db.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;

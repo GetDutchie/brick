@@ -4,7 +4,6 @@ enum Casing { snake, camel }
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
-// This file should NOT be version controlled and should not be manually edited.
 part of '../brick.g.dart';
 
 Future<AllFieldTypes> _$AllFieldTypesFromSqlite(Map<String, dynamic> data,

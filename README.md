@@ -8,9 +8,9 @@ An intuitive way to work with persistent data in Dart.
 
 * Out-of-the-box [offline access](packages/brick_offline_first) to data
 * [Handle and hide](packages/brick_build) complex serialization/deserialization logic
-* Single [access point](https://engineering.dutchie.com/brick/#/data/repositories) and opinionated DSL
-* Automatic, [intelligently-generated migrations](packages/brick_sqlite)
-* Legible [querying interface](https://engineering.dutchie.com/brick/#/data/query)
+* Single [access point](docs/data/repositories) and opinionated DSL
+* Automatic, [intelligently-generated migrations](docs/sqlite.md#intelligent-migrations)
+* Legible [querying interface](docs/data/query)
 
 ## What is Brick?
 
@@ -32,9 +32,9 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     ```bash
     mkdir -p lib/brick/adapters lib/brick/db;
     ```
-1. Add [models](https://engineering.dutchie.com/brick/#/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
-1. Run `flutter pub run build_runner run` to generate your models (or `pub run build_runner run` if you're not using Flutter) and [sometimes migrations](https://engineering.dutchie.com/brick/#/sqlite?id=intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
-1. Extend [an existing repository](https://engineering.dutchie.com/brick/#/data/repositories) or create your own:
+1. Add [models](docs/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
+1. Run `flutter pub run build_runner build` to generate your models (or `pub run build_runner build` if you're not using Flutter) and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
+1. Extend [an existing repository](docs/data/repositories) or create your own:
     ```dart
     // lib/brick/repository.dart
     import 'package:brick_offline_first/brick_offline_first_with_rest.dart';
