@@ -1,4 +1,4 @@
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:test/test.dart';
 
 import '__helpers__/demo_model.dart';

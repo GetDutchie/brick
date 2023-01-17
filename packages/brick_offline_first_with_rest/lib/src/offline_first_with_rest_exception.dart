@@ -1,5 +1,5 @@
-import 'package:brick_offline_first/offline_first.dart';
-import 'package:brick_rest/rest.dart' show RestException;
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:brick_rest/brick_rest.dart' show RestException;
 
 class OfflineFirstWithRestException extends OfflineFirstException {
   OfflineFirstWithRestException(Exception originalError) : super(originalError);

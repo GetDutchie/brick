@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
+
 ## 2.1.1
 
 * Remove `FallThroughError` after Dart beta deprecation

@@ -1,4 +1,4 @@
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

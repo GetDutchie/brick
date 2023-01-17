@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Remove `brick_sqlite_abstract`
+* Remove `brick_offline_first_abstract`
+
 ## 2.1.2
 
 * Set default of 5 seconds for `RequestSqliteCacheManager#processingInterval`

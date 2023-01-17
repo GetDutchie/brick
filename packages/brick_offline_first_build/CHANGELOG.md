@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Remove `brick_sqlite_abstract`
+* Remove `brick_offline_first_abstract`
+* Update imports from `_abstract` packages
+
 ## 2.1.1
 
 * Respect enum `from<Provider>` constructors and `to<Provider>` methods

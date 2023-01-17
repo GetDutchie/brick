@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 
 /// This class and code is always generated.

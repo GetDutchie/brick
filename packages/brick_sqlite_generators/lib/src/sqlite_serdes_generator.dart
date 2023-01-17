@@ -1,8 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
-import 'package:brick_sqlite_abstract/db.dart' show InsertForeignKey;
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/db.dart' show InsertForeignKey;
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'sqlite_fields.dart';

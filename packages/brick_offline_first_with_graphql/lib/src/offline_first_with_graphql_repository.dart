@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_queue.dart';
+import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
+import 'package:brick_offline_first_with_graphql/src/models/offline_first_with_graphql_model.dart';
 import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_offline_first/offline_first.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:meta/meta.dart';
 import 'package:gql_exec/gql_exec.dart';
-
-import 'package:brick_sqlite_abstract/db.dart' show Migration;
 
 /// Ensures the [remoteProvider] is a [GraphqlProvider]. All requests to and
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app

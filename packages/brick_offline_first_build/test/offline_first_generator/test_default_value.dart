@@ -1,5 +1,6 @@
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
-import 'package:brick_rest/rest.dart' show Rest;
+import 'package:brick_rest/brick_rest.dart' show Rest;
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 final output = r'''
 Future<DefaultValue> _$DefaultValueFromTest(Map<String, dynamic> data,

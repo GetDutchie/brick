@@ -1,7 +1,7 @@
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
 
 const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
 const _createIndexChecker = TypeChecker.fromRuntime(CreateIndex);

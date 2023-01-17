@@ -1,5 +1,5 @@
-import 'package:brick_offline_first_abstract/abstract.dart';
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
 @ConnectOfflineFirstWithRest()
 class OfflineFirstGeneratorArguments extends OfflineFirstModel {}

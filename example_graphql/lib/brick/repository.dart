@@ -1,10 +1,10 @@
-import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
+import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 // run flutter pub run build_runner build before using this example
 import 'package:pizza_shoppe/brick/db/schema.g.dart';
 import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 
 class Repository extends OfflineFirstWithGraphqlRepository {

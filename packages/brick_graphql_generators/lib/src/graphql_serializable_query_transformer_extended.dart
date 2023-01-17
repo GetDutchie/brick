@@ -1,4 +1,4 @@
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 
 /// [GraphqlSerializable] has `queryOperationTransformer`,
 /// however, the function can't be re-interpreted by ConstantReader.

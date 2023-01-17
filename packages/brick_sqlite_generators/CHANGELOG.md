@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Replace `brick_sqlite_abstract/db.dart` with `brick_sqlite/db.dart`
+* Remove `brick_sqlite_abstract` package
+
 ## 2.1.4
 
 * Remove `FallThroughError` after Dart beta deprecation

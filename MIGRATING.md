@@ -1,5 +1,47 @@
 # Migrating Between Major Versions
 
+## Migrating from Brick 2 to Brick 3
+
+Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter dependency to [a "common" API](https://pub.dev/packages/sqflite_common).
+
+`brick_offline_first_with_graphql_abstract`, `brick_offline_first_with_rest_abstract`, `brick_sqlite_abstract`, and `brick_offline_first_abstract` will remain on pub.dev since [publishing is forever](https://dart.dev/tools/pub/publishing#publishing-is-forever). While this change is internal, parent packages no longer export the contents of child packages. Some adjustments may need to be made.
+
+### Breaking Changes
+
+* Primary package files are renamed in line with `pub.dev` standards.
+    ```shell
+    for FILE in $(find "lib" -type f -name "*.dart"); do
+      sed -i '' 's/package:brick_offline_first\/offline_first.dart/package:brick_offline_first\/brick_offline_first.dart/g' $FILE
+      sed -i '' 's/package:brick_offline_first_with_rest\/offline_first_with_rest.dart/package:brick_offline_first_with_rest\/brick_offline_first_with_rest.dart/g' $FILE
+      sed -i '' 's/package:brick_offline_first_with_graphql\/offline_first_with_graphql.dart/package:brick_offline_first_with_graphql\/brick_offline_first_with_graphql.dart/g' $FILE
+      sed -i '' 's/package:brick_rest\/rest.dart/package:brick_rest\/brick_rest.dart/g' $FILE
+      sed -i '' 's/package:brick_sqlite\/sqlite.dart/package:brick_sqlite\/brick_sqlite.dart/g' $FILE
+      sed -i '' 's/package:brick_graphql\/graphql.dart/package:brick_graphql\/brick_graphql.dart/g' $FILE
+    done
+    ```
+    * `brick_offline_first/offline_first.dart` is now `brick_offline_first/brick_offline_first.dart`
+    * `brick_offline_first_with_rest/offline_first_with_rest.dart` is now `brick_offline_first_with_rest/brick_offline_first_with_rest.dart`
+    * `brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart` is now `brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart`
+    * `brick_graphql/graphql.dart` is now `brick_rest/brick_graphql.dart`
+    * `brick_rest/rest.dart` is now `brick_rest/brick_rest.dart`
+    * `brick_sqlite/sqlite.dart` is now `brick_sqlite/brick_sqlite.dart`
+* `brick_sqlite_abstract/db.dart` is now `brick_sqlite/db.dart`. `brick_sqlite_abstract/sqlite_model.dart` and `brick_sqlite_abstract/annotations.dart` are now exported by `brick_sqlite/sqlite.dart`
+    ```shell
+    for FILE in $(find "lib" -type f -name "*.dart"); do
+      sed -i '' 's/package:brick_sqlite_abstract\/annotations.dart/package:brick_sqlite\/sqlite.dart/g' $FILE
+      sed -i '' 's/package:brick_sqlite_abstract\/sqlite_model.dart/package:brick_sqlite\/sqlite.dart/g' $FILE
+      sed -i '' 's/package:brick_sqlite_abstract\/db.dart/package:brick_sqlite\/db.dart/g' $FILE
+    done
+    ```
+
+### Brick Offline First with Graphql
+
+* `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` are no longer exported by `offline_first_with_graphql.dart`. Instead, import these file from `package:brick_graphql/brick_graphql.dart`
+
+### Brick Offline First with Rest
+
+* `FieldRename`, `Rest` `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+
 ## Migrating from Brick 1 to Brick 2
 
 Brick 2 focuses on Brick problems encountered at scale. While the primary refactor was the abstraction of domain-specific code from generalized domains, this major release also includes a new GraphQL domain, resolution of community pain points, and a few neat tricks.

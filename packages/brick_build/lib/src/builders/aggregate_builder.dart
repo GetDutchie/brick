@@ -18,7 +18,7 @@ import 'package:glob/glob.dart';
 class AggregateBuilder implements Builder {
   /// A list of packages that must be included for adapters and models to build:
   /// field-level annotation imports, helper classes, etc.
-  /// For example: `['import 'package:brick_sqlite_abstract/db.dart';']`
+  /// For example: `['import 'package:brick_sqlite/db.dart';']`
   final List<String> requiredImports;
 
   static final adapterFiles = Glob('lib/brick/adapters/*.g.dart');

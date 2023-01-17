@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_core/core.dart';
 
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 import '__mocks__.dart';
 
 RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) {

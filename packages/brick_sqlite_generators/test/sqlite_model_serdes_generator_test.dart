@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';

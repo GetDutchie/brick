@@ -1,14 +1,13 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:dart_style/dart_style.dart' as dart_style;
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
@@ -31,7 +30,7 @@ class SqliteSchemaGenerator {
     final output = """
       // GENERATED CODE DO NOT EDIT
       // This file should be version controlled
-      import 'package:brick_sqlite_abstract/db.dart';
+      import 'package:brick_sqlite/db.dart';
       ${parts.join("\n")}
 
       /// All intelligently-generated migrations from all `@Migratable` classes on disk

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';

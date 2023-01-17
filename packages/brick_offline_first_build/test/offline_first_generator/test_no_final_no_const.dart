@@ -1,4 +1,4 @@
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
 final output = r'''
 Future<NoFinalNoConst> _$NoFinalNoConstFromTest(Map<String, dynamic> data,

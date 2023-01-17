@@ -13,10 +13,13 @@ dependencies:
   analyzer: ">=4.3.1 <5.0.0"
   brick_build: ">=2.1.2 <3.0.0"
   brick_core: ^1.1.1
-  brick_offline_first_abstract: ^2.0.0
   brick_json_generators: ">=1.1.1 <2.0.0"
-  brick_sqlite_abstract: ">=1.1.0 <2.0.0"
-  brick_sqlite_generators: ">=2.1.3 <3.0.0"
+  brick_offline_first:
+    path: ../brick_offline_first
+  brick_sqlite:
+    path: ../brick_sqlite
+  brick_sqlite_generators:
+    path: ../brick_sqlite_generators
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
@@ -27,9 +30,10 @@ dependencies:
 dev_dependencies:
   brick_build_test:
     path: ../brick_build_test
-  brick_offline_first_with_rest_abstract:
-    path: ../brick_offline_first_with_rest_abstract
-  brick_rest: any
+  brick_offline_first_with_rest:
+    path: ../brick_offline_first_with_rest
+  brick_rest:
+    path: ../brick_rest
   brick_rest_generators:
     path: ../brick_rest_generators
   build_verify: ^2.0.0

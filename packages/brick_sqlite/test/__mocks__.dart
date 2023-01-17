@@ -1,5 +1,11 @@
-import 'package:brick_sqlite_abstract/db.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
+import 'package:brick_sqlite/src/sqlite_adapter.dart';
+import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
 import '__mocks__/demo_model.dart';
 import '__mocks__/demo_model_adapter.dart';
 import '__mocks__/demo_model_assoc_adapter.dart';

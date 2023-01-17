@@ -1,6 +1,6 @@
-import 'package:brick_sqlite_abstract/db.dart' show InsertTable;
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:test/test.dart';
 import 'package:brick_core/core.dart';
 

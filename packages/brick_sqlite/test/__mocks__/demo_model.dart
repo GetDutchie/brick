@@ -1,5 +1,4 @@
-import 'package:brick_sqlite/sqlite.dart';
-import 'package:brick_sqlite_abstract/annotations.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 class DemoModelAssoc extends SqliteModel {
   DemoModelAssoc({this.name});

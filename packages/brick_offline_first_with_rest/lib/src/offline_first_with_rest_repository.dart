@@ -1,16 +1,15 @@
+import 'package:brick_offline_first_with_rest/src/models/offline_first_with_rest_model.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_request_queue.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_offline_first/offline_first.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first/offline_queue.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import 'package:brick_rest/rest.dart' show RestProvider, RestException;
-import 'package:brick_offline_first_with_rest_abstract/abstract.dart'
-    show OfflineFirstWithRestModel;
-import 'package:brick_sqlite_abstract/db.dart' show Migration;
+import 'package:brick_rest/brick_rest.dart' show RestProvider, RestException;
 
 /// Ensures the [remoteProvider] is a [RestProvider]. All requests to and
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app

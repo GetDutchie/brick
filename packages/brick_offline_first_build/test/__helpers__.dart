@@ -1,6 +1,4 @@
-// ignore_for_file: overridden_fields
-
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_rest_generators/generators.dart';
 import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
 import 'package:test/test.dart';
@@ -9,7 +7,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 
 final _generator = OfflineFirstWithTestGenerator();
 final folder = 'offline_first_generator';

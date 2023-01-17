@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:brick_core/query.dart';
+import 'package:brick_offline_first/src/offline_first_policy.dart';
 import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

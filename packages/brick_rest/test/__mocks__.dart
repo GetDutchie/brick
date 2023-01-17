@@ -1,6 +1,6 @@
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 
 class DemoRestModel extends RestModel {
   DemoRestModel(this.name);

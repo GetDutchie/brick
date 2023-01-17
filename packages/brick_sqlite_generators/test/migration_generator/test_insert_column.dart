@@ -1,4 +1,4 @@
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
 
 const version = 1;
 

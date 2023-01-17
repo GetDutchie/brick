@@ -12,9 +12,8 @@ environment:
 
 dependencies:
   brick_core: ^1.1.1
-  brick_offline_first_abstract: ^2.0.0
-  brick_sqlite: ">=2.0.0 <3.0.0"
-  brick_sqlite_abstract: ">=1.1.0 <2.0.0"
+  brick_sqlite:
+    path: ../brick_sqlite
   collection: ">=1.15.0 <2.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   http: ^0.13.4

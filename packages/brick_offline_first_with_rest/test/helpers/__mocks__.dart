@@ -1,11 +1,11 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first_with_rest/offline_first_with_rest.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:http/http.dart' as http;
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/sqlite.dart';
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
-import 'package:brick_sqlite_abstract/db.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

@@ -1,6 +1,10 @@
 ## Unreleased
 
 * Remove extraneous properties and rely on remote policy
+* Remove `brick_sqlite_abstract`
+* Remove `brick_offline_first_abstract`
+* Remove `brick_offline_first_with_rest_abstract`; add annotation `ConnectOfflineFirstWithRest` and class `OfflineFirstWithRestModel` to this package
+* Rename main export file to `brick_offline_first_with_rest.dart`: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_rest` package
 
 ## 1.1.1
 
@@ -23,6 +27,6 @@
 
 ## 0.0.1
 
-* **BREAKING CHANGE** `SqliteProvider` and `Query` are no longer exported `offline_first_with_rest.dart`. Please import from `package:brick_sqlite/sqlite.dart` and `package:brick_core/query.dart` respectively.
+* **BREAKING CHANGE** `SqliteProvider` and `Query` are no longer exported `offline_first_with_rest.dart`. Please import from `package:brick_sqlite/db.dart` and `package:brick_core/query.dart` respectively.
 * Create package from `brick_offline_first`
 * Initial

@@ -1,9 +1,7 @@
 import 'package:brick_build/generators.dart' show SharedChecker;
-import 'package:brick_offline_first_abstract/offline_first_serdes.dart';
 import 'package:source_gen/source_gen.dart' show TypeChecker;
 import 'package:analyzer/dart/element/type.dart';
-
-import 'package:brick_offline_first_abstract/offline_first_model.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 
 const _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
 

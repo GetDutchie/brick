@@ -1,7 +1,5 @@
 import 'package:brick_core/core.dart' show Query;
-import 'package:brick_sqlite/sqlite.dart';
-// ignore: unused_import, unused_shown_name
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
 import 'demo_model.dart';

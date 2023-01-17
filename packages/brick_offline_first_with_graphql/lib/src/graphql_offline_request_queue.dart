@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:brick_offline_first/offline_queue.dart';
-import 'package:brick_offline_first_with_graphql/offline_first_with_graphql.dart';
+import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 

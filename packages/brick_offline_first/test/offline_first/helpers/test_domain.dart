@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first_abstract/abstract.dart';
+import 'package:brick_offline_first/src/models/offline_first_model.dart';
+import 'package:brick_offline_first/src/offline_first_adapter.dart';
+import 'package:brick_offline_first/src/offline_first_repository.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/sqlite.dart';
-import 'package:brick_sqlite_abstract/db.dart';
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 import '__mocks__.dart';
 

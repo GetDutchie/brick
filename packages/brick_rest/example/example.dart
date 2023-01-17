@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_rest/rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 
 /// This class and code is always generated.
 /// It is included here as an illustration.

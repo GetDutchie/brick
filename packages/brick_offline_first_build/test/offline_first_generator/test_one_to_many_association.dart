@@ -1,6 +1,7 @@
-import 'package:brick_offline_first_abstract/abstract.dart';
-import 'package:brick_offline_first_with_rest_abstract/annotations.dart';
-import 'package:brick_rest/rest.dart' show Rest;
+import 'package:brick_offline_first/brick_offline_first.dart' show OfflineFirstModel;
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_rest/brick_rest.dart';
 
 @ConnectOfflineFirstWithRest()
 class OneToManyAssociation extends OfflineFirstModel {

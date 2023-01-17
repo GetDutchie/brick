@@ -1,11 +1,12 @@
+import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:meta/meta.dart' show protected;
 import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
-import 'package:brick_sqlite_abstract/db.dart';
 
 import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
 import 'package:brick_sqlite/src/sqlite_adapter.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
-import 'package:brick_sqlite_abstract/sqlite_model.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
