@@ -11,8 +11,6 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    logger.info('******* TEST ********');
-
     final libraryReader = LibraryReader(await buildStep.inputLibrary);
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final now = DateTime.now().toUtc();
@@ -24,7 +22,6 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     if (output == null) {
       return;
     }
-    logger.info('******* TEST ********');
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -36,8 +33,6 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     // and more predictable by using the same schema generator to do all the heavy lifting
     final newSetPiece = 'final migrations = <Migration>{\n  Migration$version(),';
     final newPart = "/db.dart';\npart '$version.migration.dart';";
-
-    logger.info('******* TEST ********');
 
     await replaceWithinFile(
       'db/schema.g.dart',
@@ -56,7 +51,6 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
       RegExp(r'final schema = Schema\(([\d]+|null),'),
       'final schema = Schema($version,',
     );
-    logger.info('******* TEST ********');
 
     logStopwatch('Generated new migration (db/$version.migration.dart)', stopwatch);
   }

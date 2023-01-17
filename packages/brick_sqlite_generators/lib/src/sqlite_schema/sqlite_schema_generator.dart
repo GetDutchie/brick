@@ -30,7 +30,7 @@ class SqliteSchemaGenerator {
 
     final output = """
       // GENERATED CODE DO NOT EDIT
-      // This file should be version controlled mmmmm
+      // This file should be version controlled
       import 'package:brick_sqlite_abstract/db.dart';
       ${parts.join("\n")}
 
