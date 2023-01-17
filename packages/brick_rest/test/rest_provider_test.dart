@@ -20,16 +20,14 @@ void main() {
       test('simple', () async {
         final provider = generateProvider('[{"name": "Thomas"}]');
 
-        final m = await provider.get<DemoRestModel>();
-        final testable = m.first;
-        expect(testable.name, 'Thomas');
+        final instance = await provider.get<DemoRestModel>();
+        expect(instance.first.name, 'Thomas');
       });
 
       test('without specifying a top level key', () async {
         final provider = generateProvider('{"people": [{"name": "Thomas"}]}');
-        final m = await provider.get<DemoRestModel>();
-        final testable = m.first;
-        expect(testable.name, 'Thomas');
+        final instance = await provider.get<DemoRestModel>();
+        expect(instance.first.name, 'Thomas');
       });
     });
 
@@ -38,9 +36,8 @@ void main() {
       final provider = generateProvider('[{"name": "Guy"}]');
 
       provider.defaultHeaders = headers;
-      final m = await provider.get<DemoRestModel>();
-      final testable = m.first;
-      expect(testable.name, 'Guy');
+      final instance = await provider.get<DemoRestModel>();
+      expect(instance.first.name, 'Guy');
     });
 
     group('#upsert', () {
@@ -155,14 +152,14 @@ void main() {
     final provider = generateProvider('');
 
     test('#toRest', () async {
-      final m = DemoRestModel('Thomas');
-      final payload = await DemoRestModelAdapter().toRest(m, provider: provider);
+      final instance = DemoRestModel('Thomas');
+      final payload = await DemoRestModelAdapter().toRest(instance, provider: provider);
       expect(payload, containsPair('name', 'Thomas'));
     });
 
     test('#fromRest', () async {
-      final m = DemoRestModel('Thomas');
-      final payload = await DemoRestModelAdapter().toRest(m, provider: provider);
+      final instance = DemoRestModel('Thomas');
+      final payload = await DemoRestModelAdapter().toRest(instance, provider: provider);
       final newModel = await DemoRestModelAdapter().fromRest(payload, provider: provider);
       expect(newModel.name, 'Thomas');
     });

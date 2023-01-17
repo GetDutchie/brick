@@ -5,3 +5,4 @@ export 'package:brick_rest/src/rest_adapter.dart';
 export 'package:brick_rest/src/rest_model_dictionary.dart';
 export 'package:brick_rest/src/rest_model.dart';
 export 'package:brick_rest/src/rest_provider.dart';
+export 'package:brick_rest/src/rest_request_transformer.dart';
