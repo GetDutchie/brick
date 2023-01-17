@@ -14,7 +14,8 @@ dependencies:
   brick_build: ">=2.1.2 <3.0.0"
   brick_offline_first:
     path: ../brick_offline_first
-  brick_offline_first_build: ">=2.0.0 <3.0.0"
+  brick_offline_first_build:
+    path: ../brick_offline_first_build
   brick_offline_first_with_rest:
     path: ../brick_offline_first_with_rest
   brick_rest:
@@ -23,7 +24,8 @@ dependencies:
     path: ../brick_rest_generators
   brick_sqlite:
     path: ../brick_sqlite
-  brick_sqlite_generators: ">=2.0.2 <3.0.0"
+  brick_sqlite_generators:
+    path: ../brick_sqlite_generators
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
