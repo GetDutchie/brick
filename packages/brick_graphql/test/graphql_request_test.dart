@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/graphql.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/graphql_request.dart';
 import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
