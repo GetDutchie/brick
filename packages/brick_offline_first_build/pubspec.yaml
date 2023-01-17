@@ -18,7 +18,8 @@ dependencies:
     path: ../brick_offline_first
   brick_sqlite:
     path: ../brick_sqlite
-  brick_sqlite_generators: ">=2.1.3 <3.0.0"
+  brick_sqlite_generators:
+    path: ../brick_sqlite_generators
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
