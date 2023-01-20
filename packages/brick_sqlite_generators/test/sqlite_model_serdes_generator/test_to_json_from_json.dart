@@ -77,6 +77,12 @@ class ToFromJsonAdapter extends SqliteAdapter<ToFromJson> {
       columnName: 'assoc_iterable_nullable',
       iterable: true,
       type: String,
+    ),
+    'ignoredIterable': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'ignored_iterable',
+      iterable: true,
+      type: String,
     )
   };
   @override
