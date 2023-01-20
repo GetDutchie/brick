@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.2.0
+
+* If a field is annotated `@Sqlite(ignore: true)` do not create a column for it.
+
 ## 2.1.4
 
 * Remove `FallThroughError` after Dart beta deprecation

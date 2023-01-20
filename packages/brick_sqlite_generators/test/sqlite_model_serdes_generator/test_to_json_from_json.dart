@@ -118,10 +118,14 @@ class ToFromJson {
   final List<ToFromJsonAssoc> assocIterable;
   final List<ToFromJsonAssoc>? assocIterableNullable;
 
+  @Sqlite(ignore: true)
+  final List<ToFromJsonAssoc> ignoredIterable;
+
   ToFromJson({
     required this.assoc,
     required this.assocNullable,
     required this.assocIterable,
     required this.assocIterableNullable,
+    required this.ignoredIterable,
   });
 }

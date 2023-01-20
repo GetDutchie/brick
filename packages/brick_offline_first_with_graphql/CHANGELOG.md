@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.4.0
+
 * Update default of offline queue from 0 seconds to 5 seconds
 * Notify SQLite subscribers when a remote update has occurred.
 
