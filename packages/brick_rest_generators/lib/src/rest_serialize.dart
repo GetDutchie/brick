@@ -14,7 +14,7 @@ class RestSerialize extends RestSerdesGenerator with JsonSerialize<RestModel, Re
 
   @override
   List<String> get instanceFieldsAndMethods {
-    var toKey = (fields as RestFields).config?.toKey?.trim();
+    var toKey = (fields as RestFields).config?.topLevelKey?.trim();
 
     if (toKey != null) toKey = "'$toKey'";
 

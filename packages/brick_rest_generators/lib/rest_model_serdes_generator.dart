@@ -33,8 +33,8 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
       nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
       fieldRename: fieldRename ?? RestSerializable.defaults.fieldRename,
       endpoint: withinConfigKey('endpoint')?.stringValue ?? RestSerializable.defaults.endpoint,
-      fromKey: withinConfigKey('fromKey')?.stringValue ?? RestSerializable.defaults.fromKey,
-      toKey: withinConfigKey('toKey')?.stringValue ?? RestSerializable.defaults.toKey,
+      topLevelKey:
+          withinConfigKey('topLevelKey')?.stringValue ?? RestSerializable.defaults.topLevelKey,
     );
   }
 
