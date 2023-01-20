@@ -31,17 +31,17 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     // because it uses the LibraryReader from before the migration is created.
     // this should be revisited in a few build versions to make this flow less brittle
     // and more predictable by using the same schema generator to do all the heavy lifting
-    final newSetPiece = 'final Set<Migration> migrations = <Migration>{\n  Migration$version(),';
-    final newPart = "show Migratable;\npart '$version.migration.dart';";
+    final newSetPiece = 'final migrations = <Migration>{\n  Migration$version(),';
+    final newPart = "/db.dart';\npart '$version.migration.dart';";
 
     await replaceWithinFile(
       'db/schema.g.dart',
-      'final Set<Migration> migrations = <Migration>{',
+      'final migrations = <Migration>{',
       newSetPiece,
     );
     await replaceWithinFile(
       'db/schema.g.dart',
-      'show Migratable;',
+      "/db.dart';\n",
       newPart,
     );
     await manuallyUpsertBrickFile('db/$version.migration.dart', output);
@@ -51,6 +51,7 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
       RegExp(r'final schema = Schema\(([\d]+|null),'),
       'final schema = Schema($version,',
     );
+
     logStopwatch('Generated new migration (db/$version.migration.dart)', stopwatch);
   }
 }
