@@ -98,10 +98,12 @@ class RestConfigEndpointAdapter
 }
 ''';
 
+class EndpointCreator {}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: "{ return 'anEndpoint'; }",
     nullable: false,
+    requestTransformer: EndpointCreator.new,
   ),
 )
 class RestConfigEndpoint extends OfflineFirstModel {
