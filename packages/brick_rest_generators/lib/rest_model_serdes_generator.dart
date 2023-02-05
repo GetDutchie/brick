@@ -2,6 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_rest_generators/src/rest_deserialize.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
+import 'package:brick_rest_generators/src/rest_serializable_extended.dart';
 import 'package:brick_rest_generators/src/rest_serialize.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:brick_rest/brick_rest.dart' show RestSerializable, FieldRename;
@@ -20,21 +21,24 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
   }) : super(element, reader, configKey: 'restConfig');
 
   @override
-  RestSerializable get config {
+  RestSerializableExtended get config {
     if (reader.peek(configKey) == null) {
-      return RestSerializable.defaults;
+      return RestSerializableExtended();
     }
 
     final fieldRenameIndex =
         withinConfigKey('fieldRename')?.objectValue.getField('index')?.toIntValue();
     final fieldRename = fieldRenameIndex != null ? FieldRename.values[fieldRenameIndex] : null;
+    final function = withinConfigKey('restRequest')?.objectValue.toFunctionValue();
+    var functionName = function?.enclosingElement3.name;
+    if (function is ConstructorElement) {
+      functionName = '$functionName.new';
+    }
 
-    return RestSerializable(
-      nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
+    return RestSerializableExtended(
       fieldRename: fieldRename ?? RestSerializable.defaults.fieldRename,
-      endpoint: withinConfigKey('endpoint')?.stringValue ?? RestSerializable.defaults.endpoint,
-      topLevelKey:
-          withinConfigKey('topLevelKey')?.stringValue ?? RestSerializable.defaults.topLevelKey,
+      nullable: withinConfigKey('nullable')?.boolValue ?? RestSerializable.defaults.nullable,
+      requestName: functionName,
     );
   }
 

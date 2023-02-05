@@ -1,3 +1,4 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_rest/brick_rest.dart';
@@ -5,15 +6,17 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/hat.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/mounty.dart';
 
+class KitchenSinkRequest extends RestRequestTransformer {
+  final get = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sinks');
+
+  final upsert = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sink');
+
+  KitchenSinkRequest(Query? query, Model? instance) : super(query, instance);
+}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: "=> '/my-path';",
-    // These are NOT necessary unless other properties are present
-    // Brick will find the first top-level property if there are multiple properties
-    // in the return response from REST
-    fromKey: 'kitchen_sinks',
-    // Only necessary if the endpoint expects the payload nested within a property key
-    toKey: 'kitchen_sink',
+    requestTransformer: KitchenSinkRequest.new,
   ),
 )
 class KitchenSink extends OfflineFirstWithRestModel {

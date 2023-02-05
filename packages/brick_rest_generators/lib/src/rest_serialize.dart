@@ -11,13 +11,4 @@ class RestSerialize extends RestSerdesGenerator with JsonSerialize<RestModel, Re
     RestFields fields, {
     required String repositoryName,
   }) : super(element, fields, repositoryName: repositoryName);
-
-  @override
-  List<String> get instanceFieldsAndMethods {
-    var toKey = (fields as RestFields).config?.topLevelKey?.trim();
-
-    if (toKey != null) toKey = "'$toKey'";
-
-    return ['@override\nfinal String? toKey = $toKey;'];
-  }
 }

@@ -14,17 +14,10 @@ class RestDeserialize extends RestSerdesGenerator with JsonDeserialize<RestModel
 
   @override
   List<String> get instanceFieldsAndMethods {
-    var endpoint = (fields as RestFields).config?.endpoint?.trim() ?? "=> ''";
-    var fromKey = (fields as RestFields).config?.fromKey?.trim();
-    if (!endpoint.endsWith(';') && !endpoint.endsWith('}')) {
-      endpoint += ';';
-    }
-
-    if (fromKey != null) fromKey = "'$fromKey'";
+    final config = (fields as RestFields).config;
 
     return [
-      '@override\nString? restEndpoint({query, instance}) $endpoint',
-      '@override\nfinal String? fromKey = $fromKey;',
+      if (config?.requestName != null) '@override\nfinal restRequest = ${config!.requestName};'
     ];
   }
 }
