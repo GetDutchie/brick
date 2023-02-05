@@ -1,6 +1,6 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest/brick_rest.dart' show RestSerializable;
+import 'package:brick_rest/brick_rest.dart' show RestRequestTransformer, RestSerializable;
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -98,7 +98,9 @@ class RestConfigEndpointAdapter
 }
 ''';
 
-class EndpointCreator {}
+class EndpointCreator extends RestRequestTransformer {
+  EndpointCreator(super.query, super.instance);
+}
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
