@@ -32,11 +32,6 @@ abstract class OfflineFirstWithGraphqlRepository
   @protected
   late final GraphqlOfflineRequestQueue offlineRequestQueue;
 
-  @protected
-  @visibleForTesting
-  final Map<Type, Map<Query?, StreamController<List<OfflineFirstWithGraphqlModel>>>> subscriptions =
-      {};
-
   OfflineFirstWithGraphqlRepository({
     bool? autoHydrate,
     required GraphqlProvider graphqlProvider,
@@ -88,9 +83,7 @@ abstract class OfflineFirstWithGraphqlRepository
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
   }) async {
     try {
-      final result = await super.delete<_Model>(instance, policy: policy, query: query);
-      await notifySubscriptionsWithLocalData<_Model>(notifyWhenEmpty: true);
-      return result;
+      return await super.delete<_Model>(instance, policy: policy, query: query);
     } on GraphQLError catch (e) {
       logger.warning('#delete graphql failure: $e');
 
@@ -161,44 +154,6 @@ abstract class OfflineFirstWithGraphqlRepository
     await offlineRequestQueue.requestManager.migrate();
   }
 
-  /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
-  @protected
-  @visibleForTesting
-  Future<void> notifySubscriptionsWithLocalData<_Model extends OfflineFirstWithGraphqlModel>(
-      {bool notifyWhenEmpty = true}) async {
-    final queriesControllers = subscriptions[_Model]?.entries;
-    if (queriesControllers?.isEmpty ?? true) return;
-
-    for (final queryController in queriesControllers!) {
-      final query = queryController.key;
-      final controller = queryController.value;
-      if (controller.isClosed || controller.isPaused) continue;
-
-      if (query == null || memoryCacheProvider.canFind<_Model>(query)) {
-        final results = memoryCacheProvider.get<_Model>(query: query);
-        if (!controller.isClosed && (results?.isNotEmpty ?? false)) controller.add(results!);
-      }
-
-      final existsInSqlite = await sqliteProvider.exists<_Model>(query: query, repository: this);
-      if (existsInSqlite) {
-        final results = await sqliteProvider.get<_Model>(query: query, repository: this);
-        if (!controller.isClosed) controller.add(results);
-      } else if (notifyWhenEmpty) {
-        if (!controller.isClosed) controller.add(<_Model>[]);
-      }
-    }
-  }
-
-  @override
-  Future<List<_Model>> storeRemoteResults<_Model extends OfflineFirstWithGraphqlModel>(
-    List<_Model> models, {
-    bool shouldNotify = true,
-  }) async {
-    final results = await super.storeRemoteResults<_Model>(models);
-    if (shouldNotify) await notifySubscriptionsWithLocalData<_Model>();
-    return results;
-  }
-
   /// Listen for streaming changes from the [remoteProvider]. Data is returned in complete batches.
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData].
@@ -206,6 +161,7 @@ abstract class OfflineFirstWithGraphqlRepository
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
+  @override
   Stream<List<_Model>> subscribe<_Model extends OfflineFirstWithGraphqlModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -262,9 +218,7 @@ abstract class OfflineFirstWithGraphqlRepository
     Query? query,
   }) async {
     try {
-      final result = await super.upsert<_Model>(instance, policy: policy, query: query);
-      await notifySubscriptionsWithLocalData<_Model>();
-      return result;
+      return await super.upsert<_Model>(instance, policy: policy, query: query);
     } on GraphQLError catch (e) {
       logger.warning('#upsert graphql failure: $e');
 
