@@ -34,7 +34,7 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
-  brickNewMigrationBuilder:
+  brickSchemaBuilder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstSchemaBuilder", "offlineFirstNewMigrationBuilder"]
     build_extensions: {".brick_aggregate.dart": [".brick_aggregate.migration_build_offline_first.dart"]}
