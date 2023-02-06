@@ -110,12 +110,6 @@ class OneToManyAssociationAdapter
   OneToManyAssociationAdapter();
 
   @override
-  String? restEndpoint({query, instance}) => '';
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
-  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
