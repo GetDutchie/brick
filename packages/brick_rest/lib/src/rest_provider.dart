@@ -201,7 +201,7 @@ class RestProvider implements Provider<RestModel> {
     Query? query,
     String? body,
   }) async {
-    final url = Uri.parse(request.url!);
+    final url = Uri.parse([baseEndpoint, request.url!].join(''));
     final method = (query?.providerArgs ?? {})['request'] ?? request.method ?? operation.httpMethod;
     final headers = headersForQuery(query, request.headers);
 

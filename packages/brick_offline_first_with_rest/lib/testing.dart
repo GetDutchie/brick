@@ -98,8 +98,7 @@ class StubOfflineFirstWithRest {
 
         final response = responses.firstWhereOrNull((e) {
           final methodMatches = e.method == reqMethodToEnum || e.method == StubHttpMethod.any;
-          final urlMatches = req.url == Uri.parse('$baseEndpoint/${e.endpoint}') ||
-              req.url == Uri.parse('/${e.endpoint}');
+          final urlMatches = req.url == Uri.parse('$baseEndpoint/${e.endpoint}');
           return methodMatches && urlMatches;
         });
         if (response != null) {
