@@ -314,7 +314,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     memoryCacheProvider.reset();
   }
 
-  /// Listen for streaming changes when the [sqliteProvider] is `upsert`ed.
+  /// Listen for streaming changes when the [sqliteProvider] is `upsert`ed. This method utilizes [remoteProvider]'s [get].
   ///
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData]. Because only local data
