@@ -1,27 +1,13 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.request.dart';
+import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: r'''{
-    if (query?.action == QueryAction.upsert) {
-      return "/customers";
-    }
-
-    if (query?.action == QueryAction.get && query?.where != null) {
-      final byId = Where.firstByField('id', query?.where);
-      // member endpoint
-      if (byId?.value != null) {
-        return "/customer/${byId!.value}";
-      }
-    }
-
-    if (query?.action == QueryAction.get) {
-      return "/customers";
-    }
-
-    return null;
-  }''',
+    requestTransformer: CustomerRequestTransformer.new,
   ),
 )
 class Customer extends OfflineFirstWithRestModel {

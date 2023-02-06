@@ -1,26 +1,11 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.request.dart';
+import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: r'''{
-    if (query?.action == QueryAction.upsert) {
-      return "/pizzas";
-    }
-
-    if (query?.action == QueryAction.get && query?.where != null) {
-      final byId = Where.firstByField('id', query!.where);
-      // member endpoint
-      if (byId?.value != null) {
-        return "/pizza/${byId!.value}";
-      }
-    }
-
-    if (query?.action == QueryAction.get) {
-      return "/pizzas";
-    }
-
-    return null;
-  }''',
+    requestTransformer: PizzaRequestTransformer.new,
   ),
 )
 class Pizza extends OfflineFirstWithRestModel {

@@ -1,3 +1,4 @@
+import 'package:brick_core/query.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/brick_rest.dart';
@@ -22,6 +23,34 @@ Future<Map<String, dynamic>> _$DemoRestModelToRest(DemoRestModel instance) async
   return val;
 }
 
+class DemoRestRequestTransformer extends RestRequestTransformer {
+  // A production code base would not forward to another operation
+  // but for testing this is convenient
+  @override
+  RestRequest get delete => get;
+
+  @override
+  RestRequest get get {
+    final url = () {
+      if (query != null &&
+          query!.providerArgs['limit'] != null &&
+          query!.providerArgs['limit'] > 1) {
+        return '/people';
+      }
+
+      return '/person';
+    }();
+    return RestRequest(url: url);
+  }
+
+  // A production code base would not forward to another operation
+  // but for testing this is convenient
+  @override
+  RestRequest get upsert => get;
+
+  const DemoRestRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
 /// Construct a [DemoRestModel] for the [RestRepository]
 class DemoRestModelAdapter extends RestAdapter<DemoRestModel> {
   @override
@@ -30,19 +59,9 @@ class DemoRestModelAdapter extends RestAdapter<DemoRestModel> {
   @override
   Future<Map<String, dynamic>> toRest(instance, {required provider, repository}) async =>
       await _$DemoRestModelToRest(instance);
-  @override
-  String restEndpoint({query, instance}) {
-    if (query != null && query.providerArgs['limit'] != null && query.providerArgs['limit'] > 1) {
-      return '/people';
-    }
-
-    return '/person';
-  }
 
   @override
-  final fromKey = null;
-  @override
-  final toKey = null;
+  final restRequest = DemoRestRequestTransformer.new;
 }
 
 final Map<Type, RestAdapter<RestModel>> _restMappings = {

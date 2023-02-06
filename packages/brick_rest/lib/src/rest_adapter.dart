@@ -1,28 +1,28 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_rest/src/rest_request_transformer.dart';
 import 'package:brick_rest/src/rest_provider.dart';
 import 'package:brick_rest/src/rest_model.dart';
 
+class _DefaultRestTransformer extends RestRequestTransformer {
+  const _DefaultRestTransformer(Query? query, RestModel? instance) : super(null, null);
+}
+
 /// Constructors that convert app models to and from REST
-abstract class RestAdapter<_Model extends Model> implements Adapter<_Model> {
-  /// Retrieves data under this key when deserializing from REST
-  String? get fromKey;
-
-  /// Submits data under this key when serializing to REST
-  String? get toKey;
-
+abstract class RestAdapter<_Model extends RestModel> implements Adapter<_Model> {
   Future<_Model> fromRest(
     Map<String, dynamic> input, {
     required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });
+
+  /// The endpoint path to access provided a query. Must include a leading slash.
+  RestRequestTransformer Function(Query?, _Model?)? get restRequest => _DefaultRestTransformer.new;
+
   Future<Map<String, dynamic>> toRest(
     _Model input, {
     required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });
-
-  /// The endpoint path to access provided a query. Must include a leading slash.
-  String? restEndpoint({Query? query, _Model? instance});
 
   /// Returns an enum value based on its string name. For example, given `'POST'`,
   /// and the enum `enum Methods { GET, POST, DELETE }`, `Methods.POST` is returned.

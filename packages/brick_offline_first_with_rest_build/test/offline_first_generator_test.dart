@@ -5,7 +5,6 @@ import 'package:brick_build_test/brick_build_test.dart';
 
 import 'offline_first_generator/test_rest_config_endpoint.dart' as _$restConfigEndpoint;
 import 'offline_first_generator/test_rest_config_field_rename.dart' as _$restConfigFieldRename;
-import 'offline_first_generator/test_rest_config_response_keys.dart' as _$restConfigResponseKeys;
 import 'offline_first_generator/test_custom_serdes.dart' as _$customSerdes;
 import 'offline_first_generator/test_specify_field_name.dart' as _$specifyFieldName;
 
@@ -24,11 +23,6 @@ void main() {
     group('@ConnectOfflineFirstWithRest', () {
       test('restSerializable#endpoint', () async {
         await generateAdapterExpectation('rest_config_endpoint', _$restConfigEndpoint.output);
-      });
-
-      test('restSerializable#fromKey restSerializable#toKey', () async {
-        await generateAdapterExpectation(
-            'rest_config_response_keys', _$restConfigResponseKeys.output);
       });
 
       test('restSerializable#nullable', () {}, skip: 'Write implementation and then write test');

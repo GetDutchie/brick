@@ -5,6 +5,8 @@ import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/db.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
+import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 class Repository extends OfflineFirstWithRestRepository {
   Repository._(String endpoint)

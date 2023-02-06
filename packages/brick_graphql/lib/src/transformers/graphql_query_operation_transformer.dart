@@ -55,7 +55,7 @@ abstract class GraphqlQueryOperationTransformer {
   /// ```
   GraphqlOperation? get subscribe => null;
 
-  /// The operation used for any destructive data operations that
+  /// The operation used for any updating or inserting data operations that
   /// should use GraphQL's `mutation`.
   /// Only the header of the operation is required. For example
   /// ```graphql

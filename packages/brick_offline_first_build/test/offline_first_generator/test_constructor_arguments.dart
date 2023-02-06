@@ -43,12 +43,6 @@ class OfflineFirstGeneratorArgumentsAdapter
   OfflineFirstGeneratorArgumentsAdapter();
 
   @override
-  String? restEndpoint({query, instance}) => '';
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
-  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
@@ -130,12 +124,6 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends SuperDuperAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
-  @override
-  String? restEndpoint({query, instance}) => '';
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(

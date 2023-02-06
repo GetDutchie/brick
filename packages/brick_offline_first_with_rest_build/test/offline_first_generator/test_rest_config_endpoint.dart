@@ -1,6 +1,6 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest/brick_rest.dart' show RestSerializable;
+import 'package:brick_rest/brick_rest.dart' show RestRequestTransformer, RestSerializable;
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -41,14 +41,7 @@ class RestConfigEndpointAdapter
   RestConfigEndpointAdapter();
 
   @override
-  String? restEndpoint({query, instance}) {
-    return 'anEndpoint';
-  }
-
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
+  final restRequest = EndpointTransformer.new;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -98,10 +91,14 @@ class RestConfigEndpointAdapter
 }
 ''';
 
+class EndpointTransformer extends RestRequestTransformer {
+  EndpointTransformer(super.query, super.instance);
+}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: "{ return 'anEndpoint'; }",
     nullable: false,
+    requestTransformer: EndpointTransformer.new,
   ),
 )
 class RestConfigEndpoint extends OfflineFirstModel {

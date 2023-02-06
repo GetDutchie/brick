@@ -26,11 +26,8 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
   @override
-  String? restEndpoint({query, instance}) => '/mounties';
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
+  final restRequest = MountyRequestTransformer.new;
+
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
