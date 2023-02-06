@@ -41,14 +41,7 @@ class RestConfigEndpointAdapter
   RestConfigEndpointAdapter();
 
   @override
-  String? restEndpoint({query, instance}) {
-    return 'anEndpoint';
-  }
-
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
+  final restRequest = EndpointTransformer.new;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -98,14 +91,14 @@ class RestConfigEndpointAdapter
 }
 ''';
 
-class EndpointCreator extends RestRequestTransformer {
-  EndpointCreator(super.query, super.instance);
+class EndpointTransformer extends RestRequestTransformer {
+  EndpointTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     nullable: false,
-    requestTransformer: EndpointCreator.new,
+    requestTransformer: EndpointTransformer.new,
   ),
 )
 class RestConfigEndpoint extends OfflineFirstModel {
