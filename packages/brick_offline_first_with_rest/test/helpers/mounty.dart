@@ -1,5 +1,13 @@
 part of '__mocks__.dart';
 
+class MountyRequestTransformer extends RestRequestTransformer {
+  @override
+  final get = const RestRequest(url: '/mounties');
+  @override
+  RestRequest? get upsert => get;
+  const MountyRequestTransformer(super.query, super.instance);
+}
+
 class Mounty extends OfflineFirstWithRestModel {
   final String? name;
 
