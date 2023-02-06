@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 2.4.1
+
+* Update replacement RegEx for `migrations =` and `schema =` to account for whitespace and removed type names
+
 ## 2.2.0
 
 * If a field is annotated `@Sqlite(ignore: true)` do not create a column for it.
