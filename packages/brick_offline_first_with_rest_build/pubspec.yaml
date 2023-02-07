@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.1.0
+version: 2.1.1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"

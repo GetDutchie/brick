@@ -5,6 +5,10 @@
 * Remove `brick_offline_first_with_rest_abstract`
 * Update references to renamed v3 files like `brick_rest/brick_rest.dart`
 
+## 2.1.1
+
+* Merge `brickSchemaBuilder` into `brickNewMigrationBuilder` and rename to `brickSchemaBuilder` to ensure the schema is compiled before the migration. `runs_before` was not working, perhaps because of [the combination](https://github.com/dart-lang/build/blob/85900b19ee186d133b41e957fd60836282b45d7c/docs/builder_author_faq.md#why-cant-my-builder-resolve-code-output-by-another-builder) with `combining_builder`
+
 ## 2.1.0
 
 * Upgrade analyzer to version 4

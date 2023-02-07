@@ -170,6 +170,8 @@ class SqliteSchemaGenerator {
       final checker = checkerForField(field);
       final column = fields.finder.annotationForField(field);
 
+      if (column.ignore) return null;
+
       // ignore all other checks if a custom column type is defined
       if (column.columnType != null) {
         return schemaColumn(column, checker: checker);
@@ -177,9 +179,7 @@ class SqliteSchemaGenerator {
 
       if (checker.isSerializableViaJson(false)) return schemaColumn(column, checker: checker);
 
-      if (column.ignore ||
-          !checker.isSerializable ||
-          (checker.isIterable && checker.isArgTypeASibling)) return null;
+      if (!checker.isSerializable || (checker.isIterable && checker.isArgTypeASibling)) return null;
 
       return schemaColumn(column, checker: checker);
     });

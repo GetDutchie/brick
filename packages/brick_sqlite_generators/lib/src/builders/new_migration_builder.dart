@@ -19,9 +19,7 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final version = int.parse('${now.year}$timestamp');
     final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 
-    if (output == null) {
-      return;
-    }
+    if (output == null) return;
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -31,26 +29,27 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     // because it uses the LibraryReader from before the migration is created.
     // this should be revisited in a few build versions to make this flow less brittle
     // and more predictable by using the same schema generator to do all the heavy lifting
-    final newSetPiece = 'final Set<Migration> migrations = <Migration>{\n  Migration$version(),';
-    final newPart = "show Migratable;\npart '$version.migration.dart';";
+    final newSetPiece = 'final migrations = <Migration>{\n  const Migration$version(),';
+    final newPart = "brick_sqlite_abstract/db.dart';\npart '$version.migration.dart';";
 
     await replaceWithinFile(
       'db/schema.g.dart',
-      'final Set<Migration> migrations = <Migration>{',
+      'final migrations = <Migration>{',
       newSetPiece,
     );
     await replaceWithinFile(
       'db/schema.g.dart',
-      'show Migratable;',
+      "brick_sqlite_abstract/db.dart';",
       newPart,
     );
     await manuallyUpsertBrickFile('db/$version.migration.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
     await replaceWithinFile(
       'db/schema.g.dart',
-      RegExp(r'final schema = Schema\(([\d]+|null),'),
+      RegExp(r'final schema =(?:\n\s+)? Schema\(([\d]+|null),'),
       'final schema = Schema($version,',
     );
+
     logStopwatch('Generated new migration (db/$version.migration.dart)', stopwatch);
   }
 }

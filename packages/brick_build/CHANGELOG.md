@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Update `AggregateBuilder#requiredImports` docs
+* Remove unnecessary assignment in `BaseBuilder#replaceWithinFile`
 
 ## 2.1.2
 

@@ -3,6 +3,14 @@
 * Replace `brick_sqlite_abstract/db.dart` with `brick_sqlite/db.dart`
 * Remove `brick_sqlite_abstract` package
 
+## 2.4.1
+
+* Update replacement RegEx for `migrations =` and `schema =` to account for whitespace and removed type names
+
+## 2.2.0
+
+* If a field is annotated `@Sqlite(ignore: true)` do not create a column for it.
+
 ## 2.1.4
 
 * Remove `FallThroughError` after Dart beta deprecation
