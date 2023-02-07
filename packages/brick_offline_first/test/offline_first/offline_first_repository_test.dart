@@ -112,6 +112,21 @@ void main() {
       expect(results.first.name, instance.name);
     });
 
+    group('#notifySubscriptionsWithLocalData', () {
+      test('retrieves from SQLite', () async {
+        var eventReceived = false;
+        final subscription = TestRepository().subscribe<Mounty>().listen((event) {
+          eventReceived = event.first.name == 'Guy';
+        });
+        await TestRepository().sqliteProvider.upsert<Mounty>(Mounty(name: 'Guy'));
+        await TestRepository().notifySubscriptionsWithLocalData<Mounty>();
+        await Future.delayed(const Duration(milliseconds: 500));
+        await subscription.cancel();
+
+        expect(eventReceived, isTrue);
+      });
+    });
+
     test('#storeRestResults', () async {
       final instance = Mounty(name: 'SqliteName');
       final results = await TestRepository().storeRemoteResults([instance]);
@@ -147,6 +162,120 @@ void main() {
       expect(TestRepository().memoryCacheProvider.managedObjects, isNotEmpty);
       await TestRepository().reset();
       expect(TestRepository().memoryCacheProvider.managedObjects, isEmpty);
+    });
+
+    group('#subscribe', () {
+      test('adds controller and query to #subscriptions', () async {
+        expect(TestRepository().subscriptions, hasLength(0));
+        final query = Query.where('name', 'Thomas');
+        TestRepository().subscribe<Mounty>(query: query);
+        expect(TestRepository().subscriptions, hasLength(1));
+        expect(TestRepository().subscriptions[Mounty], hasLength(1));
+        expect(TestRepository().subscriptions[Mounty]!.entries.first.key, query);
+        expect(TestRepository().subscriptions[Mounty]!.entries.first.value, isNotNull);
+      });
+
+      test('adds controller and null query to #subscriptions', () async {
+        expect(TestRepository().subscriptions, hasLength(0));
+        TestRepository().subscribe<Mounty>();
+        expect(TestRepository().subscriptions, hasLength(1));
+        expect(TestRepository().subscriptions[Mounty], hasLength(1));
+        expect(TestRepository().subscriptions[Mounty]!.entries.first.key, isNotNull);
+        expect(TestRepository().subscriptions[Mounty]!.entries.first.value, isNotNull);
+      });
+
+      test('cancelling removes from #subscriptions', () async {
+        expect(TestRepository().subscriptions, hasLength(0));
+        final subscription = TestRepository().subscribe<Mounty>().listen((event) {});
+        expect(TestRepository().subscriptions[Mounty], hasLength(1));
+        await subscription.cancel();
+        expect(TestRepository().subscriptions, hasLength(0));
+      });
+
+      test('pausing does not remove from #subscriptions', () async {
+        expect(TestRepository().subscriptions, hasLength(0));
+        final subscription = TestRepository().subscribe<Mounty>().listen((event) {});
+        expect(TestRepository().subscriptions, hasLength(1));
+        subscription.pause();
+        expect(TestRepository().subscriptions, hasLength(1));
+        expect(TestRepository().subscriptions[Mounty]!.entries.first.value.isPaused, isTrue);
+      });
+
+      test('stores fetched data', () async {
+        final sqliteResults = await TestRepository().sqliteProvider.get<Mounty>();
+        expect(sqliteResults, hasLength(0));
+        // eager load
+        await TestRepository().get<Mounty>();
+        TestRepository().subscribe<Mounty>();
+        // Wait for the repository to fetch and insert the data
+        // I can't figure out a better way to do this since the controller
+        // stream doesn't close on its own
+        await Future.delayed(const Duration(milliseconds: 500));
+        final afterSubscribe = await TestRepository().sqliteProvider.get<Mounty>();
+        expect(afterSubscribe, hasLength(1));
+      });
+
+      test('streams filtered data with query', () async {
+        var eventReceived = false;
+        var eventCount = 0;
+        // eager load
+        await TestRepository().get<Mounty>();
+        final subscription = TestRepository()
+            .subscribe<Mounty>(query: Query.where('name', 'Thomas'))
+            .listen((event) {
+          eventReceived = event.first.name == 'Thomas';
+          eventCount += 1;
+        });
+        expect(TestRepository().subscriptions[Mounty], hasLength(1));
+        await TestRepository().upsert<Mounty>(Mounty(name: 'Thomas'));
+        await subscription.cancel();
+        expect(eventReceived, isTrue);
+        // once for initial subscribe
+        // and again for upsert
+        expect(eventCount, 2);
+      });
+
+      test('notifies when storeRemoteResults is invoked', () async {
+        var eventReceived = false;
+        final subscription = TestRepository().subscribe<Mounty>().listen((event) {
+          print(event);
+          eventReceived = event.first.name == 'Thomas';
+        });
+        await TestRepository().storeRemoteResults<Mounty>([Mounty(name: 'Thomas')]);
+        await subscription.cancel();
+        expect(eventReceived, isTrue);
+      });
+
+      test('notifies when upsert is invoked', () async {
+        var eventReceived = false;
+        var eventCount = 0;
+        final subscription = TestRepository().subscribe<Mounty>().listen((event) {
+          eventReceived = event.first.name == 'Thomas';
+          eventCount += 1;
+        });
+        await TestRepository().upsert<Mounty>(Mounty(name: 'Thomas'));
+        await subscription.cancel();
+        expect(eventReceived, isTrue);
+        // once for initial subscribe
+        // and again for upsert
+        expect(eventCount, 2);
+      });
+
+      test('notifies when delete is invoked', () async {
+        final instance = await TestRepository().upsert<Mounty>(Mounty(name: 'Thomas'));
+        var eventCount = 0;
+        final subscription = TestRepository()
+            .subscribe<Mounty>(query: Query.where('name', 'Thomas'))
+            .listen((event) {
+          eventCount += 1;
+        });
+        await TestRepository().delete<Mounty>(instance);
+        await subscription.cancel();
+
+        // once for the original `subscribe`
+        // and again for `delete`
+        expect(eventCount, 2);
+      });
     });
   });
 }
