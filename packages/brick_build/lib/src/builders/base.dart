@@ -63,8 +63,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
 
     final contents = await file.readAsString();
     final replacedContents = contents.replaceAll(from, to);
-    final writtenFile = await file.writeAsString(replacedContents);
-    return writtenFile;
+    return await file.writeAsString(replacedContents);
   }
 
   /// Stop stopwatch and conditionally format elapsed time as seconds or ms

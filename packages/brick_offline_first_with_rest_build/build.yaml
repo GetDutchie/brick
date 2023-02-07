@@ -1,13 +1,5 @@
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
-  brickSchemaBuilder:
-    import: "package:brick_offline_first_with_rest_build/builder.dart"
-    builder_factories: ["offlineFirstSchemaBuilder"]
-    build_extensions: {".brick_aggregate.dart": [".brick_aggregate.schema_build_offline_first.dart"]}
-    build_to: cache
-    auto_apply: root_package
-    applies_builders: ["source_gen|combining_builder"]
-    runs_before: ["brickNewMigrationBuilder"]
   brickAggregateBuilder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
     builder_factories: ["offlineFirstAggregateBuilder"]
@@ -42,9 +34,9 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
-  brickNewMigrationBuilder:
+  brickSchemaBuilder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
-    builder_factories: ["offlineFirstNewMigrationBuilder"]
+    builder_factories: ["offlineFirstSchemaBuilder", "offlineFirstNewMigrationBuilder"]
     build_extensions: {".brick_aggregate.dart": [".brick_aggregate.migration_build_offline_first.dart"]}
     build_to: cache
     auto_apply: root_package
