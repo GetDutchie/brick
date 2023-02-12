@@ -44,13 +44,14 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 
 #### `RestSerializable(requestTransformer:)`
 
-`RestSerializable(endpoint:)` has been removed in this release. It will be painful to upgrade though with good reason.
+* `RestSerializable`'s `fromKey` and `toKey` have been consolidated to `RestRequest(topLevelKey:)`
+* `RestSerializable(endpoint:)` has been replaced in this release by `RestSerializable(requestTransformer:)`. It will be painful to upgrade though with good reason.
 
 1. Define strongly-typed classes. `endpoint` was a string, which removed analysis in IDEs, permitting errors to escape to runtime. With endpoints as classes, the `Query` object will receive type hinting as well as the `instance`.
 1. Fine-grain control over REST requests. Define on a request-level basis what key to pull from or push to. Declare specific HTTP methods like `PATCH` in a class that manages request instead of in distributed `providerArgs`.
 1. A future-proof development. Enhancing REST's configuration will be on a class object instead of in untyped string keys on `providerArgs`. The REST interface is consolidated to this subclass.
 
-The easiest migration is the take the existing endpoint and paste the code into the new class. Some examples:
+Since all APIs are different, and `endpoint` used stringified code, the migration cannot be scripted for all users. Instead, examples are provided below to illustrate how to refactor from Brick 2's `endpoint` to Brick 3's `requestTransformer`. Some examples:
 
 ```dart
 // BEFORE
@@ -114,9 +115,7 @@ class UserRequestTransformer extends RestRequestTransformer {
 )
 ```
 
-Deprecation notes:
-
-* `RestSerializable`'s `fromKey` and `toKey` have been consolidated to `RestRequest(topLevelKey:)`
+:bulb: For ease of illustration, the code is provided as if the transformer and model logic live in the same file. It's strongly recommended to include the request transformer logic in its own, colocated file (such as `user.model.request.dart`).
 
 ## Migrating from Brick 1 to Brick 2
 

@@ -91,9 +91,11 @@ class UserRequestTransformer extends RestRequestTransformer {
 class User extends OfflineFirstModel {}
 ```
 
+?> For ease of illustration, the code is provided as if the transformer and model logic live in the same file. It's strongly recommended to include the request transformer logic in its own, colocated file (such as `user.model.request.dart`).
+
 ### `@RestRequest(topLevelKey:)`
 
-Data will be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
+Data will most often be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
 
 1) A `topLevelKey` in `Query#providerArgs` with a non-empty value
 1) `topLevelKey` if defined in a `RestRequest`
