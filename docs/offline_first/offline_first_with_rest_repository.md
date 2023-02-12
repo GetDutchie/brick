@@ -19,9 +19,7 @@ import 'package:brick_offline_first/rest_to_offline_first_converter.dart';
 const BASE = "http://0.0.0.0:3000";
 const endpoint = "$BASE/users";
 
-final converter = RestToOfflineFirstConverter(
-  endpoint: endpoint,
-);
+final converter = RestToOfflineFirstConverter(endpoint: endpoint);
 
 void main() {
   converter.saveToFile();

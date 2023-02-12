@@ -40,7 +40,83 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 
 ### Brick Offline First with Rest
 
-* `FieldRename`, `Rest` `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+* `FieldRename`, `Rest`, `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+
+#### `RestSerializable(requestTransformer:)`
+
+`RestSerializable(endpoint:)` has been removed in this release. It will be painful to upgrade though with good reason.
+
+1. Define strongly-typed classes. `endpoint` was a string, which removed analysis in IDEs, permitting errors to escape to runtime. With endpoints as classes, the `Query` object will receive type hinting as well as the `instance`.
+1. Fine-grain control over REST requests. Define on a request-level basis what key to pull from or push to. Declare specific HTTP methods like `PATCH` in a class that manages request instead of in distributed `providerArgs`.
+1. A future-proof development. Enhancing REST's configuration will be on a class object instead of in untyped string keys on `providerArgs`. The REST interface is consolidated to this subclass.
+
+The easiest migration is the take the existing endpoint and paste the code into the new class. Some examples:
+
+```dart
+// BEFORE
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    endpoint: '"/users";'
+    fromKey: 'users',
+  )
+)
+
+// AFTER
+class UserRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(url: '/users', topLevelKey: 'users');
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    requestTransformer: UserRequestTransformer.new,
+  )
+)
+```
+
+Some cases are more complex:
+
+```dart
+// BEFORE
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    endpoint: r'''{
+      if (query?.action == QueryAction.delete) return "/users/${instance.id}";
+
+      if (query?.action == QueryAction.get &&
+          query?.providerArgs.isNotEmpty &&
+          query?.providerArgs['limit'] != null) {
+            return "/users?limit=${query.providerArgs['limit']}";
+      }
+
+      return "/users";
+    }''';
+  )
+)
+
+// AFTER
+class UserRequestTransformer extends RestRequestTransformer {
+  RestRequest? get get {
+    if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
+      return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
+    }
+    const RestRequest(url: '/users');
+  }
+
+  final delete = RestRequest(url: '/users/${instance.id}');
+
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    requestTransformer: UserRequestTransformer.new,
+  )
+)
+```
+
+Deprecation notes:
+
+* `RestSerializable`'s `fromKey` and `toKey` have been consolidated to `RestRequest(topLevelKey:)`
 
 ## Migrating from Brick 1 to Brick 2
 

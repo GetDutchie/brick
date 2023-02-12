@@ -4,7 +4,7 @@
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Remove `brick_offline_first_with_rest_abstract`; add annotation `ConnectOfflineFirstWithRest` and class `OfflineFirstWithRestModel` to this package
-* Rename main export file to `brick_offline_first_with_rest.dart`: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_rest` package
+* **BREAKING CHANGE** Rename main export file to `brick_offline_first_with_rest.dart`: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_rest` package
 
 ## 1.1.1
 
