@@ -1,7 +1,9 @@
 ## Unreleased
 
+## 3.0.0
+
 * Replace `brick_sqlite_abstract/db.dart` with `brick_sqlite/db.dart`
-* Remove `brick_sqlite_abstract` package
+* Remove `brick_sqlite_abstract` dependency
 
 ## 2.4.1
 

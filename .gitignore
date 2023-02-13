@@ -72,3 +72,5 @@
 testfile.dill
 pubspec.lock
 .flutter-plugins-dependencies
+
+pubspec_overrides.yaml

@@ -1,8 +1,11 @@
 ## Unreleased
 
-* Remove `brick_sqlite_abstract`
-* Remove `brick_offline_first_abstract`
-* Remove `brick_offline_first_with_graphql_abstract`
+## 3.0.0
+
+* Remove `brick_sqlite_abstract` dependency
+* Remove `brick_offline_first_abstract` dependency
+* Remove `brick_offline_first_with_graphql_abstract` dependency
+* Update import paths
 
 ## 1.3.1
 

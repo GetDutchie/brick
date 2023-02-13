@@ -1,9 +1,11 @@
 ## Unreleased
 
+## 3.0.0
+
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Remove `brick_offline_first_with_graphql_abstract`; add annotation `ConnectOfflineFirstWithGraphql` and class `OfflineFirstWithGraphqlModel` to this package
-* Rename main export file to `brick_offline_first_with_graphql.dart`; remove forwarded exports from other packages: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_graphql` package
+* **BREAKING CHANGE** Rename main export file to `brick_offline_first_with_graphql.dart`; remove forwarded exports from other packages: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_graphql` package
 * Migrate code and tests for `OfflineFirstWithGraphqlRepository#subscribe` to `OfflineFirstRepository#subscribe`
 
 ## 1.4.0

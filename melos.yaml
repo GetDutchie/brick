@@ -1,0 +1,16 @@
+name: brick
+packages:
+  - packages/brick_build
+  - packages/brick_core
+  - packages/brick_graphql
+  - packages/brick_json_generators
+  - packages/brick_offline_first
+  - packages/brick_offline_first_build
+  - packages/brick_offline_first_with_graphql
+  - packages/brick_offline_first_with_graphql_build
+  - packages/brick_offline_first_with_rest
+  - packages/brick_offline_first_with_rest_build
+  - packages/brick_rest
+  - packages/brick_rest_generators
+  - packages/brick_sqlite
+  - packages/brick_sqlite_generators

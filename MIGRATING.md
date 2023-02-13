@@ -33,6 +33,7 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
       sed -i '' 's/package:brick_sqlite_abstract\/db.dart/package:brick_sqlite\/db.dart/g' $FILE
     done
     ```
+* The minimum Dart version has been increased to 2.18
 
 ### Brick Offline First with Graphql
 

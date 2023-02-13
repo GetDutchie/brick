@@ -1,10 +1,14 @@
 ## Unreleased
 
-* Remove extraneous properties and rely on remote policy
+## 3.0.0
+
+* Remove instance-access `reattemptForStatusCodes`; this is passed directly to the cache manager
+* Remove extraneous constructor argument `throwTunnerNotFoundExceptions` and rely on remote policy / the queue manager
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Remove `brick_offline_first_with_rest_abstract`; add annotation `ConnectOfflineFirstWithRest` and class `OfflineFirstWithRestModel` to this package
 * **BREAKING CHANGE** Rename main export file to `brick_offline_first_with_rest.dart`: `FieldRename`, `Graphql` `GraphqlProvider`,  and `GraphqlSerializable` can all be imported from the `brick_rest` package
+* Add `#subscribe` method to listen for SQLite updates
 
 ## 1.1.1
 

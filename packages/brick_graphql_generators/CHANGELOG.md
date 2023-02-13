@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.0
+
+* Update dependency import paths
+
 ## 2.0.1
 
 * Remove `FallThroughError` after Dart beta deprecation

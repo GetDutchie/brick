@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest_gene
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.1.1
+version: 3.0.0-pre.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -14,8 +14,7 @@ dependencies:
   brick_build: ">=2.1.0 <3.0.0"
   brick_core: ^1.1.1
   brick_json_generators: ">=1.1.0 <2.0.0"
-  brick_rest:
-    path: ../brick_rest
+  brick_rest: ">=3.0.0 <4.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   source_gen: ">=1.2.2 <2.0.0"

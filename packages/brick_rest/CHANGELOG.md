@@ -1,7 +1,10 @@
 ## Unreleased
 
+## 3.0.0
+
 * **BREAKING CHANGE** Rename main export file to `brick_rest.dart`
 * **BREAKING CHANGE** replace `RestSerializable(endpoint:)` with `RestSerializable(requestTransformer:)`
+* Add `RestAdapter#restRequest`
 
 ## 1.1.1
 

@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.0.0
+
 * Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
 
 ## 2.1.1
