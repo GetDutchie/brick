@@ -25,11 +25,11 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
     * `brick_graphql/graphql.dart` is now `brick_rest/brick_graphql.dart`
     * `brick_rest/rest.dart` is now `brick_rest/brick_rest.dart`
     * `brick_sqlite/sqlite.dart` is now `brick_sqlite/brick_sqlite.dart`
-* `brick_sqlite_abstract/db.dart` is now `brick_sqlite/db.dart`. `brick_sqlite_abstract/sqlite_model.dart` and `brick_sqlite_abstract/annotations.dart` are now exported by `brick_sqlite/sqlite.dart`
+* `brick_sqlite_abstract/db.dart` is now `brick_sqlite/db.dart`. `brick_sqlite_abstract/sqlite_model.dart` and `brick_sqlite_abstract/annotations.dart` are now exported by `brick_sqlite/brick_sqlite.dart`
     ```shell
     for FILE in $(find "lib" -type f -name "*.dart"); do
-      sed -i '' 's/package:brick_sqlite_abstract\/annotations.dart/package:brick_sqlite\/sqlite.dart/g' $FILE
-      sed -i '' 's/package:brick_sqlite_abstract\/sqlite_model.dart/package:brick_sqlite\/sqlite.dart/g' $FILE
+      sed -i '' 's/package:brick_sqlite_abstract\/annotations.dart/package:brick_sqlite\/brick_sqlite.dart/g' $FILE
+      sed -i '' 's/package:brick_sqlite_abstract\/sqlite_model.dart/package:brick_sqlite\/brick_sqlite.dart/g' $FILE
       sed -i '' 's/package:brick_sqlite_abstract\/db.dart/package:brick_sqlite\/db.dart/g' $FILE
     done
     ```
