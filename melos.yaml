@@ -1,16 +1,23 @@
 name: brick
+repository: https://github.com/GetDutchie/brick
+
 packages:
-  - packages/brick_build
-  - packages/brick_core
-  - packages/brick_graphql
-  - packages/brick_json_generators
-  - packages/brick_offline_first
-  - packages/brick_offline_first_build
-  - packages/brick_offline_first_with_graphql
-  - packages/brick_offline_first_with_graphql_build
-  - packages/brick_offline_first_with_rest
-  - packages/brick_offline_first_with_rest_build
-  - packages/brick_rest
-  - packages/brick_rest_generators
-  - packages/brick_sqlite
-  - packages/brick_sqlite_generators
+  - packages/*
+
+command:
+  version:
+    # Generate commit links in package changelogs.
+    linkToCommits: true
+
+    changelogs:
+      - path: firebase_ui_changelog.md
+        packageFilters:
+          scope: firebase_ui_*
+        description: |
+          All notable changes for firebase_ui packages
+  bootstrap:
+    # It seems so that running "pub get" in parallel has some issues (like
+    # https://github.com/dart-lang/pub/issues/3404). Disabling this feature
+    # makes the CI much more stable.
+    runPubGetInParallel: false
+    usePubspecOverrides: true

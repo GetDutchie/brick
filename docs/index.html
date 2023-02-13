@@ -6,30 +6,58 @@
   <title>Brick Docs</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Data management for Flutter and Dart">
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=1" />
-  <link rel="stylesheet" href="https://unpkg.com/docsify-themeable/dist/css/theme-simple.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css" />
+
   <style type="text/css">
-    .lang-dart .class-name {
-      color: var(--code-theme-function);
+    body {
+      --theme-color: #9A3536;
     }
 
-    :root {
-      --sidebar-nav-indent: 10px;
-      --sidebar-nav-link-before-content: '';
-      --sidebar-nav-link-before-content-l1: '';
-      --table-cell-border-width: 1px;
-      --table-cell-body-width: 1px;
-      --table-cell-head-width: 1px;
-      --link-color: var(--theme-color);
-      --cover-color: #999;
-      --cover-background-image: none;
-      --cover-background-color: #fff;
-      --theme-color: #9A3536;
+    .cover {
+      background: none !important;
+    }
+
+    .app-name {
+      padding: 0 20px;
+    }
+
+    .markdown-section code {
+      color: var(--theme-color);
     }
 
     .sidebar-nav>ul>li>a {
       padding-left: 0 !important;
       background-image: none !important;
+    }
+
+    .markdown-section {
+      max-width: 820px;
+      font-size: 18px;
+    }
+
+    .markdown-section h1 {
+      font-size: 2.5em;
+    }
+
+    .markdown-section h3 {
+      margin: 50px 0 0.6rem;
+    }
+
+    .markdown-section h2 code,
+    .markdown-section h3 code {
+      font-size: .75em;
+    }
+
+    .token.keyword,
+    .token.function {
+      color: #619c3c;
+    }
+
+    code .token {
+      color: #3c7cc2;
     }
 
   </style>

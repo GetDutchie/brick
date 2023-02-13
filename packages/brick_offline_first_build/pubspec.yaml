@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.1.1
+version: 3.0.0-pre.1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -14,9 +14,9 @@ dependencies:
   brick_build: ">=2.1.2 <3.0.0"
   brick_core: ^1.1.1
   brick_json_generators: ">=1.1.1 <2.0.0"
-  brick_offline_first: ">=3.0.0 <4.0.0"
-  brick_sqlite: ">=3.0.0 <4.0.0"
-  brick_sqlite_generators: ">=3.0.0 <4.0.0"
+  brick_offline_first: ">=3.0.0-pre.1 <4.0.0"
+  brick_sqlite: ">=3.0.0-pre.1 <4.0.0"
+  brick_sqlite_generators: ">=3.0.0-pre.1 <4.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
   logging: ">=1.0.0 <2.0.0"
@@ -27,12 +27,6 @@ dependencies:
 dev_dependencies:
   brick_build_test:
     path: ../brick_build_test
-  brick_offline_first_with_rest:
-    path: ../brick_offline_first_with_rest
-  brick_rest:
-    path: ../brick_rest
-  brick_rest_generators:
-    path: ../brick_rest_generators
   build_verify: ^2.0.0
   source_gen_test: ^1.0.0
   test: ^1.20.1
