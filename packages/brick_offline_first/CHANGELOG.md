@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.0.0
+
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Add `OfflineFirstRepository#subscribe`. The query provided when invoked is stored on the repository. Whenever data is locally mutated with `storeRemoteResults` or `upsert` or `delete` that matches one of these stored queries, the stream receives the latest data for the query. It is strongly recommended to store the subscription after creating the stream and listening to it; cancelling the stream will close it and remove the stream to prevent memory leaks.

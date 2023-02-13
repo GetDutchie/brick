@@ -1,8 +1,10 @@
 ## Unreleased
 
+## 3.0.0
+
 * Remove `brick_sqlite_abstract`; import `brick_sqlite` directly
-* Remove `brick_offline_first_abstract`
-* Remove `brick_offline_first_with_rest_abstract`
+* Remove `brick_offline_first_abstract` depedency
+* Remove `brick_offline_first_with_rest_abstract` depedency
 * Update references to renamed v3 files like `brick_rest/brick_rest.dart`
 
 ## 2.1.1

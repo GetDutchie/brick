@@ -62,12 +62,21 @@ void main() {
 
     group('#generate', () {
       const expectedOutput = '''import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_offline_first_abstract/annotations.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+
+class PeopleRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(
+    url: '/people',
+  );
+
+  const PeopleRequestTransformer(Query? query, RestModel? instance)
+      : super(query, instance);
+}
 
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
     fieldRename: FieldRename.snake,
-    endpoint: "=> '/people';",
+    requestTransformer: PeopleRequestTransformer.new,
   ),
 )
 class People extends OfflineFirstModel {
@@ -99,7 +108,7 @@ class People extends OfflineFirstModel {
         converter.client = _generateResponse('{"people": [{"name": "Thomas"}]}');
 
         final output = await converter.generate();
-        expect(output, contains("fromKey: 'people',"));
+        expect(output, contains("topLevelKey: 'people',"));
       });
     });
 

@@ -1,8 +1,11 @@
 ## Unreleased
 
+## 3.0.0
+
 * Combine `brick_sqlite_abstract` to this package, adding `db.dart` as an export. This merge also includes `SqliteSerializable` and `SqliteModel`, both now exported by `brick_sqlite/brick_sqlite.dart`
-* Rename main export `sqlite.dart` to `brick_sqlite.dart`
-* Remove `brick_sqlite_abstract`
+* **BREAKING CHANGE** Rename main export `sqlite.dart` to `brick_sqlite.dart`
+* Remove `brick_sqlite_abstract` dependency
+* Add `collection` as a direct dependency
 
 ## 2.1.0
 

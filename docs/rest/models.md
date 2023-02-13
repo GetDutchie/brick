@@ -1,53 +1,66 @@
 # Model (Class) Configuration
 
-### `@Rest(endpoint:)`
+### `@RestSerializable(requestTransformer:)`
+
+?> `requestTransformer` was added in Brick 3. For upgrading to Brick v3 from v2, please see [the migration guide](https://github.com/GetDutchie/brick/blob/main/MIGRATING.md).
 
 Every REST API is built differently, and with a fair amount of technical debt. Brick provides flexibility for inconsistent endpoints within any system. Endpoints can also change based on the query. The model adapter will query `endpoint` for `upsert` or `get` or `delete`.
 
-Since Dart requires annotations to be constants, functions cannot be used. This is a headache. Instead, the function must be stringified. The annotation only expects the function body: `query` will always be available, and `instance` will be available to methods handling an `instance` argument like `upsert` or `delete`. The function body must return a string.
+Since Dart requires annotations to be constants, dynamic functions cannot be used. This is a headache. Instead, the a `const`antized [constructor tearoff](https://medium.com/dartlang/dart-2-15-7e7a598e508a) can be used. The transformers permit dynamically defining the request (method, top level key, url, etc.) at runtime based on query params or if a Dart instance is available (`upsert` and `delete` only)
 
 ```dart
+class UserRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(url: '/users');
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: '=> "/users";';
+    requestTransformer: UserRequestTransformer.new;
   )
 )
 class User extends OfflineFirstModel {}
 ```
 
-When managing an instance, say in `delete`, the endpoint will have to be expanded:
+Different provider calls will use different transformer fields:
 
 ```dart
+class UserRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(url: '/users');
+  final delete = RestRequest(url: '/users/${instance.id}');
+
+  const UserRequestTransformer(Query? query, Model? instance) : super(query, instance);
+}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: r'''{
-      if (query?.action == QueryAction.delete) return "/users/${instance.id}";
-
-      return "/users";
-    }''';
+    requestTransformer: UserRequestTransformer.new,
   )
 )
 class User extends OfflineFirstModel {}
 ```
 
-!> If an endpoint's function returns `null`, it is skipped by the provider.
+!> If an `RestRequestTransform`'s method field (`get`, `upsert`, `delete`) is `null` or it's `url` is `null`, the request is skipped by the provider.
 
 #### With Query#providerArgs
 
 ```dart
+class UserRequestTransformer extends RestRequestTransformer {
+  RestRequest? get get {
+    if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
+      return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
+    }
+    const RestRequest(url: '/users');
+  }
+
+  final delete = RestRequest(url: '/users/${instance.id}');
+
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: r'''{
-      if (query?.action == QueryAction.delete) return "/users/${instance.id}";
-
-      if (query?.action == QueryAction.get &&
-          query?.providerArgs.isNotEmpty &&
-          query?.providerArgs['limit'] != null) {
-            return "/users?limit=${query.providerArgs['limit']}";
-      }
-
-      return "/users";
-    }''';
+    requestTransformer: UserRequestTransformer.new,
   )
 )
 class User extends OfflineFirstModel {}
@@ -56,92 +69,47 @@ class User extends OfflineFirstModel {}
 #### With Query#where
 
 ```dart
-@ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
-    endpoint: r'''{
-      if (query?.action == QueryAction.delete) return "/users/${instance.id}";
-
-      if (query?.action == QueryAction.get && query?.where != null) {
-        final id = Where.firstByField('id', query.where)?.value;
-        if (id != null) return "/users/$id";
-      }
-
-      return "/users";
-    }''';
-  )
-)
-class User extends OfflineFirstModel {}
-```
-
-#### DRY Endpoints
-
-As this can become repetitive across models that share a similar interface with a remote provider, a helper class can be employed. Brick imports the same files that a model file imports into `brick.g.dart`, which in turn is shared across all adapters.
-
-```dart
-// Plainly:
-import 'package:my_flutter_app/endpoint_helpers.dart';
-...
-class User extends OfflineFirstModel {}
-
-// is accessible for
-class UserAdapter ... {
-  endpoint() {}
-}
-```
-
-A complete example:
-
-```dart
-// endpoint_helpers.dart
-class EndpointHelpers {
-  static indexOrMemberEndpoint(String path) {
-    if (query?.action == QueryAction.delete) return "/$path/${instance.id}";
-
-    if (query?.action == QueryAction.get && query?.where != null) {
+class UserRequestTransformer extends RestRequestTransformer {
+  RestRequest? get get {
+    if (query?.where != null) {
       final id = Where.firstByField('id', query.where)?.value;
-      if (id != null) return "/$path/$id";
+      if (id != null) return RestRequest(url: "/users/$id");
     }
-
-    return "/$path";
+    const RestRequest(url: '/users');
   }
+
+  final delete = RestRequest(url: '/users/${instance.id}');
+
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
 }
 
-// user.dart
-import 'package:my_flutter_app/endpoint_helpers.dart';
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
-    endpoint: '=> EndpointHelpers.indexOrMemberEndpoint("users")';
+    requestTransformer: UserRequestTransformer.new,
   )
 )
 class User extends OfflineFirstModel {}
-
-// hat.dart
-// Brick has already discovered and imported endpoint_helpers.dart, so while it
-// can be imported again in this file for consistency, it's not necessary
-@ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
-    endpoint: '=> EndpointHelpers.indexOrMemberEndpoint("hats")';
-  )
-)
-class Hat extends OfflineFirstModel {}
 ```
 
-### `@RestSerializable(fromKey:)` and `@RestSerializable(toKey:)`
+?> For ease of illustration, the code is provided as if the transformer and model logic live in the same file. It's strongly recommended to include the request transformer logic in its own, colocated file (such as `user.model.request.dart`).
 
-Data will be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
+### `@RestRequest(topLevelKey:)`
+
+Data will most often be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
 
 1) A `topLevelKey` in `Query#providerArgs` with a non-empty value
-1) `fromKey` if invoked from `provider#get` or `toKey` if invoked from `provider#upsert`
+1) `topLevelKey` if defined in a `RestRequest`
 1) The first discovered key. As a map is effectively an unordered list, relying on this fall through is not recommended.
 
-`fromKey` and `toKey` are defined in the model's annotation:
-
 ```dart
+class UserRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(url: '/users', topLevelKey: 'users');
+  final upsert = const RestRequest(url: '/users', topLevelKey: 'user');
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
-    toKey: 'user',
-    fromKey: 'users',
-  )
+  requestTransformer: UserRequestTransformer.new
 )
 class User extends OfflineFirstModel {}
 ```

@@ -1,6 +1,8 @@
 ## Unreleased
 
-* Rename `graphql.dart` to `brick_graphql.dart`
+## 3.0.0
+
+* **BREAKING CHANGE** Rename `graphql.dart` to `brick_graphql.dart`
 
 ## 2.0.2
 

@@ -33,6 +33,7 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
       sed -i '' 's/package:brick_sqlite_abstract\/db.dart/package:brick_sqlite\/db.dart/g' $FILE
     done
     ```
+* The minimum Dart version has been increased to 2.18
 
 ### Brick Offline First with Graphql
 
@@ -40,7 +41,90 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 
 ### Brick Offline First with Rest
 
-* `FieldRename`, `Rest` `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+* `FieldRename`, `Rest`, `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+* `OfflineFirstWithRestRepository#reattemptForStatusCodes` has been removed from instance-level access. The constructor argument forwards to the `RestOfflineQueueClient`, where it can be accessed if needed.
+* `OfflineFirstWithRestRepository#throwTunnerNotFoundExceptions` has been removed. This value was duplicated from `offlineQueueManager`; the queue manager is where the property exclusively lives now.
+
+#### Improvements
+
+* Listen for SQLite changes via `OfflineFirstWithRestRepository#subscribe`
+
+### Brick Rest
+
+#### `RestSerializable(requestTransformer:)`
+
+* `RestSerializable`'s `fromKey` and `toKey` have been consolidated to `RestRequest(topLevelKey:)`
+* `RestSerializable(endpoint:)` has been replaced in this release by `RestSerializable(requestTransformer:)`. It will be painful to upgrade though with good reason.
+
+1. Strongly-typed classes. `endpoint` was a string, which removed analysis in IDEs, permitting errors to escape during runtime. With endpoints as classes, `Query` and `instance` objects will receive type hinting.
+1. Fine control over REST requests. Define on a request-level basis what key to pull from or push to. Declare specific HTTP methods like `PATCH` in a class that manages request instead of in distributed `providerArgs`.
+1. Future-proof development. Enhancing REST's configuration will be on a class object instead of in untyped string keys on `providerArgs`. The REST interface is consolidated to this subclass.
+
+Since all APIs are different, and `endpoint` used stringified code, the migration cannot be scripted for all users. Instead, examples are provided below to illustrate how to refactor from Brick 2's `endpoint` to Brick 3's `requestTransformer`. Some examples:
+
+```dart
+// BEFORE
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    endpoint: '"/users";'
+    fromKey: 'users',
+  )
+)
+
+// AFTER
+class UserRequestTransformer extends RestRequestTransformer {
+  final get = const RestRequest(url: '/users', topLevelKey: 'users');
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    requestTransformer: UserRequestTransformer.new,
+  )
+)
+```
+
+Some cases are more complex:
+
+```dart
+// BEFORE
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    endpoint: r'''{
+      if (query?.action == QueryAction.delete) return "/users/${instance.id}";
+
+      if (query?.action == QueryAction.get &&
+          query?.providerArgs.isNotEmpty &&
+          query?.providerArgs['limit'] != null) {
+            return "/users?limit=${query.providerArgs['limit']}";
+      }
+
+      return "/users";
+    }''';
+  )
+)
+
+// AFTER
+class UserRequestTransformer extends RestRequestTransformer {
+  RestRequest? get get {
+    if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
+      return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
+    }
+    const RestRequest(url: '/users');
+  }
+
+  final delete = RestRequest(url: '/users/${instance.id}');
+
+  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+}
+
+@ConnectOfflineFirstWithRest(
+  restConfig: RestSerializable(
+    requestTransformer: UserRequestTransformer.new,
+  )
+)
+```
+
+:bulb: For ease of illustration, the code is provided as if the transformer and model logic live in the same file. It's strongly recommended to include the request transformer logic in its own, colocated file (such as `user.model.request.dart`).
 
 ## Migrating from Brick 1 to Brick 2
 

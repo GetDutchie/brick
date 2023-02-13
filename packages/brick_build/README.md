@@ -86,12 +86,11 @@ RestSerializable(
 )
 ```
 
-Configuration can also describe behavior that relies on an instance. Since functions cannot be passed in a `const` class, a stringified function body can be used:
+Configuration can also describe behavior that relies on an instance. Since functions cannot be passed in a `const` class, a `const`-antized function body can be used:
 
 ```dart
 RestSerializable(
-  // implied arguments are instance and query
-  endpoint: r"=> query.action == QueryAction.get ? '/users' : '/users/${instance.id}'",
+  requestTransformer: UserRequestTransformer.new
 )
 ```
 
@@ -314,7 +313,7 @@ A provider will likely require high-level information about a class that would b
 ```dart
 RestSerializable(
   // a REST endpoint is inappropriate to define as an instance-level definition
-  endpoint: '=> "/users";',
+  requestTransformer: UserRequestTransformer.new,
   // class-level configs are also useful for setting a default for subsequent field-level definitions in the class
   fieldRename: FieldRename.snake,
 )
@@ -509,7 +508,7 @@ Domain annotations at the class-level are discovered by the domain builder. **Th
 @ConnectOfflineFirstWithRest(
   // RestSerializable is our configuration body.
   restConfig: RestSerializable(
-    endpoint: '=> "/users";',
+    requestTransfomer: MyModelTransformer.new,
     fieldRename: FieldRename.snake,
   )
 )

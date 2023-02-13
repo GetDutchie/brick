@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 2.0.2
+version: 3.0.0-pre.1
 
 environment:
   sdk: ">=2.15.0 <3.0.0"

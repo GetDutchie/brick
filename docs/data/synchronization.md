@@ -18,7 +18,7 @@ Consider one provider the source of truth and **always** [overwrite data](https:
 
 ### Custom Hydrate
 
-Persist updates based on specific field(s) between providers (I'm sure there's a term for this; looking to you, CS grads). The following is loose psuedo-code to illustrate clearly how an implementation *could* look.
+Persist updates based on specific field(s) between providers (looking to you, CS grads). The following is loose psuedo-code to illustrate clearly how an implementation *could* look.
 
 ```dart
 abstract class BaseModel extends OfflineFirstModel {

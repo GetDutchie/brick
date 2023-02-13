@@ -41,6 +41,14 @@ final query = Query.where('email', 'user@example.com', limit1: true);
 final user = await repository.get<User>(query: query);
 ```
 
+For continuous updates, queries can also be streams. The stream receives all models from its query whenever the local copy is updated:
+
+```dart
+final subscription repository.subscribe<User>().listen((users) {
+
+})
+```
+
 ## Mutating Data
 
 Once a model has been created, it's sent to the repository and back out to _each_ provider:

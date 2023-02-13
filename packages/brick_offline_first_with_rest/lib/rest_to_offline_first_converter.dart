@@ -94,16 +94,25 @@ class RestToOfflineFirstConverter {
     final camelizedClass = toCamelCase(splitEndpoint.last);
     final className = camelizedClass[0].toUpperCase() + camelizedClass.substring(1);
     final restEndpoint = splitEndpoint.sublist(3).join('/');
-    final fromKey = topLevelKey != null ? "fromKey: '$topLevelKey'," : '';
+    final fromKey = topLevelKey != null ? "topLevelKey: '$topLevelKey'," : '';
 
     final output = '''
       import 'package:brick_offline_first/brick_offline_first.dart';
-      import 'package:brick_offline_first_abstract/annotations.dart';
+      import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+
+      class ${className}RequestTransformer extends RestRequestTransformer {
+        final get = const RestRequest(
+          url: '/$restEndpoint',
+          $fromKey
+        );
+
+        const ${className}RequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+      }
 
       @ConnectOfflineFirstWithRest(
         restConfig: RestSerializable(
           fieldRename: FieldRename.snake,
-          endpoint: "=> '/$restEndpoint';",$fromKey
+          requestTransformer: ${className}RequestTransformer.new,
         ),
       )
       class $className extends OfflineFirstModel {
