@@ -41,15 +41,23 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 ### Brick Offline First with Rest
 
 * `FieldRename`, `Rest`, `RestProvider`,  and `RestSerializable` are no longer exported by `offline_first_with_rest.dart`. Instead, import these file from `package:brick_rest/brick_rest.dart`
+* `OfflineFirstWithRestRepository#reattemptForStatusCodes` has been removed from instance-level access. The constructor argument forwards to the `RestOfflineQueueClient`, where it can be accessed if needed.
+* `OfflineFirstWithRestRepository#throwTunnerNotFoundExceptions` has been removed. This value was duplicated from `offlineQueueManager`; the queue manager is where the property exclusively lives now.
+
+#### Improvements
+
+* Listen for SQLite changes via `OfflineFirstWithRestRepository#subscribe`
+
+### Brick Rest
 
 #### `RestSerializable(requestTransformer:)`
 
 * `RestSerializable`'s `fromKey` and `toKey` have been consolidated to `RestRequest(topLevelKey:)`
 * `RestSerializable(endpoint:)` has been replaced in this release by `RestSerializable(requestTransformer:)`. It will be painful to upgrade though with good reason.
 
-1. Define strongly-typed classes. `endpoint` was a string, which removed analysis in IDEs, permitting errors to escape to runtime. With endpoints as classes, the `Query` object will receive type hinting as well as the `instance`.
-1. Fine-grain control over REST requests. Define on a request-level basis what key to pull from or push to. Declare specific HTTP methods like `PATCH` in a class that manages request instead of in distributed `providerArgs`.
-1. A future-proof development. Enhancing REST's configuration will be on a class object instead of in untyped string keys on `providerArgs`. The REST interface is consolidated to this subclass.
+1. Strongly-typed classes. `endpoint` was a string, which removed analysis in IDEs, permitting errors to escape during runtime. With endpoints as classes, `Query` and `instance` objects will receive type hinting.
+1. Fine control over REST requests. Define on a request-level basis what key to pull from or push to. Declare specific HTTP methods like `PATCH` in a class that manages request instead of in distributed `providerArgs`.
+1. Future-proof development. Enhancing REST's configuration will be on a class object instead of in untyped string keys on `providerArgs`. The REST interface is consolidated to this subclass.
 
 Since all APIs are different, and `endpoint` used stringified code, the migration cannot be scripted for all users. Instead, examples are provided below to illustrate how to refactor from Brick 2's `endpoint` to Brick 3's `requestTransformer`. Some examples:
 
