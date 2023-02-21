@@ -108,6 +108,9 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
   FuturesAdapter();
 
   @override
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{};
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,

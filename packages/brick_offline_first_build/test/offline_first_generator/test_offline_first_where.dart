@@ -126,6 +126,25 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   OfflineFirstWhereAdapter();
 
   @override
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{
+    'assoc': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'id': "data['id']"},
+    ),
+    'assocs': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'id': "data['id']", 'otherVar': "data['var']"},
+    ),
+    'loadedAssoc': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'id': "data['id']"},
+    ),
+    'loadedAssocs': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'id': "data['id']"},
+    ),
+    'multiLookupCustomGenerator': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'id': "data['id']", 'otherVar': "data['var']"},
+    )
+  };
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,

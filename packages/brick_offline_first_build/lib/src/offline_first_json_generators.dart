@@ -17,6 +17,32 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
 
   @override
+  List<String> get instanceFieldsAndMethods {
+    final fieldsToColumns = unignoredFields.fold<List<String>>([], (acc, field) {
+      final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
+      final where =
+          offlineFirstAnnotation.where?.entries.fold<List<String>>(<String>[], (acc, entry) {
+        acc.add("'${entry.key}': \"${entry.value}\"");
+        return acc;
+      }).join(',');
+
+      if (where != null) {
+        final output = '''
+          '${field.name}': const RuntimeOfflineFirstDefinition(
+            where: <String, String>{$where},
+          )
+        ''';
+        acc.add(output);
+      }
+      return acc;
+    });
+
+    return [
+      '@override\nfinal fieldsToOfflineFirstRuntimeDefinition = <String, RuntimeOfflineFirstDefinition>{${fieldsToColumns.join(',\n')}};',
+    ];
+  }
+
+  @override
   String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
 
@@ -117,7 +143,8 @@ mixin OfflineFirstJsonDeserialize<_Model extends Model, _Annotation extends Fiel
         final repositoryOperator = isNullable ? '?' : '!';
 
         // @OfflineFirst(where: )
-        if (offlineFirstAnnotation.where != null) {
+        if (offlineFirstAnnotation.where != null &&
+            offlineFirstAnnotation.applyToRemoteDeserialization) {
           final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
 
           // Future<Iterable<OfflineFirstModel>>
@@ -169,7 +196,8 @@ mixin OfflineFirstJsonDeserialize<_Model extends Model, _Annotation extends Fiel
     if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
 
-      if (offlineFirstAnnotation.where != null) {
+      if (offlineFirstAnnotation.where != null &&
+          offlineFirstAnnotation.applyToRemoteDeserialization) {
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
         final getAssociationStatement =

@@ -4,6 +4,8 @@ import 'offline_first_generator/test_primitive_fields.dart' as _$primitiveFields
 import 'offline_first_generator/test_nullable_field.dart' as _$nullableField;
 import 'offline_first_generator/test_futures.dart' as _$futures;
 import 'offline_first_generator/test_offline_first_where.dart' as _$offlineFirstWhere;
+import 'offline_first_generator/test_offline_first_apply_to_remote_deserialization.dart'
+    as _$offlineFirstRemoteDeserialization;
 import 'offline_first_generator/test_custom_offline_first_serdes.dart'
     as _$customOfflineFirstSerdes;
 import 'offline_first_generator/test_default_value.dart' as _$defaultValue;
@@ -98,6 +100,11 @@ void main() {
     group('@OfflineFirst', () {
       test('offlineFirstWhere', () async {
         await generateAdapterExpectation('offline_first_where', _$offlineFirstWhere.output);
+      });
+
+      test('offlineFirstApplyToRemoteDeserialization', () async {
+        await generateAdapterExpectation('offline_first_apply_to_remote_deserialization',
+            _$offlineFirstRemoteDeserialization.output);
       });
     });
   });
