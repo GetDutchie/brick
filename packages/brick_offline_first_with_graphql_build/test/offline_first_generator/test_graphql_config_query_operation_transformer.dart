@@ -44,15 +44,8 @@ class QueryOperationTransformerExampleAdapter
   final queryOperationTransformer =
       QueryOperationTransformerExampleTransformer.new;
   @override
-  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
-    'name': const RuntimeGraphqlDefinition(
-      association: false,
-      documentNodeName: 'name',
-      iterable: false,
-      subfields: <String, Map<String, dynamic>>{},
-      type: String,
-    )
-  };
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{};
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(

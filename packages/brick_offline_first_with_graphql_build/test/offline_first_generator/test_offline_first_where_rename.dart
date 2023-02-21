@@ -22,7 +22,7 @@ Future<Map<String, dynamic>> _$GraphqlConfigEndpointToGraphql(
     GraphqlConfigEndpoint instance,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return {'someField': instance.someField.name};
+  return {'name': instance.someField.name};
 }
 
 Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromSqlite(
@@ -54,13 +54,10 @@ class GraphqlConfigEndpointAdapter
   GraphqlConfigEndpointAdapter();
 
   @override
-  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
-    'someField': const RuntimeGraphqlDefinition(
-      association: false,
-      documentNodeName: 'name',
-      iterable: false,
-      subfields: <String, Map<String, dynamic>>{},
-      type: Object,
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{
+    'someField': const RuntimeOfflineFirstDefinition(
+      where: <String, String>{'name': "data['name']"},
     )
   };
   @override
