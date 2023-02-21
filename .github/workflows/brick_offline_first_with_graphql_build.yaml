@@ -1,4 +1,4 @@
-name: Brick Offline First with GraphQL
+name: Brick Offline First with GraphQL Build
 on:
   push:
     branches:
