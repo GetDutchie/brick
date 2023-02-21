@@ -39,6 +39,7 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
 
     return [
       '@override\nfinal fieldsToOfflineFirstRuntimeDefinition = <String, RuntimeOfflineFirstDefinition>{${fieldsToColumns.join(',\n')}};',
+      ...super.instanceFieldsAndMethods,
     ];
   }
 

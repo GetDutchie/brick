@@ -61,6 +61,16 @@ class GraphqlConfigEndpointAdapter
     )
   };
   @override
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
+    'someField': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'name',
+      iterable: false,
+      subfields: <String, Map<String, dynamic>>{},
+      type: Object,
+    )
+  };
+  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
