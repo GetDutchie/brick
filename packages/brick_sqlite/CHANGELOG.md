@@ -6,6 +6,8 @@
 * **BREAKING CHANGE** Rename main export `sqlite.dart` to `brick_sqlite.dart`
 * Remove `brick_sqlite_abstract` dependency
 * Add `collection` as a direct dependency
+* Add `transaction` to `SqliteProvider`
+* Update signature for `rawQuery` to mirror Sqflite's signature
 
 ## 2.1.0
 

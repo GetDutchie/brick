@@ -239,7 +239,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   }
 
   /// Query with a raw SQL statement. **Advanced use only**.
-  Future<List<Map>> rawQuery(String sql, [List? arguments]) async {
+  Future<List<Map<String, Object?>>> rawQuery(String sql, [List? arguments]) async {
     return await (await getDb()).rawQuery(sql, arguments);
   }
 
@@ -258,6 +258,16 @@ class SqliteProvider implements Provider<SqliteModel> {
     } on FileSystemException {
       // noop
     }
+  }
+
+  /// Perform actions within a database transaction.
+  /// **DO NOT** access `sqliteProvider` methods within [callback]. Instead,
+  /// access DB methods and properties from [transaction]. **Advanced use only**.
+  Future<T> transaction<T>(Future<T> Function(Transaction transaction) callback) async {
+    final db = await getDb();
+    return await _lock.synchronized(() async {
+      return await db.transaction<T>(callback);
+    });
   }
 
   /// Insert record into SQLite. Returns the primary key of the record inserted

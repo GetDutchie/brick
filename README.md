@@ -22,25 +22,29 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     ```yaml
     dependencies:
       # Or brick_offline_first_with_graphql
-      brick_offline_first_with_rest: any
+      brick_offline_first_with_rest:
+      sqflite: # optional
     dev_dependencies:
       # Or brick_offline_first_with_graphql_build: any
-      brick_offline_first_with_rest_build: any
-      build_runner: any
+      brick_offline_first_with_rest_build:
+      build_runner:
     ```
 1. Configure your app directory structure to match Brick's expectations:
     ```bash
     mkdir -p lib/brick/adapters lib/brick/db;
     ```
 1. Add [models](docs/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
-1. Run `flutter pub run build_runner build` to generate your models (or `pub run build_runner build` if you're not using Flutter) and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
+1. Run `dart run build_runner build` to generate your models and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `dart run build_runner watch` for automatic generations. You'll need to run this again after your first migration.
 1. Extend [an existing repository](docs/data/repositories) or create your own:
     ```dart
     // lib/brick/repository.dart
-    import 'package:brick_offline_first/brick_offline_first_with_rest.dart';
+    import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+    import 'package:brick_rest/brick_rest.dart';
+    import 'package:brick_sqlite/brick_sqlite.dart';
     import 'package:my_app/brick/brick.g.dart';
-    import 'package:sqflite/sqflite' show databaseFactory;
-    export 'package:brick_offline_first/brick_offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
+    import 'package:sqflite/sqflite.dart' show databaseFactory;
+    import 'package:my_app/brick/db/schema.g.dart';
+    export 'package:brick_core/query.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
 
     class Repository extends OfflineFirstWithRestRepository {
       Repository()
