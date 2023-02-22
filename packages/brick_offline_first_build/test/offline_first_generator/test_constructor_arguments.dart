@@ -43,9 +43,6 @@ class OfflineFirstGeneratorArgumentsAdapter
   OfflineFirstGeneratorArgumentsAdapter();
 
   @override
-  final fieldsToOfflineFirstRuntimeDefinition =
-      <String, RuntimeOfflineFirstDefinition>{};
-  @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
       association: false,
@@ -127,9 +124,6 @@ class OfflineFirstGeneratorArgumentsAdapter
     extends SuperDuperAdapter<OfflineFirstGeneratorArguments> {
   OfflineFirstGeneratorArgumentsAdapter();
 
-  @override
-  final fieldsToOfflineFirstRuntimeDefinition =
-      <String, RuntimeOfflineFirstDefinition>{};
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
