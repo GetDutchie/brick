@@ -3,7 +3,7 @@
 class RuntimeOfflineFirstDefinition {
   /// The mappings declared by the `where` property in the
   /// `OfflineFirst` annotation
-  final Map<String, Map<String, String>> where;
+  final Map<String, String> where;
 
   const RuntimeOfflineFirstDefinition({
     required this.where,
