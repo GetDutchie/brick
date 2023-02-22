@@ -44,6 +44,9 @@ class QueryOperationTransformerExampleAdapter
   final queryOperationTransformer =
       QueryOperationTransformerExampleTransformer.new;
   @override
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{};
+  @override
   final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'name': const RuntimeGraphqlDefinition(
       association: false,

@@ -5,6 +5,7 @@
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Update imports from `_abstract` packages
+* Support `applyToRemoteDeserialization` and `fieldsToOfflineRuntimeDefinition`
 
 ## 2.1.1
 

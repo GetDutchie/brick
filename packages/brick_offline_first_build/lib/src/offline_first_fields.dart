@@ -18,6 +18,8 @@ class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {
         ?.map((key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
 
     return OfflineFirst(
+      applyToRemoteDeserialization: obj.getField('applyToRemoteDeserialization')?.toBoolValue() ??
+          OfflineFirst.defaults.applyToRemoteDeserialization,
       where: where,
     );
   }
