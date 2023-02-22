@@ -22,11 +22,15 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
       final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
       final where =
           offlineFirstAnnotation.where?.entries.fold<List<String>>(<String>[], (acc, entry) {
-        acc.add("'${entry.key}': \"${entry.value}\"");
+        if (entry.value.contains("'")) {
+          acc.add("'${entry.key}': \"${entry.value}\"");
+        } else {
+          acc.add("'${entry.key}': '${entry.value}'");
+        }
         return acc;
       }).join(',');
 
-      if (where != null) {
+      if (where != null && where.isNotEmpty) {
         final output = '''
           '${field.name}': const RuntimeOfflineFirstDefinition(
             where: <String, String>{$where},
@@ -38,7 +42,8 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
     });
 
     return [
-      '@override\nfinal fieldsToOfflineFirstRuntimeDefinition = <String, RuntimeOfflineFirstDefinition>{${fieldsToColumns.join(',\n')}};',
+      if (fieldsToColumns.isNotEmpty)
+        '@override\nfinal fieldsToOfflineFirstRuntimeDefinition = <String, RuntimeOfflineFirstDefinition>{${fieldsToColumns.join(',\n')}};',
       ...super.instanceFieldsAndMethods,
     ];
   }

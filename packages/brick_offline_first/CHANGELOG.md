@@ -5,7 +5,7 @@
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Add `OfflineFirstRepository#subscribe`. The query provided when invoked is stored on the repository. Whenever data is locally mutated with `storeRemoteResults` or `upsert` or `delete` that matches one of these stored queries, the stream receives the latest data for the query. It is strongly recommended to store the subscription after creating the stream and listening to it; cancelling the stream will close it and remove the stream to prevent memory leaks.
-* Add `fieldsToOfflineRuntimeDefinition` to `OfflineFirstAdapter`. This exposes `@OfflineFirst(where` configuration to repositories
+* Add `fieldsToOfflineFirstRuntimeDefinition` to `OfflineFirstAdapter`. This exposes `@OfflineFirst(where` configuration to repositories
 * Add `applyToRemoteDeserialization` to `@OfflineFirst`. When `true` (the default and existing behavior), deserializing methods will query based on `where` configuration
 
 ## 2.1.2
