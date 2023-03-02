@@ -698,7 +698,6 @@ class OfflineFirstChecker extends SharedChecker {
 
 For every new or removed type check, always update `SharedChecker`'s computed getter `isSerializable`.
 
-
 # FAQ
 
 ### Why are all models hacked into a single file?
