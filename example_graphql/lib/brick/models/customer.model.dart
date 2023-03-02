@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
-import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
 @ConnectOfflineFirstWithGraphql(

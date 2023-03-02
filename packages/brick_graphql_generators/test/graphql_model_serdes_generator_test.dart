@@ -10,6 +10,8 @@ import 'graphql_model_serdes_generator/test_enum_as_string.dart' as enum_as_stri
 import 'graphql_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 import 'graphql_model_serdes_generator/test_from_json_to_json.dart' as from_json_to_json;
 import 'graphql_model_serdes_generator/test_annotation_subfields.dart' as annotation_subfields;
+import 'graphql_model_serdes_generator/test_runtime_association_definition.dart'
+    as runtime_association_definition;
 import 'graphql_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
 import 'graphql_model_serdes_generator/test_constructor_member_field_mismatch.dart'
@@ -21,6 +23,11 @@ final generateReader = generateLibraryForFolder(folder);
 
 void main() {
   group('GraphqlModelSerdesGenerator', () {
+    test('RuntimeGraphqlDefinition#association', () async {
+      await generateAdapterExpectation(
+          'runtime_association_definition', runtime_association_definition.output);
+    });
+
     group('@Graphql', () {
       test('enum_as_string', () async {
         await generateExpectation('enum_as_string', enum_as_string.output);
