@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 
 import 'package:brick_core/core.dart';
+import 'package:glob/list_local_fs.dart';
 
 abstract class FileModel extends Model {
   String get fileName;
