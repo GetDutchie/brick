@@ -8,18 +8,18 @@ class _DefaultRestTransformer extends RestRequestTransformer {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class RestAdapter<_Model extends RestModel> implements Adapter<_Model> {
-  Future<_Model> fromRest(
+abstract class RestAdapter<TModel extends RestModel> implements Adapter<TModel> {
+  Future<TModel> fromRest(
     Map<String, dynamic> input, {
     required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });
 
   /// The endpoint path to access provided a query. Must include a leading slash.
-  RestRequestTransformer Function(Query?, _Model?)? get restRequest => _DefaultRestTransformer.new;
+  RestRequestTransformer Function(Query?, TModel?)? get restRequest => _DefaultRestTransformer.new;
 
   Future<Map<String, dynamic>> toRest(
-    _Model input, {
+    TModel input, {
     required RestProvider provider,
     ModelRepository<RestModel>? repository,
   });

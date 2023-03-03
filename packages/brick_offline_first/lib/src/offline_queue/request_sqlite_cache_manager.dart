@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseFactory, DatabaseExecutor;
 
 /// Fetch and delete [RequestSqliteCache]s.
-abstract class RequestSqliteCacheManager<_RequestMethod> {
+abstract class RequestSqliteCacheManager<RequestMethod> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms.
   @protected
@@ -79,7 +79,7 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
 
   /// Discover most recent unprocessed job in database convert it back to an HTTP request.
   /// This method also locks the row to make it idempotent to subsequent processing.
-  Future<_RequestMethod?> prepareNextRequestToProcess() async {
+  Future<RequestMethod?> prepareNextRequestToProcess() async {
     final db = await getDb();
     final unprocessedRequests = await db.transaction<List<Map<String, dynamic>>>((txn) async {
       final latestLockedRequests = await _latestRequest(txn, whereLocked: true);
@@ -116,7 +116,7 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
       return unlockedRequests;
     });
 
-    final jobs = unprocessedRequests.map(sqliteToRequest).cast<_RequestMethod>();
+    final jobs = unprocessedRequests.map(sqliteToRequest).cast<RequestMethod>();
 
     if (jobs.isNotEmpty) return jobs.first;
 
@@ -144,8 +144,8 @@ abstract class RequestSqliteCacheManager<_RequestMethod> {
     );
   }
 
-  /// Builds a client-consumable [_RequestMethod] from SQLite row output
-  _RequestMethod? sqliteToRequest(Map<String, dynamic> data);
+  /// Builds a client-consumable [RequestMethod] from SQLite row output
+  RequestMethod? sqliteToRequest(Map<String, dynamic> data);
 
   /// Returns row data for all unprocessed job in database.
   /// Accessing this list can be useful determining queue length.

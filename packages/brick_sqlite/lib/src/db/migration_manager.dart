@@ -45,13 +45,13 @@ class MigrationManager {
   }
 
   /// Sort migrations by their version number in ascending order
-  /// and return the latest [Migration] version or `0` if [_migrations] is empty
-  static int latestMigrationVersion(Iterable<Migration> _migrations) {
-    if (_migrations.isEmpty) {
+  /// and return the latest [Migration] version or `0` if [allMigrations] is empty
+  static int latestMigrationVersion(Iterable<Migration> allMigrations) {
+    if (allMigrations.isEmpty) {
       return 0;
     }
 
-    final versions = _migrations.map((m) => m.version).toList();
+    final versions = allMigrations.map((m) => m.version).toList();
     versions.sort();
     return versions.last;
   }

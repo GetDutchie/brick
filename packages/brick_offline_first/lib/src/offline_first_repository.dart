@@ -43,8 +43,8 @@ import 'package:http/src/exception.dart';
 ///   }
 /// }
 /// ```
-abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel>
-    implements ModelRepository<_RepositoryModel> {
+abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
+    implements ModelRepository<RepositoryModel> {
   /// Refetch results in the background from remote source when any request is made.
   /// Defaults to [false].
   final bool autoHydrate;
@@ -62,7 +62,7 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
   @protected
   @visibleForTesting
-  final Map<Type, Map<Query?, StreamController<List<_RepositoryModel>>>> subscriptions = {};
+  final Map<Type, Map<Query?, StreamController<List<RepositoryModel>>>> subscriptions = {};
 
   /// User for low-level debugging. The logger name can be defined in the default constructor;
   /// it defaults to `OfflineFirstRepository`.
@@ -96,8 +96,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
   /// Remove a model from SQLite and the [remoteProvider]
   @override
-  Future<bool> delete<_Model extends _RepositoryModel>(
-    _Model instance, {
+  Future<bool> delete<TModel extends RepositoryModel>(
+    TModel instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
   }) async {
@@ -111,15 +111,15 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     var rowsDeleted = 0;
 
     if (optimisticLocal) {
-      rowsDeleted = await _deleteLocal<_Model>(instance, query: query);
-      await notifySubscriptionsWithLocalData<_Model>(notifyWhenEmpty: true);
+      rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
+      await notifySubscriptionsWithLocalData<TModel>(notifyWhenEmpty: true);
     }
 
     try {
-      await remoteProvider.delete<_Model>(instance, query: query, repository: this);
+      await remoteProvider.delete<TModel>(instance, query: query, repository: this);
       if (requireRemote) {
-        rowsDeleted = await _deleteLocal<_Model>(instance, query: query);
-        await notifySubscriptionsWithLocalData<_Model>(notifyWhenEmpty: true);
+        rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
+        await notifySubscriptionsWithLocalData<TModel>(notifyWhenEmpty: true);
       }
     } on ClientException catch (e) {
       logger.warning('#delete client failure: $e');
@@ -130,37 +130,37 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     }
 
     // ignore: unawaited_futures
-    if (autoHydrate) hydrate<_Model>(query: query);
+    if (autoHydrate) hydrate<TModel>(query: query);
 
     return rowsDeleted > 0;
   }
 
-  Future<int> _deleteLocal<_Model extends _RepositoryModel>(_Model instance, {Query? query}) async {
-    final rowsDeleted = await sqliteProvider.delete<_Model>(
+  Future<int> _deleteLocal<TModel extends RepositoryModel>(TModel instance, {Query? query}) async {
+    final rowsDeleted = await sqliteProvider.delete<TModel>(
       instance,
       query: query,
       repository: this,
     );
-    memoryCacheProvider.delete<_Model>(instance, query: query);
+    memoryCacheProvider.delete<TModel>(instance, query: query);
     return rowsDeleted;
   }
 
-  /// Check if a [_Model] is accessible locally.
+  /// Check if a [TModel] is accessible locally.
   /// First checks if there's a matching query in [memoryCacheProvider] and then check [sqliteProvider].
   /// Does **not** query [remoteProvider].
-  Future<bool> exists<_Model extends _RepositoryModel>({
+  Future<bool> exists<TModel extends RepositoryModel>({
     Query? query,
   }) async {
-    if (memoryCacheProvider.canFind<_Model>(query)) {
-      final results = memoryCacheProvider.get<_Model>(query: query, repository: this);
+    if (memoryCacheProvider.canFind<TModel>(query)) {
+      final results = memoryCacheProvider.get<TModel>(query: query, repository: this);
 
       return results?.isNotEmpty ?? false;
     }
 
-    return await sqliteProvider.exists<_Model>(query: query, repository: this);
+    return await sqliteProvider.exists<TModel>(query: query, repository: this);
   }
 
-  /// Load association from SQLite first; if the [_Model] hasn't been loaded previously,
+  /// Load association from SQLite first; if the [TModel] hasn't been loaded previously,
   /// fetch it from [remoteProvider] and hydrate SQLite.
   /// For available query providerArgs see [remoteProvider#get] [SqliteProvider.get].
   ///
@@ -168,45 +168,45 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
-  Future<List<_Model>> get<_Model extends _RepositoryModel>({
+  Future<List<TModel>> get<TModel extends RepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
   }) async {
     final withPolicy = applyPolicyToQuery(query, get: policy);
     query = (withPolicy ?? Query()).copyWith(action: QueryAction.get);
-    logger.finest('#get: $_Model $query');
+    logger.finest('#get: $TModel $query');
 
-    if (memoryCacheProvider.canFind<_Model>(query)) {
-      final memoryCacheResults = memoryCacheProvider.get<_Model>(query: query, repository: this);
+    if (memoryCacheProvider.canFind<TModel>(query)) {
+      final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
 
       if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults!;
     }
 
-    final modelExists = await exists<_Model>(query: query);
+    final modelExists = await exists<TModel>(query: query);
 
     final requireRemote = policy == OfflineFirstGetPolicy.awaitRemote;
     final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
     final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
 
     if (requireRemote || (hydrateUnexisting && !modelExists)) {
-      return await hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
+      return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
     } else if (alwaysHydrate) {
       // start round trip for fresh data
       // ignore: unawaited_futures
-      hydrate<_Model>(query: query, deserializeSqlite: !seedOnly);
+      hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
     }
 
     return await sqliteProvider
-        .get<_Model>(query: query, repository: this)
+        .get<TModel>(query: query, repository: this)
         // cache this query
-        .then((m) => memoryCacheProvider.hydrate<_Model>(m));
+        .then((m) => memoryCacheProvider.hydrate<TModel>(m));
   }
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
-  Future<List<_Model>?> getAssociation<_Model extends _RepositoryModel>(Query query) async {
-    logger.finest('#getAssociation: $_Model $query');
-    final results = await get<_Model>(query: query);
+  Future<List<TModel>?> getAssociation<TModel extends RepositoryModel>(Query query) async {
+    logger.finest('#getAssociation: $TModel $query');
+    final results = await get<TModel>(query: query);
     if (results.isEmpty) return null;
     return results;
   }
@@ -215,13 +215,13 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// Useful for large queries or remote results.
   ///
   /// [batchSize] will map to the [query]'s `limit`, and the [query]'s pagination number will be
-  /// incremented in `query.providerArgs['offset']`. The endpoint for [_Model] should expect these
+  /// incremented in `query.providerArgs['offset']`. The endpoint for [TModel] should expect these
   /// arguments. The stream will recurse until the return size does not equal [batchSize].
   ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
-  Future<List<_Model>> getBatched<_Model extends _RepositoryModel>({
+  Future<List<TModel>> getBatched<TModel extends RepositoryModel>({
     int batchSize = 50,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -232,17 +232,17 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     final queryWithLimit = query.copyWith(
       providerArgs: {...query.providerArgs, 'limit': batchSize},
     );
-    final total = <_Model>[];
+    final total = <TModel>[];
 
     /// Retrieve up to [batchSize] starting at [offset]. Recursively retrieves the next
     /// [batchSize] until no more results are retrieved.
-    Future<List<_Model>> getFrom(int offset) async {
+    Future<List<TModel>> getFrom(int offset) async {
       // add offset to the existing query
       final recursiveQuery = queryWithLimit.copyWith(
         providerArgs: {...queryWithLimit.providerArgs, 'offset': offset},
       );
 
-      final results = await get<_Model>(
+      final results = await get<TModel>(
         query: recursiveQuery,
         policy: policy,
         seedOnly: seedOnly,
@@ -282,9 +282,9 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
   @protected
   @visibleForTesting
-  Future<void> notifySubscriptionsWithLocalData<_Model extends _RepositoryModel>(
+  Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>(
       {bool notifyWhenEmpty = true}) async {
-    final queriesControllers = subscriptions[_Model]?.entries;
+    final queriesControllers = subscriptions[TModel]?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
     for (final queryController in queriesControllers!) {
@@ -292,17 +292,17 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       final controller = queryController.value;
       if (controller.isClosed || controller.isPaused) continue;
 
-      if (query == null || memoryCacheProvider.canFind<_Model>(query)) {
-        final results = memoryCacheProvider.get<_Model>(query: query);
+      if (query == null || memoryCacheProvider.canFind<TModel>(query)) {
+        final results = memoryCacheProvider.get<TModel>(query: query);
         if (!controller.isClosed && (results?.isNotEmpty ?? false)) controller.add(results!);
       }
 
-      final existsInSqlite = await sqliteProvider.exists<_Model>(query: query, repository: this);
+      final existsInSqlite = await sqliteProvider.exists<TModel>(query: query, repository: this);
       if (existsInSqlite) {
-        final results = await sqliteProvider.get<_Model>(query: query, repository: this);
+        final results = await sqliteProvider.get<TModel>(query: query, repository: this);
         if (!controller.isClosed) controller.add(results);
       } else if (notifyWhenEmpty) {
-        if (!controller.isClosed) controller.add(<_Model>[]);
+        if (!controller.isClosed) controller.add(<TModel>[]);
       }
     }
   }
@@ -318,34 +318,34 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   ///
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData]. Because only local data
-  /// is supplied for [subscribe], it will not fetch [_Model] if no local models exist.
+  /// is supplied for [subscribe], it will not fetch [TModel] if no local models exist.
   ///
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
-  Stream<List<_Model>> subscribe<_Model extends _RepositoryModel>({
+  Stream<List<TModel>> subscribe<TModel extends RepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
   }) {
     query ??= Query();
-    if (subscriptions[_Model]?[query] != null) {
-      return subscriptions[_Model]![query]!.stream as Stream<List<_Model>>;
+    if (subscriptions[TModel]?[query] != null) {
+      return subscriptions[TModel]![query]!.stream as Stream<List<TModel>>;
     }
 
-    final controller = StreamController<List<_Model>>(
+    final controller = StreamController<List<TModel>>(
       onCancel: () async {
-        subscriptions[_Model]?[query]?.close();
-        subscriptions[_Model]?.remove(query);
-        if (subscriptions[_Model]?.isEmpty ?? false) {
-          subscriptions.remove(_Model);
+        subscriptions[TModel]?[query]?.close();
+        subscriptions[TModel]?.remove(query);
+        if (subscriptions[TModel]?.isEmpty ?? false) {
+          subscriptions.remove(TModel);
         }
       },
     );
 
-    subscriptions[_Model] ??= {};
-    subscriptions[_Model]?[query] = controller;
+    subscriptions[TModel] ??= {};
+    subscriptions[TModel]?[query] = controller;
 
-    get<_Model>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((results) {
+    get<TModel>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((results) {
       if (!controller.isClosed) controller.add(results);
     });
 
@@ -354,8 +354,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
 
   /// Send a model to [remoteProvider] and [hydrate].
   @override
-  Future<_Model> upsert<_Model extends _RepositoryModel>(
-    _Model instance, {
+  Future<TModel> upsert<TModel extends RepositoryModel>(
+    TModel instance, {
     Query? query,
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
   }) async {
@@ -369,16 +369,16 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     final requireRemote = policy == OfflineFirstUpsertPolicy.requireRemote;
 
     if (optimisticLocal) {
-      instance.primaryKey = await _upsertLocal<_Model>(instance, query: query);
-      await notifySubscriptionsWithLocalData<_Model>();
+      instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
+      await notifySubscriptionsWithLocalData<TModel>();
     }
 
     try {
-      await remoteProvider.upsert<_Model>(instance, query: query, repository: this);
+      await remoteProvider.upsert<TModel>(instance, query: query, repository: this);
 
       if (requireRemote) {
-        instance.primaryKey = await _upsertLocal<_Model>(instance, query: query);
-        await notifySubscriptionsWithLocalData<_Model>();
+        instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
+        await notifySubscriptionsWithLocalData<TModel>();
       }
     } on ClientException catch (e) {
       logger.warning('#upsert client failure: $e');
@@ -389,20 +389,19 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
     }
 
     // ignore: unawaited_futures
-    if (autoHydrate) hydrate<_Model>(query: query);
+    if (autoHydrate) hydrate<TModel>(query: query);
 
     return instance;
   }
 
-  Future<int?> _upsertLocal<_Model extends _RepositoryModel>(_Model instance,
-      {Query? query}) async {
-    final modelId = await sqliteProvider.upsert<_Model>(
+  Future<int?> _upsertLocal<TModel extends RepositoryModel>(TModel instance, {Query? query}) async {
+    final modelId = await sqliteProvider.upsert<TModel>(
       instance,
       query: query,
       repository: this,
     );
     instance.primaryKey = modelId;
-    memoryCacheProvider.upsert<_Model>(instance, query: query);
+    memoryCacheProvider.upsert<TModel>(instance, query: query);
     return modelId;
   }
 
@@ -412,42 +411,42 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable. Defaults to `true`.
   @protected
-  Future<List<_Model>> hydrate<_Model extends _RepositoryModel>({
+  Future<List<TModel>> hydrate<TModel extends RepositoryModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
     try {
-      logger.finest('#hydrate: $_Model $query');
-      final modelsFromRemote = await remoteProvider.get<_Model>(query: query, repository: this);
+      logger.finest('#hydrate: $TModel $query');
+      final modelsFromRemote = await remoteProvider.get<TModel>(query: query, repository: this);
 
       if (modelsFromRemote != null) {
-        final modelsIntoSqlite = await storeRemoteResults<_Model>(modelsFromRemote);
-        final modelsIntoMemory = memoryCacheProvider.hydrate<_Model>(modelsIntoSqlite);
+        final modelsIntoSqlite = await storeRemoteResults<TModel>(modelsFromRemote);
+        final modelsIntoMemory = memoryCacheProvider.hydrate<TModel>(modelsIntoSqlite);
 
         if (!deserializeSqlite) return modelsIntoMemory;
       }
 
       return await sqliteProvider
-          .get<_Model>(query: query, repository: this)
-          .then((d) => memoryCacheProvider.hydrate<_Model>(d));
+          .get<TModel>(query: query, repository: this)
+          .then((d) => memoryCacheProvider.hydrate<TModel>(d));
     } on ClientException catch (e) {
       logger.warning('#hydrate client failure: $e');
     } on SocketException catch (e) {
       logger.warning('#hydrate socket failure: $e');
     }
 
-    return <_Model>[];
+    return <TModel>[];
   }
 
   /// Save response results to SQLite.
   ///
-  /// When `true`, [shouldNotify] will check if any subscribers of [_Model] are affected by
+  /// When `true`, [shouldNotify] will check if any subscribers of [TModel] are affected by
   /// the new [models]. See [notifySubscriptionsWithLocalData].
   @protected
   @visibleForTesting
-  Future<List<_Model>> storeRemoteResults<_Model extends _RepositoryModel>(List<_Model> models,
+  Future<List<TModel>> storeRemoteResults<TModel extends RepositoryModel>(List<TModel> models,
       {bool shouldNotify = true}) async {
-    final modelIds = models.map((m) => sqliteProvider.upsert<_Model>(m, repository: this));
+    final modelIds = models.map((m) => sqliteProvider.upsert<TModel>(m, repository: this));
     final results = await Future.wait<int?>(modelIds, eagerError: true);
 
     MapEntry modelWithPrimaryKey(index, id) {
@@ -456,8 +455,8 @@ abstract class OfflineFirstRepository<_RepositoryModel extends OfflineFirstModel
       return MapEntry(index, model);
     }
 
-    final savedResults = results.asMap().map(modelWithPrimaryKey).values.toList().cast<_Model>();
-    if (shouldNotify) await notifySubscriptionsWithLocalData<_Model>();
+    final savedResults = results.asMap().map(modelWithPrimaryKey).values.toList().cast<TModel>();
+    if (shouldNotify) await notifySubscriptionsWithLocalData<TModel>();
     return savedResults;
   }
 }

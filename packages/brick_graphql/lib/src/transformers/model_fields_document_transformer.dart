@@ -8,7 +8,7 @@ import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart' as lang;
 
-class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
+class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
   final GraphqlAdapter adapter;
 
   /// Generates a document based on the [GraphqlAdapter#fieldsToGraphqlRuntimeDefinition]
@@ -26,7 +26,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     final operationFunctionName = (node.selectionSet.selections.first as FieldNode).name.value;
 
     /// The name following `query` or `mutation` (e.g. `mutation UpsertPerson`)
-    final operationNameNode = node.name?.value ?? _Model.toString();
+    final operationNameNode = node.name?.value ?? TModel.toString();
     final variables = GraphqlVariable.fromOperationNode(node);
 
     return DocumentNode(
@@ -93,7 +93,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   ModelFieldsDocumentTransformer({
     required this.modelDictionary,
     required DocumentNode document,
-  })  : adapter = modelDictionary.adapterFor[_Model]!,
+  })  : adapter = modelDictionary.adapterFor[TModel]!,
         sourceDocument = document;
 
   /// Recursively request nodes from GraphQL as well as any deeply-nested associations.
@@ -141,11 +141,11 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   }
 
   /// Merge the operation headers from [document] and the generated `#document` nodes.
-  static ModelFieldsDocumentTransformer<_Model> fromDocument<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<TModel> fromDocument<TModel extends GraphqlModel>(
     DocumentNode document,
     GraphqlModelDictionary modelDictionary,
   ) {
-    return ModelFieldsDocumentTransformer<_Model>(
+    return ModelFieldsDocumentTransformer<TModel>(
       document: document,
       modelDictionary: modelDictionary,
     );
@@ -154,24 +154,24 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
   /// Instead of a [DocumentNode], the raw document is used.
   /// Only the operation information is retrieved from the supplied document;
   /// field nodes are ignored.
-  static ModelFieldsDocumentTransformer<_Model> fromString<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<TModel> fromString<TModel extends GraphqlModel>(
     String existingOperation,
     GraphqlModelDictionary modelDictionary,
   ) =>
-      fromDocument<_Model>(lang.parseString(existingOperation), modelDictionary);
+      fromDocument<TModel>(lang.parseString(existingOperation), modelDictionary);
 
   /// Assign and determine what operation to make against the request
-  static ModelFieldsDocumentTransformer<_Model>? defaultOperation<_Model extends GraphqlModel>(
+  static ModelFieldsDocumentTransformer<TModel>? defaultOperation<TModel extends GraphqlModel>(
     GraphqlModelDictionary modelDictionary, {
     required QueryAction action,
-    _Model? instance,
+    TModel? instance,
     Query? query,
   }) {
     if (query?.providerArgs['document'] != null) {
-      return fromString<_Model>(query!.providerArgs['document'], modelDictionary);
+      return fromString<TModel>(query!.providerArgs['document'], modelDictionary);
     }
 
-    final adapter = modelDictionary.adapterFor[_Model]!;
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final operationTransformer = adapter.queryOperationTransformer == null
         ? null
         : adapter.queryOperationTransformer!(query, instance);
@@ -179,7 +179,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
     switch (action) {
       case QueryAction.get:
         if (operationTransformer?.get?.document != null) {
-          return fromDocument<_Model>(
+          return fromDocument<TModel>(
             lang.parseString(operationTransformer!.get!.document!),
             modelDictionary,
           );
@@ -189,7 +189,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
       case QueryAction.update:
       case QueryAction.upsert:
         if (operationTransformer?.upsert?.document != null) {
-          return fromDocument<_Model>(
+          return fromDocument<TModel>(
             lang.parseString(operationTransformer!.upsert!.document!),
             modelDictionary,
           );
@@ -197,7 +197,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
         return null;
       case QueryAction.delete:
         if (operationTransformer?.delete?.document != null) {
-          return fromDocument<_Model>(
+          return fromDocument<TModel>(
             lang.parseString(operationTransformer!.delete!.document!),
             modelDictionary,
           );
@@ -205,7 +205,7 @@ class ModelFieldsDocumentTransformer<_Model extends GraphqlModel> {
         return null;
       case QueryAction.subscribe:
         if (operationTransformer?.subscribe?.document != null) {
-          return fromDocument<_Model>(
+          return fromDocument<TModel>(
             lang.parseString(operationTransformer!.subscribe!.document!),
             modelDictionary,
           );

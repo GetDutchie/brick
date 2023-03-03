@@ -52,7 +52,7 @@ class RestOfflineQueueClient extends http.BaseClient {
 
     /// When the request is null or an error has occurred, an error-like
     /// response is required because null is unacceptable in [BaseClient]
-    final _genericErrorResponse = http.StreamedResponse(
+    final genericErrorResponse = http.StreamedResponse(
       Stream.fromFuture(Future.value('unknown internal error'.codeUnits)),
       501,
     );
@@ -76,7 +76,7 @@ class RestOfflineQueueClient extends http.BaseClient {
       await cacheItem.unlock(db);
     }
 
-    return _genericErrorResponse;
+    return genericErrorResponse;
   }
 
   /// Parse the returned response and determine if it needs to be removed from the queue.

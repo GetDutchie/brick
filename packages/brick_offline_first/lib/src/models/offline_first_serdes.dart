@@ -5,25 +5,25 @@
 /// This is best used to `extends` non-primitive types that are not associations but still
 /// need to be serialized and deserialized as a field.
 ///
-/// Type parameters **are required**. For [_SqliteSerializeType] (second arg), these may be any of the
-/// following: `bool`, `DateTime`, `double`, `int`, `num`, `String`. [_RemoteSerializeType]
+/// Type parameters **are required**. For [SqliteSerializeType] (second arg), these may be any of the
+/// following: `bool`, `DateTime`, `double`, `int`, `num`, `String`. [RemoteSerializeType]
 /// should support the same types in addition to `Iterable` and `Map`s digestible by [jsonEncode]
 /// and [jsonDecode] unless otherwise specified.
 ///
 /// Declare `factory` methods `fromSqlite` and `from<REMOTE PROIVDER(s)>` (like `fromRest`) to deserialize.
 /// Both use one unnamed arg with a type post-`jsonDecode`.
-abstract class OfflineFirstSerdes<_RemoteSerializeType, _SqliteSerializeType> {
+abstract class OfflineFirstSerdes<RemoteSerializeType, SqliteSerializeType> {
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
-  _RemoteSerializeType? toGraphql() => null;
+  RemoteSerializeType? toGraphql() => null;
 
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
-  _RemoteSerializeType? toRest() => null;
+  RemoteSerializeType? toRest() => null;
 
   /// Must be one of the following: `bool`, `DateTime`, `double`, `int`, `num`, `String`,
   /// or another `Iterable` digestible by `jsonEncode`.
   ///
-  /// Often, [_SqliteSerializeType] is a `String` and `toSqlite` performs `jsonEncode(toRest())`.
-  _SqliteSerializeType? toSqlite() => null;
+  /// Often, [SqliteSerializeType] is a `String` and `toSqlite` performs `jsonEncode(toRest())`.
+  SqliteSerializeType? toSqlite() => null;
 
-  // factory.fromSqlite(_SqliteSerializeType data) {}
+  // factory.fromSqlite(SqliteSerializeType data) {}
 }

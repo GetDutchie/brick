@@ -37,6 +37,7 @@ class _OfflineFirstTestSerialize extends RestSerialize
   final OfflineFirstFields offlineFirstFields;
 
   @override
+  // ignore: overridden_fields
   final providerName = 'Test';
 
   _OfflineFirstTestSerialize(ClassElement element, RestFields fields,

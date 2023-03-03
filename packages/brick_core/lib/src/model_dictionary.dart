@@ -7,10 +7,10 @@ import 'package:brick_core/src/model.dart';
 /// It should only be instantiated once, even if multiple [Provider]s are used. The end instantiation
 /// is left to the end user in case `const` (favored over `final`) can be used for
 /// all [Adapter] mappings.
-abstract class ModelDictionary<_ImplementationModel extends Model,
-    _ImplementationAdapter extends Adapter<_ImplementationModel>> {
+abstract class ModelDictionary<ImplementationModel extends Model,
+    ImplementationAdapter extends Adapter<ImplementationModel>> {
   /// A generated map associating models to adapters
-  final Map<Type, _ImplementationAdapter> adapterFor;
+  final Map<Type, ImplementationAdapter> adapterFor;
 
   const ModelDictionary(this.adapterFor);
 }

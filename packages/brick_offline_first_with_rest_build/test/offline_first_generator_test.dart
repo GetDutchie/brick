@@ -3,10 +3,10 @@ import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_
 import 'package:test/test.dart';
 import 'package:brick_build_test/brick_build_test.dart';
 
-import 'offline_first_generator/test_rest_config_endpoint.dart' as _$restConfigEndpoint;
-import 'offline_first_generator/test_rest_config_field_rename.dart' as _$restConfigFieldRename;
-import 'offline_first_generator/test_custom_serdes.dart' as _$customSerdes;
-import 'offline_first_generator/test_specify_field_name.dart' as _$specifyFieldName;
+import 'offline_first_generator/test_rest_config_endpoint.dart' as restConfigEndpoint;
+import 'offline_first_generator/test_rest_config_field_rename.dart' as restConfigFieldRename;
+import 'offline_first_generator/test_custom_serdes.dart' as customSerdes;
+import 'offline_first_generator/test_specify_field_name.dart' as specifyFieldName;
 
 final _generator = OfflineFirstWithRestGenerator();
 final folder = 'offline_first_generator';
@@ -16,25 +16,25 @@ void main() {
   group('OfflineFirstWithRestGenerator', () {
     group('#generate', () {
       test('CustomSerdes', () async {
-        await generateExpectation('custom_serdes', _$customSerdes.output);
+        await generateExpectation('custom_serdes', customSerdes.output);
       });
     });
 
     group('@ConnectOfflineFirstWithRest', () {
       test('restSerializable#endpoint', () async {
-        await generateAdapterExpectation('rest_config_endpoint', _$restConfigEndpoint.output);
+        await generateAdapterExpectation('rest_config_endpoint', restConfigEndpoint.output);
       });
 
       test('restSerializable#nullable', () {}, skip: 'Write implementation and then write test');
 
       test('restSerializable#fieldRename', () async {
-        await generateExpectation('rest_config_field_rename', _$restConfigFieldRename.output);
+        await generateExpectation('rest_config_field_rename', restConfigFieldRename.output);
       });
     });
 
     group('FieldSerializable', () {
       test('name', () async {
-        await generateExpectation('specify_field_name', _$specifyFieldName.output);
+        await generateExpectation('specify_field_name', specifyFieldName.output);
       });
     });
   });

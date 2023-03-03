@@ -36,8 +36,8 @@ class RestProvider implements Provider<RestModel> {
 
   /// Sends a DELETE request method to the endpoint
   @override
-  Future<http.Response?> delete<_Model extends RestModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null ? adapter.restRequest!(query, instance) : null;
 
     final url = request?.delete?.url;
@@ -58,8 +58,8 @@ class RestProvider implements Provider<RestModel> {
   }
 
   @override
-  Future<bool> exists<_Model extends RestModel>({query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<bool> exists<TModel extends RestModel>({query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null ? adapter.restRequest!(query, null) : null;
 
     final url = request?.get?.url;
@@ -80,12 +80,12 @@ class RestProvider implements Provider<RestModel> {
   /// (however, when defined, `topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
   /// regardless of the first key (in the example, `{"id"...}`).
   @override
-  Future<List<_Model>> get<_Model extends RestModel>({query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null ? adapter.restRequest!(query, null) : null;
 
     final url = request?.get?.url;
-    if (url == null) return <_Model>[];
+    if (url == null) return <TModel>[];
 
     final resp = await _brickRequestToHttpRequest(
       request!.get!,
@@ -103,9 +103,9 @@ class RestProvider implements Provider<RestModel> {
             return adapter.fromRest(msg, provider: this, repository: repository);
           })
           .toList()
-          .cast<Future<_Model>>();
+          .cast<Future<TModel>>();
 
-      return await Future.wait<_Model>(results);
+      return await Future.wait<TModel>(results);
     } else {
       logger.warning('#get: url=$url statusCode=${resp.statusCode} body=${resp.body}');
       throw RestException(resp);
@@ -122,8 +122,8 @@ class RestProvider implements Provider<RestModel> {
   /// It is recommended to use `RestRequest#topLevelKey` instead to simplify queries
   /// (however, when defined in providerArgs, `topLevelKey` is prioritized).
   @override
-  Future<http.Response?> upsert<_Model extends RestModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final request = adapter.restRequest != null ? adapter.restRequest!(query, instance) : null;
 

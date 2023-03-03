@@ -4,8 +4,8 @@ import 'package:brick_json_generators/json_serdes_generator.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
 
-mixin JsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
-    on JsonSerdesGenerator<_Model, _Annotation> {
+mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
+    on JsonSerdesGenerator<TModel, Annotation> {
   @override
   final doesDeserialize = false;
 

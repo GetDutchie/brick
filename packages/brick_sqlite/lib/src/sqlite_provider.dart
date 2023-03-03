@@ -53,8 +53,8 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Remove record from SQLite. [query] is ignored.
   @override
-  Future<int> delete<_Model extends SqliteModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<int> delete<TModel extends SqliteModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
 
@@ -71,15 +71,15 @@ class SqliteProvider implements Provider<SqliteModel> {
     );
   }
 
-  /// Returns `true` if [_Model] exists in SQLite.
+  /// Returns `true` if [TModel] exists in SQLite.
   ///
   /// If [query.where] is `null`, existence for **any** record is executed.
   @override
-  Future<bool> exists<_Model extends SqliteModel>({
+  Future<bool> exists<TModel extends SqliteModel>({
     Query? query,
     ModelRepository<SqliteModel>? repository,
   }) async {
-    final sqlQuery = QuerySqlTransformer<_Model>(
+    final sqlQuery = QuerySqlTransformer<TModel>(
       modelDictionary: modelDictionary,
       query: query,
       selectStatement: false,
@@ -121,15 +121,15 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   @override
-  Future<List<_Model>> get<_Model extends SqliteModel>({
+  Future<List<TModel>> get<TModel extends SqliteModel>({
     query,
     repository,
   }) async {
-    final sqlQuery = QuerySqlTransformer<_Model>(
+    final sqlQuery = QuerySqlTransformer<TModel>(
       modelDictionary: modelDictionary,
       query: query,
     );
-    return await rawGet<_Model>(
+    return await rawGet<TModel>(
       sqlQuery.statement,
       sqlQuery.values,
       repository: repository,
@@ -205,12 +205,12 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Fetch results for model with a custom SQL statement.
   /// It is recommended to use [get] whenever possible. **Advanced use only**.
-  Future<List<_Model>> rawGet<_Model extends SqliteModel>(
+  Future<List<TModel>> rawGet<TModel extends SqliteModel>(
     String sql,
     List arguments, {
     ModelRepository<SqliteModel>? repository,
   }) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+    final adapter = modelDictionary.adapterFor[TModel]!;
 
     final results = await _lock.synchronized(() async {
       return (await getDb()).rawQuery(sql, arguments);
@@ -218,12 +218,12 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     if (results.isEmpty || results.first.isEmpty) {
       // otherwise an empty sql result will generate a blank model
-      return <_Model>[];
+      return <TModel>[];
     }
 
-    return await Future.wait<_Model>(
+    return await Future.wait<TModel>(
       results.map(
-        (row) => adapter.fromSqlite(row, provider: this, repository: repository) as Future<_Model>,
+        (row) => adapter.fromSqlite(row, provider: this, repository: repository) as Future<TModel>,
       ),
     );
   }
@@ -272,8 +272,8 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
   @override
-  Future<int?> upsert<_Model extends SqliteModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<int?> upsert<TModel extends SqliteModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
 
     await adapter.beforeSave(instance, provider: this, repository: repository);

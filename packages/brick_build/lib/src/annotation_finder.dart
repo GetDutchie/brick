@@ -5,20 +5,20 @@ import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/constant/value.dart';
 
-/// Find an [_Annotation] per field.
-abstract class AnnotationFinder<_Annotation extends Object> {
-  final _columnChecker = TypeChecker.fromRuntime(_Annotation);
+/// Find an [Annotation] per field.
+abstract class AnnotationFinder<Annotation extends Object> {
+  final _columnChecker = TypeChecker.fromRuntime(Annotation);
 
-  /// Holder of previously generated [_Annotation]s
-  final _columnExpando = Expando<_Annotation>();
+  /// Holder of previously generated [Annotation]s
+  final _columnExpando = Expando<Annotation>();
 
   AnnotationFinder();
 
-  /// Given a field element, retrieve the [_Annotation] equivalent
-  _Annotation annotationForField(FieldElement field) => _columnExpando[field] ??= from(field);
+  /// Given a field element, retrieve the [Annotation] equivalent
+  Annotation annotationForField(FieldElement field) => _columnExpando[field] ??= from(field);
 
-  /// Create a [_Annotation] based on a [FieldElement]
-  _Annotation from(FieldElement element);
+  /// Create a [Annotation] based on a [FieldElement]
+  Annotation from(FieldElement element);
 
   /// Find annotation for [FieldElement] if one exists
   DartObject? objectForField(FieldElement field) {

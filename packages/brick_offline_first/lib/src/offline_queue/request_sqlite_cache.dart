@@ -3,12 +3,12 @@ import 'package:meta/meta.dart';
 import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseExecutor;
 
 /// Serialize and Deserialize a [Request] from SQLite.
-abstract class RequestSqliteCache<_Request> {
+abstract class RequestSqliteCache<TRequest> {
   final String attemptColumn;
   final String createdAtColumn;
   final String lockedColumn;
   final String primaryKeyColumn;
-  final _Request request;
+  final TRequest request;
 
   /// Columns used to uniquely identify the request (e.g. body, headers, url, method).
   final List<String> requestColumns;
@@ -98,7 +98,7 @@ abstract class RequestSqliteCache<_Request> {
   }
 
   /// Builds SQLite-row into a [request]
-  _Request sqliteToRequest(Map<String, dynamic> data);
+  TRequest sqliteToRequest(Map<String, dynamic> data);
 
   /// Builds request into a new SQLite-insertable row
   /// Only available if [request] was initialized from [fromRequest]

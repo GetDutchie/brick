@@ -9,8 +9,8 @@ import 'package:brick_core/field_serializable.dart';
 /// Adds support for siblings and serdes.
 /// It's best to extend the original generator
 /// (e.g. `class OfflineFirstRestSerialize extends RestSerialize with OfflineFirstJsonSerialize`)
-mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldSerializable>
-    on JsonSerialize<_Model, _Annotation> {
+mixin OfflineFirstJsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
+    on JsonSerialize<TModel, Annotation> {
   OfflineFirstFields get offlineFirstFields;
 
   @override
@@ -72,8 +72,8 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
-        final _hasSerializer = hasSerializer(checker.argType);
-        if (_hasSerializer) {
+        final doesHaveSerializer = hasSerializer(checker.argType);
+        if (doesHaveSerializer) {
           final nullableSuffix = checker.isNullable ? '?' : '';
           return '$fieldValue$nullableSuffix.map((${SharedChecker.withoutNullability(checker.argType)} c) => c.$serializeMethod()).toList()';
         }
@@ -101,8 +101,8 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
     }
 
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      final _hasSerializer = hasSerializer(field.type);
-      if (_hasSerializer) {
+      final doesHaveSerializer = hasSerializer(field.type);
+      if (doesHaveSerializer) {
         final nullableSuffix = checker.isNullable ? '?' : '';
         return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
@@ -116,8 +116,8 @@ mixin OfflineFirstJsonSerialize<_Model extends Model, _Annotation extends FieldS
 /// Adds support for siblings and serdes.
 /// It's best to extend the original generator
 /// (e.g. `class OfflineFirstRestDeserialize extends RestDeserialize with OfflineFirstJsonDeserialize`)
-mixin OfflineFirstJsonDeserialize<_Model extends Model, _Annotation extends FieldSerializable>
-    on JsonDeserialize<_Model, _Annotation> {
+mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends FieldSerializable>
+    on JsonDeserialize<TModel, Annotation> {
   OfflineFirstFields get offlineFirstFields;
 
   @override
@@ -188,8 +188,8 @@ mixin OfflineFirstJsonDeserialize<_Model extends Model, _Annotation extends Fiel
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
-        final _hasConstructor = hasConstructor(checker.argType);
-        if (_hasConstructor) {
+        final doesHaveConstructor = hasConstructor(checker.argType);
+        if (doesHaveConstructor) {
           final serializableType =
               argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
           final nullabilityOperator = checker.isNullable ? '?' : '';
@@ -217,8 +217,8 @@ mixin OfflineFirstJsonDeserialize<_Model extends Model, _Annotation extends Fiel
 
     // serializable non-adapter OfflineFirstModel, OfflineFirstSerdes
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      final _hasConstructor = hasConstructor(field.type);
-      if (_hasConstructor) {
+      final doesHaveConstructor = hasConstructor(field.type);
+      if (doesHaveConstructor) {
         return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue)';
       }
     }

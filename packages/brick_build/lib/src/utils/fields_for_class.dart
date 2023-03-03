@@ -4,15 +4,15 @@ import 'package:brick_build/src/annotation_finder.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Manages all fields of a [ClassElement]. Generously borrowed from JSON Serializable
-abstract class FieldsForClass<_FieldAnnotation extends Object> {
+abstract class FieldsForClass<FieldAnnotation extends Object> {
   /// The annotated element
   final ClassElement element;
 
   /// Searches for annotations on fields
-  AnnotationFinder<_FieldAnnotation> get finder;
+  AnnotationFinder<FieldAnnotation> get finder;
 
   /// Returns the annotation for a given field
-  _FieldAnnotation annotationForField(FieldElement element) => finder.annotationForField(element);
+  FieldAnnotation annotationForField(FieldElement element) => finder.annotationForField(element);
 
   /// Returns a [Set] of all instance [FieldElement] items for [element] and
   /// super classes, sorted first by their location in the inheritance hierarchy
