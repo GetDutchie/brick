@@ -5,6 +5,7 @@
 * **BREAKING CHANGE** Rename main export file to `brick_rest.dart`
 * **BREAKING CHANGE** replace `RestSerializable(endpoint:)` with `RestSerializable(requestTransformer:)`
 * Add `RestAdapter#restRequest`
+* **BREAKING CHANGE** `providerArgs['topLevelKey']` and `providerArgs['headers']` have been removed (use `'request'`) and `providerArgs['request']` now accepts a `RestRequest` instead of the HTTP method string.
 
 ## 1.1.1
 
