@@ -39,9 +39,9 @@ abstract class Migration {
 
   String get statement => upStatement;
 
-  String get upStatement => up.map((c) => c.statement).join(';\n') + ';';
+  String get upStatement => '${up.map((c) => c.statement).join(';\n')};';
 
-  String get downStatement => down.map((c) => c.statement).join(';\n') + ';';
+  String get downStatement => '${down.map((c) => c.statement).join(';\n')};';
 
   /// Convert `Column` to SQLite data types
   static String ofDefinition(Column definition) {

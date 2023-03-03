@@ -4,8 +4,8 @@ import 'package:brick_json_generators/json_serdes_generator.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
 
-mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializable>
-    on JsonSerdesGenerator<_Model, _Annotation> {
+mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable>
+    on JsonSerdesGenerator<TModel, Annotation> {
   @override
   final doesDeserialize = true;
 
@@ -86,7 +86,7 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
 
       // Iterable<fromJson>
       if (argTypeChecker.fromJsonConstructor != null) {
-        final klass = argTypeChecker.targetType.element2 as ClassElement;
+        final klass = argTypeChecker.targetType.element as ClassElement;
         final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
         final nullableSuffix = checker.isNullable ? '?' : '';
 
@@ -132,7 +132,7 @@ mixin JsonDeserialize<_Model extends Model, _Annotation extends FieldSerializabl
     } else if (checker.isMap) {
       return '$fieldValue$defaultValue';
     } else if (checker.fromJsonConstructor != null) {
-      final klass = checker.targetType.element2 as ClassElement;
+      final klass = checker.targetType.element as ClassElement;
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
       final output =

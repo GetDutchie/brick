@@ -9,20 +9,20 @@ class _DefaultGraphqlTransformer extends GraphqlQueryOperationTransformer {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class GraphqlAdapter<_Model extends Model> implements Adapter<_Model> {
+abstract class GraphqlAdapter<TModel extends Model> implements Adapter<TModel> {
   GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? get queryOperationTransformer =>
       _DefaultGraphqlTransformer.new;
 
   Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition;
 
-  Future<_Model> fromGraphql(
+  Future<TModel> fromGraphql(
     Map<String, dynamic> input, {
     required GraphqlProvider provider,
     ModelRepository<GraphqlModel>? repository,
   });
 
   Future<Map<String, dynamic>> toGraphql(
-    _Model input, {
+    TModel input, {
     required GraphqlProvider provider,
     ModelRepository<GraphqlModel>? repository,
   });

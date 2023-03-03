@@ -6,7 +6,7 @@ import 'package:brick_sqlite/src/sqlite_provider.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 
 /// Constructors that convert app models to and from Sqlite
-abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
+abstract class SqliteAdapter<TModel extends Model> implements Adapter<TModel> {
   /// Defaults to pluralized model name from the generator.
   /// If this property is changed after the table has been inserted,
   /// a [RenameTable] [MigrationCommand] must be included in the next [Migration].
@@ -16,7 +16,7 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// Useful to update or save associations. This is invoked **before**
   /// `SqliteModel#beforeSave`.
   Future<void> beforeSave(
-    _Model instance, {
+    TModel instance, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   }) async {}
@@ -25,18 +25,18 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// Useful to update or save associations. This is invoked **before**
   /// `SqliteModel#afterSave`.
   Future<void> afterSave(
-    _Model instance, {
+    TModel instance, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   }) async {}
 
-  Future<_Model> fromSqlite(
+  Future<TModel> fromSqlite(
     Map<String, dynamic> input, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
   Future<Map<String, dynamic>> toSqlite(
-    _Model input, {
+    TModel input, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
@@ -49,5 +49,5 @@ abstract class SqliteAdapter<_Model extends Model> implements Adapter<_Model> {
   /// in the query. Returns the Brick-defined primary key of the discovered record.
   ///
   /// [executor] accepts a `Database` or `Transaction`.
-  Future<int?> primaryKeyByUniqueColumns(_Model instance, DatabaseExecutor executor);
+  Future<int?> primaryKeyByUniqueColumns(TModel instance, DatabaseExecutor executor);
 }

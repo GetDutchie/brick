@@ -94,13 +94,13 @@ abstract class OfflineFirstWithRestRepository
   }
 
   @override
-  Future<bool> delete<_Model extends OfflineFirstWithRestModel>(
-    _Model instance, {
+  Future<bool> delete<TModel extends OfflineFirstWithRestModel>(
+    TModel instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
   }) async {
     try {
-      return await super.delete<_Model>(instance, policy: policy, query: query);
+      return await super.delete<TModel>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#delete rest failure: $e');
 
@@ -114,7 +114,7 @@ abstract class OfflineFirstWithRestRepository
   }
 
   @override
-  Future<List<_Model>> get<_Model extends OfflineFirstWithRestModel>({
+  Future<List<TModel>> get<TModel extends OfflineFirstWithRestModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     query,
     bool seedOnly = false,
@@ -130,7 +130,7 @@ abstract class OfflineFirstWithRestRepository
 
       if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
           policy != OfflineFirstGetPolicy.awaitRemote) {
-        return <_Model>[];
+        return <TModel>[];
       }
 
       throw OfflineFirstException(e);
@@ -159,14 +159,14 @@ abstract class OfflineFirstWithRestRepository
   /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
   /// Defaults `false`.
   @override
-  Future<_Model> upsert<_Model extends OfflineFirstWithRestModel>(
-    _Model instance, {
+  Future<TModel> upsert<TModel extends OfflineFirstWithRestModel>(
+    TModel instance, {
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,
     bool throwOnReattemptStatusCodes = false,
   }) async {
     try {
-      return await super.upsert<_Model>(instance, policy: policy, query: query);
+      return await super.upsert<TModel>(instance, policy: policy, query: query);
     } on RestException catch (e) {
       logger.warning('#upsert rest failure: $e');
       // since we know we'll reattempt this request, an exception does not need to be reported
@@ -180,7 +180,7 @@ abstract class OfflineFirstWithRestRepository
 
   @protected
   @override
-  Future<List<_Model>> hydrate<_Model extends OfflineFirstWithRestModel>({
+  Future<List<TModel>> hydrate<TModel extends OfflineFirstWithRestModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
@@ -190,6 +190,6 @@ abstract class OfflineFirstWithRestRepository
       logger.warning('#hydrate rest failure: $e');
     }
 
-    return <_Model>[];
+    return <TModel>[];
   }
 }

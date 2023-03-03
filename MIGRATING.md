@@ -35,6 +35,7 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
     ```
 * The minimum Dart version has been increased to 2.18
 * `providerArgs` in Brick Rest have changed: `'topLevelKey'` and `'headers'` have been removed (use `'request'`) and `'request'` now accepts a `RestRequest` instead of the HTTP method string.
+* `analyzer` is now `>= 5`
 
 ### Brick Offline First with Graphql
 

@@ -14,7 +14,7 @@ import 'package:brick_core/src/provider.dart';
 ///
 /// `implement`ing this class is not necessary. It's supplied as a standardized, opinionated way to
 /// structure your `Store`.
-abstract class ModelRepository<_ManagedModel extends Model> {
+abstract class ModelRepository<ManagedModel extends Model> {
   const ModelRepository();
 
   /// Delete a model from all [Provider]s.
@@ -23,7 +23,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
   // ignore: always_declare_return_types
-  delete<_Model extends _ManagedModel>(_Model instance, {Query query});
+  delete<TModel extends ManagedModel>(TModel instance, {Query query});
 
   /// Query for raw data from all [Provider]s.
   ///
@@ -31,7 +31,7 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
   // ignore: always_declare_return_types
-  get<_Model extends _ManagedModel>({Query query});
+  get<TModel extends ManagedModel>({Query query});
 
   /// Perform required setup work. For example, migrating a database, starting a queue,
   /// or authenticating with a [Provider]'s service.
@@ -44,24 +44,24 @@ abstract class ModelRepository<_ManagedModel extends Model> {
   /// be passed to the same provider method with a named argument (`repository: this`) to use in
   /// the [Adapter].
   // ignore: always_declare_return_types
-  upsert<_Model extends _ManagedModel>(_Model model, {Query query});
+  upsert<TModel extends ManagedModel>(TModel model, {Query query});
 }
 
 /// Helper for mono provider systems
-abstract class SingleProviderRepository<_Model extends Model> implements ModelRepository<_Model> {
+abstract class SingleProviderRepository<TModel extends Model> implements ModelRepository<TModel> {
   /// The only provider for the store
-  final Provider<_Model> provider;
+  final Provider<TModel> provider;
 
   const SingleProviderRepository(this.provider);
 
   /// Remove models from providers
   @override
-  FutureOr<bool> delete<T extends _Model>(T instance, {Query? query}) =>
+  FutureOr<bool> delete<T extends TModel>(T instance, {Query? query}) =>
       provider.delete<T>(instance, query: query, repository: this);
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<List<T>> get<T extends _Model>({Query? query}) =>
+  FutureOr<List<T>> get<T extends TModel>({Query? query}) =>
       provider.get<T>(query: query, repository: this);
 
   @override
@@ -69,6 +69,6 @@ abstract class SingleProviderRepository<_Model extends Model> implements ModelRe
 
   /// Query provider for raw data and convert to an app model
   @override
-  FutureOr<T> upsert<T extends _Model>(T instance, {Query? query}) =>
+  FutureOr<T> upsert<T extends TModel>(T instance, {Query? query}) =>
       provider.upsert<T>(instance, query: query, repository: this);
 }

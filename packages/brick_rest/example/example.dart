@@ -7,11 +7,6 @@ import 'package:brick_rest/brick_rest.dart';
 /// such as brick_offline_first_with_rest_build
 class UserAdapter extends RestAdapter<User> {
   @override
-  final fromKey = 'users';
-  @override
-  final toKey = 'user';
-
-  @override
   Future<User> fromRest(data, {provider, repository}) async {
     return User(
       name: data['name'],
@@ -24,9 +19,6 @@ class UserAdapter extends RestAdapter<User> {
       'name': instance.name,
     };
   }
-
-  @override
-  String restEndpoint({query, instance}) => '/users';
 }
 
 /// This value is always generated.

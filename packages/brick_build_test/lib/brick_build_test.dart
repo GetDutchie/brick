@@ -30,6 +30,7 @@ Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String fi
   return reader.annotatedWith(annotationChecker).first;
 }
 
+// ignore: subtype_of_sealed_class
 class MockBuildStep extends BuildStep {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

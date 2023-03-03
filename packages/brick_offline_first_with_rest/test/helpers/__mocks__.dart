@@ -43,11 +43,11 @@ class TestRepository extends OfflineFirstWithRestRepository {
   static TestRepository? _singleton;
 
   TestRepository._(
-    RestProvider _restProvider,
-    SqliteProvider _sqliteProvider,
+    RestProvider restProvider,
+    SqliteProvider sqliteProvider,
   ) : super(
-          restProvider: _restProvider,
-          sqliteProvider: _sqliteProvider,
+          restProvider: restProvider,
+          sqliteProvider: sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
           offlineQueueManager: RestRequestSqliteCacheManager(

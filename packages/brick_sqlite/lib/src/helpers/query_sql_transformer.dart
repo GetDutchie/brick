@@ -102,13 +102,13 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   }
 
   /// Recursively step through a `Where` or `WherePhrase` to ouput a condition for `WHERE`.
-  String _expandCondition(WhereCondition condition, [SqliteAdapter? _adapter]) {
-    _adapter ??= adapter;
+  String _expandCondition(WhereCondition condition, [SqliteAdapter? passedAdapter]) {
+    passedAdapter ??= adapter;
 
     // Begin a separate where phrase
     if (condition is WherePhrase) {
       final phrase = condition.conditions.fold<String>('', (acc, phraseCondition) {
-        return acc + _expandCondition(phraseCondition, _adapter);
+        return acc + _expandCondition(phraseCondition, passedAdapter);
       });
       if (phrase.isEmpty) return '';
 
@@ -116,12 +116,12 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       return ' $matcher ($phrase)';
     }
 
-    if (!_adapter.fieldsToSqliteColumns.containsKey(condition.evaluatedField)) {
+    if (!passedAdapter.fieldsToSqliteColumns.containsKey(condition.evaluatedField)) {
       throw ArgumentError(
           'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite');
     }
 
-    final definition = _adapter.fieldsToSqliteColumns[condition.evaluatedField]!;
+    final definition = passedAdapter.fieldsToSqliteColumns[condition.evaluatedField]!;
 
     /// Add an INNER JOINS statement to the existing list
     if (definition.association) {
@@ -159,12 +159,12 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     /// The value is still not at the column level, so the process must restart
     if (condition.value is WhereCondition) {
-      return _expandCondition(condition.value as WhereCondition, _adapter);
+      return _expandCondition(condition.value as WhereCondition, passedAdapter);
     }
 
     /// Finally add the column to the complete phrase
-    final sqliteColumn = _adapter.tableName != adapter.tableName || _innerJoins.isNotEmpty
-        ? '`${_adapter.tableName}`.${definition.columnName}'
+    final sqliteColumn = passedAdapter.tableName != adapter.tableName || _innerJoins.isNotEmpty
+        ? '`${passedAdapter.tableName}`.${definition.columnName}'
         : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
@@ -257,14 +257,14 @@ class WhereColumnFragment {
   }
 
   @protected
-  dynamic sqlifiedValue(dynamic _value, Compare compare) {
+  dynamic sqlifiedValue(dynamic value, Compare compare) {
     if (compare == Compare.contains || compare == Compare.doesNotContain) {
-      return '%$_value%';
+      return '%$value%';
     }
 
-    if (_value == null) return 'NULL';
+    if (value == null) return 'NULL';
 
-    return _value;
+    return value;
   }
 
   @override
@@ -312,7 +312,7 @@ class WhereColumnFragment {
       values.add(sqlifiedValue(conditionValue, condition.compare));
     });
 
-    return ' $matcher ' + wherePrepared.join(' $matcher ');
+    return ' $matcher ${wherePrepared.join(' $matcher ')}';
   }
 }
 

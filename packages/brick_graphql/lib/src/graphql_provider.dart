@@ -36,8 +36,8 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }) : logger = Logger('GraphqlProvider');
 
   @override
-  Future<bool> delete<_Model extends GraphqlModel>(instance, {query, repository}) async {
-    final request = GraphqlRequest<_Model>(
+  Future<bool> delete<TModel extends GraphqlModel>(instance, {query, repository}) async {
+    final request = GraphqlRequest<TModel>(
       action: QueryAction.delete,
       instance: instance,
       modelDictionary: modelDictionary,
@@ -52,8 +52,8 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<bool> exists<_Model extends GraphqlModel>({query, repository}) async {
-    final request = GraphqlRequest<_Model>(
+  Future<bool> exists<TModel extends GraphqlModel>({query, repository}) async {
+    final request = GraphqlRequest<TModel>(
       action: QueryAction.get,
       modelDictionary: modelDictionary,
       query: query,
@@ -67,55 +67,55 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<List<_Model>> get<_Model extends GraphqlModel>({query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
-    final request = GraphqlRequest<_Model>(
+  Future<List<TModel>> get<TModel extends GraphqlModel>({query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final request = GraphqlRequest<TModel>(
       action: QueryAction.get,
       modelDictionary: modelDictionary,
       query: query,
       variableNamespace: variableNamespace,
     ).request;
-    if (request == null) return <_Model>[];
+    if (request == null) return <TModel>[];
     await for (final resp in link.request(request)) {
-      if (resp.data?.values == null) return <_Model>[];
+      if (resp.data?.values == null) return <TModel>[];
       if (resp.data!.values.isEmpty || resp.data!.values.first == null) {
-        return <_Model>[];
+        return <TModel>[];
       }
 
       if (resp.data?.values.first is Iterable) {
         final results = resp.data?.values.first
             .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
             .toList()
-            .cast<Future<_Model>>();
+            .cast<Future<TModel>>();
 
-        return await Future.wait<_Model>(results);
+        return await Future.wait<TModel>(results);
       }
 
       if (resp.data?.values.first is Map) {
         return [
           await adapter.fromGraphql(resp.data?.values.first!,
-              provider: this, repository: repository) as _Model
+              provider: this, repository: repository) as TModel
         ];
       }
 
       return [
-        await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as _Model
+        await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as TModel
       ];
     }
-    return <_Model>[];
+    return <TModel>[];
   }
 
-  Stream<List<_Model>> subscribe<_Model extends GraphqlModel>(
+  Stream<List<TModel>> subscribe<TModel extends GraphqlModel>(
       {Query? query, ModelRepository<GraphqlModel>? repository}) async* {
-    final adapter = modelDictionary.adapterFor[_Model]!;
-    final request = GraphqlRequest<_Model>(
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final request = GraphqlRequest<TModel>(
       action: QueryAction.subscribe,
       modelDictionary: modelDictionary,
       query: query,
       variableNamespace: variableNamespace,
     ).request;
     if (request == null) {
-      yield <_Model>[];
+      yield <TModel>[];
       return;
     }
     await for (final response in link.request(request)) {
@@ -123,22 +123,22 @@ class GraphqlProvider extends Provider<GraphqlModel> {
         final results = response.data?.values.first
             .map((v) => adapter.fromGraphql(v, provider: this, repository: repository))
             .toList()
-            .cast<Future<_Model>>();
+            .cast<Future<TModel>>();
 
-        yield await Future.wait<_Model>(results);
+        yield await Future.wait<TModel>(results);
       } else if (response.data != null) {
         final result =
             await adapter.fromGraphql(response.data!, provider: this, repository: repository);
-        yield [result as _Model];
+        yield [result as TModel];
       }
     }
   }
 
   @override
-  Future<Response?> upsert<_Model extends GraphqlModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[_Model]!;
+  Future<Response?> upsert<TModel extends GraphqlModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final variables = await adapter.toGraphql(instance, provider: this, repository: repository);
-    final request = GraphqlRequest<_Model>(
+    final request = GraphqlRequest<TModel>(
       action: QueryAction.upsert,
       instance: instance,
       modelDictionary: modelDictionary,

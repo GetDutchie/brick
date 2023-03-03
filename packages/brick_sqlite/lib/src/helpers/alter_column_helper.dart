@@ -40,7 +40,7 @@ class AlterColumnHelper {
   }
 
   /// Create new table with updated column data
-  List<Map<String, dynamic>> newColumns(List<Map<String, dynamic>> columns) {
+  List<Map<String, dynamic>> _newColumns(List<Map<String, dynamic>> columns) {
     Map<String, dynamic>? convertColumn(Map<String, dynamic> column) {
       final newColumn = Map<String, dynamic>.from(column);
 
@@ -73,7 +73,7 @@ class AlterColumnHelper {
   }
 
   /// Given new columns, create the SQLite statement
-  String newColumnsExpression(List<Map<String, dynamic>> columns) {
+  String _newColumnsExpression(List<Map<String, dynamic>> columns) {
     return columns.map((Map<String, dynamic> column) {
       final definition = [column['name'] as String, column['type'] as String];
 
@@ -105,10 +105,10 @@ class AlterColumnHelper {
     }
 
     final columns = await tableInfo(db);
-    final _newColumns = newColumns(columns);
-    final _newColumnsExpression = newColumnsExpression(_newColumns);
+    final newColumns = _newColumns(columns);
+    final newColumnsExpression = _newColumnsExpression(newColumns);
     final oldColumnNames = columns.map((c) => c['name']).join(', ');
-    final newColumnNames = _newColumns.map((c) => c['name']).join(', ');
+    final newColumnNames = newColumns.map((c) => c['name']).join(', ');
     final selectExpression = isDrop ? newColumnNames : oldColumnNames;
 
     await db.execute('PRAGMA foreign_keys = OFF');
@@ -118,7 +118,7 @@ class AlterColumnHelper {
       await txn.execute('ALTER TABLE `$tableName` RENAME TO `temp_$tableName`');
 
       // Setup new table
-      await txn.execute('CREATE TABLE `$tableName` ($_newColumnsExpression)');
+      await txn.execute('CREATE TABLE `$tableName` ($newColumnsExpression)');
 
       // Copy data
       await txn.execute(

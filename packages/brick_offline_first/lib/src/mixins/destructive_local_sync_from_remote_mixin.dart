@@ -13,7 +13,7 @@ import 'package:brick_offline_first/src/offline_first_repository.dart';
 mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
     on OfflineFirstRepository<T> {
   @override
-  Future<List<_Model>> get<_Model extends T>({
+  Future<List<TModel>> get<TModel extends T>({
     /// When [forceLocalSyncFromRemote] is `true`, local instances that do not exist in the [remoteProvider]
     /// are destroyed. Further, when `true`, all values from other parameters except [query] are ignored.
     bool forceLocalSyncFromRemote = false,
@@ -22,25 +22,25 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
     bool seedOnly = false,
   }) async {
     if (!forceLocalSyncFromRemote) {
-      return await super.get<_Model>(
+      return await super.get<TModel>(
         query: query,
         policy: policy,
         seedOnly: seedOnly,
       );
     }
 
-    return await destructiveLocalSyncFromRemote<_Model>(query: query);
+    return await destructiveLocalSyncFromRemote<TModel>(query: query);
   }
 
   /// When invoked, local instances that exist in [sqliteProvider] and [memoryCacheProvider] but
   /// do not exist in the [remoteProvider] are destroyed. The data from the [remoteProvider]
   /// should not be paginated and must be complete from a single request.
-  Future<List<_Model>> destructiveLocalSyncFromRemote<_Model extends T>({Query? query}) async {
+  Future<List<TModel>> destructiveLocalSyncFromRemote<TModel extends T>({Query? query}) async {
     query = (query ?? Query()).copyWith(action: QueryAction.get);
-    logger.finest('#get: $_Model $query');
+    logger.finest('#get: $TModel $query');
 
-    final remoteResults = await remoteProvider.get<_Model>(query: query, repository: this);
-    final localResults = await sqliteProvider.get<_Model>(query: query, repository: this);
+    final remoteResults = await remoteProvider.get<TModel>(query: query, repository: this);
+    final localResults = await sqliteProvider.get<TModel>(query: query, repository: this);
     final toDelete = localResults.where((r) => !remoteResults.contains(r));
 
     for (final deletableModel in toDelete) {
@@ -48,6 +48,6 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
       memoryCacheProvider.delete(deletableModel);
     }
 
-    return await storeRemoteResults<_Model>(remoteResults);
+    return await storeRemoteResults<TModel>(remoteResults);
   }
 }

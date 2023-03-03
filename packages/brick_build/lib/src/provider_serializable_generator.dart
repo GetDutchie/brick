@@ -4,7 +4,7 @@ import 'package:source_gen/source_gen.dart' show ConstantReader, InvalidGenerati
 import 'package:meta/meta.dart' show protected;
 
 /// Given an element and annotation, output a digestable config
-abstract class ProviderSerializableGenerator<_Config> {
+abstract class ProviderSerializableGenerator<Config> {
   /// The annotated element
   final Element element;
 
@@ -18,8 +18,8 @@ abstract class ProviderSerializableGenerator<_Config> {
   /// ```
   final String configKey;
 
-  /// Deserialize a [_Config] from an annotation, such as `RestSerializable`.
-  _Config? get config => null;
+  /// Deserialize a [Config] from an annotation, such as `RestSerializable`.
+  Config? get config => null;
 
   /// Produce serializer and deserializer generators
   List<SerdesGenerator> get generators;

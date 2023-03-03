@@ -4,10 +4,10 @@ import 'package:brick_graphql/src/graphql_model_dictionary.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql_exec/gql_exec.dart';
 
-class GraphqlRequest<_Model extends GraphqlModel> {
+class GraphqlRequest<TModel extends GraphqlModel> {
   final QueryAction action;
 
-  final _Model? instance;
+  final TModel? instance;
 
   final GraphqlModelDictionary modelDictionary;
 
@@ -27,7 +27,7 @@ class GraphqlRequest<_Model extends GraphqlModel> {
   });
 
   Request? get request {
-    final defaultOperation = ModelFieldsDocumentTransformer.defaultOperation<_Model>(
+    final defaultOperation = ModelFieldsDocumentTransformer.defaultOperation<TModel>(
       modelDictionary,
       action: action,
       instance: instance,
@@ -59,8 +59,8 @@ class GraphqlRequest<_Model extends GraphqlModel> {
   }
 
   /// Retrive variables defined by the annotation in [GraphqlQueryOperationTransformer]
-  Map<String, dynamic>? operationVariables(QueryAction action, {Query? query, _Model? instance}) {
-    final adapter = modelDictionary.adapterFor[_Model];
+  Map<String, dynamic>? operationVariables(QueryAction action, {Query? query, TModel? instance}) {
+    final adapter = modelDictionary.adapterFor[TModel];
     final operationTransformer = adapter?.queryOperationTransformer == null
         ? null
         : adapter!.queryOperationTransformer!(query, instance);
@@ -83,7 +83,7 @@ class GraphqlRequest<_Model extends GraphqlModel> {
   /// to document node names.
   Map<String, dynamic> queryToVariables(Query? query) {
     if (query?.where == null) return {};
-    final adapter = modelDictionary.adapterFor[_Model]!;
+    final adapter = modelDictionary.adapterFor[TModel]!;
 
     return query!.where!.fold<Map<String, dynamic>>(<String, dynamic>{}, (allVariables, where) {
       final definition = adapter.fieldsToGraphqlRuntimeDefinition[where.evaluatedField];

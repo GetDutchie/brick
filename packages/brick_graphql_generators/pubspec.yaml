@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  analyzer: ">=4.3.1 <5.0.0"
+  analyzer: ">=5.0.0 <6.0.0"
   brick_build: ">=2.1.2 <3.0.0"
   brick_graphql: ">=3.0.0-pre.1 <4.0.0"
   brick_json_generators: ">=1.1.0 <3.0.0"
@@ -20,6 +20,6 @@ dependencies:
 
 dev_dependencies:
   test: ^1.20.1
-  lints: ^1.0.1
+  lints: ^2.0.1
   brick_build_test:
     path: ../brick_build_test

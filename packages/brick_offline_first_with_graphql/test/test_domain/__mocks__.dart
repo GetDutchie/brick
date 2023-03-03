@@ -41,15 +41,15 @@ class DemoModelMigration extends Migration {
 
 class TestRepository extends OfflineFirstWithGraphqlRepository {
   TestRepository._(
-    GraphqlProvider _graphqlProvider,
-    SqliteProvider _sqliteProvider,
-    GraphqlRequestSqliteCacheManager _manager,
+    GraphqlProvider graphqlProvider,
+    SqliteProvider sqliteProvider,
+    GraphqlRequestSqliteCacheManager manager,
   ) : super(
-          graphqlProvider: _graphqlProvider,
-          sqliteProvider: _sqliteProvider,
+          graphqlProvider: graphqlProvider,
+          sqliteProvider: sqliteProvider,
           memoryCacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
-          offlineRequestManager: _manager,
+          offlineRequestManager: manager,
         );
 
   factory TestRepository.configure({

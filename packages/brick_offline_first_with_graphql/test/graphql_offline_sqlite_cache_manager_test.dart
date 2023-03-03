@@ -55,24 +55,24 @@ void main() {
     });
 
     test('#serialProcessing:false', () async {
-      final _requestManager = GraphqlRequestSqliteCacheManager(
+      final requestManager = GraphqlRequestSqliteCacheManager(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
         processingInterval: const Duration(seconds: 0),
       );
-      final client = GraphqlOfflineQueueLink(_requestManager)
+      final client = GraphqlOfflineQueueLink(requestManager)
           .concat(stubGraphqlLink({}, errors: ['Unable to connect']));
 
       await client.request(upsertMutation).first;
       await client.request(deleteMutation).first;
 
-      final preparedNextRequest = await _requestManager.prepareNextRequestToProcess();
+      final preparedNextRequest = await requestManager.prepareNextRequestToProcess();
       expect(preparedNextRequest!.operation.operationName, 'UpsertPerson');
 
       final asCacheItem = GraphqlRequestSqliteCache(preparedNextRequest);
-      await asCacheItem.insertOrUpdate(await _requestManager.getDb());
-      final req = await _requestManager.prepareNextRequestToProcess();
+      await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      final req = await requestManager.prepareNextRequestToProcess();
       expect(req?.operation.operationName, 'DeletePerson');
     });
 

@@ -4,15 +4,15 @@ import 'package:brick_build/src/annotation_finder.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Manages all fields of a [ClassElement]. Generously borrowed from JSON Serializable
-abstract class FieldsForClass<_FieldAnnotation extends Object> {
+abstract class FieldsForClass<FieldAnnotation extends Object> {
   /// The annotated element
   final ClassElement element;
 
   /// Searches for annotations on fields
-  AnnotationFinder<_FieldAnnotation> get finder;
+  AnnotationFinder<FieldAnnotation> get finder;
 
   /// Returns the annotation for a given field
-  _FieldAnnotation annotationForField(FieldElement element) => finder.annotationForField(element);
+  FieldAnnotation annotationForField(FieldElement element) => finder.annotationForField(element);
 
   /// Returns a [Set] of all instance [FieldElement] items for [element] and
   /// super classes, sorted first by their location in the inheritance hierarchy
@@ -77,17 +77,17 @@ class _FieldSet implements Comparable<_FieldSet> {
   int compareTo(_FieldSet other) => _sortByLocation(sortField, other.sortField);
 
   static int _sortByLocation(FieldElement a, FieldElement b) {
-    final checkerA = TypeChecker.fromStatic((a.enclosingElement3 as ClassElement).thisType);
+    final checkerA = TypeChecker.fromStatic((a.enclosingElement as ClassElement).thisType);
 
-    if (!checkerA.isExactly(b.enclosingElement3)) {
+    if (!checkerA.isExactly(b.enclosingElement)) {
       // in this case, you want to prioritize the enclosingElement that is more "super".
-      if (checkerA.isAssignableFrom(b.enclosingElement3)) {
+      if (checkerA.isAssignableFrom(b.enclosingElement)) {
         return -1;
       }
 
-      final checkerB = TypeChecker.fromStatic((b.enclosingElement3 as ClassElement).thisType);
+      final checkerB = TypeChecker.fromStatic((b.enclosingElement as ClassElement).thisType);
 
-      if (checkerB.isAssignableFrom(a.enclosingElement3)) {
+      if (checkerB.isAssignableFrom(a.enclosingElement)) {
         return 1;
       }
     }

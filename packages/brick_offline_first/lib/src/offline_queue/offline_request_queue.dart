@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 /// Repeatedly reattempts requests in an interval
-abstract class OfflineRequestQueue<_Request> {
+abstract class OfflineRequestQueue<TRequest> {
   /// If the queue is processing
   bool get isRunning => _timer?.isActive == true;
 
@@ -27,12 +27,12 @@ abstract class OfflineRequestQueue<_Request> {
   }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
-  void _process(Timer _timer) async {
+  void _process(Timer timer) async {
     if (_processingInBackground) return;
 
     _processingInBackground = true;
 
-    _Request? request;
+    TRequest? request;
     try {
       request = await requestManager.prepareNextRequestToProcess();
     } finally {
@@ -63,5 +63,5 @@ abstract class OfflineRequestQueue<_Request> {
 
   /// Send the next available request through the remote interface
   /// such as an HTTP client.
-  Future<void> transmitRequest(_Request request);
+  Future<void> transmitRequest(TRequest request);
 }

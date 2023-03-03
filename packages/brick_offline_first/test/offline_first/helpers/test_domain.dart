@@ -46,14 +46,14 @@ class TestProvider extends Provider<TestModel> {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class TestAdapter<_Model extends TestModel> implements Adapter<_Model> {
-  Future<_Model> fromTest(
+abstract class TestAdapter<TModel extends TestModel> implements Adapter<TModel> {
+  Future<TModel> fromTest(
     Map<String, dynamic> input, {
     required TestProvider provider,
     ModelRepository<TestModel>? repository,
   });
   Future<Map<String, dynamic>> toTest(
-    _Model input, {
+    TModel input, {
     required TestProvider provider,
     ModelRepository<TestModel>? repository,
   });
@@ -69,8 +69,8 @@ abstract class TestModel implements Model {}
 
 abstract class OfflineFirstWithTestModel extends OfflineFirstModel with TestModel {}
 
-abstract class OfflineFirstWithTestAdapter<_Model extends OfflineFirstWithTestModel>
-    extends OfflineFirstAdapter<_Model> with TestAdapter<_Model> {
+abstract class OfflineFirstWithTestAdapter<TModel extends OfflineFirstWithTestModel>
+    extends OfflineFirstAdapter<TModel> with TestAdapter<TModel> {
   OfflineFirstWithTestAdapter();
 }
 

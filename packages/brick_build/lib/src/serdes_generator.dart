@@ -14,15 +14,15 @@ final _formatter = dart_style.DartFormatter();
 /// A generator that converts raw input into Dart code or Dart code into raw input. Most
 /// [Provider]s will require a `SerdesGenerator` to help the Repository normalize data.
 ///
-/// [_FieldAnnotation] describes the field-level class, such as @`Rest`
+/// [FieldAnnotation] describes the field-level class, such as @`Rest`
 /// [_SiblingModel] describes the domain or provider model, such as `SqliteModel`
-abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
+abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     _SiblingModel extends Model> {
   /// The annotated class
   final ClassElement element;
 
   /// The sorted fields of the element
-  final FieldsForClass<_FieldAnnotation> fields;
+  final FieldsForClass<FieldAnnotation> fields;
 
   /// The method as printed by the adapter. Does **not** include semicolon.
   ///
@@ -134,7 +134,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// See [FieldsForClass#stableInstanceFields].
   @visibleForOverriding
   @visibleForTesting
-  String? addField(FieldElement field, _FieldAnnotation fieldAnnotation) {
+  String? addField(FieldElement field, FieldAnnotation fieldAnnotation) {
     var wrappedInFuture = false;
 
     final futureChecker = SharedChecker(field.type);
@@ -239,7 +239,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   String? coderForField(
     FieldElement field,
     SharedChecker checker, {
-    required _FieldAnnotation fieldAnnotation,
+    required FieldAnnotation fieldAnnotation,
     required bool wrappedInFuture,
   });
 
@@ -258,7 +258,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// Injected between the field member in the constructor and the contents
   String deserializerNullableClause({
     required FieldElement field,
-    required _FieldAnnotation fieldAnnotation,
+    required FieldAnnotation fieldAnnotation,
     required String name,
   }) {
     return fieldAnnotation.nullable && field.type.nullabilitySuffix != NullabilitySuffix.none
@@ -268,7 +268,7 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
 
   /// Convert placeholders in `fromGenerator` and `toGenerator` to functions.
   String? expandGenerators(
-    _FieldAnnotation annotation, {
+    FieldAnnotation annotation, {
     required FieldElement field,
     required SharedChecker checker,
   }) {
@@ -302,21 +302,21 @@ abstract class SerdesGenerator<_FieldAnnotation extends FieldSerializable,
   /// If this class possesses a factory such as `fromRest`
   @protected
   bool hasConstructor(DartType type) {
-    final classElement = type.element2 as ClassElement;
+    final classElement = type.element as ClassElement;
     return classElement.getNamedConstructor(constructorName) != null;
   }
 
   /// If this class possesses a serializing method such as `toSqlite`
   @protected
   bool hasSerializer(DartType type) {
-    final classElement = type.element2 as ClassElement;
+    final classElement = type.element as ClassElement;
     return classElement.getMethod(serializeMethod) != null;
   }
 
   /// Determine whether this field should be included in generated output.
   @protected
   bool ignoreCoderForField(
-      FieldElement field, _FieldAnnotation annotation, SharedChecker<Model> checker) {
+      FieldElement field, FieldAnnotation annotation, SharedChecker<Model> checker) {
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     if (isComputedGetter && doesDeserialize) return true;

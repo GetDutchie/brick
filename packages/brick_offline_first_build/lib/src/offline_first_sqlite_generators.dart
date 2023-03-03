@@ -23,8 +23,8 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
-        final _hasSerializer = hasSerializer(checker.argType);
-        if (_hasSerializer) {
+        final doesHaveSerializer = hasSerializer(checker.argType);
+        if (doesHaveSerializer) {
           return '''
             jsonEncode($fieldValue?.map(
               (${checker.unFuturedArgType} c) => c.$serializeMethod()
@@ -36,8 +36,8 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
 
     // OfflineFirstSerdes
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      final _hasSerializer = hasSerializer(field.type);
-      if (_hasSerializer) {
+      final doesHaveSerializer = hasSerializer(field.type);
+      if (doesHaveSerializer) {
         final nullableSuffix = checker.isNullable ? '?' : '';
         return '$fieldValue$nullableSuffix.$serializeMethod()';
       }
@@ -74,8 +74,8 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
-        final _hasConstructor = hasConstructor(checker.argType);
-        if (_hasConstructor) {
+        final doesHaveConstructor = hasConstructor(checker.argType);
+        if (doesHaveConstructor) {
           final serializableType =
               argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
           return '''
@@ -89,8 +89,8 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
 
     // OfflineFirstSerdes
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      final _hasConstructor = hasConstructor(field.type);
-      if (_hasConstructor) {
+      final doesHaveConstructor = hasConstructor(field.type);
+      if (doesHaveConstructor) {
         final serializableType =
             checker.superClassTypeArgs.last.getDisplayString(withNullability: true);
         return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue as $serializableType)';
