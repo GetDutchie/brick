@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:brick_offline_first_abstract/abstract.dart' show OfflineFirstSerdes;
+import 'package:brick_offline_first/brick_offline_first.dart' show OfflineFirstSerdes;
 
 enum Style { party, dance }
 

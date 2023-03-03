@@ -3,7 +3,6 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 import 'package:pizza_shoppe/brick/db/schema.g.dart';
 import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';

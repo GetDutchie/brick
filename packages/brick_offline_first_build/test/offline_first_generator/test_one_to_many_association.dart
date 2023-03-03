@@ -171,7 +171,7 @@ class OneToManyAssociationAdapter
       final nullableAssocOldIds =
           nullableAssocOldColumns.map((a) => a['f_SqliteAssoc_brick_id']);
       final nullableAssocNewIds =
-          instance.nullableAssoc?.map((s) => s.primaryKey)?.whereType<int>() ??
+          instance.nullableAssoc?.map((s) => s.primaryKey).whereType<int>() ??
               [];
       final nullableAssocIdsToDelete =
           nullableAssocOldIds.where((id) => !nullableAssocNewIds.contains(id));

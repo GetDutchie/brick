@@ -12,8 +12,10 @@ part of 'schema.g.dart';
 const List<MigrationCommand> _migration_20200616220821_up = [
   InsertTable('_brick_Horse_mounties'),
   InsertTable('Horse'),
-  InsertForeignKey('_brick_Horse_mounties', 'Horse', foreignKeyColumn: 'Horse_brick_id', onDeleteCascade: true),
-  InsertForeignKey('_brick_Horse_mounties', 'Mounty', foreignKeyColumn: 'Mounty_brick_id', onDeleteCascade: true),
+  InsertForeignKey('_brick_Horse_mounties', 'Horse',
+      foreignKeyColumn: 'Horse_brick_id', onDeleteCascade: true),
+  InsertForeignKey('_brick_Horse_mounties', 'Mounty',
+      foreignKeyColumn: 'Mounty_brick_id', onDeleteCascade: true),
   InsertColumn('name', Column.varchar, onTable: 'Horse')
 ];
 
@@ -36,9 +38,9 @@ const List<MigrationCommand> _migration_20200616220821_down = [
 )
 class Migration20200616220821 extends Migration {
   const Migration20200616220821()
-    : super(
-        version: 20200616220821,
-        up: _migration_20200616220821_up,
-        down: _migration_20200616220821_down,
-      );
+      : super(
+          version: 20200616220821,
+          up: _migration_20200616220821_up,
+          down: _migration_20200616220821_down,
+        );
 }

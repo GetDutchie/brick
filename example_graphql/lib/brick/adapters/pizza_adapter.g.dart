@@ -1,19 +1,19 @@
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<Pizza> _$PizzaFromRest(Map<String, dynamic> data,
-    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
+Future<Pizza> _$PizzaFromGraphql(Map<String, dynamic> data,
+    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
   return Pizza(
       id: data['id'] as int?,
       toppings: data['toppings']
-          .map((value) => RestAdapter.enumValueFromName(Topping.values, value)!)
+          .map((value) => GraphqlAdapter.enumValueFromName(Topping.values, value)!)
           .toList()
           .cast<Topping>(),
       frozen: data['frozen'] as bool?);
 }
 
-Future<Map<String, dynamic>> _$PizzaToRest(Pizza instance,
-    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
+Future<Map<String, dynamic>> _$PizzaToGraphql(Pizza instance,
+    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
   return {
     'id': instance.id,
     'toppings': instance.toppings?.map((e) => e.toString().split('.').last).toList(),
@@ -22,7 +22,7 @@ Future<Map<String, dynamic>> _$PizzaToRest(Pizza instance,
 }
 
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
   return Pizza(
       id: data['id'] == null ? null : data['id'] as int?,
       toppings: data['toppings'] == null
@@ -37,7 +37,7 @@ Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
-    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
+    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
   return {
     'id': instance.id,
     'toppings': jsonEncode(instance.toppings?.map((s) => Topping.values.indexOf(s)).toList() ?? []),
@@ -46,11 +46,35 @@ Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
 }
 
 /// Construct a [Pizza]
-class PizzaAdapter extends OfflineFirstWithRestAdapter<Pizza> {
+class PizzaAdapter extends OfflineFirstWithGraphqlAdapter<Pizza> {
   PizzaAdapter();
 
   @override
-  final restRequest = PizzaRequestTransformer.new;
+  final queryOperationTransformer = PizzaOperationTransformer.new;
+  @override
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
+    'id': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'id',
+      iterable: false,
+      subfields: <String, Map<String, dynamic>>{},
+      type: int,
+    ),
+    'toppings': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'toppings',
+      iterable: true,
+      subfields: <String, Map<String, dynamic>>{},
+      type: Topping,
+    ),
+    'frozen': const RuntimeGraphqlDefinition(
+      association: false,
+      documentNodeName: 'frozen',
+      iterable: false,
+      subfields: <String, Map<String, dynamic>>{},
+      type: bool,
+    )
+  };
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -95,19 +119,19 @@ class PizzaAdapter extends OfflineFirstWithRestAdapter<Pizza> {
   final String tableName = 'Pizza';
 
   @override
-  Future<Pizza> fromRest(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
-      await _$PizzaFromRest(input, provider: provider, repository: repository);
+  Future<Pizza> fromGraphql(Map<String, dynamic> input,
+          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$PizzaFromGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toRest(Pizza input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
-      await _$PizzaToRest(input, provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toGraphql(Pizza input,
+          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$PizzaToGraphql(input, provider: provider, repository: repository);
   @override
   Future<Pizza> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
+          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
       await _$PizzaFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(Pizza input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
+          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
       await _$PizzaToSqlite(input, provider: provider, repository: repository);
 }

@@ -1,13 +1,23 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
-import 'package:brick_offline_first_with_graphql_abstract/annotations.dart';
+import 'package:brick_graphql/brick_graphql.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
-@ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
-    defaultQueryOperation: r'''
+class PizzaOperationTransformer extends GraphqlQueryOperationTransformer {
+  final get = const GraphqlOperation(
+    document: r'''
       query GetPizzas {
         getPizzas {}
       }
     ''',
+  );
+
+  const PizzaOperationTransformer(Query? query, Model? instance) : super(query, instance);
+}
+
+@ConnectOfflineFirstWithGraphql(
+  graphqlConfig: GraphqlSerializable(
+    queryOperationTransformer: PizzaOperationTransformer.new,
   ),
 )
 class Pizza extends OfflineFirstWithGraphqlModel {

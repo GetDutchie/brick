@@ -4,7 +4,8 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:pizza_shoppe/brick/db/schema.g.dart';
 import 'brick.g.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 
 class Repository extends OfflineFirstWithGraphqlRepository {
