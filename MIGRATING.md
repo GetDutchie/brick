@@ -34,6 +34,7 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
     done
     ```
 * The minimum Dart version has been increased to 2.18
+* `providerArgs` in Brick Rest have changed: `'topLevelKey'` and `'headers'` have been removed (use `'request'`) and `'request'` now accepts a `RestRequest` instead of the HTTP method string.
 
 ### Brick Offline First with Graphql
 
@@ -50,6 +51,18 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 * Listen for SQLite changes via `OfflineFirstWithRestRepository#subscribe`
 
 ### Brick Rest
+
+#### `providerArgs['request']`
+
+This key now accepts a `RestRequest` class instead of an HTTP method name.
+
+#### `providerArgs['headers']`
+
+This has been consolidated to `'request'`. For example: `providerArgs: { 'request': RestRequest(headers: {'Authorization': 'Bearer'})}`.
+
+#### `providerArgs['topLevelKey']`
+
+This has been consolidated to `'request'`. For example: `providerArgs: { 'request': RestRequest(topLevelKey: 'myKey' )}`.
 
 #### `RestSerializable(requestTransformer:)`
 

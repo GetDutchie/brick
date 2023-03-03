@@ -37,14 +37,17 @@ class RestProvider implements Provider<RestModel> {
   /// Sends a DELETE request method to the endpoint
   @override
   Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
+  Future<http.Response?> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null ? adapter.restRequest!(query, instance) : null;
+    final request = adapter.restRequest != null
+        ? adapter.restRequest!(query, instance).delete
+        : query?.providerArgs['request']?.delete as RestRequest?;
 
-    final url = request?.delete?.url;
+    final url = request?.url;
     if (url == null) return null;
 
     final resp = await _brickRequestToHttpRequest(
-      request!.delete!,
+      request!,
       QueryAction.delete,
       query: query,
     );
@@ -60,13 +63,15 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<bool> exists<TModel extends RestModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null ? adapter.restRequest!(query, null) : null;
+    final request = adapter.restRequest != null
+        ? adapter.restRequest!(query, null).get
+        : query?.providerArgs['request']?.get as RestRequest?;
 
-    final url = request?.get?.url;
+    final url = request?.url;
     if (url == null) return false;
 
     final resp = await _brickRequestToHttpRequest(
-      request!.get!,
+      request!,
       QueryAction.get,
       query: query,
     );
@@ -74,27 +79,27 @@ class RestProvider implements Provider<RestModel> {
   }
 
   /// [Query]'s `providerArgs` can extend the [get] functionality:
-  /// * `'headers'` (`Map<String, String>`) set HTTP headers
-  /// * `'topLevelKey'` (`String`) includes the incoming payload beneath a JSON key (For example, `{"user": {"id"...}}`).
-  /// It is recommended to use `RestSerializable#fromKey` instead to simplify queries
-  /// (however, when defined, `topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
+  /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
+  /// (however, when defined, `['request']['topLevelKey']` is prioritized). Note that when no key is defined, the first value is returned
   /// regardless of the first key (in the example, `{"id"...}`).
   @override
   Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null ? adapter.restRequest!(query, null) : null;
+    final request = adapter.restRequest != null
+        ? adapter.restRequest!(query, null).get
+        : query?.providerArgs['request']?.get as RestRequest?;
 
-    final url = request?.get?.url;
-    if (url == null) return <TModel>[];
+    final url = request?.url;
+    if (url == null) return <_Model>[];
 
     final resp = await _brickRequestToHttpRequest(
-      request!.get!,
+      request!,
       QueryAction.get,
       query: query,
     );
 
     if (statusCodeIsSuccessful(resp.statusCode)) {
-      final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? request.get?.topLevelKey;
+      final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? request.topLevelKey;
       final parsed = convertJsonFromGet(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
@@ -113,9 +118,7 @@ class RestProvider implements Provider<RestModel> {
   }
 
   /// [Query]'s `providerArgs` can extend the [upsert] functionality:
-  /// * `'headers'` (`Map<String, String>`) set HTTP headers
-  /// * `'request'` (`String`) specifies HTTP method. Defaults to `POST`
-  /// * `'topLevelKey'` (`String`) includes the serialized payload beneath a JSON key (For example, `{"user": {"id"...}}`)
+  /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
   /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
   /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
   ///
@@ -125,14 +128,16 @@ class RestProvider implements Provider<RestModel> {
   Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
-    final request = adapter.restRequest != null ? adapter.restRequest!(query, instance) : null;
+    final request = adapter.restRequest != null
+        ? adapter.restRequest!(query, instance).upsert
+        : query?.providerArgs['request']?.upsert as RestRequest?;
 
-    final url = request?.upsert?.url;
+    final url = request?.url;
     if (url == null) return null;
 
     final combinedBody = {};
 
-    final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? request?.upsert?.topLevelKey;
+    final topLevelKey = (query?.providerArgs ?? {})['request']?.topLevelKey ?? request?.topLevelKey;
     if (topLevelKey != null) {
       combinedBody.addAll({topLevelKey: body});
     } else {
@@ -145,7 +150,7 @@ class RestProvider implements Provider<RestModel> {
     }
 
     final resp = await _brickRequestToHttpRequest(
-      request!.upsert!,
+      request!,
       QueryAction.upsert,
       body: jsonEncode(combinedBody),
       query: query,
@@ -164,7 +169,7 @@ class RestProvider implements Provider<RestModel> {
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery(Query? query, Map<String, String>? requestHeaders) {
-    if ((query == null || query.providerArgs['headers'] == null) &&
+    if ((query == null || query.providerArgs['request']?.headers == null) &&
         requestHeaders == null &&
         defaultHeaders != null) {
       return defaultHeaders!;
@@ -174,7 +179,7 @@ class RestProvider implements Provider<RestModel> {
       ..addAll({'Content-Type': 'application/json'})
       ..addAll(defaultHeaders ?? <String, String>{})
       ..addAll(requestHeaders ?? <String, String>{})
-      ..addAll(query?.providerArgs['headers'] ?? <String, String>{});
+      ..addAll(query?.providerArgs['request']?.headers ?? <String, String>{});
   }
 
   /// If a [key] is defined from the adapter and it is not null in the response, use it to narrow the response.
@@ -202,7 +207,8 @@ class RestProvider implements Provider<RestModel> {
     String? body,
   }) async {
     final url = Uri.parse([baseEndpoint, request.url!].join(''));
-    final method = (query?.providerArgs ?? {})['request'] ?? request.method ?? operation.httpMethod;
+    final method =
+        (query?.providerArgs ?? {})['request']?.method ?? request.method ?? operation.httpMethod;
     final headers = headersForQuery(query, request.headers);
 
     logger.fine('$method $url');
@@ -238,6 +244,7 @@ class RestProvider implements Provider<RestModel> {
 extension on QueryAction {
   String get httpMethod {
     switch (this) {
+      case QueryAction.subscribe:
       case QueryAction.get:
         return 'GET';
       case QueryAction.insert:
@@ -246,8 +253,6 @@ extension on QueryAction {
         return 'POST';
       case QueryAction.delete:
         return 'DELETE';
-      case QueryAction.subscribe:
-        return 'GET';
     }
   }
 }

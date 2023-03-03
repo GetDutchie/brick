@@ -75,4 +75,22 @@ class RestRequest {
     this.topLevelKey,
     this.url,
   });
+
+  factory RestRequest.fromJson(Map<String, dynamic> data) {
+    return RestRequest(
+      headers: data['headers'],
+      method: data['method'],
+      topLevelKey: data['topLevelKey'],
+      url: data['url'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'headers': headers,
+      'method': method,
+      'topLevelKey': topLevelKey,
+      'url': url,
+    };
+  }
 }
