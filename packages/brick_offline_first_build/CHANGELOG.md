@@ -6,6 +6,7 @@
 * Remove `brick_offline_first_abstract`
 * Update imports from `_abstract` packages
 * Support `applyToRemoteDeserialization` and `fieldsToOfflineFirstRuntimeDefinition`
+* Update minimum `analyzer` constraint to `5.0.0`
 
 ## 2.1.1
 

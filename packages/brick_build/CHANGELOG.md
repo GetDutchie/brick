@@ -1,7 +1,10 @@
 ## Unreleased
 
+## 3.0.0
+
 * Update `AggregateBuilder#requiredImports` docs
 * Remove unnecessary assignment in `BaseBuilder#replaceWithinFile`
+* Update minimum `analyzer` constraint to `5.0.0`
 
 ## 2.1.2
 

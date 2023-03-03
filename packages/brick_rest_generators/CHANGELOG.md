@@ -3,6 +3,7 @@
 ## 3.0.0
 
 * Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
+* Update minimum `analyzer` constraint to `5.0.0`
 
 ## 2.1.1
 

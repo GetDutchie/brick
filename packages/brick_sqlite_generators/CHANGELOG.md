@@ -4,6 +4,7 @@
 
 * Replace `brick_sqlite_abstract/db.dart` with `brick_sqlite/db.dart`
 * Remove `brick_sqlite_abstract` dependency
+* Update minimum `analyzer` constraint to `5.0.0`
 
 ## 2.4.1
 
