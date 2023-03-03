@@ -38,9 +38,9 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null
-        ? adapter.restRequest!(query, instance).delete
-        : query?.providerArgs['request'] as RestRequest?;
+    final fromAdapter =
+        adapter.restRequest != null ? adapter.restRequest!(query, null).delete : null;
+    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
@@ -62,9 +62,8 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<bool> exists<TModel extends RestModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null
-        ? adapter.restRequest!(query, null).get
-        : query?.providerArgs['request'] as RestRequest?;
+    final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
+    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return false;
@@ -84,9 +83,8 @@ class RestProvider implements Provider<RestModel> {
   @override
   Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final request = adapter.restRequest != null
-        ? adapter.restRequest!(query, null).get
-        : query?.providerArgs['request'] as RestRequest?;
+    final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
+    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return <TModel>[];
@@ -127,9 +125,9 @@ class RestProvider implements Provider<RestModel> {
   Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
-    final request = adapter.restRequest != null
-        ? adapter.restRequest!(query, instance).upsert
-        : query?.providerArgs['request'] as RestRequest?;
+    final fromAdapter =
+        adapter.restRequest != null ? adapter.restRequest!(query, null).upsert : null;
+    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
