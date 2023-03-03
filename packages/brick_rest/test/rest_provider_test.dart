@@ -50,7 +50,7 @@ void main() {
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test('providerArgs["request"]["headers"]', () async {
+      test('providerArgs["request"].headers', () async {
         final provider = RestProvider(
           'http://0.0.0.0:3000',
           modelDictionary: restModelDictionary,
@@ -65,7 +65,7 @@ void main() {
 
         final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {
-          'request': RestRequest(headers: {'Authorization': 'Basic xyz'}),
+          'request': RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
@@ -73,29 +73,29 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test('providerArgs["request"]["method"] PUT', () async {
+      test('providerArgs["request"].method PUT', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(method: 'PUT')});
+        final query = Query(providerArgs: {'request': RestRequest(method: 'PUT', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test('providerArgs["request"]["method"] PATCH', () async {
+      test('providerArgs["request"].method PATCH', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PATCH');
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(method: 'PATCH')});
+        final query = Query(providerArgs: {'request': RestRequest(method: 'PATCH', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test("providerArgs['request']['topLevelKey']", () async {
+      test("providerArgs['request'].topLevelKey", () async {
         final provider = generateProvider(
           '{"name": "Thomas"}',
           requestMethod: 'POST',
@@ -103,7 +103,7 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(topLevelKey: 'top')});
+        final query = Query(providerArgs: {'request': RestRequest(topLevelKey: 'top', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
@@ -119,7 +119,7 @@ void main() {
 
         final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {
-          'request': RestRequest(topLevelKey: 'top'),
+          'request': RestRequest(topLevelKey: 'top', url: '/'),
           'supplementalTopLevelData': {
             'other_name': {'first_name': 'Thomas'},
           }
