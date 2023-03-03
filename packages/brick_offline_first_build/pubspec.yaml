@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  analyzer: ">=4.3.1 <6.0.0"
+  analyzer: ">=5.0.0 <6.0.0"
   brick_build: ">=2.1.2 <3.0.0"
   brick_core: ^1.1.1
   brick_json_generators: ">=1.1.1 <2.0.0"

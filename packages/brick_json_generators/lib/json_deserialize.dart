@@ -86,7 +86,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
 
       // Iterable<fromJson>
       if (argTypeChecker.fromJsonConstructor != null) {
-        final klass = argTypeChecker.targetType.element2 as ClassElement;
+        final klass = argTypeChecker.targetType.element as ClassElement;
         final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
         final nullableSuffix = checker.isNullable ? '?' : '';
 
@@ -132,7 +132,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
     } else if (checker.isMap) {
       return '$fieldValue$defaultValue';
     } else if (checker.fromJsonConstructor != null) {
-      final klass = checker.targetType.element2 as ClassElement;
+      final klass = checker.targetType.element as ClassElement;
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
       final output =
