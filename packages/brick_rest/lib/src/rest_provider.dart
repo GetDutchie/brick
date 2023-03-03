@@ -40,7 +40,7 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null
         ? adapter.restRequest!(query, instance).delete
-        : query?.providerArgs['request']?.delete as RestRequest?;
+        : query?.providerArgs['request'] as RestRequest?;
 
     final url = request?.url;
     if (url == null) return null;
@@ -64,7 +64,7 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null
         ? adapter.restRequest!(query, null).get
-        : query?.providerArgs['request']?.get as RestRequest?;
+        : query?.providerArgs['request'] as RestRequest?;
 
     final url = request?.url;
     if (url == null) return false;
@@ -86,7 +86,7 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null
         ? adapter.restRequest!(query, null).get
-        : query?.providerArgs['request']?.get as RestRequest?;
+        : query?.providerArgs['request'] as RestRequest?;
 
     final url = request?.url;
     if (url == null) return <TModel>[];
@@ -129,7 +129,7 @@ class RestProvider implements Provider<RestModel> {
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final request = adapter.restRequest != null
         ? adapter.restRequest!(query, instance).upsert
-        : query?.providerArgs['request']?.upsert as RestRequest?;
+        : query?.providerArgs['request'] as RestRequest?;
 
     final url = request?.url;
     if (url == null) return null;
