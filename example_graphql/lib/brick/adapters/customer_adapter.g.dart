@@ -146,7 +146,7 @@ class CustomerAdapter extends OfflineFirstWithGraphqlAdapter<Customer> {
           'SELECT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE `l_Customer_brick_id` = ?',
           [instance.primaryKey]);
       final pizzasOldIds = pizzasOldColumns.map((a) => a['f_Pizza_brick_id']);
-      final pizzasNewIds = instance.pizzas?.map((s) => s.primaryKey)?.whereType<int>() ?? [];
+      final pizzasNewIds = instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
       final pizzasIdsToDelete = pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
 
       await Future.wait<void>(pizzasIdsToDelete.map((id) async {

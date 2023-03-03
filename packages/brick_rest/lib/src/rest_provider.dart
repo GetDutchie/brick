@@ -79,7 +79,7 @@ class RestProvider implements Provider<RestModel> {
 
   /// [Query]'s `providerArgs` can extend the [get] functionality:
   /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
-  /// (however, when defined, `['request']['topLevelKey']` is prioritized). Note that when no key is defined, the first value is returned
+  /// (however, when defined, `['request'].topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
   /// regardless of the first key (in the example, `{"id"...}`).
   @override
   Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
@@ -98,8 +98,7 @@ class RestProvider implements Provider<RestModel> {
     );
 
     if (statusCodeIsSuccessful(resp.statusCode)) {
-      final topLevelKey =
-          (query?.providerArgs ?? {})['request']?.topLevelKey ?? request.topLevelKey;
+      final topLevelKey = request.topLevelKey;
       final parsed = convertJsonFromGet(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
@@ -122,8 +121,8 @@ class RestProvider implements Provider<RestModel> {
   /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
   /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
   ///
-  /// It is recommended to use `RestRequest#topLevelKey` instead to simplify queries
-  /// (however, when defined in providerArgs, `topLevelKey` is prioritized).
+  /// It is recommended to use `RestRequest#topLevelKey` within a `RestRequestTransformer` instead to simplify queries
+  /// (however, when defined in `providerArgs#request`, `topLevelKey` is prioritized).
   @override
   Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
@@ -137,7 +136,7 @@ class RestProvider implements Provider<RestModel> {
 
     final combinedBody = {};
 
-    final topLevelKey = (query?.providerArgs ?? {})['request']?.topLevelKey ?? request?.topLevelKey;
+    final topLevelKey = request?.topLevelKey;
     if (topLevelKey != null) {
       combinedBody.addAll({topLevelKey: body});
     } else {
