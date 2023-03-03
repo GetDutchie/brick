@@ -37,7 +37,6 @@ class RestProvider implements Provider<RestModel> {
   /// Sends a DELETE request method to the endpoint
   @override
   Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
-  Future<http.Response?> delete<_Model extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = adapter.restRequest != null
         ? adapter.restRequest!(query, instance).delete
@@ -90,7 +89,7 @@ class RestProvider implements Provider<RestModel> {
         : query?.providerArgs['request']?.get as RestRequest?;
 
     final url = request?.url;
-    if (url == null) return <_Model>[];
+    if (url == null) return <TModel>[];
 
     final resp = await _brickRequestToHttpRequest(
       request!,
@@ -99,7 +98,8 @@ class RestProvider implements Provider<RestModel> {
     );
 
     if (statusCodeIsSuccessful(resp.statusCode)) {
-      final topLevelKey = (query?.providerArgs ?? {})['topLevelKey'] ?? request.topLevelKey;
+      final topLevelKey =
+          (query?.providerArgs ?? {})['request']?.topLevelKey ?? request.topLevelKey;
       final parsed = convertJsonFromGet(resp.body, topLevelKey);
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
