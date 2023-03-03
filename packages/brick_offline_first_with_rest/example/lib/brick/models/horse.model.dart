@@ -1,5 +1,5 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_offline_first_with_rest_example/brick/models/mounty.dart';
+import 'package:brick_offline_first_with_rest_example/brick/models/mounty.model.dart';
 
 @ConnectOfflineFirstWithRest()
 class Horse extends OfflineFirstWithRestModel {

@@ -167,7 +167,7 @@ class FuturesAdapter extends OfflineFirstAdapter<Futures> {
       final futureAssocsOldIds =
           futureAssocsOldColumns.map((a) => a['f_Assoc_brick_id']);
       final futureAssocsNewIds =
-          instance.futureAssocs?.map((s) => s.primaryKey)?.whereType<int>() ??
+          instance.futureAssocs?.map((s) => s.primaryKey).whereType<int>() ??
               [];
       final futureAssocsIdsToDelete =
           futureAssocsOldIds.where((id) => !futureAssocsNewIds.contains(id));

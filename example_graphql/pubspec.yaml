@@ -6,7 +6,7 @@ version: 0.1.0
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
   flutter: ">=2.0.0"
 
 dependencies:
@@ -19,7 +19,6 @@ dependencies:
 dev_dependencies:
   brick_offline_first_with_graphql_build:
     path: ../packages/brick_offline_first_with_graphql_build
-  brick_sqlite_generators: ^2.0.0
   build_runner: any
   shelf: ^1.1.0
 

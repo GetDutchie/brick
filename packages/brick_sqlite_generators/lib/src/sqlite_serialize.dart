@@ -355,7 +355,7 @@ String _removeStaleAssociations(
       '$siblingAssociations.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD}).whereType<int>()';
   if (nullableField) {
     newIdFieldsValue =
-        '$siblingAssociations?.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD})?.whereType<int>() ?? []';
+        '$siblingAssociations?.map((s) => s$argTypeNullabilitySuffix.${InsertTable.PRIMARY_KEY_FIELD}).whereType<int>() ?? []';
   }
 
   return '''

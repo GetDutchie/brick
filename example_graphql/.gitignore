@@ -38,6 +38,5 @@ coverage/
 
 ios/
 android/
-*.g.dart
 pubspec.lock
 web/

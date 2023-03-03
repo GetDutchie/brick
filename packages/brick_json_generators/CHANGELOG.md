@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.0
+
+* Update minimum `analyzer` constraint to `5.0.0`
+
 ## 1.1.1
 
 * Respect enum `from<Provider>` constructors and `to<Provider>` methods

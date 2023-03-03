@@ -19,7 +19,7 @@ Future<Mounty> _$MountyFromSqlite(Map<String, dynamic> data,
   return Mounty(
       name: data['name'] == null ? null : data['name'] as String?,
       email: data['email'] == null ? null : data['email'] as String?,
-      hat: data['hat'] == null ? null : Hat?.fromSqlite(data['hat'] as String))
+      hat: data['hat'] == null ? null : Hat.fromSqlite(data['hat'] as String))
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -33,11 +33,7 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   MountyAdapter();
 
   @override
-  String? restEndpoint({query, instance}) => '/mounties';
-  @override
-  final String? fromKey = null;
-  @override
-  final String? toKey = null;
+  final restRequest = MountyRequest.new;
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(

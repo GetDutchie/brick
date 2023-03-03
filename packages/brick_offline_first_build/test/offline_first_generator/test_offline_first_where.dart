@@ -197,7 +197,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
           [instance.primaryKey]);
       final assocsOldIds = assocsOldColumns.map((a) => a['f_Assoc_brick_id']);
       final assocsNewIds =
-          instance.assocs?.map((s) => s.primaryKey)?.whereType<int>() ?? [];
+          instance.assocs?.map((s) => s.primaryKey).whereType<int>() ?? [];
       final assocsIdsToDelete =
           assocsOldIds.where((id) => !assocsNewIds.contains(id));
 
@@ -224,7 +224,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       final loadedAssocsOldIds =
           loadedAssocsOldColumns.map((a) => a['f_Assoc_brick_id']);
       final loadedAssocsNewIds =
-          instance.loadedAssocs?.map((s) => s.primaryKey)?.whereType<int>() ??
+          instance.loadedAssocs?.map((s) => s.primaryKey).whereType<int>() ??
               [];
       final loadedAssocsIdsToDelete =
           loadedAssocsOldIds.where((id) => !loadedAssocsNewIds.contains(id));
@@ -255,7 +255,7 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
       final multiLookupCustomGeneratorNewIds = instance
               .multiLookupCustomGenerator
               ?.map((s) => s.primaryKey)
-              ?.whereType<int>() ??
+              .whereType<int>() ??
           [];
       final multiLookupCustomGeneratorIdsToDelete =
           multiLookupCustomGeneratorOldIds

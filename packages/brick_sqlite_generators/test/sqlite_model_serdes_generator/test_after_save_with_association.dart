@@ -148,7 +148,7 @@ class AfterSaveWithAssociationAdapter
       final assocNullableOldIds =
           assocNullableOldColumns.map((a) => a['f_Assoc_brick_id']);
       final assocNullableNewIds =
-          instance.assocNullable?.map((s) => s.primaryKey)?.whereType<int>() ??
+          instance.assocNullable?.map((s) => s.primaryKey).whereType<int>() ??
               [];
       final assocNullableIdsToDelete =
           assocNullableOldIds.where((id) => !assocNullableNewIds.contains(id));
@@ -205,7 +205,7 @@ class AfterSaveWithAssociationAdapter
       final assocNullableAndNullableArgNewIds = instance
               .assocNullableAndNullableArg
               ?.map((s) => s?.primaryKey)
-              ?.whereType<int>() ??
+              .whereType<int>() ??
           [];
       final assocNullableAndNullableArgIdsToDelete =
           assocNullableAndNullableArgOldIds

@@ -8,37 +8,16 @@ part '20200124174431.migration.dart';
 part '20200616215211.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final Set<Migration> migrations = <Migration>{
-  Migration20200616220821(),
-  Migration20210111041540(),
-  Migration20200106215014(),
-  Migration20200124174431(),
-  Migration20200616215211()
+final migrations = <Migration>{
+  const Migration20200616220821(),
+  const Migration20210111041540(),
+  const Migration20200106215014(),
+  const Migration20200124174431(),
+  const Migration20200616215211()
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(20210111041540, generatorVersion: 1, tables: <SchemaTable>{
-  SchemaTable('_brick_Horse_mounties', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('l_Horse_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Horse',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false),
-    SchemaColumn('f_Mounty_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'Mounty',
-        onDeleteCascade: true,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{
-    SchemaIndex(columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'], unique: true)
-  }),
-  SchemaTable('Horse', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('name', Column.varchar)
-  }, indices: <SchemaIndex>{}),
   SchemaTable('_brick_KitchenSink_list_offline_first_model', columns: <SchemaColumn>{
     SchemaColumn('_brick_id', Column.integer,
         autoincrement: true, nullable: false, isPrimaryKey: true),
@@ -119,5 +98,26 @@ final schema = Schema(20210111041540, generatorVersion: 1, tables: <SchemaTable>
     SchemaColumn('name', Column.varchar),
     SchemaColumn('email', Column.varchar),
     SchemaColumn('hat', Column.varchar)
+  }, indices: <SchemaIndex>{}),
+  SchemaTable('_brick_Horse_mounties', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', Column.integer,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('l_Horse_brick_id', Column.integer,
+        isForeignKey: true,
+        foreignTableName: 'Horse',
+        onDeleteCascade: true,
+        onDeleteSetDefault: false),
+    SchemaColumn('f_Mounty_brick_id', Column.integer,
+        isForeignKey: true,
+        foreignTableName: 'Mounty',
+        onDeleteCascade: true,
+        onDeleteSetDefault: false)
+  }, indices: <SchemaIndex>{
+    SchemaIndex(columns: ['l_Horse_brick_id', 'f_Mounty_brick_id'], unique: true)
+  }),
+  SchemaTable('Horse', columns: <SchemaColumn>{
+    SchemaColumn('_brick_id', Column.integer,
+        autoincrement: true, nullable: false, isPrimaryKey: true),
+    SchemaColumn('name', Column.varchar)
   }, indices: <SchemaIndex>{})
 });
