@@ -32,23 +32,23 @@ void main() {
 
     test('#serialProcessing:false', () async {
       final inner = stubResult(statusCode: 501);
-      final _requestManager = RestRequestSqliteCacheManager(
+      final requestManager = RestRequestSqliteCacheManager(
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
         processingInterval: const Duration(seconds: 0),
       );
-      final client = RestOfflineQueueClient(inner, _requestManager);
+      final client = RestOfflineQueueClient(inner, requestManager);
 
       await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
       await client.put(Uri.parse('http://0.0.0.0:3000'), body: 'existing record');
 
-      final request = await _requestManager.prepareNextRequestToProcess();
+      final request = await requestManager.prepareNextRequestToProcess();
       expect(request!.method, 'POST');
 
       final asCacheItem = RestRequestSqliteCache(request);
-      await asCacheItem.insertOrUpdate(await _requestManager.getDb());
-      final req = await _requestManager.prepareNextRequestToProcess();
+      await asCacheItem.insertOrUpdate(await requestManager.getDb());
+      final req = await requestManager.prepareNextRequestToProcess();
       expect(req?.method, 'PUT');
     });
 
