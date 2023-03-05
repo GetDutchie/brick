@@ -36,7 +36,7 @@ mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
         }
 
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue$nullabilitySuffix.map((e) => e.toString().split('.').last).toList()";
+          return "$fieldValue$nullabilitySuffix.map((e) => e.name).toList()";
         } else {
           return '$fieldValue$nullabilitySuffix.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
@@ -84,7 +84,7 @@ mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
       }
 
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue$nullabilitySuffix.toString().split('.').last";
+        return "$fieldValue$nullabilitySuffix.name";
       } else {
         if (checker.isNullable) {
           return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';
