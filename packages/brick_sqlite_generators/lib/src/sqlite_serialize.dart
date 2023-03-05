@@ -113,7 +113,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         final serializedValue = serializeMethod != null
             ? 's.$serializeMethod()'
             : fieldAnnotation.enumAsString
-                ? "s.toString().split('.').last"
+                ? "s.name"
                 : '${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)';
 
         return '''
@@ -188,7 +188,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       }
 
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue$nullabilitySuffix.toString().split('.').last";
+        return "$fieldValue$nullabilitySuffix.toString().name";
       }
 
       if (checker.isNullable) {

@@ -9,10 +9,12 @@ Future<SqliteEnumAsString> _$SqliteEnumAsStringFromSqlite(
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return SqliteEnumAsString(
-      someField: MyEnum.values.firstWhere(
-          (v) => v.toString().split('.').last == data['some_field'] as String),
-      someFields: jsonDecode(data['some_fields'] ?? []).map((d) => MyEnum.values
-          .firstWhere((v) => v.toString().split('.').last == d as String)))
+      someField: MyEnum.values.byName(data['some_field'] as String),
+      someFields: jsonDecode(data['some_fields'] ?? [])
+          .whereType<String>()
+          .map(MyEnum.values.byName)
+          .toList()
+          .cast<MyEnum>())
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -21,9 +23,8 @@ Future<Map<String, dynamic>> _$SqliteEnumAsStringToSqlite(
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return {
-    'some_field': instance.someField.toString().split('.').last,
-    'some_fields': jsonEncode(
-        instance.someFields.map((s) => s.toString().split('.').last).toList())
+    'some_field': instance.someField.toString().name,
+    'some_fields': jsonEncode(instance.someFields.map((s) => s.name).toList())
   };
 }
 

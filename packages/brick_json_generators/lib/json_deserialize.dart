@@ -73,10 +73,8 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
         }
 
         if (fieldAnnotation.enumAsString) {
-          final nullableSuffix = argTypeChecker.isNullable ? '' : '!';
-
           return '''$fieldValue.map(
-            (value) => ${providerName}Adapter.enumValueFromName(${SharedChecker.withoutNullability(argType)}.values, value)$nullableSuffix
+            ${SharedChecker.withoutNullability(argType)}.values.byName
           )$castIterable$defaultValue
           ''';
         } else {
@@ -119,8 +117,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
       }
 
       if (fieldAnnotation.enumAsString) {
-        final nullableSuffix = checker.isNullable ? '' : '!';
-        return '${providerName}Adapter.enumValueFromName(${SharedChecker.withoutNullability(field.type)}.values, $fieldValue)$nullableSuffix$defaultValue';
+        return '${SharedChecker.withoutNullability(field.type)}.values.byName($fieldValue)$defaultValue';
       } else {
         if (checker.isNullable) {
           return '$fieldValue is int ? ${SharedChecker.withoutNullability(field.type)}.values[$fieldValue as int] : null$defaultValue';

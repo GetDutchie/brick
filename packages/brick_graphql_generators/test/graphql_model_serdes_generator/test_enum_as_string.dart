@@ -5,29 +5,23 @@ Future<EnumAsString> _$EnumAsStringFromGraphql(Map<String, dynamic> data,
     {required GraphqlProvider provider,
     GraphqlFirstRepository? repository}) async {
   return EnumAsString(
-      hat: GraphqlAdapter.enumValueFromName(Hat.values, data['hat'])!,
+      hat: Hat.values.byName(data['hat']),
       nullableHat: data['nullableHat'] == null
           ? null
-          : GraphqlAdapter.enumValueFromName(Hat.values, data['nullableHat']),
-      hats: data['hats']
-          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value)!)
-          .toList()
-          .cast<Hat>(),
-      nullableHats: data['nullableHats']
-          .map((value) => GraphqlAdapter.enumValueFromName(Hat.values, value))
-          ?.toList()
-          .cast<Hat?>());
+          : Hat.values.byName(data['nullableHat']),
+      hats: data['hats'].map(Hat.values.byName).toList().cast<Hat>(),
+      nullableHats:
+          data['nullableHats'].map(Hat.values.byName)?.toList().cast<Hat?>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToGraphql(EnumAsString instance,
     {required GraphqlProvider provider,
     GraphqlFirstRepository? repository}) async {
   return {
-    'hat': instance.hat.toString().split('.').last,
-    'nullableHat': instance.nullableHat?.toString().split('.').last,
-    'hats': instance.hats.map((e) => e.toString().split('.').last).toList(),
-    'nullableHats':
-        instance.nullableHats.map((e) => e.toString().split('.').last).toList()
+    'hat': instance.hat.name,
+    'nullableHat': instance.nullableHat?.name,
+    'hats': instance.hats.map((e) => e.name).toList(),
+    'nullableHats': instance.nullableHats.map((e) => e.name).toList()
   };
 }
 ''';
