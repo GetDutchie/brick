@@ -82,7 +82,6 @@ class TestGenerator extends AnnotationSuperGenerator<GraphqlSerializable> {
 Future<void> generateExpectation(String filename, String output, {TestGenerator? generator}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
-  print(generated);
   expect(generated.trim(), output.trim());
 }
 
