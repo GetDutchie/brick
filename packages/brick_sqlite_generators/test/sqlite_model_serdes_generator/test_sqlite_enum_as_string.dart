@@ -23,7 +23,7 @@ Future<Map<String, dynamic>> _$SqliteEnumAsStringToSqlite(
     {required SqliteProvider provider,
     SqliteFirstRepository? repository}) async {
   return {
-    'some_field': instance.someField.toString().name,
+    'some_field': instance.someField.name,
     'some_fields': jsonEncode(instance.someFields.map((s) => s.name).toList())
   };
 }

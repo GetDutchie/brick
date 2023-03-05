@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_sqlite_ge
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 3.0.0-pre.4
+version: 3.0.0-pre.5
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
