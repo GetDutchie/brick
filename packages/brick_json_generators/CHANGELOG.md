@@ -3,6 +3,7 @@
 ## 3.0.0
 
 * Update minimum `analyzer` constraint to `5.0.0`
+* Use Dart 2.15's `.byName` accessor for iterable enum values
 
 ## 1.1.1
 

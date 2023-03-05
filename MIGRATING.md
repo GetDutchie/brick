@@ -33,6 +33,8 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
       sed -i '' 's/package:brick_sqlite_abstract\/db.dart/package:brick_sqlite\/db.dart/g' $FILE
     done
     ```
+* `RestAdapter#firstWhereOrNull` and `GraphqlAdatper#firstWhereOrNull` have been removed. Instead `import 'package:collection/collection.dart';` and use the bundled `Iterable` extension `.firstWhereOrNull`
+* `RestAdapter#enumValuesByName` and `GraphqlAdatper#enumValuesByName` have been removed. Instead use Dart 2.15's built-in `<enum>.values.byName`
 * The minimum Dart version has been increased to 2.18
 * `providerArgs` in Brick Rest have changed: `'topLevelKey'` and `'headers'` have been removed (use `'request'`) and `'request'` now accepts a `RestRequest` instead of the HTTP method string.
 * `analyzer` is now `>= 5`

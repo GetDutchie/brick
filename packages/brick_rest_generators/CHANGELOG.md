@@ -4,6 +4,7 @@
 
 * Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
 * Update minimum `analyzer` constraint to `5.0.0`
+* Use Dart 2.15's `.byName` accessor for iterable enum values
 
 ## 2.1.1
 

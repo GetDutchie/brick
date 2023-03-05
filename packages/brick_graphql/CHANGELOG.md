@@ -3,6 +3,7 @@
 ## 3.0.0
 
 * **BREAKING CHANGE** Rename `graphql.dart` to `brick_graphql.dart`
+* Use Dart 2.15's `.byName` accessor for iterable enum values and remove `GraphqlAdapter.enumValueFromName` and `GraphqlAdapter.firstWhereOrNull`. Instead use `<Enum>.values.byName` and `import 'package:collection/collection.dart'`'s `.firstWhereOrNull` respectively.
 
 ## 2.0.2
 
