@@ -26,13 +26,13 @@ Every REST API is built differently, and with a fair amount of technical debt. B
 Since Dart requires annotations to be constants, dynamic functions cannot be used. This is a headache. Instead, the a `const`antized [constructor tearoff](https://medium.com/dartlang/dart-2-15-7e7a598e508a) can be used. The transformers permit dynamically defining the request (method, top level key, url, etc.) at runtime based on query params or if a Dart instance is available (`upsert` and `delete` only)
 
 ```dart
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   final get = const RestRequest(url: '/users');
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<User>(
     requestTransformer: UserRequestTransformer.new;
   )
 )
@@ -42,15 +42,15 @@ class User extends OfflineFirstModel {}
 Different provider calls will use different transformer fields:
 
 ```dart
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   final get = const RestRequest(url: '/users');
   final delete = RestRequest(url: '/users/${instance.id}');
 
-  const UserRequestTransformer(Query? query, Model? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<User>(
     requestTransformer: UserRequestTransformer.new,
   )
 )
@@ -62,7 +62,7 @@ class User extends OfflineFirstModel {}
 #### With Query#providerArgs
 
 ```dart
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   RestRequest? get get {
     if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
       return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
@@ -72,11 +72,11 @@ class UserRequestTransformer extends RestRequestTransformer {
 
   final delete = RestRequest(url: '/users/${instance.id}');
 
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<User>(
     requestTransformer: UserRequestTransformer.new,
   )
 )
@@ -86,7 +86,7 @@ class User extends OfflineFirstModel {}
 #### With Query#where
 
 ```dart
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   RestRequest? get get {
     if (query?.where != null) {
       final id = Where.firstByField('id', query.where)?.value;
@@ -97,11 +97,11 @@ class UserRequestTransformer extends RestRequestTransformer {
 
   final delete = RestRequest(url: '/users/${instance.id}');
 
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<User>(
     requestTransformer: UserRequestTransformer.new,
   )
 )
@@ -119,14 +119,16 @@ Data will most often be nested beneath a top-level key in a JSON response. The k
 1) The first discovered key. As a map is effectively an unordered list, relying on this fall through is not recommended.
 
 ```dart
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   final get = const RestRequest(url: '/users', topLevelKey: 'users');
   final upsert = const RestRequest(url: '/users', topLevelKey: 'user');
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  requestTransformer: UserRequestTransformer.new
+  restConfig: RestSerializable<User>(
+    requestTransformer: UserRequestTransformer.new,
+  )
 )
 class User extends OfflineFirstModel {}
 ```

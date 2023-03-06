@@ -64,17 +64,16 @@ void main() {
       const expectedOutput = '''import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
-class PeopleRequestTransformer extends RestRequestTransformer {
+class PeopleRequestTransformer extends RestRequestTransformer<People> {
   final get = const RestRequest(
     url: '/people',
   );
 
-  const PeopleRequestTransformer(Query? query, RestModel? instance)
-      : super(query, instance);
+  const PeopleRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<People>(
     fieldRename: FieldRename.snake,
     requestTransformer: PeopleRequestTransformer.new,
   ),

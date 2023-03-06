@@ -1,6 +1,4 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/graphql_adapter.dart';
-import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
@@ -50,7 +48,7 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
       await _$DemoModelAssocToGraphql(input, provider: provider, repository: repository);
 }
 
-class _DemoModelAssocTransformer extends GraphqlQueryOperationTransformer {
+class _DemoModelAssocTransformer extends GraphqlQueryOperationTransformer<DemoModelAssoc> {
   @override
   GraphqlOperation get get => GraphqlOperation(
         document: r'''query GetDemoAssocModels() {
@@ -58,7 +56,7 @@ class _DemoModelAssocTransformer extends GraphqlQueryOperationTransformer {
         }''',
       );
 
-  const _DemoModelAssocTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const _DemoModelAssocTransformer(super.query, super.instance);
 }
 
 class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> {

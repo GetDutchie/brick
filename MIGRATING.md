@@ -88,9 +88,9 @@ Since all APIs are different, and `endpoint` used stringified code, the migratio
 )
 
 // AFTER
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   final get = const RestRequest(url: '/users', topLevelKey: 'users');
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 @ConnectOfflineFirstWithRest(
   restConfig: RestSerializable(
@@ -120,7 +120,7 @@ Some cases are more complex:
 )
 
 // AFTER
-class UserRequestTransformer extends RestRequestTransformer {
+class UserRequestTransformer extends RestRequestTransformer<User> {
   RestRequest? get get {
     if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
       return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
@@ -130,7 +130,7 @@ class UserRequestTransformer extends RestRequestTransformer {
 
   final delete = RestRequest(url: '/users/${instance.id}');
 
-  const UserRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const UserRequestTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(

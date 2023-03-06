@@ -1,4 +1,5 @@
-import 'package:brick_core/core.dart';
+import 'package:brick_core/query.dart';
+import 'package:brick_rest/src/rest_model.dart';
 
 /// Specify request formatting (such as `method` or `url`) for each Brick operation.
 ///
@@ -10,12 +11,12 @@ import 'package:brick_core/core.dart';
 /// )
 /// class MyModel extends RestModel {}
 /// class MyModelOperationTransformer extends RestRequestTransformer<MyModel> {
-///   final get = RestRequest(
+///   final get = const RestRequest(
 ///     url: 'https://myapi.com/mymodel'
 ///   );
 /// }
 /// ```
-abstract class RestRequestTransformer {
+abstract class RestRequestTransformer<TModel extends RestModel> {
   /// The operation used for any destructive data operations.
   RestRequest? get delete => null;
 
@@ -25,7 +26,7 @@ abstract class RestRequestTransformer {
 
   /// The model being sent to the REST API; this will
   /// only be non-null for [upsert] and [delete] operations.
-  final Model? instance;
+  final TModel? instance;
 
   /// A query provided with the provider or repository request.
   final Query? query;

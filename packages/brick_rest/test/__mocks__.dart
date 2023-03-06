@@ -23,7 +23,7 @@ Future<Map<String, dynamic>> _$DemoRestModelToRest(DemoRestModel instance) async
   return val;
 }
 
-class DemoRestRequestTransformer extends RestRequestTransformer {
+class DemoRestRequestTransformer extends RestRequestTransformer<DemoRestModel> {
   // A production code base would not forward to another operation
   // but for testing this is convenient
   @override
@@ -48,7 +48,7 @@ class DemoRestRequestTransformer extends RestRequestTransformer {
   @override
   RestRequest get upsert => get;
 
-  const DemoRestRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const DemoRestRequestTransformer(Query? query, DemoRestModel? instance) : super(query, instance);
 }
 
 /// Construct a [DemoRestModel] for the [RestRepository]

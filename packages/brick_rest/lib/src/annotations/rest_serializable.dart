@@ -24,7 +24,7 @@ enum FieldRename {
 /// Creates a serialize/deserialize function for JSON.
 ///
 /// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_serializable.dart)
-class RestSerializable {
+class RestSerializable<TModel extends RestModel> {
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
   ///
@@ -47,7 +47,7 @@ class RestSerializable {
   /// Implementing classes of [RestRequestTransformer] must be a `const`
   /// constructor. For simplicity, the default constructor tearoff can be provided
   /// as a value (`requestTransformer: MyTransformer.new`).
-  final RestRequestTransformer Function(Query?, RestModel?)? requestTransformer;
+  final RestRequestTransformer Function(Query?, TModel?)? requestTransformer;
 
   /// Creates a new [RestSerializable] instance.
   const RestSerializable({

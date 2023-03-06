@@ -4,7 +4,7 @@ import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<Pizza>(
     requestTransformer: PizzaRequestTransformer.new,
   ),
 )

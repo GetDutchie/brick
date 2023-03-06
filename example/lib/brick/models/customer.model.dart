@@ -6,7 +6,7 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<Customer>(
     requestTransformer: CustomerRequestTransformer.new,
   ),
 )

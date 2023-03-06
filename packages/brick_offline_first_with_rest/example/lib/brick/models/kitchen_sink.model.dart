@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_rest/brick_rest.dart';
@@ -6,16 +5,16 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/hat.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/mounty.model.dart';
 
-class KitchenSinkRequest extends RestRequestTransformer {
+class KitchenSinkRequest extends RestRequestTransformer<KitchenSink> {
   final get = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sinks');
 
   final upsert = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sink');
 
-  KitchenSinkRequest(Query? query, Model? instance) : super(query, instance);
+  KitchenSinkRequest(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<KitchenSink>(
     requestTransformer: KitchenSinkRequest.new,
   ),
 )

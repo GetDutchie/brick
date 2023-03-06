@@ -100,17 +100,17 @@ class RestToOfflineFirstConverter {
       import 'package:brick_offline_first/brick_offline_first.dart';
       import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
-      class ${className}RequestTransformer extends RestRequestTransformer {
+      class ${className}RequestTransformer extends RestRequestTransformer<$className> {
         final get = const RestRequest(
           url: '/$restEndpoint',
           $fromKey
         );
 
-        const ${className}RequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+        const ${className}RequestTransformer(super.query, super.instance);
       }
 
       @ConnectOfflineFirstWithRest(
-        restConfig: RestSerializable(
+        restConfig: RestSerializable<$className>(
           fieldRename: FieldRename.snake,
           requestTransformer: ${className}RequestTransformer.new,
         ),

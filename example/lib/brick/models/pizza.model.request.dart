@@ -1,7 +1,8 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_rest/brick_rest.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
-class PizzaRequestTransformer extends RestRequestTransformer {
+class PizzaRequestTransformer extends RestRequestTransformer<Pizza> {
   RestRequest? get get {
     if (query?.where != null) {
       final byId = Where.firstByField('id', query!.where);
@@ -16,5 +17,5 @@ class PizzaRequestTransformer extends RestRequestTransformer {
 
   final upsert = const RestRequest(url: '/pizzas');
 
-  const PizzaRequestTransformer(Query? query, Model? instance) : super(query, instance);
+  const PizzaRequestTransformer(super.query, super.instance);
 }

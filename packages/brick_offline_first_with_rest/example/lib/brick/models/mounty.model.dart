@@ -1,17 +1,17 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/hat.dart';
 import 'package:brick_rest/brick_rest.dart';
-import 'package:brick_core/core.dart';
 
-class MountyRequest extends RestRequestTransformer {
+class MountyRequest extends RestRequestTransformer<Mounty> {
   final get = RestRequest(url: '/mounties');
 
   RestRequest? get upsert => get;
 
-  MountyRequest(Query? query, Model? instance) : super(query, instance);
+  MountyRequest(super.query, super.instance);
 }
 
-@ConnectOfflineFirstWithRest(restConfig: RestSerializable(requestTransformer: MountyRequest.new))
+@ConnectOfflineFirstWithRest(
+    restConfig: RestSerializable<Mounty>(requestTransformer: MountyRequest.new))
 class Mounty extends OfflineFirstWithRestModel {
   final String? name;
 

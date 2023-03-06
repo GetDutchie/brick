@@ -28,17 +28,17 @@ cd my_app; (flutter) pub run build_runner build
 
 1. A class is discovered with the `@ConnectOfflineFirstWithRest` annotation.
       ```dart
-      class MyClassRequestTransformer extends RestRequestTransformer {
+      class MyClassRequestTransformer extends RestRequestTransformer<MyClass> {
         final get = RestRequest(url: "=> '/my/endpoint/to/models';");
-        const MyClassRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+        const MyClassRequestTransformer(super.query, super.instance);
       }
 
       @ConnectOfflineFirstWithRest(
         sqliteConfig: SqliteSerializable(
           nullable: false
         ),
-        restConfig: RestSerializable(
-          requestTransformer:
+        restConfig: RestSerializable<MyClass>(
+          requestTransformer: MyClassRequestTransformer.new,
         )
       )
       class MyClass extends OfflineFirstModel

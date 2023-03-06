@@ -1,4 +1,5 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_graphql/src/graphql_model.dart';
 
 /// This class should be subclassed for each model. For example:
 ///
@@ -17,7 +18,7 @@ import 'package:brick_core/core.dart';
 ///   );
 /// }
 /// ```
-abstract class GraphqlQueryOperationTransformer {
+abstract class GraphqlQueryOperationTransformer<TModel extends GraphqlModel> {
   /// The operation used for any destructive data operations that
   /// should use GraphQL's `mutation`.
   /// Only the header of the operation is required. For example
@@ -40,7 +41,7 @@ abstract class GraphqlQueryOperationTransformer {
 
   /// The model being sent to the GraphQL server; this will
   /// only be non-null for [upsert] and [delete] operations.
-  final Model? instance;
+  final TModel? instance;
 
   /// A query provided with the provider or repository request.
   final Query? query;

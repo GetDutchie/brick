@@ -1,6 +1,6 @@
 part of '__mocks__.dart';
 
-class MountyRequestTransformer extends RestRequestTransformer {
+class MountyRequestTransformer extends RestRequestTransformer<Mounty> {
   @override
   final get = const RestRequest(url: '/mounties');
   @override

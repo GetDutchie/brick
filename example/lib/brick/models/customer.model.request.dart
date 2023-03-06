@@ -1,7 +1,8 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_rest/brick_rest.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.dart';
 
-class CustomerRequestTransformer extends RestRequestTransformer {
+class CustomerRequestTransformer extends RestRequestTransformer<Customer> {
   // A production code base would not forward to another operation
   // but for testing this is convenient
   @override
@@ -24,5 +25,5 @@ class CustomerRequestTransformer extends RestRequestTransformer {
   @override
   RestRequest get upsert => RestRequest(url: '/customers');
 
-  const CustomerRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const CustomerRequestTransformer(super.query, super.instance);
 }

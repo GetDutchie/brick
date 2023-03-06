@@ -44,7 +44,7 @@ Future<Map<String, dynamic>> _$HorseToSqlite(Horse instance,
   return {'name': instance.name};
 }
 
-class HorseOperationTransformer extends GraphqlQueryOperationTransformer {
+class HorseOperationTransformer extends GraphqlQueryOperationTransformer<Horse> {
   @override
   GraphqlOperation get delete => GraphqlOperation(
         document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
@@ -87,7 +87,7 @@ class HorseOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const HorseOperationTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const HorseOperationTransformer(super.query, super.instance);
 }
 
 /// Construct a [Horse]

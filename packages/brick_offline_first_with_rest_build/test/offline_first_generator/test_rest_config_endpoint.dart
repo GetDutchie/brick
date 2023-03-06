@@ -1,6 +1,7 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest/brick_rest.dart' show RestRequestTransformer, RestSerializable;
+import 'package:brick_rest/brick_rest.dart'
+    show RestRequestTransformer, RestSerializable, RestModel;
 
 final output = r'''
 // GENERATED CODE DO NOT EDIT
@@ -91,17 +92,17 @@ class RestConfigEndpointAdapter
 }
 ''';
 
-class EndpointTransformer extends RestRequestTransformer {
+class EndpointTransformer extends RestRequestTransformer<RestConfigEndpoint> {
   EndpointTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(
+  restConfig: RestSerializable<RestConfigEndpoint>(
     nullable: false,
     requestTransformer: EndpointTransformer.new,
   ),
 )
-class RestConfigEndpoint extends OfflineFirstModel {
+class RestConfigEndpoint extends OfflineFirstModel with RestModel {
   final int someField;
 
   RestConfigEndpoint(this.someField);

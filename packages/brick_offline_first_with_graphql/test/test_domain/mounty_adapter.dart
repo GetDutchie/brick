@@ -21,7 +21,7 @@ Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
   return {'name': instance.name};
 }
 
-class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
+class MountyOperationTransformer extends GraphqlQueryOperationTransformer<Mounty> {
   @override
   GraphqlOperation get delete => GraphqlOperation(
         document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
@@ -64,7 +64,7 @@ class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const MountyOperationTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const MountyOperationTransformer(super.query, super.instance);
 }
 
 /// Construct a [Mounty]

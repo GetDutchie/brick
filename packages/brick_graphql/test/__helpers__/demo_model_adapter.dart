@@ -1,6 +1,5 @@
 import 'package:brick_core/core.dart' show Query;
 import 'package:brick_graphql/src/graphql_adapter.dart';
-import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
@@ -36,7 +35,7 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
   };
 }
 
-class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
+class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer<DemoModel> {
   @override
   GraphqlOperation get delete => GraphqlOperation(
         document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
@@ -79,8 +78,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const DemoModelOperationTransformer(Query? query, GraphqlModel? instance)
-      : super(query, instance);
+  const DemoModelOperationTransformer(super.query, super.instance);
 }
 
 /// Construct a [DemoModel]
