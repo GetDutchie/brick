@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
+  brick_rest:
+    path: ../../brick_rest
   brick_offline_first_with_rest:
     path: ../
 

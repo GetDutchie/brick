@@ -1,9 +1,8 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-class PizzaOperationTransformer extends GraphqlQueryOperationTransformer {
+class PizzaOperationTransformer extends GraphqlQueryOperationTransformer<Pizza> {
   final get = const GraphqlOperation(
     document: r'''
       query GetPizzas {
@@ -12,11 +11,11 @@ class PizzaOperationTransformer extends GraphqlQueryOperationTransformer {
     ''',
   );
 
-  const PizzaOperationTransformer(Query? query, Model? instance) : super(query, instance);
+  const PizzaOperationTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
+  graphqlConfig: GraphqlSerializable<Pizza>(
     queryOperationTransformer: PizzaOperationTransformer.new,
   ),
 )

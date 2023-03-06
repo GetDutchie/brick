@@ -5,10 +5,7 @@ Future<Pizza> _$PizzaFromGraphql(Map<String, dynamic> data,
     {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
   return Pizza(
       id: data['id'] as int?,
-      toppings: data['toppings']
-          .map((value) => GraphqlAdapter.enumValueFromName(Topping.values, value)!)
-          .toList()
-          .cast<Topping>(),
+      toppings: data['toppings'].map(Topping.values.byName).toList().cast<Topping>(),
       frozen: data['frozen'] as bool?);
 }
 
