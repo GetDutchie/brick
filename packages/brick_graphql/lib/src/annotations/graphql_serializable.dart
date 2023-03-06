@@ -24,7 +24,7 @@ enum FieldRename {
 /// Creates a serialize/deserialize function for JSON.
 ///
 /// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_serializable.dart)
-class GraphqlSerializable {
+class GraphqlSerializable<TModel extends GraphqlModel> {
   /// Defines the automatic naming strategy when converting class field names
   /// into JSON map keys.
   ///
@@ -37,7 +37,7 @@ class GraphqlSerializable {
   /// Implementing classes of [GraphqlQueryOperationTransformer] must be a `const`
   /// constructor. For simplicity, the default constructor tearoff can be provided
   /// as a value (`queryOperationTransformer: MyTransformer.new`).
-  final GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? queryOperationTransformer;
+  final GraphqlQueryOperationTransformer Function(Query?, TModel?)? queryOperationTransformer;
 
   /// Creates a new [GraphqlSerializable] instance.
   const GraphqlSerializable({

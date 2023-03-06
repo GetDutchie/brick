@@ -17,7 +17,7 @@ class CustomerOperationTransformer extends GraphqlQueryOperationTransformer {
 }
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
+  graphqlConfig: GraphqlSerializable<Customer>(
     queryOperationTransformer: CustomerOperationTransformer.new,
   ),
 )

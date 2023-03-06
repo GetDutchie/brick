@@ -105,7 +105,7 @@ class QueryOperationTransformerExampleAdapter
 }
 ''';
 
-class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationTransformer {
+class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationTransformer<QueryOperationTransformerExample> {
   @override
   GraphqlOperation get get => GraphqlOperation(
         document: r'''
@@ -115,12 +115,11 @@ class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationT
         ''',
       );
 
-  const QueryOperationTransformerExampleTransformer(Query? query, GraphqlModel? instance)
-      : super(query, instance);
+  const QueryOperationTransformerExampleTransformer(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(
+  graphqlConfig: GraphqlSerializable<QueryOperationTransformerExample>(
     queryOperationTransformer: QueryOperationTransformerExampleTransformer.new,
   ),
 )
