@@ -39,7 +39,7 @@ class RestProvider implements Provider<RestModel> {
   Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter =
-        adapter.restRequest != null ? adapter.restRequest!(query, null).delete : null;
+        adapter.restRequest != null ? adapter.restRequest!(query, instance).delete : null;
     final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
@@ -126,7 +126,7 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final fromAdapter =
-        adapter.restRequest != null ? adapter.restRequest!(query, null).upsert : null;
+        adapter.restRequest != null ? adapter.restRequest!(query, instance).upsert : null;
     final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
 
     final url = request?.url;
