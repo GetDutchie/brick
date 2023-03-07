@@ -1,4 +1,3 @@
-import 'package:brick_core/query.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:brick_rest/brick_rest.dart';
@@ -48,7 +47,7 @@ class DemoRestRequestTransformer extends RestRequestTransformer<DemoRestModel> {
   @override
   RestRequest get upsert => get;
 
-  const DemoRestRequestTransformer(Query? query, DemoRestModel? instance) : super(query, instance);
+  const DemoRestRequestTransformer(super.query, super.instance);
 }
 
 /// Construct a [DemoRestModel] for the [RestRepository]
