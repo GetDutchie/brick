@@ -4,6 +4,7 @@
 
 * **BREAKING CHANGE** Rename `graphql.dart` to `brick_graphql.dart`
 * Use Dart 2.15's `.byName` accessor for iterable enum values and remove `GraphqlAdapter.enumValueFromName` and `GraphqlAdapter.firstWhereOrNull`. Instead use `<Enum>.values.byName` and `import 'package:collection/collection.dart'`'s `.firstWhereOrNull` respectively.
+* **BREAKING CHANGE** consolidate `providerArgs['document']` and `providerArgs['variables']` to `providerArgs['operation']`. `providerArgs['operation']` should be a `GraphqlOperation` which can be constructed with a `document` and `variables`
 
 ## 2.0.2
 

@@ -167,8 +167,8 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
     TModel? instance,
     Query? query,
   }) {
-    if (query?.providerArgs['document'] != null) {
-      return fromString<TModel>(query!.providerArgs['document'], modelDictionary);
+    if (query?.providerArgs['operation'] != null) {
+      return fromString<TModel>(query!.providerArgs['operation'].document, modelDictionary);
     }
 
     final adapter = modelDictionary.adapterFor[TModel]!;

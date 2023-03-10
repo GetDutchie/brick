@@ -86,4 +86,9 @@ class GraphqlOperation {
   final Map<String, dynamic>? variables;
 
   const GraphqlOperation({this.document, this.variables});
+
+  factory GraphqlOperation.fromJson(Map<String, dynamic> data) =>
+      GraphqlOperation(document: data['document'], variables: data['variables']);
+
+  Map<String, dynamic> toJson() => {'document': document, 'variables': variables};
 }
