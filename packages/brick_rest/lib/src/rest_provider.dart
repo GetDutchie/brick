@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:brick_rest/src/rest_request_transformer.dart';
+import 'package:brick_rest/src/rest_request.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -119,11 +119,6 @@ class RestProvider implements Provider<RestModel> {
 
   /// [Query]'s `providerArgs` can extend the [upsert] functionality:
   /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
-  /// * `'supplementalTopLevelData'` (`Map<String, dynamic>`) this map is merged alongside the `topLevelKey` in the payload.
-  /// For example, given `'supplementalTopLevelData': {'other_key': true}` `{"topLevelKey": ..., "other_key": true}`. It is **strongly recommended** to avoid using this property. Your data should be managed at the model level, not the query level.
-  ///
-  /// It is recommended to use `RestRequest#topLevelKey` instead to simplify queries
-  /// (however, when defined in providerArgs, `topLevelKey` is prioritized).
   @override
   Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
@@ -145,8 +140,8 @@ class RestProvider implements Provider<RestModel> {
     }
 
     // if supplementalTopLevelData is specified it, insert alongside normal payload
-    if ((query?.providerArgs ?? {})['supplementalTopLevelData'] != null) {
-      combinedBody.addAll(query!.providerArgs['supplementalTopLevelData']);
+    if ((query?.providerArgs ?? {})['request']?.supplementalTopLevelData != null) {
+      combinedBody.addAll(query!.providerArgs['request']?.supplementalTopLevelData);
     }
 
     final resp = await _brickRequestToHttpRequest(

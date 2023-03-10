@@ -36,7 +36,8 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 * `RestAdapter.firstWhereOrNull` and `GraphqlAdapter.firstWhereOrNull` have been removed. Instead `import 'package:collection/collection.dart';` and use the bundled `Iterable` extension `.firstWhereOrNull`
 * `RestAdapter.enumValuesByName` and `GraphqlAdapter.enumValuesByName` have been removed. Instead use Dart 2.15's built-in `<enum>.values.byName`
 * The minimum Dart version has been increased to 2.18
-* `providerArgs` in Brick Rest have changed: `'topLevelKey'` and `'headers'` have been removed (use `'request'`) and `'request'` now accepts a `RestRequest` instead of the HTTP method string.
+* `providerArgs` in Brick Rest have changed: `'topLevelKey'` and `'headers'` and `'supplementalTopLevelData'` have been removed (use `'request'`) and `'request'` now accepts a `RestRequest` instead of the HTTP method string.
+* `providerArgs` in Brick Graphql have changed: `'document'` and `'variables'` have been removed. Instead, use `'operation'`.
 * `analyzer` is now `>= 5`
 
 ### Brick Offline First with Graphql
@@ -55,6 +56,18 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 
 ### Brick Graphql
 
+This breaking change migration is less automatable. The script below is a best attempt and should be manually confirmed after running.
+
+```shell
+for FILE in $(find "lib" -type f -name "*.dart"); do
+  # `sed` regex capture may work for you; it didn't on Mac for me
+  # sed -i '' "s/\'document\': (.*)/\'operation\': GraphqlOperation\(document: \1\) \/\/ TODO verify migration to GraphqlOperation /g" $FILE
+  perl -0777 -i -pe "s/'document': (.*)/'operation': GraphqlOperation\(document: \1\) \/\/ TODO verify migration to GraphqlOperation /igs" $FILE
+  # sed -i '' "s/\'variables\': (.*)/\'operation\': GraphqlOperation\(variables: \1\) \/\/ TODO verify migration to GraphqlOperation /g" $FILE
+  perl -0777 -i -pe "s/'variables': (.*)/'operation': GraphqlOperation\(variables: \1\) \/\/ TODO verify migration to GraphqlOperation /igs" $FILE
+done
+```
+
 #### `providerArgs['document']`
 
 This has been consolidated to `'operation'`. For example: `providerArgs: { 'operation': GraphqlOperation(document: r'''mutation UpdateUser(id: ....)''')}`.
@@ -64,6 +77,22 @@ This has been consolidated to `'operation'`. For example: `providerArgs: { 'oper
 This has been consolidated to `'operation'`. For example: `providerArgs: { 'operation': GraphqlOperation(variables: {'id': '1'}) }`.
 
 ### Brick Rest
+
+This breaking change migration is less automatable. The script below is a best attempt and should be manually confirmed after running.
+
+```shell
+for FILE in $(find "lib" -type f -name "*.dart"); do
+  # `sed` regex capture may work for you; it didn't on Mac for me
+  # sed -i '' "s/\'request\': (.*)/\'request\': RestRequest\(method: \1\) \/\/ TODO verify migration to RestRequest /g" $FILE
+  perl -0777 -i -pe "s/'request': (.*)/'request': RestRequest\(method: \1\) \/\/ TODO verify migration to RestRequest /igs" $FILE
+  # sed -i '' "s/\'headers\': (.*)/\'request\': RestRequest\(headers: \1\) \/\/ TODO verify migration to RestRequest /g" $FILE
+  perl -0777 -i -pe "s/'headers': (.*)/'request': RestRequest\(headers: \1\) \/\/ TODO verify migration to RestRequest /igs" $FILE
+  # sed -i '' "s/\'topLevelKey\': (.*)/\'request\': RestRequest\(topLevelKey: \1\) \/\/ TODO verify migration to RestRequest /g" $FILE
+  perl -0777 -i -pe "s/'topLevelKey': (.*)/'request': RestRequest\(topLevelKey: \1\) \/\/ TODO verify migration to RestRequest /igs" $FILE
+  # sed -i '' "s/\'supplementalTopLevelData\': (.*)/\'request\': RestRequest\(supplementalTopLevelData: \1\) \/\/ TODO verify migration to RestRequest /g" $FILE
+  perl -0777 -i -pe "s/'supplementalTopLevelData': (.*)/'request': RestRequest\(supplementalTopLevelData: \1\) \/\/ TODO verify migration to RestRequest /igs" $FILE
+done
+```
 
 #### `providerArgs['request']`
 
@@ -76,6 +105,10 @@ This has been consolidated to `'request'`. For example: `providerArgs: { 'reques
 #### `providerArgs['topLevelKey']`
 
 This has been consolidated to `'request'`. For example: `providerArgs: { 'request': RestRequest(topLevelKey: 'myKey' )}`.
+
+#### `providerArgs['supplementalTopLevelData']`
+
+This has been consolidated to `'request'`. For example: `providerArgs: { 'request': RestRequest(supplementalTopLevelData: {'myKey': {'myData': 1}}) }`.
 
 #### `RestSerializable(requestTransformer:)`
 
