@@ -24,7 +24,8 @@ Future<Map<String, dynamic>> _$EnumFactorySerializeToTest(
     'with_factory': WithFactory.values.indexOf(instance.withFactory),
     'with_serialize': instance.withSerialize.toTest(),
     'with_both': instance.withBoth.toTest(),
-    'with_both_iterable': instance.withBothIterable.map((e) => e.toTest()).toList(),
+    'with_both_iterable':
+        instance.withBothIterable.map((e) => e.toTest()).toList(),
     'with_both_nullable': instance.withBothNullable?.toTest(),
     'with_json': instance.withJson.toTest()
   };
