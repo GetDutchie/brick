@@ -2,6 +2,8 @@
 
 ## 3.0.0
 
+Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.
+
 * Remove instance-access `reattemptForStatusCodes`; this is passed directly to the cache manager
 * Remove extraneous constructor argument `throwTunnerNotFoundExceptions` and rely on remote policy / the queue manager
 * Remove `brick_sqlite_abstract`

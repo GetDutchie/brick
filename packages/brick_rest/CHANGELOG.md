@@ -2,6 +2,8 @@
 
 ## 3.0.0
 
+Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.
+
 * **BREAKING CHANGE** Rename main export file to `brick_rest.dart`
 * **BREAKING CHANGE** replace `RestSerializable(endpoint:)` with `RestSerializable(requestTransformer:)`
 * Add `RestAdapter#restRequest`

@@ -120,7 +120,7 @@ abstract class OfflineFirstWithRestRepository
     bool seedOnly = false,
   }) async {
     try {
-      return await super.get(
+      return await super.get<TModel>(
         policy: policy,
         query: query,
         seedOnly: seedOnly,
@@ -185,7 +185,7 @@ abstract class OfflineFirstWithRestRepository
     Query? query,
   }) async {
     try {
-      return await super.hydrate(deserializeSqlite: deserializeSqlite, query: query);
+      return await super.hydrate<TModel>(deserializeSqlite: deserializeSqlite, query: query);
     } on RestException catch (e) {
       logger.warning('#hydrate rest failure: $e');
     }

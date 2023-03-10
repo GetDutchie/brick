@@ -2,6 +2,8 @@
 
 ## 3.0.0
 
+Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.
+
 * Remove `brick_sqlite_abstract`
 * Remove `brick_offline_first_abstract`
 * Remove `brick_offline_first_with_graphql_abstract`; add annotation `ConnectOfflineFirstWithGraphql` and class `OfflineFirstWithGraphqlModel` to this package

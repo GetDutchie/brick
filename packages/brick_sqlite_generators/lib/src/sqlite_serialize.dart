@@ -188,7 +188,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       }
 
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue$nullabilitySuffix.toString().name";
+        return "$fieldValue$nullabilitySuffix.name";
       }
 
       if (checker.isNullable) {

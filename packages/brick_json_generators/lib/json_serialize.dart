@@ -32,7 +32,7 @@ mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
         final nullabilitySuffix = checker.isNullable ? '?' : '';
         final serializeMethod = argTypeChecker.enumSerializeMethod(providerName);
         if (serializeMethod != null) {
-          return '$fieldValue$nullabilitySuffix.map((e) => e.$serializeMethod())';
+          return '$fieldValue$nullabilitySuffix.map((e) => e.$serializeMethod()).toList()';
         }
 
         if (fieldAnnotation.enumAsString) {
