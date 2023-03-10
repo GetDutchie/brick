@@ -2,6 +2,8 @@
 
 ## 3.0.0
 
+Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.
+
 * Combine `brick_sqlite_abstract` to this package, adding `db.dart` as an export. This merge also includes `SqliteSerializable` and `SqliteModel`, both now exported by `brick_sqlite/brick_sqlite.dart`
 * **BREAKING CHANGE** Rename main export `sqlite.dart` to `brick_sqlite.dart`
 * Remove `brick_sqlite_abstract` dependency
