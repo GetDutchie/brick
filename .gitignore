@@ -70,7 +70,7 @@
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 testfile.dill
-pubspec.lock
+**/**pubspec.lock
 .flutter-plugins-dependencies
 
 pubspec_overrides.yaml

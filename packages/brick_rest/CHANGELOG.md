@@ -5,7 +5,7 @@
 * **BREAKING CHANGE** Rename main export file to `brick_rest.dart`
 * **BREAKING CHANGE** replace `RestSerializable(endpoint:)` with `RestSerializable(requestTransformer:)`
 * Add `RestAdapter#restRequest`
-* **BREAKING CHANGE** `providerArgs['topLevelKey']` and `providerArgs['headers']` have been removed (use `'request'`) and `providerArgs['request']` now accepts a `RestRequest` instead of the HTTP method string.
+* **BREAKING CHANGE** `providerArgs['topLevelKey']` and `providerArgs['headers']` and `providerArgs['supplementalTopLevelData']` have been removed (use `'request'`) and `providerArgs['request']` now accepts a `RestRequest` instead of the HTTP method string.
 * Use Dart 2.15's `.byName` accessor for iterable enum values and remove `RestAdapter.enumValueFromName` and `RestAdapter.firstWhereOrNull`. Instead use `<Enum>.values.byName` and `import 'package:collection/collection.dart'`'s `.firstWhereOrNull` respectively.
 
 ## 1.1.1

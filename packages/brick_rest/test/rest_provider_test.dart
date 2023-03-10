@@ -110,7 +110,7 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test("providerArgs['supplementalTopLevelData']", () async {
+      test("providerArgs['request'].supplementalTopLevelData", () async {
         final provider = generateProvider(
           '{"name": "Thomas"}',
           requestMethod: 'POST',
@@ -119,10 +119,9 @@ void main() {
 
         final instance = DemoRestModel('Guy');
         final query = Query(providerArgs: {
-          'request': RestRequest(topLevelKey: 'top', url: '/'),
-          'supplementalTopLevelData': {
+          'request': RestRequest(topLevelKey: 'top', url: '/', supplementalTopLevelData: {
             'other_name': {'first_name': 'Thomas'},
-          }
+          }),
         });
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
