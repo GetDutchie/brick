@@ -53,6 +53,16 @@ Brick 3 removes the abstract packages since Sqflite has abstracted its Flutter d
 
 * Listen for SQLite changes via `OfflineFirstWithRestRepository#subscribe`
 
+### Brick Graphql
+
+#### `providerArgs['document']`
+
+This has been consolidated to `'operation'`. For example: `providerArgs: { 'operation': GraphqlOperation(document: r'''mutation UpdateUser(id: ....)''')}`.
+
+#### `providerArgs['variables']`
+
+This has been consolidated to `'operation'`. For example: `providerArgs: { 'operation': GraphqlOperation(variables: {'id': '1'}) }`.
+
 ### Brick Rest
 
 #### `providerArgs['request']`

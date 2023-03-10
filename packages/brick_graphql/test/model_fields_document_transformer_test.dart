@@ -1,4 +1,5 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:test/test.dart';
@@ -128,7 +129,8 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
 
     group('.defaultOperation', () {
       test('with specified document', () {
-        final query = Query(providerArgs: {'document': upsertPersonWithNodes});
+        final query =
+            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
             action: QueryAction.get, query: query);
         expect(lang.printNode(transformer!.document),

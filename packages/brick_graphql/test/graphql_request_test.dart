@@ -73,7 +73,7 @@ void main() {
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'variables': variables}),
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
         );
         expect(request.requestVariables, variables);
       });
@@ -84,7 +84,7 @@ void main() {
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'variables': providerVariables}),
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
           variables: variables,
         );
         expect(request.requestVariables, providerVariables);

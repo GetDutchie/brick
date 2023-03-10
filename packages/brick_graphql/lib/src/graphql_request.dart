@@ -55,7 +55,7 @@ class GraphqlRequest<TModel extends GraphqlModel> {
       vars = {variableNamespace!: vars};
     }
 
-    return query?.providerArgs['variables'] ?? vars;
+    return query?.providerArgs['operation'].variables ?? vars;
   }
 
   /// Retrive variables defined by the annotation in [GraphqlQueryOperationTransformer]
