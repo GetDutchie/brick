@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Resolve concurrent modification error when looping through subscriptions
+
 ## 3.0.0
 
 * Remove `brick_sqlite_abstract`
