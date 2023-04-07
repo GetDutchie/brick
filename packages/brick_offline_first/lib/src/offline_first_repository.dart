@@ -287,7 +287,10 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     final queriesControllers = subscriptions[TModel]?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
-    for (final queryController in queriesControllers!) {
+    // create a copy of the controllers to avoid concurrent modification while looping
+    final cachedControllers =
+        List<MapEntry<Query?, StreamController<List<RepositoryModel>>>>.from(queriesControllers!);
+    for (final queryController in cachedControllers) {
       final query = queryController.key;
       final controller = queryController.value;
       if (controller.isClosed || controller.isPaused) continue;
