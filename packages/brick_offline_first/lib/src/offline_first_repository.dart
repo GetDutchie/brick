@@ -320,14 +320,16 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// Listen for streaming changes when the [sqliteProvider] is `upsert`ed. This method utilizes [remoteProvider]'s [get].
   ///
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
-  /// invocation. For more, see [notifySubscriptionsWithLocalData]. Because only local data
-  /// is supplied for [subscribe], it will not fetch [TModel] if no local models exist.
+  /// invocation. For more, see [notifySubscriptionsWithLocalData].
+  ///
+  /// [policy] is only applied to the initial population of the stream. Only local data is supplied
+  /// on subsequent events to [notifySubscriptionsWithLocalData].
   ///
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
   Stream<List<TModel>> subscribe<TModel extends RepositoryModel>({
-    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.localOnly,
     Query? query,
   }) {
     query ??= Query();
@@ -348,7 +350,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     subscriptions[TModel] ??= {};
     subscriptions[TModel]?[query] = controller;
 
-    get<TModel>(query: query, policy: OfflineFirstGetPolicy.localOnly).then((results) {
+    get<TModel>(query: query, policy: policy).then((results) {
       if (!controller.isClosed) controller.add(results);
     });
 

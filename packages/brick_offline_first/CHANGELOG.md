@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.2
+
+* Permit awaiting remote on first `get` in `OfflineFirstRepository#subscribe`. While the default for the `policy` argument of this method has changed, it was unapplied (`.localOnly` was used regardless).
+
 ## 3.0.1
 
 * Resolve concurrent modification error when looping through subscriptions
