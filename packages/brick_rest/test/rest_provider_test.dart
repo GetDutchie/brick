@@ -110,23 +110,46 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test("providerArgs['request'].supplementalTopLevelData", () async {
-        final provider = generateProvider(
-          '{"name": "Thomas"}',
-          requestMethod: 'POST',
-          requestBody: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
-        );
+      group("providerArgs['request'].supplementalTopLevelData", () {
+        test('#get', () async {
+          final provider = generateProvider(
+            '[{"name": "Thomas"}]',
+            requestMethod: 'POST',
+            requestBody: '{"other_name":{"first_name":"Thomas"}}',
+          );
 
-        final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {
-          'request': RestRequest(topLevelKey: 'top', url: '/', supplementalTopLevelData: {
-            'other_name': {'first_name': 'Thomas'},
-          }),
+          final query = Query(providerArgs: {
+            'request': RestRequest(
+              url: '/',
+              method: 'POST',
+              supplementalTopLevelData: {
+                'other_name': {'first_name': 'Thomas'},
+              },
+            ),
+          });
+          final instance = await provider.get<DemoRestModel>(query: query);
+
+          expect(instance.first.name, 'Thomas');
         });
-        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
-        expect(resp!.statusCode, 200);
-        expect(resp.body, '{"name": "Thomas"}');
+        test('#upsert', () async {
+          final provider = generateProvider(
+            '{"name": "Thomas"}',
+            requestMethod: 'POST',
+            requestBody: '{"top":{"name":"Guy"},"other_name":{"first_name":"Thomas"}}',
+          );
+
+          final instance = DemoRestModel('Guy');
+          final query = Query(providerArgs: {
+            'request': RestRequest(topLevelKey: 'top', url: '/', supplementalTopLevelData: {
+              'other_name': {'first_name': 'Thomas'},
+            }),
+          });
+          final resp = await provider.upsert<DemoRestModel>(instance, query: query);
+
+          expect(resp!.statusCode, 200);
+          expect(resp.body, '{"name": "Thomas"}');
+        });
       });
     });
 

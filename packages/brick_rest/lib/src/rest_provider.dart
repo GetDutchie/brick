@@ -127,7 +127,7 @@ class RestProvider implements Provider<RestModel> {
     final url = request?.url;
     if (url == null) return null;
 
-    final combinedBody = {};
+    final combinedBody = <String, dynamic>{};
 
     final topLevelKey = request?.topLevelKey;
     if (topLevelKey != null) {
@@ -136,15 +136,10 @@ class RestProvider implements Provider<RestModel> {
       combinedBody.addAll(body);
     }
 
-    // if supplementalTopLevelData is specified it, insert alongside normal payload
-    if ((query?.providerArgs ?? {})['request']?.supplementalTopLevelData != null) {
-      combinedBody.addAll(query!.providerArgs['request']?.supplementalTopLevelData);
-    }
-
     final resp = await _brickRequestToHttpRequest(
       request!,
       QueryAction.upsert,
-      body: jsonEncode(combinedBody),
+      body: combinedBody,
       query: query,
     );
 
@@ -196,8 +191,9 @@ class RestProvider implements Provider<RestModel> {
     RestRequest request,
     QueryAction operation, {
     Query? query,
-    String? body,
+    Map<String, dynamic>? body,
   }) async {
+    final combinedBody = body ?? {};
     final url = Uri.parse([baseEndpoint, request.url!].join(''));
     final method =
         (query?.providerArgs ?? {})['request']?.method ?? request.method ?? operation.httpMethod;
@@ -211,17 +207,26 @@ class RestProvider implements Provider<RestModel> {
       logger.finest(methodLog);
     }
 
+    // if supplementalTopLevelData is specified it, insert alongside normal payload
+    final topLevelData = (query?.providerArgs ?? {})['request']?.supplementalTopLevelData ??
+        request.supplementalTopLevelData;
+    if (topLevelData != null) {
+      combinedBody.addAll(topLevelData);
+    }
+
+    final serializedBody = body == null && combinedBody.isEmpty ? null : jsonEncode(combinedBody);
+
     switch (method) {
       case 'DELETE':
         return await client.delete(url, headers: headers);
       case 'GET':
         return await client.get(url, headers: headers);
       case 'PATCH':
-        return await client.patch(url, body: body, headers: headers);
+        return await client.patch(url, body: serializedBody, headers: headers);
       case 'POST':
-        return await client.post(url, body: body, headers: headers);
+        return await client.post(url, body: serializedBody, headers: headers);
       case 'PUT':
-        return await client.put(url, body: body, headers: headers);
+        return await client.put(url, body: serializedBody, headers: headers);
       default:
         throw StateError(
           "Request method $method is unhandled; use providerArgs['request'] or RestRequest#method",
