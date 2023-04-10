@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Support accessing `supplementalTopLevelData` from any REST request that accepts a body (`PUT`, `PATCH`, `POST`). Additionally, include `supplementalTopLevelData` defined within `RestRequest` instances defined outside `providerArgs`
+
 ## 3.0.0
 
 Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.
