@@ -175,6 +175,14 @@ void main() {
         expect(TestRepository().subscriptions[Mounty]!.entries.first.value, isNotNull);
       });
 
+      test('subscription succeeds when policy is non-default .awaitRemote', () async {
+        expect(TestRepository().subscriptions, hasLength(0));
+        final query = Query.where('name', 'Thomas');
+        TestRepository().subscribe<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote, query: query);
+        expect(TestRepository().subscriptions, hasLength(1));
+        expect(TestRepository().subscriptions[Mounty], hasLength(1));
+      });
+
       test('adds controller and null query to #subscriptions', () async {
         expect(TestRepository().subscriptions, hasLength(0));
         TestRepository().subscribe<Mounty>();
@@ -238,7 +246,6 @@ void main() {
       test('notifies when storeRemoteResults is invoked', () async {
         var eventReceived = false;
         final subscription = TestRepository().subscribe<Mounty>().listen((event) {
-          print(event);
           eventReceived = event.first.name == 'Thomas';
         });
         await TestRepository().storeRemoteResults<Mounty>([Mounty(name: 'Thomas')]);
