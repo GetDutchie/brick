@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Support Dart 3
+
 ## 3.0.0
 
 Please follow the [v3 migration guide](https://github.com/GetDutchie/brick/issues/325) to easily upgrade.

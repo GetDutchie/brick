@@ -5,7 +5,6 @@ import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_polic
 import 'package:test/test.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:gql/language.dart';
 import '__helpers__.dart';

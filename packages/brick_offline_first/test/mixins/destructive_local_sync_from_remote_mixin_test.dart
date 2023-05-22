@@ -4,8 +4,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-import 'package:sqflite_common/sqlite_api.dart';
-
 import '../offline_first/helpers/__mocks__.dart';
 import '../offline_first/helpers/test_domain.dart';
 

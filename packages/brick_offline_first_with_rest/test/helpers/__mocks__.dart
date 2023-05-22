@@ -6,7 +6,6 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 part 'horse_adapter.dart';

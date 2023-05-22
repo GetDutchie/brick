@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 1.1.2
+
+* Support Dart 3
 * Loosen dependency restrictions to major versions
 
 ## 1.1.1

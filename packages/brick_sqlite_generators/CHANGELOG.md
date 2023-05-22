@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Support Dart 3
+
 ## 3.0.0
 
 * Replace `brick_sqlite_abstract/db.dart` with `brick_sqlite/db.dart`

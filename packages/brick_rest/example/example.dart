@@ -7,14 +7,14 @@ import 'package:brick_rest/brick_rest.dart';
 /// such as brick_offline_first_with_rest_build
 class UserAdapter extends RestAdapter<User> {
   @override
-  Future<User> fromRest(data, {provider, repository}) async {
+  Future<User> fromRest(data, {required provider, repository}) async {
     return User(
       name: data['name'],
     );
   }
 
   @override
-  Future<Map<String, dynamic>> toRest(instance, {provider, repository}) async {
+  Future<Map<String, dynamic>> toRest(instance, {required provider, repository}) async {
     return {
       'name': instance.name,
     };
@@ -33,7 +33,7 @@ class User extends RestModel {
   final String name;
 
   User({
-    this.name,
+    required this.name,
   });
 }
 

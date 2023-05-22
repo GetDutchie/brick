@@ -4,10 +4,10 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 3.0.0
+version: 3.0.1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
   analyzer: ">=5.0.0 <6.0.0"

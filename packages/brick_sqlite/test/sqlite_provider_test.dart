@@ -3,7 +3,6 @@ import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:test/test.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '__mocks__.dart';
