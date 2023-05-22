@@ -74,3 +74,4 @@ testfile.dill
 .flutter-plugins-dependencies
 
 pubspec_overrides.yaml
+**/reports/test-results.json
