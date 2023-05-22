@@ -8,6 +8,6 @@ environment:
   sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
-  sqflite: any
+  sqflite: '>=2.2.7 <3.0.0'
   brick_sqlite:
     path: ../
