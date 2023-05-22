@@ -234,14 +234,11 @@ void main() {
 
       test('without any where arguments', () async {
         const statement = 'SELECT COUNT(*) FROM `DemoModel`';
-        String? nilValue;
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(
             where: [
-              WherePhrase([
-                if (nilValue != null) const And('name').isExactly('John'),
-              ], isRequired: false),
+              WherePhrase([], isRequired: false),
             ],
           ),
           selectStatement: false,

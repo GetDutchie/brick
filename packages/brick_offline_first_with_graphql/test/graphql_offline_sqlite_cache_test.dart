@@ -9,7 +9,6 @@ import 'package:gql/language.dart';
 import 'package:logging/logging.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 
 class MockLogger extends Mock implements Logger {}
 

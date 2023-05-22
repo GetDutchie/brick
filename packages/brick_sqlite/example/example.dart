@@ -1,6 +1,8 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:sqflite/sqflite.dart' show databaseFactory;
+// Use sqflite when building for Flutter
+// import 'package:sqflite/sqflite.dart' show databaseFactory;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' show databaseFactory;
 
 /// This class and code is always generated.
 /// It is included here as an illustration.

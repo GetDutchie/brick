@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Support Dart 3
+
 ## 3.0.0
 
 * Update dependency import paths

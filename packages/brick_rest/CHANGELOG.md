@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.2
+
+* Support Dart 3
+
 ## 3.0.1
 
 * Support accessing `supplementalTopLevelData` from any REST request that accepts a body (`PUT`, `PATCH`, `POST`). Additionally, include `supplementalTopLevelData` defined within `RestRequest` instances defined outside `providerArgs`

@@ -25,14 +25,14 @@ class User extends FileModel {
   final String name;
 
   User({
-    this.name,
+    required this.name,
   });
 }
 
 class FileProvider implements Provider<FileModel> {
   @override
   final FileModelDictionary modelDictionary;
-  FileProvider({this.modelDictionary});
+  FileProvider({required this.modelDictionary});
 
   @override
   Future<bool> delete<T extends FileModel>(instance, {query, repository}) async {
@@ -41,31 +41,31 @@ class FileProvider implements Provider<FileModel> {
   }
 
   @override
-  bool exists<T extends FileModel>({Query query, ModelRepository<FileModel> repository}) => false;
+  bool exists<T extends FileModel>({Query? query, ModelRepository<FileModel>? repository}) => false;
 
   /// Query.where must always include `filePath`
   @override
   Future<List<T>> get<T extends FileModel>({query, repository}) async {
-    final adapter = modelDictionary.adapterFor[T];
-    if (query.where != null) {
-      final filePath = Where.firstByField('filePath', query.where)?.value;
+    final adapter = modelDictionary.adapterFor[T]!;
+    if (query?.where != null) {
+      final filePath = Where.firstByField('filePath', query?.where)?.value;
 
       final contents = await File('${adapter.directory}/$filePath.json').readAsString();
-      return [await adapter.fromFile(contents)];
+      return [await adapter.fromFile(contents, provider: this, repository: repository) as T];
     }
 
     final files = Glob('${adapter.directory}/**.${adapter.fileExtension}');
     return Future.wait<T>(files.listSync().map<Future<T>>((file) async {
       final contents = await File(file.path).readAsString();
-      return await adapter.fromFile(contents);
+      return await adapter.fromFile(contents, provider: this, repository: repository) as T;
     }));
   }
 
   @override
   Future<T> upsert<T extends FileModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[T];
-    final fileContents = await adapter.toFile(instance, provider: this, repository: repository);
-    await File(instance.fileName).writeAsString(fileContents);
+    final fileContents = await adapter?.toFile(instance, provider: this, repository: repository);
+    await File(instance.fileName).writeAsString(fileContents ?? '');
     return instance;
   }
 }
@@ -80,13 +80,13 @@ abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
 
   Future<FileModel> fromFile(
     String data, {
-    FileProvider provider,
-    ModelRepository<FileModel> repository,
+    required FileProvider provider,
+    ModelRepository<FileModel>? repository,
   });
   Future<String> toFile(
     _Model instance, {
-    FileProvider provider,
-    ModelRepository<FileModel> repository,
+    required FileProvider provider,
+    ModelRepository<FileModel>? repository,
   });
 }
 
@@ -100,13 +100,13 @@ class UserAdapter extends FileAdapter<User> {
   UserAdapter();
 
   @override
-  Future<User> fromFile(input, {provider, repository}) async {
+  Future<User> fromFile(input, {required provider, repository}) async {
     final contents = jsonDecode(input);
     return User(name: contents['name']);
   }
 
   @override
-  Future<String> toFile(instance, {provider, repository}) async =>
+  Future<String> toFile(instance, {required provider, repository}) async =>
       jsonEncode({'name': instance.name});
 }
 

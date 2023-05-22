@@ -3,12 +3,7 @@ name: brick_offline_first_with_rest_example
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
-  flutter: ">=2.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
+  sdk: ">=2.18.0 <4.0.0"
 
 dependency_overrides:
   brick_offline_first_with_rest:

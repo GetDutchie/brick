@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.1
+
+* Support Dart 3
+
 ## 3.0.0
 
 * Update minimum `analyzer` constraint to `5.0.0`
