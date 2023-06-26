@@ -73,7 +73,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
         }
 
         if (fieldAnnotation.enumAsString) {
-          return '''$fieldValue.map(
+          return '''$fieldValue.whereType<String>().map(
             ${SharedChecker.withoutNullability(argType)}.values.byName
           )$castIterable$defaultValue
           ''';

@@ -9,9 +9,16 @@ Future<EnumAsString> _$EnumAsStringFromGraphql(Map<String, dynamic> data,
       nullableHat: data['nullableHat'] == null
           ? null
           : Hat.values.byName(data['nullableHat']),
-      hats: data['hats'].map(Hat.values.byName).toList().cast<Hat>(),
-      nullableHats:
-          data['nullableHats'].map(Hat.values.byName)?.toList().cast<Hat?>());
+      hats: data['hats']
+          .whereType<String>()
+          .map(Hat.values.byName)
+          .toList()
+          .cast<Hat>(),
+      nullableHats: data['nullableHats']
+          .whereType<String>()
+          .map(Hat.values.byName)
+          ?.toList()
+          .cast<Hat?>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToGraphql(EnumAsString instance,
