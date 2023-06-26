@@ -16,7 +16,6 @@ Future<shelf.Response> _echoRequest(shelf.Request request) async {
   for (final endpoint in endpoints) {
     if (request.url.toString().startsWith(endpoint)) {
       final resp = await File("_api/$endpoint.json").readAsString();
-      print(resp);
       return shelf.Response.ok(resp, headers: {"Content-Type": "application/json"});
     }
   }
