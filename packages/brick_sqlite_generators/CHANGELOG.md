@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.2
+
+* Fix discovery path for injecting new migration `part` into schema from legacy `brick_sqlite_abstract` to `brick_sqlite/db`
+
 ## 3.0.1
 
 * Support Dart 3

@@ -16,9 +16,14 @@ dependencies:
   gql_http_link: any
   sqflite: any
 
+dependency_overrides:
+  brick_sqlite_generators:
+    path: ../packages/brick_sqlite_generators
+
 dev_dependencies:
   brick_offline_first_with_graphql_build:
     path: ../packages/brick_offline_first_with_graphql_build
+    
   build_runner: any
   shelf: ^1.1.0
 
