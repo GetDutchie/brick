@@ -30,7 +30,7 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     // this should be revisited in a few build versions to make this flow less brittle
     // and more predictable by using the same schema generator to do all the heavy lifting
     final newSetPiece = 'final migrations = <Migration>{\n  const Migration$version(),';
-    final newPart = "brick_sqlite_abstract/db.dart';\npart '$version.migration.dart';";
+    final newPart = "brick_sqlite/db.dart';\npart '$version.migration.dart';";
 
     await replaceWithinFile(
       'db/schema.g.dart',
@@ -39,9 +39,10 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     );
     await replaceWithinFile(
       'db/schema.g.dart',
-      "brick_sqlite_abstract/db.dart';",
+      "brick_sqlite/db.dart';",
       newPart,
     );
+
     await manuallyUpsertBrickFile('db/$version.migration.dart', output);
     await buildStep.writeAsString(buildStep.inputId.changeExtension(outputExtension), output);
     await replaceWithinFile(

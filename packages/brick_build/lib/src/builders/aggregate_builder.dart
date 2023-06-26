@@ -27,7 +27,7 @@ class AggregateBuilder implements Builder {
   static final modelFiles = Glob('lib/**/*.model.dart');
   static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
 
-  AggregateBuilder({this.requiredImports = const <String>[]});
+  const AggregateBuilder({this.requiredImports = const <String>[]});
 
   @override
   Future<void> build(BuildStep buildStep) async {
