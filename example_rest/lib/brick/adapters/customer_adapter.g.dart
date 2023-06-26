@@ -2,13 +2,14 @@
 part of '../brick.g.dart';
 
 Future<Customer> _$CustomerFromRest(Map<String, dynamic> data,
-    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
+    {required RestProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return Customer(
       id: data['id'] as int?,
       firstName: data['first_name'] as String?,
       lastName: data['last_name'] as String?,
-      pizzas: (await Future.wait<Pizza?>((data['pizza_ids'] ?? []).map<Future<Pizza?>>((s) =>
-              repository!
+      pizzas: (await Future.wait<Pizza?>((data['pizza_ids'] ?? [])
+              .map<Future<Pizza?>>((s) => repository!
                   .getAssociation<Pizza>(Query(where: [Where.exact('id', s)]))
                   .then((r) => r?.isNotEmpty ?? false ? r!.first : null))))
           .whereType<Pizza>()
@@ -16,7 +17,8 @@ Future<Customer> _$CustomerFromRest(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$CustomerToRest(Customer instance,
-    {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
+    {required RestProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return {
     'id': instance.id,
     'first_name': instance.firstName,
@@ -26,10 +28,12 @@ Future<Map<String, dynamic>> _$CustomerToRest(Customer instance,
 }
 
 Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
   return Customer(
       id: data['id'] == null ? null : data['id'] as int?,
-      firstName: data['first_name'] == null ? null : data['first_name'] as String?,
+      firstName:
+          data['first_name'] == null ? null : data['first_name'] as String?,
       lastName: data['last_name'] == null ? null : data['last_name'] as String?,
       pizzas: (await provider.rawQuery(
               'SELECT DISTINCT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE l_Customer_brick_id = ?',
@@ -47,8 +51,13 @@ Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$CustomerToSqlite(Customer instance,
-    {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
-  return {'id': instance.id, 'first_name': instance.firstName, 'last_name': instance.lastName};
+    {required SqliteProvider provider,
+    OfflineFirstWithRestRepository? repository}) async {
+  return {
+    'id': instance.id,
+    'first_name': instance.firstName,
+    'last_name': instance.lastName
+  };
 }
 
 /// Construct a [Customer]
@@ -58,7 +67,8 @@ class CustomerAdapter extends OfflineFirstWithRestAdapter<Customer> {
   @override
   final restRequest = CustomerRequestTransformer.new;
   @override
-  final fieldsToOfflineFirstRuntimeDefinition = <String, RuntimeOfflineFirstDefinition>{
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{
     'pizzas': const RuntimeOfflineFirstDefinition(
       where: <String, String>{'id': "data['pizza_ids']"},
     )
@@ -97,7 +107,8 @@ class CustomerAdapter extends OfflineFirstWithRestAdapter<Customer> {
     )
   };
   @override
-  Future<int?> primaryKeyByUniqueColumns(Customer instance, DatabaseExecutor executor) async {
+  Future<int?> primaryKeyByUniqueColumns(
+      Customer instance, DatabaseExecutor executor) async {
     final results = await executor.rawQuery('''
         SELECT * FROM `Customer` WHERE id = ? LIMIT 1''', [instance.id]);
 
@@ -118,8 +129,10 @@ class CustomerAdapter extends OfflineFirstWithRestAdapter<Customer> {
           'SELECT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE `l_Customer_brick_id` = ?',
           [instance.primaryKey]);
       final pizzasOldIds = pizzasOldColumns.map((a) => a['f_Pizza_brick_id']);
-      final pizzasNewIds = instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
-      final pizzasIdsToDelete = pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
+      final pizzasNewIds =
+          instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
+      final pizzasIdsToDelete =
+          pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
 
       await Future.wait<void>(pizzasIdsToDelete.map((id) async {
         return await provider.rawExecute(
@@ -128,7 +141,8 @@ class CustomerAdapter extends OfflineFirstWithRestAdapter<Customer> {
       }));
 
       await Future.wait<int?>(instance.pizzas?.map((s) async {
-            final id = s.primaryKey ?? await provider.upsert<Pizza>(s, repository: repository);
+            final id = s.primaryKey ??
+                await provider.upsert<Pizza>(s, repository: repository);
             return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Customer_pizzas` (`l_Customer_brick_id`, `f_Pizza_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -139,18 +153,25 @@ class CustomerAdapter extends OfflineFirstWithRestAdapter<Customer> {
 
   @override
   Future<Customer> fromRest(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
-      await _$CustomerFromRest(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
+      await _$CustomerFromRest(input,
+          provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toRest(Customer input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
       await _$CustomerToRest(input, provider: provider, repository: repository);
   @override
   Future<Customer> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
-      await _$CustomerFromSqlite(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
+      await _$CustomerFromSqlite(input,
+          provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(Customer input,
-          {required provider, covariant OfflineFirstWithRestRepository? repository}) async =>
-      await _$CustomerToSqlite(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithRestRepository? repository}) async =>
+      await _$CustomerToSqlite(input,
+          provider: provider, repository: repository);
 }
