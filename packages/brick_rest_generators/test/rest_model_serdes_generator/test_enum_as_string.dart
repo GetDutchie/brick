@@ -8,9 +8,16 @@ Future<EnumAsString> _$EnumAsStringFromRest(Map<String, dynamic> data,
       nullableHat: data['nullable_hat'] == null
           ? null
           : Hat.values.byName(data['nullable_hat']),
-      hats: data['hats'].map(Hat.values.byName).toList().cast<Hat>(),
-      nullableHats:
-          data['nullable_hats'].map(Hat.values.byName)?.toList().cast<Hat?>());
+      hats: data['hats']
+          .whereType<String>()
+          .map(Hat.values.byName)
+          .toList()
+          .cast<Hat>(),
+      nullableHats: data['nullable_hats']
+          .whereType<String>()
+          .map(Hat.values.byName)
+          ?.toList()
+          .cast<Hat?>());
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToRest(EnumAsString instance,
