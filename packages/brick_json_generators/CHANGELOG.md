@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.0.2
+
+* Ensure deserializing string-based enums iterate on an array of strings (#345)
+
 ## 3.0.1
 
 * Support Dart 3

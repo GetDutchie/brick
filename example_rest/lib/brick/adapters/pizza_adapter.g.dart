@@ -5,7 +5,7 @@ Future<Pizza> _$PizzaFromRest(Map<String, dynamic> data,
     {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Pizza(
       id: data['id'] as int?,
-      toppings: data['toppings'].map(Topping.values.byName).toList().cast<Topping>(),
+      toppings: data['toppings'].whereType<String>().map(Topping.values.byName).toList().cast<Topping>(),
       frozen: data['frozen'] as bool?);
 }
 
