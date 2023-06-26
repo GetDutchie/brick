@@ -4,9 +4,9 @@ part of '../brick.g.dart';
 Future<Pizza> _$PizzaFromRest(Map<String, dynamic> data,
     {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Pizza(
-      id: data['id'] as int?,
+      id: data['id'] as int,
       toppings: data['toppings'].map(Topping.values.byName).toList().cast<Topping>(),
-      frozen: data['frozen'] as bool?);
+      frozen: data['frozen'] as bool);
 }
 
 Future<Map<String, dynamic>> _$PizzaToRest(Pizza instance,
@@ -21,7 +21,7 @@ Future<Map<String, dynamic>> _$PizzaToRest(Pizza instance,
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return Pizza(
-      id: data['id'] == null ? null : data['id'] as int?,
+      id: data['id'] as int,
       toppings: data['toppings'] == null
           ? null
           : jsonDecode(data['toppings'])
@@ -29,7 +29,7 @@ Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
               ?.whereType<Topping>()
               .toList()
               .cast<Topping>(),
-      frozen: data['frozen'] == null ? null : data['frozen'] == 1)
+      frozen: data['frozen'] == 1)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -37,8 +37,8 @@ Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
     {required SqliteProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {
     'id': instance.id,
-    'toppings': jsonEncode(instance.toppings?.map((s) => Topping.values.indexOf(s)).toList() ?? []),
-    'frozen': instance.frozen == null ? null : (instance.frozen! ? 1 : 0)
+    'toppings': jsonEncode(instance.toppings.map((s) => Topping.values.indexOf(s)).toList()),
+    'frozen': instance.frozen ? 1 : 0
   };
 }
 

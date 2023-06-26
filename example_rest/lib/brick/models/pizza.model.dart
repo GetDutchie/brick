@@ -11,18 +11,18 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 class Pizza extends OfflineFirstWithRestModel {
   /// Read more about `@Sqlite`: https://github.com/GetDutchie/brick/tree/main/packages/brick_sqlite#fields
   @Sqlite(unique: true)
-  final int? id;
+  final int id;
 
   /// Read more about `@Rest`: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest#fields
   @Rest(enumAsString: true)
-  final List<Topping>? toppings;
+  final List<Topping> toppings;
 
-  final bool? frozen;
+  final bool frozen;
 
   Pizza({
-    this.id,
-    this.toppings,
-    this.frozen,
+    required this.id,
+    required this.toppings,
+    required this.frozen,
   });
 }
 
