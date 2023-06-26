@@ -13,7 +13,7 @@ Future<Map<String, dynamic>> _$PizzaToRest(Pizza instance,
     {required RestProvider provider, OfflineFirstWithRestRepository? repository}) async {
   return {
     'id': instance.id,
-    'toppings': instance.toppings?.map((e) => e.toString().split('.').last).toList(),
+    'toppings': instance.toppings?.map((e) => e.name).toList(),
     'frozen': instance.frozen
   };
 }
