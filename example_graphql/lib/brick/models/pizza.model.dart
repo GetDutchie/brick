@@ -23,18 +23,18 @@ class PizzaOperationTransformer extends GraphqlQueryOperationTransformer {
 class Pizza extends OfflineFirstWithGraphqlModel {
   /// Read more about `@Sqlite`: https://github.com/GetDutchie/brick/tree/main/packages/brick_sqlite#fields
   @Sqlite(unique: true)
-  final int? id;
+  final int id;
 
   /// Read more about `@Graphql`: https://github.com/GetDutchie/brick/tree/main/packages/brick_graphql#fields
   @Graphql(enumAsString: true)
-  final List<Topping>? toppings;
+  final List<Topping> toppings;
 
-  final bool? frozen;
+  final bool frozen;
 
   Pizza({
-    this.id,
-    this.toppings,
-    this.frozen,
+    required this.id,
+    required this.toppings,
+    required this.frozen,
   });
 }
 

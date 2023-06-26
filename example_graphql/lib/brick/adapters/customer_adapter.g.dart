@@ -2,37 +2,42 @@
 part of '../brick.g.dart';
 
 Future<Customer> _$CustomerFromGraphql(Map<String, dynamic> data,
-    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+    {required GraphqlProvider provider,
+    OfflineFirstWithGraphqlRepository? repository}) async {
   return Customer(
       id: data['id'] as int?,
       firstName: data['firstName'] as String?,
       lastName: data['lastName'] as String?,
       pizzas: await Future.wait<Pizza>(data['pizzas']
-              ?.map(
-                  (d) => PizzaAdapter().fromGraphql(d, provider: provider, repository: repository))
+              ?.map((d) => PizzaAdapter()
+                  .fromGraphql(d, provider: provider, repository: repository))
               .toList()
               .cast<Future<Pizza>>() ??
           []));
 }
 
 Future<Map<String, dynamic>> _$CustomerToGraphql(Customer instance,
-    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+    {required GraphqlProvider provider,
+    OfflineFirstWithGraphqlRepository? repository}) async {
   return {
     'id': instance.id,
     'firstName': instance.firstName,
     'lastName': instance.lastName,
     'pizzas': await Future.wait<Map<String, dynamic>>(instance.pizzas
-            ?.map((s) => PizzaAdapter().toGraphql(s, provider: provider, repository: repository))
+            ?.map((s) => PizzaAdapter()
+                .toGraphql(s, provider: provider, repository: repository))
             .toList() ??
         [])
   };
 }
 
 Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+    {required SqliteProvider provider,
+    OfflineFirstWithGraphqlRepository? repository}) async {
   return Customer(
       id: data['id'] == null ? null : data['id'] as int?,
-      firstName: data['first_name'] == null ? null : data['first_name'] as String?,
+      firstName:
+          data['first_name'] == null ? null : data['first_name'] as String?,
       lastName: data['last_name'] == null ? null : data['last_name'] as String?,
       pizzas: (await provider.rawQuery(
               'SELECT DISTINCT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE l_Customer_brick_id = ?',
@@ -50,8 +55,13 @@ Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$CustomerToSqlite(Customer instance,
-    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
-  return {'id': instance.id, 'first_name': instance.firstName, 'last_name': instance.lastName};
+    {required SqliteProvider provider,
+    OfflineFirstWithGraphqlRepository? repository}) async {
+  return {
+    'id': instance.id,
+    'first_name': instance.firstName,
+    'last_name': instance.lastName
+  };
 }
 
 /// Construct a [Customer]
@@ -125,7 +135,8 @@ class CustomerAdapter extends OfflineFirstWithGraphqlAdapter<Customer> {
     )
   };
   @override
-  Future<int?> primaryKeyByUniqueColumns(Customer instance, DatabaseExecutor executor) async {
+  Future<int?> primaryKeyByUniqueColumns(
+      Customer instance, DatabaseExecutor executor) async {
     final results = await executor.rawQuery('''
         SELECT * FROM `Customer` WHERE id = ? LIMIT 1''', [instance.id]);
 
@@ -146,8 +157,10 @@ class CustomerAdapter extends OfflineFirstWithGraphqlAdapter<Customer> {
           'SELECT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE `l_Customer_brick_id` = ?',
           [instance.primaryKey]);
       final pizzasOldIds = pizzasOldColumns.map((a) => a['f_Pizza_brick_id']);
-      final pizzasNewIds = instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
-      final pizzasIdsToDelete = pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
+      final pizzasNewIds =
+          instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
+      final pizzasIdsToDelete =
+          pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
 
       await Future.wait<void>(pizzasIdsToDelete.map((id) async {
         return await provider.rawExecute(
@@ -156,7 +169,8 @@ class CustomerAdapter extends OfflineFirstWithGraphqlAdapter<Customer> {
       }));
 
       await Future.wait<int?>(instance.pizzas?.map((s) async {
-            final id = s.primaryKey ?? await provider.upsert<Pizza>(s, repository: repository);
+            final id = s.primaryKey ??
+                await provider.upsert<Pizza>(s, repository: repository);
             return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_Customer_pizzas` (`l_Customer_brick_id`, `f_Pizza_brick_id`) VALUES (?, ?)',
                 [instance.primaryKey, id]);
@@ -167,18 +181,26 @@ class CustomerAdapter extends OfflineFirstWithGraphqlAdapter<Customer> {
 
   @override
   Future<Customer> fromGraphql(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
-      await _$CustomerFromGraphql(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$CustomerFromGraphql(input,
+          provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toGraphql(Customer input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
-      await _$CustomerToGraphql(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$CustomerToGraphql(input,
+          provider: provider, repository: repository);
   @override
   Future<Customer> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
-      await _$CustomerFromSqlite(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$CustomerFromSqlite(input,
+          provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(Customer input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
-      await _$CustomerToSqlite(input, provider: provider, repository: repository);
+          {required provider,
+          covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+      await _$CustomerToSqlite(input,
+          provider: provider, repository: repository);
 }

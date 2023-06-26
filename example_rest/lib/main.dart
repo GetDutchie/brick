@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     // be sure to run `dart server.dart` before using this example
+    // on android, try 10.0.2.2
     Repository.configure('http://localhost:8080');
     // Note that subsequent boots of the app will use cached data
     // To clear this, wipe data on android or tap-press on iOS and delete the app
