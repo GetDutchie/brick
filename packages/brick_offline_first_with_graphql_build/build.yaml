@@ -1,13 +1,13 @@
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
-  brickAggregateBuilder:
+  brick_aggregate_builder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstAggregateBuilder"]
     build_extensions: {"$lib$": ["models_and_migrations.brick_aggregate.dart"]}
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]
-    runs_before: ["brickSchemaBuilder"]
-    auto_apply: root_package
+    runs_before: ["brick_schema_builder", "brick_model_dictionary_builder"]
+    auto_apply: dependents
     defaults:
       generate_for:
         exclude:
@@ -15,12 +15,13 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
-  brickAdaptersBuilder:
+
+  brick_adapters_builder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstAdaptersBuilder"]
     build_extensions: {".model.dart": [".adapter_build_offline_first.dart"]}
     build_to: cache
-    auto_apply: root_package
+    auto_apply: dependents
     applies_builders: ["source_gen|combining_builder"]
     defaults:
       generate_for:
@@ -34,16 +35,31 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
-  brickSchemaBuilder:
+  
+  brick_schema_builder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
-    builder_factories: ["offlineFirstSchemaBuilder", "offlineFirstNewMigrationBuilder"]
-    build_extensions: {".brick_aggregate.dart": [".brick_aggregate.migration_build_offline_first.dart"]}
+    builder_factories: ["offlineFirstSchemaBuilder"]
+    build_extensions: {".brick_aggregate.dart": [".brick_aggregate.schema_build_offline_first.dart"]}
     build_to: cache
-    auto_apply: root_package
-  brickModelDictionaryBuilder:
+    auto_apply: dependents
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders: ["source_gen|combining_builder", ":brick_aggregate_builder", ":brick_new_migration_builder"]
+  
+  brick_new_migration_builder:
+    import: "package:brick_offline_first_with_graphql_build/builder.dart"
+    builder_factories: ["offlineFirstNewMigrationBuilder"]
+    build_extensions: {".brick_aggregate.dart": [".brick_aggregate.migration_builder.dart"]}
+    build_to: cache
+    auto_apply: dependents
+    runs_before: ["brick_schema_builder"]
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders: ["source_gen|combining_builder", ":brick_aggregate_builder"]
+
+  brick_model_dictionary_builder:
     import: "package:brick_offline_first_with_graphql_build/builder.dart"
     builder_factories: ["offlineFirstModelDictionaryBuilder"]
     build_extensions: {".brick_aggregate.dart": [".brick_aggregate.model_dictionary_build_offline_first.dart"]}
     build_to: cache
-    auto_apply: root_package
-    applies_builders: ["source_gen|combining_builder"]
+    auto_apply: dependents
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders: ["source_gen|combining_builder", ":brick_aggregate_builder"]

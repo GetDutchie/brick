@@ -1,5 +1,7 @@
 ## Unreleased
 
+* `const`antize `AggregateBuilder`
+
 ## 3.0.1
 
 * Support Dart 3

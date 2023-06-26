@@ -15,6 +15,7 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
+
   brick_adapters_builder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
     builder_factories: ["offlineFirstAdaptersBuilder"]
@@ -34,6 +35,7 @@ builders:
           - brick/adapters/*.dart
           - lib/brick/db/*.dart
           - brick/db/*.dart
+  
   brick_schema_builder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
     builder_factories: ["offlineFirstSchemaBuilder"]
@@ -42,6 +44,7 @@ builders:
     auto_apply: dependents
     required_inputs: [".brick_aggregate.dart"]
     applies_builders: ["source_gen|combining_builder", ":brick_aggregate_builder", ":brick_new_migration_builder"]
+  
   brick_new_migration_builder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
     builder_factories: ["offlineFirstNewMigrationBuilder"]
@@ -51,6 +54,7 @@ builders:
     runs_before: ["brick_schema_builder"]
     required_inputs: [".brick_aggregate.dart"]
     applies_builders: ["source_gen|combining_builder", ":brick_aggregate_builder"]
+
   brick_model_dictionary_builder:
     import: "package:brick_offline_first_with_rest_build/builder.dart"
     builder_factories: ["offlineFirstModelDictionaryBuilder"]
