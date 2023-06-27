@@ -1,7 +1,7 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
-import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 import 'helpers/__mocks__.dart';
 
@@ -27,7 +27,9 @@ void main() {
     test('instantiates', () {
       // isA matcher didn't work
       expect(
-          TestRepository().remoteProvider.client.runtimeType.toString(), 'RestOfflineQueueClient');
+        TestRepository().remoteProvider.client.runtimeType.toString(),
+        'RestOfflineQueueClient',
+      );
     });
 
     test('#delete', () {}, skip: 'Is this worth testing because of all the stubbing?');
@@ -52,9 +54,11 @@ void main() {
         expect(results.first.mounties.last.primaryKey, greaterThan(0));
         final findByName = await TestRepository().sqliteProvider.get<Horse>(
               repository: TestRepository(),
-              query: Query(where: [
-                const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
-              ]),
+              query: Query(
+                where: [
+                  const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+                ],
+              ),
             );
 
         expect(findByName.first.name, horse.name);
@@ -67,14 +71,18 @@ void main() {
       expect(results.first.name, 'SqliteName');
     });
 
-    test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
+    test(
+      '#hydrateSqlite / #get requireRest:true',
+      () async {
+        await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
 
-      // verify(TestRepository()
-      //     .remoteProvider
-      //     .client
-      //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
-    }, skip: 'Client is no longer a Mockito instance');
+        // verify(TestRepository()
+        //     .remoteProvider
+        //     .client
+        //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
+      },
+      skip: 'Client is no longer a Mockito instance',
+    );
 
     test('#storeRemoteResults', () async {
       final instance = Mounty(name: 'SqliteName');

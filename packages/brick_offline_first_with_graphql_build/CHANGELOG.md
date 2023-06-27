@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Apply standardized lints
+
 ## 3.1.0
 
 * _Soft breaking change_: Rename `build.yaml` builder keys from camelCase to snake_case (e.g. `brickAggregateBuilder` becomes `brick_aggregate_builder`). This shouldn't affect implementations because these builders do not support configuration, but some implementations may use `runs_before`. For these implementations, please rename all configured builders from this package.

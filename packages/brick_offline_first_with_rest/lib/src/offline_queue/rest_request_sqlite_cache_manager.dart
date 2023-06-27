@@ -1,23 +1,20 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:http/http.dart' as http;
-import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
   RestRequestSqliteCacheManager(
-    String databaseName, {
-    required DatabaseFactory databaseFactory,
-    Duration? processingInterval,
+    super.databaseName, {
+    required super.databaseFactory,
+    super.processingInterval,
     bool? serialProcessing,
   }) : super(
-          databaseName,
           createdAtColumn: HTTP_JOBS_CREATED_AT_COLUMN,
-          databaseFactory: databaseFactory,
           lockedColumn: HTTP_JOBS_LOCKED_COLUMN,
           primaryKeyColumn: HTTP_JOBS_PRIMARY_KEY_COLUMN,
-          processingInterval: processingInterval,
           serialProcessing: serialProcessing ?? true,
           tableName: HTTP_JOBS_TABLE_NAME,
           updateAtColumn: HTTP_JOBS_UPDATED_AT,
@@ -46,13 +43,14 @@ class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Reque
     final createdAtHasBeenMigrated = tableInfo.any((c) => c['name'] == HTTP_JOBS_CREATED_AT_COLUMN);
     if (!createdAtHasBeenMigrated) {
       await db.execute(
-          'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0');
+        'ALTER TABLE `$HTTP_JOBS_TABLE_NAME` ADD `$HTTP_JOBS_CREATED_AT_COLUMN` INTEGER DEFAULT 0',
+      );
     }
   }
 
   @override
   http.Request sqliteToRequest(Map<String, dynamic> data) {
-    var request = http.Request(
+    final request = http.Request(
       data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
       Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
     );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +36,7 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
 
   @override
   http.Request sqliteToRequest(Map<String, dynamic> data) {
-    var request = http.Request(
+    final request = http.Request(
       data[HTTP_JOBS_REQUEST_METHOD_COLUMN],
       Uri.parse(data[HTTP_JOBS_URL_COLUMN]),
     );

@@ -1,17 +1,13 @@
 import 'dart:async';
 
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_offline_first_with_rest/src/models/offline_first_with_rest_model.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_request_queue.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_offline_first/offline_queue.dart';
-import 'package:brick_sqlite/db.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_rest/brick_rest.dart' show RestProvider, RestException;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-import 'package:brick_rest/brick_rest.dart' show RestProvider, RestException;
 
 /// Ensures the [remoteProvider] is a [RestProvider]. All requests to and
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app
@@ -35,10 +31,10 @@ abstract class OfflineFirstWithRestRepository
   late RestOfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithRestRepository({
-    bool? autoHydrate,
-    String? loggerName,
-    MemoryCacheProvider? memoryCacheProvider,
-    required Set<Migration> migrations,
+    super.autoHydrate,
+    super.loggerName,
+    super.memoryCacheProvider,
+    required super.migrations,
 
     /// This property was added in 2.0.0
     ///
@@ -52,14 +48,9 @@ abstract class OfflineFirstWithRestRepository
     /// its defaults
     List<int>? reattemptForStatusCodes,
     required RestProvider restProvider,
-    required SqliteProvider sqliteProvider,
+    required super.sqliteProvider,
   })  : remoteProvider = restProvider,
         super(
-          autoHydrate: autoHydrate,
-          loggerName: loggerName,
-          memoryCacheProvider: memoryCacheProvider,
-          migrations: migrations,
-          sqliteProvider: sqliteProvider,
           remoteProvider: restProvider,
         ) {
     remoteProvider.client = RestOfflineQueueClient(
@@ -83,14 +74,16 @@ abstract class OfflineFirstWithRestRepository
     final headerValue = delete?.toString().split('.').last ??
         get?.toString().split('.').last ??
         upsert?.toString().split('.').last;
-    return query?.copyWith(providerArgs: {
-      ...query.providerArgs,
-      'headers': {
-        // This header is removed by the [RestOfflineQueueClient]
-        if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
-        ...?query.providerArgs['headers'] as Map<String, String>?,
-      }
-    });
+    return query?.copyWith(
+      providerArgs: {
+        ...query.providerArgs,
+        'headers': {
+          // This header is removed by the [RestOfflineQueueClient]
+          if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
+          ...?query.providerArgs['headers'] as Map<String, String>?,
+        }
+      },
+    );
   }
 
   @override

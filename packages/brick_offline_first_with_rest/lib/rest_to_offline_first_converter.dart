@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart';
+
 import 'package:dart_style/dart_style.dart' as dart_style;
+import 'package:http/http.dart';
 
 final _formatter = dart_style.DartFormatter();
 
