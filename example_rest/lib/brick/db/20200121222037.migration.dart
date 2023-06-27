@@ -10,27 +10,27 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_20200121222037_up = [
-  InsertTable("Customer"),
-  InsertTable("Pizza"),
-  InsertColumn("id", Column.integer, onTable: "Customer", unique: true),
-  InsertColumn("first_name", Column.varchar, onTable: "Customer"),
-  InsertColumn("last_name", Column.varchar, onTable: "Customer"),
-  InsertColumn("pizzas", Column.varchar, onTable: "Customer"),
-  InsertColumn("id", Column.integer, onTable: "Pizza", unique: true),
-  InsertColumn("toppings", Column.varchar, onTable: "Pizza"),
-  InsertColumn("frozen", Column.boolean, onTable: "Pizza"),
+  InsertTable('Customer'),
+  InsertTable('Pizza'),
+  InsertColumn('id', Column.integer, onTable: 'Customer', unique: true),
+  InsertColumn('first_name', Column.varchar, onTable: 'Customer'),
+  InsertColumn('last_name', Column.varchar, onTable: 'Customer'),
+  InsertColumn('pizzas', Column.varchar, onTable: 'Customer'),
+  InsertColumn('id', Column.integer, onTable: 'Pizza', unique: true),
+  InsertColumn('toppings', Column.varchar, onTable: 'Pizza'),
+  InsertColumn('frozen', Column.boolean, onTable: 'Pizza'),
 ];
 
 const List<MigrationCommand> _migration_20200121222037_down = [
-  DropTable("Customer"),
-  DropTable("Pizza"),
-  DropColumn("id", onTable: "Customer"),
-  DropColumn("first_name", onTable: "Customer"),
-  DropColumn("last_name", onTable: "Customer"),
-  DropColumn("pizzas", onTable: "Customer"),
-  DropColumn("id", onTable: "Pizza"),
-  DropColumn("toppings", onTable: "Pizza"),
-  DropColumn("frozen", onTable: "Pizza"),
+  DropTable('Customer'),
+  DropTable('Pizza'),
+  DropColumn('id', onTable: 'Customer'),
+  DropColumn('first_name', onTable: 'Customer'),
+  DropColumn('last_name', onTable: 'Customer'),
+  DropColumn('pizzas', onTable: 'Customer'),
+  DropColumn('id', onTable: 'Pizza'),
+  DropColumn('toppings', onTable: 'Pizza'),
+  DropColumn('frozen', onTable: 'Pizza'),
 ];
 
 //

@@ -1,8 +1,8 @@
-import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:pizza_shoppe/brick/models/customer.model.request.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.request.dart';
 import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
 @ConnectOfflineFirstWithRest(

@@ -44,6 +44,7 @@ analyzer:
     - "**/example/"
     - example_rest
     - example_graphql
+    - "**/*.g.dart"
     
   errors:
     # override custom
