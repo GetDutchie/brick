@@ -1,19 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
-import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_build_test/brick_build_test.dart';
+import 'package:test/test.dart';
 
-import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as sqliteColumnType;
-import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as sqliteUnique;
-import 'sqlite_model_serdes_generator/test_sqlite_enum_as_string.dart' as sqliteEnumAsString;
-import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart' as fieldWithTypeArgument;
-import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as booleanFields;
 import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
     as afterSaveWithAssociation;
 import 'sqlite_model_serdes_generator/test_all_field_types.dart' as allFieldTypes;
+import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as booleanFields;
+import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart' as fieldWithTypeArgument;
+import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as sqliteColumnType;
+import 'sqlite_model_serdes_generator/test_sqlite_enum_as_string.dart' as sqliteEnumAsString;
+import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as sqliteUnique;
 import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as toJsonFromJson;
 
 final _generator = TestGenerator();
@@ -72,7 +72,9 @@ void main() {
 
     test('AfterSaveWithAssociation', () async {
       await generateAdapterExpectation(
-          'after_save_with_association', afterSaveWithAssociation.output);
+        'after_save_with_association',
+        afterSaveWithAssociation.output,
+      );
     });
 
     test('AllFieldTypes', () async {

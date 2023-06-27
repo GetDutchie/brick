@@ -1,9 +1,9 @@
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
-import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema.dart';
 import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema_table.dart';
 import 'package:collection/collection.dart';
 

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Apply standardized lints
+
 ## 3.0.2
 
 * Support Dart 3

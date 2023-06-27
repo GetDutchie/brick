@@ -1,19 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
+import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generator.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import 'package:brick_build_test/brick_build_test.dart';
 
-import 'sqlite_schema/test_simple.dart' as simple;
-import 'sqlite_schema/test_nullable.dart' as nullable;
-import 'sqlite_schema/test_sqlite_column_type.dart' as sqliteColumnType;
-import 'sqlite_schema/test_one_to_one_association.dart' as oneToOneAssociation;
-import 'sqlite_schema/test_one_to_many_association.dart' as oneToManyAssociation;
-import 'sqlite_schema/test_index_annotation.dart' as indexAnnotation;
 import 'sqlite_schema/test_all_field_types.dart' as allFieldTypes;
 import 'sqlite_schema/test_from_to_json.dart' as fromToJson;
+import 'sqlite_schema/test_index_annotation.dart' as indexAnnotation;
+import 'sqlite_schema/test_nullable.dart' as nullable;
+import 'sqlite_schema/test_one_to_many_association.dart' as oneToManyAssociation;
+import 'sqlite_schema/test_one_to_one_association.dart' as oneToOneAssociation;
+import 'sqlite_schema/test_simple.dart' as simple;
+import 'sqlite_schema/test_sqlite_column_type.dart' as sqliteColumnType;
 
 const generator = SqliteSchemaGenerator();
 final generateReader = generateLibraryForFolder('sqlite_schema');

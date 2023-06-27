@@ -1,7 +1,7 @@
 import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_manager.dart';
 import 'package:test/test.dart';
-import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 
 class Migration1 extends Migration {
   const Migration1() : super(version: 1, up: const [InsertTable('demo1')], down: const []);

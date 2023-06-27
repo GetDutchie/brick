@@ -4,44 +4,58 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
 import 'demo_model.dart';
 
-Future<DemoModel> _$DemoModelFromSqlite(Map<String, dynamic> data,
-    {SqliteProvider? provider, repository}) async {
+Future<DemoModel> _$DemoModelFromSqlite(
+  Map<String, dynamic> data, {
+  SqliteProvider? provider,
+  repository,
+}) async {
   return DemoModel(
-      name: data['full_name'] == null ? null : data['full_name'] as String,
-      assoc: data['assoc_DemoModelAssoc_brick_id'] == null
-          ? null
-          : (data['assoc_DemoModelAssoc_brick_id'] > -1
-              ? (await repository?.getAssociation<DemoModelAssoc>(
-                  Query.where('primaryKey', data['assoc_DemoModelAssoc_brick_id'] as int,
-                      limit1: true),
-                ))
-                  ?.first
-              : null),
-      complexFieldName:
-          data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
-      lastName: data['last_name'] == null ? null : data['last_name'] as String,
-      manyAssoc: (await provider?.rawQuery(
-              'SELECT DISTINCT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE l_DemoModel_brick_id = ?',
-              [data['_brick_id'] as int]).then((results) {
-        final ids = results.map((r) => r['f_DemoModelAssoc_brick_id']);
-        return Future.wait<DemoModelAssoc>(ids.map((primaryKey) => repository
-            ?.getAssociation<DemoModelAssoc>(
-              Query.where('primaryKey', primaryKey, limit1: true),
-            )
-            ?.then((r) => (r?.isEmpty ?? true) ? null : r.first)));
-      }))
-          ?.toList(),
-      simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
-      simpleTime: data['simple_time'] == null
-          ? null
-          : data['simple_time'] == null
-              ? null
-              : DateTime.tryParse(data['simple_time'] as String))
-    ..primaryKey = data['_brick_id'] as int;
+    name: data['full_name'] == null ? null : data['full_name'] as String,
+    assoc: data['assoc_DemoModelAssoc_brick_id'] == null
+        ? null
+        : (data['assoc_DemoModelAssoc_brick_id'] > -1
+            ? (await repository?.getAssociation<DemoModelAssoc>(
+                Query.where(
+                  'primaryKey',
+                  data['assoc_DemoModelAssoc_brick_id'] as int,
+                  limit1: true,
+                ),
+              ))
+                ?.first
+            : null),
+    complexFieldName:
+        data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
+    lastName: data['last_name'] == null ? null : data['last_name'] as String,
+    manyAssoc: (await provider?.rawQuery(
+      'SELECT DISTINCT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE l_DemoModel_brick_id = ?',
+      [data['_brick_id'] as int],
+    ).then((results) {
+      final ids = results.map((r) => r['f_DemoModelAssoc_brick_id']);
+      return Future.wait<DemoModelAssoc>(
+        ids.map(
+          (primaryKey) => repository
+              ?.getAssociation<DemoModelAssoc>(
+                Query.where('primaryKey', primaryKey, limit1: true),
+              )
+              ?.then((r) => (r?.isEmpty ?? true) ? null : r.first),
+        ),
+      );
+    }))
+        ?.toList(),
+    simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
+    simpleTime: data['simple_time'] == null
+        ? null
+        : data['simple_time'] == null
+            ? null
+            : DateTime.tryParse(data['simple_time'] as String),
+  )..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$DemoModelToSqlite(DemoModel instance,
-    {required SqliteProvider provider, repository}) async {
+Future<Map<String, dynamic>> _$DemoModelToSqlite(
+  DemoModel instance, {
+  required SqliteProvider provider,
+  repository,
+}) async {
   return {
     'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
         (instance.assoc != null
@@ -133,26 +147,33 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   Future<void> afterSave(instance, {required provider, repository}) async {
     if (instance.primaryKey != null) {
       final oldColumns = await provider.rawQuery(
-          'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
-          [instance.primaryKey]);
+        'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
+        [instance.primaryKey],
+      );
       final oldIds = oldColumns.map((a) => a['f_DemoModelAssoc_brick_id']);
       final newIds = instance.manyAssoc?.map((s) => s.primaryKey).where((s) => s != null) ?? [];
       final idsToDelete = oldIds.where((id) => !newIds.contains(id));
 
-      await Future.wait<void>(idsToDelete.map((id) async {
-        return await provider.rawExecute(
+      await Future.wait<void>(
+        idsToDelete.map((id) async {
+          return await provider.rawExecute(
             'DELETE FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ? AND `f_DemoModelAssoc_brick_id` = ?',
-            [instance.primaryKey, id]);
-      }));
+            [instance.primaryKey, id],
+          );
+        }),
+      );
 
-      await Future.wait<int?>(instance.manyAssoc?.map((s) async {
-            final id =
-                s.primaryKey ?? await provider.upsert<DemoModelAssoc>(s, repository: repository);
-            return await provider.rawInsert(
+      await Future.wait<int?>(
+        instance.manyAssoc?.map((s) async {
+              final id =
+                  s.primaryKey ?? await provider.upsert<DemoModelAssoc>(s, repository: repository);
+              return await provider.rawInsert(
                 'INSERT OR IGNORE INTO `_brick_DemoModel_many_assoc` (`l_DemoModel_brick_id`, `f_DemoModelAssoc_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id]);
-          }) ??
-          []);
+                [instance.primaryKey, id],
+              );
+            }) ??
+            [],
+      );
     }
   }
 

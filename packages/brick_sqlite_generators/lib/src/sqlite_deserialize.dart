@@ -1,11 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
-import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
-import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_build/generators.dart' show SerdesGenerator, SharedChecker;
-
-import 'sqlite_fields.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
+import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
+import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 
 /// Generate a function to produce a [ClassElement] from SQLite data
 class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
@@ -133,7 +132,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         }
 
         if (fieldAnnotation.enumAsString) {
-          return "jsonDecode($fieldValue ?? []).whereType<String>().map(${SharedChecker.withoutNullability(argType)}.values.byName)$castIterable";
+          return 'jsonDecode($fieldValue ?? []).whereType<String>().map(${SharedChecker.withoutNullability(argType)}.values.byName)$castIterable';
         }
 
         final discoveredByIndex =
@@ -198,7 +197,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final nullablePrefix = checker.isNullable
             ? "$fieldValue == null ? ${fieldAnnotation.defaultValue ?? 'null'} : "
             : '';
-        return "$nullablePrefix${SharedChecker.withoutNullability(field.type)}.values.byName($fieldValue as String)";
+        return '$nullablePrefix${SharedChecker.withoutNullability(field.type)}.values.byName($fieldValue as String)';
       }
 
       if (checker.isNullable) {

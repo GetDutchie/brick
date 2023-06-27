@@ -1,6 +1,6 @@
-import '../migration.dart';
-import 'drop_column.dart';
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Creates a new SQLite column in a table
 class InsertColumn extends MigrationCommand {

@@ -1,11 +1,11 @@
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/migration_commands/rename_column.dart';
 import 'package:brick_sqlite/src/db/schema/schema.dart';
 import 'package:brick_sqlite/src/db/schema/schema_column.dart';
 import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema_table.dart';
 import 'package:test/test.dart';
-import 'package:brick_sqlite/src/db/migration.dart';
-import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
-import 'package:brick_sqlite/src/db/migration_commands/rename_column.dart';
 
 import '__mocks__.dart';
 
@@ -29,8 +29,13 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true)
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  )
                 },
               )
             },
@@ -57,8 +62,13 @@ void main() {
               SchemaTable(
                 'demo1',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true)
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  )
                 },
               )
             },
@@ -92,8 +102,10 @@ void main() {
 
       group('InsertColumn', () {
         test('without a prior, relevant InsertTable migration', () {
-          expect(() => Schema.fromMigrations({Migration0None(), insertColumn}),
-              throwsA(TypeMatcher<StateError>()));
+          expect(
+            () => Schema.fromMigrations({Migration0None(), insertColumn}),
+            throwsA(TypeMatcher<StateError>()),
+          );
         });
 
         test('runs', () {
@@ -103,8 +115,13 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  ),
                   SchemaColumn('name', Column.varchar)
                 },
               )
@@ -126,8 +143,10 @@ void main() {
         });
 
         test('without a prior, relevant InsertColumn migration', () {
-          expect(() => Schema.fromMigrations({insertTable, renameColumn}),
-              throwsA(TypeMatcher<StateError>()));
+          expect(
+            () => Schema.fromMigrations({insertTable, renameColumn}),
+            throwsA(TypeMatcher<StateError>()),
+          );
         });
 
         test('runs', () {
@@ -137,8 +156,13 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  ),
                   SchemaColumn('first_name', Column.varchar)
                 },
               )
@@ -166,10 +190,19 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true),
-                  SchemaColumn('demo2_id', Column.integer,
-                      isForeignKey: true, foreignTableName: 'demo2')
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  ),
+                  SchemaColumn(
+                    'demo2_id',
+                    Column.integer,
+                    isForeignKey: true,
+                    foreignTableName: 'demo2',
+                  )
                 },
               )
             },
@@ -189,8 +222,13 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  ),
                 },
                 indices: <SchemaIndex>{
                   SchemaIndex(columns: ['_brick_id'], unique: true),
@@ -213,8 +251,13 @@ void main() {
               SchemaTable(
                 'demo',
                 columns: <SchemaColumn>{
-                  SchemaColumn('_brick_id', Column.integer,
-                      autoincrement: true, nullable: false, isPrimaryKey: true),
+                  SchemaColumn(
+                    '_brick_id',
+                    Column.integer,
+                    autoincrement: true,
+                    nullable: false,
+                    isPrimaryKey: true,
+                  ),
                 },
                 indices: <SchemaIndex>{},
               )
@@ -234,15 +277,25 @@ void main() {
             SchemaTable(
               'demo',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', Column.integer,
-                    autoincrement: true, nullable: false, isPrimaryKey: true)
+                SchemaColumn(
+                  '_brick_id',
+                  Column.integer,
+                  autoincrement: true,
+                  nullable: false,
+                  isPrimaryKey: true,
+                )
               },
             ),
             SchemaTable(
               'demo2',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', Column.integer,
-                    autoincrement: true, nullable: false, isPrimaryKey: true)
+                SchemaColumn(
+                  '_brick_id',
+                  Column.integer,
+                  autoincrement: true,
+                  nullable: false,
+                  isPrimaryKey: true,
+                )
               },
             ),
           },
@@ -254,8 +307,10 @@ void main() {
       });
 
       test('version must be positive if provided', () {
-        expect(() => Schema.fromMigrations(<Migration>{}, -1),
-            throwsA(const TypeMatcher<AssertionError>()));
+        expect(
+          () => Schema.fromMigrations(<Migration>{}, -1),
+          throwsA(const TypeMatcher<AssertionError>()),
+        );
       });
 
       test("version uses the migrations' largest version if not provided", () {

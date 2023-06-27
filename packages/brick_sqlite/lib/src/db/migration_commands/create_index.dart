@@ -1,5 +1,5 @@
 import 'package:brick_sqlite/src/db/migration_commands/drop_index.dart';
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Create an index on a table if it doesn't already exists
 class CreateIndex extends MigrationCommand {
@@ -22,7 +22,7 @@ class CreateIndex extends MigrationCommand {
 
   @override
   String get statement {
-    var statement = ['CREATE'];
+    final statement = ['CREATE'];
     if (unique) statement.add('UNIQUE');
 
     final columnNames = columns.map((c) => '`$c`').join(', ');

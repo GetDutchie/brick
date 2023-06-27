@@ -1,6 +1,6 @@
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-final migrationOutput = r'''
+final migrationOutput = '''
 // GENERATED CODE EDIT WITH CAUTION
 // THIS FILE **WILL NOT** BE REGENERATED
 // This file should be version controlled and can be manually edited.
@@ -41,7 +41,7 @@ class Migration1 extends Migration {
 }
 ''';
 
-final output = r'''
+final output = '''
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';

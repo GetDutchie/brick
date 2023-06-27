@@ -1,9 +1,8 @@
+import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_rest/gzip_http_client.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-
-import 'package:brick_rest/brick_rest.dart';
+import 'package:test/test.dart';
 
 import '__mocks__.dart';
 

@@ -1,13 +1,13 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart';
-import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
+import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
+import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
-import 'package:dart_style/dart_style.dart' as dart_style;
-import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
@@ -66,11 +66,13 @@ class SqliteSchemaGenerator {
 
       if (iterableAssociations.isNotEmpty) {
         for (final iterableSibling in iterableAssociations) {
-          acc.add(_createJoinsTable(
-            localTableName: fields.element.name,
-            foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
-            checker: checkerForField(iterableSibling),
-          ));
+          acc.add(
+            _createJoinsTable(
+              localTableName: fields.element.name,
+              foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
+              checker: checkerForField(iterableSibling),
+            ),
+          );
         }
       }
 
@@ -92,46 +94,51 @@ class SqliteSchemaGenerator {
     final foreignTableName = checker.unFuturedArgType.getDisplayString(withNullability: false);
 
     return SchemaTable(
-        InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name!,
-            localTableName: localTableName),
-        columns: {
-          SchemaColumn(
-            InsertTable.PRIMARY_KEY_COLUMN,
-            Column.integer,
-            autoincrement: true,
-            isPrimaryKey: true,
-            nullable: false,
-          ),
-          SchemaColumn(
+      InsertForeignKey.joinsTableName(
+        foreignTableColumnDefinition.name!,
+        localTableName: localTableName,
+      ),
+      columns: {
+        SchemaColumn(
+          InsertTable.PRIMARY_KEY_COLUMN,
+          Column.integer,
+          autoincrement: true,
+          isPrimaryKey: true,
+          nullable: false,
+        ),
+        SchemaColumn(
+          InsertForeignKey.joinsTableLocalColumnName(localTableName),
+          Column.integer,
+          isForeignKey: true,
+          foreignTableName: localTableName,
+          nullable: foreignTableColumnDefinition.nullable,
+          onDeleteCascade: true,
+          onDeleteSetDefault: false,
+        ),
+        SchemaColumn(
+          InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
+          Column.integer,
+          isForeignKey: true,
+          foreignTableName: foreignTableName,
+          nullable: foreignTableColumnDefinition.nullable,
+          onDeleteCascade: true,
+          onDeleteSetDefault: false,
+        ),
+      },
+      indices: {
+        SchemaIndex(
+          columns: [
             InsertForeignKey.joinsTableLocalColumnName(localTableName),
-            Column.integer,
-            isForeignKey: true,
-            foreignTableName: localTableName,
-            nullable: foreignTableColumnDefinition.nullable,
-            onDeleteCascade: true,
-            onDeleteSetDefault: false,
-          ),
-          SchemaColumn(
             InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-            Column.integer,
-            isForeignKey: true,
-            foreignTableName: foreignTableName,
-            nullable: foreignTableColumnDefinition.nullable,
-            onDeleteCascade: true,
-            onDeleteSetDefault: false,
+          ],
+          tableName: InsertForeignKey.joinsTableName(
+            foreignTableColumnDefinition.name!,
+            localTableName: localTableName,
           ),
-        },
-        indices: {
-          SchemaIndex(
-            columns: [
-              InsertForeignKey.joinsTableLocalColumnName(localTableName),
-              InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
-            ],
-            tableName: InsertForeignKey.joinsTableName(foreignTableColumnDefinition.name!,
-                localTableName: localTableName),
-            unique: true,
-          )
-        });
+          unique: true,
+        )
+      },
+    );
   }
 
   SchemaTable _createTable(String tableName, SqliteFields fields) {
@@ -229,7 +236,9 @@ class SqliteSchemaGenerator {
     } else if (checker.isSibling) {
       return SchemaColumn(
         InsertForeignKey.foreignKeyColumnName(
-            checker.unFuturedType.getDisplayString(withNullability: false), column.name),
+          checker.unFuturedType.getDisplayString(withNullability: false),
+          column.name,
+        ),
         Column.integer,
         isForeignKey: true,
         foreignTableName: checker.unFuturedType.getDisplayString(withNullability: false),
@@ -259,12 +268,14 @@ class SqliteSchemaGenerator {
 
   @visibleForOverriding
   SchemaIndex? schemaIndex(Sqlite column, {required SharedChecker checker}) {
-    final isIterableAssociation = (checker.isIterable && checker.isArgTypeASibling);
+    final isIterableAssociation = checker.isIterable && checker.isArgTypeASibling;
 
     if (!column.ignore && column.index && !isIterableAssociation) {
       final name = checker.isSibling
           ? InsertForeignKey.foreignKeyColumnName(
-              checker.unFuturedType.getDisplayString(withNullability: false), column.name)
+              checker.unFuturedType.getDisplayString(withNullability: false),
+              column.name,
+            )
           : column.name!;
       return SchemaIndex(
         columns: [name],

@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'package:brick_rest/src/rest_request.dart';
-import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 
+import 'package:brick_core/core.dart';
 import 'package:brick_rest/rest_exception.dart';
 import 'package:brick_rest/src/rest_model.dart';
 import 'package:brick_rest/src/rest_model_dictionary.dart';
-import 'package:brick_core/core.dart';
+import 'package:brick_rest/src/rest_request.dart';
+import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
 /// Retrieves from an HTTP endpoint
 class RestProvider implements Provider<RestModel> {

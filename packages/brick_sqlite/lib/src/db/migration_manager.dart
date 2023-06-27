@@ -1,5 +1,5 @@
+import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:meta/meta.dart';
-import 'migration.dart';
 
 /// Holds all migrations and outputs statements for SQLite to consume
 class MigrationManager {

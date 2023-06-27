@@ -1,7 +1,7 @@
-import 'package:build/build.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:brick_sqlite/db.dart';
+import 'package:build/build.dart';
+import 'package:source_gen/source_gen.dart';
 
 const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
 const _createIndexChecker = TypeChecker.fromRuntime(CreateIndex);
@@ -52,7 +52,8 @@ class MigrationGenerator extends Generator {
       if (_createIndexChecker.isExactlyType(object.type!)) {
         if (!reader.read('columns').isList) {
           throw ArgumentError(
-              'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns');
+            'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns',
+          );
         }
         final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
 
@@ -100,12 +101,10 @@ class MigrationGenerator extends Generator {
           foreignKeyColumn: reader.read('foreignKeyColumn').isNull
               ? null
               : reader.read('foreignKeyColumn').stringValue,
-          onDeleteCascade: reader.read('onDeleteCascade').isNull
-              ? false
-              : reader.read('onDeleteCascade').boolValue,
-          onDeleteSetDefault: reader.read('onDeleteSetDefault').isNull
-              ? false
-              : reader.read('onDeleteSetDefault').boolValue,
+          onDeleteCascade:
+              !reader.read('onDeleteCascade').isNull && reader.read('onDeleteCascade').boolValue,
+          onDeleteSetDefault: !reader.read('onDeleteSetDefault').isNull &&
+              reader.read('onDeleteSetDefault').boolValue,
         );
       } else if (_insertTableChecker.isExactlyType(object.type!)) {
         return InsertTable(

@@ -4,9 +4,9 @@
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
-import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema_base.dart';
 import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 
 /// Describes a table object managed by SQLite
 class SchemaTable extends BaseSchemaObject {

@@ -1,20 +1,18 @@
 import 'dart:io';
+
+import 'package:brick_core/core.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_manager.dart';
-import 'package:logging/logging.dart';
-import 'package:sqflite_common/sqlite_api.dart';
-import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
-
-import 'package:brick_core/core.dart';
-import 'package:brick_sqlite/src/models/sqlite_model.dart';
-
 import 'package:brick_sqlite/src/helpers/alter_column_helper.dart';
 import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
-
-import 'package:synchronized/synchronized.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
+import 'package:synchronized/synchronized.dart';
 
 /// Retrieves from a Sqlite database
 class SqliteProvider implements Provider<SqliteModel> {
@@ -148,7 +146,8 @@ class SqliteProvider implements Provider<SqliteModel> {
 
     // ensure migrations table exists
     await db.execute(
-        'CREATE TABLE IF NOT EXISTS $_migrationVersionsTableName(version INTEGER PRIMARY KEY)');
+      'CREATE TABLE IF NOT EXISTS $_migrationVersionsTableName(version INTEGER PRIMARY KEY)',
+    );
 
     final sqliteVersions = await db.query(
       _migrationVersionsTableName,
@@ -184,7 +183,8 @@ class SqliteProvider implements Provider<SqliteModel> {
     for (var migration in migrations) {
       for (var command in migration.up) {
         _logger.finer(
-            'Running migration (${migration.version}): ${command.statement ?? command.forGenerator}');
+          'Running migration (${migration.version}): ${command.statement ?? command.forGenerator}',
+        );
 
         final alterCommand = AlterColumnHelper(command);
         await _lock.synchronized(() async {

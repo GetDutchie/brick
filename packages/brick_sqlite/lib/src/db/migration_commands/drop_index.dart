@@ -1,4 +1,4 @@
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Drop index from DB if it exists
 class DropIndex extends MigrationCommand {

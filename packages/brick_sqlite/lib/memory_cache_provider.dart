@@ -1,9 +1,9 @@
+import 'package:brick_core/core.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/sqlite_adapter.dart';
-import 'package:meta/meta.dart';
-import 'package:brick_core/core.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
 /// Query models by SQLite primary key, sparing a more expensive on-disk lookup.
 ///

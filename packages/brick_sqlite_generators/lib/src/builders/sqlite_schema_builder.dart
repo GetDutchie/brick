@@ -1,6 +1,6 @@
 import 'package:brick_sqlite_generators/src/builders/sqlite_base_builder.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
+import 'package:source_gen/source_gen.dart';
 
 /// Write a [Schema] from existing migrations. Outputs to brick/db/schema.g.dart
 class SchemaBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation> {

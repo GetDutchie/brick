@@ -1,4 +1,4 @@
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Renames an existing SQLite column in a table
 class RenameColumn extends MigrationCommand {

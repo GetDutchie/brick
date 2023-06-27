@@ -1,6 +1,6 @@
-import 'drop_column.dart';
-import 'insert_table.dart';
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Create a foreign key column to reference another table
 class InsertForeignKey extends MigrationCommand {

@@ -1,12 +1,11 @@
+import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
-import 'package:meta/meta.dart' show protected;
-import 'package:brick_core/core.dart' show Query, WhereCondition, Compare, WherePhrase;
-
-import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
-import 'package:brick_sqlite/src/sqlite_adapter.dart';
-import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 import 'package:brick_sqlite/src/models/sqlite_model.dart';
+import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
+import 'package:brick_sqlite/src/sqlite_adapter.dart';
+import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
+import 'package:meta/meta.dart' show protected;
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -83,10 +82,12 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     if (_innerJoins.isNotEmpty) _statement.add(innerJoins);
     if (_where.isNotEmpty) _statement.add(whereClause);
 
-    _statement.add(AllOtherClausesFragment(
-      query?.providerArgs ?? {},
-      fieldsToColumns: adapter.fieldsToSqliteColumns,
-    ).toString());
+    _statement.add(
+      AllOtherClausesFragment(
+        query?.providerArgs ?? {},
+        fieldsToColumns: adapter.fieldsToSqliteColumns,
+      ).toString(),
+    );
   }
 
   /// Since the statements are evaluated in a recursive, tree-walking function, they are
@@ -95,7 +96,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// and should be refactored after experimental use in the wild.
   String _cleanWhereClause(String dirtyClause) {
     return dirtyClause
-        .replaceFirst(RegExp(r'^ (AND|OR)'), '')
+        .replaceFirst(RegExp('^ (AND|OR)'), '')
         .replaceAll(RegExp(r' \( (AND|OR)'), ' (')
         .replaceAll(RegExp(r'\(\s+'), '(')
         .trim();
@@ -118,7 +119,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     if (!passedAdapter.fieldsToSqliteColumns.containsKey(condition.evaluatedField)) {
       throw ArgumentError(
-          'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite');
+        'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite',
+      );
     }
 
     final definition = passedAdapter.fieldsToSqliteColumns[condition.evaluatedField]!;
@@ -127,7 +129,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     if (definition.association) {
       if (condition.value is! WhereCondition) {
         throw ArgumentError(
-            'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase');
+          'Query value for association ${condition.evaluatedField} on $_Model must be a Where or WherePhrase',
+        );
       }
 
       final associationAdapter = modelDictionary.adapterFor[definition.type]!;
