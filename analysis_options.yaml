@@ -17,11 +17,15 @@ linter:
     - discarded_futures
     - eol_at_end_of_file
     - file_names
+    - invalid_case_patterns
+    - matching_super_parameters
+    - no_literal_bool_comparisons
     - prefer_final_locals
     - prefer_is_empty
     - prefer_is_not_empty
     - prefer_single_quotes
     - require_trailing_commas
+    - type_literal_in_constant_pattern
     - unawaited_futures
     - unnecessary_lambdas
     - unnecessary_parenthesis
@@ -32,6 +36,7 @@ linter:
     - use_raw_strings
     - use_super_parameters
     - use_to_and_as_if_applicable
+    - unnecessary_breaks
 
 analyzer:
   exclude: 
@@ -88,11 +93,14 @@ analyzer:
     empty_statements: error
     exhaustive_cases: error
     implementation_imports: ignore
+    invalid_case_patterns: error
     library_names: error
     library_prefixes: error
     library_private_types_in_public_api: error
+    matching_super_parameters: error
     no_leading_underscores_for_library_prefixes: error
     no_leading_underscores_for_local_identifiers: error
+    no_literal_bool_comparisons: error
     null_check_on_nullable_type_parameter: error
     null_closures: error
     overridden_fields: error
@@ -116,7 +124,9 @@ analyzer:
     recursive_getters: error
     slash_for_doc_comments: error
     type_init_formals: error
+    type_literal_in_constant_pattern: error
     unnecessary_brace_in_string_interps: error
+    unnecessary_breaks: error
     unnecessary_const: error
     unnecessary_constructor_name: error
     unnecessary_getters_setters: error
