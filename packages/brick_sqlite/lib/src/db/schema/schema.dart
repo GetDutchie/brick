@@ -152,6 +152,7 @@ class Schema {
     } else if (command is DropIndex) {
       for (final table in tables) {
         for (final index in table.indices) {
+          // ignore: unnecessary_statements
           index.tableName == table.name;
         }
       }
