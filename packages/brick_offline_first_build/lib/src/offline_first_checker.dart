@@ -1,12 +1,11 @@
 import 'package:brick_build/generators.dart' show SharedChecker;
-import 'package:source_gen/source_gen.dart' show TypeChecker;
-import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:source_gen/source_gen.dart' show TypeChecker;
 
 const _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
 
 class OfflineFirstChecker extends SharedChecker<OfflineFirstModel> {
-  OfflineFirstChecker(DartType type) : super(type);
+  OfflineFirstChecker(super.targetType);
 
   @override
   bool get isSerializable {

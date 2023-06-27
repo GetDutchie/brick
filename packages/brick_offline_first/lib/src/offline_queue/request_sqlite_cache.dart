@@ -139,8 +139,14 @@ abstract class RequestSqliteCache<TRequest> {
   }) async =>
       await _updateLock(false, data, db, tableName, lockedColumn, primaryKeyColumn);
 
-  static Future<int> _updateLock(bool shouldLock, Map<String, dynamic> data, DatabaseExecutor db,
-      String tableName, String lockedColumn, String primaryKeyColumn) async {
+  static Future<int> _updateLock(
+    bool shouldLock,
+    Map<String, dynamic> data,
+    DatabaseExecutor db,
+    String tableName,
+    String lockedColumn,
+    String primaryKeyColumn,
+  ) async {
     return await db.update(
       tableName,
       {

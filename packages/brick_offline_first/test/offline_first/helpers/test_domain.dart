@@ -4,9 +4,9 @@ import 'package:brick_core/core.dart';
 import 'package:brick_offline_first/src/models/offline_first_model.dart';
 import 'package:brick_offline_first/src/offline_first_adapter.dart';
 import 'package:brick_offline_first/src/offline_first_repository.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/memory_cache_provider.dart';
 
 import '__mocks__.dart';
 
@@ -17,15 +17,20 @@ class TestProvider extends Provider<TestModel> {
   TestProvider(this.modelDictionary);
 
   @override
-  bool delete<T extends TestModel>(T instance,
-      {Query? query, ModelRepository<TestModel>? repository}) {
+  bool delete<T extends TestModel>(
+    T instance, {
+    Query? query,
+    ModelRepository<TestModel>? repository,
+  }) {
     if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return true;
   }
 
   @override
-  Future<List<T>> get<T extends TestModel>(
-      {Query? query, ModelRepository<TestModel>? repository}) async {
+  Future<List<T>> get<T extends TestModel>({
+    Query? query,
+    ModelRepository<TestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[T]!;
     final data = [
       {'name': 'SqliteName'}
@@ -38,8 +43,11 @@ class TestProvider extends Provider<TestModel> {
   }
 
   @override
-  Future<T> upsert<T extends TestModel>(T instance,
-      {Query? query, ModelRepository<TestModel>? repository}) {
+  Future<T> upsert<T extends TestModel>(
+    T instance, {
+    Query? query,
+    ModelRepository<TestModel>? repository,
+  }) {
     if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return Future<T>.value(instance);
   }

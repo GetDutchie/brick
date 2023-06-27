@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:brick_offline_first_build/src/offline_first_model_dictionary_generator.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('OfflineFirstModelDictionaryGenerator', () {
@@ -7,7 +7,7 @@ void main() {
       test('basic', () {
         final generated = OfflineFirstModelDictionaryGenerator('Rest')
             .generate({'Person': 'person.dart', 'User': 'path/user.dart'});
-        final output = r'''
+        final output = '''
 // GENERATED CODE DO NOT EDIT
 // ignore: unused_import
 import 'dart:convert';

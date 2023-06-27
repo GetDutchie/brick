@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
-import 'package:test/test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:gql/language.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:logging/logging.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -18,12 +18,14 @@ void main() {
   group('GraphqlRequestSqliteCache', () {
     const variables = {'hello': 'world'};
     final mutationRequest = Request(
-        operation: Operation(document: parseString('''mutation {}'''), operationName: 'fakeMutate'),
-        variables: variables);
+      operation: Operation(document: parseString('''mutation {}'''), operationName: 'fakeMutate'),
+      variables: variables,
+    );
 
     final queryRequest = Request(
-        operation: Operation(document: parseString('''query {}'''), operationName: 'fakeQuery'),
-        variables: variables);
+      operation: Operation(document: parseString('''query {}'''), operationName: 'fakeQuery'),
+      variables: variables,
+    );
 
     final mutResp = GraphqlRequestSqliteCache(mutationRequest);
 

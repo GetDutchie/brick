@@ -2,14 +2,14 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_build/src/offline_first_checker.dart';
 import 'package:brick_sqlite_generators/generators.dart';
-
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
-import 'package:source_gen/source_gen.dart';
 
 class OfflineFirstSqliteSerialize extends SqliteSerialize {
-  OfflineFirstSqliteSerialize(ClassElement element, SqliteFields fields,
-      {required String repositoryName})
-      : super(element, fields, repositoryName: repositoryName);
+  OfflineFirstSqliteSerialize(
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
@@ -43,15 +43,21 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
       }
     }
 
-    return super.coderForField(field, checker,
-        wrappedInFuture: wrappedInFuture, fieldAnnotation: fieldAnnotation);
+    return super.coderForField(
+      field,
+      checker,
+      wrappedInFuture: wrappedInFuture,
+      fieldAnnotation: fieldAnnotation,
+    );
   }
 }
 
 class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
-  OfflineFirstSqliteDeserialize(ClassElement element, SqliteFields fields,
-      {required String repositoryName})
-      : super(element, fields, repositoryName: repositoryName);
+  OfflineFirstSqliteDeserialize(
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
@@ -97,15 +103,21 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       }
     }
 
-    return super.coderForField(field, checker,
-        wrappedInFuture: wrappedInFuture, fieldAnnotation: fieldAnnotation);
+    return super.coderForField(
+      field,
+      checker,
+      wrappedInFuture: wrappedInFuture,
+      fieldAnnotation: fieldAnnotation,
+    );
   }
 }
 
 class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator {
-  OfflineFirstSqliteModelSerdesGenerator(Element element, ConstantReader reader,
-      {required String repositoryName})
-      : super(element, reader, repositoryName: repositoryName);
+  OfflineFirstSqliteModelSerdesGenerator(
+    super.element,
+    super.reader, {
+    required super.repositoryName,
+  });
 
   @override
   List<SqliteSerdesGenerator> get generators {

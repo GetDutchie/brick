@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_build/generators.dart' show AnnotationFinder, FieldsForClass;
+import 'package:brick_offline_first/brick_offline_first.dart';
 
 /// Convert `@OfflineFirst` annotations into digestible code
 class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {

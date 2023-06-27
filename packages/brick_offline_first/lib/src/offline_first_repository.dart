@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:brick_offline_first/src/models/offline_first_model.dart';
-import 'package:brick_offline_first/src/offline_first_policy.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:meta/meta.dart';
-import 'package:logging/logging.dart';
 
 import 'package:brick_core/core.dart' show Query, ModelRepository, QueryAction, Provider;
-
+import 'package:brick_offline_first/src/models/offline_first_model.dart';
+import 'package:brick_offline_first/src/offline_first_policy.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart';
-
+import 'package:brick_sqlite/memory_cache_provider.dart';
 // ignore: implementation_imports
 import 'package:http/src/exception.dart';
+import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
 /// A [ModelRepository] that interacts with a [SqliteProvider] first before using a [Provider] from a remote source.
 ///
@@ -282,8 +280,9 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
   @protected
   @visibleForTesting
-  Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>(
-      {bool notifyWhenEmpty = true}) async {
+  Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
+    bool notifyWhenEmpty = true,
+  }) async {
     final queriesControllers = subscriptions[TModel]?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
@@ -339,7 +338,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
 
     final controller = StreamController<List<TModel>>(
       onCancel: () async {
-        subscriptions[TModel]?[query]?.close();
+        await subscriptions[TModel]?[query]?.close();
         subscriptions[TModel]?.remove(query);
         if (subscriptions[TModel]?.isEmpty ?? false) {
           subscriptions.remove(TModel);
@@ -350,6 +349,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     subscriptions[TModel] ??= {};
     subscriptions[TModel]?[query] = controller;
 
+    // ignore: discarded_futures
     get<TModel>(query: query, policy: policy).then((results) {
       if (!controller.isClosed) controller.add(results);
     });
@@ -449,8 +449,10 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// the new [models]. See [notifySubscriptionsWithLocalData].
   @protected
   @visibleForTesting
-  Future<List<TModel>> storeRemoteResults<TModel extends RepositoryModel>(List<TModel> models,
-      {bool shouldNotify = true}) async {
+  Future<List<TModel>> storeRemoteResults<TModel extends RepositoryModel>(
+    List<TModel> models, {
+    bool shouldNotify = true,
+  }) async {
     final modelIds = models.map((m) => sqliteProvider.upsert<TModel>(m, repository: this));
     final results = await Future.wait<int?>(modelIds, eagerError: true);
 

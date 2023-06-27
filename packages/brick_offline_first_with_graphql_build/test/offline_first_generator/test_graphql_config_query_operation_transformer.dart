@@ -1,5 +1,5 @@
-import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_core/core.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
 final output = r'''
@@ -108,7 +108,7 @@ class QueryOperationTransformerExampleAdapter
 class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationTransformer {
   @override
   GraphqlOperation get get => GraphqlOperation(
-        document: r'''
+        document: '''
           query {
             getAll()
           }
