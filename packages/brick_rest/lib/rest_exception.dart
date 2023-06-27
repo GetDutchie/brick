@@ -1,5 +1,6 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 /// An error class exclusive to the [RestProvider]
 class RestException implements Exception {

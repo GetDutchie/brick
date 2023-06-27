@@ -1,9 +1,9 @@
 import 'package:brick_core/query.dart';
-import 'package:test/test.dart';
-import 'package:sqflite_common/src/mixin/factory.dart';
-import 'package:sqflite_common/sqlite_api.dart';
-
 import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common/src/mixin/factory.dart';
+import 'package:test/test.dart';
+
 import '__mocks__.dart';
 
 class _FakeMethodCall {
@@ -35,14 +35,16 @@ class _FakeMethodCall {
 void main() {
   group('QuerySqlTransformer', () {
     late Database db;
-    var sqliteLogs = <_FakeMethodCall>[];
-    final stub = buildDatabaseFactory(invokeMethod: (String method, [dynamic arguments]) async {
-      sqliteLogs.add(_FakeMethodCall.fromFactory(method, arguments));
+    final sqliteLogs = <_FakeMethodCall>[];
+    final stub = buildDatabaseFactory(
+      invokeMethod: (String method, [dynamic arguments]) async {
+        sqliteLogs.add(_FakeMethodCall.fromFactory(method, arguments));
 
-      if (method == 'getDatabasesPath') return 'db.sqlite';
-      if (method == 'openDatabase') return Future.value(1);
-      return [];
-    });
+        if (method == 'getDatabasesPath') return 'db.sqlite';
+        if (method == 'openDatabase') return Future.value(1);
+        return [];
+      },
+    );
 
     setUpAll(() async {
       db = await stub.openDatabase('db.sqlite');
@@ -102,20 +104,25 @@ void main() {
           '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)''';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
-        query: Query(where: [
-          WherePhrase([
-            Where.exact('id', 1),
-            const Or('name').isExactly('Guy'),
-          ]),
-          WherePhrase([
-            Where.exact('id', 1),
-            Where.exact('name', 'Guy'),
-          ], isRequired: true),
-          WherePhrase([
-            Where.exact('id', 1),
-            Where.exact('name', 'Guy'),
-          ]),
-        ]),
+        query: Query(
+          where: [
+            WherePhrase([
+              Where.exact('id', 1),
+              const Or('name').isExactly('Guy'),
+            ]),
+            WherePhrase(
+              [
+                Where.exact('id', 1),
+                Where.exact('name', 'Guy'),
+              ],
+              isRequired: true,
+            ),
+            WherePhrase([
+              Where.exact('id', 1),
+              Where.exact('name', 'Guy'),
+            ]),
+          ],
+        ),
       );
 
       expect(sqliteQuery.statement, statement);
@@ -128,13 +135,18 @@ void main() {
           'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE id = ? AND (full_name = ? OR full_name = ?)';
       final sqliteQuery = QuerySqlTransformer<DemoModel>(
         modelDictionary: dictionary,
-        query: Query(where: [
-          Where.exact('id', 1),
-          WherePhrase([
-            const Or('name').isExactly('Thomas'),
-            const Or('name').isExactly('Guy'),
-          ], isRequired: true),
-        ]),
+        query: Query(
+          where: [
+            Where.exact('id', 1),
+            WherePhrase(
+              [
+                const Or('name').isExactly('Thomas'),
+                const Or('name').isExactly('Guy'),
+              ],
+              isRequired: true,
+            ),
+          ],
+        ),
       );
 
       expect(sqliteQuery.statement, statement);
@@ -148,9 +160,11 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name NOT LIKE ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            const Where('name').doesNotContain('Thomas'),
-          ]),
+          query: Query(
+            where: [
+              const Where('name').doesNotContain('Thomas'),
+            ],
+          ),
         );
 
         expect(sqliteQuery.statement, statement);
@@ -177,20 +191,25 @@ void main() {
             'SELECT COUNT(*) FROM `DemoModel` WHERE (id = ? OR full_name = ?) AND (id = ? AND full_name = ?) OR (id = ? AND full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            WherePhrase([
-              Where.exact('id', 1),
-              const Or('name').isExactly('Guy'),
-            ]),
-            WherePhrase([
-              Where.exact('id', 1),
-              Where.exact('name', 'Guy'),
-            ], isRequired: true),
-            WherePhrase([
-              Where.exact('id', 1),
-              Where.exact('name', 'Guy'),
-            ]),
-          ]),
+          query: Query(
+            where: [
+              WherePhrase([
+                Where.exact('id', 1),
+                const Or('name').isExactly('Guy'),
+              ]),
+              WherePhrase(
+                [
+                  Where.exact('id', 1),
+                  Where.exact('name', 'Guy'),
+                ],
+                isRequired: true,
+              ),
+              WherePhrase([
+                Where.exact('id', 1),
+                Where.exact('name', 'Guy'),
+              ]),
+            ],
+          ),
           selectStatement: false,
         );
 
@@ -204,9 +223,11 @@ void main() {
             'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact('assoc', Where.exact('id', 1)),
-          ]),
+          query: Query(
+            where: [
+              Where.exact('assoc', Where.exact('id', 1)),
+            ],
+          ),
           selectStatement: false,
         );
 
@@ -220,10 +241,12 @@ void main() {
             'SELECT COUNT(*) FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ? AND `DemoModel`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact('assoc', Where.exact('id', 1)),
-            Where.exact('id', 1),
-          ]),
+          query: Query(
+            where: [
+              Where.exact('assoc', Where.exact('id', 1)),
+              Where.exact('id', 1),
+            ],
+          ),
           selectStatement: false,
         );
 
@@ -256,9 +279,11 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact('assoc', Where.exact('id', 1)),
-          ]),
+          query: Query(
+            where: [
+              Where.exact('assoc', Where.exact('id', 1)),
+            ],
+          ),
         );
 
         expect(sqliteQuery.statement, statement);
@@ -271,9 +296,11 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.full_name = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact('manyAssoc', Where.exact('assoc', Where.exact('name', 1))),
-          ]),
+          query: Query(
+            where: [
+              Where.exact('manyAssoc', Where.exact('assoc', Where.exact('name', 1))),
+            ],
+          ),
         );
 
         expect(sqliteQuery.statement, statement);
@@ -286,15 +313,17 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE (`DemoModelAssoc`.id = ? OR `DemoModelAssoc`.full_name = ?)';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact(
-              'assoc',
-              WherePhrase([
-                const Or('id').isExactly(1),
-                const Or('name').isExactly('Guy'),
-              ]),
-            ),
-          ]),
+          query: Query(
+            where: [
+              Where.exact(
+                'assoc',
+                WherePhrase([
+                  const Or('id').isExactly(1),
+                  const Or('name').isExactly('Guy'),
+                ]),
+              ),
+            ],
+          ),
         );
 
         expect(sqliteQuery.statement, statement);
@@ -307,12 +336,14 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.id = ?';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            Where.exact(
-              'manyAssoc',
-              Where.exact('id', 1),
-            ),
-          ]),
+          query: Query(
+            where: [
+              Where.exact(
+                'manyAssoc',
+                Where.exact('id', 1),
+              ),
+            ],
+          ),
         );
 
         expect(sqliteQuery.statement, statement);
@@ -372,10 +403,12 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {
-            'limit': 1,
-            'offset': 1,
-          }),
+          query: Query(
+            providerArgs: {
+              'limit': 1,
+              'offset': 1,
+            },
+          ),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -427,9 +460,11 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, complex_field_name ASC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {
-            'orderBy': 'manyAssoc DESC, complexFieldName ASC',
-          }),
+          query: Query(
+            providerArgs: {
+              'orderBy': 'manyAssoc DESC, complexFieldName ASC',
+            },
+          ),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -442,11 +477,13 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {
-            'orderBy': 'complexFieldName ASC',
-            'having': 'complexFieldName > 1000',
-            'groupBy': 'complexFieldName',
-          }),
+          query: Query(
+            providerArgs: {
+              'orderBy': 'complexFieldName ASC',
+              'having': 'complexFieldName > 1000',
+              'groupBy': 'complexFieldName',
+            },
+          ),
         );
 
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
@@ -475,10 +512,12 @@ void main() {
             '''SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name = ? OR full_name = ?''';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(where: [
-            const Or('name').isExactly(true),
-            const Or('name').isExactly(false),
-          ]),
+          query: Query(
+            where: [
+              const Or('name').isExactly(true),
+              const Or('name').isExactly(false),
+            ],
+          ),
         );
         expect(sqliteQuery.statement, statement);
         expect(sqliteQuery.values, [1, 0]);

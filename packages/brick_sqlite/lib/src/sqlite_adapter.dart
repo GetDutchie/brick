@@ -1,9 +1,8 @@
-import 'package:brick_sqlite/src/models/sqlite_model.dart';
-import 'package:sqflite_common/sqlite_api.dart';
-
 import 'package:brick_core/core.dart';
-import 'package:brick_sqlite/src/sqlite_provider.dart';
+import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
+import 'package:brick_sqlite/src/sqlite_provider.dart';
+import 'package:sqflite_common/sqlite_api.dart';
 
 /// Constructors that convert app models to and from Sqlite
 abstract class SqliteAdapter<TModel extends Model> implements Adapter<TModel> {

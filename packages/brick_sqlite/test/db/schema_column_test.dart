@@ -1,9 +1,9 @@
 import 'package:brick_sqlite/src/db/migration.dart';
-import 'package:brick_sqlite/src/db/schema/schema_column.dart';
-import 'package:test/test.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('SchemaColumn', () {
@@ -72,7 +72,9 @@ void main() {
         final column = SchemaColumn('first_name', Column.varchar);
         column.tableName = 'demo';
         expect(
-            column.toCommand(), const InsertColumn('first_name', Column.varchar, onTable: 'demo'));
+          column.toCommand(),
+          const InsertColumn('first_name', Column.varchar, onTable: 'demo'),
+        );
       });
 
       test('primary key', () {
@@ -108,7 +110,9 @@ void main() {
             SchemaColumn('Hat_id', Column.integer, isForeignKey: true, foreignTableName: 'hat');
         column.tableName = 'demo';
         expect(
-            column.toCommand(), const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
+          column.toCommand(),
+          const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'),
+        );
       });
 
       test('columnType', () {

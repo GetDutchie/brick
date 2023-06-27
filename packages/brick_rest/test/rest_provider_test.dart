@@ -1,9 +1,9 @@
+import 'package:brick_core/core.dart';
+import 'package:brick_rest/brick_rest.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
-import 'package:http/http.dart' as http;
-import 'package:brick_core/core.dart';
 
-import 'package:brick_rest/brick_rest.dart';
 import '__mocks__.dart';
 
 RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) {
@@ -64,9 +64,11 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {
-          'request': RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
-        });
+        final query = Query(
+          providerArgs: {
+            'request': RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
+          },
+        );
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
@@ -118,15 +120,17 @@ void main() {
             requestBody: '{"other_name":{"first_name":"Thomas"}}',
           );
 
-          final query = Query(providerArgs: {
-            'request': RestRequest(
-              url: '/',
-              method: 'POST',
-              supplementalTopLevelData: {
-                'other_name': {'first_name': 'Thomas'},
-              },
-            ),
-          });
+          final query = Query(
+            providerArgs: {
+              'request': RestRequest(
+                url: '/',
+                method: 'POST',
+                supplementalTopLevelData: {
+                  'other_name': {'first_name': 'Thomas'},
+                },
+              ),
+            },
+          );
           final instance = await provider.get<DemoRestModel>(query: query);
 
           expect(instance.first.name, 'Thomas');
@@ -140,11 +144,17 @@ void main() {
           );
 
           final instance = DemoRestModel('Guy');
-          final query = Query(providerArgs: {
-            'request': RestRequest(topLevelKey: 'top', url: '/', supplementalTopLevelData: {
-              'other_name': {'first_name': 'Thomas'},
-            }),
-          });
+          final query = Query(
+            providerArgs: {
+              'request': RestRequest(
+                topLevelKey: 'top',
+                url: '/',
+                supplementalTopLevelData: {
+                  'other_name': {'first_name': 'Thomas'},
+                },
+              ),
+            },
+          );
           final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
           expect(resp!.statusCode, 200);

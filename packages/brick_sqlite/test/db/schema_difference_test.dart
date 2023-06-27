@@ -1,9 +1,3 @@
-import 'package:brick_sqlite/src/db/schema/schema.dart';
-import 'package:brick_sqlite/src/db/schema/schema_column.dart';
-import 'package:brick_sqlite/src/db/schema/schema_difference.dart';
-import 'package:brick_sqlite/src/db/schema/schema_index.dart';
-import 'package:brick_sqlite/src/db/schema/schema_table.dart';
-import 'package:test/test.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
@@ -11,6 +5,12 @@ import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/schema/schema.dart';
+import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite/src/db/schema/schema_difference.dart';
+import 'package:brick_sqlite/src/db/schema/schema_index.dart';
+import 'package:brick_sqlite/src/db/schema/schema_table.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('SchemaDifference', () {
@@ -20,8 +20,13 @@ void main() {
     final tableNoColumn = SchemaTable(
       'demo',
       columns: <SchemaColumn>{
-        SchemaColumn('_brick_id', Column.integer,
-            autoincrement: true, nullable: false, isPrimaryKey: true),
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
       },
     );
 
@@ -29,8 +34,13 @@ void main() {
       table = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', Column.integer,
-              autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn(
+            '_brick_id',
+            Column.integer,
+            autoincrement: true,
+            nullable: false,
+            isPrimaryKey: true,
+          ),
           column
         },
       );
@@ -87,16 +97,26 @@ void main() {
             SchemaTable(
               'demo',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', Column.integer,
-                    autoincrement: true, nullable: false, isPrimaryKey: true),
+                SchemaColumn(
+                  '_brick_id',
+                  Column.integer,
+                  autoincrement: true,
+                  nullable: false,
+                  isPrimaryKey: true,
+                ),
                 column,
               },
             ),
             SchemaTable(
               'users',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', Column.integer,
-                    autoincrement: true, nullable: false, isPrimaryKey: true),
+                SchemaColumn(
+                  '_brick_id',
+                  Column.integer,
+                  autoincrement: true,
+                  nullable: false,
+                  isPrimaryKey: true,
+                ),
                 SchemaColumn('email', Column.varchar)
               },
             ),
@@ -142,8 +162,13 @@ void main() {
       final newTable = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', Column.integer,
-              autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn(
+            '_brick_id',
+            Column.integer,
+            autoincrement: true,
+            nullable: false,
+            isPrimaryKey: true,
+          ),
           column
         },
       );
@@ -176,8 +201,13 @@ void main() {
       final newTable = SchemaTable(
         'demo',
         columns: <SchemaColumn>{
-          SchemaColumn('_brick_id', Column.integer,
-              autoincrement: true, nullable: false, isPrimaryKey: true),
+          SchemaColumn(
+            '_brick_id',
+            Column.integer,
+            autoincrement: true,
+            nullable: false,
+            isPrimaryKey: true,
+          ),
           column
         },
       );
@@ -259,8 +289,13 @@ void main() {
             SchemaTable(
               '_brick_People_friend',
               columns: <SchemaColumn>{
-                SchemaColumn('_brick_id', Column.integer,
-                    autoincrement: true, nullable: false, isPrimaryKey: true),
+                SchemaColumn(
+                  '_brick_id',
+                  Column.integer,
+                  autoincrement: true,
+                  nullable: false,
+                  isPrimaryKey: true,
+                ),
                 SchemaColumn(
                   'l_People_brick_id',
                   Column.integer,
@@ -286,18 +321,25 @@ void main() {
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.toMigrationCommands(), [
           InsertTable('_brick_People_friend'),
-          InsertForeignKey('_brick_People_friend', 'People',
-              foreignKeyColumn: 'l_People_brick_id',
-              onDeleteCascade: false,
-              onDeleteSetDefault: true),
-          InsertForeignKey('_brick_People_friend', 'Friend',
-              foreignKeyColumn: 'f_Friend_brick_id',
-              onDeleteCascade: false,
-              onDeleteSetDefault: true),
+          InsertForeignKey(
+            '_brick_People_friend',
+            'People',
+            foreignKeyColumn: 'l_People_brick_id',
+            onDeleteCascade: false,
+            onDeleteSetDefault: true,
+          ),
+          InsertForeignKey(
+            '_brick_People_friend',
+            'Friend',
+            foreignKeyColumn: 'f_Friend_brick_id',
+            onDeleteCascade: false,
+            onDeleteSetDefault: true,
+          ),
           CreateIndex(
-              columns: ['l_People_brick_id', 'f_Friend_brick_id'],
-              onTable: '_brick_People_friend',
-              unique: true)
+            columns: ['l_People_brick_id', 'f_Friend_brick_id'],
+            onTable: '_brick_People_friend',
+            unique: true,
+          )
         ]);
       });
     });

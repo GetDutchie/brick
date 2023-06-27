@@ -1,11 +1,11 @@
-import 'package:brick_sqlite/src/db/schema/schema_column.dart';
-import 'package:brick_sqlite/src/db/schema/schema_table.dart';
-import 'package:test/test.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite/src/db/schema/schema_table.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('SchemaTable', () {
@@ -125,8 +125,13 @@ void main() {
         "SchemaColumn('hat_id', Column.integer, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: false, onDeleteSetDefault: false)",
       );
 
-      column = SchemaColumn('hat_id', Column.integer,
-          isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
+      column = SchemaColumn(
+        'hat_id',
+        Column.integer,
+        isForeignKey: true,
+        foreignTableName: 'hat',
+        onDeleteCascade: true,
+      );
       expect(
         column.forGenerator,
         "SchemaColumn('hat_id', Column.integer, isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true, onDeleteSetDefault: false)",
@@ -163,19 +168,36 @@ void main() {
       column.tableName = 'demo';
       expect(column.toCommand(), const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
 
-      column = SchemaColumn('Hat_id', Column.integer,
-          isForeignKey: true, foreignTableName: 'hat', onDeleteCascade: true);
-      column.tableName = 'demo';
-      expect(column.toCommand(),
-          const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id', onDeleteCascade: true));
-
-      column = SchemaColumn('Hat_id', Column.integer,
-          isForeignKey: true, foreignTableName: 'hat', onDeleteSetDefault: true);
+      column = SchemaColumn(
+        'Hat_id',
+        Column.integer,
+        isForeignKey: true,
+        foreignTableName: 'hat',
+        onDeleteCascade: true,
+      );
       column.tableName = 'demo';
       expect(
-          column.toCommand(),
-          const InsertForeignKey('demo', 'hat',
-              foreignKeyColumn: 'Hat_id', onDeleteSetDefault: true));
+        column.toCommand(),
+        const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id', onDeleteCascade: true),
+      );
+
+      column = SchemaColumn(
+        'Hat_id',
+        Column.integer,
+        isForeignKey: true,
+        foreignTableName: 'hat',
+        onDeleteSetDefault: true,
+      );
+      column.tableName = 'demo';
+      expect(
+        column.toCommand(),
+        const InsertForeignKey(
+          'demo',
+          'hat',
+          foreignKeyColumn: 'Hat_id',
+          onDeleteSetDefault: true,
+        ),
+      );
     });
 
     test('==', () {

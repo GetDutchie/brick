@@ -1,4 +1,4 @@
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// SQLite doesn't have a catch-all drop column command. On migrate, the provider can search for
 /// columns prefixed by `_should_drop` and generate a statement that includes the schema of

@@ -1,10 +1,10 @@
 import 'package:brick_build_test/brick_build_test.dart';
-import 'package:test/test.dart';
 import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
+import 'package:test/test.dart';
 
-import 'migration_generator/test_from_new_schema.dart' as fromNewSchema;
 import 'migration_generator/test_from_identical_schema.dart' as fromIdenticalSchema;
+import 'migration_generator/test_from_new_schema.dart' as fromNewSchema;
 
 const generator = MigrationGenerator();
 final generateLibrary = generateLibraryForFolder('migration_generator');
@@ -30,8 +30,10 @@ void main() {
         expect(migrations.first, isA<Migration>());
         expect(migrations.first.up, hasLength(3));
         expect(migrations.first.up.last, isA<CreateIndex>());
-        expect(migrations.first.up.last.statement,
-            'CREATE INDEX IF NOT EXISTS index_demo_on_name on `demo`(`name`)');
+        expect(
+          migrations.first.up.last.statement,
+          'CREATE INDEX IF NOT EXISTS index_demo_on_name on `demo`(`name`)',
+        );
       });
 
       test('DropTable', () async {

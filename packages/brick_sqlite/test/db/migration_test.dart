@@ -1,9 +1,9 @@
-import 'package:test/test.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/rename_column.dart';
+import 'package:test/test.dart';
 
 import '__mocks__.dart';
 
@@ -39,8 +39,10 @@ void main() {
       expect(Migration.ofDefinition(Column.num), 'DOUBLE');
       expect(Migration.ofDefinition(Column.text), 'TEXT');
       expect(Migration.ofDefinition(Column.varchar), 'VARCHAR');
-      expect(() => Migration.ofDefinition(Column.undefined),
-          throwsA(const TypeMatcher<ArgumentError>()));
+      expect(
+        () => Migration.ofDefinition(Column.undefined),
+        throwsA(const TypeMatcher<ArgumentError>()),
+      );
     });
 
     test('.fromDartPrimitive', () {
@@ -51,7 +53,9 @@ void main() {
       expect(Migration.fromDartPrimitive(num), Column.num);
       expect(Migration.fromDartPrimitive(String), Column.varchar);
       expect(
-          () => Migration.fromDartPrimitive(dynamic), throwsA(const TypeMatcher<ArgumentError>()));
+        () => Migration.fromDartPrimitive(dynamic),
+        throwsA(const TypeMatcher<ArgumentError>()),
+      );
     });
 
     test('.toDartPrimitive', () {
@@ -171,8 +175,10 @@ class Migration15 extends Migration {
         ];
 
         final output = Migration.generate(commands, 15);
-        expect(output,
-            contains(RegExp(r'const List<MigrationCommand> _migration_15_down = \[\s+\];')));
+        expect(
+          output,
+          contains(RegExp(r'const List<MigrationCommand> _migration_15_down = \[\s+\];')),
+        );
       });
     });
 

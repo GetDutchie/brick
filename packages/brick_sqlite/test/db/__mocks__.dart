@@ -29,9 +29,10 @@ class Migration2 extends Migration {
 class Migration0None extends Migration {
   const Migration0None()
       : super(
-            version: 0,
-            up: const [InsertTable('nonexistent_table')],
-            down: const [DropTable('nonexistent_table')]);
+          version: 0,
+          up: const [InsertTable('nonexistent_table')],
+          down: const [DropTable('nonexistent_table')],
+        );
 }
 
 class MigrationInsertTable extends Migration {

@@ -122,7 +122,8 @@ class AlterColumnHelper {
 
       // Copy data
       await txn.execute(
-          'INSERT INTO `$tableName`($newColumnNames) SELECT $selectExpression FROM `temp_$tableName`');
+        'INSERT INTO `$tableName`($newColumnNames) SELECT $selectExpression FROM `temp_$tableName`',
+      );
 
       // Drop old table
       await txn.execute('DROP TABLE `temp_$tableName`');

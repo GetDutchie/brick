@@ -1,14 +1,13 @@
-import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:brick_build/generators.dart';
-import 'package:meta/meta.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
+import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
-
-import 'sqlite_fields.dart';
+import 'package:meta/meta.dart';
+import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 
 /// Generate a function to produce a [ClassElement] to SQLite data
 class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
@@ -113,7 +112,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         final serializedValue = serializeMethod != null
             ? 's.$serializeMethod()'
             : fieldAnnotation.enumAsString
-                ? "s.name"
+                ? 's.name'
                 : '${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(s)';
 
         return '''
@@ -184,11 +183,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       final nullabilitySuffix = checker.isNullable ? '?' : '';
       final serializeMethod = checker.enumSerializeMethod(providerName);
       if (serializeMethod != null) {
-        return "$fieldValue$nullabilitySuffix.$serializeMethod()";
+        return '$fieldValue$nullabilitySuffix.$serializeMethod()';
       }
 
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue$nullabilitySuffix.name";
+        return '$fieldValue$nullabilitySuffix.name';
       }
 
       if (checker.isNullable) {
@@ -267,7 +266,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final joinsTable =
         InsertForeignKey.joinsTableName(annotation.name!, localTableName: fields.element.name);
     final joinsForeignColumn = InsertForeignKey.joinsTableForeignColumnName(
-        checker.unFuturedArgType.getDisplayString(withNullability: false));
+      checker.unFuturedArgType.getDisplayString(withNullability: false),
+    );
     final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
 
     // Iterable<Future<SqliteModel>>

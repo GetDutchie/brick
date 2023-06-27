@@ -1,4 +1,3 @@
-import 'package:test/test.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
@@ -9,6 +8,7 @@ import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/rename_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/rename_table.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('MigrationCommand', () {
@@ -28,22 +28,32 @@ void main() {
       });
 
       test('#statement', () {
-        expect(m.statement,
-            'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
-        expect(mUnique.statement,
-            'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)');
+        expect(
+          m.statement,
+          'CREATE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)',
+        );
+        expect(
+          mUnique.statement,
+          'CREATE UNIQUE INDEX IF NOT EXISTS index__brick_Local_field_on_f_Local_brick_id_l_Field_brick_id on `_brick_Local_field`(`f_Local_brick_id`, `l_Field_brick_id`)',
+        );
       });
 
       test('#forGenerator', () {
-        expect(m.forGenerator,
-            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)");
-        expect(mUnique.forGenerator,
-            "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)");
+        expect(
+          m.forGenerator,
+          "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: false)",
+        );
+        expect(
+          mUnique.forGenerator,
+          "CreateIndex(columns: ['f_Local_brick_id', 'l_Field_brick_id'], onTable: '_brick_Local_field', unique: true)",
+        );
       });
 
       test('.generateName', () {
-        expect(CreateIndex.generateName(['user_id', 'friend_id', 'account_id'], 'Person'),
-            'index_Person_on_user_id_friend_id_account_id');
+        expect(
+          CreateIndex.generateName(['user_id', 'friend_id', 'account_id'], 'Person'),
+          'index_Person_on_user_id_friend_id_account_id',
+        );
       });
     });
 
@@ -129,20 +139,26 @@ void main() {
 
         test('autoincrement:true', () {
           const m = InsertColumn('name', Column.integer, onTable: 'demo', autoincrement: true);
-          expect(m.forGenerator,
-              "InsertColumn('name', Column.integer, onTable: 'demo', autoincrement: true)");
+          expect(
+            m.forGenerator,
+            "InsertColumn('name', Column.integer, onTable: 'demo', autoincrement: true)",
+          );
         });
 
         test('defaultValue:', () {
           const m = InsertColumn('name', Column.integer, onTable: 'demo', defaultValue: 0);
-          expect(m.forGenerator,
-              "InsertColumn('name', Column.integer, onTable: 'demo', defaultValue: 0)");
+          expect(
+            m.forGenerator,
+            "InsertColumn('name', Column.integer, onTable: 'demo', defaultValue: 0)",
+          );
         });
 
         test('nullable:', () {
           const m = InsertColumn('name', Column.integer, onTable: 'demo', nullable: false);
-          expect(m.forGenerator,
-              "InsertColumn('name', Column.integer, onTable: 'demo', nullable: false)");
+          expect(
+            m.forGenerator,
+            "InsertColumn('name', Column.integer, onTable: 'demo', nullable: false)",
+          );
         });
       });
     });
@@ -158,28 +174,40 @@ void main() {
       });
 
       test('#statement', () {
-        expect(m.statement,
-            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)');
+        expect(
+          m.statement,
+          'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`)',
+        );
 
         const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
-        expect(withOnDeleteCascade.statement,
-            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE');
+        expect(
+          withOnDeleteCascade.statement,
+          'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE CASCADE',
+        );
 
         const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
-        expect(withOnDeleteSetDefault.statement,
-            'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE SET DEFAULT');
+        expect(
+          withOnDeleteSetDefault.statement,
+          'ALTER TABLE `demo` ADD COLUMN `demo2_brick_id` INTEGER REFERENCES `demo2`(`_brick_id`) ON DELETE SET DEFAULT',
+        );
       });
 
       test('#forGenerator', () {
-        expect(m.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: false)");
+        expect(
+          m.forGenerator,
+          "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: false)",
+        );
         const withOnDeleteCascade = InsertForeignKey('demo', 'demo2', onDeleteCascade: true);
-        expect(withOnDeleteCascade.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true, onDeleteSetDefault: false)");
+        expect(
+          withOnDeleteCascade.forGenerator,
+          "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: true, onDeleteSetDefault: false)",
+        );
 
         const withOnDeleteSetDefault = InsertForeignKey('demo', 'demo2', onDeleteSetDefault: true);
-        expect(withOnDeleteSetDefault.forGenerator,
-            "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: true)");
+        expect(
+          withOnDeleteSetDefault.forGenerator,
+          "InsertForeignKey('demo', 'demo2', foreignKeyColumn: 'demo2_brick_id', onDeleteCascade: false, onDeleteSetDefault: true)",
+        );
       });
 
       test('.foreignKeyColumnName', () {
@@ -213,8 +241,10 @@ void main() {
       const m = InsertTable('demo');
 
       test('#statement', () {
-        expect(m.statement,
-            'CREATE TABLE IF NOT EXISTS `demo` (`_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT)');
+        expect(
+          m.statement,
+          'CREATE TABLE IF NOT EXISTS `demo` (`_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT)',
+        );
       });
 
       test('#forGenerator', () {

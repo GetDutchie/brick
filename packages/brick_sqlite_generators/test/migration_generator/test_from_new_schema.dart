@@ -20,16 +20,24 @@ final schema = Schema(
   2,
   generatorVersion: 1,
   tables: <SchemaTable>{
-    SchemaTable('User', columns: <SchemaColumn>{
-      SchemaColumn('_brick_id', Column.integer,
-          autoincrement: true, nullable: false, isPrimaryKey: true),
-      SchemaColumn('address', Column.varchar),
-      SchemaColumn('email', Column.varchar),
-    })
+    SchemaTable(
+      'User',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('address', Column.varchar),
+        SchemaColumn('email', Column.varchar),
+      },
+    )
   },
 );
 
-final output = r'''
+final output = '''
 // GENERATED CODE EDIT WITH CAUTION
 // THIS FILE **WILL NOT** BE REGENERATED
 // This file should be version controlled and can be manually edited.

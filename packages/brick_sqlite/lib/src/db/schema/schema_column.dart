@@ -1,11 +1,11 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
+import 'package:brick_sqlite/src/db/migration.dart' show Column;
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 import 'package:brick_sqlite/src/db/schema/schema_base.dart';
-import 'package:brick_sqlite/src/db/migration.dart' show Column;
 
 /// Describes a column object managed by SQLite
 /// This should not exist outside of a SchemaTable
@@ -58,11 +58,11 @@ class SchemaColumn extends BaseSchemaObject {
       parts.add('nullable: $nullable');
     }
 
-    if (isPrimaryKey != false) {
+    if (isPrimaryKey) {
       parts.add('isPrimaryKey: $isPrimaryKey');
     }
 
-    if (isForeignKey != false) {
+    if (isForeignKey) {
       parts.add('isForeignKey: $isForeignKey');
       parts.add("foreignTableName: '$foreignTableName'");
       parts.add('onDeleteCascade: $onDeleteCascade');

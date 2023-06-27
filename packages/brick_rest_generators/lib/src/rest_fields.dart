@@ -1,8 +1,8 @@
 // Generously inspired by JsonSerializable
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_rest/brick_rest.dart' show Rest, RestSerializable, FieldRename;
 import 'package:brick_build/generators.dart';
+import 'package:brick_rest/brick_rest.dart' show Rest, RestSerializable, FieldRename;
 import 'package:brick_rest_generators/src/rest_serializable_extended.dart';
 
 /// Find `@Rest` given a field

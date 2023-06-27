@@ -1,11 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart' show ProviderSerializableGenerator;
+import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite_generators/src/sqlite_deserialize.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serialize.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
 
 /// Digest a `sqliteConfig` from [reader] and manage serdes generators
 /// to and from a `SqliteProvider`.

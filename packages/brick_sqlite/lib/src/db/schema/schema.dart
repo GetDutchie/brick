@@ -1,5 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
+import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_index.dart';
@@ -10,14 +11,11 @@ import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 import 'package:brick_sqlite/src/db/migration_commands/rename_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/rename_table.dart';
-import 'package:brick_sqlite/src/db/schema/schema_index.dart';
-import 'package:meta/meta.dart' show visibleForTesting;
-
-import 'package:brick_sqlite/src/db/migration.dart';
-
 import 'package:brick_sqlite/src/db/migration_manager.dart';
 import 'package:brick_sqlite/src/db/schema/schema_column.dart';
+import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema_table.dart';
+import 'package:meta/meta.dart' show visibleForTesting;
 
 class Schema {
   /// The last version successfully migrated to SQLite.
@@ -76,13 +74,15 @@ class Schema {
       tables.add(SchemaTable(command.name));
 
       final table = tables.firstWhere((s) => s.name == command.name);
-      table.columns.add(SchemaColumn(
-        InsertTable.PRIMARY_KEY_COLUMN,
-        Column.integer,
-        autoincrement: true,
-        nullable: false,
-        isPrimaryKey: true,
-      ));
+      table.columns.add(
+        SchemaColumn(
+          InsertTable.PRIMARY_KEY_COLUMN,
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+      );
     } else if (command is RenameTable) {
       final table = findTable(command.oldName);
       tables.add(SchemaTable(command.newName, columns: table.columns..toSet()));
@@ -92,15 +92,17 @@ class Schema {
       tables.remove(table);
     } else if (command is InsertColumn) {
       final table = findTable(command.onTable);
-      table.columns.add(SchemaColumn(
-        command.name,
-        command.definitionType,
-        autoincrement: command.autoincrement,
-        defaultValue: command.defaultValue,
-        isPrimaryKey: false,
-        nullable: command.nullable,
-        unique: command.unique,
-      ));
+      table.columns.add(
+        SchemaColumn(
+          command.name,
+          command.definitionType,
+          autoincrement: command.autoincrement,
+          defaultValue: command.defaultValue,
+          isPrimaryKey: false,
+          nullable: command.nullable,
+          unique: command.unique,
+        ),
+      );
     } else if (command is RenameColumn) {
       final table = findTable(command.onTable);
       final column = table.columns.firstWhere(
@@ -120,32 +122,38 @@ class Schema {
       table.columns.remove(column);
     } else if (command is InsertForeignKey) {
       final table = findTable(command.localTableName);
-      table.columns.add(SchemaColumn(
-        command.foreignKeyColumn,
-        Column.integer,
-        isForeignKey: true,
-        foreignTableName: command.foreignTableName,
-        onDeleteCascade: command.onDeleteCascade,
-        onDeleteSetDefault: command.onDeleteSetDefault,
-      ));
+      table.columns.add(
+        SchemaColumn(
+          command.foreignKeyColumn,
+          Column.integer,
+          isForeignKey: true,
+          foreignTableName: command.foreignTableName,
+          onDeleteCascade: command.onDeleteCascade,
+          onDeleteSetDefault: command.onDeleteSetDefault,
+        ),
+      );
     } else if (command is CreateIndex) {
       final table = findTable(command.onTable);
       final tableColumnNames = table.columns.map((c) => c.name);
       for (final c in command.columns) {
         if (!tableColumnNames.contains(c)) {
           throw StateError(
-              '${command.onTable} does not contain column $c specified by CreateIndex');
+            '${command.onTable} does not contain column $c specified by CreateIndex',
+          );
         }
       }
-      table.indices.add(SchemaIndex(
-        columns: command.columns,
-        tableName: command.onTable,
-        unique: command.unique,
-      ));
+      table.indices.add(
+        SchemaIndex(
+          columns: command.columns,
+          tableName: command.onTable,
+          unique: command.unique,
+        ),
+      );
     } else if (command is DropIndex) {
-      for (final t in tables) {
-        for (final i in t.indices) {
-          i.tableName == t.name;
+      for (final table in tables) {
+        for (final index in table.indices) {
+          // ignore: unnecessary_statements
+          index.tableName == table.name;
         }
       }
       final table = tables.firstWhere(
@@ -165,10 +173,12 @@ class Schema {
   /// Output for generator
   String get forGenerator {
     final tableString = tables
-        .map((t) => t.forGenerator
-            // Add indentation
-            .replaceAll('\n\t', '\n\t\t\t')
-            .replaceAll('\n)', '\n\t\t)'))
+        .map(
+          (t) => t.forGenerator
+              // Add indentation
+              .replaceAll('\n\t', '\n\t\t\t')
+              .replaceAll('\n)', '\n\t\t)'),
+        )
         .join(',\n\t\t');
 
     return '''Schema(

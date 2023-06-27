@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -30,7 +31,7 @@ class GZipHttpClient extends http.BaseClient {
     if (request.body.isEmpty) return innerClient.send(request);
     if (request.headers['Content-Encoding'] == 'gzip') return innerClient.send(request);
 
-    var newRequest = http.Request(request.method, request.url);
+    final newRequest = http.Request(request.method, request.url);
     newRequest.headers.addAll(request.headers);
     newRequest.bodyBytes = _encoder.encode(request.bodyBytes);
     newRequest.headers['Content-Encoding'] = 'gzip';

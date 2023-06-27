@@ -1,5 +1,5 @@
-import 'drop_table.dart';
-import 'migration_command.dart';
+import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Insert table if it doesn't already exist
 class InsertTable extends MigrationCommand {

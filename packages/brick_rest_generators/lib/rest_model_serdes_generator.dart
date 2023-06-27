@@ -1,11 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_rest/brick_rest.dart' show RestSerializable, FieldRename;
 import 'package:brick_rest_generators/src/rest_deserialize.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serializable_extended.dart';
 import 'package:brick_rest_generators/src/rest_serialize.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_rest/brick_rest.dart' show RestSerializable, FieldRename;
 
 /// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
 /// to and from a `RestProvider`.
