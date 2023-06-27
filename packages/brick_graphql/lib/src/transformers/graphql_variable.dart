@@ -27,7 +27,7 @@ class GraphqlVariable {
 
   static List<GraphqlVariable> fromOperationNode(OperationDefinitionNode node) {
     return node.variableDefinitions
-        .map((v) => GraphqlVariable.fromVariableDefinitionNode(v))
+        .map(GraphqlVariable.fromVariableDefinitionNode)
         .toList()
         .cast<GraphqlVariable>();
   }

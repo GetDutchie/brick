@@ -54,14 +54,16 @@ class ModelDictionaryBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotat
   }
 
   static Map<String, String> classFilePathsFromAnnotations(
-      Iterable<AnnotatedElement> annotations, Map<String, String> filesToContents) {
+    Iterable<AnnotatedElement> annotations,
+    Map<String, String> filesToContents,
+  ) {
     return {
       for (final annotation in annotations)
         '${annotation.element.name}': filesToContents.entries
             .firstWhere((entry) => entry.value.contains('class ${annotation.element.name} '))
             .key
             // Make relative from the `brick/` folder
-            .replaceAll(RegExp(r'^lib/'), '../'),
+            .replaceAll(RegExp('^lib/'), '../'),
     };
   }
 }

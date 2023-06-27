@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Apply standardized lints
 * `const`antize `AggregateBuilder`
 
 ## 3.0.1

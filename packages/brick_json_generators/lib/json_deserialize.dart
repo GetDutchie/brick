@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_json_generators/json_serdes_generator.dart';
-import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
+import 'package:brick_core/field_serializable.dart';
+import 'package:brick_json_generators/json_serdes_generator.dart';
 
 mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonSerdesGenerator<TModel, Annotation> {
@@ -42,8 +42,13 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
 
       // Iterable<RestModel>, Iterable<Future<RestModel>>
       if (checker.isArgTypeASibling) {
-        final fromJsonCast = SerdesGenerator.iterableCast(argType,
-            isSet: checker.isSet, isList: checker.isList, isFuture: true, forceCast: true);
+        final fromJsonCast = SerdesGenerator.iterableCast(
+          argType,
+          isSet: checker.isSet,
+          isList: checker.isList,
+          isFuture: true,
+          forceCast: true,
+        );
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>

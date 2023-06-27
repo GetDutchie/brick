@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:glob/glob.dart';
-
 import 'package:brick_core/core.dart';
+import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
 
 abstract class FileModel extends Model {
@@ -55,10 +54,12 @@ class FileProvider implements Provider<FileModel> {
     }
 
     final files = Glob('${adapter.directory}/**.${adapter.fileExtension}');
-    return Future.wait<T>(files.listSync().map<Future<T>>((file) async {
-      final contents = await File(file.path).readAsString();
-      return await adapter.fromFile(contents, provider: this, repository: repository) as T;
-    }));
+    return Future.wait<T>(
+      files.listSync().map<Future<T>>((file) async {
+        final contents = await File(file.path).readAsString();
+        return await adapter.fromFile(contents, provider: this, repository: repository) as T;
+      }),
+    );
   }
 
   @override
@@ -111,7 +112,7 @@ class UserAdapter extends FileAdapter<User> {
 }
 
 class FileModelDictionary extends ModelDictionary<FileModel, FileAdapter> {
-  FileModelDictionary(Map<Type, FileAdapter> dictionary) : super(dictionary);
+  FileModelDictionary(super.dictionary);
 }
 
 final Map<Type, FileAdapter> mappings = {

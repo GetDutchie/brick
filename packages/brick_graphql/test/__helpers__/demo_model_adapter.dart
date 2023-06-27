@@ -7,27 +7,37 @@ import 'package:brick_graphql/src/transformers/graphql_query_operation_transform
 
 import 'demo_model.dart';
 
-Future<DemoModel> _$DemoModelFromGraphql(Map<String, dynamic> data,
-    {GraphqlProvider? provider, repository}) async {
+Future<DemoModel> _$DemoModelFromGraphql(
+  Map<String, dynamic> data, {
+  GraphqlProvider? provider,
+  repository,
+}) async {
   return DemoModel(
-      name: data['full_name'] == null ? null : data['full_name'] as String,
-      assoc: data['assoc_DemoModelAssoc_brick_id'] == null
-          ? null
-          : (data['assoc_DemoModelAssoc_brick_id'] > -1
-              ? (await repository?.getAssociation<DemoModelAssoc>(
-                  Query.where('primaryKey', data['assoc_DemoModelAssoc_brick_id'] as int,
-                      limit1: true),
-                ))
-                  ?.first
-              : null),
-      complexFieldName:
-          data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
-      lastName: data['last_name'] == null ? null : data['last_name'] as String,
-      simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1);
+    name: data['full_name'] == null ? null : data['full_name'] as String,
+    assoc: data['assoc_DemoModelAssoc_brick_id'] == null
+        ? null
+        : (data['assoc_DemoModelAssoc_brick_id'] > -1
+            ? (await repository?.getAssociation<DemoModelAssoc>(
+                Query.where(
+                  'primaryKey',
+                  data['assoc_DemoModelAssoc_brick_id'] as int,
+                  limit1: true,
+                ),
+              ))
+                ?.first
+            : null),
+    complexFieldName:
+        data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
+    lastName: data['last_name'] == null ? null : data['last_name'] as String,
+    simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
+  );
 }
 
-Future<Map<String, dynamic>> _$DemoModelToGraphql(DemoModel instance,
-    {required GraphqlProvider provider, repository}) async {
+Future<Map<String, dynamic>> _$DemoModelToGraphql(
+  DemoModel instance, {
+  required GraphqlProvider provider,
+  repository,
+}) async {
   return {
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
@@ -46,7 +56,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
 
   @override
   GraphqlOperation get get {
-    var document = r'''query GetDemoModels() {
+    var document = '''query GetDemoModels() {
       getDemoModels() {}
     }''';
 
@@ -60,7 +70,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
 
   @override
   GraphqlOperation get subscribe {
-    var document = r'''subscription GetDemoModels() {
+    var document = '''subscription GetDemoModels() {
       getDemoModels() {}
     }''';
 
@@ -91,8 +101,11 @@ class DemoModelAdapter extends GraphqlAdapter<DemoModel> {
   DemoModelAdapter();
 
   @override
-  Future<DemoModel> fromGraphql(Map<String, dynamic> input,
-          {required provider, repository}) async =>
+  Future<DemoModel> fromGraphql(
+    Map<String, dynamic> input, {
+    required provider,
+    repository,
+  }) async =>
       await _$DemoModelFromGraphql(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toGraphql(DemoModel input, {required provider, repository}) async =>

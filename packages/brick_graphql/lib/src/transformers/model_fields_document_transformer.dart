@@ -47,26 +47,28 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
               ),
           ],
           directives: [],
-          selectionSet: SelectionSetNode(selections: [
-            FieldNode(
-              name: NameNode(value: operationFunctionName),
-              arguments: [
-                for (final argument in arguments)
-                  ArgumentNode(
-                    name: NameNode(value: argument.name),
-                    value: VariableNode(
-                      name: NameNode(value: argument.variable.name),
+          selectionSet: SelectionSetNode(
+            selections: [
+              FieldNode(
+                name: NameNode(value: operationFunctionName),
+                arguments: [
+                  for (final argument in arguments)
+                    ArgumentNode(
+                      name: NameNode(value: argument.name),
+                      value: VariableNode(
+                        name: NameNode(value: argument.variable.name),
+                      ),
                     ),
+                ],
+                selectionSet: SelectionSetNode(
+                  selections: _generateNodes(
+                    adapter.fieldsToGraphqlRuntimeDefinition,
+                    ignoreAssociations: node.type == OperationType.mutation,
                   ),
-              ],
-              selectionSet: SelectionSetNode(
-                selections: _generateNodes(
-                  adapter.fieldsToGraphqlRuntimeDefinition,
-                  ignoreAssociations: node.type == OperationType.mutation,
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
         ),
       ],
     );
@@ -104,21 +106,23 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
     bool ignoreAssociations = false,
   }) {
     return fieldsToGraphqlRuntimeDefinition.entries.fold<List<SelectionNode>>([], (nodes, entry) {
-      nodes.add(FieldNode(
-        name: NameNode(value: entry.value.documentNodeName),
-        alias: null,
-        arguments: [],
-        directives: [],
-        selectionSet: entry.value.association && !ignoreAssociations
-            ? SelectionSetNode(
-                selections: _generateNodes(
-                  modelDictionary.adapterFor[entry.value.type]!.fieldsToGraphqlRuntimeDefinition,
-                ),
-              )
-            : entry.value.subfields.isNotEmpty
-                ? _generateSubFields(entry.value.subfields)
-                : null,
-      ));
+      nodes.add(
+        FieldNode(
+          name: NameNode(value: entry.value.documentNodeName),
+          alias: null,
+          arguments: [],
+          directives: [],
+          selectionSet: entry.value.association && !ignoreAssociations
+              ? SelectionSetNode(
+                  selections: _generateNodes(
+                    modelDictionary.adapterFor[entry.value.type]!.fieldsToGraphqlRuntimeDefinition,
+                  ),
+                )
+              : entry.value.subfields.isNotEmpty
+                  ? _generateSubFields(entry.value.subfields)
+                  : null,
+        ),
+      );
 
       return nodes;
     });
@@ -127,13 +131,15 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
   SelectionSetNode _generateSubFields(Map<String, dynamic> subfields) {
     return SelectionSetNode(
       selections: subfields.entries.fold<List<SelectionNode>>(<SelectionNode>[], (acc, entry) {
-        acc.add(FieldNode(
-          name: NameNode(value: entry.key),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: entry.value.isEmpty ? null : _generateSubFields(entry.value),
-        ));
+        acc.add(
+          FieldNode(
+            name: NameNode(value: entry.key),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: entry.value.isEmpty ? null : _generateSubFields(entry.value),
+          ),
+        );
 
         return acc;
       }),

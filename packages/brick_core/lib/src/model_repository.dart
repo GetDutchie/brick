@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:brick_core/src/query/query.dart';
 import 'package:brick_core/src/model.dart';
 import 'package:brick_core/src/provider.dart';
+import 'package:brick_core/src/query/query.dart';
 
 /// A Repository is the top-level means of relaying data between [Model]s and [Provider]s.
 /// A conventional implementation would adhere to the singleton pattern.

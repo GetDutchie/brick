@@ -42,8 +42,10 @@ class GraphqlRequest<TModel extends GraphqlModel> {
       ),
       variables: requestVariables ?? {},
       context: query?.providerArgs['context'] != null
-          ? Context.fromMap(Map<String, ContextEntry>.from(query?.providerArgs['context'])
-              .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)))
+          ? Context.fromMap(
+              Map<String, ContextEntry>.from(query?.providerArgs['context'])
+                  .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
+            )
           : Context(),
     );
   }

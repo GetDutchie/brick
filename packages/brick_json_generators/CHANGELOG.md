@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Apply standardized lints
+
 ## 3.0.2
 
 * Ensure deserializing string-based enums iterate on an array of strings (#345)

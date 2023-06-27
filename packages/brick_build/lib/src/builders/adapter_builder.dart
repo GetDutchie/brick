@@ -33,11 +33,15 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
       await manuallyUpsertBrickFile('adapters/${snakedName}_adapter.g.dart', output);
       allOutputs.add(output);
       logStopwatch(
-          'Generated ${snakedName}_adapter.g.dart (${annotatedElement.element.name})', stopwatch);
+        'Generated ${snakedName}_adapter.g.dart (${annotatedElement.element.name})',
+        stopwatch,
+      );
     }
 
     await buildStep.writeAsString(
-        buildStep.inputId.changeExtension(outputExtension), allOutputs.join('\n'));
+      buildStep.inputId.changeExtension(outputExtension),
+      allOutputs.join('\n'),
+    );
   }
 
   @override

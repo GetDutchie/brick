@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:brick_graphql/brick_graphql.dart';
 

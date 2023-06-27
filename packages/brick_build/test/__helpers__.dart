@@ -1,10 +1,10 @@
-export 'package:brick_build_test/brick_build_test.dart';
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
+import 'package:brick_core/field_serializable.dart';
 import 'package:source_gen/source_gen.dart';
+
+export 'package:brick_build_test/brick_build_test.dart';
 
 class FieldAnnotation extends FieldSerializable {
   @override

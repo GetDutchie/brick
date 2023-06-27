@@ -1,21 +1,21 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql_generators/graphql_model_serdes_generator.dart';
-import 'package:test/test.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:brick_build_test/brick_build_test.dart';
+import 'package:test/test.dart';
 
-import 'graphql_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
-import 'graphql_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
-import 'graphql_model_serdes_generator/test_from_json_to_json.dart' as from_json_to_json;
 import 'graphql_model_serdes_generator/test_annotation_subfields.dart' as annotation_subfields;
+import 'graphql_model_serdes_generator/test_constructor_member_field_mismatch.dart'
+    as constructor_member_field_mismatch;
+import 'graphql_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
+import 'graphql_model_serdes_generator/test_from_json_to_json.dart' as from_json_to_json;
+import 'graphql_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
 import 'graphql_model_serdes_generator/test_runtime_association_definition.dart'
     as runtime_association_definition;
 import 'graphql_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
-import 'graphql_model_serdes_generator/test_constructor_member_field_mismatch.dart'
-    as constructor_member_field_mismatch;
 
 final _generator = TestGenerator();
 final folder = 'graphql_model_serdes_generator';
@@ -25,7 +25,9 @@ void main() {
   group('GraphqlModelSerdesGenerator', () {
     test('RuntimeGraphqlDefinition#association', () async {
       await generateAdapterExpectation(
-          'runtime_association_definition', runtime_association_definition.output);
+        'runtime_association_definition',
+        runtime_association_definition.output,
+      );
     });
 
     group('@Graphql', () {
@@ -39,12 +41,16 @@ void main() {
 
       test('fromGenerator toGenerator', () async {
         await generateExpectation(
-            'unserializable_field_with_generator', unserializable_field_with_generator.output);
+          'unserializable_field_with_generator',
+          unserializable_field_with_generator.output,
+        );
       });
 
       test('GraphqlConstructorMemberFieldMismatch', () async {
         await generateExpectation(
-            'constructor_member_field_mismatch', constructor_member_field_mismatch.output);
+          'constructor_member_field_mismatch',
+          constructor_member_field_mismatch.output,
+        );
       });
 
       test('FromJsonToJson', () async {

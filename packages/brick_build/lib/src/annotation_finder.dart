@@ -1,9 +1,9 @@
 // Generously inspired by JsonSerializable
 
+import 'package:analyzer/dart/constant/value.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/constant/value.dart';
 
 /// Find an [Annotation] per field.
 abstract class AnnotationFinder<Annotation extends Object> {

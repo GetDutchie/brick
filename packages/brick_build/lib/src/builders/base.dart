@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:path/path.dart' as p;
+
 import 'package:build/build.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as p;
+import 'package:source_gen/source_gen.dart';
+
 export 'package:brick_build/src/annotation_super_generator.dart';
 
 final brickLogger = Logger('Brick');

@@ -24,7 +24,7 @@ class GraphqlArgument {
   static List<GraphqlArgument> fromOperationNode(OperationDefinitionNode node) {
     return (node.selectionSet.selections.first as FieldNode)
         .arguments
-        .map((a) => GraphqlArgument.fromArgumentNode(a))
+        .map(GraphqlArgument.fromArgumentNode)
         .toList()
         .cast<GraphqlArgument>();
   }

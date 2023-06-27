@@ -1,9 +1,9 @@
 // Generously inspired by JsonSerializable
 
-import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_graphql/brick_graphql.dart';
-import 'package:brick_build/generators.dart';
 import 'package:analyzer/dart/constant/value.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_serializable_query_transformer_extended.dart';
 
 /// Find `@Graphql` given a field
@@ -58,7 +58,8 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
   }
 
   static Map<String, Map<String, dynamic>> _convertMapToMap(
-      Map<DartObject?, DartObject?>? unconvertedMap) {
+    Map<DartObject?, DartObject?>? unconvertedMap,
+  ) {
     if (unconvertedMap == null) return {};
     return {
       for (final entry in unconvertedMap.entries)

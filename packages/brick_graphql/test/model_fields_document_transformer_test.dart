@@ -11,7 +11,7 @@ const upsertPersonWithoutNodesHeader = r'''mutation UpsertPerson($input: UpsertP
   upsertPerson(input: $input) {}
 }''';
 
-const upsertPersonWithoutArgumentsHeader = r'''mutation UpsertPerson {
+const upsertPersonWithoutArgumentsHeader = '''mutation UpsertPerson {
   upsertPerson {}
 }''';
 
@@ -28,7 +28,7 @@ const upsertPersonWithNodes = r'''mutation UpsertPerson($input: UpsertPersonInpu
   }
 }''';
 
-const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
+const upsertPersonWithoutArguments = '''mutation UpsertPerson {
   upsertPerson {
     primaryKey
     id
@@ -41,7 +41,7 @@ const upsertPersonWithoutArguments = r'''mutation UpsertPerson {
   }
 }''';
 
-const subfields = r'''query GetDemoAssocModels {
+const subfields = '''query GetDemoAssocModels {
   getDemoAssocModels {
     _brick_id
     full_name {
@@ -56,14 +56,18 @@ const subfields = r'''query GetDemoAssocModels {
 void main() {
   group('ModelFieldsDocumentTransformer', () {
     test('#hasSubfields', () {
-      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-          action: QueryAction.subscribe);
+      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+        dictionary,
+        action: QueryAction.subscribe,
+      );
       expect(transformer?.hasSubfields, isFalse);
     });
 
     test('#operationName', () {
-      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-          action: QueryAction.subscribe);
+      final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+        dictionary,
+        action: QueryAction.subscribe,
+      );
       expect(transformer?.operationName, 'getDemoModels');
     });
 
@@ -131,81 +135,128 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
       test('with specified document', () {
         final query =
             Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
-        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-            action: QueryAction.get, query: query);
-        expect(lang.printNode(transformer!.document),
-            startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-  upsertPerson(input: $input) {'''));
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+          dictionary,
+          action: QueryAction.get,
+          query: query,
+        );
+        expect(
+          lang.printNode(transformer!.document),
+          startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
+  upsertPerson(input: $input) {'''),
+        );
       });
 
       test('with delete action', () {
-        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-            action: QueryAction.delete);
-        expect(lang.printNode(transformer!.document),
-            startsWith(r'''mutation DeleteDemoModel($input: DemoModelInput!) {
-  deleteDemoModel(input: $input) {'''));
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+          dictionary,
+          action: QueryAction.delete,
+        );
+        expect(
+          lang.printNode(transformer!.document),
+          startsWith(r'''mutation DeleteDemoModel($input: DemoModelInput!) {
+  deleteDemoModel(input: $input) {'''),
+        );
       });
 
       test('with upsert action', () {
-        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-            action: QueryAction.upsert);
-        expect(lang.printNode(transformer!.document),
-            startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
-  upsertDemoModel(input: $input) {'''));
+        final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+          dictionary,
+          action: QueryAction.upsert,
+        );
+        expect(
+          lang.printNode(transformer!.document),
+          startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
+  upsertDemoModel(input: $input) {'''),
+        );
       });
 
       test('with nested subfields', () {
         final transformer =
-            ModelFieldsDocumentTransformer.defaultOperation<DemoModelAssocWithSubfields>(dictionary,
-                action: QueryAction.get);
+            ModelFieldsDocumentTransformer.defaultOperation<DemoModelAssocWithSubfields>(
+          dictionary,
+          action: QueryAction.get,
+        );
         expect(lang.printNode(transformer!.document), subfields);
       });
 
       group('QueryAction.get', () {
         test('without query', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.get);
-          expect(lang.printNode(transformer!.document), startsWith(r'''query GetDemoModels {
-  getDemoModels {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.get,
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith('''query GetDemoModels {
+  getDemoModels {'''),
+          );
         });
 
         test('without query.where', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.get, query: Query(action: QueryAction.get));
-          expect(lang.printNode(transformer!.document), startsWith(r'''query GetDemoModels {
-  getDemoModels {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.get,
+            query: Query(action: QueryAction.get),
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith('''query GetDemoModels {
+  getDemoModels {'''),
+          );
         });
 
         test('with query', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.get, query: Query.where('name', 'Thomas'));
-          expect(lang.printNode(transformer!.document),
-              startsWith(r'''query GetDemoModel($input: DemoModelFilterInput!) {
-  getDemoModel(input: $input) {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.get,
+            query: Query.where('name', 'Thomas'),
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith(r'''query GetDemoModel($input: DemoModelFilterInput!) {
+  getDemoModel(input: $input) {'''),
+          );
         });
       });
 
       group('QueryAction.subscribe', () {
         test('without query', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.subscribe);
-          expect(lang.printNode(transformer!.document), startsWith(r'''subscription GetDemoModels {
-  getDemoModels {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.subscribe,
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith('''subscription GetDemoModels {
+  getDemoModels {'''),
+          );
         });
 
         test('without query.where', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.subscribe, query: Query(action: QueryAction.get));
-          expect(lang.printNode(transformer!.document), startsWith(r'''subscription GetDemoModels {
-  getDemoModels {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.subscribe,
+            query: Query(action: QueryAction.get),
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith('''subscription GetDemoModels {
+  getDemoModels {'''),
+          );
         });
 
         test('with query', () {
-          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(dictionary,
-              action: QueryAction.subscribe, query: Query.where('name', 'Thomas'));
-          expect(lang.printNode(transformer!.document),
-              startsWith(r'''subscription GetDemoModels($input: DemoModelInput!) {
-  getDemoModels(input: $input) {'''));
+          final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+            dictionary,
+            action: QueryAction.subscribe,
+            query: Query.where('name', 'Thomas'),
+          );
+          expect(
+            lang.printNode(transformer!.document),
+            startsWith(r'''subscription GetDemoModels($input: DemoModelInput!) {
+  getDemoModels(input: $input) {'''),
+          );
         });
       });
     });

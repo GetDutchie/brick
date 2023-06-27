@@ -1,7 +1,6 @@
 import 'package:brick_build/src/serdes_generator.dart';
-import 'package:source_gen/source_gen.dart';
-
 import 'package:dart_style/dart_style.dart' as dart_style;
+import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
 
@@ -39,7 +38,8 @@ class AdapterGenerator {
         final didAdd = acc2.add(field);
         if (!didAdd) {
           throw InvalidGenerationSourceError(
-              '$field has already been declared by another generator');
+            '$field has already been declared by another generator',
+          );
         }
         return acc2;
       });
