@@ -93,8 +93,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
 
       if (resp.data?.values.first is Map) {
         return [
-          await adapter.fromGraphql(resp.data?.values.first!,
-              provider: this, repository: repository) as TModel
+          await adapter.fromGraphql(
+            resp.data?.values.first!,
+            provider: this,
+            repository: repository,
+          ) as TModel
         ];
       }
 
@@ -105,8 +108,10 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     return <TModel>[];
   }
 
-  Stream<List<TModel>> subscribe<TModel extends GraphqlModel>(
-      {Query? query, ModelRepository<GraphqlModel>? repository}) async* {
+  Stream<List<TModel>> subscribe<TModel extends GraphqlModel>({
+    Query? query,
+    ModelRepository<GraphqlModel>? repository,
+  }) async* {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = GraphqlRequest<TModel>(
       action: QueryAction.subscribe,

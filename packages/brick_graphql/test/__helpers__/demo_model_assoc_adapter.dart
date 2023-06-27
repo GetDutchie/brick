@@ -7,13 +7,19 @@ import 'package:brick_graphql/src/transformers/graphql_query_operation_transform
 
 import 'demo_model.dart';
 
-Future<DemoModelAssoc> _$DemoModelAssocFromGraphql(Map<String, dynamic> data,
-    {GraphqlProvider? provider, repository}) async {
+Future<DemoModelAssoc> _$DemoModelAssocFromGraphql(
+  Map<String, dynamic> data, {
+  GraphqlProvider? provider,
+  repository,
+}) async {
   return DemoModelAssoc(name: data['full_name'] == null ? null : data['full_name'] as String);
 }
 
-Future<Map<String, dynamic>> _$DemoModelAssocToGraphql(DemoModelAssoc instance,
-    {GraphqlProvider? provider, repository}) async {
+Future<Map<String, dynamic>> _$DemoModelAssocToGraphql(
+  DemoModelAssoc instance, {
+  GraphqlProvider? provider,
+  repository,
+}) async {
   return {'full_name': instance.name};
 }
 
@@ -41,19 +47,25 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
   };
 
   @override
-  Future<DemoModelAssoc> fromGraphql(Map<String, dynamic> input,
-          {required provider, repository}) async =>
+  Future<DemoModelAssoc> fromGraphql(
+    Map<String, dynamic> input, {
+    required provider,
+    repository,
+  }) async =>
       await _$DemoModelAssocFromGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toGraphql(DemoModelAssoc input,
-          {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toGraphql(
+    DemoModelAssoc input, {
+    required provider,
+    repository,
+  }) async =>
       await _$DemoModelAssocToGraphql(input, provider: provider, repository: repository);
 }
 
 class _DemoModelAssocTransformer extends GraphqlQueryOperationTransformer {
   @override
   GraphqlOperation get get => GraphqlOperation(
-        document: r'''query GetDemoAssocModels() {
+        document: '''query GetDemoAssocModels() {
           getDemoAssocModels() {}
         }''',
       );
@@ -87,11 +99,17 @@ class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> 
   };
 
   @override
-  Future<DemoModelAssoc> fromGraphql(Map<String, dynamic> input,
-          {required provider, repository}) async =>
+  Future<DemoModelAssoc> fromGraphql(
+    Map<String, dynamic> input, {
+    required provider,
+    repository,
+  }) async =>
       await _$DemoModelAssocFromGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toGraphql(DemoModelAssoc input,
-          {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toGraphql(
+    DemoModelAssoc input, {
+    required provider,
+    repository,
+  }) async =>
       await _$DemoModelAssocToGraphql(input, provider: provider, repository: repository);
 }

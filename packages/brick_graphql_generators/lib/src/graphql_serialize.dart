@@ -1,5 +1,5 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';

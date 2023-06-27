@@ -1,8 +1,8 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_core/core.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/dart/element/element.dart';
 
 const _mapChecker = TypeChecker.fromUrl('dart:core#Map');
 const _iterableChecker = TypeChecker.fromUrl('dart:core#Iterable');

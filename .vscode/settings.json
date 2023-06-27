@@ -1,0 +1,11 @@
+{
+  "dart.lineLength": 100,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true,
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "files.insertFinalNewline": true,
+}

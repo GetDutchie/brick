@@ -38,17 +38,22 @@ void main() {
           action: QueryAction.get,
           modelDictionary: provider.modelDictionary,
         ).request;
-        expect(printNode(request!.operation.document), startsWith(r'''query GetDemoModels {
-  getDemoModels {'''));
+        expect(
+          printNode(request!.operation.document),
+          startsWith('''query GetDemoModels {
+  getDemoModels {'''),
+        );
       });
 
       test('providerArgs#context:', () {
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {
-            'context': {'SampleContextEntry': SampleContextEntry('myValue')}
-          }),
+          query: Query(
+            providerArgs: {
+              'context': {'SampleContextEntry': SampleContextEntry('myValue')}
+            },
+          ),
         ).request;
         expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
@@ -62,9 +67,11 @@ void main() {
           modelDictionary: provider.modelDictionary,
           variables: variables,
         );
-        expect(printNode(request.request!.operation.document),
-            startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
-  upsertDemoModel(input: $input) {'''));
+        expect(
+          printNode(request.request!.operation.document),
+          startsWith(r'''mutation UpsertDemoModels($input: DemoModelInput!) {
+  upsertDemoModel(input: $input) {'''),
+        );
         expect(request.requestVariables, variables);
       });
 
@@ -135,10 +142,12 @@ void main() {
       });
 
       test('skips associations', () {
-        final query = Query(where: [
-          Where('lastName').isExactly(1),
-          Where('assoc').isExactly(Where('name').isExactly(1)),
-        ]);
+        final query = Query(
+          where: [
+            Where('lastName').isExactly(1),
+            Where('assoc').isExactly(Where('name').isExactly(1)),
+          ],
+        );
         expect(request.queryToVariables(query), {'lastName': 1});
       });
     });

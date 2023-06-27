@@ -1,0 +1,132 @@
+include: package:lints/recommended.yaml
+
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
+
+linter:
+  rules:
+    - always_declare_return_types
+    - always_use_package_imports
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_escaping_inner_quotes
+    - avoid_void_async
+    - camel_case_extensions
+    - camel_case_types
+    - curly_braces_in_flow_control_structures
+    - directives_ordering
+    - discarded_futures
+    - eol_at_end_of_file
+    - file_names
+    - prefer_final_locals
+    - prefer_is_empty
+    - prefer_is_not_empty
+    - prefer_single_quotes
+    - require_trailing_commas
+    - unawaited_futures
+    - unnecessary_lambdas
+    - unnecessary_parenthesis
+    - unnecessary_raw_strings
+    - unnecessary_statements
+    - unnecessary_to_list_in_spreads
+    - use_if_null_to_convert_nulls_to_bools
+    - use_raw_strings
+    - use_super_parameters
+    - use_to_and_as_if_applicable
+
+analyzer:
+  exclude: 
+    - example/
+    - "**/example/"
+    - example_rest
+    - example_graphql
+    
+  errors:
+    # override custom
+    always_use_package_imports: error
+    camel_case_extensions: error
+    camel_case_types: error
+    curly_braces_in_flow_control_structures: error
+    directives_ordering: error
+    file_names: error
+    prefer_single_quotes: error
+    prefer_is_empty: error
+    prefer_is_not_empty: error
+    require_trailing_commas: error
+    sort_pub_dependencies: error
+    unnecessary_statements: error
+
+    # override flutter_lints
+    avoid_print: error
+    avoid_unnecessary_containers: error
+    avoid_web_libraries_in_flutter: error
+    no_logic_in_create_state: error
+    prefer_const_constructors: error
+    prefer_const_constructors_in_immutables: error
+    prefer_const_declarations: error
+    prefer_const_literals_to_create_immutables: error
+    sized_box_for_whitespace: error
+    sort_child_properties_last: error
+    use_build_context_synchronously: error
+    use_full_hex_values_for_flutter_colors: error
+    use_key_in_widget_constructors: error
+
+    # override recommended lints
+    always_require_non_null_named_parameters: error
+    annotate_overrides: error
+    avoid_function_literals_in_foreach_calls: error
+    avoid_init_to_null: error
+    avoid_null_checks_in_equality_operators: error
+    avoid_renaming_method_parameters: error
+    avoid_return_types_on_setters: error
+    avoid_returning_null_for_void: error
+    avoid_single_cascade_in_expression_statements: error
+    await_only_futures: error
+    constant_identifier_names: error
+    control_flow_in_finally: error
+    depend_on_referenced_packages: ignore
+    empty_constructor_bodies: error
+    empty_statements: error
+    exhaustive_cases: error
+    implementation_imports: ignore
+    library_names: error
+    library_prefixes: error
+    library_private_types_in_public_api: error
+    no_leading_underscores_for_library_prefixes: error
+    no_leading_underscores_for_local_identifiers: error
+    null_check_on_nullable_type_parameter: error
+    null_closures: error
+    overridden_fields: error
+    package_names: error
+    prefer_adjacent_string_concatenation: error
+    prefer_collection_literals: error
+    prefer_conditional_assignment: error
+    prefer_contains: error
+    prefer_equal_for_default_values: error
+    prefer_final_fields: error
+    prefer_for_elements_to_map_fromIterable: error
+    prefer_function_declarations_over_variables: error
+    prefer_if_null_operators: error
+    prefer_initializing_formals: error
+    prefer_inlined_adds: error
+    prefer_interpolation_to_compose_strings: error
+    prefer_is_not_operator: error
+    prefer_null_aware_operators: error
+    prefer_spread_collections: error
+    prefer_void_to_null: error
+    recursive_getters: error
+    slash_for_doc_comments: error
+    type_init_formals: error
+    unnecessary_brace_in_string_interps: error
+    unnecessary_const: error
+    unnecessary_constructor_name: error
+    unnecessary_getters_setters: error
+    unnecessary_late: error
+    unnecessary_new: error
+    unnecessary_null_aware_assignments: error
+    unnecessary_null_in_if_null_operators: error
+    unnecessary_nullable_for_final_variable_declarations: error
+    unnecessary_string_escapes: error
+    unnecessary_string_interpolations: error
+    unnecessary_this: error
+    use_function_type_syntax_for_parameters: error
+    use_rethrow_when_possible: error

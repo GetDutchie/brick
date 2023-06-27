@@ -1,5 +1,6 @@
-import 'package:collection/collection.dart' show ListEquality;
 import 'dart:convert';
+
+import 'package:collection/collection.dart' show ListEquality;
 
 const _listEquality = ListEquality();
 
@@ -124,8 +125,12 @@ class Where extends WhereCondition {
 
   Where isBetween(dynamic value1, dynamic value2) {
     assert(value1.runtimeType == value2.runtimeType, 'Comparison values must be the same type');
-    return Where(evaluatedField,
-        value: [value1, value2], compare: Compare.between, isRequired: isRequired);
+    return Where(
+      evaluatedField,
+      value: [value1, value2],
+      compare: Compare.between,
+      isRequired: isRequired,
+    );
   }
 
   Where contains(dynamic value) =>
@@ -137,14 +142,22 @@ class Where extends WhereCondition {
   Where isLessThan(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.lessThan, isRequired: isRequired);
 
-  Where isLessThanOrEqualTo(dynamic value) => Where(evaluatedField,
-      value: value, compare: Compare.lessThanOrEqualTo, isRequired: isRequired);
+  Where isLessThanOrEqualTo(dynamic value) => Where(
+        evaluatedField,
+        value: value,
+        compare: Compare.lessThanOrEqualTo,
+        isRequired: isRequired,
+      );
 
   Where isGreaterThan(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.greaterThan, isRequired: isRequired);
 
-  Where isGreaterThanOrEqualTo(dynamic value) => Where(evaluatedField,
-      value: value, compare: Compare.greaterThanOrEqualTo, isRequired: isRequired);
+  Where isGreaterThanOrEqualTo(dynamic value) => Where(
+        evaluatedField,
+        value: value,
+        compare: Compare.greaterThanOrEqualTo,
+        isRequired: isRequired,
+      );
 
   Where isNot(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.notEqual, isRequired: isRequired);

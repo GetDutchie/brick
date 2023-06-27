@@ -1,6 +1,6 @@
-import 'package:test/test.dart';
 import 'package:brick_core/src/query/query.dart';
 import 'package:brick_core/src/query/where.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Query', () {
@@ -48,9 +48,11 @@ void main() {
       });
 
       test('#where', () {
-        final q = Query(where: [
-          Where('name', value: 'Thomas'),
-        ]);
+        final q = Query(
+          where: [
+            Where('name', value: 'Thomas'),
+          ],
+        );
 
         expect(q.where!.first.evaluatedField, 'name');
         expect(q.where!.first.value, 'Thomas');

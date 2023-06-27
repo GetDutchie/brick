@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_json_generators/json_serdes_generator.dart';
-import 'package:brick_core/field_serializable.dart';
 import 'package:brick_core/core.dart';
+import 'package:brick_core/field_serializable.dart';
+import 'package:brick_json_generators/json_serdes_generator.dart';
 
 mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonSerdesGenerator<TModel, Annotation> {
@@ -36,7 +36,7 @@ mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
         }
 
         if (fieldAnnotation.enumAsString) {
-          return "$fieldValue$nullabilitySuffix.map((e) => e.name).toList()";
+          return '$fieldValue$nullabilitySuffix.map((e) => e.name).toList()';
         } else {
           return '$fieldValue$nullabilitySuffix.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e)).toList()';
         }
@@ -80,11 +80,11 @@ mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
       final nullabilitySuffix = checker.isNullable ? '?' : '';
       final serializeMethod = checker.enumSerializeMethod(providerName);
       if (serializeMethod != null) {
-        return "$fieldValue$nullabilitySuffix.$serializeMethod()";
+        return '$fieldValue$nullabilitySuffix.$serializeMethod()';
       }
 
       if (fieldAnnotation.enumAsString) {
-        return "$fieldValue$nullabilitySuffix.name";
+        return '$fieldValue$nullabilitySuffix.name';
       } else {
         if (checker.isNullable) {
           return '$fieldValue != null ? ${SharedChecker.withoutNullability(field.type)}.values.indexOf($fieldValue!) : null';

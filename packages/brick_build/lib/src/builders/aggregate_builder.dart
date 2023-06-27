@@ -1,7 +1,7 @@
 import 'package:brick_build/src/builders/base.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
+import 'package:source_gen/source_gen.dart';
 
 /// Combine all `@ConnectOfflineFirstWithRest` and `@Migratable` classes and annotations
 ///
@@ -46,7 +46,7 @@ class AggregateBuilder implements Builder {
         imports.addAll(findAllImports(contents));
         final newContents = contents
             .replaceAll(importRegex, '')
-            .replaceAll(RegExp(r"part of '.*';"), '')
+            .replaceAll(RegExp("part of '.*';"), '')
             .replaceAll(RegExp(r"^part\s'.*';", multiLine: true), '')
             .replaceAll(RegExp(r'^export\s.*;', multiLine: true), '');
         files.add(newContents);
@@ -55,7 +55,9 @@ class AggregateBuilder implements Builder {
 
     final contents = '${imports.join('\n')}\n${files.join('\n')}';
     await buildStep.writeAsString(
-        AssetId(buildStep.inputId.package, 'lib/$outputFileName'), contents);
+      AssetId(buildStep.inputId.package, 'lib/$outputFileName'),
+      contents,
+    );
   }
 
   /// All unique `import:package` within a large body of text

@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/src/utils/fields_for_class.dart';
 import 'package:brick_build/src/utils/shared_checker.dart';
 import 'package:brick_core/core.dart';
@@ -7,7 +8,6 @@ import 'package:brick_core/field_serializable.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:analyzer/dart/element/type.dart';
 
 final _formatter = dart_style.DartFormatter();
 
@@ -218,10 +218,14 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   SharedChecker checkerForField(FieldElement field) {
     if (!doesDeserialize) return checkerForType(field.type);
     final defaultConstructor = _firstWhereOrNull<ConstructorElement>(
-        element.constructors, (e) => !e.isFactory && e.name.isEmpty);
+      element.constructors,
+      (e) => !e.isFactory && e.name.isEmpty,
+    );
     final defaultConstructorParameter = defaultConstructor?.parameters != null
         ? _firstWhereOrNull<ParameterElement>(
-            defaultConstructor!.parameters, (e) => e.name == field.name)
+            defaultConstructor!.parameters,
+            (e) => e.name == field.name,
+          )
         : null;
     return checkerForType(defaultConstructorParameter?.type ?? field.type);
   }
@@ -316,7 +320,10 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   /// Determine whether this field should be included in generated output.
   @protected
   bool ignoreCoderForField(
-      FieldElement field, FieldAnnotation annotation, SharedChecker<Model> checker) {
+    FieldElement field,
+    FieldAnnotation annotation,
+    SharedChecker<Model> checker,
+  ) {
     final isComputedGetter = FieldsForClass.isComputedGetter(field);
 
     if (isComputedGetter && doesDeserialize) return true;
@@ -375,7 +382,8 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
       final valueMatch = valueRegex.firstMatch(input);
       if (valueMatch?.group(1) == null) {
         throw InvalidGenerationSourceError(
-            '@$placeholderName@ requires a trailing value: @NAME@value@/NAME@');
+          '@$placeholderName@ requires a trailing value: @NAME@value@/NAME@',
+        );
       }
 
       return valueMatch!.group(1)!;
