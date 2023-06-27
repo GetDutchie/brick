@@ -13,7 +13,7 @@ class CustomerRequestTransformer extends RestRequestTransformer {
       final byId = Where.firstByField('id', query?.where);
       // member endpoint
       if (byId?.value != null) {
-        return RestRequest(url: "/customer/${byId!.value}");
+        return RestRequest(url: '/customer/${byId!.value}');
       }
     }
     return RestRequest(url: '/customers');
@@ -24,5 +24,5 @@ class CustomerRequestTransformer extends RestRequestTransformer {
   @override
   RestRequest get upsert => RestRequest(url: '/customers');
 
-  const CustomerRequestTransformer(Query? query, RestModel? instance) : super(query, instance);
+  const CustomerRequestTransformer(super.query, super.instance);
 }

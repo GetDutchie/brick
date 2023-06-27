@@ -7,7 +7,7 @@ class PizzaRequestTransformer extends RestRequestTransformer {
       final byId = Where.firstByField('id', query!.where);
       // member endpoint
       if (byId?.value != null) {
-        return RestRequest(url: "/pizza/${byId!.value}");
+        return RestRequest(url: '/pizza/${byId!.value}');
       }
     }
 
@@ -16,5 +16,5 @@ class PizzaRequestTransformer extends RestRequestTransformer {
 
   final upsert = const RestRequest(url: '/pizzas');
 
-  const PizzaRequestTransformer(Query? query, Model? instance) : super(query, instance);
+  const PizzaRequestTransformer(super.query, super.instance);
 }

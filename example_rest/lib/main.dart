@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             )
-          : Text("Migrating database..."),
+          : Text('Migrating database...'),
     );
   }
 }

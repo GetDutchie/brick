@@ -40,3 +40,5 @@ ios/
 android/
 pubspec.lock
 web/
+linux/
+windows/
