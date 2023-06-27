@@ -1,7 +1,7 @@
-import 'package:test/test.dart';
+import 'package:brick_offline_first_with_rest/rest_to_offline_first_converter.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:brick_offline_first_with_rest/rest_to_offline_first_converter.dart';
+import 'package:test/test.dart';
 
 MockClient _generateResponse(String response) {
   return MockClient((req) async {
@@ -30,7 +30,9 @@ void main() {
 
       test('with top-level key', () async {
         final converter = RestToOfflineFirstConverter(
-            endpoint: 'http://0.0.0.0:3000/person', topLevelKey: 'person');
+          endpoint: 'http://0.0.0.0:3000/person',
+          topLevelKey: 'person',
+        );
         converter.client = _generateResponse('{ "person": { "name": "Thomas"} }');
 
         final result = await converter.getRestPayload();
@@ -104,7 +106,9 @@ class People extends OfflineFirstModel {
 
       test('with topLevelKey', () async {
         final converter = RestToOfflineFirstConverter(
-            endpoint: 'http://0.0.0.0:3000/people', topLevelKey: 'people');
+          endpoint: 'http://0.0.0.0:3000/people',
+          topLevelKey: 'people',
+        );
         converter.client = _generateResponse('{"people": [{"name": "Thomas"}]}');
 
         final output = await converter.generate();

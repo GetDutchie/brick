@@ -2,11 +2,12 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
-import 'package:test/test.dart';
+import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:gql/language.dart';
+import 'package:test/test.dart';
+
 import '__helpers__.dart';
 
 void main() {
@@ -121,7 +122,8 @@ void main() {
 
       test('mutations with requireRemote policy are ignored', () {
         final context = const Context().withEntry<OfflineFirstGraphqlPolicy>(
-            const OfflineFirstGraphqlPolicy(upsert: OfflineFirstUpsertPolicy.requireRemote));
+          const OfflineFirstGraphqlPolicy(upsert: OfflineFirstUpsertPolicy.requireRemote),
+        );
         final mutationRequest = Request(
           operation: Operation(
             document: parseString('''mutation {}'''),

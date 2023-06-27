@@ -1,27 +1,33 @@
-import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest_generators/generators.dart';
-import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
-import 'package:test/test.dart';
-import 'package:brick_build_test/brick_build_test.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_build_test/brick_build_test.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:source_gen/source_gen.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_rest_generators/generators.dart';
+import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
+import 'package:source_gen/source_gen.dart';
+import 'package:test/test.dart';
 
 final _generator = OfflineFirstWithTestGenerator();
 final folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
-Future<void> generateExpectation(String filename, String output,
-    {OfflineFirstWithTestGenerator? generator}) async {
+Future<void> generateExpectation(
+  String filename,
+  String output, {
+  OfflineFirstWithTestGenerator? generator,
+}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
   expect(generated.trim(), output.trim());
 }
 
-Future<void> generateAdapterExpectation(String filename, String output,
-    {OfflineFirstWithTestGenerator? generator}) async {
+Future<void> generateAdapterExpectation(
+  String filename,
+  String output, {
+  OfflineFirstWithTestGenerator? generator,
+}) async {
   final annotation = await annotationForFile<ConnectOfflineFirstWithRest>(folder, filename);
   final generated = (generator ?? _generator).generateAdapter(
     annotation.element,
@@ -40,10 +46,11 @@ class _OfflineFirstTestSerialize extends RestSerialize
   // ignore: overridden_fields
   final providerName = 'Test';
 
-  _OfflineFirstTestSerialize(ClassElement element, RestFields fields,
-      {required String repositoryName})
-      : offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: repositoryName);
+  _OfflineFirstTestSerialize(
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
 class _OfflineFirstTestDeserialize extends RestDeserialize
@@ -55,16 +62,19 @@ class _OfflineFirstTestDeserialize extends RestDeserialize
   // ignore: overridden_fields
   final providerName = 'Test';
 
-  _OfflineFirstTestDeserialize(ClassElement element, RestFields fields,
-      {required String repositoryName})
-      : offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: repositoryName);
+  _OfflineFirstTestDeserialize(
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
 class OfflineFirstTestModelSerdesGenerator extends RestModelSerdesGenerator {
-  OfflineFirstTestModelSerdesGenerator(Element element, ConstantReader reader,
-      {required String repositoryName})
-      : super(element, reader, repositoryName: repositoryName);
+  OfflineFirstTestModelSerdesGenerator(
+    super.element,
+    super.reader, {
+    required String super.repositoryName,
+  });
 
   @override
   List<SerdesGenerator> get generators {
@@ -79,12 +89,9 @@ class OfflineFirstTestModelSerdesGenerator extends RestModelSerdesGenerator {
 
 class OfflineFirstWithTestGenerator extends OfflineFirstGenerator<ConnectOfflineFirstWithRest> {
   const OfflineFirstWithTestGenerator({
-    String? repositoryName,
-    String? superAdapterName,
-  }) : super(
-          repositoryName: repositoryName,
-          superAdapterName: superAdapterName,
-        );
+    super.repositoryName,
+    super.superAdapterName,
+  });
 
   /// Given an [element] and an [annotation], scaffold generators
   @override

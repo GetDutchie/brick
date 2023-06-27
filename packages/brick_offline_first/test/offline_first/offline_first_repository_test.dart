@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/src/offline_first_policy.dart';
-import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 import 'helpers/__mocks__.dart';
 
@@ -71,9 +71,11 @@ void main() {
         expect(results.first.mounties.last.primaryKey, greaterThan(0));
         final findByName = await TestRepository().sqliteProvider.get<Horse>(
               repository: TestRepository(),
-              query: Query(where: [
-                const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
-              ]),
+              query: Query(
+                where: [
+                  const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+                ],
+              ),
             );
 
         expect(findByName.first.name, horse.name);
@@ -93,14 +95,18 @@ void main() {
       });
     });
 
-    test('#hydrateSqlite / #get requireRest:true', () async {
-      await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
+    test(
+      '#hydrateSqlite / #get requireRest:true',
+      () async {
+        await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote);
 
-      // verify(TestRepository()
-      //     .remoteProvider
-      //     .client
-      //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
-    }, skip: 'Client is no longer a Mockito instance');
+        // verify(TestRepository()
+        //     .remoteProvider
+        //     .client
+        //     .get(Uri.parse('http://0.0.0.0:3000/mounties'), headers: anyNamed('headers')));
+      },
+      skip: 'Client is no longer a Mockito instance',
+    );
 
     test('#getBatched', () async {
       final instance = Mounty(name: 'SqliteName');

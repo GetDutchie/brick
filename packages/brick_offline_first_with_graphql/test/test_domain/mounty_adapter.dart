@@ -1,23 +1,35 @@
 part of '__mocks__.dart';
 
-Future<Mounty> _$MountyFromGraphql(Map<String, dynamic> data,
-    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+Future<Mounty> _$MountyFromGraphql(
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstWithGraphqlRepository? repository,
+}) async {
   return Mounty(name: data['name'] as String?);
 }
 
-Future<Map<String, dynamic>> _$MountyToGraphql(Mounty instance,
-    {required GraphqlProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+Future<Map<String, dynamic>> _$MountyToGraphql(
+  Mounty instance, {
+  required GraphqlProvider provider,
+  OfflineFirstWithGraphqlRepository? repository,
+}) async {
   return {'name': instance.name};
 }
 
-Future<Mounty> _$MountyFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+Future<Mounty> _$MountyFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstWithGraphqlRepository? repository,
+}) async {
   return Mounty(name: data['name'] == null ? null : data['name'] as String?)
     ..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$MountyToSqlite(Mounty instance,
-    {required SqliteProvider provider, OfflineFirstWithGraphqlRepository? repository}) async {
+Future<Map<String, dynamic>> _$MountyToSqlite(
+  Mounty instance, {
+  required SqliteProvider provider,
+  OfflineFirstWithGraphqlRepository? repository,
+}) async {
   return {'name': instance.name};
 }
 
@@ -31,7 +43,7 @@ class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
 
   @override
   GraphqlOperation get get {
-    var document = r'''query GetDemoModels() {
+    var document = '''query GetDemoModels() {
       getDemoModels() {}
     }''';
 
@@ -45,7 +57,7 @@ class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
 
   @override
   GraphqlOperation get subscribe {
-    var document = r'''subscription GetDemoModels() {
+    var document = '''subscription GetDemoModels() {
       getDemoModels() {}
     }''';
 
@@ -106,19 +118,31 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
   final String tableName = 'Mounty';
 
   @override
-  Future<Mounty> fromGraphql(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+  Future<Mounty> fromGraphql(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstWithGraphqlRepository? repository,
+  }) async =>
       await _$MountyFromGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toGraphql(Mounty input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+  Future<Map<String, dynamic>> toGraphql(
+    Mounty input, {
+    required provider,
+    covariant OfflineFirstWithGraphqlRepository? repository,
+  }) async =>
       await _$MountyToGraphql(input, provider: provider, repository: repository);
   @override
-  Future<Mounty> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+  Future<Mounty> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstWithGraphqlRepository? repository,
+  }) async =>
       await _$MountyFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(Mounty input,
-          {required provider, covariant OfflineFirstWithGraphqlRepository? repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(
+    Mounty input, {
+    required provider,
+    covariant OfflineFirstWithGraphqlRepository? repository,
+  }) async =>
       await _$MountyToSqlite(input, provider: provider, repository: repository);
 }

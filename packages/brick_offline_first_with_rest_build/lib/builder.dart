@@ -1,10 +1,9 @@
 import 'package:brick_build/builders.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-
 import 'package:brick_offline_first_with_rest_build/src/offline_first_with_rest_generator.dart';
-import 'package:build/build.dart';
 import 'package:brick_sqlite_generators/builders.dart';
+import 'package:build/build.dart';
 
 final _schemaGenerator = OfflineFirstSchemaGenerator();
 
@@ -24,12 +23,14 @@ final offlineFirstGenerator = const OfflineFirstWithRestGenerator(
 );
 
 /// These functions act as builder factories used by `build.yaml`
-Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(requiredImports: [
-      "import 'package:brick_offline_first_abstract/annotations.dart';",
-      "import 'package:brick_offline_first/brick_offline_first.dart';",
-      "import 'package:brick_core/query.dart';",
-      "import 'package:brick_sqlite/db.dart';",
-    ]);
+Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(
+      requiredImports: [
+        "import 'package:brick_offline_first_abstract/annotations.dart';",
+        "import 'package:brick_offline_first/brick_offline_first.dart';",
+        "import 'package:brick_core/query.dart';",
+        "import 'package:brick_sqlite/db.dart';",
+      ],
+    );
 Builder offlineFirstAdaptersBuilder(options) =>
     AdapterBuilder<ConnectOfflineFirstWithRest>(offlineFirstGenerator);
 Builder offlineFirstModelDictionaryBuilder(options) =>

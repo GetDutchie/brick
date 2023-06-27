@@ -1,11 +1,11 @@
+import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
 import 'package:logging/logging.dart';
-import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
+import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -56,7 +56,9 @@ void main() {
       expect(asSqlite, containsPair(HTTP_JOBS_CREATED_AT_COLUMN, isA<int>()));
       expect(asSqlite, containsPair(HTTP_JOBS_URL_COLUMN, 'http://example.com'));
       expect(
-          asSqlite, containsPair(HTTP_JOBS_HEADERS_COLUMN, '{"Content-Type":"application/json"}'));
+        asSqlite,
+        containsPair(HTTP_JOBS_HEADERS_COLUMN, '{"Content-Type":"application/json"}'),
+      );
       expect(asSqlite, containsPair(HTTP_JOBS_UPDATED_AT, isA<int>()));
       expect(asSqlite, containsPair(HTTP_JOBS_CREATED_AT_COLUMN, isA<int>()));
     });
@@ -150,7 +152,8 @@ void main() {
       test('missing headers', () {
         final tempRequest = http.Request('GET', Uri.parse('http://uninserted.com'));
         final request = RestRequestSqliteCache(tempRequest).sqliteToRequest(
-            {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'});
+          {HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET', HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000'},
+        );
 
         expect(request.method, 'GET');
         expect(request.url.toString(), 'http://0.0.0.0:3000');

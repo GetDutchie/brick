@@ -1,18 +1,15 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first_with_rest_build/src/offline_first_rest_generators.dart';
-import 'package:brick_build/generators.dart';
 import 'package:source_gen/source_gen.dart';
 
 class OfflineFirstWithRestGenerator extends OfflineFirstGenerator<ConnectOfflineFirstWithRest> {
   const OfflineFirstWithRestGenerator({
-    String? repositoryName,
-    String? superAdapterName,
-  }) : super(
-          repositoryName: repositoryName,
-          superAdapterName: superAdapterName,
-        );
+    super.repositoryName,
+    super.superAdapterName,
+  });
 
   /// Given an [element] and an [annotation], scaffold generators
   @override

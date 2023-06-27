@@ -1,9 +1,10 @@
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
-import 'package:test/test.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
+
 import '__helpers__.dart';
 
 void main() {

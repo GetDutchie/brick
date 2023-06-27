@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 final output = r'''
 Future<NullableField> _$NullableFieldFromTest(Map<String, dynamic> data,

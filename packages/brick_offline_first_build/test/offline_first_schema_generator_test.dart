@@ -1,14 +1,14 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build_test/brick_build_test.dart';
+import 'package:brick_offline_first_build/src/offline_first_sqlite_builders.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
-import 'package:brick_offline_first_build/src/offline_first_sqlite_builders.dart';
 
-import 'offline_first_schema_generator/test_with_serdes.dart' as withSerdes;
 import 'offline_first_schema_generator/test_with_association.dart' as withAssociation;
 import 'offline_first_schema_generator/test_with_associations.dart' as withAssociations;
+import 'offline_first_schema_generator/test_with_serdes.dart' as withSerdes;
 
 final generator = OfflineFirstSchemaGenerator();
 final generateLibrary = generateLibraryForFolder('offline_first_schema_generator');

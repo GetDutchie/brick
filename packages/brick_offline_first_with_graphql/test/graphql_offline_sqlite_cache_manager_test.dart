@@ -1,10 +1,10 @@
 import 'package:brick_offline_first_with_graphql/src/graphql_offline_queue_link.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache.dart';
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
-import 'package:test/test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:gql/language.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 import '__helpers__.dart';
 
@@ -109,12 +109,13 @@ void main() {
 
       test('new request is locked and skipped', () async {
         final request = Request(
-            operation: Operation(
-          document: parseString(
-            '''mutation {}''',
+          operation: Operation(
+            document: parseString(
+              '''mutation {}''',
+            ),
+            operationName: 'lockedUp',
           ),
-          operationName: 'lockedUp',
-        ));
+        );
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -129,12 +130,13 @@ void main() {
 
       test('unlocked request is locked', () async {
         final request = Request(
-            operation: Operation(
-          document: parseString(
-            '''mutation {}''',
+          operation: Operation(
+            document: parseString(
+              '''mutation {}''',
+            ),
+            operationName: 'unlocked',
           ),
-          operationName: 'unlocked',
-        ));
+        );
 
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);
@@ -156,12 +158,13 @@ void main() {
 
       test('locked request older than 2 minutes is unlocked', () async {
         final request = Request(
-            operation: Operation(
-          document: parseString(
-            '''mutation {}''',
+          operation: Operation(
+            document: parseString(
+              '''mutation {}''',
+            ),
+            operationName: 'unlocked',
           ),
-          operationName: 'unlocked',
-        ));
+        );
         final db = await requestManager.getDb();
         // prepare unlocked request
         final asCacheItem = GraphqlRequestSqliteCache(request);

@@ -1,16 +1,15 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-
+import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'test_domain.dart';
 
-part 'horse_adapter.dart';
 part 'horse.dart';
-part 'mounty_adapter.dart';
+part 'horse_adapter.dart';
 part 'mounty.dart';
+part 'mounty_adapter.dart';
 
 /// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
 /// while [DemoModel] is not.
@@ -27,10 +26,18 @@ class DemoModelMigration extends Migration {
             InsertColumn('name', Column.varchar, onTable: 'Mounty'),
             InsertTable('_brick_Horse_mounties'),
             InsertTable('Horse'),
-            InsertForeignKey('_brick_Horse_mounties', 'Horse',
-                foreignKeyColumn: 'l_Horse_brick_id', onDeleteCascade: true),
-            InsertForeignKey('_brick_Horse_mounties', 'Mounty',
-                foreignKeyColumn: 'f_Mounty_brick_id', onDeleteCascade: true),
+            InsertForeignKey(
+              '_brick_Horse_mounties',
+              'Horse',
+              foreignKeyColumn: 'l_Horse_brick_id',
+              onDeleteCascade: true,
+            ),
+            InsertForeignKey(
+              '_brick_Horse_mounties',
+              'Mounty',
+              foreignKeyColumn: 'f_Mounty_brick_id',
+              onDeleteCascade: true,
+            ),
             InsertColumn('name', Column.varchar, onTable: 'Horse')
           ],
           down: const <MigrationCommand>[],
@@ -70,13 +77,17 @@ class TestRepository extends OfflineFirstWithTestRepository {
   }
 
   @override
-  Query? applyPolicyToQuery(Query? query,
-      {OfflineFirstDeletePolicy? delete,
-      OfflineFirstGetPolicy? get,
-      OfflineFirstUpsertPolicy? upsert}) {
-    return query?.copyWith(providerArgs: {
-      'policy': get?.index,
-    });
+  Query? applyPolicyToQuery(
+    Query? query, {
+    OfflineFirstDeletePolicy? delete,
+    OfflineFirstGetPolicy? get,
+    OfflineFirstUpsertPolicy? upsert,
+  }) {
+    return query?.copyWith(
+      providerArgs: {
+        'policy': get?.index,
+      },
+    );
   }
 }
 

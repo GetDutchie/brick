@@ -2,7 +2,7 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_rest/brick_rest.dart' show RestException;
 
 class OfflineFirstWithRestException extends OfflineFirstException {
-  OfflineFirstWithRestException(Exception originalError) : super(originalError);
+  OfflineFirstWithRestException(super.originalError);
 
   /// If [originalError] was produced by [RestProvider].
   bool get fromRest => originalError is RestException;

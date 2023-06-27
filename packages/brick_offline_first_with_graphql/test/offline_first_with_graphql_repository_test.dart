@@ -1,6 +1,6 @@
 import 'package:brick_core/core.dart';
-import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:test/test.dart';
 
 import '__helpers__.dart';
 import 'test_domain/__mocks__.dart';
@@ -40,9 +40,11 @@ void main() {
         expect(results.first.mounties.last.primaryKey, greaterThan(0));
         final findByName = await repository.sqliteProvider.get<Horse>(
           repository: repository,
-          query: Query(where: [
-            const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
-          ]),
+          query: Query(
+            where: [
+              const Where('mounties').isExactly(Where.exact('name', mounties.first.name)),
+            ],
+          ),
         );
 
         expect(findByName.first.name, horse.name);

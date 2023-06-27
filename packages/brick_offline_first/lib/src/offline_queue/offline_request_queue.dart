@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -6,7 +7,7 @@ import 'package:meta/meta.dart';
 /// Repeatedly reattempts requests in an interval
 abstract class OfflineRequestQueue<TRequest> {
   /// If the queue is processing
-  bool get isRunning => _timer?.isActive == true;
+  bool get isRunning => _timer?.isActive ?? false;
 
   @protected
   final Logger logger;
@@ -27,7 +28,7 @@ abstract class OfflineRequestQueue<TRequest> {
   }) : logger = Logger('OfflineRequestQueue');
 
   /// Resend latest unproccessed request to the client.
-  void _process(Timer timer) async {
+  Future<void> _process(Timer timer) async {
     if (_processingInBackground) return;
 
     _processingInBackground = true;

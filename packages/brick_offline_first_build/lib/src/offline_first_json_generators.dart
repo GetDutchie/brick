@@ -1,10 +1,10 @@
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:brick_json_generators/json_serialize.dart';
-import 'package:brick_json_generators/json_deserialize.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
+import 'package:brick_json_generators/json_deserialize.dart';
+import 'package:brick_json_generators/json_serialize.dart';
+import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 
 /// Adds support for siblings and serdes.
 /// It's best to extend the original generator
@@ -108,8 +108,12 @@ mixin OfflineFirstJsonSerialize<TModel extends Model, Annotation extends FieldSe
       }
     }
 
-    return super.coderForField(field, checker,
-        wrappedInFuture: wrappedInFuture, fieldAnnotation: fieldAnnotation);
+    return super.coderForField(
+      field,
+      checker,
+      wrappedInFuture: wrappedInFuture,
+      fieldAnnotation: fieldAnnotation,
+    );
   }
 }
 
@@ -160,8 +164,12 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
 
             // Iterable<OfflineFirstModel>
           } else {
-            final fromJsonCast = SerdesGenerator.iterableCast(argType,
-                isSet: checker.isSet, isList: checker.isList, isFuture: true);
+            final fromJsonCast = SerdesGenerator.iterableCast(
+              argType,
+              isSet: checker.isSet,
+              isList: checker.isList,
+              isFuture: true,
+            );
             final where =
                 _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
             final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
@@ -223,8 +231,12 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
       }
     }
 
-    return super.coderForField(field, checker,
-        wrappedInFuture: wrappedInFuture, fieldAnnotation: fieldAnnotation);
+    return super.coderForField(
+      field,
+      checker,
+      wrappedInFuture: wrappedInFuture,
+      fieldAnnotation: fieldAnnotation,
+    );
   }
 
   /// Define [iterableArgument] to condition value with one that comes from an iterated result
