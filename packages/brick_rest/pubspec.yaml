@@ -7,7 +7,7 @@ repository: https://github.com/GetDutchie/brick
 version: 3.0.2
 
 environment:
-  sdk: ">=2.15.0 <4.0.0"
+  sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
   brick_core: ^1.1.1

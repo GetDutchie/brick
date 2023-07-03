@@ -76,7 +76,7 @@ class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const MountyOperationTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const MountyOperationTransformer(super.query, GraphqlModel? super.instance);
 }
 
 /// Construct a [Mounty]

@@ -41,7 +41,7 @@ abstract class WhereCondition {
   factory WhereCondition.fromJson(Map<String, dynamic> data) {
     if (data['subclass'] == 'WherePhrase') {
       return WherePhrase(
-        data['conditions'].map((s) => WhereCondition.fromJson(s)),
+        data['conditions'].map(WhereCondition.fromJson),
         isRequired: data['required'],
       );
     }

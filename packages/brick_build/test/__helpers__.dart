@@ -54,7 +54,7 @@ class TestFields extends FieldsForClass<FieldAnnotation> {
 }
 
 class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
-  DefaultSerdes(ClassElement element, TestFields fields) : super(element, fields);
+  DefaultSerdes(super.element, super.fields);
   @override
   final providerName = 'DefaultSerdes';
 
@@ -64,7 +64,7 @@ class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
 }
 
 class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
-  CustomSerdes(ClassElement element, TestFields fields) : super(element, fields);
+  CustomSerdes(super.element, TestFields super.fields);
 
   @override
   final doesDeserialize = false;
@@ -112,8 +112,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
 }
 
 class TestSerializableGenerator extends ProviderSerializableGenerator<AnnotationSuperGenerator> {
-  TestSerializableGenerator(Element element, ConstantReader reader)
-      : super(element, reader, configKey: 'testConfig');
+  TestSerializableGenerator(super.element, super.reader) : super(configKey: 'testConfig');
 
   @override
   AnnotationSuperGenerator? get config => null;

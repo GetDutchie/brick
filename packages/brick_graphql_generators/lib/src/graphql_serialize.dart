@@ -2,7 +2,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_graphql/brick_graphql.dart';
-import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_graphql_generators/src/graphql_serdes_generator.dart';
 import 'package:brick_json_generators/json_serialize.dart';
 
@@ -20,10 +19,10 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
   }
 
   GraphqlSerialize(
-    ClassElement element,
-    GraphqlFields fields, {
-    required String repositoryName,
-  }) : super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   List<String> get instanceFieldsAndMethods {

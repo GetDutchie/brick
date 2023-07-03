@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_graphql/src/graphql_adapter.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/graphql_provider.dart';
@@ -70,7 +69,7 @@ class _DemoModelAssocTransformer extends GraphqlQueryOperationTransformer {
         }''',
       );
 
-  const _DemoModelAssocTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const _DemoModelAssocTransformer(super.query, GraphqlModel? super.instance);
 }
 
 class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> {

@@ -20,8 +20,8 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
   }
 
   GraphqlDeserialize(
-    ClassElement element,
-    GraphqlFields fields, {
-    required String repositoryName,
-  }) : super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 }

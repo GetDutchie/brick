@@ -18,10 +18,10 @@ const _renameTableChecker = TypeChecker.fromRuntime(RenameTable);
 /// to access migration properties.
 class _MigrationImpl extends Migration {
   const _MigrationImpl({
-    required int version,
-    required List<MigrationCommand> up,
-    required List<MigrationCommand> down,
-  }) : super(version: version, up: up, down: down);
+    required super.version,
+    required super.up,
+    required super.down,
+  });
 }
 
 /// Recreate existing migrations as manageable objects.

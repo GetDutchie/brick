@@ -6,7 +6,7 @@ class DemoModelAssoc extends GraphqlModel {
 }
 
 class DemoModelAssocWithSubfields extends DemoModelAssoc {
-  DemoModelAssocWithSubfields({String? name}) : super(name: name);
+  DemoModelAssocWithSubfields({super.name});
 }
 
 class DemoModel extends GraphqlModel {

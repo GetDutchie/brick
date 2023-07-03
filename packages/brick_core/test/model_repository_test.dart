@@ -1,8 +1,9 @@
 import 'package:test/test.dart';
+
 import '__mocks__.dart';
 
 class DemoSimpleStore extends SingleProviderRepository<DemoModel> {
-  DemoSimpleStore(DemoProvider provider) : super(provider);
+  DemoSimpleStore(DemoProvider super.provider);
 
   DemoProvider get testableProvider => provider as DemoProvider;
 }
