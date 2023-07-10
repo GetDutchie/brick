@@ -11,6 +11,8 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import '__mocks__.dart';
 
 class TestProvider extends Provider<TestModel> {
+  var methodsCalled = <String>[];
+
   @override
   final TestModelDictionary modelDictionary;
 
@@ -22,6 +24,7 @@ class TestProvider extends Provider<TestModel> {
     Query? query,
     ModelRepository<TestModel>? repository,
   }) {
+    methodsCalled.add('delete');
     if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return true;
   }
@@ -31,6 +34,7 @@ class TestProvider extends Provider<TestModel> {
     Query? query,
     ModelRepository<TestModel>? repository,
   }) async {
+    methodsCalled.add('get');
     final adapter = modelDictionary.adapterFor[T]!;
     final data = [
       {'name': 'SqliteName'}
@@ -48,6 +52,7 @@ class TestProvider extends Provider<TestModel> {
     Query? query,
     ModelRepository<TestModel>? repository,
   }) {
+    methodsCalled.add('upsert');
     if (TestRepository.throwOnNextRemoteMutation) throw const SocketException('Remote failed');
     return Future<T>.value(instance);
   }

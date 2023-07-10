@@ -175,17 +175,23 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     query = (withPolicy ?? Query()).copyWith(action: QueryAction.get);
     logger.finest('#get: $TModel $query');
 
-    if (memoryCacheProvider.canFind<TModel>(query)) {
+    final requireRemote = policy == OfflineFirstGetPolicy.awaitRemote;
+    final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
+    final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
+
+    if (memoryCacheProvider.canFind<TModel>(query) && !requireRemote) {
       final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
+
+      if (alwaysHydrate) {
+        // start round trip for fresh data
+        // ignore: unawaited_futures
+        hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
+      }
 
       if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults!;
     }
 
     final modelExists = await exists<TModel>(query: query);
-
-    final requireRemote = policy == OfflineFirstGetPolicy.awaitRemote;
-    final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
-    final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
 
     if (requireRemote || (hydrateUnexisting && !modelExists)) {
       return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);

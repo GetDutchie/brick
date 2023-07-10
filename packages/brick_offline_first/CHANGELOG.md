@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 3.1.0
+
 * Apply standardized lints
+* Respect `awaitRemote` policy for `OfflineFirstRepository#get` - fixes a bug where an instance in memory cache would early-return before hitting remote despite the requested `await` or `alwaysHydrate` policy
 
 ## 3.0.3
 

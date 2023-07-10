@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/src/offline_first_policy.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';
 
 import 'helpers/__mocks__.dart';
+import 'helpers/test_domain.dart';
 
 void main() {
   sqfliteFfiInit();
@@ -19,6 +21,7 @@ void main() {
 
     tearDown(() {
       TestRepository.throwOnNextRemoteMutation = false;
+      (TestRepository().remoteProvider as TestProvider).methodsCalled.clear();
     });
 
     test('#applyPolicyToQuery', () async {
@@ -79,6 +82,29 @@ void main() {
             );
 
         expect(findByName.first.name, horse.name);
+      });
+
+      test('OfflineFirstGetPolicy.awaitRemote', () async {
+        TestRepository().memoryCacheProvider.managedModelTypes.add(Horse);
+
+        try {
+          final fetchFirst =
+              await TestRepository().get<Horse>(policy: OfflineFirstGetPolicy.awaitRemote);
+          expect(fetchFirst, isNotEmpty);
+          final fetchMemory = TestRepository().memoryCacheProvider.get<Horse>(
+                query: Query.where(InsertTable.PRIMARY_KEY_FIELD, fetchFirst.first.primaryKey),
+              );
+          expect(fetchMemory, isNotEmpty);
+          final fetchAgain =
+              await TestRepository().get<Horse>(policy: OfflineFirstGetPolicy.awaitRemote);
+
+          // The TestProvider does not have unique keys, so Brick can't compare based on the name,
+          // giving the appearance of two distinct records
+          expect(fetchAgain, hasLength(2));
+          expect((TestRepository().remoteProvider as TestProvider).methodsCalled, hasLength(2));
+        } finally {
+          TestRepository().memoryCacheProvider.managedModelTypes.remove(Horse);
+        }
       });
 
       test('OfflineFirstGetPolicy.localOnly', () async {
