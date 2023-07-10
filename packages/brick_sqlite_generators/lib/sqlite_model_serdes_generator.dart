@@ -5,7 +5,6 @@ import 'package:brick_sqlite_generators/src/sqlite_deserialize.dart';
 import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serialize.dart';
-import 'package:source_gen/source_gen.dart';
 
 /// Digest a `sqliteConfig` from [reader] and manage serdes generators
 /// to and from a `SqliteProvider`.
@@ -14,10 +13,10 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
   final String repositoryName;
 
   SqliteModelSerdesGenerator(
-    Element element,
-    ConstantReader reader, {
+    super.element,
+    super.reader, {
     required this.repositoryName,
-  }) : super(element, reader, configKey: 'sqliteConfig');
+  }) : super(configKey: 'sqliteConfig');
 
   @override
   SqliteSerializable get config {

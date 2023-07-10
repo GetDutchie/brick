@@ -14,10 +14,10 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   final String repositoryName;
 
   SqliteSerdesGenerator(
-    ClassElement element,
-    SqliteFields fields, {
+    super.element,
+    SqliteFields super.fields, {
     required this.repositoryName,
-  }) : super(element, fields);
+  });
 
   /// External models, such as REST or I/O, pull type inference data from class constructors.
   /// This is to allow for class constructors to process potentially nullable data

@@ -4,5 +4,5 @@ import 'package:brick_rest/src/rest_model.dart';
 
 /// Associates app models with their [RestAdapter]
 class RestModelDictionary extends ModelDictionary<RestModel, RestAdapter<RestModel>> {
-  const RestModelDictionary(Map<Type, RestAdapter<RestModel>> mappings) : super(mappings);
+  const RestModelDictionary(super.adapterFor);
 }

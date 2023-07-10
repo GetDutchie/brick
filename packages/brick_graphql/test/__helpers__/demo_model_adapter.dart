@@ -89,8 +89,7 @@ class DemoModelOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const DemoModelOperationTransformer(Query? query, GraphqlModel? instance)
-      : super(query, instance);
+  const DemoModelOperationTransformer(super.query, GraphqlModel? super.instance);
 }
 
 /// Construct a [DemoModel]

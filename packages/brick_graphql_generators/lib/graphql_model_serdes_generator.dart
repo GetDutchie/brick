@@ -5,7 +5,6 @@ import 'package:brick_graphql_generators/src/graphql_deserialize.dart';
 import 'package:brick_graphql_generators/src/graphql_fields.dart';
 import 'package:brick_graphql_generators/src/graphql_serializable_query_transformer_extended.dart';
 import 'package:brick_graphql_generators/src/graphql_serialize.dart';
-import 'package:source_gen/source_gen.dart';
 
 /// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
 /// to and from a `GraphqlProvider`.
@@ -16,10 +15,10 @@ class GraphqlModelSerdesGenerator
   final String repositoryName;
 
   GraphqlModelSerdesGenerator(
-    Element element,
-    ConstantReader reader, {
+    super.element,
+    super.reader, {
     required this.repositoryName,
-  }) : super(element, reader, configKey: 'graphqlConfig');
+  }) : super(configKey: 'graphqlConfig');
 
   @override
   GraphqlSerializableExtended get config {

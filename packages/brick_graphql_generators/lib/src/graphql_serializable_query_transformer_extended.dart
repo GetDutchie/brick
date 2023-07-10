@@ -7,7 +7,7 @@ class GraphqlSerializableExtended extends GraphqlSerializable {
   final String? queryOperationTransformerName;
 
   const GraphqlSerializableExtended({
-    FieldRename? fieldRename,
+    super.fieldRename,
     this.queryOperationTransformerName,
-  }) : super(fieldRename: fieldRename);
+  });
 }

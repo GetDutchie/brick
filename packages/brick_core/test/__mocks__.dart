@@ -1,8 +1,9 @@
 import 'package:brick_core/core.dart';
+
 export 'package:brick_core/core.dart';
 
 class DemoModelDictionary extends ModelDictionary<DemoModel, DemoAdapter> {
-  const DemoModelDictionary(Map<Type, DemoAdapter> mappings) : super(mappings);
+  const DemoModelDictionary(super.adapterFor);
 }
 
 class DemoProvider extends Provider<DemoModel> {

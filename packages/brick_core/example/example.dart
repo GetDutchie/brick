@@ -112,7 +112,7 @@ class UserAdapter extends FileAdapter<User> {
 }
 
 class FileModelDictionary extends ModelDictionary<FileModel, FileAdapter> {
-  FileModelDictionary(super.dictionary);
+  FileModelDictionary(super.adapterFor);
 }
 
 final Map<Type, FileAdapter> mappings = {

@@ -8,12 +8,9 @@ import 'package:source_gen/source_gen.dart';
 class OfflineFirstWithGraphqlGenerator
     extends OfflineFirstGenerator<ConnectOfflineFirstWithGraphql> {
   const OfflineFirstWithGraphqlGenerator({
-    String? repositoryName,
-    String? superAdapterName,
-  }) : super(
-          repositoryName: repositoryName,
-          superAdapterName: superAdapterName,
-        );
+    super.repositoryName,
+    super.superAdapterName,
+  });
 
   /// Given an [element] and an [annotation], scaffold generators
   @override

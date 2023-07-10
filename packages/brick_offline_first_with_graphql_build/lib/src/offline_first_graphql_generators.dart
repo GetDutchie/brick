@@ -4,7 +4,6 @@ import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql_generators/generators.dart';
 import 'package:brick_graphql_generators/graphql_model_serdes_generator.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:source_gen/source_gen.dart';
 
 class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
     with OfflineFirstJsonSerialize<GraphqlModel, Graphql> {
@@ -12,11 +11,10 @@ class _OfflineFirstGraphqlSerialize extends GraphqlSerialize
   final OfflineFirstFields offlineFirstFields;
 
   _OfflineFirstGraphqlSerialize(
-    ClassElement element,
-    GraphqlFields fields, {
-    required String repositoryName,
-  })  : offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  }) : offlineFirstFields = OfflineFirstFields(element);
 
   @override
   String generateGraphqlDefinition(FieldElement field) {
@@ -46,19 +44,18 @@ class _OfflineFirstGraphqlDeserialize extends GraphqlDeserialize
   final OfflineFirstFields offlineFirstFields;
 
   _OfflineFirstGraphqlDeserialize(
-    ClassElement element,
-    GraphqlFields fields, {
-    required String repositoryName,
-  })  : offlineFirstFields = OfflineFirstFields(element),
-        super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
 class OfflineFirstGraphqlModelSerdesGenerator extends GraphqlModelSerdesGenerator {
   OfflineFirstGraphqlModelSerdesGenerator(
-    Element element,
-    ConstantReader reader, {
-    required String repositoryName,
-  }) : super(element, reader, repositoryName: repositoryName);
+    super.element,
+    super.reader, {
+    required super.repositoryName,
+  });
 
   @override
   List<SerdesGenerator> get generators {

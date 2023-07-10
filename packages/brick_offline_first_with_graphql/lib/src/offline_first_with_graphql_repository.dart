@@ -6,9 +6,6 @@ import 'package:brick_offline_first_with_graphql/src/graphql_offline_request_que
 import 'package:brick_offline_first_with_graphql/src/graphql_request_sqlite_cache_manager.dart';
 import 'package:brick_offline_first_with_graphql/src/models/offline_first_with_graphql_model.dart';
 import 'package:brick_offline_first_with_graphql/src/offline_first_graphql_policy.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart';
-import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:meta/meta.dart';
 
@@ -33,12 +30,12 @@ abstract class OfflineFirstWithGraphqlRepository
   late final GraphqlOfflineRequestQueue offlineRequestQueue;
 
   OfflineFirstWithGraphqlRepository({
-    bool? autoHydrate,
+    super.autoHydrate,
     required GraphqlProvider graphqlProvider,
-    required SqliteProvider sqliteProvider,
-    String? loggerName,
-    MemoryCacheProvider? memoryCacheProvider,
-    required Set<Migration> migrations,
+    required super.sqliteProvider,
+    super.loggerName,
+    super.memoryCacheProvider,
+    required super.migrations,
     required GraphqlRequestSqliteCacheManager offlineRequestManager,
   })  : remoteProvider = graphqlProvider,
         offlineRequestQueue = GraphqlOfflineRequestQueue(
@@ -46,11 +43,6 @@ abstract class OfflineFirstWithGraphqlRepository
           requestManager: offlineRequestManager,
         ),
         super(
-          autoHydrate: autoHydrate,
-          loggerName: loggerName,
-          memoryCacheProvider: memoryCacheProvider,
-          migrations: migrations,
-          sqliteProvider: sqliteProvider,
           remoteProvider: graphqlProvider,
         );
 

@@ -7,10 +7,10 @@ import 'package:brick_rest_generators/src/rest_serdes_generator.dart';
 /// Generate a function to produce a [ClassElement] from REST data
 class RestDeserialize extends RestSerdesGenerator with JsonDeserialize<RestModel, Rest> {
   RestDeserialize(
-    ClassElement element,
-    RestFields fields, {
-    required String repositoryName,
-  }) : super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   List<String> get instanceFieldsAndMethods {

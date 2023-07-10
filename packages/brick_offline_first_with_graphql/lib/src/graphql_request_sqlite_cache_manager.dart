@@ -5,21 +5,17 @@ import 'dart:convert';
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
-import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 
 class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
   GraphqlRequestSqliteCacheManager(
-    String databaseName, {
-    required DatabaseFactory databaseFactory,
-    Duration? processingInterval,
+    super.databaseName, {
+    required super.databaseFactory,
+    super.processingInterval,
     bool? serialProcessing,
   }) : super(
-          databaseName,
           createdAtColumn: GRAPHQL_JOBS_CREATED_AT_COLUMN,
-          databaseFactory: databaseFactory,
           lockedColumn: GRAPHQL_JOBS_LOCKED_COLUMN,
           primaryKeyColumn: GRAPHQL_JOBS_PRIMARY_KEY_COLUMN,
-          processingInterval: processingInterval,
           serialProcessing: serialProcessing ?? true,
           tableName: GRAPHQL_JOBS_TABLE_NAME,
           updateAtColumn: GRAPHQL_JOBS_UPDATED_AT,

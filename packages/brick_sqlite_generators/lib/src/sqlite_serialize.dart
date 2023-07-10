@@ -4,7 +4,6 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
-import 'package:brick_sqlite_generators/src/sqlite_fields.dart';
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
@@ -12,10 +11,10 @@ import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 /// Generate a function to produce a [ClassElement] to SQLite data
 class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
   SqliteSerialize(
-    ClassElement element,
-    SqliteFields fields, {
-    required String repositoryName,
-  }) : super(element, fields, repositoryName: repositoryName);
+    super.element,
+    super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   final doesDeserialize = false;

@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
@@ -115,8 +114,7 @@ class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationT
         ''',
       );
 
-  const QueryOperationTransformerExampleTransformer(Query? query, GraphqlModel? instance)
-      : super(query, instance);
+  const QueryOperationTransformerExampleTransformer(super.query, GraphqlModel? super.instance);
 }
 
 @ConnectOfflineFirstWithGraphql(

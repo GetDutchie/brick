@@ -110,7 +110,7 @@ class HorseOperationTransformer extends GraphqlQueryOperationTransformer {
     }''',
       );
 
-  const HorseOperationTransformer(Query? query, GraphqlModel? instance) : super(query, instance);
+  const HorseOperationTransformer(super.query, GraphqlModel? super.instance);
 }
 
 /// Construct a [Horse]

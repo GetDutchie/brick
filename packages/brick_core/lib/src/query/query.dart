@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:brick_core/src/query/where.dart';
 import 'package:collection/collection.dart' show MapEquality, ListEquality;
 
@@ -64,7 +65,7 @@ class Query {
     return Query(
       action: json['action'] == null ? null : QueryAction.values[json['action']],
       providerArgs: json['providerArgs'],
-      where: json['where']?.map((w) => WhereCondition.fromJson(w)),
+      where: json['where']?.map(WhereCondition.fromJson),
     );
   }
 

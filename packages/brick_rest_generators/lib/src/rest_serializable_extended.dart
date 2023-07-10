@@ -7,8 +7,8 @@ class RestSerializableExtended extends RestSerializable {
   final String? requestName;
 
   const RestSerializableExtended({
-    FieldRename? fieldRename,
-    bool? nullable,
+    super.fieldRename,
+    super.nullable,
     this.requestName,
-  }) : super(fieldRename: fieldRename, nullable: nullable);
+  });
 }
