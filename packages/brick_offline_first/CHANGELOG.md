@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Apply desired policy to all association fetches during `OfflineFirstRepository#get` requests. Fixes #371.
+
 ## 3.1.0
 
 * Apply standardized lints

@@ -47,6 +47,13 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// Defaults to [false].
   final bool autoHydrate;
 
+  /// Required to maintain the same policy for [getAssociation] requests.
+  /// This is a stateful variable that should be cleared immediately after
+  /// it is no longer necessary.
+  ///
+  /// See discussion: https://github.com/GetDutchie/brick/issues/371
+  OfflineFirstGetPolicy? _latestGetPolicy;
+
   /// The first data source to speed up otherwise taxing queries. Only caches specified models.
   final MemoryCacheProvider memoryCacheProvider;
 
@@ -179,38 +186,47 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
     final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
 
-    if (memoryCacheProvider.canFind<TModel>(query) && !requireRemote) {
-      final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
+    try {
+      _latestGetPolicy = policy;
 
-      if (alwaysHydrate) {
+      if (memoryCacheProvider.canFind<TModel>(query) && !requireRemote) {
+        final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
+
+        if (alwaysHydrate) {
+          // start round trip for fresh data
+          // ignore: unawaited_futures
+          hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
+        }
+
+        if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults!;
+      }
+
+      final modelExists = await exists<TModel>(query: query);
+
+      if (requireRemote || (hydrateUnexisting && !modelExists)) {
+        return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
+      } else if (alwaysHydrate) {
         // start round trip for fresh data
         // ignore: unawaited_futures
         hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
       }
 
-      if (memoryCacheResults?.isNotEmpty ?? false) return memoryCacheResults!;
+      return await sqliteProvider
+          .get<TModel>(query: query, repository: this)
+          // cache this query
+          .then((m) => memoryCacheProvider.hydrate<TModel>(m));
+    } finally {
+      _latestGetPolicy = null;
     }
-
-    final modelExists = await exists<TModel>(query: query);
-
-    if (requireRemote || (hydrateUnexisting && !modelExists)) {
-      return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
-    } else if (alwaysHydrate) {
-      // start round trip for fresh data
-      // ignore: unawaited_futures
-      hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
-    }
-
-    return await sqliteProvider
-        .get<TModel>(query: query, repository: this)
-        // cache this query
-        .then((m) => memoryCacheProvider.hydrate<TModel>(m));
   }
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
   Future<List<TModel>?> getAssociation<TModel extends RepositoryModel>(Query query) async {
     logger.finest('#getAssociation: $TModel $query');
-    final results = await get<TModel>(query: query);
+    final results = await get<TModel>(
+      query: query,
+      policy: _latestGetPolicy ?? OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    );
     if (results.isEmpty) return null;
     return results;
   }
