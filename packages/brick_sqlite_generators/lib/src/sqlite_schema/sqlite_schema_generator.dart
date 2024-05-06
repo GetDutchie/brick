@@ -136,7 +136,7 @@ class SqliteSchemaGenerator {
             localTableName: localTableName,
           ),
           unique: true,
-        )
+        ),
       },
     );
   }

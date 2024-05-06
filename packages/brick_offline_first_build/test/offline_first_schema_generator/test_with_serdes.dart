@@ -9,13 +9,13 @@ const List<MigrationCommand> _migration1up = [
   InsertTable('Serdes'),
   InsertTable('WithSerdes'),
   InsertColumn('name', Column.varchar, onTable: 'Serdes'),
-  InsertColumn('serdes_member', Column.varchar, onTable: 'WithSerdes')
+  InsertColumn('serdes_member', Column.varchar, onTable: 'WithSerdes'),
 ];
 const List<MigrationCommand> _migration1down = [
   DropTable('Serdes'),
   DropTable('WithSerdes'),
   DropColumn('name', onTable: 'Serdes'),
-  DropColumn('serdes_member', onTable: 'WithSerdes')
+  DropColumn('serdes_member', onTable: 'WithSerdes'),
 ];
 
 @Migratable(version: '1', up: _migration1up, down: _migration1down)

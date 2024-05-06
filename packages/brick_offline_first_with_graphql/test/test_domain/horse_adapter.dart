@@ -29,7 +29,7 @@ Future<Map<String, dynamic>> _$HorseToGraphql(
       instance.mounties
           .map((s) => MountyAdapter().toGraphql(s, provider: provider, repository: repository))
           .toList(),
-    )
+    ),
   };
 }
 
@@ -139,7 +139,7 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
       documentNodeName: 'mounties',
       iterable: true,
       type: Mounty,
-    )
+    ),
   };
 
   @override
@@ -161,7 +161,7 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
       columnName: 'mounties',
       iterable: true,
       type: Mounty,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>

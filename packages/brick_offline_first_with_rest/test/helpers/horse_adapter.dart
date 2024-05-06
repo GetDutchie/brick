@@ -27,7 +27,7 @@ Future<Map<String, dynamic>> _$HorseToRest(
       instance.mounties
           .map((s) => MountyAdapter().toRest(s, provider: provider, repository: repository))
           .toList(),
-    )
+    ),
   };
 }
 
@@ -88,7 +88,7 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
       columnName: 'mounties',
       iterable: true,
       type: Mounty,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>

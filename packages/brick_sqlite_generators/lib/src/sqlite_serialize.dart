@@ -64,7 +64,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       primaryKeyByUniqueColumns,
       "@override\nfinal String tableName = '$tableName';",
       if (afterSaveCallbacks.isNotEmpty)
-        "@override\nFuture<void> afterSave(instance, {required provider, repository}) async {${afterSaveCallbacks.join('\n')}}"
+        "@override\nFuture<void> afterSave(instance, {required provider, repository}) async {${afterSaveCallbacks.join('\n')}}",
     ];
   }
 

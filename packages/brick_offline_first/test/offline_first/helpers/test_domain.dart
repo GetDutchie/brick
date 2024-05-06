@@ -37,7 +37,7 @@ class TestProvider extends Provider<TestModel> {
     methodsCalled.add('get');
     final adapter = modelDictionary.adapterFor[T]!;
     final data = [
-      {'name': 'SqliteName'}
+      {'name': 'SqliteName'},
     ];
     final results = data
         .map((e) => adapter.fromTest(e, provider: this, repository: repository))

@@ -46,6 +46,6 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        '.dart': [outputExtension]
+        '.dart': [outputExtension],
       };
 }

@@ -81,7 +81,7 @@ abstract class OfflineFirstWithRestRepository
           // This header is removed by the [RestOfflineQueueClient]
           if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
           ...?query.providerArgs['headers'] as Map<String, String>?,
-        }
+        },
       },
     );
   }

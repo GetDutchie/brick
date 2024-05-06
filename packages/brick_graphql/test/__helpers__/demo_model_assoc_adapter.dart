@@ -91,7 +91,7 @@ class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> 
       iterable: false,
       subfields: {
         'first': {'subfield1': {}},
-        'last': {}
+        'last': {},
       },
       type: String,
     ),

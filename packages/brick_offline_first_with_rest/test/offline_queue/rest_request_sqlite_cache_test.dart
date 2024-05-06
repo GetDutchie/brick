@@ -141,7 +141,7 @@ void main() {
         final request = RestRequestSqliteCache(tempRequest).sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'POST',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
-          HTTP_JOBS_BODY_COLUMN: 'POST body'
+          HTTP_JOBS_BODY_COLUMN: 'POST body',
         });
 
         expect(request.method, 'POST');
@@ -167,7 +167,7 @@ void main() {
         final request = RestRequestSqliteCache(tempRequest).sqliteToRequest({
           HTTP_JOBS_REQUEST_METHOD_COLUMN: 'GET',
           HTTP_JOBS_URL_COLUMN: 'http://0.0.0.0:3000',
-          HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}'
+          HTTP_JOBS_HEADERS_COLUMN: '{"Content-Type": "application/json"}',
         });
 
         expect(request.method, 'GET');

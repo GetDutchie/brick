@@ -63,8 +63,9 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
     if (unconvertedMap == null) return {};
     return {
       for (final entry in unconvertedMap.entries)
-        entry.key!.toStringValue()!:
-            entry.value?.toStringValue() == null ? _convertMapToMap(entry.value!.toMapValue()!) : {}
+        entry.key!.toStringValue()!: entry.value?.toStringValue() == null
+            ? _convertMapToMap(entry.value!.toMapValue()!)
+            : {},
     };
   }
 }

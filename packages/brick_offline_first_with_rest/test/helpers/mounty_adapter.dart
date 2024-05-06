@@ -53,7 +53,7 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
       columnName: 'name',
       iterable: false,
       type: String,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>

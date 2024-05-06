@@ -39,7 +39,7 @@ class DemoModelMigration extends Migration {
               foreignKeyColumn: 'f_Mounty_brick_id',
               onDeleteCascade: true,
             ),
-            InsertColumn('name', Column.varchar, onTable: 'Horse')
+            InsertColumn('name', Column.varchar, onTable: 'Horse'),
           ],
           down: const <MigrationCommand>[],
         );
@@ -91,7 +91,7 @@ class TestRepository extends OfflineFirstWithRestRepository {
 final Map<Type, RestAdapter<RestModel>> restMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
-  Mounty: MountyAdapter()
+  Mounty: MountyAdapter(),
 };
 final restModelDictionary = RestModelDictionary(restMappings);
 
@@ -99,6 +99,6 @@ final restModelDictionary = RestModelDictionary(restMappings);
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
-  Mounty: MountyAdapter()
+  Mounty: MountyAdapter(),
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

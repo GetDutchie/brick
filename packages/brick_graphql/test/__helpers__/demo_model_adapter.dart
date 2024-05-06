@@ -42,7 +42,7 @@ Future<Map<String, dynamic>> _$DemoModelToGraphql(
     'complex_field_name': instance.complexFieldName,
     'last_name': instance.lastName,
     'full_name': instance.name,
-    'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0)
+    'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0),
   };
 }
 

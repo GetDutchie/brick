@@ -35,9 +35,9 @@ void main() {
                     autoincrement: true,
                     nullable: false,
                     isPrimaryKey: true,
-                  )
+                  ),
                 },
-              )
+              ),
             },
           );
 
@@ -68,9 +68,9 @@ void main() {
                     autoincrement: true,
                     nullable: false,
                     isPrimaryKey: true,
-                  )
+                  ),
                 },
-              )
+              ),
             },
           );
 
@@ -122,9 +122,9 @@ void main() {
                     nullable: false,
                     isPrimaryKey: true,
                   ),
-                  SchemaColumn('name', Column.varchar)
+                  SchemaColumn('name', Column.varchar),
                 },
-              )
+              ),
             },
           );
 
@@ -163,9 +163,9 @@ void main() {
                     nullable: false,
                     isPrimaryKey: true,
                   ),
-                  SchemaColumn('first_name', Column.varchar)
+                  SchemaColumn('first_name', Column.varchar),
                 },
-              )
+              ),
             },
           );
 
@@ -202,9 +202,9 @@ void main() {
                     Column.integer,
                     isForeignKey: true,
                     foreignTableName: 'demo2',
-                  )
+                  ),
                 },
-              )
+              ),
             },
           );
 
@@ -233,7 +233,7 @@ void main() {
                 indices: <SchemaIndex>{
                   SchemaIndex(columns: ['_brick_id'], unique: true),
                 },
-              )
+              ),
             },
           );
 
@@ -260,7 +260,7 @@ void main() {
                   ),
                 },
                 indices: <SchemaIndex>{},
-              )
+              ),
             },
           );
 
@@ -283,7 +283,7 @@ void main() {
                   autoincrement: true,
                   nullable: false,
                   isPrimaryKey: true,
-                )
+                ),
               },
             ),
             SchemaTable(
@@ -295,7 +295,7 @@ void main() {
                   autoincrement: true,
                   nullable: false,
                   isPrimaryKey: true,
-                )
+                ),
               },
             ),
           },

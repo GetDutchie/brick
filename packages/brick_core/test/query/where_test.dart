@@ -130,7 +130,7 @@ void main() {
             'value': 1,
           }
         ],
-        'required': false
+        'required': false,
       });
     });
   });

@@ -39,7 +39,7 @@ class DemoModelMigration extends Migration {
               foreignKeyColumn: 'f_Mounty_brick_id',
               onDeleteCascade: true,
             ),
-            InsertColumn('name', Column.varchar, onTable: 'Horse')
+            InsertColumn('name', Column.varchar, onTable: 'Horse'),
           ],
           down: const <MigrationCommand>[],
         );
@@ -84,7 +84,7 @@ class TestRepository extends OfflineFirstWithGraphqlRepository {
 final Map<Type, GraphqlAdapter<GraphqlModel>> graphqlMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
-  Mounty: MountyAdapter()
+  Mounty: MountyAdapter(),
 };
 final graphqlModelDictionary = GraphqlModelDictionary(graphqlMappings);
 
@@ -92,6 +92,6 @@ final graphqlModelDictionary = GraphqlModelDictionary(graphqlMappings);
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
-  Mounty: MountyAdapter()
+  Mounty: MountyAdapter(),
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);
