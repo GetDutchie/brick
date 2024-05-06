@@ -1,7 +1,10 @@
 ## Unreleased
 
+## 3.0.3
+
 * Apply standardized lints
 * Upgrade minimum Dart to 2.18
+* Update minimum HTTP to 1.0.0
 
 ## 3.0.2
 

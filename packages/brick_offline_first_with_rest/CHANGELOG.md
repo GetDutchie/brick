@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 3.0.2
+
 * Apply standardized lints
+* Update minimum HTTP to 1.0.0
 
 ## 3.0.1
 
