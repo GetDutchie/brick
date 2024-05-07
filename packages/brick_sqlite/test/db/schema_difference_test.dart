@@ -41,7 +41,7 @@ void main() {
             nullable: false,
             isPrimaryKey: true,
           ),
-          column
+          column,
         },
       );
     });
@@ -117,7 +117,7 @@ void main() {
                   nullable: false,
                   isPrimaryKey: true,
                 ),
-                SchemaColumn('email', Column.varchar)
+                SchemaColumn('email', Column.varchar),
               },
             ),
           },
@@ -169,7 +169,7 @@ void main() {
             nullable: false,
             isPrimaryKey: true,
           ),
-          column
+          column,
         },
       );
       final foreignKeyColumnWithOnDeleteCascade = SchemaColumn(
@@ -208,7 +208,7 @@ void main() {
             nullable: false,
             isPrimaryKey: true,
           ),
-          column
+          column,
         },
       );
       final foreignKeyColumnWithOnDeleteSetDefault = SchemaColumn(
@@ -239,7 +239,7 @@ void main() {
           diff.toMigrationCommands(),
           [
             InsertTable('demo'),
-            InsertColumn(column.name, Column.varchar, onTable: column.tableName!)
+            InsertColumn(column.name, Column.varchar, onTable: column.tableName!),
           ],
         );
         expect(diff.hasDifference, isTrue);
@@ -255,7 +255,7 @@ void main() {
           diff.toMigrationCommands(),
           [
             InsertTable('demo'),
-            InsertColumn(column.name, Column.varchar, onTable: column.tableName!)
+            InsertColumn(column.name, Column.varchar, onTable: column.tableName!),
           ],
         );
         expect(diff.hasDifference, isTrue);
@@ -312,7 +312,7 @@ void main() {
                 ),
               },
               indices: <SchemaIndex>{
-                SchemaIndex(columns: ['l_People_brick_id', 'f_Friend_brick_id'], unique: true)
+                SchemaIndex(columns: ['l_People_brick_id', 'f_Friend_brick_id'], unique: true),
               },
             ),
           },
@@ -339,7 +339,7 @@ void main() {
             columns: ['l_People_brick_id', 'f_Friend_brick_id'],
             onTable: '_brick_People_friend',
             unique: true,
-          )
+          ),
         ]);
       });
     });

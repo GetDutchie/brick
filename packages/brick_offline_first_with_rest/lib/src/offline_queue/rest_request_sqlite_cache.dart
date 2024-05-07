@@ -28,7 +28,7 @@ class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
   String attemptLogMessage(Map<String, dynamic> responseFromSqlite) {
     final attemptMessage = [
       responseFromSqlite[HTTP_JOBS_REQUEST_METHOD_COLUMN],
-      responseFromSqlite[HTTP_JOBS_URL_COLUMN]
+      responseFromSqlite[HTTP_JOBS_URL_COLUMN],
     ].join(' ');
 
     return 'in $attemptMessage : $responseFromSqlite';

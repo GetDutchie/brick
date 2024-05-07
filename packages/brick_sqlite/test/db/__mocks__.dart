@@ -94,7 +94,7 @@ class MigrationCreateIndex extends Migration {
       : super(
           version: 7,
           up: const [
-            CreateIndex(columns: ['_brick_id'], onTable: 'demo', unique: true)
+            CreateIndex(columns: ['_brick_id'], onTable: 'demo', unique: true),
           ],
           down: const [DropIndex('index_demo_on__brick_id')],
         );

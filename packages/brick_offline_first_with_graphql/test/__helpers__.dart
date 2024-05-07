@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:mockito/mockito.dart';
@@ -15,7 +16,7 @@ Link stubGraphqlLink(
 
   if (wrapInTopLevelKeyAndArray) {
     response = {
-      'result': [response]
+      'result': [response],
     };
   }
 

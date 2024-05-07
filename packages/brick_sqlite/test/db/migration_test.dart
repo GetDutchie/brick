@@ -122,7 +122,7 @@ class Migration1 extends Migration {
       test('multiple commands', () {
         final commands = [
           InsertTable('demo'),
-          RenameColumn('first_name', 'last_name', onTable: 'people')
+          RenameColumn('first_name', 'last_name', onTable: 'people'),
         ];
 
         final output = Migration.generate(commands, 15);

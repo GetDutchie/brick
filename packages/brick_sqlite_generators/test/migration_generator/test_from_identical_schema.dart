@@ -30,6 +30,6 @@ final schema = Schema(
         ),
         SchemaColumn('name', Column.varchar),
       },
-    )
+    ),
   },
 );

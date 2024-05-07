@@ -65,7 +65,7 @@ abstract class OfflineFirstWithGraphqlRepository
             upsert: upsert,
           ),
           ...?query.providerArgs['context'] as Map<String, ContextEntry>?,
-        }
+        },
       },
     );
   }

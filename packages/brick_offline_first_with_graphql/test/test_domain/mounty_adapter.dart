@@ -99,7 +99,7 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
       columnName: 'name',
       iterable: false,
       type: String,
-    )
+    ),
   };
 
   @override
@@ -109,7 +109,7 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
       documentNodeName: 'name',
       iterable: false,
       type: String,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>

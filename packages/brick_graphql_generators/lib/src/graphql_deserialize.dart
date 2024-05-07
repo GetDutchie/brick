@@ -15,7 +15,7 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
 
     return [
       if (config?.queryOperationTransformerName != null)
-        '@override\nfinal queryOperationTransformer = ${config!.queryOperationTransformerName};'
+        '@override\nfinal queryOperationTransformer = ${config!.queryOperationTransformerName};',
     ];
   }
 

@@ -14,7 +14,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        '$aggregateExtension.dart': ['${BaseBuilder.aggregateExtension}$outputExtension']
+        '$aggregateExtension.dart': ['${BaseBuilder.aggregateExtension}$outputExtension'],
       };
 
   /// The cached file this will produce

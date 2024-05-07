@@ -17,7 +17,7 @@ class RestDeserialize extends RestSerdesGenerator with JsonDeserialize<RestModel
     final config = (fields as RestFields).config;
 
     return [
-      if (config?.requestName != null) '@override\nfinal restRequest = ${config!.requestName};'
+      if (config?.requestName != null) '@override\nfinal restRequest = ${config!.requestName};',
     ];
   }
 }

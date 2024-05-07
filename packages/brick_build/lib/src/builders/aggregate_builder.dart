@@ -67,6 +67,6 @@ class AggregateBuilder implements Builder {
 
   @override
   final buildExtensions = const {
-    r'$lib$': [outputFileName]
+    r'$lib$': [outputFileName],
   };
 }

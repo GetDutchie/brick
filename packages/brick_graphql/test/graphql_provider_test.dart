@@ -54,7 +54,7 @@ void main() {
     group('#get', () {
       test('array', () async {
         final provider = generateProvider([
-          {'full_name': 'Thomas'}
+          {'full_name': 'Thomas'},
         ]);
 
         final m = await provider.get<DemoModel>();
@@ -73,7 +73,7 @@ void main() {
 
     test('#subscribe', () async {
       final payload = [
-        {'full_name': 'Guy'}
+        {'full_name': 'Guy'},
       ];
       final provider = generateProvider(payload);
 
@@ -92,7 +92,7 @@ void main() {
       final resp = await provider.upsert<DemoModel>(instance);
 
       expect(resp?.data, {
-        'upsertPerson': [payload]
+        'upsertPerson': [payload],
       });
       expect(resp?.errors, isNull);
     });

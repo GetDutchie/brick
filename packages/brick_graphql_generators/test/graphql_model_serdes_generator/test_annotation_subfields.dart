@@ -68,7 +68,7 @@ class ToFromJson {
       'subfield1': {},
       'subfield2': {
         'nestedSubfield': {},
-      }
+      },
     },
   )
   final ToFromJsonAssoc assoc;

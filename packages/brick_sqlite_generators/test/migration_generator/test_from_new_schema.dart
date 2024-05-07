@@ -33,7 +33,7 @@ final schema = Schema(
         SchemaColumn('address', Column.varchar),
         SchemaColumn('email', Column.varchar),
       },
-    )
+    ),
   },
 );
 

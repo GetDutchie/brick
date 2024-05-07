@@ -97,12 +97,12 @@ class GraphqlProvider extends Provider<GraphqlModel> {
             resp.data?.values.first!,
             provider: this,
             repository: repository,
-          ) as TModel
+          ) as TModel,
         ];
       }
 
       return [
-        await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as TModel
+        await adapter.fromGraphql(resp.data!, provider: this, repository: repository) as TModel,
       ];
     }
     return <TModel>[];

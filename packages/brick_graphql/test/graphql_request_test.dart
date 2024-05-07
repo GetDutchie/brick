@@ -51,7 +51,7 @@ void main() {
           modelDictionary: provider.modelDictionary,
           query: Query(
             providerArgs: {
-              'context': {'SampleContextEntry': SampleContextEntry('myValue')}
+              'context': {'SampleContextEntry': SampleContextEntry('myValue')},
             },
           ),
         ).request;
@@ -114,7 +114,7 @@ void main() {
           variables: {'myVar': 1234},
         );
         expect(request.requestVariables, {
-          'vars': {'myVar': 1234}
+          'vars': {'myVar': 1234},
         });
       });
     });

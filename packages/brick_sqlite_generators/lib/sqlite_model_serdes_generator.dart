@@ -35,7 +35,7 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
     final fields = SqliteFields(classElement, config);
     return [
       SqliteDeserialize(classElement, fields, repositoryName: repositoryName),
-      SqliteSerialize(classElement, fields, repositoryName: repositoryName)
+      SqliteSerialize(classElement, fields, repositoryName: repositoryName),
     ];
   }
 }
