@@ -10,7 +10,9 @@ import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:sqflite_common/sqlite_api.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common/sqflite.dart';
 import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 import 'package:synchronized/synchronized.dart';
 
@@ -136,8 +138,18 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Access the latest instantiation of the database [safely](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/opening_db.md#prevent-database-locked-issue).
   @protected
-  Future<Database> getDb() {
+  Future<Database> getDb() async {
+    final String dbPath;
+    if (Platform.isWindows) {
+      final Directory directory = await getApplicationSupportDirectory();
+      dbPath = directory.path;
+    } else {
+      dbPath = await getDatabasesPath();
+    }
+    final String path = join(dbPath, dbName);
+    _openDb ??= openDatabase(path);
     _openDb ??= databaseFactory.openDatabase(dbName);
+
     return _openDb!;
   }
 
