@@ -148,7 +148,6 @@ class SqliteProvider implements Provider<SqliteModel> {
     }
     final String path = join(dbPath, dbName);
     _openDb ??= openDatabase(path);
-    _openDb ??= databaseFactory.openDatabase(dbName);
 
     return _openDb!;
   }
