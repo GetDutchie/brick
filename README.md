@@ -8,9 +8,9 @@ An intuitive way to work with persistent data in Dart.
 
 * Out-of-the-box [offline access](packages/brick_offline_first) to data
 * [Handle and hide](packages/brick_build) complex serialization/deserialization logic
-* Single [access point](docs/data/repositories) and opinionated DSL
+* Single [access point](docs/data/repositories.md) and opinionated DSL
 * Automatic, [intelligently-generated migrations](docs/sqlite.md#intelligent-migrations)
-* Legible [querying interface](docs/data/query)
+* Legible [querying interface](docs/data/query.md)
 
 ## What is Brick?
 
@@ -33,9 +33,9 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
     ```bash
     mkdir -p lib/brick/adapters lib/brick/db;
     ```
-1. Add [models](docs/data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
+1. Add [models](docs/data/models.md) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
 1. Run `dart run build_runner build` to generate your models and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `dart run build_runner watch` for automatic generations. You'll need to run this again after your first migration.
-1. Extend [an existing repository](docs/data/repositories) or create your own:
+1. Extend [an existing repository](docs/data/repositories.md) or create your own:
     ```dart
     // lib/brick/repository.dart
     import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
