@@ -8,6 +8,8 @@ import 'package:test/test.dart';
 
 import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
     as afterSaveWithAssociation;
+import 'sqlite_model_serdes_generator/test_after_save_with_association_ignored.dart'
+    as afterSaveWithAssociationIgnored;
 import 'sqlite_model_serdes_generator/test_all_field_types.dart' as allFieldTypes;
 import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as booleanFields;
 import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart' as fieldWithTypeArgument;
@@ -77,6 +79,13 @@ void main() {
       );
     });
 
+    test('AfterSaveWithAssociationIgnored', () async {
+      await generateAdapterExpectation(
+        'after_save_with_association_ignored',
+        afterSaveWithAssociationIgnored.output,
+      );
+    });
+
     test('AllFieldTypes', () async {
       await generateAdapterExpectation('all_field_types', allFieldTypes.output);
     });
@@ -121,5 +130,6 @@ Future<void> generateAdapterExpectation(String filename, String output) async {
     annotation.annotation,
     null,
   );
+  print(generated);
   expect(generated.trim(), output.trim());
 }
