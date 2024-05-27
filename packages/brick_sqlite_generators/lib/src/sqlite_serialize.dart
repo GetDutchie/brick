@@ -49,7 +49,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
             type: $columnInsertionType,
           )''');
       if (annotation.unique) {
-        final value = uniqueValueForField(annotation.name, checker: checker);
+        final value = uniqueValueForField(field.name, checker: checker);
         uniqueFields[value] = columnName;
       }
     }
@@ -345,8 +345,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   /// confuse maintenance. A string or int or double is more than sufficient to determine
   /// a row's uniqueness.
   @protected
-  String uniqueValueForField(String? annotatedName, {required SharedChecker checker}) {
-    return annotatedName ?? '';
+  String uniqueValueForField(String? fieldName, {required SharedChecker checker}) {
+    return fieldName ?? '';
   }
 }
 

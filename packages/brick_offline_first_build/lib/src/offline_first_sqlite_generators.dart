@@ -52,12 +52,12 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
   }
 
   @override
-  String uniqueValueForField(annotatedName, {required checker}) {
+  String uniqueValueForField(fieldName, {required checker}) {
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      return '$annotatedName.toSqlite()';
+      return '$fieldName.toSqlite()';
     }
 
-    return super.uniqueValueForField(annotatedName, checker: checker);
+    return super.uniqueValueForField(fieldName, checker: checker);
   }
 }
 

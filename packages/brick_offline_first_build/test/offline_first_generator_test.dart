@@ -89,7 +89,7 @@ void main() {
 
       test('OfflineFirstSerdesWithTypeArgument', () async {
         await generateAdapterExpectation(
-          'offlne_first_serdes_with_type_argument',
+          'offline_first_serdes_with_type_argument',
           offlineFirstSerdesWithTypeArgument.output,
         );
       });
