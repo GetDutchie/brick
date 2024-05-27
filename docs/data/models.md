@@ -4,7 +4,7 @@ Models are business logic unique to the app. Fetched by the `Repository`, and if
 
 ## Setup
 
-Every model must be decorated by an annotation and extend a base type that the repository manages:
+Models must be stored inside files with the `.model.dart` suffix, be decorated by an annotation and extend a base type that the repository manages:
 
 ```dart
 @ConnectOfflineFirstWithRest()
@@ -25,4 +25,4 @@ class Hat extends OfflineFirstModel {
 }
 ```
 
-?> Every `import` in a model definition file will be copied to `brick.g.dart` and available to the adapters. This is useful for field-level generators or class-level annotations that stringified functions (`RestSerializable#endpoint`).
+?> Every `import` in a model definition file will be copied to `brick.g.dart` and available to the adapters. This is useful for field-level generators or class-level annotations that stringified functions (`RestSerializable#endpoint`). Please note that only absolute imports are supported inside `.model.dart` files, as these imports are directly copied to `brick.g.dart`.
