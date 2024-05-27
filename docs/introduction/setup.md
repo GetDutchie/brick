@@ -1,49 +1,71 @@
 # Quick Start
 
 1. Add the packages:
-    ```yaml
-    dependencies:
-      # or brick_offline_first_with_graphql: any
-      brick_offline_first_with_rest: any
-    dev_dependencies:
-      # or brick_offline_first_with_graphql_build: any
-      brick_offline_first_with_rest_build: any
-      build_runner: any
-    ```
+
+   ```yaml
+   dependencies:
+     # or brick_offline_first_with_graphql: any
+     brick_offline_first_with_rest: any
+   dev_dependencies:
+     # or brick_offline_first_with_graphql_build: any
+     brick_offline_first_with_rest_build: any
+     build_runner: any
+   ```
 
 1. Configure your app directory structure to match Brick's expectations:
-    ```bash
-    mkdir -p lib/brick/adapters lib/brick/db;
-    ```
+   ```bash
+   mkdir -p lib/brick/adapters lib/brick/db;
+   ```
 1. Add [models](../data/models) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
 1. Run `flutter pub run build_runner build` to generate your models (or `pub run build_runner build` if you're not using Flutter) and [sometimes migrations](../sqlite.md#intelligent-migrations). Rerun after every new model change or `flutter pub run build_runner watch` for automatic generations.
 1. Extend [an existing repository](../data/repositories.md) or create your own:
-    ```dart
-    // lib/brick/repository.dart
-    import 'package:brick_offline_first/brick_offline_first_with_rest.dart';
-    import 'package:my_app/brick/brick.g.dart';
-    export 'package:brick_offline_first/brick_offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
 
-    class Repository extends OfflineFirstWithRestRepository {
-      Repository()
-          : super(
-              migrations: migrations,
-              restProvider: RestProvider(
-                'http://0.0.0.0:3000',
-                modelDictionary: restModelDictionary,
-              ),
-              sqliteProvider: SqliteProvider(
-                _DB_NAME,
-                modelDictionary: sqliteModelDictionary,
-              ),
-              offlineQueueManager: RestRequestSqliteCacheManager(
-                'brick_offline_queue.sqlite',
-                databaseFactory: databaseFactory,
-              ),
-            );
-    }
-    ```
+   ```dart
+   // lib/brick/repository.dart
+   import 'package:brick_offline_first/brick_offline_first_with_rest.dart';
+   import 'package:my_app/brick/brick.g.dart';
+   export 'package:brick_offline_first/brick_offline_first_with_rest.dart' show And, Or, Query, QueryAction, Where, WherePhrase;
+
+   class Repository extends OfflineFirstWithRestRepository {
+     Repository()
+         : super(
+             migrations: migrations,
+             restProvider: RestProvider(
+               'http://0.0.0.0:3000',
+               modelDictionary: restModelDictionary,
+             ),
+             sqliteProvider: SqliteProvider(
+               _DB_NAME,
+               modelDictionary: sqliteModelDictionary,
+             ),
+             offlineQueueManager: RestRequestSqliteCacheManager(
+               'brick_offline_queue.sqlite',
+               databaseFactory: databaseFactory,
+             ),
+           );
+   }
+   ```
+
 1. Profit.
+
+!> **Apps that distribute to Windows** should be sure to specify an absolute path to their SQLite instance (see [#378](https://github.com/GetDutchie/brick/pull/378/files) for discussion):
+
+```dart
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
+import 'package:sqflite_common/sqflite.dart';
+...
+final directory = Platform.isWindows ? (await getApplicationSupportDirectory()).path : await getDatabasesPath();
+...
+sqliteProvider: SqliteProvider(
+  join(directory, _DB_NAME),
+  modelDictionary: sqliteModelDictionary,
+),
+offlineQueueManager: RestRequestSqliteCacheManager(
+  join(directory, 'brick_offline_queue.sqlite'),
+  databaseFactory: databaseFactory,
+),
+```
 
 ## Recommended but Optional
 
