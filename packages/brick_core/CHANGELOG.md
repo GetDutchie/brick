@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.2.0
+
 * Apply standardized lints
 * Upgrade minimum Dart to 2.18
 

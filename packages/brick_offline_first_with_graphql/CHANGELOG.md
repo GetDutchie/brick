@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.1.0
+
 * Upgrade minimum Dart to 2.18
 
 ## 3.0.1

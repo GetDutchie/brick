@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.1.0
+
 * Apply standardized lints
 * Support using `OfflineFirstSerdes` as a unique field in SQLite
 
