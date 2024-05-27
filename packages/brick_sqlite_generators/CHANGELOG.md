@@ -2,6 +2,7 @@
 
 * Apply standardized lints
 * Upgrade minimum Dart to 2.18
+* Add `SqliteSerialize#uniqueValueForField` for advanced control of unique field genertion
 
 ## 3.0.2
 

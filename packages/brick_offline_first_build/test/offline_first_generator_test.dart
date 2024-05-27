@@ -11,13 +11,14 @@ import 'offline_first_generator/test_no_final_no_const.dart' as noFinalNoConst;
 import 'offline_first_generator/test_nullable_field.dart' as nullableField;
 import 'offline_first_generator/test_offline_first_apply_to_remote_deserialization.dart'
     as offlineFirstRemoteDeserialization;
+import 'offline_first_generator/test_offline_first_serdes_with_type_argument.dart'
+    as offlineFirstSerdesWithTypeArgument;
 import 'offline_first_generator/test_offline_first_where.dart' as offlineFirstWhere;
-import 'offline_first_generator/test_offlne_first_serdes_with_type_argument.dart'
-    as oflineFirstSerdesWithTypeArgument;
 import 'offline_first_generator/test_one_to_many_association.dart' as oneToManyAssociation;
 import 'offline_first_generator/test_one_to_one_association.dart' as oneToOneAssociation;
 import 'offline_first_generator/test_only_static_members.dart' as onlyStaticMembers;
 import 'offline_first_generator/test_primitive_fields.dart' as primitiveFields;
+import 'offline_first_generator/test_unique_offline_first_serdes.dart' as uniqueOfflineFirstSerdes;
 import 'offline_first_generator/test_unrelated_association.dart' as unrelatedAssociation;
 
 void main() {
@@ -45,6 +46,13 @@ void main() {
     group('#generate', () {
       test('CustomOfflineFirstSerdes', () async {
         await generateExpectation('custom_offline_first_serdes', customOfflineFirstSerdes.output);
+      });
+
+      test('UniqueOfflineFirstSerdes', () async {
+        await generateAdapterExpectation(
+          'unique_offline_first_serdes',
+          uniqueOfflineFirstSerdes.output,
+        );
       });
 
       test('EnumFactorySerialize', () async {
@@ -82,7 +90,7 @@ void main() {
       test('OfflineFirstSerdesWithTypeArgument', () async {
         await generateAdapterExpectation(
           'offlne_first_serdes_with_type_argument',
-          oflineFirstSerdesWithTypeArgument.output,
+          offlineFirstSerdesWithTypeArgument.output,
         );
       });
     });

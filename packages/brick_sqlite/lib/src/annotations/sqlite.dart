@@ -1,6 +1,6 @@
 import 'package:brick_core/field_serializable.dart';
-
 import 'package:brick_sqlite/src/db/migration.dart' show Column;
+
 export 'package:brick_sqlite/src/db/migration.dart' show Column;
 
 /// An annotation used to specify how a field is serialized.
@@ -93,6 +93,14 @@ class Sqlite implements FieldSerializable {
   ///
   /// To index this column, [index] needs to be `true`. Indices **are not** automatically
   /// created for [unique] columns.
+  ///
+  /// Some libraries may provide serializable classes (i.e. OfflineFirstSerdes) that can be used
+  /// as a unique value. However, it is strongly, strongly discouraged to use anything more than
+  /// a primitive for unique values. A complex class with multiple fields and methods will
+  /// significantly confuse maintenance. A string or int or double is more than sufficient to
+  /// determine a row's uniqueness. If a complex class must determine uniqueness, it is
+  /// recommended to annotate a computed property with `@Sqlite(unique:)` instead of the class
+  /// (e.g. `String get id => serdes.toSqlite()`).
   final bool unique;
 
   /// Creates a new [Sqlite] instance.
