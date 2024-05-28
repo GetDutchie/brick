@@ -49,7 +49,8 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
             type: $columnInsertionType,
           )''');
       if (annotation.unique) {
-        uniqueFields[field.name] = providerNameForField(annotation.name, checker: checker);
+        final value = uniqueValueForField(field.name, checker: checker);
+        uniqueFields[value] = columnName;
       }
     }
 
@@ -333,6 +334,19 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     return '$fieldValue ? 1 : 0';
+  }
+
+  /// Provides the value for the SQL lookup. Most often this is simply the field
+  /// name, but more complex use cases may require a specific property to be called
+  /// on the class itself.
+  ///
+  /// However, it is strongly, strongly discouraged to use anything more than a primitive
+  /// for unique values. A complex class with multiple fields and methods will significantly
+  /// confuse maintenance. A string or int or double is more than sufficient to determine
+  /// a row's uniqueness.
+  @protected
+  String uniqueValueForField(String? fieldName, {required SharedChecker checker}) {
+    return fieldName ?? '';
   }
 }
 

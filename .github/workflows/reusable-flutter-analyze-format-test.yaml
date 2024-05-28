@@ -7,6 +7,10 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.package }}
+  cancel-in-progress: true
+
 jobs:
   flutter_analyze_format_test:
     runs-on: ubuntu-latest
@@ -17,11 +21,6 @@ jobs:
       matrix:
         flutter_version: [beta, stable]
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@89f242ee29e10c53a841bfe71cc0ce7b2f065abc
-        with:
-          access_token: ${{ github.token }}
-
       - name: Install SQLite3
         run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
 

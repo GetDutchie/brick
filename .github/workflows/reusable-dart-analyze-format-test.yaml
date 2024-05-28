@@ -7,6 +7,10 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.package }}
+  cancel-in-progress: true
+
 jobs:
   dart_analyze_format_test:
     runs-on: ubuntu-latest
@@ -15,10 +19,6 @@ jobs:
       matrix:
         sdk_version: [beta, stable]
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@89f242ee29e10c53a841bfe71cc0ce7b2f065abc
-        with:
-          access_token: ${{ github.token }}
       - uses: dart-lang/setup-dart@v1.0
         with:
           sdk: ${{ matrix.sdk_version }}

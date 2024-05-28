@@ -50,6 +50,15 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
       fieldAnnotation: fieldAnnotation,
     );
   }
+
+  @override
+  String uniqueValueForField(fieldName, {required checker}) {
+    if ((checker as OfflineFirstChecker).hasSerdes) {
+      return '$fieldName.toSqlite()';
+    }
+
+    return super.uniqueValueForField(fieldName, checker: checker);
+  }
 }
 
 class OfflineFirstSqliteDeserialize extends SqliteDeserialize {

@@ -1,7 +1,10 @@
 ## Unreleased
 
+## 3.1.0
+
 * Apply standardized lints
 * Upgrade minimum Dart to 2.18
+* Add extra documentation to the `@Sqlite(unique:)` annotation
 
 ## 3.0.1
 
