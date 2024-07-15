@@ -1,14 +1,19 @@
-import 'package:brick_supabase/env.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// A HTTP Client that adds the supabase api key and the access token of the
-/// current supabase auth session to the request headers.
-class JWTClient extends http.BaseClient {
-  JWTClient({
+/// A HTTP Client that adds all necessary headers for requests to the
+/// Supabase REST-API.
+class SupabaseBrickClient extends http.BaseClient {
+  SupabaseBrickClient({
+    required this.anonKey,
     http.Client? innerClient,
     this.resourceName = 'dart.http',
   }) : _innerClient = innerClient ?? http.Client();
+
+  /// The anon key of the supabase project.
+  ///
+  /// This is sent in the request headers as the `apikey` field.
+  final String anonKey;
 
   /// Populates APM's "RESOURCE" column. Defaults to `dart.http`.
   final String resourceName;
@@ -27,7 +32,12 @@ class JWTClient extends http.BaseClient {
 
     request.headers.addAll({
       if (accessToken != null) 'Authorization': 'Bearer $accessToken',
-      'apikey': SUPABASE_ANON_KEY,
+      'apikey': anonKey,
+      'Content-Type': 'application/json; charset=utf-8',
+      // In order to use the upsert method for updates, the following header
+      // is needed for the REST API to work correctly.
+      // see // https://postgrest.org/en/v12/references/api/tables_views.html#upsert
+      'Prefer': 'resolution=merge-duplicates',
     });
 
     return _innerClient.send(request);
