@@ -1,0 +1,29 @@
+name: brick_supabase
+description: A Flutter example project that uses Brick with Supabase
+
+version: 0.1.0
+
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: any
+  supabase_flutter: ^2.5.8
+  uuid: ^4.4.2
+  
+dependency_overrides:
+  brick_sqlite_generators:
+    path: ../packages/brick_sqlite_generators
+
+dev_dependencies:
+  brick_offline_first_with_rest_build:
+    path: ../packages/brick_offline_first_with_rest_build
+  build_runner: any
+
+flutter:
+  uses-material-design: true
