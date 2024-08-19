@@ -14,6 +14,7 @@ dependencies:
   brick_build: ">=3.0.0 <4.0.0"
   brick_offline_first: ">=3.0.0 <4.0.0"
   brick_offline_first_build: ">=3.0.0 <4.0.0"
+  brick_offline_first_with_supabase: ">=0.0.1 <2.0.0"
   brick_supabase: ">=0.0.1 <2.0.0"
   brick_supabase_generators: ">=0.0.1 <2.0.0"
   brick_sqlite: ">=3.0.0 <4.0.0"
