@@ -22,8 +22,8 @@ class User
 Connect Supabase's primary key (or any other index) to your application code. This is useful for `upsert` and `delete` logic when mutating instances.
 
 ```dart
-@Supabase(unique: true, name: 'id')
-final int supabaseId;
+@Supabase(unique: true, name: 'uuid')
+final String supabaseUuid;
 ```
 
 ### `@Supabase(foreignKey:)`
