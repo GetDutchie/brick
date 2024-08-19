@@ -85,7 +85,7 @@ class Supabase implements FieldSerializable {
     bool? ignore,
     bool? ignoreFrom,
     bool? ignoreTo,
-    bool? isUniqueKey,
+    bool? unique,
     this.name,
     bool? nullable,
     this.toGenerator,
@@ -93,7 +93,7 @@ class Supabase implements FieldSerializable {
         ignore = ignore ?? false,
         ignoreFrom = ignoreFrom ?? false,
         ignoreTo = ignoreTo ?? false,
-        unique = isUniqueKey ?? false,
+        unique = unique ?? false,
         nullable = nullable ?? false;
 
   /// An instance of [Supabase] with all fields set to their default values.
