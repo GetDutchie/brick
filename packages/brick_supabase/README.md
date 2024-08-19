@@ -36,13 +36,14 @@ the `customers` table, an `Order` class in Dart may look like:
 ```dart
 @SupabaseSerializeable(tableName: 'orders')
 class Order {
-  @Supabase(foreignKey: 'customer_id')
+  @Supabase(foreignKey: 'customer_uuid')
   final Customer customer;
 }
 
 @SupabaseSerializeable(tableName: 'customers')
 class Customer {
-  final int id;
+  @Supabase(unique: true)
+  final String uuid;
 }
 ```
 

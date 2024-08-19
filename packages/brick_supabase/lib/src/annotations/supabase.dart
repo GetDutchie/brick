@@ -27,13 +27,13 @@ class Supabase implements FieldSerializable {
   /// ```dart
   /// @SupabaseSerializeable(tableName: 'orders')
   /// class Order {
-  ///   @Supabase(foreignKey: 'customer_id')
+  ///   @Supabase(foreignKey: 'customer_uuid')
   ///   final Customer customer;
   /// }
   ///
   /// @SupabaseSerializeable(tableName: 'customers')
   /// class Customer {
-  ///   final int id;
+  ///   final String uuid;
   /// }
   /// ```
   final String? foreignKey;
