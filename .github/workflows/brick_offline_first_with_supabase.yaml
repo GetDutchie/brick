@@ -13,6 +13,6 @@ env:
 
 jobs:
   analyze_format_test:
-    uses: ./.github/workflows/reusable-flutter-analyze-format-test.yaml
+    uses: ./.github/workflows/reusable-dart-analyze-format-test.yaml
     with:
       package: brick_offline_first_with_supabase
