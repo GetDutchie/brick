@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_build_test/brick_build_test.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase_generators/supabase_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';

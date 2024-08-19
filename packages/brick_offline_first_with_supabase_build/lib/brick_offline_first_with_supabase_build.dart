@@ -1,6 +1,6 @@
 import 'package:brick_build/builders.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:brick_offline_first_with_supabase_abstract/brick_offline_first_with_supabase_abstract.dart';
+import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_offline_first_with_supabase_build/src/offline_first_with_supabase_generator.dart';
 import 'package:brick_sqlite_generators/builders.dart';
 import 'package:build/build.dart';

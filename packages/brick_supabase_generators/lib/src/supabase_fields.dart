@@ -2,7 +2,7 @@
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 
 /// Find `@Supabase` given a field
 class SupabaseAnnotationFinder extends AnnotationFinder<Supabase> {

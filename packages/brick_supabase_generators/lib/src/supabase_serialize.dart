@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_json_generators/json_serialize.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase_generators/src/supabase_fields.dart';
 import 'package:brick_supabase_generators/src/supabase_serdes_generator.dart';
 

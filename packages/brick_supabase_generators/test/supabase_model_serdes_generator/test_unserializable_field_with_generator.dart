@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
 Future<SupabaseUnserializableFieldWithGenerator>

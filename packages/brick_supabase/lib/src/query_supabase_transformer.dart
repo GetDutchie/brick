@@ -1,7 +1,8 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_supabase/src/runtime_supabase_column_definition.dart';
 import 'package:brick_supabase/src/supabase_adapter.dart';
+import 'package:brick_supabase/src/supabase_model.dart';
 import 'package:brick_supabase/src/supabase_model_dictionary.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart' hide Supabase;
 import 'package:supabase/supabase.dart';
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]

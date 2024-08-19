@@ -1,7 +1,7 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_supabase/src/query_supabase_transformer.dart';
+import 'package:brick_supabase/src/supabase_model.dart';
 import 'package:brick_supabase/src/supabase_model_dictionary.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart' hide Supabase;
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase/supabase.dart';

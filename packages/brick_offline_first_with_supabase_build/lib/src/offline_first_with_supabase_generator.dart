@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
-import 'package:brick_offline_first_with_supabase_abstract/brick_offline_first_with_supabase_abstract.dart';
+import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_offline_first_with_supabase_build/src/offline_first_supabase_generators.dart';
 import 'package:source_gen/source_gen.dart';
 
