@@ -1,0 +1,19 @@
+name: brick_offline_first_with_supabase_abstract
+description: A Brick domain that routes data fetching through local providers
+  before a Supabase provider.
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_first_with_supabase_abstract
+issue_tracker: https://github.com/GetDutchie/brick/issues
+repository: https://github.com/GetDutchie/brick
+
+version: 0.0.1
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+
+dependencies:
+  brick_supabase_abstract: ">=0.0.1 <1.0.0"
+  brick_sqlite: ">=3.0.0 <4.0.0"
+
+dev_dependencies:
+  lints: ^2.0.1
+  test: ^1.16.5

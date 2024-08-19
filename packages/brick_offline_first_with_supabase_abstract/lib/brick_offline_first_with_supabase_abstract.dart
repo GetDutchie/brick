@@ -1,0 +1,1 @@
+export 'package:brick_offline_first_with_supabase_abstract/src/connect_offline_first_with_supabase.dart';
