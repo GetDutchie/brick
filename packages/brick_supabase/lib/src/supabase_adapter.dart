@@ -3,7 +3,7 @@ import 'package:brick_supabase/src/supabase_provider.dart';
 import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
 
 /// Constructors that convert app models to and from Supabase
-abstract class SupabaseAdapter<TModel extends SupabaseModel> implements Adapter<TModel> {
+abstract mixin class SupabaseAdapter<TModel extends SupabaseModel> implements Adapter<TModel> {
   /// Used for upserts; forwards to Supabase's `defaultToNull`
   bool get defaultToNull;
 

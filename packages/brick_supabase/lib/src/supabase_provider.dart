@@ -4,12 +4,14 @@ import 'package:brick_supabase/src/supabase_model_dictionary.dart';
 import 'package:brick_supabase_abstract/brick_supabase_abstract.dart' hide Supabase;
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
 
 /// Retrieves from an HTTP endpoint
 class SupabaseProvider implements Provider<SupabaseModel> {
   /// A fully-qualified URL
   final String baseEndpoint;
+
+  final SupabaseClient client;
 
   /// The glue between app models and generated adapters.
   @override
@@ -20,6 +22,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
   SupabaseProvider(
     this.baseEndpoint, {
+    required this.client,
     required this.modelDictionary,
   }) : logger = Logger('SupabaseProvider');
 
@@ -27,7 +30,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   @override
   Future<bool> delete<TModel extends SupabaseModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final tableBuilder = Supabase.instance.client.from(adapter.tableName);
+    final tableBuilder = client.from(adapter.tableName);
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
     final queryTransformer =
@@ -47,9 +50,10 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
   @override
   Future<bool> exists<TModel extends SupabaseModel>({query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
-    final builder = queryTransformer.select();
+    final builder = queryTransformer.select(client.from(adapter.tableName));
 
     final resp = await builder.count(CountOption.exact);
     return resp.count > 0;
@@ -60,7 +64,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
-    final builder = queryTransformer.select();
+    final builder = queryTransformer.select(client.from(adapter.tableName));
 
     final resp = await builder;
 
@@ -73,13 +77,13 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   @override
   Future<TModel> upsert<TModel extends SupabaseModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final tableBuilder = Supabase.instance.client.from(adapter.tableName);
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
 
-    final builder = adapter.uniqueFields.fold(tableBuilder.upsert(output), (acc, uniqueFieldName) {
+    final builder = adapter.uniqueFields.fold(client.from(adapter.tableName).upsert(output),
+        (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
       if (output.containsKey(columnName)) {
         return acc.eq(columnName, output[columnName]);

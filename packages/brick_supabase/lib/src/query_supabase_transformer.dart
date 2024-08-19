@@ -2,7 +2,7 @@ import 'package:brick_core/core.dart';
 import 'package:brick_supabase/src/supabase_adapter.dart';
 import 'package:brick_supabase/src/supabase_model_dictionary.dart';
 import 'package:brick_supabase_abstract/brick_supabase_abstract.dart' hide Supabase;
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
 /// should be accessed.
@@ -30,9 +30,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return _destructureAssociation(adapter.fieldsToSupabaseColumns.values).join(',\n  ');
   }
 
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> select() {
-    final builder = Supabase.instance.client.from(adapter.tableName);
-
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) {
     return (query?.where ?? []).fold(builder.select(selectQuery), (acc, condition) {
       final whereStatement = _expandCondition(condition);
       for (final where in whereStatement) {
