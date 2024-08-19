@@ -11,8 +11,7 @@ environment:
   sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
-  brick_supabase_abstract:
-    path: ../brick_supabase_abstract
+  brick_supabase_abstract: ">=0.0.1 <1.0.0"
   brick_sqlite: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
