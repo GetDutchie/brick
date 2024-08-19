@@ -1,5 +1,5 @@
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase_abstract/brick_supabase_abstract.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 
 /// An annotation used to specify a class to generate code for.
 ///
