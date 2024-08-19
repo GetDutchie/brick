@@ -15,7 +15,7 @@ jobs:
   flutter_analyze_format_test:
     runs-on: ubuntu-latest
     container:
-      image: cirrusci/flutter:${{ matrix.flutter_version }}
+      image: ghcr.io/cirruslabs/flutter:${{ matrix.flutter_version }}
     strategy:
       fail-fast: false
       matrix:

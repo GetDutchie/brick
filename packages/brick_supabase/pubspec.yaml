@@ -1,0 +1,21 @@
+name: brick_supabase
+description: Supabase connector for Brick, a data persistence library. Includes annotations, adapter, model, and provider.
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_supabase
+issue_tracker: https://github.com/GetDutchie/brick/issues
+repository: https://github.com/GetDutchie/brick
+
+version: 0.0.1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  brick_core: ^1.1.1
+  supabase: ">=2.3.0 <3.0.0"
+  logging: ">=1.0.0 <2.0.0"
+  meta: ">=1.3.0 <2.0.0"
+  brick_supabase_abstract: ">=0.0.1 <2.0.0"
+
+dev_dependencies:
+  lints: ^2.0.1
+  test: ^1.16.5

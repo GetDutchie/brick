@@ -29,8 +29,8 @@ jobs:
           key: ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.sdk_version }}-${{ hashFiles(format('packages/{0}/pubspec.yaml', inputs.package)) }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.sdk_version }}
-      - id: checkout
-        uses: actions/checkout@v3
+
+      - uses: actions/checkout@v3
 
       - run: dart pub get && dart run melos bootstrap --scope="${{ inputs.package }}"
 
