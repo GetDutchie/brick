@@ -10,7 +10,7 @@ abstract class ProviderSerializableGenerator<Config> {
 
   /// Property under the annotation that contains the serialized config.
   ///
-  /// Such as `"restConfig"` here:
+  /// Example, `"restConfig"` here:
   /// ```dart
   /// @ConnectOfflineFirstWithRest(
   ///   restConfig: RestSerializable(...)
