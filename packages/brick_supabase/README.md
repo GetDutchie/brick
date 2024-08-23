@@ -15,6 +15,17 @@ The Supabase table name must be specified to connect `from`, `upsert` and `delet
 class User
 ```
 
+### `@SupabaseSerializable(fieldRename:)`
+
+By default, Brick assumes the Dart field name is the camelized version of the Supabase column name (i.e. `final String lastName => 'last_name'`). However, this can be changed to rename all fields.
+
+```dart
+@SupabaseSerializable(fieldRename: FieldRename.pascal)
+class User
+```
+
+`fieldRename` is only the default transformation. Naming can be overriden on a field-by-field basis with `@Supabase(name:)`.
+
 ## Fields
 
 ### `@Supabase(unique:)`
