@@ -28,7 +28,8 @@ Future<Map<String, dynamic>> _$DemoModelToSupabase(DemoModel instance) async {
 
 class DemoModelAdapter extends SupabaseAdapter<DemoModel> {
   @override
-  DemoModel fromSupabase(data, {required provider, repository}) => _$DemoModelFromSupabase(data);
+  Future<DemoModel> fromSupabase(data, {required provider, repository}) async =>
+      _$DemoModelFromSupabase(data);
 
   @override
   Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
@@ -97,7 +98,7 @@ Future<Map<String, dynamic>> _$DemoNestedAssociationModelToSupabase(
 
 class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssociationModel> {
   @override
-  DemoNestedAssociationModel fromSupabase(data, {required provider, repository}) =>
+  Future<DemoNestedAssociationModel> fromSupabase(data, {required provider, repository}) async =>
       _$DemoNestedAssociationModelFromSupabase(data);
 
   @override
@@ -171,7 +172,7 @@ Future<Map<String, dynamic>> _$DemoAssociationModelToSupabase(DemoAssociationMod
 
 class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> {
   @override
-  DemoAssociationModel fromSupabase(data, {required provider, repository}) =>
+  Future<DemoAssociationModel> fromSupabase(data, {required provider, repository}) async =>
       _$DemoAssociationModelFromSupabase(data);
 
   @override

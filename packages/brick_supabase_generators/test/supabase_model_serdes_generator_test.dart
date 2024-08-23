@@ -10,6 +10,8 @@ import 'supabase_model_serdes_generator/test_constructor_member_field_mismatch.d
     as constructor_member_field_mismatch;
 import 'supabase_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
 import 'supabase_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
+import 'supabase_model_serdes_generator/test_runtime_supabase_column_definition.dart'
+    as runtime_supabase_column_definition;
 import 'supabase_model_serdes_generator/test_unique.dart' as unique;
 import 'supabase_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
@@ -46,6 +48,13 @@ void main() {
           constructor_member_field_mismatch.output,
         );
       });
+    });
+
+    test('runtime associations', () async {
+      await generateAdapterExpectation(
+        'runtime_supabase_column_definition',
+        runtime_supabase_column_definition.output,
+      );
     });
   });
 }
