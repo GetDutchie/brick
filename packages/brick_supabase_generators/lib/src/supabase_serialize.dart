@@ -26,13 +26,15 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       final columnName = providerNameForField(annotation.name, checker: checker);
 
       // T0D0 support List<Future<Sibling>> for 'association'
-      fieldsToColumns.add('''
+      fieldsToColumns.add(
+        '''
           '${field.name}': const RuntimeSupabaseColumnDefinition(
             association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
             associationForeignKey: '${annotation.foreignKey}',
             associationType: ${_finalTypeForField(field.type)},
             columnName: '$columnName',
-          )''');
+          )''',
+      );
 
       if (annotation.unique) uniqueFields.add(field.name);
     }
@@ -43,7 +45,7 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       '@override\nfinal Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {${fieldsToColumns.join(',\n')}};',
       '@override\nfinal ignoreDuplicates = ${config?.ignoreDuplicates};',
       if (config?.onConflict != null) '@override\nfinal onConflict = ${config?.onConflict};',
-      '@override\nfinal uniqueFields = {${uniqueFields.join(',\n')}};',
+      '@override\nfinal uniqueFields = {${uniqueFields.map((u) => "'$u'").join(',\n')}};',
     ];
   }
 
