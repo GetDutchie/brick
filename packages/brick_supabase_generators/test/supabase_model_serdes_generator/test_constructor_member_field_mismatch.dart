@@ -2,8 +2,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
 Future<SupabaseConstructorMemberFieldMismatch>
-    _$SupabaseConstructorMemberFieldMismatchFromSupabase(
-        Map<String, dynamic> data,
+    _$SupabaseConstructorMemberFieldMismatchFromSupabase(Map<String, dynamic> data,
         {required SupabaseProvider provider,
         SupabaseFirstRepository? repository}) async {
   return SupabaseConstructorMemberFieldMismatch(
@@ -37,7 +36,7 @@ Future<Map<String, dynamic>> _$SupabaseConstructorMemberFieldMismatchToSupabase(
 /// A `const` class is required from an non-relative import,
 /// and [SupabaseSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@SupabaseSerializable()
+@SupabaseSerializable(tableName: '')
 class SupabaseConstructorMemberFieldMismatch extends SupabaseModel {
   final String nullableConstructor;
   final String nonNullableConstructor;

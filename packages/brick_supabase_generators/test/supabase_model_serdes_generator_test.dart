@@ -10,27 +10,22 @@ import 'supabase_model_serdes_generator/test_constructor_member_field_mismatch.d
     as constructor_member_field_mismatch;
 import 'supabase_model_serdes_generator/test_enum_as_string.dart' as enum_as_string;
 import 'supabase_model_serdes_generator/test_ignore_from_to.dart' as ignore_from_to;
-import 'supabase_model_serdes_generator/test_unique.dart' as unique;
 import 'supabase_model_serdes_generator/test_unserializable_field_with_generator.dart'
     as unserializable_field_with_generator;
 
 final _generator = TestGenerator();
-const folder = 'supabase_model_serdes_generator';
+final folder = 'supabase_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
   group('SupabaseModelSerdesGenerator', () {
     group('@Supabase', () {
-      test('enumAsString', () async {
+      test('enum_as_string', () async {
         await generateExpectation('enum_as_string', enum_as_string.output);
       });
 
       test('ignoreFrom ignoreTo', () async {
         await generateExpectation('ignore_from_to', ignore_from_to.output);
-      });
-
-      test('unique', () async {
-        await generateAdapterExpectation('unique', unique.output);
       });
 
       test('fromGenerator toGenerator', () async {

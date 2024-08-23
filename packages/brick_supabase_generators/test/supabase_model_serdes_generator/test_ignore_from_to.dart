@@ -1,20 +1,16 @@
 import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
-Future<SupabaseIgnoreFromTo> _$SupabaseIgnoreFromToFromSupabase(
-    Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+Future<SupabaseIgnoreFromTo> _$SupabaseIgnoreFromToFromSupabase(Map<String, dynamic> data,
+    {required SupabaseProvider provider, SupabaseFirstRepository? repository}) async {
   return SupabaseIgnoreFromTo(
       ignoredTo: data['ignored_to'] as bool,
       otherIgnoredTo: data['other_ignored_to'] as bool,
       normal: data['normal'] as bool);
 }
 
-Future<Map<String, dynamic>> _$SupabaseIgnoreFromToToSupabase(
-    SupabaseIgnoreFromTo instance,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$SupabaseIgnoreFromToToSupabase(SupabaseIgnoreFromTo instance,
+    {required SupabaseProvider provider, SupabaseFirstRepository? repository}) async {
   return {'ignored_from': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';
@@ -24,7 +20,7 @@ Future<Map<String, dynamic>> _$SupabaseIgnoreFromToToSupabase(
 /// A `const` class is required from an non-relative import,
 /// and [SupabaseSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@SupabaseSerializable()
+@SupabaseSerializable(tableName: '')
 class SupabaseIgnoreFromTo extends SupabaseModel {
   @Supabase(ignoreFrom: true)
   final bool ignoredFrom;

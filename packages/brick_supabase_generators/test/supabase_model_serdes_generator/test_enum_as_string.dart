@@ -2,8 +2,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
 Future<EnumAsString> _$EnumAsStringFromSupabase(Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+    {required SupabaseProvider provider, SupabaseFirstRepository? repository}) async {
   return EnumAsString(
       hat: Hat.values.byName(data['hat']),
       nullableHat: data['nullable_hat'] == null
@@ -22,8 +21,7 @@ Future<EnumAsString> _$EnumAsStringFromSupabase(Map<String, dynamic> data,
 }
 
 Future<Map<String, dynamic>> _$EnumAsStringToSupabase(EnumAsString instance,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+    {required SupabaseProvider provider, SupabaseFirstRepository? repository}) async {
   return {
     'hat': instance.hat.name,
     'nullable_hat': instance.nullableHat?.name,
@@ -40,7 +38,7 @@ enum Hat { party, dance, sleeping }
 /// A `const` class is required from an non-relative import,
 /// and [SupabaseSerializable] was arbitrarily chosen for this test.
 /// This will do nothing outside of this exact test suite.
-@SupabaseSerializable()
+@SupabaseSerializable(tableName: '')
 class EnumAsString {
   EnumAsString({
     required this.hat,
