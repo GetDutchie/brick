@@ -4,6 +4,16 @@
 
 Connecting [Brick](https://github.com/GetDutchie/brick) with Supabase.
 
+## Supported `Query` Configuration
+
+### `providerArgs:`
+
+- `'limit'` e.g. `{'limit': 10}`
+- `'limitByReferencedTable' forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
+- `'orderBy'` Use field names not column names and always specify direction.For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`.
+  If the column cannot be found for the first value before a space, the value is left unchanged.
+- `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
+
 ## Models
 
 ### `@SupabaseSerializable(tableName:)`

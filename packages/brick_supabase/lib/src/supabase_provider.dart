@@ -8,9 +8,6 @@ import 'package:supabase/supabase.dart';
 
 /// Retrieves from an HTTP endpoint
 class SupabaseProvider implements Provider<SupabaseModel> {
-  /// A fully-qualified URL
-  final String baseEndpoint;
-
   final SupabaseClient client;
 
   /// The glue between app models and generated adapters.
@@ -21,8 +18,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   final Logger logger;
 
   SupabaseProvider(
-    this.baseEndpoint, {
-    required this.client,
+    this.client, {
     required this.modelDictionary,
   }) : logger = Logger('SupabaseProvider');
 
@@ -44,7 +40,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       return acc;
     });
 
-    final resp = await builder.select(queryTransformer.selectQuery).limit(1).maybeSingle();
+    final resp = await builder.select(queryTransformer.selectFields).limit(1).maybeSingle();
     return resp == null;
   }
 
@@ -59,6 +55,13 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     return resp.count > 0;
   }
 
+  /// [Query]'s `providerArgs` can extend the [get] functionality:
+  /// * `'limit'` e.g. `{'limit': 10}`
+  /// * `'limitByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
+  /// * `'orderBy'` Use field names not column names and always specify direction.
+  /// For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`.
+  /// If the column cannot be found for the first value before a space, the value is left unchanged.
+  /// * `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
   @override
   Future<List<TModel>> get<TModel extends SupabaseModel>({query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
@@ -66,7 +69,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
     final builder = queryTransformer.select(client.from(adapter.tableName));
 
-    final resp = await builder;
+    final resp = await queryTransformer.applyProviderArgs(builder);
 
     return resp
         .map((r) => adapter.fromSupabase(r, repository: repository, provider: this))
@@ -74,13 +77,35 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         .cast<TModel>();
   }
 
+  /// Association models are upserted recursively before the requested instance is upserted.
+  /// Because it's unknown if there has been any change from the local association to the remote
+  /// association, all associations and their associations are upserted on a parent's upsert.
+  ///
+  /// For example, given model `Room` has association `Bed` and `Bed` has association `Pillow`,
+  /// when `Room` is upserted, `Pillow` is upserted and then `Bed` is upserted.
   @override
   Future<TModel> upsert<TModel extends SupabaseModel>(instance, {query, repository}) async {
-    final adapter = modelDictionary.adapterFor[TModel]!;
+    return await _recursiveAssociationUpsert(
+      instance,
+      type: TModel,
+      query: query,
+      repository: repository,
+    ) as TModel;
+  }
+
+  Future<SupabaseModel> _upsertByType(
+    SupabaseModel instance, {
+    required Type type,
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
+    assert(type is SupabaseModel);
+
+    final adapter = modelDictionary.adapterFor[type]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
     final queryTransformer =
-        QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
+        QuerySupabaseTransformer(adapter: adapter, modelDictionary: modelDictionary, query: query);
 
     final builder = adapter.uniqueFields.fold(client.from(adapter.tableName).upsert(output),
         (acc, uniqueFieldName) {
@@ -90,12 +115,35 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       }
       return acc;
     });
-    final resp = await builder.select(queryTransformer.selectQuery).limit(1).maybeSingle();
+    final resp = await builder.select(queryTransformer.selectFields).limit(1).maybeSingle();
 
     if (resp == null) {
       throw StateError('Upsert of $instance failed');
     }
 
-    return adapter.fromSupabase(resp, repository: repository, provider: this) as TModel;
+    return adapter.fromSupabase(resp, repository: repository, provider: this);
+  }
+
+  Future<SupabaseModel> _recursiveAssociationUpsert(
+    SupabaseModel instance, {
+    required Type type,
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
+    assert(type is SupabaseModel);
+
+    final adapter = modelDictionary.adapterFor[type]!;
+    final associations = adapter.fieldsToSupabaseColumns.values
+        .where((a) => a.association && a.associationType != null);
+
+    for (final association in associations) {
+      await _recursiveAssociationUpsert(
+        instance,
+        type: association.associationType!,
+        query: query,
+        repository: repository,
+      );
+    }
+    return await _upsertByType(instance, type: type, query: query, repository: repository);
   }
 }
