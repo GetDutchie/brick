@@ -33,12 +33,10 @@ Future<Map<String, dynamic>> _$DemoModelToSupabase(DemoModel instance) async {
 
 class DemoModelAdapter extends SupabaseAdapter<DemoModel> {
   @override
-  DemoModel fromSupabase(data, {required provider, repository}) =>
-      _$DemoModelFromSupabase(data);
+  DemoModel fromSupabase(data, {required provider, repository}) => _$DemoModelFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance,
-          {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
       await _$DemoModelToSupabase(instance);
 
   @override
@@ -89,13 +87,11 @@ class DemoNestedAssociationModel extends SupabaseModel {
   });
 }
 
-DemoNestedAssociationModel _$DemoNestedAssociationModelFromSupabase(
-    Map<String, dynamic> json) {
+DemoNestedAssociationModel _$DemoNestedAssociationModelFromSupabase(Map<String, dynamic> json) {
   return DemoNestedAssociationModel(
     id: json['id'] as String,
     name: json['name'] as String,
-    nested: _$DemoAssociationModelFromSupabase(
-        json['nested'] as Map<String, dynamic>),
+    nested: _$DemoAssociationModelFromSupabase(json['nested'] as Map<String, dynamic>),
   );
 }
 
@@ -108,16 +104,13 @@ Future<Map<String, dynamic>> _$DemoNestedAssociationModelToSupabase(
   };
 }
 
-class DemoNestedAssociationModelAdapter
-    extends SupabaseAdapter<DemoNestedAssociationModel> {
+class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssociationModel> {
   @override
-  DemoNestedAssociationModel fromSupabase(data,
-          {required provider, repository}) =>
+  DemoNestedAssociationModel fromSupabase(data, {required provider, repository}) =>
       _$DemoNestedAssociationModelFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance,
-          {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
       await _$DemoNestedAssociationModelToSupabase(instance);
 
   @override
@@ -170,8 +163,7 @@ class DemoAssociationModel extends SupabaseModel {
   });
 }
 
-DemoAssociationModel _$DemoAssociationModelFromSupabase(
-    Map<String, dynamic> json) {
+DemoAssociationModel _$DemoAssociationModelFromSupabase(Map<String, dynamic> json) {
   return DemoAssociationModel(
     id: json['id'] as String,
     name: json['name'] as String,
@@ -179,23 +171,20 @@ DemoAssociationModel _$DemoAssociationModelFromSupabase(
   );
 }
 
-Future<Map<String, dynamic>> _$DemoAssociationModelToSupabase(
-    DemoAssociationModel instance) async {
+Future<Map<String, dynamic>> _$DemoAssociationModelToSupabase(DemoAssociationModel instance) async {
   return <String, dynamic>{
     'id': instance.id,
     'name': instance.name,
   };
 }
 
-class DemoAssociationModelAdapter
-    extends SupabaseAdapter<DemoAssociationModel> {
+class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> {
   @override
   DemoAssociationModel fromSupabase(data, {required provider, repository}) =>
       _$DemoAssociationModelFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance,
-          {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
       await _$DemoAssociationModelToSupabase(instance);
 
   @override

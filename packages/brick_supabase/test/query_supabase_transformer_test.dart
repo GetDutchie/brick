@@ -141,10 +141,9 @@ void main() {
       test('orderBy', () {
         final query = Query(providerArgs: {'orderBy': 'name asc'});
         final queryTransformer = _buildTransformer<DemoModel>(query);
-        final filterBuilder = queryTransformer
-            .select(_supabaseClient.from(DemoModelAdapter().tableName));
-        final transformBuilder =
-            queryTransformer.applyProviderArgs(filterBuilder);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
           transformBuilder.query,
@@ -155,10 +154,9 @@ void main() {
       test('orderBy with descending order', () {
         final query = Query(providerArgs: {'orderBy': 'name desc'});
         final queryTransformer = _buildTransformer<DemoModel>(query);
-        final filterBuilder = queryTransformer
-            .select(_supabaseClient.from(DemoModelAdapter().tableName));
-        final transformBuilder =
-            queryTransformer.applyProviderArgs(filterBuilder);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
           transformBuilder.query,
@@ -169,10 +167,9 @@ void main() {
       test('limit', () {
         final query = Query(providerArgs: {'limit': 10});
         final queryTransformer = _buildTransformer<DemoModel>(query);
-        final filterBuilder = queryTransformer
-            .select(_supabaseClient.from(DemoModelAdapter().tableName));
-        final transformBuilder =
-            queryTransformer.applyProviderArgs(filterBuilder);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(transformBuilder.query, 'select=id,name,age&limit=10');
       });
@@ -180,13 +177,11 @@ void main() {
       test('limit with referenced table', skip: true, () {});
 
       test('combined orderBy and limit', () {
-        final query =
-            Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
+        final query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
         final queryTransformer = _buildTransformer<DemoModel>(query);
-        final filterBuilder = queryTransformer
-            .select(_supabaseClient.from(DemoModelAdapter().tableName));
-        final transformBuilder =
-            queryTransformer.applyProviderArgs(filterBuilder);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
           transformBuilder.query,
