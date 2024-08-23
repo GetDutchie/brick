@@ -9,7 +9,8 @@ class RuntimeSupabaseColumnDefinition {
 
   final Type? associationType;
 
-  /// The Supabase column name, **not** the field name.
+  /// The Supabase column name, **not** the field name unless this definition is an association.
+  /// Then the [columnName] should reflect the Dart field name for deserialization.
   final String columnName;
 
   const RuntimeSupabaseColumnDefinition({

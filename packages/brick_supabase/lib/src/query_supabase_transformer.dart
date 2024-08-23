@@ -3,18 +3,13 @@ import 'package:brick_supabase/src/runtime_supabase_column_definition.dart';
 import 'package:brick_supabase/src/supabase_adapter.dart';
 import 'package:brick_supabase/src/supabase_model.dart';
 import 'package:brick_supabase/src/supabase_model_dictionary.dart';
+import 'package:meta/meta.dart';
 import 'package:supabase/supabase.dart';
 
-/// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
-/// should be accessed.
-///
-/// Example (using SQLFlite):
-/// ```dart
-/// final sqliteQuery = QuerySqlTransformer(modelDictionary: dict, query: query);
-/// final results = await (await db).rawQuery(sqliteQuery.statement, sqliteQuery.values);
-/// ```
+/// Create a prepared Supabase URI for eventual execution
 class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   final SupabaseAdapter adapter;
+
   final SupabaseModelDictionary modelDictionary;
 
   /// Must-haves for the [statement], mainly used to build clauses
@@ -25,15 +20,28 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   QuerySupabaseTransformer({
     required this.modelDictionary,
     this.query,
-  }) : adapter = modelDictionary.adapterFor[_Model]!;
+    SupabaseAdapter? adapter,
+  }) : adapter = adapter ?? modelDictionary.adapterFor[_Model]!;
 
-  String get selectQuery {
-    return _destructureAssociation(adapter.fieldsToSupabaseColumns.values).join(',\n  ');
+  String get selectFields {
+    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns.values).join(',');
+  }
+
+  PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
+    PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
+  ) {
+    if (query?.providerArgs['orderBy'] != null) {
+      builder = order(builder);
+    }
+    if (query?.providerArgs['limit'] != null) {
+      return limit(builder);
+    }
+    return builder;
   }
 
   PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) {
-    return (query?.where ?? []).fold(builder.select(selectQuery), (acc, condition) {
-      final whereStatement = _expandCondition(condition);
+    return (query?.where ?? []).fold(builder.select(selectFields), (acc, condition) {
+      final whereStatement = expandCondition(condition);
       for (final where in whereStatement) {
         for (final entry in where.entries) {
           final newUri = acc.appendSearchParams(entry.key, entry.value);
@@ -44,7 +52,11 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     });
   }
 
-  List<String> _destructureAssociation(Iterable<RuntimeSupabaseColumnDefinition>? columns) {
+  @protected
+  @visibleForTesting
+  List<String> destructureAssociationProperties(
+    Iterable<RuntimeSupabaseColumnDefinition>? columns,
+  ) {
     final selectedFields = <String>[];
 
     if (columns == null) return selectedFields;
@@ -57,10 +69,10 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
           associationOutput += '!${field.associationForeignKey}';
         }
         associationOutput += '(';
-        final fields = _destructureAssociation(
+        final fields = destructureAssociationProperties(
           modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns.values,
         );
-        associationOutput += fields.join(',\n  ');
+        associationOutput += fields.join(',');
         associationOutput += ')';
 
         selectedFields.add(associationOutput);
@@ -73,31 +85,10 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return selectedFields;
   }
 
-  String _compareToSearchParam(Compare compare) {
-    switch (compare) {
-      case Compare.exact:
-        return 'eq';
-      case Compare.contains:
-        return 'like';
-      case Compare.doesNotContain:
-        return 'not.like';
-      case Compare.greaterThan:
-        return 'gt';
-      case Compare.greaterThanOrEqualTo:
-        return 'gte';
-      case Compare.lessThan:
-        return 'lt';
-      case Compare.lessThanOrEqualTo:
-        return 'lte';
-      case Compare.between:
-        return 'adj';
-      case Compare.notEqual:
-        return 'neq';
-    }
-  }
-
   /// Recursively step through a `Where` or `WherePhrase` to ouput a condition for `WHERE`.
-  List<Map<String, String>> _expandCondition(
+  @protected
+  @visibleForTesting
+  List<Map<String, String>> expandCondition(
     WhereCondition condition, [
     SupabaseAdapter? passedAdapter,
   ]) {
@@ -106,7 +97,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     // Begin a separate where phrase
     if (condition is WherePhrase) {
       final conditions = condition.conditions
-          .map((c) => _expandCondition(c, passedAdapter))
+          .map((c) => expandCondition(c, passedAdapter))
           .expand((c) => c)
           .toList();
 
@@ -138,7 +129,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition.associationType]!;
 
-      return _expandCondition(condition.value as WhereCondition, associationAdapter);
+      return expandCondition(condition.value as WhereCondition, associationAdapter);
     }
 
     return [
@@ -146,5 +137,60 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         definition.columnName: '${_compareToSearchParam(condition.compare)}.${condition.value}',
       }
     ];
+  }
+
+  PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(
+    PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
+  ) {
+    if (query?.providerArgs['limit'] == null) return builder;
+
+    final limit = query!.providerArgs['limit'] as int;
+    final referencedTable = query!.providerArgs['limitReferencedTable'] as String?;
+
+    final key = referencedTable == null ? 'limit' : '$referencedTable.limit';
+
+    final url = builder.appendSearchParams(key, '$limit');
+    return PostgrestTransformBuilder(builder.copyWithUrl(url));
+  }
+
+  @protected
+  @visibleForTesting
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> order(
+    PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
+  ) {
+    if (query?.providerArgs['orderBy'] == null) return builder;
+
+    final orderBy = query!.providerArgs['orderBy'] as String;
+    final ascending = orderBy.toLowerCase().endsWith(' asc');
+    final referencedTable = query!.providerArgs['orderByReferencedTable'] as String?;
+    final key = referencedTable == null ? 'order' : '$referencedTable.order';
+    final fieldName = orderBy.split(' ')[0];
+    final columnName = adapter.fieldsToSupabaseColumns[fieldName]!.columnName;
+    final value = '$columnName.${ascending ? 'asc' : 'desc'}.nullslast';
+    final url = builder.overrideSearchParams(key, value);
+    return builder.copyWithUrl(url);
+  }
+
+  static String _compareToSearchParam(Compare compare) {
+    switch (compare) {
+      case Compare.exact:
+        return 'eq';
+      case Compare.contains:
+        return 'like';
+      case Compare.doesNotContain:
+        return 'not.like';
+      case Compare.greaterThan:
+        return 'gt';
+      case Compare.greaterThanOrEqualTo:
+        return 'gte';
+      case Compare.lessThan:
+        return 'lt';
+      case Compare.lessThanOrEqualTo:
+        return 'lte';
+      case Compare.between:
+        return 'adj';
+      case Compare.notEqual:
+        return 'neq';
+    }
   }
 }
