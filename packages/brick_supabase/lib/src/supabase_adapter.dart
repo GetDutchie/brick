@@ -24,7 +24,7 @@ abstract mixin class SupabaseAdapter<TModel extends SupabaseModel> implements Ad
   /// used to target upsert and delete operations.
   Set<String> get uniqueFields;
 
-  TModel fromSupabase(
+  Future<TModel> fromSupabase(
     Map<String, dynamic> input, {
     required SupabaseProvider provider,
     ModelRepository<SupabaseModel>? repository,

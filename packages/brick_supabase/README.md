@@ -36,6 +36,18 @@ class User
 
 `fieldRename` is only the default transformation. Naming can be overriden on a field-by-field basis with `@Supabase(name:)`.
 
+### `@SupabaseSerializable(defaultToNull:)`
+
+Forwards to [Supabase's defaultToNull](https://supabase.com/docs/reference/dart/upsert) during `upsert` operations.
+
+### `@SupabaseSerializable(ignoreDuplicates:)`
+
+Forwards to [Supabase's ignoreDuplicates](https://supabase.com/docs/reference/dart/upsert) during `upsert` operations.
+
+### `@SupabaseSerializable(onConflict:)`
+
+Forwards to [Supabase's onConflict](https://supabase.com/docs/reference/dart/upsert) during `upsert` operations.
+
 ## Fields
 
 ### `@Supabase(unique:)`

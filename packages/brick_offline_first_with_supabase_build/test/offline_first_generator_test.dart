@@ -3,7 +3,13 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_offline_first_with_supabase_build/src/offline_first_with_supabase_generator.dart';
 import 'package:test/test.dart';
 
-import 'offline_first_generator/test_specify_field_name.dart' as specifyFieldName;
+import 'offline_first_generator/test_default_to_null.dart' as default_to_null;
+import 'offline_first_generator/test_field_name.dart' as specify_field_name;
+import 'offline_first_generator/test_field_rename.dart' as field_rename;
+import 'offline_first_generator/test_ignore_duplicates.dart' as ignore_duplicates;
+import 'offline_first_generator/test_on_conflict.dart' as on_conflict;
+import 'offline_first_generator/test_table_name_defined.dart' as table_name_defined;
+import 'offline_first_generator/test_table_name_undefined.dart' as table_name_undefined;
 
 final _generator = OfflineFirstWithSupabaseGenerator();
 final folder = 'offline_first_generator';
@@ -13,7 +19,35 @@ void main() {
   group('OfflineFirstWithSupabaseGenerator', () {
     group('FieldSerializable', () {
       test('name', () async {
-        await generateExpectation('specify_field_name', specifyFieldName.output);
+        await generateExpectation('field_name', specify_field_name.output);
+      });
+    });
+
+    group('@SupabaseSerializable', () {
+      test('defaultToNull', () async {
+        await generateAdapterExpectation('default_to_null', default_to_null.output);
+      });
+
+      test('fieldRename', () async {
+        await generateExpectation('field_rename', field_rename.output);
+      });
+
+      test('ignoreDuplicates', () async {
+        await generateAdapterExpectation('ignore_duplicates', ignore_duplicates.output);
+      });
+
+      test('onConflict', () async {
+        await generateAdapterExpectation('on_conflict', on_conflict.output);
+      });
+
+      group('tableName', () {
+        test('defined', () async {
+          await generateAdapterExpectation('table_name_defined', table_name_defined.output);
+        });
+
+        test('undefined', () async {
+          await generateAdapterExpectation('table_name_undefined', table_name_undefined.output);
+        });
       });
     });
   });

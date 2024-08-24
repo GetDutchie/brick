@@ -7,14 +7,14 @@ Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
     Map<String, dynamic> data,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
-  return SpecifyFieldName(email: data['email_address'] as String?);
+  return SpecifyFieldName(email: data['supa_email_address'] as String?);
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToSupabase(
     SpecifyFieldName instance,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
-  return {'email_address': instance.email};
+  return {'supa_email_address': instance.email};
 }
 
 Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(Map<String, dynamic> data,
@@ -38,7 +38,7 @@ Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
 @ConnectOfflineFirstWithSupabase()
 class SpecifyFieldName {
   @Sqlite(name: 'email_address')
-  @Supabase(name: 'email_address')
+  @Supabase(name: 'supa_email_address')
   final String? email;
 
   SpecifyFieldName({this.email});

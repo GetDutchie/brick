@@ -1,5 +1,1 @@
 include: ../../analysis_options.yaml
-
-linter:
-  rules:
-    library_prefixes: false
