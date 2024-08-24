@@ -1,0 +1,25 @@
+name: brick_offline_first_with_supabase_example
+
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  sqflite: any
+
+dependency_overrides:
+  brick_offline_first_with_supabase:
+    path: ../
+  brick_offline_first_with_rest:
+    path: ../../brick_offline_first_with_rest
+  brick_supabase:
+    path: ../../brick_supabase
+  brick_supabase_generators:
+    path: ../../brick_supabase_generators
+
+dev_dependencies:
+  build_runner: any
+  build_resolvers: any
+  brick_offline_first_with_supabase_build:
+    path: ../../brick_offline_first_with_supabase_build
