@@ -17,3 +17,6 @@ command:
     # makes the CI much more stable.
     runPubGetInParallel: false
     usePubspecOverrides: true
+
+  upgrade:
+    usePubspecOverrides: true
