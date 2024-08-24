@@ -4,6 +4,62 @@
 
 The `OfflineFirstWithSupabase` domain uses all the same configurations and annotations as `OfflineFirst`.
 
+## Repository
+
+Adding offline support to Supabase is slightly more complicated than the average [../brick_offline_first_with_rest/README.md](repository process). Feedback is welcome on a smoother and more intuitive integration.
+
+````dart
+class MyRepository extends OfflineFirstWithSupabaseRepository {
+  static late MyRepository? _singleton;
+
+  MyRepository._({
+    required super.supabaseProvider,
+    required super.sqliteProvider,
+    required super.migrations,
+    required super.offlineRequestQueue,
+    super.memoryCacheProvider,
+  });
+
+  factory MyRepository() => _singleton!;
+
+  static void configure({
+    required String supabaseUrl,
+    required String apiKey,
+    required Set<Migration> migrations,
+  }) {
+    // Convenience method `.clientQueue` makes creating the queue and client easy.
+    final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
+      databaseFactory: databaseFactory,
+    );
+
+    final provider = SupabaseProvider(
+      // It's important to pass the offline client to your Supabase#Client instantiation.
+      // If you're using supabase_flutter, make sure you initialize with the clientQueue's client
+      // before passing it here. For example:
+      // ```dart
+      // await Supabase.initialize(httpClient: client)
+      // SupabaseProvider(Supabase.instance.client, modelDictionary: ...)
+      // ```
+      SupabaseClient(supabaseUrl, apiKey, httpClient: client),
+      modelDictionary: supabaseModelDictionary,
+    );
+
+    // Finally, initialize the repository as normal.
+    _singleton = MyRepository._(
+      supabaseProvider: provider,
+      sqliteProvider: SqliteProvider(
+        'my_repository.sqlite',
+        databaseFactory: databaseFactory,
+        modelDictionary: sqliteModelDictionary,
+      ),
+      migrations: migrations,
+      offlineRequestQueue: queue,
+      memoryCacheProvider: MemoryCacheProvider(),
+    );
+  }
+}
+````
+
 ## Models
 
 ### ConnectOfflineFirstWithSupabase
