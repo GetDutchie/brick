@@ -3,13 +3,15 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
-Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(Map<String, dynamic> data,
+Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
+    Map<String, dynamic> data,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
   return SpecifyFieldName(email: data['email_address'] as String?);
 }
 
-Future<Map<String, dynamic>> _$SpecifyFieldNameToSupabase(SpecifyFieldName instance,
+Future<Map<String, dynamic>> _$SpecifyFieldNameToSupabase(
+    SpecifyFieldName instance,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
   return {'email_address': instance.email};
