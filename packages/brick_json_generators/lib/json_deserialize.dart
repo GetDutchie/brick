@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
@@ -94,7 +95,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
         final nullableSuffix = checker.isNullable ? '?' : '';
 
         return '''$fieldValue$nullableSuffix.map(
-          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()}${parameterType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''})
         )$castIterable$defaultValue''';
       }
 
@@ -138,7 +139,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
       final output =
-          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
+          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString()}${parameterType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''})';
       if (checker.isNullable) return '$fieldValue != null ? $output : null';
       return output;
     }

@@ -181,7 +181,7 @@ class SharedChecker<_SiblingModel extends Model> {
     if (classElement.supertype?.typeArguments == null ||
         classElement.supertype!.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
+        'Type argument for ${targetType.getDisplayString()}${targetType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''} is undefined.',
         todo:
             'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString()}<int>`',
         element: targetType.element,
