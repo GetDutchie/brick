@@ -1,12 +1,14 @@
+import 'package:analyzer/dart/element/element.dart';
+import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
 /// Generate serialized code for each field to write to a file
 class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model> {
   FileSerialize(
-    super.element,
-    super.fields, {
-    required super.repositoryName,
-  });
+    ClassElement element,
+    FileFields fields, {
+    required String repositoryName,
+  }) : super(element, fields, repositoryName: repositoryName);
 
   @override
   final doesDeserialize = false;
@@ -29,7 +31,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return '$fieldValue?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))';
+        return '$fieldValue?.map((e) => ${checker.argType.getDisplayString(withNullability: false)}.values.indexOf(e))';
       }
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
