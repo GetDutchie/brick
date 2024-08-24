@@ -49,6 +49,20 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
     ];
   }
 
+  @override
+  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+    // Supabase's API only accepts the active model
+    // Recursive assocations are iteratively upserted
+    if (checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)) return null;
+
+    return super.coderForField(
+      field,
+      checker,
+      wrappedInFuture: wrappedInFuture,
+      fieldAnnotation: fieldAnnotation,
+    );
+  }
+
   String _finalTypeForField(DartType type) {
     final checker = checkerForType(type);
     final typeRemover = RegExp(r'\<[,\s\w]+\>');

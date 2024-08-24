@@ -18,7 +18,7 @@ class SupabaseDeserialize extends SupabaseSerdesGenerator
     final config = (fields as SupabaseFields).config;
 
     return [
-      if (config?.tableName != null) '@override\nfinal tableName = ${config!.tableName};',
+      if (config?.tableName != null) "@override\nfinal tableName = '${config!.tableName}';",
     ];
   }
 }
