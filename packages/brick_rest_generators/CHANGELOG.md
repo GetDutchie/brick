@@ -1,91 +1,96 @@
 ## Unreleased
 
+## 3.1.1
+
+- Update upper `analyzer` constraint to `7.0.0`
+- Format CHANGELOG.md
+
 ## 3.1.0
 
-* Apply standardized lints
-* Upgrade minimum Dart to 2.18
+- Apply standardized lints
+- Upgrade minimum Dart to 2.18
 
 ## 3.0.1
 
-* Support Dart 3
+- Support Dart 3
 
 ## 3.0.0
 
-* Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
-* Update minimum `analyzer` constraint to `5.0.0`
-* Use Dart 2.15's `.byName` accessor for iterable enum values
+- Update reference from `brick_rest/rest.dart` to `brick_rest/brick_rest.dart`
+- Update minimum `analyzer` constraint to `5.0.0`
+- Use Dart 2.15's `.byName` accessor for iterable enum values
 
 ## 2.1.1
 
-* Remove `FallThroughError` after Dart beta deprecation
+- Remove `FallThroughError` after Dart beta deprecation
 
 ## 2.1.0
 
-* Loosen dependency restrictions to major versions
-* Upgrade analyzer to version 4
+- Loosen dependency restrictions to major versions
+- Upgrade analyzer to version 4
 
 ## 2.0.0
 
-* Separate JSON generators to their own package in `brick_json_generators`
+- Separate JSON generators to their own package in `brick_json_generators`
 
 ## 2.0.0-rc.2
 
-* Include `1.3.0` updates
+- Include `1.3.0` updates
 
 ## 2.0.0-rc.1
 
-* Prepare for 2.0.0 launch
+- Prepare for 2.0.0 launch
 
 ## 1.3.0+1
 
-* Fix FieldRename enums deserialization to use new Analyzer API
+- Fix FieldRename enums deserialization to use new Analyzer API
 
 ## 1.3.0
 
-* Upgrade `analyzer` dependency to `3.2.0`
+- Upgrade `analyzer` dependency to `3.2.0`
 
 ## 1.2.0
 
-* Separate logic into more agnostic classes `JsonSerdesGenerator`, `JsonDeserialize` and `JsonSerialize`.
+- Separate logic into more agnostic classes `JsonSerdesGenerator`, `JsonDeserialize` and `JsonSerialize`.
 
 ## 1.1.0
 
-* Upgrade `brick_build` and `brick_core`
+- Upgrade `brick_build` and `brick_core`
 
 ## 1.0.2
 
-* Prefer constructor field type (including nullability) over field definition for type inference in adapter generation.
-* Bump `brick_build`
+- Prefer constructor field type (including nullability) over field definition for type inference in adapter generation.
+- Bump `brick_build`
 
 ## 1.0.1
 
-* Add Dart Lints
-* Bump `brick_build`
-* Always cast from list when deserializing siblings
+- Add Dart Lints
+- Bump `brick_build`
+- Always cast from list when deserializing siblings
 
 ## 1.0.0+4
 
-* Fix deserialize and serialize `enumAsString` for non-nullable types (#183)
+- Fix deserialize and serialize `enumAsString` for non-nullable types (#183)
 
 ## 1.0.0+3
 
-* Fix pubspec dependencies
+- Fix pubspec dependencies
 
 ## 1.0.0+2
 
-* Fix nullable analyzer errors around DateTime and enum (de)serialization and association serialization
+- Fix nullable analyzer errors around DateTime and enum (de)serialization and association serialization
 
 ## 1.0.0+1
 
-* Remove `source_gen_test` dependency
+- Remove `source_gen_test` dependency
 
 ## 1.0.0
 
-* Null safety
+- Null safety
 
 ## 0.0.1
 
-* Fix a a JSON encode error in REST serialization. `.map` returns a `MappedListIterable` which `jsonEncode` cannot parse. It can parse `List<dynamic>`.
-* Fix REST's iterable enum serialization
-* #58 fixes sibling serialization when null
-* Dart style: prefer collection literals
+- Fix a a JSON encode error in REST serialization. `.map` returns a `MappedListIterable` which `jsonEncode` cannot parse. It can parse `List<dynamic>`.
+- Fix REST's iterable enum serialization
+- #58 fixes sibling serialization when null
+- Dart style: prefer collection literals
