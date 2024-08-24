@@ -222,7 +222,7 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   /// Print the `DartType` without nullability
-  static String withoutNullability(DartType type) => type.getDisplayString(withNullability: false);
+  static String withoutNullability(DartType type) => type.getDisplayString().replaceAll('?', '');
 
   /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///
