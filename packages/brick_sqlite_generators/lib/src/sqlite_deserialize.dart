@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart' show SerdesGenerator, SharedChecker;
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
@@ -138,7 +137,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final discoveredByIndex =
             'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
         final nullableSuffix = checker.isNullable ? '?' : '';
-        return '$discoveredByIndex$nullableSuffix.whereType<${argType.getDisplayString()}${argType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''}>()$castIterable';
+        return '$discoveredByIndex$nullableSuffix.whereType<${argType.getDisplayString()}>()$castIterable';
       }
 
       // Iterable<bool>
@@ -153,7 +152,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final nullableSuffix = checker.isNullable ? " ?? '[]'" : '';
 
         return '''jsonDecode($fieldValue$nullableSuffix).map(
-          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()}${parameterType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''})
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()})
         )$castIterable$defaultValue''';
       }
 
@@ -211,7 +210,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
     } else if (checker.fromJsonConstructor != null) {
       final klass = checker.targetType.element as ClassElement;
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
-      return '${klass.displayName}.fromJson(jsonDecode($fieldValue as String) as ${parameterType.getDisplayString()}${parameterType.nullabilitySuffix == NullabilitySuffix.question ? '?' : ''})';
+      return '${klass.displayName}.fromJson(jsonDecode($fieldValue as String) as ${parameterType.getDisplayString()})';
     }
 
     return null;
