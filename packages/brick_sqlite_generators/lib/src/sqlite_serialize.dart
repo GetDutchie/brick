@@ -266,7 +266,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final joinsTable =
         InsertForeignKey.joinsTableName(annotation.name!, localTableName: fields.element.name);
     final joinsForeignColumn = InsertForeignKey.joinsTableForeignColumnName(
-      checker.unFuturedArgType.getDisplayString(withNullability: false),
+      checker.unFuturedArgType.getDisplayString(),
     );
     final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
 
@@ -319,13 +319,11 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     }
 
     if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType
-          .getDisplayString(withNullability: false)
-          .replaceAll(typeRemover, '');
+      return checker.toJsonMethod!.returnType.getDisplayString().replaceAll(typeRemover, '');
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
+    return type.getDisplayString().replaceAll(typeRemover, '');
   }
 
   String _boolForField(String fieldValue, bool nullable) {

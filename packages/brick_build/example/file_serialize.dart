@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
@@ -31,7 +32,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return '$fieldValue?.map((e) => ${checker.argType.getDisplayString(withNullability: false)}.values.indexOf(e))';
+        return '$fieldValue?.map((e) => ${checker.argType.getDisplayString()}.values.indexOf(e))';
       }
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>

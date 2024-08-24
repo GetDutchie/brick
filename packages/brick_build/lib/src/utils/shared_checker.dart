@@ -183,7 +183,7 @@ class SharedChecker<_SiblingModel extends Model> {
       throw InvalidGenerationSourceError(
         'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString(withNullability: false)}<int>`',
+            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString()}<int>`',
         element: targetType.element,
       );
     }
@@ -222,7 +222,7 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   /// Print the `DartType` without nullability
-  static String withoutNullability(DartType type) => type.getDisplayString(withNullability: false);
+  static String withoutNullability(DartType type) => type.getDisplayString();
 
   /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///
