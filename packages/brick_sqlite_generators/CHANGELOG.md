@@ -1,8 +1,8 @@
 ## Unreleased
 
-## 3.1.1
+## 3.2.0
 
-- Update upper `analyzer` constraint to `7.0.0`
+- Update `analyzer` constraints to `>=6.0.0 <7.0.0`
 - Format CHANGELOG.md
 
 ## 3.1.0

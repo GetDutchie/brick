@@ -4,7 +4,7 @@
 
 - Apply standardized lints
 - `const`antize `AggregateBuilder`
-- Update upper `analyzer` constraint to `7.0.0`
+- Update `analyzer` constraints to `>=6.0.0 <7.0.0`
 - Format CHANGELOG.md
 
 ## 3.0.1

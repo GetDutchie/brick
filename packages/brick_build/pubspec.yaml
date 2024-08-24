@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
-  analyzer: ">=5.0.0 <7.0.0"
+  analyzer: ">=6.0.0 <7.0.0"
   brick_core: ^1.1.1
   build: ^2.3.0
   dart_style: ">=2.0.0 <3.0.0"
