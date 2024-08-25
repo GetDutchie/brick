@@ -8,11 +8,28 @@ Connecting [Brick](https://github.com/GetDutchie/brick) with Supabase.
 
 ### `providerArgs:`
 
-- `'limit'` e.g. `{'limit': 10}`
-- `'limitByReferencedTable' forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
-- `'orderBy'` Use field names not column names and always specify direction.For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`.
-  If the column cannot be found for the first value before a space, the value is left unchanged.
-- `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
+| Name                       | Type      | Description                                                                                                                                           |
+| -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'limit'`                  | `int`     | Forwards to Supabase's `limit` [param](https://supabase.com/docs/reference/dart/limit) in Brick's `#get` action                                       |
+| `'limitByReferencedTable'` | `String?` | Forwards to Supabase's `referencedTable` [property](https://supabase.com/docs/reference/dart/limit)                                                   |
+| `'orderBy'`                | `String`  | Use field names not column names and always specify direction.For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`. |
+| `'orderByReferencedTable'` | `String?` | Forwards to Supabase's `referencedTable` [property](https://supabase.com/docs/reference/dart/order)                                                   |
+
+### `where:`
+
+Brick currently does not support all of Supabase's filtering methods. Consider the associated `Compare` enum value to Supabase's method when building a Brick query:
+
+| Brick                          | Supabase    |
+| ------------------------------ | ----------- |
+| `Compare.exact`                | `.eq`       |
+| `Compare.notEqual`             | `.neq`      |
+| `Compare.contains`             | `.like`     |
+| `Compare.doesNotContain`       | `.not.like` |
+| `Compare.greaterThan`          | `.gt`       |
+| `Compare.greaterThanOrEqualTo` | `.gte`      |
+| `Compare.lessThen`             | `.lt`       |
+| `Compare.lessThenOrEqualTo`    | `.lte`      |
+| `Compare.between`              | `.adj`      |
 
 ## Models
 
@@ -82,7 +99,7 @@ class Customer {
 
 ### `@Supabase(enumAsString:)`
 
-Brick by default assumes enums from a REST API will be delivered as integers matching the index in the Flutter app. However, if your API delivers strings instead, the field can be easily annotated without writing a custom generator.
+Brick by default assumes enums from a Supabase API will be delivered as integers matching the index in the Flutter app. However, if your API delivers strings instead, the field can be easily annotated without writing a custom generator.
 
 Given the API:
 
@@ -103,11 +120,11 @@ final List<Hat> hats;
 
 ### `@Supabase(name:)`
 
-REST keys can be renamed per field. This will override the default set by `SupabaseSerializable#fieldRename`.
+Supabase keys can be renamed per field. This will override the default set by `SupabaseSerializable#fieldRename`.
 
 ```dart
 @Supabase(
-  name: "full_name"  // "full_name" is used in from and to requests to REST instead of "last_name"
+  name: "full_name"  // "full_name" is used in from and to requests to Supabase instead of "last_name"
 )
 final String lastName;
 ```
@@ -118,7 +135,7 @@ When true, the field will be ignored by the (de)serializing function in the adap
 
 ## Unsupported Field Types
 
-The following are not serialized to REST. However, unsupported types can still be accessed in the model as non-final fields.
+The following are not serialized to Supabase. However, unsupported types can still be accessed in the model as non-final fields.
 
 - Nested `List<>` e.g. `<List<List<int>>>`
 - Many-to-many associations
