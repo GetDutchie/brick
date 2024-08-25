@@ -22,7 +22,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
 
   static Future<void> initializeSupabaseAndConfigure({
     required String supabaseUrl,
-    required String anonKey,
+    required String supabaseAnonKey,
   }) async {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactory,
@@ -30,7 +30,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
 
     final supabase = await Supabase.initialize(
       url: supabaseUrl,
-      anonKey: anonKey,
+      anonKey: supabaseAnonKey,
       httpClient: client,
     );
 

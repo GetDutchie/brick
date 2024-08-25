@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pizza_shoppe/brick/models/customer.model.dart';
 import 'package:pizza_shoppe/brick/repository.dart';
 
+const supabaseUrl = 'YOUR_SUPABASE_URL';
+const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -34,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Future<void> initState() async {
     await Repository.initializeSupabaseAndConfigure(
-      supabaseUrl: 'YOUR_SUPABASE_URL',
-      anonKey: 'YOUR_SUPABASE_ANON_KEY',
+      supabaseUrl: supabaseUrl,
+      supabaseAnonKey: supabaseAnonKey,
     );
     await Repository().initialize();
     // Note that subsequent boots of the app will use cached data
