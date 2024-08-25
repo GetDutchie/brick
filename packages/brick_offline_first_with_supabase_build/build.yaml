@@ -1,7 +1,7 @@
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
   brick_aggregate_builder:
-    import: "package:brick_offline_first_with_supabase_build/builder.dart"
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
     builder_factories: ["offlineFirstAggregateBuilder"]
     build_extensions:
       { "$lib$": ["models_and_migrations.brick_aggregate.dart"] }
@@ -18,7 +18,7 @@ builders:
           - brick/db/*.dart
 
   brick_adapters_builder:
-    import: "package:brick_offline_first_with_supabase_build/builder.dart"
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
     builder_factories: ["offlineFirstAdaptersBuilder"]
     build_extensions: { ".model.dart": [".adapter_build_offline_first.dart"] }
     build_to: cache
@@ -38,7 +38,7 @@ builders:
           - brick/db/*.dart
 
   brick_schema_builder:
-    import: "package:brick_offline_first_with_supabase_build/builder.dart"
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
     builder_factories: ["offlineFirstSchemaBuilder"]
     build_extensions:
       {
@@ -56,7 +56,7 @@ builders:
       ]
 
   brick_new_migration_builder:
-    import: "package:brick_offline_first_with_supabase_build/builder.dart"
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
     builder_factories: ["offlineFirstNewMigrationBuilder"]
     build_extensions:
       { ".brick_aggregate.dart": [".brick_aggregate.migration_builder.dart"] }
@@ -68,7 +68,7 @@ builders:
       ["source_gen|combining_builder", ":brick_aggregate_builder"]
 
   brick_model_dictionary_builder:
-    import: "package:brick_offline_first_with_supabase_build/builder.dart"
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
     builder_factories: ["offlineFirstModelDictionaryBuilder"]
     build_extensions:
       {

@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Expose offline queue functionality in `offline_queue.dart`
+
 ## 3.0.2
 
 * Apply standardized lints
