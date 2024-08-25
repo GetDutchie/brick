@@ -14,7 +14,7 @@ class Repository extends OfflineFirstWithRestRepository {
             '${SUPABASE_PROJECT_URL}/rest/v1',
             modelDictionary: restModelDictionary,
             client: SupabaseBrickClient(
-              anonKey: SUPABASE_ANON_KEY,
+              supabaseAnonKey: SUPABASE_ANON_KEY,
             ),
           ),
           sqliteProvider: SqliteProvider(

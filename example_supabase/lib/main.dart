@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 Future<void> main() async {
   await Supabase.initialize(
     url: SUPABASE_PROJECT_URL,
-    anonKey: SUPABASE_ANON_KEY,
+    supabaseAnonKey: SUPABASE_ANON_KEY,
   );
 
   Repository.configure();
@@ -71,8 +71,7 @@ class MyHomePage extends StatelessWidget {
                   ? Center(child: Text('No customers found.'))
                   : ListView.builder(
                       itemCount: customers.length,
-                      itemBuilder: (context, index) =>
-                          CustomerListTile(customers[index]),
+                      itemBuilder: (context, index) => CustomerListTile(customers[index]),
                     );
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));

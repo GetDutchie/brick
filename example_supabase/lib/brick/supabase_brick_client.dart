@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Supabase REST-API.
 class SupabaseBrickClient extends http.BaseClient {
   SupabaseBrickClient({
-    required this.anonKey,
+    required this.supabaseAnonKey,
     http.Client? innerClient,
     this.resourceName = 'dart.http',
   }) : _innerClient = innerClient ?? http.Client();
@@ -13,7 +13,7 @@ class SupabaseBrickClient extends http.BaseClient {
   /// The anon key of the supabase project.
   ///
   /// This is sent in the request headers as the `apikey` field.
-  final String anonKey;
+  final String supabaseAnonKey;
 
   /// Populates APM's "RESOURCE" column. Defaults to `dart.http`.
   final String resourceName;
@@ -27,12 +27,11 @@ class SupabaseBrickClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     // The access token is automatically refreshed by the supabase client
-    final accessToken =
-        Supabase.instance.client.auth.currentSession?.accessToken;
+    final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
 
     request.headers.addAll({
       if (accessToken != null) 'Authorization': 'Bearer $accessToken',
-      'apikey': anonKey,
+      'apikey': supabaseAnonKey,
       'Content-Type': 'application/json; charset=utf-8',
       // In order to use the upsert method for updates, the following header
       // is needed for the REST API to work correctly.

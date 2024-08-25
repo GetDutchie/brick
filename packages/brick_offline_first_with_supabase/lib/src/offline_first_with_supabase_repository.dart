@@ -24,7 +24,7 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
 ///   databaseFactory: databaseFactory
 /// );
 /// final provider = SupabaseProvider(
-///   SupabaseClient(supabaseUrl, anonKey, httpClient: client),
+///   SupabaseClient(supabaseUrl, supabaseAnonKey, httpClient: client),
 ///   modelDictionary: supabaseModelDictionary,
 /// );
 ///

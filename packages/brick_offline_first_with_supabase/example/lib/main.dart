@@ -30,7 +30,7 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
 
   static void configure({
     required String supabaseUrl,
-    required String anonKey,
+    required String supabaseAnonKey,
   }) {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       // For Flutter, use import 'package:sqflite/sqflite.dart' show databaseFactory;
@@ -39,7 +39,7 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
     );
 
     final provider = SupabaseProvider(
-      SupabaseClient(supabaseUrl, anonKey, httpClient: client),
+      SupabaseClient(supabaseUrl, supabaseAnonKey, httpClient: client),
       modelDictionary: supabaseModelDictionary,
     );
 

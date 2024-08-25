@@ -26,7 +26,7 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
 
   static void configure({
     required String supabaseUrl,
-    required String anonKey,
+    required String supabaseAnonKey,
   }) {
     // Convenience method `.clientQueue` makes creating the queue and client easy.
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
@@ -36,7 +36,7 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
     );
 
     final provider = SupabaseProvider(
-      SupabaseClient(supabaseUrl, anonKey, httpClient: client),
+      SupabaseClient(supabaseUrl, supabaseAnonKey, httpClient: client),
       modelDictionary: supabaseModelDictionary,
     );
 
