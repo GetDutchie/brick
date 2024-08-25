@@ -91,6 +91,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   List<Map<String, String>> expandCondition(
     WhereCondition condition, [
     SupabaseAdapter? passedAdapter,
+    List<String>? leadingAssociations,
   ]) {
     passedAdapter ??= adapter;
 
@@ -129,12 +130,18 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition.associationType]!;
 
-      return expandCondition(condition.value as WhereCondition, associationAdapter);
+      final newLeadingAssociations = [...leadingAssociations ?? <String>[], definition.columnName];
+      return expandCondition(
+        condition.value as WhereCondition,
+        associationAdapter,
+        newLeadingAssociations,
+      );
     }
 
     return [
       {
-        definition.columnName: '${_compareToSearchParam(condition.compare)}.${condition.value}',
+        definition.columnName:
+            '${_compareToSearchParam(condition.compare)}.${leadingAssociations != null ? '${leadingAssociations.join('.')}.' : ''}${condition.value}',
       }
     ];
   }

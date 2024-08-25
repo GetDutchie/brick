@@ -41,7 +41,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     });
 
     final resp = await builder.select(queryTransformer.selectFields).limit(1).maybeSingle();
-    return resp == null;
+    return resp != null;
   }
 
   @override
@@ -71,10 +71,12 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
     final resp = await queryTransformer.applyProviderArgs(builder);
 
-    return resp
-        .map((r) => adapter.fromSupabase(r, repository: repository, provider: this))
-        .toList()
-        .cast<TModel>();
+    return Future.wait<TModel>(
+      resp
+          .map((r) => adapter.fromSupabase(r, repository: repository, provider: this))
+          .toList()
+          .cast<Future<TModel>>(),
+    );
   }
 
   /// Association models are upserted recursively before the requested instance is upserted.
@@ -99,7 +101,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     Query? query,
     ModelRepository<SupabaseModel>? repository,
   }) async {
-    assert(type is SupabaseModel);
+    assert(modelDictionary.adapterFor.containsKey(type));
 
     final adapter = modelDictionary.adapterFor[type]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
@@ -130,7 +132,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     Query? query,
     ModelRepository<SupabaseModel>? repository,
   }) async {
-    assert(type is SupabaseModel);
+    assert(modelDictionary.adapterFor.containsKey(type));
 
     final adapter = modelDictionary.adapterFor[type]!;
     final associations = adapter.fieldsToSupabaseColumns.values
