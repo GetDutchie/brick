@@ -9,6 +9,8 @@ The `OfflineFirstWithSupabase` domain uses all the same configurations and annot
 The repository utilizes the `OfflineFirstWithRestRepository`'s queue because the Supabase client is a thin wrapper around the PostgREST API. There's a small amount of configuration to apply this queue:
 
 ```dart
+// import brick.g.dart and brick/db/schema.g.dart
+
 class MyRepository extends OfflineFirstWithSupabaseRepository {
   static late MyRepository? _singleton;
 
@@ -24,16 +26,17 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
 
   static void configure({
     required String supabaseUrl,
-    required String apiKey,
-    required Set<Migration> migrations,
+    required String anonKey,
   }) {
     // Convenience method `.clientQueue` makes creating the queue and client easy.
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
+      // For Flutter, use import 'package:sqflite/sqflite.dart' show databaseFactory;
+      // For unit testing (even in Flutter), use import 'package:sqflite_common_ffi/sqflite_ffi.dart' show databaseFactory;
       databaseFactory: databaseFactory,
     );
 
     final provider = SupabaseProvider(
-      SupabaseClient(supabaseUrl, apiKey, httpClient: client),
+      SupabaseClient(supabaseUrl, anonKey, httpClient: client),
       modelDictionary: supabaseModelDictionary,
     );
 
