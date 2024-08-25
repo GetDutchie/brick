@@ -1,104 +1,102 @@
-import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_supabase/brick/models/customer.model.dart';
-import 'package:brick_supabase/brick/repository.dart';
-import 'package:brick_supabase/env.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.dart';
+import 'package:pizza_shoppe/brick/repository.dart';
 
-Future<void> main() async {
-  await Supabase.initialize(
-    url: SUPABASE_PROJECT_URL,
-    anonKey: SUPABASE_ANON_KEY,
-  );
-
-  Repository.configure();
-  await Repository().initialize();
-
-  await Supabase.instance.client.auth.signInAnonymously();
-
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Brick Supabase Example',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: MyHomePage(title: 'Brick Supabase Example'),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(fontSize: 20.0),
+        ),
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var migrated = false;
+  @override
+  Future<void> initState() async {
+    await Repository.initializeSupabaseAndConfigure(
+      supabaseUrl: 'YOUR_SUPABASE_URL',
+      anonKey: 'YOUR_SUPABASE_ANON_KEY',
+    );
+    await Repository().initialize();
+    // Note that subsequent boots of the app will use cached data
+    // To clear this, wipe data on android or tap-press on iOS and delete the app
+    setState(() => migrated = true);
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
-        label: Text('Add Customer'),
-        onPressed: () async {
-          final customer = Customer(
-            id: Uuid().v4(),
-            createdAt: DateTime.now(),
-            firstName: 'John',
-            lastName: 'Doe',
-          );
+      body: migrated
+          ? Container(
+              padding: const EdgeInsets.all(20.0),
+              child: FutureBuilder(
+                future: Repository().get<Customer>(),
+                builder: (context, AsyncSnapshot<List<Customer>> customerList) {
+                  final customers = customerList.data;
 
-          await Repository().upsert<Customer>(customer);
-        },
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: StreamBuilder(
-          stream: Repository().subscribe<Customer>(
-            policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-          ),
-          builder: (context, AsyncSnapshot<List<Customer>> snapshot) {
-            print(snapshot);
-            if (snapshot.hasData) {
-              final customers = snapshot.data ?? [];
-
-              return customers.isEmpty
-                  ? Center(child: Text('No customers found.'))
-                  : ListView.builder(
-                      itemCount: customers.length,
-                      itemBuilder: (context, index) =>
-                          CustomerListTile(customers[index]),
-                    );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              return Center(child: CircularProgressIndicator.adaptive());
-            }
-          },
-        ),
-      ),
+                  return ListView.builder(
+                    itemCount: customers?.length ?? 0,
+                    itemBuilder: (ctx, index) =>
+                        customers?[index] == null ? Container() : CustomerTile(customers![index]),
+                  );
+                },
+              ),
+            )
+          : Text('Migrating database...'),
     );
   }
 }
 
-class CustomerListTile extends StatelessWidget {
+class CustomerTile extends StatelessWidget {
   final Customer customer;
 
-  CustomerListTile(this.customer);
+  CustomerTile(this.customer);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text('${customer.firstName} ${customer.lastName}'),
-        subtitle: Text('ID: ${customer.id}'),
-        trailing: Text('Created at: ${customer.createdAt}'),
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Text('id: ${customer.id}'),
+        Text('name: ${customer.firstName} ${customer.lastName}'),
+        Text('pizzas:'),
+        if (customer.pizzas != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                for (var pizza in customer.pizzas!)
+                  Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

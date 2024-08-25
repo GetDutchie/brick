@@ -3,7 +3,6 @@
 
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
@@ -13,6 +12,8 @@ import 'package:supabase/supabase.dart';
 // You should always use package imports in real-world code.
 // ignore: always_use_package_imports
 import 'brick/brick.g.dart';
+// ignore: always_use_package_imports
+import 'brick/db/schema.g.dart';
 
 class MyRepository extends OfflineFirstWithSupabaseRepository {
   static late MyRepository? _singleton;
@@ -30,7 +31,6 @@ class MyRepository extends OfflineFirstWithSupabaseRepository {
   static void configure({
     required String supabaseUrl,
     required String apiKey,
-    required Set<Migration> migrations,
   }) {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactory,
