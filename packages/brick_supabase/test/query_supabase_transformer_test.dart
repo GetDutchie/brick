@@ -1,15 +1,43 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase/src/query_supabase_transformer.dart';
 import 'package:brick_supabase/src/supabase_model.dart';
+import 'package:supabase/supabase.dart';
 import 'package:test/test.dart';
 
 import '__mocks__.dart';
 
-QuerySupabaseTransformer<T> _buildTransformer<T extends SupabaseModel>([Query? query]) {
+QuerySupabaseTransformer<T> _buildTransformer<T extends SupabaseModel>([
+  Query? query,
+]) {
   return QuerySupabaseTransformer<T>(
     modelDictionary: supabaseModelDictionary,
     query: query,
   );
+}
+
+final _supabaseClient = SupabaseClient(
+  'http://localhost:3000',
+  'supabaseKey',
+);
+
+extension _PostgrestBuilderExtension on PostgrestBuilder {
+  /// Get the URI from the builder.
+  Uri get uri {
+    var uriString = overrideSearchParams('', '').toString();
+
+    // Remove any trailing '&' or '?' (which is added by the overrideSearchParams)
+    if (uriString.endsWith('&') || uriString.endsWith('?')) {
+      uriString = uriString.substring(0, uriString.length - 1);
+    }
+
+    return Uri.parse(uriString);
+  }
+
+  /// Get the decoded query from the URI of the builder.
+  String get query {
+    return Uri.decodeQueryComponent(uri.query);
+  }
 }
 
 void main() {
@@ -17,60 +45,176 @@ void main() {
     group('#selectFields', () {
       test('no association', () {
         final transformer = _buildTransformer<DemoModel>();
-        expect(transformer.selectFields, 'id,name');
+        expect(transformer.selectFields, 'id,name,age');
       });
 
       test('association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
-        expect(transformer.selectFields, 'id,name,assoc:demos!assoc_id(id,name)');
+        expect(
+          transformer.selectFields,
+          'id,name,assoc:demos!assoc_id(id,name,age)',
+        );
       });
 
       test('association', () {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name))',
+          'id,name,nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name,age))',
         );
       });
     });
 
-    group('#select', skip: true, () {
-      test('no query', skip: true, () {});
-      group('with query', skip: true, () {
-        group('eq', skip: true, () {
-          test('by field', skip: true, () {});
+    group('#select', () {
+      test('no query', () {
+        final select = _buildTransformer<DemoModel>()
+            .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+        expect(select.query, 'select=id,name,age');
+      });
+      group('with query', () {
+        group('eq', () {
+          test('by field', () {
+            final query = Query.where('name', 'Jens');
+            final select = _buildTransformer<DemoModel>(query)
+                .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+            expect(select.query, 'select=id,name,age&name=eq.Jens');
+          });
+
           test('by association field', skip: true, () {});
         });
-        test('neq', skip: true, () {});
 
-        test('lt/gt/lte/gte', skip: true, () {});
-        test('contains', skip: true, () {});
-        test('does not contain', skip: true, () {});
+        test('neq', () {
+          final query = Query(
+            where: [Where('name', value: 'Jens', compare: Compare.notEqual)],
+          );
+          final select = _buildTransformer<DemoModel>(query)
+              .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+          expect(select.query, 'select=id,name,age&name=neq.Jens');
+        });
+
+        test('lt/gt/lte/gte', () {
+          final query = Query(
+            where: [
+              Where('age', value: '30', compare: Compare.lessThan),
+              Where('age', value: '18', compare: Compare.greaterThan),
+              Where('age', value: '25', compare: Compare.lessThanOrEqualTo),
+              Where('age', value: '21', compare: Compare.greaterThanOrEqualTo),
+            ],
+          );
+          final select = _buildTransformer<DemoModel>(query)
+              .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+          expect(
+            select.query,
+            'select=id,name,age&age=lt.30&age=gt.18&age=lte.25&age=gte.21',
+          );
+        });
+
+        test('contains', () {
+          final query = Query(
+            where: [Where('name', value: 'search', compare: Compare.contains)],
+          );
+          final select = _buildTransformer<DemoModel>(query)
+              .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+          expect(select.query, 'select=id,name,age&name=like.search');
+        });
+
+        test('does not contain', () {
+          final query = Query(
+            where: [
+              Where('name', value: 'search', compare: Compare.doesNotContain),
+            ],
+          );
+          final select = _buildTransformer<DemoModel>(query)
+              .select(_supabaseClient.from(DemoModelAdapter().tableName));
+
+          expect(select.query, 'select=id,name,age&name=not.like.search');
+        });
       });
     });
 
-    group('#applyProviderArgs', skip: true, () {});
+    group('#applyProviderArgs', () {
+      test('orderBy', () {
+        final query = Query(providerArgs: {'orderBy': 'name asc'});
+        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,age&order=name.asc.nullslast',
+        );
+      });
+
+      test('orderBy with descending order', () {
+        final query = Query(providerArgs: {'orderBy': 'name desc'});
+        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,age&order=name.desc.nullslast',
+        );
+      });
+
+      test('limit', () {
+        final query = Query(providerArgs: {'limit': 10});
+        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+
+        expect(transformBuilder.query, 'select=id,name,age&limit=10');
+      });
+
+      test('limit with referenced table', skip: true, () {});
+
+      test('combined orderBy and limit', () {
+        final query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
+        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().tableName));
+        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,age&order=name.desc.nullslast&limit=20',
+        );
+      });
+    });
 
     group('#destructureAssociationProperties', () {
       test('single association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
-        final result = transformer
-            .destructureAssociationProperties(transformer.adapter.fieldsToSupabaseColumns.values);
-        expect(result, containsAll(['id', 'name', 'assoc:demos!assoc_id(id,name)']));
+        final result = transformer.destructureAssociationProperties(
+          transformer.adapter.fieldsToSupabaseColumns.values,
+        );
+        expect(
+          result,
+          containsAll(['id', 'name', 'assoc:demos!assoc_id(id,name,age)']),
+        );
       });
 
       group('iterable association', skip: true, () {});
 
       test('nested association', () {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
-        final result = transformer
-            .destructureAssociationProperties(transformer.adapter.fieldsToSupabaseColumns.values);
+        final result = transformer.destructureAssociationProperties(
+          transformer.adapter.fieldsToSupabaseColumns.values,
+        );
         expect(
           result,
           containsAll([
             'id',
             'name',
-            'nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name))',
+            'nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name,age))',
           ]),
         );
       });
