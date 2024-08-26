@@ -149,6 +149,9 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
 }
 
 class DemoAssociationModel extends SupabaseModel {
+  @Supabase(foreignKey: 'assocs_id')
+  final List<DemoModel>? assocs;
+
   @Supabase(foreignKey: 'assoc_id')
   final DemoModel assoc;
 
@@ -158,6 +161,7 @@ class DemoAssociationModel extends SupabaseModel {
   final String name;
 
   DemoAssociationModel({
+    this.assocs,
     required this.assoc,
     required this.id,
     required this.name,
@@ -206,6 +210,12 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
       columnName: 'assoc',
       associationType: DemoModel,
       associationForeignKey: 'assoc_id',
+    ),
+    'assocs': const RuntimeSupabaseColumnDefinition(
+      association: true,
+      columnName: 'assocs',
+      associationType: DemoModel,
+      associationForeignKey: 'assocs_id',
     ),
   };
 
