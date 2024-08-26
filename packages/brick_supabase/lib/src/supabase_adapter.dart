@@ -18,7 +18,7 @@ abstract mixin class SupabaseAdapter<TModel extends SupabaseModel> implements Ad
   String? get onConflict;
 
   /// Declared by the [SupabaseSerializable] `tableName` property
-  String get tableName;
+  String get supabaseTableName;
 
   /// Unique fields that map to Supabase columns (using [fieldsToSupabaseColumns])
   /// used to target upsert and delete operations.
