@@ -59,10 +59,10 @@ class User extends SupabaseModel {
 }
 
 class MyRepository extends SingleProviderRepository<SupabaseModel> {
-  MyRepository(String apiUrl, String apiKey)
+  MyRepository(String apiUrl, String supabaseAnonKey)
       : super(
           SupabaseProvider(
-            SupabaseClient(apiUrl, apiKey),
+            SupabaseClient(apiUrl, supabaseAnonKey),
             modelDictionary: dictionary,
           ),
         );
