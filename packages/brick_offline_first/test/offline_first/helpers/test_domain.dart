@@ -4,8 +4,6 @@ import 'package:brick_core/core.dart';
 import 'package:brick_offline_first/src/models/offline_first_model.dart';
 import 'package:brick_offline_first/src/offline_first_adapter.dart';
 import 'package:brick_offline_first/src/offline_first_repository.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
 
 import '__mocks__.dart';
@@ -91,13 +89,11 @@ abstract class OfflineFirstWithTestRepository
     extends OfflineFirstRepository<OfflineFirstWithTestModel> {
   OfflineFirstWithTestRepository({
     required TestProvider testProvider,
-    required SqliteProvider sqliteProvider,
+    required super.sqliteProvider,
     required MemoryCacheProvider cacheProvider,
-    required Set<Migration> migrations,
+    required super.migrations,
   }) : super(
           remoteProvider: testProvider,
-          sqliteProvider: sqliteProvider,
           memoryCacheProvider: cacheProvider,
-          migrations: migrations,
         );
 }
