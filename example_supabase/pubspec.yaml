@@ -1,29 +1,38 @@
-name: brick_supabase
-description: A Flutter example project that uses Brick with Supabase
+name: pizza_shoppe
+description: A new Flutter project.
 
 version: 0.1.0
 
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  sqflite: any
-  supabase_flutter: ^2.5.8
-  uuid: ^4.4.2
-  
+  brick_supabase:
+  brick_offline_first_with_supabase:
+  sqflite:
+  supabase_flutter:
+
 dependency_overrides:
+  brick_offline_first_with_supabase:
+    path: ../packages/brick_offline_first_with_supabase
+  brick_supabase:
+    path: ../packages/brick_supabase
   brick_sqlite_generators:
     path: ../packages/brick_sqlite_generators
+  brick_offline_first_with_supabase_build:
+    path: ../packages/brick_offline_first_with_supabase_build
 
 dev_dependencies:
-  brick_offline_first_with_rest_build:
-    path: ../packages/brick_offline_first_with_rest_build
+  brick_offline_first_with_supabase_build:
+
   build_runner: any
+  shelf: ^1.1.0
 
 flutter:
   uses-material-design: true

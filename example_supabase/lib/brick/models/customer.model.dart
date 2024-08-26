@@ -1,23 +1,25 @@
-import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick/models/customer.model.request.dart';
+import 'package:brick_supabase/brick_supabase.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 
-@ConnectOfflineFirstWithRest(
-  restConfig:
-      RestSerializable(requestTransformer: CustomerRequestTransformer.new),
+@ConnectOfflineFirstWithSupabase(
+  supabaseConfig: SupabaseSerializable(),
 )
-class Customer extends OfflineFirstWithRestModel {
+class Customer extends OfflineFirstWithSupabaseModel {
   @Sqlite(unique: true)
-  final String id;
-  final String firstName;
-  final String lastName;
-  final DateTime createdAt;
+  final int? id;
+
+  final String? firstName;
+
+  final String? lastName;
+
+  final List<Pizza>? pizzas;
 
   Customer({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.createdAt,
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.pizzas,
   });
 }
