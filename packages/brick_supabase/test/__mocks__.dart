@@ -6,9 +6,12 @@ class DemoModel extends SupabaseModel {
 
   final String name;
 
+  final int age;
+
   DemoModel({
     required this.id,
     required this.name,
+    required this.age,
   });
 }
 
@@ -16,6 +19,7 @@ DemoModel _$DemoModelFromSupabase(Map<String, dynamic> json) {
   return DemoModel(
     id: json['id'] as String,
     name: json['name'] as String,
+    age: json['age'] as int,
   );
 }
 
@@ -23,6 +27,7 @@ Future<Map<String, dynamic>> _$DemoModelToSupabase(DemoModel instance) async {
   return <String, dynamic>{
     'id': instance.id,
     'name': instance.name,
+    'age': instance.age,
   };
 }
 
@@ -47,6 +52,10 @@ class DemoModelAdapter extends SupabaseAdapter<DemoModel> {
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'name',
+    ),
+    'age': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'age',
     ),
   };
 
@@ -140,6 +149,9 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
 }
 
 class DemoAssociationModel extends SupabaseModel {
+  @Supabase(foreignKey: 'assocs_id')
+  final List<DemoModel>? assocs;
+
   @Supabase(foreignKey: 'assoc_id')
   final DemoModel assoc;
 
@@ -149,6 +161,7 @@ class DemoAssociationModel extends SupabaseModel {
   final String name;
 
   DemoAssociationModel({
+    this.assocs,
     required this.assoc,
     required this.id,
     required this.name,
@@ -197,6 +210,12 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
       columnName: 'assoc',
       associationType: DemoModel,
       associationForeignKey: 'assoc_id',
+    ),
+    'assocs': const RuntimeSupabaseColumnDefinition(
+      association: true,
+      columnName: 'assocs',
+      associationType: DemoModel,
+      associationForeignKey: 'assocs_id',
     ),
   };
 
