@@ -74,11 +74,12 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
 
     if (checker.toJsonMethod != null) {
       return checker.toJsonMethod!.returnType
-          .getDisplayString(withNullability: false)
+          .getDisplayString()
+          .replaceAll('?', '')
           .replaceAll(typeRemover, '');
     }
 
     // remove arg types as they can't be declared in final fields
-    return type.getDisplayString(withNullability: false).replaceAll(typeRemover, '');
+    return type.getDisplayString().replaceAll('?', '').replaceAll(typeRemover, '');
   }
 }
