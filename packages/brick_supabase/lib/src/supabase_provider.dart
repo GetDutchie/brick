@@ -26,7 +26,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   @override
   Future<bool> delete<TModel extends SupabaseModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
-    final tableBuilder = client.from(adapter.tableName);
+    final tableBuilder = client.from(adapter.supabaseTableName);
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
     final queryTransformer =
@@ -49,7 +49,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
-    final builder = queryTransformer.select(client.from(adapter.tableName));
+    final builder = queryTransformer.select(client.from(adapter.supabaseTableName));
 
     final resp = await builder.count(CountOption.exact);
     return resp.count > 0;
@@ -67,7 +67,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
-    final builder = queryTransformer.select(client.from(adapter.tableName));
+    final builder = queryTransformer.select(client.from(adapter.supabaseTableName));
 
     final resp = await queryTransformer.applyProviderArgs(builder);
 
@@ -109,7 +109,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final queryTransformer =
         QuerySupabaseTransformer(adapter: adapter, modelDictionary: modelDictionary, query: query);
 
-    final builder = adapter.uniqueFields.fold(client.from(adapter.tableName).upsert(output),
+    final builder = adapter.uniqueFields.fold(client.from(adapter.supabaseTableName).upsert(output),
         (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
       if (output.containsKey(columnName)) {

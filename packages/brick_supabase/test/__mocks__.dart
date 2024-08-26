@@ -66,7 +66,7 @@ class DemoModelAdapter extends SupabaseAdapter<DemoModel> {
   final onConflict = null;
 
   @override
-  final tableName = 'demos';
+  final supabaseTableName = 'demos';
 
   @override
   final uniqueFields = {'id'};
@@ -142,7 +142,7 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
   final onConflict = null;
 
   @override
-  final tableName = 'demo_nested_associations';
+  final supabaseTableName = 'demo_nested_associations';
 
   @override
   final uniqueFields = {'id'};
@@ -226,7 +226,7 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
   final onConflict = null;
 
   @override
-  final tableName = 'demo_associations';
+  final supabaseTableName = 'demo_associations';
 
   @override
   final uniqueFields = {'id'};
