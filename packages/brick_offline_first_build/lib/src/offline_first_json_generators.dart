@@ -198,8 +198,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
       if (argTypeChecker.hasSerdes) {
         final doesHaveConstructor = hasConstructor(checker.argType);
         if (doesHaveConstructor) {
-          final serializableType =
-              argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
+          final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
           final nullabilityOperator = checker.isNullable ? '?' : '';
           return '$fieldValue$nullabilityOperator.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
