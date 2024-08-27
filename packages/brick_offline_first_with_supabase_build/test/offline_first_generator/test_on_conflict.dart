@@ -52,7 +52,7 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   @override
   final ignoreDuplicates = false;
   @override
-  final onConflict = user_id, other_id;
+  final onConflict = 'user_id, other_id';
   @override
   final uniqueFields = {};
   @override

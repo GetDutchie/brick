@@ -32,10 +32,11 @@ class SupabaseSerializable {
   /// Defaults to `FieldRename.snake` case.
   final FieldRename fieldRename;
 
-  /// Forwards to Supabase's ignoreDuplicates parameter.
+  /// Forwards to Supabase's `ignoreDuplicates` parameter.
   final bool ignoreDuplicates;
 
-  /// Forwards to Supabase's onConflict parameter.
+  /// Forwards to Supabase's `onConflict` parameter.
+  /// This should be comma-separated Supabase column names, not Dart fields.
   final String? onConflict;
 
   /// The Supabase table name to fetch from. For example, `"users"`
