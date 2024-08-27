@@ -1,3 +1,4 @@
+export 'package:brick_core/field_rename.dart';
 export 'package:brick_supabase/src/annotations/supabase.dart';
 export 'package:brick_supabase/src/annotations/supabase_serializable.dart';
 export 'package:brick_supabase/src/runtime_supabase_column_definition.dart';
