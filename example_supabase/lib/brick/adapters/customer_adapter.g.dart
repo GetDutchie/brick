@@ -55,7 +55,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

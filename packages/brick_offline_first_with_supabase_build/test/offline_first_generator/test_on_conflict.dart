@@ -37,11 +37,11 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   SupabaseDefinedAdapter();
 
   @override
-  final tableName = 'supabase_defineds';
+  final supabaseTableName = 'supabase_defineds';
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',
@@ -52,7 +52,7 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   @override
   final ignoreDuplicates = false;
   @override
-  final onConflict = user_id, other_id;
+  final onConflict = 'user_id,other_id';
   @override
   final uniqueFields = {};
   @override

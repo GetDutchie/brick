@@ -5,8 +5,13 @@ class RuntimeSupabaseColumnDefinition {
   /// This is true for `Iterable<SupabaseModel>` and `SupabaseModel`. Defaults to `false`.
   final bool association;
 
+  /// The column in the class's table that relates to another table in Supabase.
+  /// For example, given the Supabase table `users` with a column of `address_id` indexing
+  /// to the table `addresses`, `'address_id'` would be this value.
   final String? associationForeignKey;
 
+  /// The Dart type if [association] is `true`. This value has no nullability suffixes
+  /// and is not wrapped in `Future` or any other `Iterable` type.
   final Type? associationType;
 
   /// The Supabase column name, **not** the field name unless this definition is an association.
