@@ -44,7 +44,7 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
         '@override\nfinal defaultToNull = ${config?.defaultToNull};',
       '@override\nfinal fieldsToSupabaseColumns = {${fieldsToColumns.join(',\n')}};',
       '@override\nfinal ignoreDuplicates = ${config?.ignoreDuplicates};',
-      if (config?.onConflict != null) "@override\nfinal onConflict = '${config?.onConflict}';",
+      "@override\nfinal onConflict = ${config?.onConflict == null ? 'null' : "'${config?.onConflict}'"};",
       '@override\nfinal uniqueFields = {${uniqueFields.map((u) => "'$u'").join(',\n')}};',
     ];
   }
