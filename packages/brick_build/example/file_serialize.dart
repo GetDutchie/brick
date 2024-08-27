@@ -1,3 +1,5 @@
+import 'package:brick_build/generators.dart';
+
 import 'file_serdes_generator.dart';
 
 /// Generate serialized code for each field to write to a file
@@ -29,7 +31,7 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
 
       // Iterable<enum>
       if (argTypeChecker.isEnum) {
-        return '$fieldValue?.map((e) => ${checker.argType.getDisplayString().replaceAll('?', '')}.values.indexOf(e))';
+        return '$fieldValue?.map((e) => ${SharedChecker.withoutNullability(checker.argType)}.values.indexOf(e))';
       }
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>

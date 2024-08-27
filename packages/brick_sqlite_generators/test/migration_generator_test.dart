@@ -3,8 +3,8 @@ import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/src/sqlite_schema/migration_generator.dart';
 import 'package:test/test.dart';
 
-import 'migration_generator/test_from_identical_schema.dart' as fromIdenticalSchema;
-import 'migration_generator/test_from_new_schema.dart' as fromNewSchema;
+import 'migration_generator/test_from_identical_schema.dart' as from_identical_schema;
+import 'migration_generator/test_from_new_schema.dart' as from_new_schema;
 
 const generator = MigrationGenerator();
 final generateLibrary = generateLibraryForFolder('migration_generator');
@@ -112,17 +112,17 @@ void main() {
         final output = generator.generate(
           reader,
           MockBuildStep(),
-          newSchema: fromNewSchema.schema,
+          newSchema: from_new_schema.schema,
           version: 2,
         );
 
-        expect(output, fromNewSchema.output);
+        expect(output, from_new_schema.output);
       });
 
       test('with an identical schema', () async {
         final reader = await generateLibrary('from_identical_schema');
         final output =
-            generator.generate(reader, MockBuildStep(), newSchema: fromIdenticalSchema.schema);
+            generator.generate(reader, MockBuildStep(), newSchema: from_identical_schema.schema);
         expect(output, isNull);
       });
     });

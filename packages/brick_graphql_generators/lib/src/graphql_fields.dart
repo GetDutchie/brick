@@ -7,26 +7,11 @@ import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql_generators/src/graphql_serializable_query_transformer_extended.dart';
 
 /// Find `@Graphql` given a field
-class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
+class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
+    with AnnotationFinderWithFieldRename {
   final GraphqlSerializable? config;
 
   GraphqlAnnotationFinder([this.config]);
-
-  /// Change serialization key based on the configuration.
-  /// `name` defined with a field annotation (`@Graphql`) take precedence.
-  String _renameField(String name) {
-    final renameTo = config?.fieldRename ?? GraphqlSerializable.defaults.fieldRename;
-    switch (renameTo) {
-      case FieldRename.none:
-        return name;
-      case FieldRename.snake:
-        return StringHelpers.snakeCase(name);
-      case FieldRename.kebab:
-        return StringHelpers.kebabCase(name);
-      case FieldRename.pascal:
-        return StringHelpers.pascalCase(name);
-    }
-  }
 
   @override
   Graphql from(element) {
@@ -37,7 +22,11 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
         ignore: Graphql.defaults.ignore,
         ignoreFrom: Graphql.defaults.ignoreFrom,
         ignoreTo: Graphql.defaults.ignoreTo,
-        name: _renameField(element.name),
+        name: renameField(
+          element.name,
+          config?.fieldRename,
+          GraphqlSerializable.defaults.fieldRename,
+        ),
         nullable: Graphql.defaults.nullable,
         enumAsString: Graphql.defaults.enumAsString,
       );
@@ -50,7 +39,8 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql> {
       ignore: obj.getField('ignore')?.toBoolValue() ?? Graphql.defaults.ignore,
       ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? Graphql.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
-      name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
+      name: obj.getField('name')?.toStringValue() ??
+          renameField(element.name, config?.fieldRename, GraphqlSerializable.defaults.fieldRename),
       nullable: obj.getField('nullable')?.toBoolValue() ?? Graphql.defaults.nullable,
       subfields: _convertMapToMap(obj.getField('subfields')?.toMapValue()),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),

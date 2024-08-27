@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.2.1
+
+- Use `renameField` from `brick_build`'s `AnnotationFinderWithFieldRename` mixin
+- Standardize `_finalTypeForField` to `SharedChecker#withoutNullResultType`
+
 ## 3.2.0
 
 - Update `analyzer` constraints to `>=6.0.0 <7.0.0`

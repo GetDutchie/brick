@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 3.2.1
+
+- Use `SharedChecker.withoutNullability` instead of stripping null suffixes manually
+- Standardize `_finalTypeForField` to `SharedChecker#withoutNullResultType`
+- (test) remove analysis options override for non-standard library prefixes
+
 ## 3.2.0
 
 - Update `analyzer` constraints to `>=6.0.0 <7.0.0`
