@@ -41,7 +41,7 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   @override
   final defaultToNull = false;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

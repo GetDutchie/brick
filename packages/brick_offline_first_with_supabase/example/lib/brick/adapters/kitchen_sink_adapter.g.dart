@@ -236,7 +236,7 @@ class KitchenSinkAdapter extends OfflineFirstWithSupabaseAdapter<KitchenSink> {
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'anyString': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

@@ -45,7 +45,7 @@ class UndefinedCamelizedNameAdapter
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

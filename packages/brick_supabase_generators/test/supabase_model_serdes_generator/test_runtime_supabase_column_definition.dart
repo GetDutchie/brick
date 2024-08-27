@@ -35,7 +35,7 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

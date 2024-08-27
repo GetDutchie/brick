@@ -55,7 +55,7 @@ class HorseAdapter extends OfflineFirstWithSupabaseAdapter<Horse> {
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',
