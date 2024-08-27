@@ -44,8 +44,6 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'some_long_field',
     )
   };
