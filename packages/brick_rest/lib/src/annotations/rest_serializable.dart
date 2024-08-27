@@ -1,23 +1,7 @@
+import 'package:brick_core/field_rename.dart';
 import 'package:brick_core/query.dart';
 import 'package:brick_rest/src/rest_model.dart';
 import 'package:brick_rest/src/rest_request_transformer.dart';
-
-/// Values for the automatic field renaming behavior for [RestSerializable].
-///
-/// Heavily borrowed/inspired by [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/a581e5cc9ee25bf4ad61e8f825a311289ade905c/json_serializable/lib/src/json_key_utils.dart#L164-L179)
-enum FieldRename {
-  /// Leave fields unchanged
-  none,
-
-  /// Encodes field name from `snakeCase` to `snake_case`.
-  snake,
-
-  /// Encodes field name from `kebabCase` to `kebab-case`.
-  kebab,
-
-  /// Capitalizes first letter of field name
-  pascal,
-}
 
 /// An annotation used to specify a class to generate code for.
 ///

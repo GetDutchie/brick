@@ -6,14 +6,14 @@ import 'package:brick_sqlite_generators/src/sqlite_schema/sqlite_schema_generato
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
-import 'sqlite_schema/test_all_field_types.dart' as allFieldTypes;
-import 'sqlite_schema/test_from_to_json.dart' as fromToJson;
-import 'sqlite_schema/test_index_annotation.dart' as indexAnnotation;
+import 'sqlite_schema/test_all_field_types.dart' as all_field_types;
+import 'sqlite_schema/test_from_to_json.dart' as from_to_json;
+import 'sqlite_schema/test_index_annotation.dart' as index_annotation;
 import 'sqlite_schema/test_nullable.dart' as nullable;
-import 'sqlite_schema/test_one_to_many_association.dart' as oneToManyAssociation;
-import 'sqlite_schema/test_one_to_one_association.dart' as oneToOneAssociation;
+import 'sqlite_schema/test_one_to_many_association.dart' as one_to_many_association;
+import 'sqlite_schema/test_one_to_one_association.dart' as one_to_one_association;
 import 'sqlite_schema/test_simple.dart' as simple;
-import 'sqlite_schema/test_sqlite_column_type.dart' as sqliteColumnType;
+import 'sqlite_schema/test_sqlite_column_type.dart' as sqlite_column_type;
 
 const generator = SqliteSchemaGenerator();
 final generateReader = generateLibraryForFolder('sqlite_schema');
@@ -23,12 +23,12 @@ void main() {
     group('#generate', () {
       test('AllFieldTypes', () async {
         final input = await generateInput('all_field_types');
-        expect(input, allFieldTypes.output);
+        expect(input, all_field_types.output);
       });
 
       test('ColumnType', () async {
         final input = await generateInput('sqlite_column_type');
-        expect(input, sqliteColumnType.output);
+        expect(input, sqlite_column_type.output);
       });
 
       test('Nullable', () async {
@@ -38,17 +38,17 @@ void main() {
 
       test('OneToOneAssociation', () async {
         final input = await generateInput('one_to_one_association');
-        expect(input, oneToOneAssociation.output);
+        expect(input, one_to_one_association.output);
       });
 
       test('OneToManyAssociation', () async {
         final input = await generateInput('one_to_many_association');
-        expect(input, oneToManyAssociation.output);
+        expect(input, one_to_many_association.output);
       });
 
       test('IndexAnnotation', () async {
         final input = await generateInput('index_annotation');
-        expect(input, indexAnnotation.output);
+        expect(input, index_annotation.output);
       });
 
       test('Simple', () async {
@@ -58,7 +58,7 @@ void main() {
 
       test('FromToJson', () async {
         final input = await generateInput('from_to_json');
-        expect(input, fromToJson.output);
+        expect(input, from_to_json.output);
       });
     });
 

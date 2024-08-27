@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
@@ -38,7 +37,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
-      final columnInsertionType = _finalTypeForField(field.type);
+      final columnInsertionType = checker.withoutNullResultType;
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''
@@ -266,7 +265,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
     final joinsTable =
         InsertForeignKey.joinsTableName(annotation.name!, localTableName: fields.element.name);
     final joinsForeignColumn = InsertForeignKey.joinsTableForeignColumnName(
-      checker.unFuturedArgType.getDisplayString().replaceAll('?', ''),
+      SharedChecker.withoutNullability(checker.unFuturedArgType),
     );
     final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
 
@@ -307,26 +306,6 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
         })$nullabilityDefault);
       }
     ''';
-  }
-
-  String _finalTypeForField(DartType type) {
-    final checker = checkerForType(type);
-    final typeRemover = RegExp(r'\<[,\s\w]+\>');
-
-    // Future<?>, Iterable<?>
-    if (checker.isFuture || checker.isIterable) {
-      return _finalTypeForField(checker.argType);
-    }
-
-    if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType
-          .getDisplayString()
-          .replaceAll('?', '')
-          .replaceAll(typeRemover, '');
-    }
-
-    // remove arg types as they can't be declared in final fields
-    return type.getDisplayString().replaceAll('?', '').replaceAll(typeRemover, '');
   }
 
   String _boolForField(String fieldValue, bool nullable) {

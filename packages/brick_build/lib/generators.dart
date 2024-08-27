@@ -1,5 +1,6 @@
 export 'package:brick_build/src/adapter_generator.dart';
 export 'package:brick_build/src/annotation_finder.dart';
+export 'package:brick_build/src/annotation_finder_with_field_rename.dart';
 export 'package:brick_build/src/annotation_super_generator.dart';
 export 'package:brick_build/src/model_dictionary_generator.dart';
 export 'package:brick_build/src/provider_serializable_generator.dart';
