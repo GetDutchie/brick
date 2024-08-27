@@ -225,13 +225,13 @@ class SharedChecker<_SiblingModel extends Model> {
   ///
   /// For example, `Future<String>`, `List<Future<String>>`, `String?` and `Future<String?>`
   /// will all return `String`.
-  String get unnullResultType {
+  String get withoutNullResultType {
     final typeRemover = RegExp(r'\<[,\s\w]+\>');
 
     // Future<?>, Iterable<?>
     if (isFuture || isIterable) {
       final checker = SharedChecker<_SiblingModel>(argType);
-      return checker.unnullResultType;
+      return checker.withoutNullResultType;
     }
 
     if (toJsonMethod != null) {

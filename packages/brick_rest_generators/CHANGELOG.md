@@ -3,7 +3,7 @@
 ## 3.2.1
 
 - Use `renameField` from `brick_build`'s `AnnotationFinderWithFieldRename` mixin
-- Standardize `_finalTypeForField` to `SharedChecker#unnullResultType`
+- Standardize `_finalTypeForField` to `SharedChecker#withoutNullResultType`
 
 ## 3.2.0
 

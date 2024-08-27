@@ -3,8 +3,8 @@
 ## 3.2.1
 
 - Use `SharedChecker.withoutNullability` instead of stripping null suffixes manually
-- Standardize `_finalTypeForField` to `SharedChecker#unnullResultType`
-- (internal) remove analysis options override for non-standard library prefixes
+- Standardize `_finalTypeForField` to `SharedChecker#withoutNullResultType`
+- (test) remove analysis options override for non-standard library prefixes
 
 ## 3.2.0
 

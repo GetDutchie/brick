@@ -41,7 +41,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     final annotation = fields.annotationForField(field);
     final checker = checkerForType(field.type);
     final remoteName = providerNameForField(annotation.name, checker: checker);
-    final columnInsertionType = checker.unnullResultType;
+    final columnInsertionType = checker.withoutNullResultType;
     final subfields = (annotation.subfields ?? _subfieldsForType(field.type))
         .entries
         .fold<List<String>>(<String>[], (acc, entry) {

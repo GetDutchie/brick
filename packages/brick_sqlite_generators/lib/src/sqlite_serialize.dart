@@ -37,7 +37,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
-      final columnInsertionType = checker.unnullResultType;
+      final columnInsertionType = checker.withoutNullResultType;
 
       // T0D0 support List<Future<Sibling>> for 'association'
       fieldsToColumns.add('''

@@ -1,6 +1,6 @@
 ## Unreleased
 
-- (internal) remove analysis options override for non-standard library prefixes
+- (test) remove analysis options override for non-standard library prefixes
 
 ## 3.3.0
 

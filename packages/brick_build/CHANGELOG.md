@@ -3,7 +3,7 @@
 ## 3.2.0
 
 - Add convenience mixin `AnnotationFinderWithFieldRename` for field renames in generators
-- Add `SharedChecker#unnullResultType` for retrieving the final typed version of a field. "unnull" was used instead of the more idiomatic "non-null" because non-null in the Dart ecosystem and lower-level analyzer means "not null-safe." This method strips null suffixes and type symbols like `<` and `>`.
+- Add `SharedChecker#withoutNullResultType` for retrieving the final typed version of a field. "withoutNull" was used instead of the more idiomatic "non-null" because non-null in the Dart ecosystem and lower-level analyzer means "not null-safe." This method strips null suffixes and type symbols like `<` and `>`.
 - **BREAKING CHANGE** Remove `StringHelpers.kebabCase` and `StringHelpers.pascalCase`. These should be invoked from the `AnnotationFinderWithFieldRename#renameField` method.
 
 ## 3.1.0
