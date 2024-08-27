@@ -1,6 +1,7 @@
+import 'package:brick_core/field_rename.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
-import 'package:brick_rest/brick_rest.dart' show FieldRename, RestSerializable;
+import 'package:brick_rest/brick_rest.dart' show RestSerializable;
 
 final output = r'''
 Future<RestConfigNoRename> _$RestConfigNoRenameFromRest(

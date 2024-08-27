@@ -1,4 +1,4 @@
-import 'package:brick_core/field_serializable.dart';
+import 'package:brick_core/field_rename.dart';
 import 'package:brick_core/query.dart';
 import 'package:brick_rest/src/rest_model.dart';
 import 'package:brick_rest/src/rest_request_transformer.dart';

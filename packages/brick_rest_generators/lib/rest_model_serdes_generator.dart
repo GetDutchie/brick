@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_rest/brick_rest.dart' show RestSerializable, FieldRename;
+import 'package:brick_core/field_rename.dart';
+import 'package:brick_rest/brick_rest.dart' show RestSerializable;
 import 'package:brick_rest_generators/src/rest_deserialize.dart';
 import 'package:brick_rest_generators/src/rest_fields.dart';
 import 'package:brick_rest_generators/src/rest_serializable_extended.dart';

@@ -1,6 +1,6 @@
 import 'package:brick_build/src/annotation_finder.dart';
 import 'package:brick_build/src/utils/string_helpers.dart';
-import 'package:brick_core/field_serializable.dart';
+import 'package:brick_core/field_rename.dart';
 
 mixin AnnotationFinderWithFieldRename<Annotation extends Object> on AnnotationFinder<Annotation> {
   /// Change serialization key based on the configuration.

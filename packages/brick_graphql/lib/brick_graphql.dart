@@ -1,4 +1,4 @@
-export 'package:brick_core/field_serializable.dart' show FieldRename;
+export 'package:brick_core/field_rename.dart';
 export 'package:brick_graphql/src/annotations/graphql.dart';
 export 'package:brick_graphql/src/annotations/graphql_serializable.dart';
 export 'package:brick_graphql/src/graphql_adapter.dart';

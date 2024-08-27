@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_core/field_serializable.dart';
+import 'package:brick_core/field_rename.dart';
 import 'package:brick_graphql/src/graphql_model.dart';
 import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 
