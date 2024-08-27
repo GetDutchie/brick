@@ -24,17 +24,19 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
+      final isAssociation = checker.isSibling || (checker.isIterable && checker.isArgTypeASibling);
 
-      // T0D0 support List<Future<Sibling>> for 'association'
-      fieldsToColumns.add(
-        '''
-          '${field.name}': const RuntimeSupabaseColumnDefinition(
-            association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
-            associationForeignKey: '${annotation.foreignKey}',
-            associationType: ${_finalTypeForField(field.type)},
-            columnName: '$columnName',
-          )''',
-      );
+      var definition = '''
+        '${field.name}': const RuntimeSupabaseColumnDefinition(
+          association: $isAssociation,
+          columnName: '$columnName',
+      ''';
+      if (annotation.foreignKey != null) {
+        definition += "associationForeignKey: '${annotation.foreignKey}',";
+      }
+      if (isAssociation) definition += 'associationType: ${_finalTypeForField(field.type)},';
+      definition += ')';
+      fieldsToColumns.add(definition);
 
       if (annotation.unique) uniqueFields.add(field.name);
     }
