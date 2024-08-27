@@ -14,13 +14,14 @@ dependency_overrides:
     path: ../../brick_supabase
   brick_supabase_generators:
     path: ../../brick_supabase_generators
-
-dev_dependencies:
-  build_runner: any
-  build_resolvers: any
-  brick_offline_first_with_supabase_build:
-    path: ../../brick_offline_first_with_supabase_build
   brick_supabase_generators:
     path: ../../brick_supabase_generators
   brick_build:
     path: ../../brick_build
+  brick_offline_first_with_supabase_build:
+    path: ../../brick_offline_first_with_supabase_build
+
+dev_dependencies:
+  build_runner:
+  build_resolvers:
+  brick_offline_first_with_supabase_build:
