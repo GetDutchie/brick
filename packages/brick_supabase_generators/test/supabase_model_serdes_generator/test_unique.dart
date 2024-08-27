@@ -23,7 +23,7 @@ class SupabaseUniqueAdapter extends SupabaseFirstAdapter<SupabaseUnique> {
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

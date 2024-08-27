@@ -37,11 +37,11 @@ class SupabaseDefinedAdapter extends OfflineFirstAdapter<SupabaseDefined> {
   SupabaseDefinedAdapter();
 
   @override
-  final tableName = 'strictly_defined_items';
+  final supabaseTableName = 'strictly_defined_items';
   @override
   final defaultToNull = true;
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
       associationForeignKey: 'null',

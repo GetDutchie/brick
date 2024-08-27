@@ -60,7 +60,6 @@ Future<void> generateExpectation(
 }) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
-  print(generated);
   expect(generated.trim(), output.trim());
 }
 
