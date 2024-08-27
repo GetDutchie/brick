@@ -14,8 +14,6 @@ dependency_overrides:
     path: ../../brick_supabase
   brick_supabase_generators:
     path: ../../brick_supabase_generators
-  brick_supabase_generators:
-    path: ../../brick_supabase_generators
   brick_build:
     path: ../../brick_build
   brick_offline_first_with_supabase_build:
