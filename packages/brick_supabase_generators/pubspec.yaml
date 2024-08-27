@@ -7,13 +7,13 @@ repository: https://github.com/GetDutchie/brick
 version: 0.1.1
 
 environment:
-  sdk: ">=2.18.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  analyzer: ">=5.0.0 <7.0.0"
+  analyzer: ">=6.0.0 <7.0.0"
   brick_build: ">=3.0.0 <4.0.0"
   brick_core: ^1.1.1
-  brick_json_generators: ">=3.0.0 <4.0.0"
+  brick_json_generators: ">=3.1.0 <4.0.0"
   brick_supabase: ">=0.0.1 <2.0.0"
   build: ">=2.0.0 <3.0.0"
   dart_style: ">=2.0.0 <3.0.0"
