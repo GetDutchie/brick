@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.1.2
+
+- Loosen constraints for `gql`, `gql_exec`, and `gql_link`
+
 ## 3.1.1
 
 - Access `FieldRename` from `brick_core` instead of declaring within this package
