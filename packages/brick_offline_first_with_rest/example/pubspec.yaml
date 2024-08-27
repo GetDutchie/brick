@@ -8,9 +8,14 @@ environment:
 dependency_overrides:
   brick_offline_first_with_rest:
     path: ../
-
-dev_dependencies:
-  build_runner: any
-  build_resolvers: any
+  brick_rest_generators:
+    path: ../../brick_rest_generators
+  brick_offline_first_build:
+    path: ../../brick_offline_first_build
   brick_offline_first_with_rest_build:
     path: ../../brick_offline_first_with_rest_build
+
+dev_dependencies:
+  build_runner:
+  build_resolvers:
+  brick_offline_first_with_rest_build:
