@@ -19,6 +19,9 @@ abstract class OfflineFirstSerdes<RemoteSerializeType, SqliteSerializeType> {
   /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
   RemoteSerializeType? toRest() => null;
 
+  /// Pre-serialization to JSON. Must be digestible by `jsonEncode`.
+  RemoteSerializeType? toSupabase() => null;
+
   /// Must be one of the following: `bool`, `DateTime`, `double`, `int`, `num`, `String`,
   /// or another `Iterable` digestible by `jsonEncode`.
   ///
