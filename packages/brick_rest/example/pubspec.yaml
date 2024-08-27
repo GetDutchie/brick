@@ -9,3 +9,7 @@ environment:
 dependencies:
   brick_rest:
     path: ../
+
+dependency_overrides:
+  brick_core:
+    path: ../../brick_core

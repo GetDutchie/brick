@@ -2,30 +2,15 @@
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_rest/brick_rest.dart' show Rest, RestSerializable, FieldRename;
+import 'package:brick_rest/brick_rest.dart' show Rest, RestSerializable;
 import 'package:brick_rest_generators/src/rest_serializable_extended.dart';
 
 /// Find `@Rest` given a field
-class RestAnnotationFinder extends AnnotationFinder<Rest> {
+class RestAnnotationFinder extends AnnotationFinder<Rest>
+    with AnnotationFinderWithFieldRename<Rest> {
   final RestSerializable? config;
 
   RestAnnotationFinder([this.config]);
-
-  /// Change serialization key based on the configuration.
-  /// `name` defined with a field annotation (`@Rest`) take precedence.
-  String _renameField(String name) {
-    final renameTo = config?.fieldRename ?? RestSerializable.defaults.fieldRename;
-    switch (renameTo) {
-      case FieldRename.none:
-        return name;
-      case FieldRename.snake:
-        return StringHelpers.snakeCase(name);
-      case FieldRename.kebab:
-        return StringHelpers.kebabCase(name);
-      case FieldRename.pascal:
-        return StringHelpers.pascalCase(name);
-    }
-  }
 
   @override
   Rest from(element) {
@@ -36,7 +21,11 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
         ignore: Rest.defaults.ignore,
         ignoreFrom: Rest.defaults.ignoreFrom,
         ignoreTo: Rest.defaults.ignoreTo,
-        name: _renameField(element.name),
+        name: renameField(
+          element.name,
+          config?.fieldRename,
+          RestSerializable.defaults.fieldRename,
+        ),
         nullable: config?.nullable ?? Rest.defaults.nullable,
         enumAsString: Rest.defaults.enumAsString,
       );
@@ -49,7 +38,8 @@ class RestAnnotationFinder extends AnnotationFinder<Rest> {
       ignore: obj.getField('ignore')!.toBoolValue() ?? Rest.defaults.ignore,
       ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Rest.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
-      name: obj.getField('name')!.toStringValue() ?? _renameField(element.name),
+      name: obj.getField('name')!.toStringValue() ??
+          renameField(element.name, config?.fieldRename, RestSerializable.defaults.fieldRename),
       nullable:
           obj.getField('nullable')!.toBoolValue() ?? config?.nullable ?? Rest.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),

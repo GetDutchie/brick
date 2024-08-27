@@ -7,14 +7,15 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 import 'sqlite_model_serdes_generator/test_after_save_with_association.dart'
-    as afterSaveWithAssociation;
-import 'sqlite_model_serdes_generator/test_all_field_types.dart' as allFieldTypes;
-import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as booleanFields;
-import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart' as fieldWithTypeArgument;
-import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as sqliteColumnType;
-import 'sqlite_model_serdes_generator/test_sqlite_enum_as_string.dart' as sqliteEnumAsString;
-import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as sqliteUnique;
-import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as toJsonFromJson;
+    as after_save_with_association;
+import 'sqlite_model_serdes_generator/test_all_field_types.dart' as all_field_types;
+import 'sqlite_model_serdes_generator/test_boolean_fields.dart' as boolean_fields;
+import 'sqlite_model_serdes_generator/test_field_with_type_argument.dart'
+    as field_with_type_argument;
+import 'sqlite_model_serdes_generator/test_sqlite_column_type.dart' as sqlite_column_type;
+import 'sqlite_model_serdes_generator/test_sqlite_enum_as_string.dart' as sqlite_enum_as_string;
+import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as sqlite_unique;
+import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as to_json_from_json;
 
 final _generator = TestGenerator();
 final folder = 'sqlite_model_serdes_generator';
@@ -50,39 +51,39 @@ void main() {
 
     group('@Sqlite', () {
       test('columnType', () async {
-        await generateAdapterExpectation('sqlite_column_type', sqliteColumnType.output);
+        await generateAdapterExpectation('sqlite_column_type', sqlite_column_type.output);
       });
 
       test('unique', () async {
-        await generateAdapterExpectation('sqlite_unique', sqliteUnique.output);
+        await generateAdapterExpectation('sqlite_unique', sqlite_unique.output);
       });
 
       test('enumAsString', () async {
-        await generateAdapterExpectation('sqlite_enum_as_string', sqliteEnumAsString.output);
+        await generateAdapterExpectation('sqlite_enum_as_string', sqlite_enum_as_string.output);
       });
     });
 
     test('FieldWithTypeArgument', () async {
-      await generateAdapterExpectation('field_with_type_argument', fieldWithTypeArgument.output);
+      await generateAdapterExpectation('field_with_type_argument', field_with_type_argument.output);
     });
 
     test('BooleanFields', () async {
-      await generateAdapterExpectation('boolean_fields', booleanFields.output);
+      await generateAdapterExpectation('boolean_fields', boolean_fields.output);
     });
 
     test('AfterSaveWithAssociation', () async {
       await generateAdapterExpectation(
         'after_save_with_association',
-        afterSaveWithAssociation.output,
+        after_save_with_association.output,
       );
     });
 
     test('AllFieldTypes', () async {
-      await generateAdapterExpectation('all_field_types', allFieldTypes.output);
+      await generateAdapterExpectation('all_field_types', all_field_types.output);
     });
 
     test('ToJsonFromJson', () async {
-      await generateAdapterExpectation('to_json_from_json', toJsonFromJson.output);
+      await generateAdapterExpectation('to_json_from_json', to_json_from_json.output);
     });
   });
 }

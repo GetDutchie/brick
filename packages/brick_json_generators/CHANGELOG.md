@@ -1,5 +1,7 @@
 ## Unreleased
 
+- (test) remove analysis options override for non-standard library prefixes
+
 ## 3.1.0
 
 - Apply standardized lints

@@ -183,7 +183,7 @@ class SharedChecker<_SiblingModel extends Model> {
       throw InvalidGenerationSourceError(
         'Type argument for ${targetType.getDisplayString()} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${classElement.supertype!.getDisplayString().replaceAll('?', '')}<int>`',
+            'Define the type on class ${targetType.element}, e.g. `extends ${withoutNullability(classElement.supertype!)}<int>`',
         element: targetType.element,
       );
     }
@@ -219,6 +219,27 @@ class SharedChecker<_SiblingModel extends Model> {
     }
 
     return targetType;
+  }
+
+  /// Returns the final version of a type without decoration. It will not have a null suffix.
+  ///
+  /// For example, `Future<String>`, `List<Future<String>>`, `String?` and `Future<String?>`
+  /// will all return `String`.
+  String get withoutNullResultType {
+    final typeRemover = RegExp(r'\<[,\s\w]+\>');
+
+    // Future<?>, Iterable<?>
+    if (isFuture || isIterable) {
+      final checker = SharedChecker<_SiblingModel>(argType);
+      return checker.withoutNullResultType;
+    }
+
+    if (toJsonMethod != null) {
+      return withoutNullability(toJsonMethod!.returnType).replaceAll(typeRemover, '');
+    }
+
+    // remove arg types as they can't be declared in final fields
+    return withoutNullability(targetType).replaceAll(typeRemover, '');
   }
 
   /// Print the `DartType` without nullability

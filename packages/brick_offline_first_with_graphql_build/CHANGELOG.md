@@ -1,5 +1,7 @@
 ## Unreleased
 
+- (test) remove analysis options override for non-standard library prefixes
+
 ## 3.3.0
 
 - Update `analyzer` constraints to `>=6.0.0 <7.0.0`

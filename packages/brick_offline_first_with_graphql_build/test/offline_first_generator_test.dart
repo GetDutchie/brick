@@ -3,12 +3,13 @@ import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphq
 import 'package:brick_offline_first_with_graphql_build/src/offline_first_with_graphql_generator.dart';
 import 'package:test/test.dart';
 
-import 'offline_first_generator/test_custom_serdes.dart' as customSerdes;
-import 'offline_first_generator/test_graphql_config_field_rename.dart' as graphqlConfigFieldRename;
+import 'offline_first_generator/test_custom_serdes.dart' as custom_serdes;
+import 'offline_first_generator/test_graphql_config_field_rename.dart'
+    as graphql_config_field_rename;
 import 'offline_first_generator/test_graphql_config_query_operation_transformer.dart'
-    as graphqlConfigQueryOperationTransformer;
-import 'offline_first_generator/test_offline_first_where_rename.dart' as offlineFirstWhereRename;
-import 'offline_first_generator/test_specify_field_name.dart' as specifyFieldName;
+    as graphql_config_query_operation_transformer;
+import 'offline_first_generator/test_offline_first_where_rename.dart' as offline_first_where_rename;
+import 'offline_first_generator/test_specify_field_name.dart' as specify_field_name;
 
 final _generator = OfflineFirstWithGraphqlGenerator();
 final folder = 'offline_first_generator';
@@ -18,26 +19,29 @@ void main() {
   group('OfflineFirstWithGraphqlGenerator', () {
     group('#generate', () {
       test('CustomSerdes', () async {
-        await generateExpectation('custom_serdes', customSerdes.output);
+        await generateExpectation('custom_serdes', custom_serdes.output);
       });
     });
 
     group('@ConnectOfflineFirstWithGraphql', () {
       test('graphqlSerializable#fieldRename', () async {
-        await generateExpectation('graphql_config_field_rename', graphqlConfigFieldRename.output);
+        await generateExpectation(
+          'graphql_config_field_rename',
+          graphql_config_field_rename.output,
+        );
       });
 
       test('graphqlSerializable#queryOperationTransformer', () async {
         await generateAdapterExpectation(
           'graphql_config_query_operation_transformer',
-          graphqlConfigQueryOperationTransformer.output,
+          graphql_config_query_operation_transformer.output,
         );
       });
     });
 
     group('FieldSerializable', () {
       test('name', () async {
-        await generateExpectation('specify_field_name', specifyFieldName.output);
+        await generateExpectation('specify_field_name', specify_field_name.output);
       });
     });
 
@@ -45,7 +49,7 @@ void main() {
       test('renames the definition', () async {
         await generateAdapterExpectation(
           'offline_first_where_rename',
-          offlineFirstWhereRename.output,
+          offline_first_where_rename.output,
         );
       });
     });

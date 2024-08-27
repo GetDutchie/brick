@@ -6,9 +6,9 @@ import 'package:brick_sqlite_generators/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
-import 'offline_first_schema_generator/test_with_association.dart' as withAssociation;
-import 'offline_first_schema_generator/test_with_associations.dart' as withAssociations;
-import 'offline_first_schema_generator/test_with_serdes.dart' as withSerdes;
+import 'offline_first_schema_generator/test_with_association.dart' as with_association;
+import 'offline_first_schema_generator/test_with_associations.dart' as with_associations;
+import 'offline_first_schema_generator/test_with_serdes.dart' as with_serdes;
 
 final generator = OfflineFirstSchemaGenerator();
 final generateLibrary = generateLibraryForFolder('offline_first_schema_generator');
@@ -30,17 +30,17 @@ void main() {
       final fieldses =
           annotatedElements.map((e) => SqliteFields(e.element as ClassElement)).toList();
       final output = generator.createMigration(reader, fieldses, version: 2);
-      expect(output, withSerdes.output);
+      expect(output, with_serdes.output);
     });
 
     test('with association', () async {
       final output = await generateOutputForFile('with_association');
-      expect(output, withAssociation.output);
+      expect(output, with_association.output);
     });
 
     test('with associations', () async {
       final output = await generateOutputForFile('with_associations');
-      expect(output, withAssociations.output);
+      expect(output, with_associations.output);
     });
   });
 }

@@ -60,7 +60,7 @@ abstract class SqliteSerdesGenerator<_Model extends SqliteModel>
   String providerNameForField(annotatedName, {required checker}) {
     if (checker.isSibling) {
       return InsertForeignKey.foreignKeyColumnName(
-        checker.unFuturedType.getDisplayString().replaceAll('?', ''),
+        SharedChecker.withoutNullability(checker.unFuturedType),
         annotatedName,
       );
     }

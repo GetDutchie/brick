@@ -91,7 +91,7 @@ class SqliteSchemaGenerator {
     required Sqlite foreignTableColumnDefinition,
     required SharedChecker checker,
   }) {
-    final foreignTableName = checker.unFuturedArgType.getDisplayString().replaceAll('?', '');
+    final foreignTableName = SharedChecker.withoutNullability(checker.unFuturedArgType);
 
     return SchemaTable(
       InsertForeignKey.joinsTableName(
@@ -236,12 +236,12 @@ class SqliteSchemaGenerator {
     } else if (checker.isSibling) {
       return SchemaColumn(
         InsertForeignKey.foreignKeyColumnName(
-          checker.unFuturedType.getDisplayString().replaceAll('?', ''),
+          SharedChecker.withoutNullability(checker.unFuturedType),
           column.name,
         ),
         Column.integer,
         isForeignKey: true,
-        foreignTableName: checker.unFuturedType.getDisplayString().replaceAll('?', ''),
+        foreignTableName: SharedChecker.withoutNullability(checker.unFuturedType),
         nullable: column.nullable,
         onDeleteCascade: column.onDeleteCascade,
         onDeleteSetDefault: column.onDeleteSetDefault,
@@ -273,7 +273,7 @@ class SqliteSchemaGenerator {
     if (!column.ignore && column.index && !isIterableAssociation) {
       final name = checker.isSibling
           ? InsertForeignKey.foreignKeyColumnName(
-              checker.unFuturedType.getDisplayString().replaceAll('?', ''),
+              SharedChecker.withoutNullability(checker.unFuturedType),
               column.name,
             )
           : column.name!;

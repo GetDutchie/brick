@@ -11,3 +11,7 @@ dependencies:
   brick_graphql:
     path: ../
   gql_http_link: any
+
+dependency_overrides:
+  brick_core:
+    path: ../../brick_core

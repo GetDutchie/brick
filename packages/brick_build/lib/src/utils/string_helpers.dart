@@ -15,28 +15,6 @@ class StringHelpers {
       return lower;
     });
   }
-
-  /// Capitalizes first letter
-  /// Taken from [json_serializable](https://github.com/dart-lang/json_serializable/blob/d7e6612cf947e150710007a63b439f8f0c316d42/json_serializable/lib/src/utils.dart#L30-L36)
-  static String pascalCase(String input) {
-    if (input.isEmpty) return '';
-
-    return input[0].toUpperCase() + input.substring(1);
-  }
-
-  /// Converts a camelized string to kebab-case
-  /// Taken from [json_serializable](https://github.com/dart-lang/json_serializable/blob/d7e6612cf947e150710007a63b439f8f0c316d42/json_serializable/lib/src/utils.dart#L38-L47)
-  static String kebabCase(String input) {
-    return input.replaceAllMapped(RegExp('[A-Z]'), (match) {
-      var lower = match.group(0)!.toLowerCase();
-
-      if (match.start > 0) {
-        lower = '-$lower';
-      }
-
-      return lower;
-    });
-  }
 }
 
 // Borrowed from [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/9fcee71528f17f8e9e80e90003264e84d048977b/json_serializable/lib/src/utils.dart)
