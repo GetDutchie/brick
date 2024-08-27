@@ -41,7 +41,7 @@ class UndefinedCamelizedNameAdapter
   UndefinedCamelizedNameAdapter();
 
   @override
-  final tableName = 'undefined_camelized_names';
+  final supabaseTableName = 'undefined_camelized_names';
   @override
   final defaultToNull = true;
   @override
