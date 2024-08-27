@@ -58,14 +58,10 @@ class HorseAdapter extends OfflineFirstWithSupabaseAdapter<Horse> {
   final fieldsToSupabaseColumns = {
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: String,
       columnName: 'name',
     ),
     'mounties': const RuntimeSupabaseColumnDefinition(
       association: true,
-      associationForeignKey: 'null',
-      associationType: Mounty,
       columnName: 'mounties',
     )
   };

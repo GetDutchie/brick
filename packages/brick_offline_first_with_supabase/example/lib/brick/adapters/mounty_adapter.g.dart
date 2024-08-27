@@ -61,19 +61,14 @@ class MountyAdapter extends OfflineFirstWithSupabaseAdapter<Mounty> {
   final fieldsToSupabaseColumns = {
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: String,
       columnName: 'name',
     ),
     'email': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: String,
       columnName: 'email',
     ),
     'hat': const RuntimeSupabaseColumnDefinition(
       association: true,
-      associationForeignKey: 'null',
       associationType: Hat,
       columnName: 'hat',
     )

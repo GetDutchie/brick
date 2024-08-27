@@ -38,27 +38,24 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
   final fieldsToSupabaseColumns = {
     'someField': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'some_field',
     ),
     'unannotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      associationForeignKey: 'null',
-      associationType: Assoc,
       columnName: 'unannotated_assoc',
+      associationType: Assoc,
     ),
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
+      columnName: 'annotated_assoc',
       associationForeignKey: 'assoc_id',
       associationType: Assoc,
-      columnName: 'annotated_assoc',
     ),
     'differentNameAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
+      columnName: 'differing_name',
       associationForeignKey: 'assoc_id',
       associationType: Assoc,
-      columnName: 'differing_name',
     )
   };
   @override

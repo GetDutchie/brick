@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_supabase/brick_supabase.dart';
+import 'package:brick_core/field_rename.dart';
+import 'package:brick_supabase/brick_supabase.dart' show SupabaseSerializable;
 import 'package:brick_supabase_generators/src/supabase_deserialize.dart';
 import 'package:brick_supabase_generators/src/supabase_fields.dart';
 import 'package:brick_supabase_generators/src/supabase_serialize.dart';

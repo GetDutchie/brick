@@ -26,8 +26,6 @@ class SupabaseUniqueAdapter extends SupabaseFirstAdapter<SupabaseUnique> {
   final fieldsToSupabaseColumns = {
     'someField': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'some_field',
     )
   };

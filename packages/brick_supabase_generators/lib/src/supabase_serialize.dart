@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_json_generators/json_serialize.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase_generators/src/supabase_fields.dart';
@@ -24,17 +23,19 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       final annotation = fields.annotationForField(field);
       final checker = checkerForType(field.type);
       final columnName = providerNameForField(annotation.name, checker: checker);
+      final isAssociation = checker.isSibling || (checker.isIterable && checker.isArgTypeASibling);
 
-      // T0D0 support List<Future<Sibling>> for 'association'
-      fieldsToColumns.add(
-        '''
-          '${field.name}': const RuntimeSupabaseColumnDefinition(
-            association: ${checker.isSibling || (checker.isIterable && checker.isArgTypeASibling)},
-            associationForeignKey: '${annotation.foreignKey}',
-            associationType: ${_finalTypeForField(field.type)},
-            columnName: '$columnName',
-          )''',
-      );
+      var definition = '''
+        '${field.name}': const RuntimeSupabaseColumnDefinition(
+          association: $isAssociation,
+          columnName: '$columnName',
+      ''';
+      if (annotation.foreignKey != null) {
+        definition += "associationForeignKey: '${annotation.foreignKey}',";
+      }
+      if (isAssociation) definition += 'associationType: ${checker.withoutNullResultType},';
+      definition += ')';
+      fieldsToColumns.add(definition);
 
       if (annotation.unique) uniqueFields.add(field.name);
     }
@@ -61,25 +62,5 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       wrappedInFuture: wrappedInFuture,
       fieldAnnotation: fieldAnnotation,
     );
-  }
-
-  String _finalTypeForField(DartType type) {
-    final checker = checkerForType(type);
-    final typeRemover = RegExp(r'\<[,\s\w]+\>');
-
-    // Future<?>, Iterable<?>
-    if (checker.isFuture || checker.isIterable) {
-      return _finalTypeForField(checker.argType);
-    }
-
-    if (checker.toJsonMethod != null) {
-      return checker.toJsonMethod!.returnType
-          .getDisplayString()
-          .replaceAll('?', '')
-          .replaceAll(typeRemover, '');
-    }
-
-    // remove arg types as they can't be declared in final fields
-    return type.getDisplayString().replaceAll('?', '').replaceAll(typeRemover, '');
   }
 }

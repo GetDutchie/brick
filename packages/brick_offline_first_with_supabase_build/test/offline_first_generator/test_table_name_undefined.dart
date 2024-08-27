@@ -48,8 +48,6 @@ class UndefinedCamelizedNameAdapter
   final fieldsToSupabaseColumns = {
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'some_long_field',
     )
   };

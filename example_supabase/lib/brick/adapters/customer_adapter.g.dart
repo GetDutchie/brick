@@ -58,26 +58,18 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'id',
     ),
     'firstName': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: String,
       columnName: 'first_name',
     ),
     'lastName': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: String,
       columnName: 'last_name',
     ),
     'pizzas': const RuntimeSupabaseColumnDefinition(
       association: true,
-      associationForeignKey: 'null',
-      associationType: Pizza,
       columnName: 'pizzas',
     )
   };

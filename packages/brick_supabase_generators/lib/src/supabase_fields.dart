@@ -5,26 +5,11 @@ import 'package:brick_build/generators.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
 /// Find `@Supabase` given a field
-class SupabaseAnnotationFinder extends AnnotationFinder<Supabase> {
+class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
+    with AnnotationFinderWithFieldRename<Supabase> {
   final SupabaseSerializable? config;
 
   SupabaseAnnotationFinder([this.config]);
-
-  /// Change serialization key based on the configuration.
-  /// `name` defined with a field annotation (`@Graphql`) take precedence.
-  String _renameField(String name) {
-    final renameTo = config?.fieldRename ?? SupabaseSerializable.defaults.fieldRename;
-    switch (renameTo) {
-      case FieldRename.none:
-        return name;
-      case FieldRename.snake:
-        return StringHelpers.snakeCase(name);
-      case FieldRename.kebab:
-        return StringHelpers.kebabCase(name);
-      case FieldRename.pascal:
-        return StringHelpers.pascalCase(name);
-    }
-  }
 
   @override
   Supabase from(element) {
@@ -35,7 +20,11 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase> {
         ignore: Supabase.defaults.ignore,
         ignoreFrom: Supabase.defaults.ignoreFrom,
         ignoreTo: Supabase.defaults.ignoreTo,
-        name: _renameField(element.name),
+        name: renameField(
+          element.name,
+          config?.fieldRename,
+          SupabaseSerializable.defaults.fieldRename,
+        ),
         nullable: Supabase.defaults.nullable,
         enumAsString: Supabase.defaults.enumAsString,
       );
@@ -49,7 +38,12 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase> {
       ignore: obj.getField('ignore')!.toBoolValue() ?? Supabase.defaults.ignore,
       ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Supabase.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Supabase.defaults.ignoreTo,
-      name: obj.getField('name')?.toStringValue() ?? _renameField(element.name),
+      name: obj.getField('name')?.toStringValue() ??
+          renameField(
+            element.name,
+            config?.fieldRename,
+            SupabaseSerializable.defaults.fieldRename,
+          ),
       nullable: obj.getField('nullable')!.toBoolValue() ?? Supabase.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
       unique: obj.getField('unique')!.toBoolValue() ?? Supabase.defaults.unique,

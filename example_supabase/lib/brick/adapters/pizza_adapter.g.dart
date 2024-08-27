@@ -52,20 +52,14 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
   final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: int,
       columnName: 'id',
     ),
     'toppings': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: Topping,
       columnName: 'toppings',
     ),
     'frozen': const RuntimeSupabaseColumnDefinition(
       association: false,
-      associationForeignKey: 'null',
-      associationType: bool,
       columnName: 'frozen',
     )
   };
