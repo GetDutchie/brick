@@ -113,10 +113,11 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
       ];
     }
 
+    // The query most likely contains a field only serialized by another provider (i.e. SQLite).
+    // Ignore this query and allow another provider to handle or ignore.
+    // https://github.com/GetDutchie/brick/issues/424
     if (!passedAdapter.fieldsToSupabaseColumns.containsKey(condition.evaluatedField)) {
-      throw ArgumentError(
-        'Field ${condition.evaluatedField} on $_Model is not serialized by SQLite',
-      );
+      return <Map<String, String>>[];
     }
 
     final definition = passedAdapter.fieldsToSupabaseColumns[condition.evaluatedField]!;

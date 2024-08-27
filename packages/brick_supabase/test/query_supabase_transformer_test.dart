@@ -266,10 +266,7 @@ void main() {
       test('missing field', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
 
-        expect(
-          () => transformer.expandCondition(Where.exact('made_up_field', 1)),
-          throwsA(const TypeMatcher<ArgumentError>()),
-        );
+        expect(transformer.expandCondition(Where.exact('made_up_field', 1)), isEmpty);
       });
 
       test('matching a value to an association', () {
