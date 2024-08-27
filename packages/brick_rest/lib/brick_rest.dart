@@ -1,3 +1,4 @@
+export 'package:brick_core/field_serializable.dart' show FieldRename;
 export 'package:brick_rest/rest_exception.dart';
 export 'package:brick_rest/src/annotations/rest.dart';
 export 'package:brick_rest/src/annotations/rest_serializable.dart';
