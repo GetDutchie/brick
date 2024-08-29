@@ -15,7 +15,7 @@ abstract mixin class SupabaseAdapter<TModel extends SupabaseModel> implements Ad
   bool get ignoreDuplicates;
 
   /// Used for upserts; forwards to Supabase's `onConflict`
-  String? get onConflict;
+  String? get onConflict => null;
 
   /// Declared by the [SupabaseSerializable] `tableName` property
   String get supabaseTableName;

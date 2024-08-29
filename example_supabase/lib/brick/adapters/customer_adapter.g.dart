@@ -76,6 +76,8 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   @override
   final ignoreDuplicates = false;
   @override
+  final onConflict = null;
+  @override
   final uniqueFields = {};
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
