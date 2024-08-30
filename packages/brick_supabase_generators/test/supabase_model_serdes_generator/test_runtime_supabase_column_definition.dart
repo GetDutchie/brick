@@ -25,7 +25,19 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
     SupabaseRuntime instance,
     {required SupabaseProvider provider,
     SupabaseFirstRepository? repository}) async {
-  return {'some_field': instance.someField};
+  return {
+    'some_field': instance.someField,
+    'unannotated_assoc': await AssocAdapter().toSupabase(
+        instance.unannotatedAssoc,
+        provider: provider,
+        repository: repository),
+    'annotated_assoc': await AssocAdapter().toSupabase(instance.annotatedAssoc,
+        provider: provider, repository: repository),
+    'differing_name': await AssocAdapter().toSupabase(
+        instance.differentNameAssoc,
+        provider: provider,
+        repository: repository)
+  };
 }
 
 /// Construct a [SupabaseRuntime]

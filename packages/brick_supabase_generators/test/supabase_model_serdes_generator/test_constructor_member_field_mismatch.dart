@@ -23,7 +23,11 @@ Future<Map<String, dynamic>> _$SupabaseConstructorMemberFieldMismatchToSupabase(
     SupabaseFirstRepository? repository}) async {
   return {
     'nullable_constructor': instance.nullableConstructor,
-    'non_nullable_constructor': instance.nonNullableConstructor
+    'non_nullable_constructor': instance.nonNullableConstructor,
+    'some_field': await Future.wait<Map<String, dynamic>>(instance.someField
+        .map((s) => AssocAdapter()
+            .toSupabase(s, provider: provider, repository: repository))
+        .toList())
   };
 }
 ''';
