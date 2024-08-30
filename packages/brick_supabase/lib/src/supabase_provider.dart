@@ -145,14 +145,17 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         continue;
       }
 
-      if (serializedInstance[association.columnName] is Map) {
-        await _recursiveAssociationUpsert(
-          Map<String, dynamic>.from(serializedInstance[association.columnName]),
-          type: association.associationType!,
-          query: query,
-          repository: repository,
-        );
+      if (serializedInstance[association.columnName] is! Map) {
+        continue;
       }
+
+      await _recursiveAssociationUpsert(
+        Map<String, dynamic>.from(serializedInstance[association.columnName]),
+        type: association.associationType!,
+        query: query,
+        repository: repository,
+      );
+      serializedInstance.remove(association.columnName);
     }
 
     return await _upsertByType(

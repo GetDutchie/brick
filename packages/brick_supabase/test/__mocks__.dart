@@ -102,6 +102,7 @@ Future<Map<String, dynamic>> _$DemoNestedAssociationModelToSupabase(
   return <String, dynamic>{
     'id': instance.id,
     'name': instance.name,
+    'nested': await _$DemoAssociationModelToSupabase(instance.nested),
   };
 }
 
@@ -180,6 +181,7 @@ Future<Map<String, dynamic>> _$DemoAssociationModelToSupabase(DemoAssociationMod
   return <String, dynamic>{
     'id': instance.id,
     'name': instance.name,
+    'assoc': await _$DemoModelToSupabase(instance.assoc),
   };
 }
 
