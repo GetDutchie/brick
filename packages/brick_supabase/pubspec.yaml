@@ -18,3 +18,4 @@ dependencies:
 dev_dependencies:
   lints: ^2.0.1
   test: ^1.16.5
+  collection: ">=1.15.0 <2.0.0"
