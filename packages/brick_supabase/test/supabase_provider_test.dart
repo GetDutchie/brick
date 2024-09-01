@@ -5,19 +5,41 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:brick_supabase/src/supabase_provider.dart';
+import 'package:collection/collection.dart';
 import 'package:supabase/supabase.dart';
 import 'package:test/test.dart';
 
 import '__mocks__.dart';
 
-String _buildUrl(
-  String tableName,
-  String method, {
-  required String fields,
-  String? filter,
-  int? limit,
-}) {
-  return '/rest/v1/$tableName${filter != null ? '?$filter&' : '?'}$method=${Uri.encodeComponent(fields)}${limit != null ? '&limit=$limit' : ''}';
+class _SupabaseRequest {
+  final String method;
+  final String? requestMethod;
+  final String tableName;
+  final String fields;
+  final String? filter;
+  final int? limit;
+
+  _SupabaseRequest(
+    this.tableName, {
+    this.method = 'select',
+    this.requestMethod = 'GET',
+    required this.fields,
+    this.filter,
+    this.limit,
+  });
+
+  @override
+  String toString() =>
+      '/rest/v1/$tableName${filter != null ? '?$filter&' : '?'}$method=${Uri.encodeComponent(fields)}${limit != null ? '&limit=$limit' : ''}';
+
+  Uri get uri => Uri.parse(toString());
+}
+
+class _SupabaseResponse {
+  final dynamic data;
+  final Map<String, String>? headers;
+
+  _SupabaseResponse(this.data, [this.headers]);
 }
 
 void main() {
@@ -27,29 +49,37 @@ void main() {
 
   // https://github.com/supabase/supabase-flutter/blob/main/packages/supabase/test/mock_test.dart#L21
   Future<void> handleRequests(
-    HttpServer server, {
-    String? matchingUrl,
-    String? matchingRequestMethod,
-    dynamic response,
-    Map<String, String>? responseHeaders,
-  }) async {
+    HttpServer server,
+    Map<_SupabaseRequest, _SupabaseResponse> responses,
+  ) async {
     await for (final HttpRequest request in server) {
-      final url = request.uri.toString();
-      final matchesRequestUrl = matchingUrl == url || matchingUrl == null;
-      final matchesRequestMethod =
-          matchingRequestMethod == request.method || matchingRequestMethod == null;
+      final matchingRequest = responses.entries.firstWhereOrNull((r) {
+        final url = request.uri.toString();
+        final matchesRequestMethod =
+            r.key.requestMethod == request.method || r.key.requestMethod == null;
+        final matchesPath = request.uri.path == r.key.uri.path;
+        var matchesQuery = true;
+        for (final param in r.key.uri.queryParameters.entries) {
+          if (!request.uri.queryParameters.containsKey(param.key) ||
+              param.value != request.uri.queryParameters[param.key]) {
+            matchesQuery = false;
+            break;
+          }
+        }
+        return r.key.toString() == url || (matchesRequestMethod && matchesPath && matchesQuery);
+      });
 
-      if (matchesRequestMethod && matchesRequestUrl) {
+      if (matchingRequest != null) {
         final resp = request.response
           ..statusCode = HttpStatus.ok
           ..headers.contentType = ContentType.json;
-        if (responseHeaders != null) {
-          responseHeaders.forEach((key, value) {
+        if (matchingRequest.value.headers != null) {
+          matchingRequest.value.headers!.forEach((key, value) {
             resp.headers.set(key, value);
           });
         }
 
-        resp.write(jsonEncode(response));
+        resp.write(jsonEncode(matchingRequest.value.data));
         await resp.close();
       } else {
         final resp = request.response..statusCode = HttpStatus.notImplemented;
@@ -74,13 +104,16 @@ void main() {
 
   group('SupabaseProvider', () {
     test('#delete', () async {
-      handleRequests(
-        mockServer,
-        matchingUrl:
-            _buildUrl('demos', 'select', fields: 'id,name,age', filter: 'id=eq.1', limit: 1),
-        matchingRequestMethod: 'DELETE',
-        response: {'id': '1', 'name': 'Demo 1'},
+      final req = _SupabaseRequest(
+        'demos',
+        requestMethod: 'DELETE',
+        fields: 'id,name,age',
+        filter: 'id=eq.1',
+        limit: 1,
       );
+      final resp = _SupabaseResponse({'id': '1', 'name': 'Demo 1'});
+
+      handleRequests(mockServer, {req: resp});
       final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
       final didDelete =
           await provider.delete<DemoModel>(DemoModel(age: 1, name: 'Demo 1', id: '1'));
@@ -88,29 +121,32 @@ void main() {
     });
 
     test('#exists', () async {
-      handleRequests(
-        mockServer,
-        matchingUrl: _buildUrl('demos', 'select', fields: 'id,name,age'),
-        response: [
-          {'id': '1', 'name': 'Demo 1', 'age': 1},
-        ],
-        responseHeaders: {'content-range': '*/1'},
+      final req = _SupabaseRequest(
+        'demos',
+        fields: 'id,name,age',
       );
+      final resp = _SupabaseResponse([
+        {'id': '1', 'name': 'Demo 1', 'age': 1},
+      ], {
+        'content-range': '*/1',
+      });
+
+      handleRequests(mockServer, {req: resp});
       final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
       final doesExist = await provider.exists<DemoModel>();
       expect(doesExist, true);
     });
 
     test('#get', () async {
-      handleRequests(
-        mockServer,
-        matchingUrl: _buildUrl('demos', 'select', fields: 'id,name,age'),
-        matchingRequestMethod: 'GET',
-        response: [
-          {'id': '1', 'name': 'Demo 1', 'age': 1},
-          {'id': '2', 'name': 'Demo 2', 'age': 2},
-        ],
+      final req = _SupabaseRequest(
+        'demos',
+        fields: 'id,name,age',
       );
+      final resp = _SupabaseResponse([
+        {'id': '1', 'name': 'Demo 1', 'age': 1},
+        {'id': '2', 'name': 'Demo 2', 'age': 2},
+      ]);
+      handleRequests(mockServer, {req: resp});
       final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
       final retrieved = await provider.get<DemoModel>();
       expect(retrieved, hasLength(2));
@@ -122,20 +158,68 @@ void main() {
       expect(retrieved[1].age, 2);
     });
 
-    test('#upsert', () async {
-      handleRequests(
-        mockServer,
-        matchingUrl:
-            _buildUrl('demos', 'select', fields: 'id,name,age', filter: 'id=eq.1', limit: 1),
-        matchingRequestMethod: 'POST',
-        response: {'id': '1', 'name': 'Demo 1', 'age': 1},
-      );
-      final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
-      final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
-      final inserted = await provider.upsert<DemoModel>(instance);
-      expect(inserted.id, instance.id);
-      expect(inserted.age, instance.age);
-      expect(inserted.name, instance.name);
+    group('#upsert', () {
+      test('no associations', () async {
+        final req = _SupabaseRequest(
+          'demos',
+          requestMethod: 'POST',
+          fields: 'id,name,age',
+          filter: 'id=eq.1',
+          limit: 1,
+        );
+        final resp = _SupabaseResponse(
+          {'id': '1', 'name': 'Demo 1', 'age': 1},
+        );
+        handleRequests(mockServer, {req: resp});
+
+        final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
+        final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
+        final inserted = await provider.upsert<DemoModel>(instance);
+        expect(inserted.id, instance.id);
+        expect(inserted.age, instance.age);
+        expect(inserted.name, instance.name);
+      });
+
+      test('one association', () async {
+        final demoModelReq = _SupabaseRequest(
+          'demos',
+          requestMethod: 'POST',
+          fields: 'id,name,age',
+          filter: 'id=eq.2',
+          limit: 1,
+        );
+        final demoModelResp = _SupabaseResponse(
+          {'id': '1', 'name': 'Demo 1', 'age': 1},
+        );
+        final assocReq = _SupabaseRequest(
+          'demo_associations',
+          requestMethod: 'POST',
+          fields: 'id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age)',
+          filter: 'id=eq.1',
+          limit: 1,
+        );
+        final assocResp = _SupabaseResponse(
+          {
+            'id': '1',
+            'name': 'Demo 1',
+            'age': 1,
+            'assoc': {'id': '2', 'name': 'Nested', 'age': 1},
+          },
+        );
+        handleRequests(mockServer, {demoModelReq: demoModelResp, assocReq: assocResp});
+
+        final provider = SupabaseProvider(supabase, modelDictionary: supabaseModelDictionary);
+        final instance = DemoAssociationModel(
+          assoc: DemoModel(age: 1, name: 'Nested', id: '2'),
+          name: 'Demo 1',
+          id: '1',
+        );
+        final inserted = await provider.upsert<DemoAssociationModel>(instance);
+        expect(inserted.id, instance.id);
+        expect(inserted.assoc.age, instance.assoc.age);
+        expect(inserted.assoc.id, instance.assoc.id);
+        expect(inserted.name, instance.name);
+      });
     });
   });
 }

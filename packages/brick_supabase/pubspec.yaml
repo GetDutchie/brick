@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_supabase
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 0.1.1+2
+version: 0.1.1+5
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -18,3 +18,4 @@ dependencies:
 dev_dependencies:
   lints: ^2.0.1
   test: ^1.16.5
+  collection: ">=1.15.0 <2.0.0"

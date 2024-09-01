@@ -87,8 +87,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   /// when `Room` is upserted, `Pillow` is upserted and then `Bed` is upserted.
   @override
   Future<TModel> upsert<TModel extends SupabaseModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final output = await adapter.toSupabase(instance, provider: this, repository: repository);
+
     return await _recursiveAssociationUpsert(
-      instance,
+      output,
       type: TModel,
       query: query,
       repository: repository,
@@ -96,7 +99,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   }
 
   Future<SupabaseModel> _upsertByType(
-    SupabaseModel instance, {
+    Map<String, dynamic> serializedInstance, {
     required Type type,
     Query? query,
     ModelRepository<SupabaseModel>? repository,
@@ -104,30 +107,29 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     assert(modelDictionary.adapterFor.containsKey(type));
 
     final adapter = modelDictionary.adapterFor[type]!;
-    final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
     final queryTransformer =
         QuerySupabaseTransformer(adapter: adapter, modelDictionary: modelDictionary, query: query);
 
-    final builder = adapter.uniqueFields.fold(client.from(adapter.supabaseTableName).upsert(output),
-        (acc, uniqueFieldName) {
+    final builder = adapter.uniqueFields.fold(
+        client.from(adapter.supabaseTableName).upsert(serializedInstance), (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
-      if (output.containsKey(columnName)) {
-        return acc.eq(columnName, output[columnName]);
+      if (serializedInstance.containsKey(columnName)) {
+        return acc.eq(columnName, serializedInstance[columnName]);
       }
       return acc;
     });
     final resp = await builder.select(queryTransformer.selectFields).limit(1).maybeSingle();
 
     if (resp == null) {
-      throw StateError('Upsert of $instance failed');
+      throw StateError('Upsert of $type failed');
     }
 
     return adapter.fromSupabase(resp, repository: repository, provider: this);
   }
 
   Future<SupabaseModel> _recursiveAssociationUpsert(
-    SupabaseModel instance, {
+    Map<String, dynamic> serializedInstance, {
     required Type type,
     Query? query,
     ModelRepository<SupabaseModel>? repository,
@@ -139,13 +141,28 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         .where((a) => a.association && a.associationType != null);
 
     for (final association in associations) {
+      if (!serializedInstance.containsKey(association.columnName)) {
+        continue;
+      }
+
+      if (serializedInstance[association.columnName] is! Map) {
+        continue;
+      }
+
       await _recursiveAssociationUpsert(
-        instance,
+        Map<String, dynamic>.from(serializedInstance[association.columnName]),
         type: association.associationType!,
         query: query,
         repository: repository,
       );
+      serializedInstance.remove(association.columnName);
     }
-    return await _upsertByType(instance, type: type, query: query, repository: repository);
+
+    return await _upsertByType(
+      serializedInstance,
+      type: type,
+      query: query,
+      repository: repository,
+    );
   }
 }

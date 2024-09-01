@@ -139,10 +139,12 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
       );
     }
 
+    final queryKey = (leadingAssociations != null ? '${leadingAssociations.join('.')}.' : '') +
+        definition.columnName;
+
     return [
       {
-        definition.columnName:
-            '${_compareToSearchParam(condition.compare)}.${leadingAssociations != null ? '${leadingAssociations.join('.')}.' : ''}${condition.value}',
+        queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
       }
     ];
   }
