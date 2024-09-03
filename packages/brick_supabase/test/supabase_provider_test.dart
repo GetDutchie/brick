@@ -12,7 +12,6 @@ import 'package:test/test.dart';
 import '__mocks__.dart';
 
 class _SupabaseRequest {
-  final String method;
   final String? requestMethod;
   final String tableName;
   final String fields;
@@ -21,7 +20,6 @@ class _SupabaseRequest {
 
   _SupabaseRequest(
     this.tableName, {
-    this.method = 'select',
     this.requestMethod = 'GET',
     required this.fields,
     this.filter,
@@ -30,7 +28,7 @@ class _SupabaseRequest {
 
   @override
   String toString() =>
-      '/rest/v1/$tableName${filter != null ? '?$filter&' : '?'}$method=${Uri.encodeComponent(fields)}${limit != null ? '&limit=$limit' : ''}';
+      '/rest/v1/$tableName${filter != null ? '?$filter&' : '?'}select=${Uri.encodeComponent(fields)}${limit != null ? '&limit=$limit' : ''}';
 
   Uri get uri => Uri.parse(toString());
 }

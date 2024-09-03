@@ -66,7 +66,7 @@ final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDiction
 
 ## Models
 
-### ConnectOfflineFirstWithSupabase
+### @ConnectOfflineFirstWithSupabase
 
 `@ConnectOfflineFirstWithSupabase` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
 
@@ -76,6 +76,24 @@ final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDiction
   sqliteConfig: SqliteSerializable(),
 )
 class MyModel extends OfflineFirstWithSupabaseModel {}
+```
+
+### Associations and Foreign Keys
+
+Field types of classes that `extends OfflineFirstWithSupabaseModel` will automatically be assumed as a foreign key in Supabase. You will only need to specify the column name if it differs from your field name to help Brick fetch the right data and serialize/deserialize it locally.
+
+```dart
+class User extends OfflineFirstWithSupabaseModel {
+  // The foreign key is a relation to the `id` column of the Address table
+  @Supabase(name: 'address_id')
+  // Help the SQLite provider connect the association locally to the one provided from remote
+  @OfflineFirst(where: {'id': "data['address']['id']"})
+  final Address address;
+}
+
+class Address extends OfflineFirstWithSupabaseModel{
+  final String id;
+}
 ```
 
 ### FAQ

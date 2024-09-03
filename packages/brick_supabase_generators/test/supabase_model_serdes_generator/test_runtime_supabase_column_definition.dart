@@ -14,11 +14,7 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
           provider: provider,
           repository: repository),
       annotatedAssoc: await AssocAdapter().fromSupabase(data['annotated_assoc'],
-          provider: provider, repository: repository),
-      differentNameAssoc: await AssocAdapter().fromSupabase(
-          data['differing_name'],
-          provider: provider,
-          repository: repository));
+          provider: provider, repository: repository));
 }
 
 Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
@@ -33,10 +29,6 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
         repository: repository),
     'annotated_assoc': await AssocAdapter().toSupabase(instance.annotatedAssoc,
         provider: provider, repository: repository),
-    'differing_name': await AssocAdapter().toSupabase(
-        instance.differentNameAssoc,
-        provider: provider,
-        repository: repository)
   };
 }
 
@@ -60,13 +52,6 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
       columnName: 'annotated_assoc',
-      associationForeignKey: 'assoc_id',
-      associationType: Assoc,
-    ),
-    'differentNameAssoc': const RuntimeSupabaseColumnDefinition(
-      association: true,
-      columnName: 'differing_name',
-      associationForeignKey: 'assoc_id',
       associationType: Assoc,
     )
   };
@@ -96,17 +81,13 @@ class SupabaseRuntime extends SupabaseModel {
 
   final Assoc unannotatedAssoc;
 
-  @Supabase(foreignKey: 'assoc_id')
+  @Supabase(name: 'assoc_id')
   final Assoc annotatedAssoc;
-
-  @Supabase(foreignKey: 'assoc_id', name: 'differing_name')
-  final Assoc differentNameAssoc;
 
   SupabaseRuntime({
     required this.unannotatedAssoc,
     required this.annotatedAssoc,
     required this.someField,
-    required this.differentNameAssoc,
   });
 }
 
