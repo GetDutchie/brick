@@ -13,7 +13,7 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
           data['unannotated_assoc'],
           provider: provider,
           repository: repository),
-      annotatedAssoc: await AssocAdapter().fromSupabase(data['annotated_assoc'],
+      annotatedAssoc: await AssocAdapter().fromSupabase(data['assoc_id'],
           provider: provider, repository: repository));
 }
 
@@ -27,8 +27,8 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
         instance.unannotatedAssoc,
         provider: provider,
         repository: repository),
-    'annotated_assoc': await AssocAdapter().toSupabase(instance.annotatedAssoc,
-        provider: provider, repository: repository),
+    'assoc_id': await AssocAdapter().toSupabase(instance.annotatedAssoc,
+        provider: provider, repository: repository)
   };
 }
 
@@ -51,7 +51,7 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
     ),
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'annotated_assoc',
+      columnName: 'assoc_id',
       associationType: Assoc,
     )
   };
