@@ -24,7 +24,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   }) : adapter = adapter ?? modelDictionary.adapterFor[_Model]!;
 
   String get selectFields {
-    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns.values).join(',');
+    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns).join(',');
   }
 
   PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
@@ -55,22 +55,20 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   @protected
   @visibleForTesting
   List<String> destructureAssociationProperties(
-    Iterable<RuntimeSupabaseColumnDefinition>? columns,
+    Map<String, RuntimeSupabaseColumnDefinition>? columns,
   ) {
     final selectedFields = <String>[];
 
     if (columns == null) return selectedFields;
 
-    for (final field in columns) {
+    for (final entry in columns.entries) {
+      final field = entry.value;
       if (field.association && field.associationType != null) {
         var associationOutput =
-            '${field.columnName}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}';
-        if (field.associationForeignKey != null) {
-          associationOutput += '!${field.associationForeignKey}';
-        }
+            '${entry.key}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}!${field.columnName}';
         associationOutput += '(';
         final fields = destructureAssociationProperties(
-          modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns.values,
+          modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns,
         );
         associationOutput += fields.join(',');
         associationOutput += ')';
