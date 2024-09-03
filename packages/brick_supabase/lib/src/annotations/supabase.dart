@@ -54,7 +54,9 @@ class Supabase implements FieldSerializable {
   /// The key name to use when reading and writing values corresponding
   /// to the annotated field.
   ///
-  /// Associations should not be annotated with `name`.
+  /// The remote column type can be different than the local Dart type for associations.
+  /// For example, `@Supabase(name: 'user_id')` that annotates `final User user` can be
+  /// a Postgres string type.
   ///
   /// If `null`, the snake case value of the field is used.
   @override
