@@ -129,7 +129,10 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition.associationType]!;
 
-      final newLeadingAssociations = [...leadingAssociations ?? <String>[], definition.columnName];
+      final newLeadingAssociations = [
+        ...leadingAssociations ?? <String>[],
+        associationAdapter.supabaseTableName,
+      ];
       return expandCondition(
         condition.value as WhereCondition,
         associationAdapter,
