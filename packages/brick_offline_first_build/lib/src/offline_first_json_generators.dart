@@ -152,7 +152,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
         final isNullable = argType.nullabilitySuffix != NullabilitySuffix.none;
         final repositoryOperator = isNullable ? '?' : '!';
 
-        // @OfflineFirst(where:)
+        // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null &&
             offlineFirstAnnotation.applyToRemoteDeserialization) {
           final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
@@ -205,7 +205,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
       }
     }
 
-    // OfflineFirstModel + @OfflineFirst(where:)
+    // OfflineFirstModel(where:)
     if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
 
