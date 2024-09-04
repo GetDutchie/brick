@@ -23,14 +23,14 @@ jobs:
         with:
           sdk: ${{ matrix.sdk_version }}
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: "~/.pub-cache/hosted"
           key: ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.sdk_version }}-${{ hashFiles(format('packages/{0}/pubspec.yaml', inputs.package)) }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.sdk_version }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: dart pub get && dart run melos bootstrap --scope="${{ inputs.package }}"
 
