@@ -24,7 +24,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   }) : adapter = adapter ?? modelDictionary.adapterFor[_Model]!;
 
   String get selectFields {
-    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns.values).join(',');
+    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns).join(',');
   }
 
   PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
@@ -55,22 +55,20 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   @protected
   @visibleForTesting
   List<String> destructureAssociationProperties(
-    Iterable<RuntimeSupabaseColumnDefinition>? columns,
+    Map<String, RuntimeSupabaseColumnDefinition>? columns,
   ) {
     final selectedFields = <String>[];
 
     if (columns == null) return selectedFields;
 
-    for (final field in columns) {
+    for (final entry in columns.entries) {
+      final field = entry.value;
       if (field.association && field.associationType != null) {
         var associationOutput =
-            '${field.columnName}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}';
-        if (field.associationForeignKey != null) {
-          associationOutput += '!${field.associationForeignKey}';
-        }
+            '${entry.key}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}!${field.columnName}';
         associationOutput += '(';
         final fields = destructureAssociationProperties(
-          modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns.values,
+          modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns,
         );
         associationOutput += fields.join(',');
         associationOutput += ')';
@@ -92,6 +90,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     WhereCondition condition, [
     SupabaseAdapter? passedAdapter,
     List<String>? leadingAssociations,
+    List<Map<String, String>> associationConditions = const [],
   ]) {
     passedAdapter ??= adapter;
 
@@ -102,9 +101,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
           .expand((c) => c)
           .toList();
 
-      if (condition.isRequired) {
-        return conditions;
-      }
+      if (condition.isRequired) return conditions;
 
       return [
         {
@@ -131,12 +128,18 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
       final associationAdapter = modelDictionary.adapterFor[definition.associationType]!;
 
-      final newLeadingAssociations = [...leadingAssociations ?? <String>[], definition.columnName];
+      final newLeadingAssociations = [
+        ...leadingAssociations ?? <String>[],
+        associationAdapter.supabaseTableName,
+      ];
       return expandCondition(
-        condition.value as WhereCondition,
-        associationAdapter,
-        newLeadingAssociations,
-      );
+          condition.value as WhereCondition, associationAdapter, newLeadingAssociations, [
+        if (!definition.associationIsNullable)
+          {
+            condition.evaluatedField: 'not.is.null',
+          },
+        ...associationConditions,
+      ]);
     }
 
     final queryKey = (leadingAssociations != null ? '${leadingAssociations.join('.')}.' : '') +
@@ -145,7 +148,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return [
       {
         queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
-      }
+      },
+      ...associationConditions,
     ];
   }
 

@@ -90,7 +90,7 @@ void main() {
 
             expect(
               select.query,
-              'select=id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age)&assoc.name=eq.Thomas',
+              'select=id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
             );
           });
         });
@@ -227,7 +227,7 @@ void main() {
       test('single association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
         final result = transformer.destructureAssociationProperties(
-          transformer.adapter.fieldsToSupabaseColumns.values,
+          transformer.adapter.fieldsToSupabaseColumns,
         );
         expect(
           result,
@@ -238,7 +238,7 @@ void main() {
       test('iterable association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
         final result = transformer.destructureAssociationProperties(
-          transformer.adapter.fieldsToSupabaseColumns.values,
+          transformer.adapter.fieldsToSupabaseColumns,
         );
         expect(
           result,
@@ -249,7 +249,7 @@ void main() {
       test('nested association', () {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         final result = transformer.destructureAssociationProperties(
-          transformer.adapter.fieldsToSupabaseColumns.values,
+          transformer.adapter.fieldsToSupabaseColumns,
         );
         expect(
           result,

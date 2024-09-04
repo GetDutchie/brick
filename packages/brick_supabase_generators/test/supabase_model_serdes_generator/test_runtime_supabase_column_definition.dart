@@ -13,12 +13,12 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
           data['unannotated_assoc'],
           provider: provider,
           repository: repository),
-      annotatedAssoc: await AssocAdapter().fromSupabase(data['annotated_assoc'],
+      annotatedAssoc: await AssocAdapter().fromSupabase(data['assoc_id'],
           provider: provider, repository: repository),
-      differentNameAssoc: await AssocAdapter().fromSupabase(
-          data['differing_name'],
-          provider: provider,
-          repository: repository));
+      nullableAssoc: data['assocs_id'] == null
+          ? null
+          : await AssocAdapter().fromSupabase(data['assocs_id'],
+              provider: provider, repository: repository));
 }
 
 Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
@@ -31,12 +31,12 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
         instance.unannotatedAssoc,
         provider: provider,
         repository: repository),
-    'annotated_assoc': await AssocAdapter().toSupabase(instance.annotatedAssoc,
+    'assoc_id': await AssocAdapter().toSupabase(instance.annotatedAssoc,
         provider: provider, repository: repository),
-    'differing_name': await AssocAdapter().toSupabase(
-        instance.differentNameAssoc,
-        provider: provider,
-        repository: repository)
+    'assocs_id': instance.nullableAssoc != null
+        ? await AssocAdapter().toSupabase(instance.nullableAssoc!,
+            provider: provider, repository: repository)
+        : null
   };
 }
 
@@ -56,18 +56,19 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
       association: true,
       columnName: 'unannotated_assoc',
       associationType: Assoc,
+      associationIsNullable: false,
     ),
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'annotated_assoc',
-      associationForeignKey: 'assoc_id',
+      columnName: 'assoc_id',
       associationType: Assoc,
+      associationIsNullable: false,
     ),
-    'differentNameAssoc': const RuntimeSupabaseColumnDefinition(
+    'nullableAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'differing_name',
-      associationForeignKey: 'assoc_id',
+      columnName: 'assocs_id',
       associationType: Assoc,
+      associationIsNullable: true,
     )
   };
   @override
@@ -96,17 +97,17 @@ class SupabaseRuntime extends SupabaseModel {
 
   final Assoc unannotatedAssoc;
 
-  @Supabase(foreignKey: 'assoc_id')
+  @Supabase(name: 'assoc_id')
   final Assoc annotatedAssoc;
 
-  @Supabase(foreignKey: 'assoc_id', name: 'differing_name')
-  final Assoc differentNameAssoc;
+  @Supabase(name: 'assocs_id')
+  final Assoc? nullableAssoc;
 
   SupabaseRuntime({
     required this.unannotatedAssoc,
     required this.annotatedAssoc,
     required this.someField,
-    required this.differentNameAssoc,
+    this.nullableAssoc,
   });
 }
 

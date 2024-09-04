@@ -25,14 +25,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
 
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: "~/.pub-cache/hosted"
           key: ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.flutter_version }}-${{ hashFiles(format('packages/{0}/pubspec.yaml', inputs.package)) }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.flutter_version }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: flutter pub get
         working-directory: packages/${{ inputs.package }}

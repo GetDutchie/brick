@@ -1,7 +1,21 @@
 import 'package:brick_core/field_serializable.dart';
 
 /// An annotation used to specify how a field is serialized for a [SupabaseAdapter].
-/// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
+///
+/// If this annotates a field type that extends this model's type, the Supabase column
+/// should be a foreign key.
+///
+/// ```dart
+/// class User extends OfflineFirstWithSupabaseModel{
+///   // The foreign key is a relation to the `id` column of the Address table
+///   @Supabase(name: 'address_id')
+///   final Address address;
+/// }
+///
+/// class Address extends OfflineFirstWithSupabaseModel{
+///   final String id;
+/// }
+/// ```
 class Supabase implements FieldSerializable {
   /// The value to use if the source does not contain this key or if the
   /// value is `null`. **Only applicable during deserialization.**
@@ -18,25 +32,6 @@ class Supabase implements FieldSerializable {
   /// The type of this field should be an enum. Defaults to `false`.
   @override
   final bool enumAsString;
-
-  /// Specify the foreign key to use on the table when fetching for a remote association.
-  ///
-  /// For example, given the `orders` table has a `customer_id` column that associates
-  /// the `customers` table, an `Order` class in Dart may look like:
-  ///
-  /// ```dart
-  /// @SupabaseSerializeable(tableName: 'orders')
-  /// class Order {
-  ///   @Supabase(foreignKey: 'customer_uuid')
-  ///   final Customer customer;
-  /// }
-  ///
-  /// @SupabaseSerializeable(tableName: 'customers')
-  /// class Customer {
-  ///   final String uuid;
-  /// }
-  /// ```
-  final String? foreignKey;
 
   @override
   final String? fromGenerator;
@@ -59,7 +54,9 @@ class Supabase implements FieldSerializable {
   /// The key name to use when reading and writing values corresponding
   /// to the annotated field.
   ///
-  /// Associations should not be annotated with `name`.
+  /// The remote column type can be different than the local Dart type for associations.
+  /// For example, `@Supabase(name: 'user_id')` that annotates `final User user` can be
+  /// a Postgres string type.
   ///
   /// If `null`, the snake case value of the field is used.
   @override
@@ -81,7 +78,6 @@ class Supabase implements FieldSerializable {
     this.defaultValue,
     bool? enumAsString,
     this.fromGenerator,
-    this.foreignKey,
     bool? ignore,
     bool? ignoreFrom,
     bool? ignoreTo,

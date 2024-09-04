@@ -18,26 +18,6 @@ Supabase.instance.client.from('users')
   .upsert(user).eq('uuid', instance.uuid)
 ```
 
-### `@Supabase(foreignKey:)`
-
-Specify the foreign key to use on the table when fetching for a remote association.
-
-For example, given the `orders` table has a `customer_id` column that associates the `customers` table, an `Order` class in Dart may look like:
-
-```dart
-@SupabaseSerializeable(tableName: 'orders')
-class Order {
-  @Supabase(foreignKey: 'customer_uuid')
-  final Customer customer;
-}
-
-@SupabaseSerializeable(tableName: 'customers')
-class Customer {
-  @Supabase(unique: true)
-  final String uuid;
-}
-```
-
 ### `@Supabase(name:)`
 
 Supabase keys can be renamed per field. This will override the default set by `SupabaseSerializable#fieldRename`.
@@ -50,6 +30,22 @@ final String lastName;
 ```
 
 ?> By default, Brick renames fields to be snake case when translating to Supabase, but you can change this default in the `@SupabaseSerializable(fieldRename:)` annotation that [decorates models](models.md).
+
+When the annotated field type extends the model's type, the Supabase column should be a foreign key.
+
+```dart
+class User extends OfflineFirstWithSupabaseModel{
+  // The foreign key is a relation to the `id` column of the Address table
+  @Supabase(name: 'address_id')
+  final Address address;
+}
+
+class Address extends OfflineFirstWithSupabaseModel{
+  final String id;
+}
+```
+
+?> The remote column type can be different than the local Dart type for associations. For example, `@Supabase(name: 'user_id')` that annotates `final User user` can be a Postgres string type.
 
 ### `@Supabase(enumAsString:)`
 

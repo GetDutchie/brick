@@ -78,7 +78,7 @@ await Supabase.initialize(httpClient: client)
 final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDictionary: ...)
 ```
 
-### ConnectOfflineFirstWithSupabase
+### @ConnectOfflineFirstWithSupabase
 
 `@ConnectOfflineFirstWithSupabase` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
 
@@ -98,8 +98,27 @@ Ideally, `@OfflineFirst(where:)` shouldn't be necessary to specify to make the a
 @OfflineFirst(where: {'id': "data['otherId']"})
 // Explicitly specifying `name:` can ensure that the two annotations
 // definitely have the same values
+// Alternatively, you can invoke nested maps (e.g. {'id': "data['pizza']['id']"})
 @Supabase(name: 'otherId')
 final Pizza pizza;
 ```
 
-!> Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) will be ignored. Nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will also be ignored.
+## Associations and Foreign Keys
+
+Field types of classes that `extends OfflineFirstWithSupabaseModel` will automatically be assumed as a foreign key in Supabase. You will only need to specify the column name if it differs from your field name to help Brick fetch the right data and serialize/deserialize it locally.
+
+```dart
+class User extends OfflineFirstWithSupabaseModel {
+  // The foreign key is a relation to the `id` column of the Address table
+  @Supabase(name: 'address_id')
+  // Help the SQLite provider connect the association locally to the one provided from remote
+  @OfflineFirst(where: {'id': "data['address']['id']"})
+  final Address address;
+}
+
+class Address extends OfflineFirstWithSupabaseModel{
+  final String id;
+}
+```
+
+!> If your association is nullable (e.g. `Address?`), the Supabase response may include all `User`s from the database from a loosely-specified query. This is caused by PostgREST's [filtering](https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#top-level-filtering). Brick does not use `!inner` to query tables because there is no guarantee that a model does not have multiple fields relating to the same association; it instead explicitly declares the foreign key with [not.is.null](https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#null-filtering-on-embedded-resources) filtering. If a Dart association is nullable, Brick will not append the `not.is.null` which could return [all results](https://github.com/GetDutchie/brick/issues/429#issuecomment-2325941205). If you have a use case that requires a nullable association and you cannot circumvent this problem with [Supabase's policies](https://supabase.com/docs/guides/database/postgres/row-level-security), please open an issue and provide extensive detail.

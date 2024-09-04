@@ -7,6 +7,7 @@ import 'offline_first_generator/test_default_to_null.dart' as default_to_null;
 import 'offline_first_generator/test_field_name.dart' as specify_field_name;
 import 'offline_first_generator/test_field_rename.dart' as field_rename;
 import 'offline_first_generator/test_ignore_duplicates.dart' as ignore_duplicates;
+import 'offline_first_generator/test_offline_first_where.dart' as offline_first_where;
 import 'offline_first_generator/test_on_conflict.dart' as on_conflict;
 import 'offline_first_generator/test_table_name_defined.dart' as table_name_defined;
 import 'offline_first_generator/test_table_name_undefined.dart' as table_name_undefined;
@@ -50,6 +51,12 @@ void main() {
         });
       });
     });
+
+    group('@OfflineFirst', () {
+      test('where', () async {
+        await generateAdapterExpectation('offline_first_where', offline_first_where.output);
+      });
+    });
   });
 }
 
@@ -74,5 +81,6 @@ Future<void> generateAdapterExpectation(
     annotation.annotation,
     MockBuildStep(),
   );
+  print(generated);
   expect(generated.trim(), output.trim());
 }

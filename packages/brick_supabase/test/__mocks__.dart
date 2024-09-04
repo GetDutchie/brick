@@ -78,7 +78,7 @@ class DemoNestedAssociationModel extends SupabaseModel {
 
   final String name;
 
-  @Supabase(foreignKey: 'nested_id')
+  @Supabase(name: 'nested_id')
   final DemoAssociationModel nested;
 
   DemoNestedAssociationModel({
@@ -130,9 +130,8 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
     ),
     'nested': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'nested',
+      columnName: 'nested_id',
       associationType: DemoAssociationModel,
-      associationForeignKey: 'nested_id',
     ),
   };
 
@@ -150,10 +149,10 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
 }
 
 class DemoAssociationModel extends SupabaseModel {
-  @Supabase(foreignKey: 'assocs_id')
+  @Supabase(name: 'assocs_id')
   final List<DemoModel>? assocs;
 
-  @Supabase(foreignKey: 'assoc_id')
+  @Supabase(name: 'assoc_id')
   final DemoModel assoc;
 
   @Supabase(unique: true)
@@ -221,15 +220,15 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
     ),
     'assoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'assoc',
+      associationIsNullable: false,
+      columnName: 'assoc_id',
       associationType: DemoModel,
-      associationForeignKey: 'assoc_id',
     ),
     'assocs': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'assocs',
+      associationIsNullable: true,
+      columnName: 'assocs_id',
       associationType: DemoModel,
-      associationForeignKey: 'assocs_id',
     ),
   };
 

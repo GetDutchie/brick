@@ -34,7 +34,6 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
       enumAsString: obj.getField('enumAsString')!.toBoolValue() ?? Supabase.defaults.enumAsString,
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
-      foreignKey: obj.getField('foreignKey')!.toStringValue(),
       ignore: obj.getField('ignore')!.toBoolValue() ?? Supabase.defaults.ignore,
       ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Supabase.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Supabase.defaults.ignoreTo,
