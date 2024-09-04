@@ -31,6 +31,22 @@ final String lastName;
 
 ?> By default, Brick renames fields to be snake case when translating to Supabase, but you can change this default in the `@SupabaseSerializable(fieldRename:)` annotation that [decorates models](models.md).
 
+When the annotated field type extends the model's type, the Supabase column should be a foreign key.
+
+```dart
+class User extends OfflineFirstWithSupabaseModel{
+  // The foreign key is a relation to the `id` column of the Address table
+  @Supabase(name: 'address_id')
+  final Address address;
+}
+
+class Address extends OfflineFirstWithSupabaseModel{
+  final String id;
+}
+```
+
+?> The remote column type can be different than the local Dart type for associations. For example, `@Supabase(name: 'user_id')` that annotates `final User user` can be a Postgres string type.
+
 ### `@Supabase(enumAsString:)`
 
 Brick by default assumes enums from a Supabase API will be delivered as integers matching the index in the Flutter app. However, if your API delivers strings instead, the field can be easily annotated without writing a custom generator.
