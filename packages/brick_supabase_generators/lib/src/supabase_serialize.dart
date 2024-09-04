@@ -31,6 +31,7 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
           columnName: '$columnName',
       ''';
       if (isAssociation) definition += 'associationType: ${checker.withoutNullResultType},';
+      if (isAssociation) definition += 'associationIsNullable: ${checker.isNullable},';
       definition += ')';
       fieldsToColumns.add(definition);
 

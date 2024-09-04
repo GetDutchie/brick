@@ -14,7 +14,11 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
           provider: provider,
           repository: repository),
       annotatedAssoc: await AssocAdapter().fromSupabase(data['assoc_id'],
-          provider: provider, repository: repository));
+          provider: provider, repository: repository),
+      nullableAssoc: data['assocs_id'] == null
+          ? null
+          : await AssocAdapter().fromSupabase(data['assocs_id'],
+              provider: provider, repository: repository));
 }
 
 Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
@@ -28,7 +32,11 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
         provider: provider,
         repository: repository),
     'assoc_id': await AssocAdapter().toSupabase(instance.annotatedAssoc,
-        provider: provider, repository: repository)
+        provider: provider, repository: repository),
+    'assocs_id': instance.nullableAssoc != null
+        ? await AssocAdapter().toSupabase(instance.nullableAssoc!,
+            provider: provider, repository: repository)
+        : null
   };
 }
 
@@ -48,11 +56,19 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
       association: true,
       columnName: 'unannotated_assoc',
       associationType: Assoc,
+      associationIsNullable: false,
     ),
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
       columnName: 'assoc_id',
       associationType: Assoc,
+      associationIsNullable: false,
+    ),
+    'nullableAssoc': const RuntimeSupabaseColumnDefinition(
+      association: true,
+      columnName: 'assocs_id',
+      associationType: Assoc,
+      associationIsNullable: true,
     )
   };
   @override
@@ -84,10 +100,14 @@ class SupabaseRuntime extends SupabaseModel {
   @Supabase(name: 'assoc_id')
   final Assoc annotatedAssoc;
 
+  @Supabase(name: 'assocs_id')
+  final Assoc? nullableAssoc;
+
   SupabaseRuntime({
     required this.unannotatedAssoc,
     required this.annotatedAssoc,
     required this.someField,
+    this.nullableAssoc,
   });
 }
 

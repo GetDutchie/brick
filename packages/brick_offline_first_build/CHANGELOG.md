@@ -1,6 +1,7 @@
 ## Unreleased
 
 - (test) remove analysis options override for non-standard library prefixes
+- Make `OfflienFirstJsonDeserialize#_convertSqliteLookupToString` a protected method
 
 ## 3.2.0
 

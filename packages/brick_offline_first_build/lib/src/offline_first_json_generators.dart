@@ -5,6 +5,7 @@ import 'package:brick_core/field_serializable.dart';
 import 'package:brick_json_generators/json_deserialize.dart';
 import 'package:brick_json_generators/json_serialize.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
+import 'package:meta/meta.dart';
 
 /// Adds support for siblings and serdes.
 /// It's best to extend the original generator
@@ -155,7 +156,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
         // @OfflineFirst(where: )
         if (offlineFirstAnnotation.where != null &&
             offlineFirstAnnotation.applyToRemoteDeserialization) {
-          final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
+          final where = convertSqliteLookupToString(offlineFirstAnnotation.where!);
 
           // Future<Iterable<OfflineFirstModel>>
           if (wrappedInFuture) {
@@ -171,7 +172,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
               isFuture: true,
             );
             final where =
-                _convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
+                convertSqliteLookupToString(offlineFirstAnnotation.where!, iterableArgument: 's');
             final getAssociationText = getAssociationMethod(argType, query: 'Query(where: $where)');
 
             if (checker.isArgTypeAFuture) {
@@ -196,8 +197,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
 
       // Iterable<OfflineFirstSerdes>
       if (argTypeChecker.hasSerdes) {
-        final doesHaveConstructor = hasConstructor(checker.argType);
-        if (doesHaveConstructor) {
+        if (hasConstructor(checker.argType)) {
           final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
           final nullabilityOperator = checker.isNullable ? '?' : '';
           return '$fieldValue$nullabilityOperator.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
@@ -205,14 +205,14 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
       }
     }
 
-    // OfflineFirstModel(where:)
+    // OfflineFirst(where:)
     if (checker.isSibling) {
       final shouldAwait = wrappedInFuture ? '' : 'await ';
 
       if (offlineFirstAnnotation.where != null &&
           offlineFirstAnnotation.applyToRemoteDeserialization) {
         final type = checker.unFuturedType;
-        final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
+        final where = convertSqliteLookupToString(offlineFirstAnnotation.where!);
         final getAssociationStatement =
             getAssociationMethod(type, query: "Query(where: $where, providerArgs: {'limit': 1})");
         final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
@@ -224,8 +224,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
 
     // serializable non-adapter OfflineFirstModel, OfflineFirstSerdes
     if ((checker as OfflineFirstChecker).hasSerdes) {
-      final doesHaveConstructor = hasConstructor(field.type);
-      if (doesHaveConstructor) {
+      if (hasConstructor(field.type)) {
         return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue)';
       }
     }
@@ -239,7 +238,8 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
   }
 
   /// Define [iterableArgument] to condition value with one that comes from an iterated result
-  String _convertSqliteLookupToString(Map<String, String> lookup, {String? iterableArgument}) {
+  @protected
+  String convertSqliteLookupToString(Map<String, String> lookup, {String? iterableArgument}) {
     final conditions = lookup.entries.fold<Set<String>>(<String>{}, (acc, pair) {
       final matchedValue = iterableArgument ?? pair.value;
       acc.add("Where.exact('${pair.key}', $matchedValue)");

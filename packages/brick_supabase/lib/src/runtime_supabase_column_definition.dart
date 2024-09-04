@@ -5,6 +5,9 @@ class RuntimeSupabaseColumnDefinition {
   /// This is true for `Iterable<SupabaseModel>` and `SupabaseModel`. Defaults to `false`.
   final bool association;
 
+  /// Whether the [associationType] can be `null`.
+  final bool associationIsNullable;
+
   /// The Dart type if [association] is `true`. This value has no nullability suffixes
   /// and is not wrapped in `Future` or any other `Iterable` type.
   final Type? associationType;
@@ -15,6 +18,7 @@ class RuntimeSupabaseColumnDefinition {
 
   const RuntimeSupabaseColumnDefinition({
     this.association = false,
+    this.associationIsNullable = false,
     this.associationType,
     required this.columnName,
   });

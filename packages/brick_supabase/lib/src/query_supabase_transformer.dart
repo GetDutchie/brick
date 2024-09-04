@@ -90,6 +90,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     WhereCondition condition, [
     SupabaseAdapter? passedAdapter,
     List<String>? leadingAssociations,
+    List<Map<String, String>> associationConditions = const [],
   ]) {
     passedAdapter ??= adapter;
 
@@ -100,9 +101,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
           .expand((c) => c)
           .toList();
 
-      if (condition.isRequired) {
-        return conditions;
-      }
+      if (condition.isRequired) return conditions;
 
       return [
         {
@@ -134,10 +133,13 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         associationAdapter.supabaseTableName,
       ];
       return expandCondition(
-        condition.value as WhereCondition,
-        associationAdapter,
-        newLeadingAssociations,
-      );
+          condition.value as WhereCondition, associationAdapter, newLeadingAssociations, [
+        if (!definition.associationIsNullable)
+          {
+            condition.evaluatedField: 'not.is.null',
+          },
+        ...associationConditions,
+      ]);
     }
 
     final queryKey = (leadingAssociations != null ? '${leadingAssociations.join('.')}.' : '') +
@@ -146,7 +148,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return [
       {
         queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
-      }
+      },
+      ...associationConditions,
     ];
   }
 

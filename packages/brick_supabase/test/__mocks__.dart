@@ -220,11 +220,13 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
     ),
     'assoc': const RuntimeSupabaseColumnDefinition(
       association: true,
+      associationIsNullable: false,
       columnName: 'assoc_id',
       associationType: DemoModel,
     ),
     'assocs': const RuntimeSupabaseColumnDefinition(
       association: true,
+      associationIsNullable: true,
       columnName: 'assocs_id',
       associationType: DemoModel,
     ),
