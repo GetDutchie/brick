@@ -2,6 +2,10 @@
 
 ## 3.2.1
 
+- Revert `.getDisplayString()` change due to Flutter 3.22 being restricted to analyzer <6.4.1. `meta` is pinned to `1.12` in this version of Flutter, and `analyzer >=6.5.0`, where the change was made, requires `meta >= 1.15`. This change will eventually be re-reverted.
+
+## 3.2.1
+
 - Use `SharedChecker.withoutNullability` instead of stripping null suffixes manually
 - Standardize `_finalTypeForField` to `SharedChecker#withoutNullResultType`
 - (test) remove analysis options override for non-standard library prefixes

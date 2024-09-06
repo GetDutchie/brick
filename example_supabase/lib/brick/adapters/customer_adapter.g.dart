@@ -17,7 +17,14 @@ Future<Customer> _$CustomerFromSupabase(Map<String, dynamic> data,
 
 Future<Map<String, dynamic>> _$CustomerToSupabase(Customer instance,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return {'id': instance.id, 'first_name': instance.firstName, 'last_name': instance.lastName};
+  return {
+    'id': instance.id,
+    'first_name': instance.firstName,
+    'last_name': instance.lastName,
+    'pizzas': await Future.wait<Map<String, dynamic>>(instance.pizzas
+        .map((s) => PizzaAdapter().toSupabase(s, provider: provider, repository: repository))
+        .toList())
+  };
 }
 
 Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
@@ -51,7 +58,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   CustomerAdapter();
 
   @override
-  final tableName = 'customers';
+  final supabaseTableName = 'customers';
   @override
   final defaultToNull = true;
   @override
@@ -71,6 +78,8 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
     'pizzas': const RuntimeSupabaseColumnDefinition(
       association: true,
       columnName: 'pizzas',
+      associationType: Pizza,
+      associationIsNullable: false,
     )
   };
   @override
@@ -132,7 +141,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
           'SELECT `f_Pizza_brick_id` FROM `_brick_Customer_pizzas` WHERE `l_Customer_brick_id` = ?',
           [instance.primaryKey]);
       final pizzasOldIds = pizzasOldColumns.map((a) => a['f_Pizza_brick_id']);
-      final pizzasNewIds = instance.pizzas?.map((s) => s.primaryKey).whereType<int>() ?? [];
+      final pizzasNewIds = instance.pizzas.map((s) => s.primaryKey).whereType<int>();
       final pizzasIdsToDelete = pizzasOldIds.where((id) => !pizzasNewIds.contains(id));
 
       await Future.wait<void>(pizzasIdsToDelete.map((id) async {
@@ -141,13 +150,12 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
             [instance.primaryKey, id]).catchError((e) => null);
       }));
 
-      await Future.wait<int?>(instance.pizzas?.map((s) async {
-            final id = s.primaryKey ?? await provider.upsert<Pizza>(s, repository: repository);
-            return await provider.rawInsert(
-                'INSERT OR IGNORE INTO `_brick_Customer_pizzas` (`l_Customer_brick_id`, `f_Pizza_brick_id`) VALUES (?, ?)',
-                [instance.primaryKey, id]);
-          }) ??
-          []);
+      await Future.wait<int?>(instance.pizzas.map((s) async {
+        final id = s.primaryKey ?? await provider.upsert<Pizza>(s, repository: repository);
+        return await provider.rawInsert(
+            'INSERT OR IGNORE INTO `_brick_Customer_pizzas` (`l_Customer_brick_id`, `f_Pizza_brick_id`) VALUES (?, ?)',
+            [instance.primaryKey, id]);
+      }));
     }
   }
 
