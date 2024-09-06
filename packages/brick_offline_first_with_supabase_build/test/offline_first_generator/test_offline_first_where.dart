@@ -3,7 +3,7 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_supabase/brick_supabase.dart';
 
 final output = r'''
-/// GENERATED CODE DO NOT EDIT
+// GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
 Future<SupabaseOfflineFirstWhere> _$SupabaseOfflineFirstWhereFromSupabase(
