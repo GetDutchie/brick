@@ -12,6 +12,7 @@
   - [Model Config](supabase/models.md)
   - [Field Config](supabase/fields.md)
   - [Querying](supabase/query.md)
+  - [Testing](supabase/testing.md)
 - [GraphQL](graphql/fields.md)
   - [Model Config](graphql/models.md)
   - [Field Config](graphql/fields.md)

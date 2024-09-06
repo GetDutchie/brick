@@ -1,4 +1,6 @@
-# Testing (OfflineFirstWithRest)
+# Testing
+
+## OfflineFirstWithRest
 
 Responses can be stubbed to and from an `OfflineFirstWithRest` repository. For convenience, file data can be used to stub JSON responses from an API:
 
@@ -42,7 +44,7 @@ StubOfflineFirstWithRest(
 )
 ```
 
-## Stubbing Without Files
+### Stubbing Without Files
 
 While storing the responses in a file can be convenient and reduce code clutter, responses can be defined inline:
 
@@ -56,7 +58,7 @@ StubOfflineFirstWithRest(
 )
 ```
 
-## Stubbing Multiple Models
+### Stubbing Multiple Models
 
 Rarely will only one model need to be stubbed. All classes in an app can be stubbed efficiently using `StubOfflineFirstWithRest`:
 
@@ -84,3 +86,7 @@ setUpAll() async {
 ```
 
 ?> Variants in the endpoint must be explicitly declared. For example, `/user`, `/users`, `/users?by_first_name=Guy` are all different. When instantiating, specify all expected variants.
+
+## OfflineFirstWithSupabase
+
+See [Supabase Testing](../supabase/testing.md)

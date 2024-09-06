@@ -14,12 +14,12 @@ class Customer extends OfflineFirstWithSupabaseModel {
 
   final String? lastName;
 
-  final List<Pizza>? pizzas;
+  final List<Pizza> pizzas;
 
   Customer({
     this.id,
     this.firstName,
     this.lastName,
-    this.pizzas,
+    required this.pizzas,
   });
 }

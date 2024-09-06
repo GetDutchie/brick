@@ -81,6 +81,5 @@ Future<void> generateAdapterExpectation(
     annotation.annotation,
     MockBuildStep(),
   );
-  print(generated);
   expect(generated.trim(), output.trim());
 }
