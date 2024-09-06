@@ -91,8 +91,7 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       if (argTypeChecker.hasSerdes) {
         final doesHaveConstructor = hasConstructor(checker.argType);
         if (doesHaveConstructor) {
-          final serializableType =
-              argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
+          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
           return '''
             jsonDecode($fieldValue).map(
               (c) => $argType.$constructorName(c as $serializableType)
@@ -106,8 +105,7 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final doesHaveConstructor = hasConstructor(field.type);
       if (doesHaveConstructor) {
-        final serializableType =
-            checker.superClassTypeArgs.last.getDisplayString(withNullability: true);
+        final serializableType = checker.superClassTypeArgs.last.getDisplayString();
         return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue as $serializableType)';
       }
     }

@@ -1,9 +1,8 @@
 ## Unreleased
 
 - (test) remove analysis options override for non-standard library prefixes
-- Revert `.getDisplayString()` change due to Flutter 3.22 being restricted to analyzer <6.4.1. `meta` is pinned to `1.12` in this version of Flutter, and `analyzer >=6.5.0`, where the change was made, requires `meta >= 1.15`. This change will eventually be re-reverted.
 
-## 3.1.1
+## 3.1.0
 
 - Apply standardized lints
 - Update `analyzer` constraints to `>=6.0.0 <7.0.0`
