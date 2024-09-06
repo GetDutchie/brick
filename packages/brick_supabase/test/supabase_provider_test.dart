@@ -69,7 +69,7 @@ void main() {
           limit: 1,
         );
         final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
-        final resp = SupabaseResponse(await mock.serialize<DemoModel>(instance));
+        final resp = SupabaseResponse(await mock.serialize(instance));
         mock.handle({req: resp});
 
         final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
@@ -97,7 +97,7 @@ void main() {
           name: 'Demo 1',
           id: '1',
         );
-        final assocResp = SupabaseResponse(await mock.serialize<DemoAssociationModel>(instance));
+        final assocResp = SupabaseResponse(await mock.serialize(instance));
         mock.handle({demoModelReq: demoModelResp, assocReq: assocResp});
 
         final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
