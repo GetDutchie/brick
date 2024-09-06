@@ -35,6 +35,7 @@ jobs:
       - run: dart pub get && dart run melos bootstrap --scope="${{ inputs.package }}"
 
       # TODO: Restore --fatal-infos when analyzer 6.5 is significantly available
+      # in major versions of Flutter. Likely in Q1 2025 https://github.com/GetDutchie/brick/pull/435
       # - run: dart analyze --fatal-infos lib
       - run: dart analyze lib
         working-directory: packages/${{ inputs.package }}
