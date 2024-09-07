@@ -86,7 +86,21 @@ abstract class OfflineFirstWithSupabaseRepository
     required DatabaseFactory databaseFactory,
     http.Client? innerClient,
     Duration? processingInterval,
-    List<int>? reattemptForStatusCodes,
+    List<int> reattemptForStatusCodes = const [
+      400,
+      401,
+      403,
+      404,
+      405,
+      408,
+      409,
+      429,
+      500,
+      501,
+      502,
+      503,
+      504,
+    ],
     bool? serialProcessing,
   }) {
     final client = RestOfflineQueueClient(

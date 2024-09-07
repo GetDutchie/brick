@@ -94,7 +94,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
         final nullableSuffix = checker.isNullable ? '?' : '';
 
         return '''$fieldValue$nullableSuffix.map(
-          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()})
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
         )$castIterable$defaultValue''';
       }
 
@@ -138,7 +138,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
       final output =
-          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString()})';
+          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
       if (checker.isNullable) return '$fieldValue != null ? $output : null';
       return output;
     }
