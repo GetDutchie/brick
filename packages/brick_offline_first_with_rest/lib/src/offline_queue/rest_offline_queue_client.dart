@@ -55,6 +55,7 @@ class RestOfflineQueueClient extends http.BaseClient {
     final genericErrorResponse = http.StreamedResponse(
       Stream.fromFuture(Future.value('unknown internal error'.codeUnits)),
       501,
+      request: request,
     );
 
     try {

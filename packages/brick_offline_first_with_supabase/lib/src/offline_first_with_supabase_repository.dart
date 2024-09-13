@@ -5,6 +5,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseFactory;
+import 'package:supabase/supabase.dart';
 
 /// Ensures the [remoteProvider] is a [SupabaseProvider].
 ///
@@ -79,6 +80,25 @@ abstract class OfflineFirstWithSupabaseRepository
     await offlineRequestQueue.client.requestManager.migrate();
   }
 
+  @override
+  Future<TModel> upsert<TModel extends OfflineFirstWithSupabaseModel>(
+    TModel instance, {
+    OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
+    Query? query,
+  }) async {
+    try {
+      return await super.upsert<TModel>(instance, policy: policy, query: query);
+    } on PostgrestException catch (e) {
+      logger.warning('#upsert supabase failure: $e');
+
+      if (policy == OfflineFirstUpsertPolicy.requireRemote) {
+        throw OfflineFirstException(Exception(e));
+      }
+
+      return instance;
+    }
+  }
+
   /// This is a convenience method to create the basic offline client and queue.
   /// The client is used to add offline capabilities to [SupabaseProvider];
   /// the queue is used to add offline to the repository.
@@ -96,7 +116,6 @@ abstract class OfflineFirstWithSupabaseRepository
       409,
       429,
       500,
-      501,
       502,
       503,
       504,

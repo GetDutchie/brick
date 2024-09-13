@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0
+
+- Stable release
+
 ## 0.1.1
 
 - Fix table name collision in offline adapter (#416)
