@@ -3,6 +3,7 @@
 ## 3.1.0
 
 - Expose offline queue functionality in `offline_queue.dart`
+- Include `request` in `RestOfflineQueueClient`'s generic error response
 
 ## 3.0.2
 
