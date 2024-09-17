@@ -78,6 +78,8 @@ await Supabase.initialize(httpClient: client)
 final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDictionary: ...)
 ```
 
+!> Supabase has a single client so auth requests would be retried if you use `Supabase.instance.client.auth` in Flutter. Instead, use a separate client for authentication: `SupabaseClient(url, anonKey).auth`.
+
 ### @ConnectOfflineFirstWithSupabase
 
 `@ConnectOfflineFirstWithSupabase` decorates the model that can be serialized by one or more providers. Offline First does not have configuration at the class level and only extends configuration held by its providers:
