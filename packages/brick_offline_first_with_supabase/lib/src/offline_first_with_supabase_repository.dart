@@ -65,6 +65,63 @@ abstract class OfflineFirstWithSupabaseRepository
         );
 
   @override
+  Future<bool> delete<TModel extends OfflineFirstWithSupabaseModel>(
+    TModel instance, {
+    OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
+    Query? query,
+  }) async {
+    try {
+      return await super.delete<TModel>(instance, policy: policy, query: query);
+    } on PostgrestException catch (e) {
+      logger.warning('#delete supabase failure: $e');
+
+      if (policy == OfflineFirstDeletePolicy.requireRemote) {
+        throw OfflineFirstException(e);
+      }
+
+      return false;
+    }
+  }
+
+  @override
+  Future<List<TModel>> get<TModel extends OfflineFirstWithSupabaseModel>({
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    query,
+    bool seedOnly = false,
+  }) async {
+    try {
+      return await super.get<TModel>(
+        policy: policy,
+        query: query,
+        seedOnly: seedOnly,
+      );
+    } on PostgrestException catch (e) {
+      logger.warning('#get supabase failure: $e');
+
+      if (policy == OfflineFirstGetPolicy.awaitRemote) {
+        throw OfflineFirstException(e);
+      }
+
+      return <TModel>[];
+    }
+  }
+
+  @protected
+  @override
+  Future<List<TModel>> hydrate<TModel extends OfflineFirstWithSupabaseModel>({
+    bool deserializeSqlite = true,
+    Query? query,
+  }) async {
+    try {
+      return await super.hydrate<TModel>(deserializeSqlite: deserializeSqlite, query: query);
+    } on PostgrestException catch (e) {
+      logger.warning('#hydrate supabase failure: $e');
+    }
+
+    return <TModel>[];
+  }
+
+  @override
   @mustCallSuper
   Future<void> initialize() async {
     await super.initialize();
@@ -92,7 +149,7 @@ abstract class OfflineFirstWithSupabaseRepository
       logger.warning('#upsert supabase failure: $e');
 
       if (policy == OfflineFirstUpsertPolicy.requireRemote) {
-        throw OfflineFirstException(Exception(e));
+        throw OfflineFirstException(e);
       }
 
       return instance;
