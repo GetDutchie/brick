@@ -64,6 +64,34 @@ await Supabase.initialize(httpClient: client)
 final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDictionary: ...)
 ```
 
+### Offline Queue Caveats
+
+For Flutter users, `Supabase.instance.client` inherits this [offline client](https://github.com/supabase/supabase-flutter/blob/main/packages/supabase/lib/src/supabase_client.dart#L141-L142). Brick works around Supabase's default endpoints: the offline queue **will not** cache and retry requests to Supabase's Auth or Storage.
+
+To ensure the queue handles all requests, pass an empty set:
+
+```dart
+final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
+  databaseFactory: databaseFactory,
+  ignorePaths: {},
+);
+```
+
+For implementations that [do not wish to retry functions](https://github.com/GetDutchie/brick/issues/440) and need to handle a response, add `'/functions/v1'` to this Set:
+
+```dart
+final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
+  databaseFactory: databaseFactory,
+  ignorePaths: {
+    '/auth/v1',
+    '/storage/v1',
+    '/functions/v1'
+  },
+);
+```
+
+:warning: This is an admittedly brittle solution for ignoring core Supabase paths. If you change the default values for `ignorePaths`, you are responsible for maintaining the right paths when Supabase changes or upgrades their endpoint paths.
+
 ## Models
 
 ### @ConnectOfflineFirstWithSupabase

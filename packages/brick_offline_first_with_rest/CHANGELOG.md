@@ -4,6 +4,7 @@
 
 - Expose offline queue functionality in `offline_queue.dart`
 - Include `request` in `RestOfflineQueueClient`'s generic error response
+- Add `ignorePaths` to `RestOfflineQueueClient`'s constructor. This parameter will not cache requests that begin with any of the supplied values.
 
 ## 3.0.2
 
