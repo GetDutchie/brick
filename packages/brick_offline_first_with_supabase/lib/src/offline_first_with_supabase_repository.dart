@@ -104,6 +104,17 @@ abstract class OfflineFirstWithSupabaseRepository
   /// the queue is used to add offline to the repository.
   static (RestOfflineQueueClient, RestOfflineRequestQueue) clientQueue({
     required DatabaseFactory databaseFactory,
+
+    /// These paths will not be stored in the offline queue.
+    /// By default, Supabase Auth and Storage paths are ignored.
+    ///
+    /// For implementations that wish to retry functions and do not
+    /// need to handle a response, add `'/functions/v1'` to this Set.
+    /// https://github.com/GetDutchie/brick/issues/440
+    Set<String>? ignorePaths = const {
+      '/auth/v1',
+      '/storage/v1',
+    },
     http.Client? innerClient,
     Duration? processingInterval,
     List<int> reattemptForStatusCodes = const [
@@ -130,6 +141,7 @@ abstract class OfflineFirstWithSupabaseRepository
         processingInterval: processingInterval,
         serialProcessing: serialProcessing,
       ),
+      ignorePaths: ignorePaths,
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     return (client, RestOfflineRequestQueue(client: client));

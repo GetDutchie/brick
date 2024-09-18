@@ -37,26 +37,6 @@ void main() {
         expect(resp.body, 'hello from inner');
       });
 
-      test('GET requests are not tracked', () async {
-        final inner = stubResult(statusCode: 404);
-        final client = RestOfflineQueueClient(inner, requestManager);
-        await client.get(Uri.parse('http://0.0.0.0:3000'));
-
-        expect(await requestManager.unprocessedRequests(), isEmpty);
-      });
-
-      test('${RestOfflineQueueClient.policyHeader} requests are not tracked', () async {
-        final inner = stubResult(statusCode: 404);
-        final client = RestOfflineQueueClient(inner, requestManager);
-        await client.post(
-          Uri.parse('http://0.0.0.0:3000'),
-          body: 'new record',
-          headers: {RestOfflineQueueClient.policyHeader: 'requireRemote'},
-        );
-
-        expect(await requestManager.unprocessedRequests(), isEmpty);
-      });
-
       test('request is stored in SQLite', () async {
         final inner = stubResult(statusCode: 501);
         final client = RestOfflineQueueClient(inner, requestManager);
@@ -88,6 +68,60 @@ void main() {
         expect(requests.first[HTTP_JOBS_ATTEMPTS_COLUMN], 2);
 
         expect(resp.statusCode, 501);
+      });
+
+      test('GET requests are not tracked', () async {
+        final inner = stubResult(statusCode: 404);
+        final client = RestOfflineQueueClient(inner, requestManager);
+        await client.get(Uri.parse('http://0.0.0.0:3000'));
+
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+      });
+
+      test('${RestOfflineQueueClient.policyHeader} requireRemote requests are not tracked',
+          () async {
+        final inner = stubResult(statusCode: 404);
+        final client = RestOfflineQueueClient(inner, requestManager);
+        await client.post(
+          Uri.parse('http://0.0.0.0:3000'),
+          body: 'new record',
+          headers: {RestOfflineQueueClient.policyHeader: 'requireRemote'},
+        );
+
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+      });
+
+      test('ignored path is not not tracked', () async {
+        final inner = stubResult(statusCode: 404);
+        final client =
+            RestOfflineQueueClient(inner, requestManager, ignorePaths: {'/ignored-path'});
+        await client.post(
+          Uri.parse('http://0.0.0.0:3000/ignored-path'),
+          body: 'new record',
+        );
+
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+
+        final multiplePaths = RestOfflineQueueClient(
+          inner,
+          requestManager,
+          ignorePaths: {'/ignored-path', '/other-path'},
+        );
+        await multiplePaths.post(
+          Uri.parse('http://0.0.0.0:3000/other-path'),
+          body: 'new record',
+        );
+
+        expect(await requestManager.unprocessedRequests(), isEmpty);
+
+        final nestedPath =
+            RestOfflineQueueClient(inner, requestManager, ignorePaths: {'/v1/ignored-path'});
+        await nestedPath.post(
+          Uri.parse('http://0.0.0.0:3000/v1/ignored-path'),
+          body: 'new record',
+        );
+
+        expect(await requestManager.unprocessedRequests(), isEmpty);
       });
 
       group('request is not deleted', () {
