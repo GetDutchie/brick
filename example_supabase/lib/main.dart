@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_shoppe/brick/models/customer.model.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 import 'package:pizza_shoppe/brick/repository.dart';
 
 const supabaseUrl = 'YOUR_SUPABASE_URL';
@@ -44,14 +44,14 @@ class MyHomePage extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder(
-          future: Repository().get<Customer>(),
-          builder: (context, AsyncSnapshot<List<Customer>> customerList) {
-            final customers = customerList.data;
+          future: Repository().get<Pizza>(),
+          builder: (context, AsyncSnapshot<List<Pizza>> pizzaList) {
+            final pizzas = pizzaList.data;
 
             return ListView.builder(
-              itemCount: customers?.length ?? 0,
+              itemCount: pizzas?.length ?? 0,
               itemBuilder: (ctx, index) =>
-                  customers?[index] == null ? Container() : CustomerTile(customers![index]),
+                  pizzas?[index] == null ? Container() : PizzaTile(pizzas![index]),
             );
           },
         ),
@@ -60,29 +60,19 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class CustomerTile extends StatelessWidget {
-  final Customer customer;
+class PizzaTile extends StatelessWidget {
+  final Pizza pizza;
 
-  CustomerTile(this.customer);
+  PizzaTile(this.pizza);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text('id: ${customer.id}'),
-        Text('name: ${customer.firstName} ${customer.lastName}'),
-        Text('pizzas:'),
-        if (customer.pizzas.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                for (var pizza in customer.pizzas) Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
-              ],
-            ),
-          ),
+        Text('id: ${pizza.id}'),
+        Text('frozen: ${pizza.frozen}'),
+        Text('name: ${pizza.customer.firstName} ${pizza.customer.lastName}'),
       ],
     );
   }

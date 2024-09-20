@@ -1,6 +1,7 @@
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
+import 'package:pizza_shoppe/brick/models/customer.model.dart';
 
 @ConnectOfflineFirstWithSupabase(
   supabaseConfig: SupabaseSerializable(),
@@ -24,6 +25,7 @@ class Pizza extends OfflineFirstWithSupabaseModel {
   Pizza({
     required this.id,
     required this.frozen,
+    required this.customer,
   });
 }
 

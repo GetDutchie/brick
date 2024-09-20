@@ -3,7 +3,11 @@ part of '../brick.g.dart';
 
 Future<Pizza> _$PizzaFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return Pizza(id: data['id'] as String, frozen: data['frozen'] as bool);
+  return Pizza(
+      id: data['id'] as String,
+      frozen: data['frozen'] as bool,
+      customer: await CustomerAdapter()
+          .fromSupabase(data['customer'], provider: provider, repository: repository));
 }
 
 Future<Map<String, dynamic>> _$PizzaToSupabase(Pizza instance,
@@ -19,13 +23,24 @@ Future<Map<String, dynamic>> _$PizzaToSupabase(Pizza instance,
 
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return Pizza(id: data['id'] as String, frozen: data['frozen'] == 1)
+  return Pizza(
+      id: data['id'] as String,
+      frozen: data['frozen'] == 1,
+      customer: (await repository!.getAssociation<Customer>(
+        Query.where('primaryKey', data['customer_Customer_brick_id'] as int, limit1: true),
+      ))!
+          .first)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return {'id': instance.id, 'frozen': instance.frozen ? 1 : 0};
+  return {
+    'id': instance.id,
+    'frozen': instance.frozen ? 1 : 0,
+    'customer_Customer_brick_id': instance.customer.primaryKey ??
+        await provider.upsert<Customer>(instance.customer, repository: repository)
+  };
 }
 
 /// Construct a [Pizza]
@@ -81,6 +96,12 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
       columnName: 'frozen',
       iterable: false,
       type: bool,
+    ),
+    'customer': const RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'customer_Customer_brick_id',
+      iterable: false,
+      type: Customer,
     )
   };
   @override

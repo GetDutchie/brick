@@ -9,48 +9,32 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20240906052847_up = [
-  InsertTable('_brick_Customer_pizzas'),
+const List<MigrationCommand> _migration_20240920063917_up = [
   InsertTable('Customer'),
   InsertTable('Pizza'),
-  InsertForeignKey(
-    '_brick_Customer_pizzas',
-    'Customer',
-    foreignKeyColumn: 'l_Customer_brick_id',
-    onDeleteCascade: true,
-    onDeleteSetDefault: false,
-  ),
-  InsertForeignKey(
-    '_brick_Customer_pizzas',
-    'Pizza',
-    foreignKeyColumn: 'f_Pizza_brick_id',
-    onDeleteCascade: true,
-    onDeleteSetDefault: false,
-  ),
   InsertColumn('id', Column.varchar, onTable: 'Customer', unique: true),
   InsertColumn('first_name', Column.varchar, onTable: 'Customer'),
   InsertColumn('last_name', Column.varchar, onTable: 'Customer'),
   InsertColumn('id', Column.varchar, onTable: 'Pizza', unique: true),
   InsertColumn('frozen', Column.boolean, onTable: 'Pizza'),
-  CreateIndex(
-    columns: ['l_Customer_brick_id', 'f_Pizza_brick_id'],
-    onTable: '_brick_Customer_pizzas',
-    unique: true,
+  InsertForeignKey(
+    'Pizza',
+    'Customer',
+    foreignKeyColumn: 'customer_Customer_brick_id',
+    onDeleteCascade: false,
+    onDeleteSetDefault: false,
   ),
 ];
 
-const List<MigrationCommand> _migration_20240906052847_down = [
-  DropTable('_brick_Customer_pizzas'),
+const List<MigrationCommand> _migration_20240920063917_down = [
   DropTable('Customer'),
   DropTable('Pizza'),
-  DropColumn('l_Customer_brick_id', onTable: '_brick_Customer_pizzas'),
-  DropColumn('f_Pizza_brick_id', onTable: '_brick_Customer_pizzas'),
   DropColumn('id', onTable: 'Customer'),
   DropColumn('first_name', onTable: 'Customer'),
   DropColumn('last_name', onTable: 'Customer'),
   DropColumn('id', onTable: 'Pizza'),
   DropColumn('frozen', onTable: 'Pizza'),
-  DropIndex('index__brick_Customer_pizzas_on_l_Customer_brick_id_f_Pizza_brick_id'),
+  DropColumn('customer_Customer_brick_id', onTable: 'Pizza'),
 ];
 
 //
@@ -58,15 +42,15 @@ const List<MigrationCommand> _migration_20240906052847_down = [
 //
 
 @Migratable(
-  version: '20240906052847',
-  up: _migration_20240906052847_up,
-  down: _migration_20240906052847_down,
+  version: '20240920063917',
+  up: _migration_20240920063917_up,
+  down: _migration_20240920063917_down,
 )
-class Migration20240906052847 extends Migration {
-  const Migration20240906052847()
+class Migration20240920063917 extends Migration {
+  const Migration20240920063917()
       : super(
-          version: 20240906052847,
-          up: _migration_20240906052847_up,
-          down: _migration_20240906052847_down,
+          version: 20240920063917,
+          up: _migration_20240920063917_up,
+          down: _migration_20240920063917_down,
         );
 }
