@@ -89,4 +89,4 @@ setUpAll() async {
 
 ## OfflineFirstWithSupabase
 
-See [Supabase Testing](../supabase/testing.md)
+See [Supabase Testing](https://getdutchie.github.io/brick/#/supabase/testing)
