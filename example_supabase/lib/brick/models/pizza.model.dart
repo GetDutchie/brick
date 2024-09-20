@@ -8,17 +8,12 @@ import 'package:brick_supabase/brick_supabase.dart';
 class Pizza extends OfflineFirstWithSupabaseModel {
   /// Read more about `@Sqlite`: https://github.com/GetDutchie/brick/tree/main/packages/brick_sqlite#fields
   @Sqlite(unique: true)
-  final int id;
-
-  /// Read more about `@Supabase`: https://github.com/GetDutchie/brick/tree/main/packages/brick_supabase#fields
-  @Supabase(enumAsString: true)
-  final List<Topping> toppings;
+  final String id;
 
   final bool frozen;
 
   Pizza({
     required this.id,
-    required this.toppings,
     required this.frozen,
   });
 }

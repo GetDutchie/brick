@@ -27,11 +27,10 @@ const List<MigrationCommand> _migration_20240906052847_up = [
     onDeleteCascade: true,
     onDeleteSetDefault: false,
   ),
-  InsertColumn('id', Column.integer, onTable: 'Customer', unique: true),
+  InsertColumn('id', Column.varchar, onTable: 'Customer', unique: true),
   InsertColumn('first_name', Column.varchar, onTable: 'Customer'),
   InsertColumn('last_name', Column.varchar, onTable: 'Customer'),
-  InsertColumn('id', Column.integer, onTable: 'Pizza', unique: true),
-  InsertColumn('toppings', Column.varchar, onTable: 'Pizza'),
+  InsertColumn('id', Column.varchar, onTable: 'Pizza', unique: true),
   InsertColumn('frozen', Column.boolean, onTable: 'Pizza'),
   CreateIndex(
     columns: ['l_Customer_brick_id', 'f_Pizza_brick_id'],
@@ -50,7 +49,6 @@ const List<MigrationCommand> _migration_20240906052847_down = [
   DropColumn('first_name', onTable: 'Customer'),
   DropColumn('last_name', onTable: 'Customer'),
   DropColumn('id', onTable: 'Pizza'),
-  DropColumn('toppings', onTable: 'Pizza'),
   DropColumn('frozen', onTable: 'Pizza'),
   DropIndex('index__brick_Customer_pizzas_on_l_Customer_brick_id_f_Pizza_brick_id'),
 ];

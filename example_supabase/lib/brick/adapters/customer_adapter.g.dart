@@ -4,7 +4,7 @@ part of '../brick.g.dart';
 Future<Customer> _$CustomerFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return Customer(
-      id: data['id'] as int?,
+      id: data['id'] as String,
       firstName: data['first_name'] as String?,
       lastName: data['last_name'] as String?,
       pizzas: await Future.wait<Pizza>(data['pizzas']
@@ -30,7 +30,7 @@ Future<Map<String, dynamic>> _$CustomerToSupabase(Customer instance,
 Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return Customer(
-      id: data['id'] == null ? null : data['id'] as int?,
+      id: data['id'] as String,
       firstName: data['first_name'] == null ? null : data['first_name'] as String?,
       lastName: data['last_name'] == null ? null : data['last_name'] as String?,
       pizzas: (await provider.rawQuery(
@@ -98,7 +98,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
       association: false,
       columnName: 'id',
       iterable: false,
-      type: int,
+      type: String,
     ),
     'firstName': const RuntimeSqliteColumnDefinition(
       association: false,

@@ -8,7 +8,7 @@ import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 )
 class Customer extends OfflineFirstWithSupabaseModel {
   @Sqlite(unique: true)
-  final int? id;
+  final String id;
 
   final String? firstName;
 
@@ -17,7 +17,7 @@ class Customer extends OfflineFirstWithSupabaseModel {
   final List<Pizza> pizzas;
 
   Customer({
-    this.id,
+    required this.id,
     this.firstName,
     this.lastName,
     required this.pizzas,

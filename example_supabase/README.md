@@ -8,11 +8,19 @@ This minimal example demonstrates how to use Brick with [Supabase](https://supab
 
 ```sql
 CREATE TABLE customers (
-    id UUID PRIMARY KEY,
-    first_name text NOT NULL,
-    last_name text NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  id UUID PRIMARY KEY,
+  first_name text NOT NULL,
+  last_name text NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE pizzas (
+  id UUID PRIMARY KEY,
+  frozen boolean NOT NULL DEFAULT false,
+  customer_id UUID NOT NULL
+);
+
+ALTER TABLE pizzas ADD CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customers (id);
 ```
 
 2. **Insert Dummy Data**: Insert some dummy data into the customers table by running the following SQL command

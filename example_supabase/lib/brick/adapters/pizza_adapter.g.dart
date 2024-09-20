@@ -3,42 +3,23 @@ part of '../brick.g.dart';
 
 Future<Pizza> _$PizzaFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return Pizza(
-      id: data['id'] as int,
-      toppings:
-          data['toppings'].whereType<String>().map(Topping.values.byName).toList().cast<Topping>(),
-      frozen: data['frozen'] as bool);
+  return Pizza(id: data['id'] as String, frozen: data['frozen'] as bool);
 }
 
 Future<Map<String, dynamic>> _$PizzaToSupabase(Pizza instance,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return {
-    'id': instance.id,
-    'toppings': instance.toppings.map((e) => e.name).toList(),
-    'frozen': instance.frozen
-  };
+  return {'id': instance.id, 'frozen': instance.frozen};
 }
 
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return Pizza(
-      id: data['id'] as int,
-      toppings: jsonDecode(data['toppings'])
-          .map((d) => d as int > -1 ? Topping.values[d] : null)
-          .whereType<Topping>()
-          .toList()
-          .cast<Topping>(),
-      frozen: data['frozen'] == 1)
+  return Pizza(id: data['id'] as String, frozen: data['frozen'] == 1)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return {
-    'id': instance.id,
-    'toppings': jsonEncode(instance.toppings.map((s) => Topping.values.indexOf(s)).toList()),
-    'frozen': instance.frozen ? 1 : 0
-  };
+  return {'id': instance.id, 'frozen': instance.frozen ? 1 : 0};
 }
 
 /// Construct a [Pizza]
@@ -54,10 +35,6 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
     'id': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'id',
-    ),
-    'toppings': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'toppings',
     ),
     'frozen': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -80,13 +57,7 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
       association: false,
       columnName: 'id',
       iterable: false,
-      type: int,
-    ),
-    'toppings': const RuntimeSqliteColumnDefinition(
-      association: false,
-      columnName: 'toppings',
-      iterable: true,
-      type: Topping,
+      type: String,
     ),
     'frozen': const RuntimeSqliteColumnDefinition(
       association: false,
