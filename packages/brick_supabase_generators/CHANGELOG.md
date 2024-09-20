@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.1
+
+- Apply `@Supabase(foreignKey:)` to `RuntimeSupabaseColumnDefinition#foreignKey`
+
 ## 1.0.0
 
 - Stable release

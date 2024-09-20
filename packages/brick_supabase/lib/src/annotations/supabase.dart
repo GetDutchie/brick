@@ -2,13 +2,10 @@ import 'package:brick_core/field_serializable.dart';
 
 /// An annotation used to specify how a field is serialized for a [SupabaseAdapter].
 ///
-/// If this annotates a field type that extends this model's type, the Supabase column
-/// should be a foreign key.
-///
 /// ```dart
 /// class User extends OfflineFirstWithSupabaseModel{
 ///   // The foreign key is a relation to the `id` column of the Address table
-///   @Supabase(name: 'address_id')
+///   @Supabase(foreignKey: 'address_id')
 ///   final Address address;
 /// }
 ///
@@ -33,6 +30,18 @@ class Supabase implements FieldSerializable {
   @override
   final bool enumAsString;
 
+  /// Specify a column for the ON clause in association queries.
+  /// For example, `'customer_id'` in `customer:customers!customer_id(...)`.
+  /// This is the model's column, not the association's column.
+  ///
+  /// This field must be specified if the current model uses
+  /// [multiple foreign keys](https://supabase.com/docs/guides/database/joins-and-nesting?queryGroups=language&language=dart#specifying-the-on-clause-for-joins-with-multiple-foreign-keys).
+  ///
+  /// The remote column type can be different than the local Dart type. For example,
+  /// `@Supabase(foreignKey: 'user_id')` that annotates `final User user` can be
+  /// a Postgres string type.
+  final String? foreignKey;
+
   @override
   final String? fromGenerator;
 
@@ -54,11 +63,10 @@ class Supabase implements FieldSerializable {
   /// The key name to use when reading and writing values corresponding
   /// to the annotated field.
   ///
-  /// The remote column type can be different than the local Dart type for associations.
-  /// For example, `@Supabase(name: 'user_id')` that annotates `final User user` can be
-  /// a Postgres string type.
+  /// **Do not use** `name` when annotating an association.
+  /// Instead, use [foreignKey].
   ///
-  /// If `null`, the snake case value of the field is used.
+  /// If `null`, the renamed value of the field is used.
   @override
   final String? name;
 
@@ -78,6 +86,7 @@ class Supabase implements FieldSerializable {
     this.defaultValue,
     bool? enumAsString,
     this.fromGenerator,
+    this.foreignKey,
     bool? ignore,
     bool? ignoreFrom,
     bool? ignoreTo,

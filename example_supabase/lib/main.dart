@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_shoppe/brick/models/customer.model.dart';
+import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 import 'package:pizza_shoppe/brick/repository.dart';
 
 const supabaseUrl = 'YOUR_SUPABASE_URL';
 const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  await Repository.initializeSupabaseAndConfigure(
+    supabaseUrl: supabaseUrl,
+    supabaseAnonKey: supabaseAnonKey,
+  );
+  await Repository().initialize();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,82 +30,49 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.title});
-
+class MyHomePage extends StatelessWidget {
   final String title;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  var migrated = false;
-  @override
-  Future<void> initState() async {
-    await Repository.initializeSupabaseAndConfigure(
-      supabaseUrl: supabaseUrl,
-      supabaseAnonKey: supabaseAnonKey,
-    );
-    await Repository().initialize();
-    // Note that subsequent boots of the app will use cached data
-    // To clear this, wipe data on android or tap-press on iOS and delete the app
-    setState(() => migrated = true);
-
-    super.initState();
-  }
+  MyHomePage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
       ),
-      body: migrated
-          ? Container(
-              padding: const EdgeInsets.all(20.0),
-              child: FutureBuilder(
-                future: Repository().get<Customer>(),
-                builder: (context, AsyncSnapshot<List<Customer>> customerList) {
-                  final customers = customerList.data;
+      body: Container(
+        padding: const EdgeInsets.all(20.0),
+        child: FutureBuilder(
+          future: Repository().get<Pizza>(),
+          builder: (context, AsyncSnapshot<List<Pizza>> pizzaList) {
+            final pizzas = pizzaList.data;
 
-                  return ListView.builder(
-                    itemCount: customers?.length ?? 0,
-                    itemBuilder: (ctx, index) =>
-                        customers?[index] == null ? Container() : CustomerTile(customers![index]),
-                  );
-                },
-              ),
-            )
-          : Text('Migrating database...'),
+            return ListView.builder(
+              itemCount: pizzas?.length ?? 0,
+              itemBuilder: (ctx, index) =>
+                  pizzas?[index] == null ? Container() : PizzaTile(pizzas![index]),
+            );
+          },
+        ),
+      ),
     );
   }
 }
 
-class CustomerTile extends StatelessWidget {
-  final Customer customer;
+class PizzaTile extends StatelessWidget {
+  final Pizza pizza;
 
-  CustomerTile(this.customer);
+  PizzaTile(this.pizza);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text('id: ${customer.id}'),
-        Text('name: ${customer.firstName} ${customer.lastName}'),
-        Text('pizzas:'),
-        if (customer.pizzas != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                for (var pizza in customer.pizzas!)
-                  Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
-              ],
-            ),
-          ),
+        Text('id: ${pizza.id}'),
+        Text('frozen: ${pizza.frozen}'),
+        Text('name: ${pizza.customer.firstName} ${pizza.customer.lastName}'),
       ],
     );
   }

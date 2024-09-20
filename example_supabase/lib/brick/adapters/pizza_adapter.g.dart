@@ -4,31 +4,32 @@ part of '../brick.g.dart';
 Future<Pizza> _$PizzaFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return Pizza(
-      id: data['id'] as int,
-      toppings:
-          data['toppings'].whereType<String>().map(Topping.values.byName).toList().cast<Topping>(),
-      frozen: data['frozen'] as bool);
+      id: data['id'] as String,
+      frozen: data['frozen'] as bool,
+      customer: await CustomerAdapter()
+          .fromSupabase(data['customer'], provider: provider, repository: repository));
 }
 
 Future<Map<String, dynamic>> _$PizzaToSupabase(Pizza instance,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return {
     'id': instance.id,
-    'toppings': instance.toppings.map((e) => e.name).toList(),
-    'frozen': instance.frozen
+    'frozen': instance.frozen,
+    'customer': await CustomerAdapter()
+        .toSupabase(instance.customer, provider: provider, repository: repository),
+    'customer_id': instance.customerId
   };
 }
 
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return Pizza(
-      id: data['id'] as int,
-      toppings: jsonDecode(data['toppings'])
-          .map((d) => d as int > -1 ? Topping.values[d] : null)
-          .whereType<Topping>()
-          .toList()
-          .cast<Topping>(),
-      frozen: data['frozen'] == 1)
+      id: data['id'] as String,
+      frozen: data['frozen'] == 1,
+      customer: (await repository!.getAssociation<Customer>(
+        Query.where('primaryKey', data['customer_Customer_brick_id'] as int, limit1: true),
+      ))!
+          .first)
     ..primaryKey = data['_brick_id'] as int;
 }
 
@@ -36,8 +37,9 @@ Future<Map<String, dynamic>> _$PizzaToSqlite(Pizza instance,
     {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
   return {
     'id': instance.id,
-    'toppings': jsonEncode(instance.toppings.map((s) => Topping.values.indexOf(s)).toList()),
-    'frozen': instance.frozen ? 1 : 0
+    'frozen': instance.frozen ? 1 : 0,
+    'customer_Customer_brick_id': instance.customer.primaryKey ??
+        await provider.upsert<Customer>(instance.customer, repository: repository)
   };
 }
 
@@ -55,13 +57,20 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
       association: false,
       columnName: 'id',
     ),
-    'toppings': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'toppings',
-    ),
     'frozen': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'frozen',
+    ),
+    'customer': const RuntimeSupabaseColumnDefinition(
+      association: true,
+      columnName: 'customer',
+      associationType: Customer,
+      associationIsNullable: false,
+      foreignKey: 'customer_id',
+    ),
+    'customerId': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'customer_id',
     )
   };
   @override
@@ -80,19 +89,19 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
       association: false,
       columnName: 'id',
       iterable: false,
-      type: int,
-    ),
-    'toppings': const RuntimeSqliteColumnDefinition(
-      association: false,
-      columnName: 'toppings',
-      iterable: true,
-      type: Topping,
+      type: String,
     ),
     'frozen': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'frozen',
       iterable: false,
       type: bool,
+    ),
+    'customer': const RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: 'customer_Customer_brick_id',
+      iterable: false,
+      type: Customer,
     )
   };
   @override

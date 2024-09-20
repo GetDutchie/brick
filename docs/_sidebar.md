@@ -30,6 +30,7 @@
   - [Model Config](offline_first/models.md)
   - [Field Config](offline_first/fields.md)
   - [Testing](offline_first/testing.md)
+  - [With Supabase](offline_first/offline_first_with_supabase_repository.md)
   - [With GraphQL](offline_first/offline_first_with_graphql_repository.md)
   - [With Rest](offline_first/offline_first_with_rest_repository.md)
   - [Offline Queue](offline_first/offline_queue.md)

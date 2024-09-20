@@ -1,5 +1,14 @@
 ## Unreleased
 
+## 1.0.2
+
+- Only specify key lookup in query transformer if `RuntimeSupabaseColumnDefinition#foreignKey` is specified
+
+## 1.0.1
+
+- Add `@Supabase(foreignKey:)` to specify association querying
+- Add `RuntimeSupabaseColumnDefinition#foreignKey` to track `@Supabase(foreignKey:)` values
+
 ## 1.0.0
 
 - Stable release

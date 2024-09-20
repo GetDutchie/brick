@@ -52,7 +52,7 @@ void main() {
         final transformer = _buildTransformer<DemoAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age)',
+          'id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age)',
         );
       });
 
@@ -60,7 +60,7 @@ void main() {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age))',
+          'id,name,nested:demo_associations(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
         );
       });
     });
@@ -90,7 +90,7 @@ void main() {
 
             expect(
               select.query,
-              'select=id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
+              'select=id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
             );
           });
         });
@@ -256,7 +256,7 @@ void main() {
           containsAll([
             'id',
             'name',
-            'nested:demo_associations!nested_id(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos!assocs_id(id,name,age))',
+            'nested:demo_associations(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
           ]),
         );
       });

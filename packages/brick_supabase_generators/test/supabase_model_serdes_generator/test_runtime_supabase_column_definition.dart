@@ -13,7 +13,7 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
           data['unannotated_assoc'],
           provider: provider,
           repository: repository),
-      annotatedAssoc: await AssocAdapter().fromSupabase(data['assoc_id'],
+      annotatedAssoc: await AssocAdapter().fromSupabase(data['annotated_assoc'],
           provider: provider, repository: repository),
       nullableAssoc: data['assocs_id'] == null
           ? null
@@ -31,7 +31,7 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
         instance.unannotatedAssoc,
         provider: provider,
         repository: repository),
-    'assoc_id': await AssocAdapter().toSupabase(instance.annotatedAssoc,
+    'annotated_assoc': await AssocAdapter().toSupabase(instance.annotatedAssoc,
         provider: provider, repository: repository),
     'assocs_id': instance.nullableAssoc != null
         ? await AssocAdapter().toSupabase(instance.nullableAssoc!,
@@ -60,9 +60,10 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
     ),
     'annotatedAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      columnName: 'assoc_id',
+      columnName: 'annotated_assoc',
       associationType: Assoc,
       associationIsNullable: false,
+      foreignKey: 'assocs_id',
     ),
     'nullableAssoc': const RuntimeSupabaseColumnDefinition(
       association: true,
@@ -97,7 +98,7 @@ class SupabaseRuntime extends SupabaseModel {
 
   final Assoc unannotatedAssoc;
 
-  @Supabase(name: 'assoc_id')
+  @Supabase(foreignKey: 'assocs_id')
   final Assoc annotatedAssoc;
 
   @Supabase(name: 'assocs_id')

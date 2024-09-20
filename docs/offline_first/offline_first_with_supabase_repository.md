@@ -138,10 +138,14 @@ Field types of classes that `extends OfflineFirstWithSupabaseModel` will automat
 ```dart
 class User extends OfflineFirstWithSupabaseModel {
   // The foreign key is a relation to the `id` column of the Address table
-  @Supabase(name: 'address_id')
-  // Help the SQLite provider connect the association locally to the one provided from remote
-  @OfflineFirst(where: {'id': "data['address']['id']"})
+  @Supabase(foreignKey: 'address_id')
   final Address address;
+
+  // If the association will be created by the app, specify
+  // a field that maps directly to the foreign key column
+  // so that Brick can notify Supabase of the association.
+  @Sqlite(ignore: true)
+  String get addressId => address.id;
 }
 
 class Address extends OfflineFirstWithSupabaseModel{

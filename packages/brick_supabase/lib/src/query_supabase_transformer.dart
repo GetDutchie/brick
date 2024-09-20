@@ -65,7 +65,10 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
       final field = entry.value;
       if (field.association && field.associationType != null) {
         var associationOutput =
-            '${entry.key}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}!${field.columnName}';
+            '${entry.key}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}';
+        if (field.foreignKey != null) {
+          associationOutput += '!${field.foreignKey}';
+        }
         associationOutput += '(';
         final fields = destructureAssociationProperties(
           modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns,
