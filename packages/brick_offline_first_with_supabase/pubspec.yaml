@@ -14,7 +14,7 @@ dependencies:
   brick_core: ">=1.2.0 <2.0.0"
   brick_offline_first: ">=3.0.0 <4.0.0"
   brick_sqlite: ">=3.0.0 <4.0.0"
-  brick_supabase: ">=0.0.1 <2.0.0"
+  brick_supabase: ">=1.0.0 <2.0.0"
   brick_offline_first_with_rest: ">=3.1.0 <4.0.0"
   http: ">=1.0.0 <2.0.0"
   logging: ">=1.0.0 <2.0.0"

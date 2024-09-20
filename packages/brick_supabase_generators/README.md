@@ -1,6 +1,6 @@
 ![brick_supabase_generators workflow](https://github.com/GetDutchie/brick/actions/workflows/brick_supabase_generators.yaml/badge.svg)
 
-# Brick Supabase Build
+# Brick Supabase Generators
 
 Code generator that provides (de)serializing functions for Brick adapters using SupabaseProvider. This package **does not** produce code. It can be imported into other Brick build domains.
 
