@@ -16,10 +16,18 @@ class RuntimeSupabaseColumnDefinition {
   /// Then the [columnName] should reflect the Dart field name for deserialization.
   final String columnName;
 
+  /// When specified, this value will be used in the ON clause of the association query.
+  /// For example, `'customer_id'` in `customer:customers!customer_id(...)`.
+  ///
+  /// When left unspecified, the query will not use a foreign key.
+  /// (e.g. `customer:customers(...)`)
+  final String? foreignKey;
+
   const RuntimeSupabaseColumnDefinition({
     this.association = false,
     this.associationIsNullable = false,
     this.associationType,
     required this.columnName,
+    this.foreignKey,
   });
 }

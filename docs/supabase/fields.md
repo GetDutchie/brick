@@ -31,12 +31,15 @@ final String lastName;
 
 ?> By default, Brick renames fields to be snake case when translating to Supabase, but you can change this default in the `@SupabaseSerializable(fieldRename:)` annotation that [decorates models](models.md).
 
-When the annotated field type extends the model's type, the Supabase column should be a foreign key.
+!> **Do not use** `name` when annotating an association. Instead, use `foreignKey`.
+
+### `@Supabase(foreignKey:)`
+
+When the annotated field references a `OfflineFirstWithSupabaseModel`, a foreign key can be specified. Supabase's PostgREST API can usually determine the association without specifying the foreign key. However, [when multiple foreign keys exist](https://supabase.com/docs/guides/database/joins-and-nesting?queryGroups=language&language=dart#specifying-the-on-clause-for-joins-with-multiple-foreign-keys) to the same table, guiding Brick to use the right foreign key is required.
 
 ```dart
 class User extends OfflineFirstWithSupabaseModel{
-  // The foreign key is a relation to the `id` column of the Address table
-  @Supabase(name: 'address_id')
+  @Supabase(foreignKey: 'address_id')
   final Address address;
 }
 

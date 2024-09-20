@@ -7,6 +7,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 /// Find `@Supabase` given a field
 class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
     with AnnotationFinderWithFieldRename<Supabase> {
+  /// Model-level settings
   final SupabaseSerializable? config;
 
   SupabaseAnnotationFinder([this.config]);
@@ -33,6 +34,7 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
     return Supabase(
       defaultValue: obj.getField('defaultValue')!.toStringValue(),
       enumAsString: obj.getField('enumAsString')!.toBoolValue() ?? Supabase.defaults.enumAsString,
+      foreignKey: obj.getField('foreignKey')!.toStringValue(),
       fromGenerator: obj.getField('fromGenerator')!.toStringValue(),
       ignore: obj.getField('ignore')!.toBoolValue() ?? Supabase.defaults.ignore,
       ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Supabase.defaults.ignoreFrom,

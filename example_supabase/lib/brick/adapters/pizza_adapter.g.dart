@@ -8,7 +8,13 @@ Future<Pizza> _$PizzaFromSupabase(Map<String, dynamic> data,
 
 Future<Map<String, dynamic>> _$PizzaToSupabase(Pizza instance,
     {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
-  return {'id': instance.id, 'frozen': instance.frozen};
+  return {
+    'id': instance.id,
+    'frozen': instance.frozen,
+    'customer': await CustomerAdapter()
+        .toSupabase(instance.customer, provider: provider, repository: repository),
+    'customer_id': instance.customerId
+  };
 }
 
 Future<Pizza> _$PizzaFromSqlite(Map<String, dynamic> data,
@@ -39,6 +45,17 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
     'frozen': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'frozen',
+    ),
+    'customer': const RuntimeSupabaseColumnDefinition(
+      association: true,
+      columnName: 'customer',
+      associationType: Customer,
+      associationIsNullable: false,
+      foreignKey: 'customer_id',
+    ),
+    'customerId': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'customer_id',
     )
   };
   @override

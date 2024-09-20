@@ -7,11 +7,13 @@ import 'package:build/build.dart';
 
 final _schemaGenerator = OfflineFirstSchemaGenerator();
 
+/// Generates migrations based off the [schemaGenerator]
 class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithSupabase> {
   @override
   final schemaGenerator = _schemaGenerator;
 }
 
+/// Generates a schema using the [schemaGenerator]
 class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithSupabase> {
   @override
   final schemaGenerator = _schemaGenerator;

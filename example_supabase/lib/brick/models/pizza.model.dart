@@ -12,6 +12,15 @@ class Pizza extends OfflineFirstWithSupabaseModel {
 
   final bool frozen;
 
+  @Supabase(foreignKey: 'customer_id')
+  final Customer customer;
+
+  // If the association will be created by the app, specify
+  // a field that maps directly to the foreign key column
+  // so that Brick can notify Supabase of the association.
+  @Sqlite(ignore: true)
+  String get customerId => customer.id;
+
   Pizza({
     required this.id,
     required this.frozen,

@@ -222,6 +222,7 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
       association: true,
       associationIsNullable: false,
       columnName: 'assoc_id',
+      foreignKey: 'assoc_id',
       associationType: DemoModel,
     ),
     'assocs': const RuntimeSupabaseColumnDefinition(

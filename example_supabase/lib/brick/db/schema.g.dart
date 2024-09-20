@@ -4,7 +4,7 @@ import 'package:brick_sqlite/db.dart';
 part '20240906052847.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final migrations = <Migration>{const Migration20240906052847()};
+final migrations = <Migration>{const Migration20240920034504()};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(20240906052847, generatorVersion: 1, tables: <SchemaTable>{

@@ -177,6 +177,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     return "'$name': $contents";
   }
 
+  /// Generates a `repository.getAssociation` invocation
   String getAssociationMethod(
     DartType argType, {
     bool forceNullable = false,
