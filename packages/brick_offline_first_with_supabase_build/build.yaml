@@ -1,0 +1,82 @@
+# Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
+builders:
+  brick_aggregate_builder:
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
+    builder_factories: ["offlineFirstAggregateBuilder"]
+    build_extensions:
+      { "$lib$": ["models_and_migrations.brick_aggregate.dart"] }
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
+    runs_before: ["brick_schema_builder", "brick_model_dictionary_builder"]
+    auto_apply: dependents
+    defaults:
+      generate_for:
+        exclude:
+          - lib/brick/adapters/*.dart
+          - brick/adapters/*.dart
+          - lib/brick/db/*.dart
+          - brick/db/*.dart
+
+  brick_adapters_builder:
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
+    builder_factories: ["offlineFirstAdaptersBuilder"]
+    build_extensions: { ".model.dart": [".adapter_build_offline_first.dart"] }
+    build_to: cache
+    auto_apply: dependents
+    applies_builders: ["source_gen|combining_builder"]
+    defaults:
+      generate_for:
+        include:
+          - lib/**/*.model.dart
+          - lib/brick/db/*.migration.dart
+          - lib/brick/db/schema.g.dart
+          - lib/brick/brick.g.dart
+        exclude:
+          - lib/brick/adapters/*.dart
+          - brick/adapters/*.dart
+          - lib/brick/db/*.dart
+          - brick/db/*.dart
+
+  brick_schema_builder:
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
+    builder_factories: ["offlineFirstSchemaBuilder"]
+    build_extensions:
+      {
+        ".brick_aggregate.dart":
+          [".brick_aggregate.schema_build_offline_first.dart"],
+      }
+    build_to: cache
+    auto_apply: dependents
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders:
+      [
+        "source_gen|combining_builder",
+        ":brick_aggregate_builder",
+        ":brick_new_migration_builder",
+      ]
+
+  brick_new_migration_builder:
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
+    builder_factories: ["offlineFirstNewMigrationBuilder"]
+    build_extensions:
+      { ".brick_aggregate.dart": [".brick_aggregate.migration_builder.dart"] }
+    build_to: cache
+    auto_apply: dependents
+    runs_before: ["brick_schema_builder"]
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders:
+      ["source_gen|combining_builder", ":brick_aggregate_builder"]
+
+  brick_model_dictionary_builder:
+    import: "package:brick_offline_first_with_supabase_build/brick_offline_first_with_supabase_build.dart"
+    builder_factories: ["offlineFirstModelDictionaryBuilder"]
+    build_extensions:
+      {
+        ".brick_aggregate.dart":
+          [".brick_aggregate.model_dictionary_build_offline_first.dart"],
+      }
+    build_to: cache
+    auto_apply: dependents
+    required_inputs: [".brick_aggregate.dart"]
+    applies_builders:
+      ["source_gen|combining_builder", ":brick_aggregate_builder"]

@@ -1,0 +1,26 @@
+name: brick_supabase_generators
+description: Code generation library for the Supabase providers, models, and adapters in Brick
+homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_supabase_generators
+issue_tracker: https://github.com/GetDutchie/brick/issues
+repository: https://github.com/GetDutchie/brick
+
+version: 1.0.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  analyzer: ">=6.0.0 <7.0.0"
+  brick_build: ">=3.2.0 <4.0.0"
+  brick_core: ">=1.2.1 <2.0.0"
+  brick_json_generators: ">=3.1.0 <4.0.0"
+  brick_supabase: ">=0.1.1+2 <2.0.0"
+  build: ">=2.0.0 <3.0.0"
+  dart_style: ">=2.0.0 <3.0.0"
+  source_gen: ">=1.2.2 <2.0.0"
+
+dev_dependencies:
+  test: ^1.20.1
+  lints: ^2.0.1
+  brick_build_test:
+    path: ../brick_build_test

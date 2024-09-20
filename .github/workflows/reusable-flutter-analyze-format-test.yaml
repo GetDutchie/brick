@@ -15,7 +15,7 @@ jobs:
   flutter_analyze_format_test:
     runs-on: ubuntu-latest
     container:
-      image: cirrusci/flutter:${{ matrix.flutter_version }}
+      image: ghcr.io/cirruslabs/flutter:${{ matrix.flutter_version }}
     strategy:
       fail-fast: false
       matrix:
@@ -25,24 +25,29 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
 
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: "~/.pub-cache/hosted"
           key: ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.flutter_version }}-${{ hashFiles(format('packages/{0}/pubspec.yaml', inputs.package)) }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.package }}-v1-${{ matrix.flutter_version }}
 
-      - id: checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: flutter pub get
         working-directory: packages/${{ inputs.package }}
 
-      - run: dart analyze --fatal-infos lib test
+      - run: dart analyze --fatal-infos lib
         working-directory: packages/${{ inputs.package }}
 
-      - run: dart format --output=none --line-length 100 --set-exit-if-changed lib test
+      - run: if [ -d "test" ]; then dart analyze --fatal-infos test; fi
         working-directory: packages/${{ inputs.package }}
 
-      - run: flutter test
+      - run: dart format --output=none --line-length 100 --set-exit-if-changed lib
+        working-directory: packages/${{ inputs.package }}
+
+      - run: if [ -d "test" ]; then dart format --output=none --line-length 100 --set-exit-if-changed test; fi
+        working-directory: packages/${{ inputs.package }}
+
+      - run: if [ -d "test" ]; then flutter test; fi
         working-directory: packages/${{ inputs.package }}

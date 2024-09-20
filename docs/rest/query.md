@@ -2,8 +2,8 @@
 
 ## `providerArgs:`
 
-| Name | Type | Description |
-|---|---|---|
+| Name        | Type          | Description                                                                            |
+| ----------- | ------------- | -------------------------------------------------------------------------------------- |
 | `'request'` | `RestRequest` | Specifies configurable information about the request like HTTP method or top level key |
 
 ## `where:`

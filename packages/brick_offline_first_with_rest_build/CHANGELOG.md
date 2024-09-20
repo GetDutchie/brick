@@ -1,6 +1,7 @@
 ## Unreleased
 
 - (test) remove analysis options override for non-standard library prefixes
+- Apply minimum constraint on `brick_offline_first_build` to `3.2.0`
 
 ## 3.2.0
 

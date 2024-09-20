@@ -1,0 +1,18 @@
+name: Brick Supabase Generators
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "packages/brick_supabase_generators/**"
+      - ".github/workflows/brick_supabase_generators.yaml"
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  analyze_format_test:
+    uses: ./.github/workflows/reusable-dart-analyze-format-test.yaml
+    with:
+      package: brick_supabase_generators

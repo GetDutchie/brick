@@ -5,9 +5,11 @@
    ```yaml
    dependencies:
      # or brick_offline_first_with_graphql: any
+     # or brick_offline_first_with_supabase: any
      brick_offline_first_with_rest: any
    dev_dependencies:
      # or brick_offline_first_with_graphql_build: any
+     # or brick_offline_first_with_supabase_build: any
      brick_offline_first_with_rest_build: any
      build_runner: any
    ```

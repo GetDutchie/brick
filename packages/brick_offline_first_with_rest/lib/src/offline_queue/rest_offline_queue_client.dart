@@ -5,6 +5,14 @@ import 'package:logging/logging.dart';
 
 /// Stores all requests in a SQLite database
 class RestOfflineQueueClient extends http.BaseClient {
+  /// Any request URI that begins with one of these paths will not be
+  /// handled by the offline queue and will be forwarded to [_inner].
+  ///
+  /// For example, if an ignore path is `/v1/ignored-path`, a request
+  /// to `http://0.0.0.0:3000/v1/ignored-path/endpoint` will not be
+  /// cached and retried on failure.
+  final RegExp? _ignorePattern;
+
   /// A normal HTTP client, treated like a manual `super`
   /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
   final http.Client _inner;
@@ -30,12 +38,31 @@ class RestOfflineQueueClient extends http.BaseClient {
     this._inner,
     this.requestManager, {
     List<int>? reattemptForStatusCodes,
+
+    /// Any request URI that begins with one of these paths will not be
+    /// handled by the offline queue and will be forwarded to [_inner].
+    ///
+    /// For example, if an ignore path is `/v1/ignored-path`, a request
+    /// to `http://0.0.0.0:3000/v1/ignored-path/endpoint` will not be
+    /// cached and retried on failure.
+    Set<String>? ignorePaths,
   })  : _logger = Logger('OfflineQueueHttpClient#${requestManager.databaseName}'),
-        reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 501, 502, 503, 504];
+        reattemptForStatusCodes = reattemptForStatusCodes ?? [404, 501, 502, 503, 504],
+        _ignorePattern = ignorePaths == null ? null : RegExp(ignorePaths.join('|'));
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final cachePolicy = (request as http.Request).headers.remove(policyHeader);
+    if (_ignorePattern != null && request.url.path.startsWith(_ignorePattern!)) {
+      return await _inner.send(request);
+    }
+
+    // Only handle http Requests
+    // https://github.com/GetDutchie/brick/issues/440#issuecomment-2357547961
+    if (request is! http.Request) {
+      return await _inner.send(request);
+    }
+
+    final cachePolicy = request.headers.remove(policyHeader);
     final skipCache = cachePolicy == 'requireRemote';
     final cacheItem = RestRequestSqliteCache(request);
     _logger.finest('sending: ${cacheItem.toSqlite()}');
@@ -55,6 +82,7 @@ class RestOfflineQueueClient extends http.BaseClient {
     final genericErrorResponse = http.StreamedResponse(
       Stream.fromFuture(Future.value('unknown internal error'.codeUnits)),
       501,
+      request: request,
     );
 
     try {

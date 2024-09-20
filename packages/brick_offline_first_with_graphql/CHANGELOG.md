@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Apply minimum constraint on `brick_offline_first_build` to `3.2.0`
+
 ## 3.1.1
 
 - Loosen constraints for `gql`, `gql_exec`, and `gql_link`
