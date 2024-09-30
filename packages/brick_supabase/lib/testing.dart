@@ -38,6 +38,12 @@ class SupabaseRequest<TModel extends SupabaseModel> {
         : fields;
     final generatedTableName =
         modelDictionary != null ? modelDictionary.adapterFor[TModel]?.supabaseTableName : tableName;
+
+    if (requestMethod == 'DELETE') {
+      final url = '/rest/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}';
+      return Uri.parse(url);
+    }
+
     final url =
         '/rest/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}select=${Uri.encodeComponent(generatedFields ?? '')}${limit != null ? '&limit=$limit' : ''}';
     return Uri.parse(url);

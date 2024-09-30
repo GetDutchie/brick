@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.3
+
+- Remove `select` from `#delete`
+
 ## 1.0.2
 
 - Only specify key lookup in query transformer if `RuntimeSupabaseColumnDefinition#foreignKey` is specified
