@@ -29,9 +29,6 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final tableBuilder = client.from(adapter.supabaseTableName);
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
-    final queryTransformer =
-        QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
-
     final builder = adapter.uniqueFields.fold(tableBuilder.delete(), (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
       if (output.containsKey(columnName)) {
@@ -40,7 +37,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       return acc;
     });
 
-    final resp = await builder.select(queryTransformer.selectFields).limit(1).maybeSingle();
+    final resp = await builder;
     return resp != null;
   }
 

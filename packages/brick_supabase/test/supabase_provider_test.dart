@@ -18,7 +18,6 @@ void main() {
       final req = SupabaseRequest<DemoModel>(
         requestMethod: 'DELETE',
         filter: 'id=eq.1',
-        limit: 1,
       );
       final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
       final resp = SupabaseResponse(await mock.serialize(instance));
