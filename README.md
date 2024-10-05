@@ -4,6 +4,10 @@ An intuitive way to work with persistent data in Dart.
 
 ## [Full documentation](https://getdutchie.github.io/brick/)
 
+- [GraphQL](https://getdutchie.github.io/brick/#/offline_first/offline_first_with_graphql_repository)
+- [REST](https://getdutchie.github.io/brick/#/offline_first/offline_first_with_rest_repository)
+- [Supabase](https://getdutchie.github.io/brick/#/offline_first/offline_first_with_supabase_repository?id=repository-configuration)
+
 ## Why Brick?
 
 - Out-of-the-box [offline access](packages/brick_offline_first) to data
@@ -37,7 +41,7 @@ Brick is an extensible query interface for Dart applications. It's an [all-in-on
    ```
 1. Add [models](docs/data/models.md) that contain your app logic. Models **must be** saved with the `.model.dart` suffix (i.e. `lib/brick/models/person.model.dart`).
 1. Run `dart run build_runner build` to generate your models and [sometimes migrations](docs/sqlite.md#intelligent-migrations). Rerun after every new model change or `dart run build_runner watch` for automatic generations. You'll need to run this again after your first migration.
-1. Extend [an existing repository](docs/data/repositories.md) or create your own:
+1. Extend [an existing repository](docs/data/repositories.md) or create your own (Supabase has [some exceptions](https://getdutchie.github.io/brick/#/offline_first/offline_first_with_supabase_repository)):
 
    ```dart
    // lib/brick/repository.dart
