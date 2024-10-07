@@ -23,9 +23,8 @@ Supabase.instance.client.from('users')
 Supabase keys can be renamed per field. This will override the default set by `SupabaseSerializable#fieldRename`.
 
 ```dart
-@Supabase(
-  name: "full_name"  // "full_name" is used in from and to requests to Supabase instead of "last_name"
-)
+// "full_name" is used in from and to requests to Supabase instead of "last_name"
+@Supabase(name: "full_name")
 final String lastName;
 ```
 
