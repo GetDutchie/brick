@@ -1,13 +1,14 @@
-// Saved in my_app/lib/src/brick/repository.dart
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
+import 'package:brick_sqlite/memory_cache_provider.dart';
+import 'package:brick_supabase/brick_supabase.dart' hide Supabase;
 import 'package:pizza_shoppe/brick/brick.g.dart';
-import 'package:sqflite_common/sqlite_api.dart';
+import 'package:pizza_shoppe/brick/db/schema.g.dart';
+import 'package:sqflite/sqflite.dart' show databaseFactory;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Repository extends OfflineFirstWithSupabaseRepository {
-  static late Repository? _instance;
+  static late Repository? _singleton;
 
   Repository._({
     required super.supabaseProvider,
@@ -17,25 +18,28 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     super.memoryCacheProvider,
   });
 
-  factory Repository() => _instance!;
+  factory Repository() => _singleton!;
 
-  static Future<void> configure(DatabaseFactory databaseFactory) async {
+  static Future<void> initializeSupabaseAndConfigure({
+    required String supabaseUrl,
+    required String supabaseAnonKey,
+  }) async {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactory,
     );
 
-    await Supabase.initialize(
+    final supabase = await Supabase.initialize(
       url: supabaseUrl,
       anonKey: supabaseAnonKey,
       httpClient: client,
     );
 
     final provider = SupabaseProvider(
-      Supabase.instance.client,
+      supabase.client,
       modelDictionary: supabaseModelDictionary,
     );
 
-    _instance = Repository._(
+    _singleton = Repository._(
       supabaseProvider: provider,
       sqliteProvider: SqliteProvider(
         'my_repository.sqlite',
@@ -44,7 +48,6 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       ),
       migrations: migrations,
       offlineRequestQueue: queue,
-      // Specify class types that should be cached in memory
       memoryCacheProvider: MemoryCacheProvider(),
     );
   }
