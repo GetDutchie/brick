@@ -1,5 +1,3 @@
-?> The GraphQL domain is currently in Alpha. APIs are subject to change.
-
 # Field Configuration
 
 ## Annotations
@@ -11,7 +9,7 @@ Brick by default assumes enums from a GraphQL API will be delivered as integers 
 Given the API:
 
 ```json
-{ "user": { "hats": [ "bowler", "birthday" ] } }
+{ "user": { "hats": ["bowler", "birthday"] } }
 ```
 
 Simply convert `hats` into a Dart enum:
@@ -80,5 +78,5 @@ query {
 
 The following are not serialized to GraphQL. However, unsupported types can still be accessed in the model as non-final fields.
 
-* Nested `List<>` e.g. `<List<List<int>>>`
-* Many-to-many associations
+- Nested `List<>` e.g. `<List<List<int>>>`
+- Many-to-many associations

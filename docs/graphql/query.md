@@ -1,13 +1,11 @@
-?> The GraphQL domain is currently in Alpha. APIs are subject to change.
-
 # `Query` Configuration
 
 ## `providerArgs:`
 
-| Name | Type | Description |
-|---|---|---|
-| `'operation'` | `GraphqlOperation` | apply this operation instead of one of the defaults from `graphqlOperationTransformer`. The document subfields **will not** be populated by the model. |
-| `'context'` | `Map<String, ContextEntry>` | apply this as the context to the request instead of an empty object. Useful for subsequent consumers/`Link`s of the request. The key should be the runtime type of the `ContextEntry`. |
+| Name          | Type                        | Description                                                                                                                                                                            |
+| ------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'operation'` | `GraphqlOperation`          | apply this operation instead of one of the defaults from `graphqlOperationTransformer`. The document subfields **will not** be populated by the model.                                 |
+| `'context'`   | `Map<String, ContextEntry>` | apply this as the context to the request instead of an empty object. Useful for subsequent consumers/`Link`s of the request. The key should be the runtime type of the `ContextEntry`. |
 
 #### `variablesNamespace`
 
@@ -47,4 +45,5 @@ final variables = {
 !> Association values within `Where` **are not** converted to variables
 
 !> Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will not generate.
-* `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.
+
+- `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.

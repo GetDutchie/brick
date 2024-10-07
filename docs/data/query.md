@@ -19,19 +19,19 @@ Query.where('lastName', 'Mustermann') // note this is lastName and not name or l
 
 Querying can be done with `Where` or `WherePhrase`:
 
-1) `WherePhrase` is a collection of `Where` statements.
-2) `WherePhrase` can't contain mixed `required:` because this will output invalid SQL. For example, when it's mixed: `WHERE id = 2 AND name = 'Thomas' OR name = 'Guy'`. The OR needs to be its own phrase: `WHERE (id = 2 AND name = 'Thomas') OR (name = 'Guy')`.
-3) `WherePhrase` can be intermixed with `Where`.
-      ```dart
-      [
-        Where('id').isExactly(2),
-        WherePhrase([
-          Or('name').isExactly('Guy'),
-          Or('name').isExactly('Thomas')
-        ], required: false)
-      ]
-      // => (id == 2) || (name == 'Thomas' || name == 'Guy')
-      ```
+1. `WherePhrase` is a collection of `Where` statements.
+2. `WherePhrase` can't contain mixed `required:` because this will output invalid SQL. For example, when it's mixed: `WHERE id = 2 AND name = 'Thomas' OR name = 'Guy'`. The OR needs to be its own phrase: `WHERE (id = 2 AND name = 'Thomas') OR (name = 'Guy')`.
+3. `WherePhrase` can be intermixed with `Where`.
+   ```dart
+   [
+     Where('id').isExactly(2),
+     WherePhrase([
+       Or('name').isExactly('Guy'),
+       Or('name').isExactly('Thomas')
+     ], required: false)
+   ]
+   // => (id == 2) || (name == 'Thomas' || name == 'Guy')
+   ```
 
 !> Queried enum values should map to a primitive. Plainly, **always include `.index`**: `Where('type').isExactly(MyEnumType.value.index)`.
 
@@ -57,15 +57,15 @@ Fields can be compared to their values beyond an exact match (the default).
 Where('name', value: 'Thomas', compare: Compare.contains);
 ```
 
-* `between`
-* `contains`
-* `doesNotContain`
-* `exact`
-* `greaterThan`
-* `greaterThanOrEqualTo`
-* `lessThan`
-* `lessThanOrEqualTo`
-* `notEqual`
+- `between`
+- `contains`
+- `doesNotContain`
+- `exact`
+- `greaterThan`
+- `greaterThanOrEqualTo`
+- `lessThan`
+- `lessThanOrEqualTo`
+- `notEqual`
 
 Please note that the provider is ultimately responsible for supporting `Where` queries.
 
@@ -97,7 +97,7 @@ Query(where: [
 // =>  (name == 'Thomas' || age != 42) && (height > 182 && height < 186 && country == 'France')
 ```
 
-?> If expanded `WherePhrase`s become unlegible, helpers `And` and `Or` can be used:
+?> If expanded `WherePhrase`s become illegible, helpers `And` and `Or` can be used:
 
 ```dart
 Query(where: [
