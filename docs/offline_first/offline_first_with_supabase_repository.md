@@ -74,7 +74,7 @@ When using [supabase_flutter](https://pub.dev/packages/supabase_flutter), create
 
 ```dart
 final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(databaseFactory: databaseFactory);
-await Supabase.initialize(httpClient: client)
+await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey, httpClient: client)
 final supabaseProvider = SupabaseProvider(Supabase.instance.client, modelDictionary: ...)
 ```
 
