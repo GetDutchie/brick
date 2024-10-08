@@ -8,7 +8,7 @@ Connecting [Brick](https://github.com/GetDutchie/brick) with a RESTful API.
 
 ### `providerArgs:`
 
-* `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
+- `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
 
 ### `where:`
 
@@ -113,9 +113,9 @@ class User extends OfflineFirstModel {}
 
 Data will most often be nested beneath a top-level key in a JSON response. The key is determined by the following priority:
 
-1) A `topLevelKey` in `Query#providerArgs['request']` with a non-empty value
-1) `topLevelKey` if defined in a `RestRequest`
-1) The first discovered key. As a map is effectively an unordered list, relying on this fall through is not recommended.
+1. A `topLevelKey` in `Query#providerArgs['request']` with a non-empty value
+1. `topLevelKey` if defined in a `RestRequest`
+1. The first discovered key. As a map is effectively an unordered list, relying on this fall through is not recommended.
 
 ```dart
 class UserRequestTransformer extends RestRequestTransformer {
@@ -153,7 +153,7 @@ Brick by default assumes enums from a REST API will be delivered as integers mat
 Given the API:
 
 ```json
-{ "user": { "hats": [ "bowler", "birthday" ] } }
+{ "user": { "hats": ["bowler", "birthday"] } }
 ```
 
 Simply convert `hats` into a Dart enum:
@@ -172,9 +172,8 @@ final List<Hat> hats;
 REST keys can be renamed per field. This will override the default set by `RestSerializable#fieldRename`.
 
 ```dart
-@Rest(
-  name: "full_name"  // "full_name" is used in from and to requests to REST instead of "last_name"
-)
+// "full_name" is used in from and to requests to REST instead of "last_name"
+@Rest(name: "full_name")
 final String lastName;
 ```
 
@@ -198,5 +197,5 @@ final restProvider = RestProvider(client: GZipHttpClient(level: 9));
 
 The following are not serialized to REST. However, unsupported types can still be accessed in the model as non-final fields.
 
-* Nested `List<>` e.g. `<List<List<int>>>`
-* Many-to-many associations
+- Nested `List<>` e.g. `<List<List<int>>>`
+- Many-to-many associations

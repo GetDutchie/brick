@@ -14,6 +14,10 @@
   <style type="text/css">
     :root {
       --theme-color: #9A3536;
+      --code-inline-color: #9A3536;
+      --cover-background-color: #fff;
+      --code-font-size: 0.9rem;
+      --code-inline-background: #f8f8f8;
     }
 
     .cover {
@@ -43,7 +47,7 @@
     }
 
     .markdown-section h3 {
-      margin: 50px 0 0.6rem;
+      margin: 30px 0 0.6rem;
     }
 
     .markdown-section h2 code,
@@ -56,8 +60,22 @@
       color: #619c3c;
     }
 
+    .token.string {
+      color: #42b983;
+      color: var(--theme-color, #42b983);
+    }
+
     code .token {
       color: #3c7cc2;
+    }
+
+
+    .markdown-section pre>code {
+      color: #525252;
+    }
+
+    .markdown-section> :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) code {
+      font-size: 0.9rem;
     }
   </style>
 </head>

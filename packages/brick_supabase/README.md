@@ -15,7 +15,7 @@ Connecting [Brick](https://github.com/GetDutchie/brick) with Supabase.
 | `'orderBy'`                | `String`  | Use field names not column names and always specify direction.For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`. |
 | `'orderByReferencedTable'` | `String?` | Forwards to Supabase's `referencedTable` [property](https://supabase.com/docs/reference/dart/order)                                                   |
 
-:bulb: The `ReferencedTable` params are awkward but necessary to not collide with other providers (like `SqliteProvider`) that also use `orderBy` and `limit`. While a `foreign_table.foreign_column` syntax is more Supabase-like, it is not supported in `orderBy` and `limit`.
+:bulb: The `ReferencedTable` naming convention is awkward but necessary to not collide with other providers (like `SqliteProvider`) that also use `orderBy` and `limit`. While a `foreign_table.foreign_column` syntax is more Supabase-like, it is not supported in `orderBy` and `limit`.
 
 ### `where:`
 
@@ -104,9 +104,8 @@ final List<Hat> hats;
 Supabase keys can be renamed per field. This will override the default set by `SupabaseSerializable#fieldRename`.
 
 ```dart
-@Supabase(
-  name: "full_name"  // "full_name" is used in from and to requests to Supabase instead of "last_name"
-)
+// "full_name" is used in from and to requests to Supabase instead of "last_name"
+@Supabase(name: "full_name")
 final String lastName;
 ```
 

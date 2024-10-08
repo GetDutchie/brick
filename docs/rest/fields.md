@@ -9,7 +9,7 @@ Brick by default assumes enums from a REST API will be delivered as integers mat
 Given the API:
 
 ```json
-{ "user": { "hats": [ "bowler", "birthday" ] } }
+{ "user": { "hats": ["bowler", "birthday"] } }
 ```
 
 Simply convert `hats` into a Dart enum:
@@ -28,9 +28,8 @@ final List<Hat> hats;
 REST keys can be renamed per field. This will override the default set by `RestSerializable#fieldRename`.
 
 ```dart
-@Rest(
-  name: "full_name"  // "full_name" is used in from and to requests to REST instead of "last_name"
-)
+// "full_name" is used in from and to requests to REST instead of "last_name"
+@Rest(name: "full_name")
 final String lastName;
 ```
 
@@ -42,5 +41,5 @@ When true, the field will be ignored by the (de)serializing function in the adap
 
 The following are not serialized to REST. However, unsupported types can still be accessed in the model as non-final fields.
 
-* Nested `List<>` e.g. `<List<List<int>>>`
-* Many-to-many associations
+- Nested `List<>` e.g. `<List<List<int>>>`
+- Many-to-many associations
