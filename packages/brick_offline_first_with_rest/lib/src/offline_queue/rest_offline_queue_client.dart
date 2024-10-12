@@ -24,6 +24,8 @@ class RestOfflineQueueClient extends http.BaseClient {
   void Function(http.Request request, http.StreamedResponse response)? onReattemptableResponse;
 
   /// A callback triggered when a request throws an exception during execution.
+  ///
+  /// `SocketException`s (errors thrown due to missing connectivity) will also be forwarded to this callback.
   void Function(http.Request request, Object error)? onRequestError;
 
   /// If the response returned from the client is one of these error codes, the request
@@ -118,7 +120,7 @@ class RestOfflineQueueClient extends http.BaseClient {
       onRequestError?.call(request, e);
       _logger.warning('#send: $e');
     } finally {
-      // unlock the request which results in a reattempt
+      // unlock the request for a later a reattempt
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
     }
