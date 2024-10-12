@@ -21,8 +21,7 @@ class RestOfflineQueueClient extends http.BaseClient {
 
   /// A callback triggered when the response of a request has a status code
   /// which is present in the [reattemptForStatusCodes] list.
-  void Function(http.Request request, http.StreamedResponse response)?
-      onReattemptableResponse;
+  void Function(http.Request request, http.StreamedResponse response)? onReattemptableResponse;
 
   /// A callback triggered when a request throws an exception during execution.
   void Function(http.Request request, Object error)? onRequestError;
@@ -105,9 +104,10 @@ class RestOfflineQueueClient extends http.BaseClient {
           // request was successfully sent and can be removed
           _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
           await cacheItem.delete(db);
-        } else {
-          _logger.finest(
-              'request failed, will be reattempted: ${cacheItem.toSqlite()}');
+        } else if (onReattemptableResponse != null) {
+          _logger.finer(
+            'request failed, will be reattempted: ${cacheItem.toSqlite()}',
+          );
           onReattemptableResponse?.call(request, resp);
         }
       }
