@@ -34,7 +34,7 @@ abstract class OfflineFirstWithRestRepository
   /// which is present in the [reattemptForStatusCodes] list.
   ///
   /// Forwarded to [RestOfflineQueueClient].
-  void Function(http.Request request, http.StreamedResponse response)? onReattemptableResponse;
+  void Function(http.Request request, int statusCode)? onReattemptableResponse;
 
   /// A callback triggered when a request throws an exception during execution.
   ///
