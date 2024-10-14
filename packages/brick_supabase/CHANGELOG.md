@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.4
+
+- Expose private methods `SupabaseProvider#upsertByType` and `SupabaseProvider#recursiveAssociationUpsert` as protected methods
+
 ## 1.0.3
 
 - Remove `select` from `#delete`

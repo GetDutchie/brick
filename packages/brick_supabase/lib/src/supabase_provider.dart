@@ -87,7 +87,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
-    return await _recursiveAssociationUpsert(
+    return await recursiveAssociationUpsert(
       output,
       type: TModel,
       query: query,
@@ -95,7 +95,10 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     ) as TModel;
   }
 
-  Future<SupabaseModel> _upsertByType(
+  /// Used by [recursiveAssociationUpsert], this performs the upsert to Supabase
+  /// and selects the model's fields in the response.
+  @protected
+  Future<SupabaseModel> upsertByType(
     Map<String, dynamic> serializedInstance, {
     required Type type,
     Query? query,
@@ -125,7 +128,10 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     return adapter.fromSupabase(resp, repository: repository, provider: this);
   }
 
-  Future<SupabaseModel> _recursiveAssociationUpsert(
+  /// Discover all SupabaseModel-like associations of a serialized instance and
+  /// upsert them recursively before the requested instance is upserted.
+  @protected
+  Future<SupabaseModel> recursiveAssociationUpsert(
     Map<String, dynamic> serializedInstance, {
     required Type type,
     Query? query,
@@ -146,7 +152,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         continue;
       }
 
-      await _recursiveAssociationUpsert(
+      await recursiveAssociationUpsert(
         Map<String, dynamic>.from(serializedInstance[association.columnName]),
         type: association.associationType!,
         query: query,
@@ -155,7 +161,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       serializedInstance.remove(association.columnName);
     }
 
-    return await _upsertByType(
+    return await upsertByType(
       serializedInstance,
       type: type,
       query: query,
