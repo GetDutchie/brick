@@ -59,10 +59,10 @@ abstract class OfflineFirstWithRestRepository
     /// its defaults
     List<int>? reattemptForStatusCodes,
 
-    /// This property is forwarded to `RestOfflineRequestQueue`.
+    /// This property is forwarded to `RestOfflineQueueClient`.
     this.onReattemptableResponse,
 
-    /// This property is forwarded to `RestOfflineRequestQueue`.
+    /// This property is forwarded to `RestOfflineQueueClient`.
     this.onRequestError,
     required RestProvider restProvider,
     required super.sqliteProvider,
