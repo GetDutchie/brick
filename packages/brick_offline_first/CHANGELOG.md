@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Add `GetFirstMixin` for convenient retrieval of the first results of `OfflineFirstRepository#get`
+
 ## 3.2.1
 
 - Add `OfflineFirstSerdes#toSupabase` abstract method

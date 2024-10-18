@@ -15,7 +15,7 @@ import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 import 'package:synchronized/synchronized.dart';
 
 /// Retrieves from a Sqlite database
-class SqliteProvider implements Provider<SqliteModel> {
+class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms.
   @protected
@@ -51,7 +51,7 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Remove record from SQLite. [query] is ignored.
   @override
-  Future<int> delete<TModel extends SqliteModel>(instance, {query, repository}) async {
+  Future<int> delete<TModel extends CModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
@@ -73,9 +73,9 @@ class SqliteProvider implements Provider<SqliteModel> {
   ///
   /// If [query.where] is `null`, existence for **any** record is executed.
   @override
-  Future<bool> exists<TModel extends SqliteModel>({
+  Future<bool> exists<TModel extends CModel>({
     Query? query,
-    ModelRepository<SqliteModel>? repository,
+    ModelRepository<CModel>? repository,
   }) async {
     final sqlQuery = QuerySqlTransformer<TModel>(
       modelDictionary: modelDictionary,
@@ -119,7 +119,7 @@ class SqliteProvider implements Provider<SqliteModel> {
   /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   @override
-  Future<List<TModel>> get<TModel extends SqliteModel>({
+  Future<List<TModel>> get<TModel extends CModel>({
     query,
     repository,
   }) async {
@@ -205,10 +205,10 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Fetch results for model with a custom SQL statement.
   /// It is recommended to use [get] whenever possible. **Advanced use only**.
-  Future<List<TModel>> rawGet<TModel extends SqliteModel>(
+  Future<List<TModel>> rawGet<TModel extends CModel>(
     String sql,
     List arguments, {
-    ModelRepository<SqliteModel>? repository,
+    ModelRepository<CModel>? repository,
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
 
@@ -272,7 +272,7 @@ class SqliteProvider implements Provider<SqliteModel> {
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
   @override
-  Future<int?> upsert<TModel extends SqliteModel>(instance, {query, repository}) async {
+  Future<int?> upsert<TModel extends CModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
 
