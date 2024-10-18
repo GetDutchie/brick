@@ -112,7 +112,9 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         QuerySupabaseTransformer(adapter: adapter, modelDictionary: modelDictionary, query: query);
 
     final builder = adapter.uniqueFields.fold(
-        client.from(adapter.supabaseTableName).upsert(serializedInstance), (acc, uniqueFieldName) {
+        client
+            .from(adapter.supabaseTableName)
+            .upsert(serializedInstance, onConflict: adapter.onConflict), (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
       if (serializedInstance.containsKey(columnName)) {
         return acc.eq(columnName, serializedInstance[columnName]);
