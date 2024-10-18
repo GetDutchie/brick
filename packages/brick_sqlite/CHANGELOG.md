@@ -3,6 +3,7 @@
 ## 3.1.1
 
 - Expose a generic type for `MemoryCacheProvider` models
+- Expose a generic type for `SqliteProvider` models
 
 ## 3.1.0
 
