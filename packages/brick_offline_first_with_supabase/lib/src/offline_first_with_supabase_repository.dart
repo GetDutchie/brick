@@ -189,6 +189,8 @@ abstract class OfflineFirstWithSupabaseRepository
       504,
     ],
     bool? serialProcessing,
+    void Function(http.Request request, int statusCode)? onReattemptableResponse,
+    void Function(http.Request, Object)? onRequestError,
   }) {
     final client = RestOfflineQueueClient(
       innerClient ?? http.Client(),
@@ -200,6 +202,8 @@ abstract class OfflineFirstWithSupabaseRepository
       ),
       ignorePaths: ignorePaths,
       reattemptForStatusCodes: reattemptForStatusCodes,
+      onReattemptableResponse: onReattemptableResponse,
+      onRequestError: onRequestError,
     );
     return (client, RestOfflineRequestQueue(client: client));
   }
