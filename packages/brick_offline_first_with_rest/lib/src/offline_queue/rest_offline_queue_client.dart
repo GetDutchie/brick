@@ -17,8 +17,6 @@ class RestOfflineQueueClient extends http.BaseClient {
   /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
   final http.Client _inner;
 
-  final RequestSqliteCacheManager<http.Request> requestManager;
-
   /// A callback triggered when the response of a request has a status code
   /// which is present in the [reattemptForStatusCodes] list.
   void Function(http.Request request, int statusCode)? onReattemptableResponse;
@@ -27,6 +25,8 @@ class RestOfflineQueueClient extends http.BaseClient {
   ///
   /// `SocketException`s (errors thrown due to missing connectivity) will also be forwarded to this callback.
   void Function(http.Request request, Object error)? onRequestError;
+
+  final RequestSqliteCacheManager<http.Request> requestManager;
 
   /// If the response returned from the client is one of these error codes, the request
   /// **will not** be removed from the queue. For example, if the result of a request produces a
@@ -107,7 +107,7 @@ class RestOfflineQueueClient extends http.BaseClient {
           _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
           await cacheItem.delete(db);
         } else if (onReattemptableResponse != null) {
-          _logger.finer(
+          _logger.finest(
             'request failed, will be reattempted: ${cacheItem.toSqlite()}',
           );
           onReattemptableResponse?.call(request, resp.statusCode);

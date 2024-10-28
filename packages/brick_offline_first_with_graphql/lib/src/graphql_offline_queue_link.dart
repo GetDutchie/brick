@@ -56,8 +56,9 @@ class GraphqlOfflineQueueLink extends Link {
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
-      } else {
-        onReattemptableResponse?.call(request, response.response['statusCode'] as int);
+      } else if (response.response.containsKey('statusCode') &&
+          response.response['statusCode'] is int) {
+        onReattemptableResponse?.call(request, response.response['statusCode']);
       }
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);

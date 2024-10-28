@@ -17,7 +17,12 @@ To cache outbound requests, apply `GraphqlOfflineQueueLink` in your GraphqlProvi
 ```dart
 GraphqlProvider(
   link: Link.from([
-    GraphqlOfflineQueueLink(GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite')),
+    GraphqlOfflineQueueLink(
+      GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite'),
+      // Optionally specify callbacks for queue retries and errors
+      onReattemptableResponse: onReattemptableResponse,
+      onRequestError: onRequestError,
+    ),
     HttpLink(endpoint)
   ]),
 );

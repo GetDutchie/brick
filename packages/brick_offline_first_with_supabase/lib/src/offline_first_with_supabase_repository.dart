@@ -201,9 +201,9 @@ abstract class OfflineFirstWithSupabaseRepository
         serialProcessing: serialProcessing,
       ),
       ignorePaths: ignorePaths,
-      reattemptForStatusCodes: reattemptForStatusCodes,
       onReattemptableResponse: onReattemptableResponse,
       onRequestError: onRequestError,
+      reattemptForStatusCodes: reattemptForStatusCodes,
     );
     return (client, RestOfflineRequestQueue(client: client));
   }

@@ -73,9 +73,9 @@ abstract class OfflineFirstWithRestRepository
     remoteProvider.client = RestOfflineQueueClient(
       restProvider.client,
       offlineQueueManager,
-      reattemptForStatusCodes: reattemptForStatusCodes,
-      onRequestError: onRequestError,
       onReattemptableResponse: onReattemptableResponse,
+      onRequestError: onRequestError,
+      reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = RestOfflineRequestQueue(
       client: remoteProvider.client as RestOfflineQueueClient,

@@ -11,7 +11,12 @@ To cache outbound requests, apply `GraphqlOfflineQueueLink` in your GraphqlProvi
 ```dart
 GraphqlProvider(
   link: Link.from([
-    GraphqlOfflineQueueLink(GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite')),
+    GraphqlOfflineQueueLink(
+      GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite'),
+      // Optionally specify callbacks for queue retries and errors
+      onReattemptableResponse: onReattemptableResponse,
+      onRequestError: onRequestError,
+    ),
     HttpLink(endpoint)
   ]),
 );
@@ -43,9 +48,9 @@ Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a 
 
 ### Field Types
 
-* Any unsupported field types from `GraphqlProvider` or `SqliteProvider`
-* Future iterables of future models (i.e. `Future<List<Future<Model>>>`.
+- Any unsupported field types from `GraphqlProvider` or `SqliteProvider`
+- Future iterables of future models (i.e. `Future<List<Future<Model>>>`.
 
 ### Configuration
 
-* `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.
+- `@OfflineFirst(where:` only supports extremely simple renames. Multiple `where` keys (`OfflineFirst(where: {'id': 'data["id"]', 'otherVar': 'data["otherVar"]'})`) or nested properties (`OfflineFirst(where: {'id': 'data["subfield"]["id"]})`) will be ignored. Be sure to use `@Graphql(name:)` to rename the generated document field.
