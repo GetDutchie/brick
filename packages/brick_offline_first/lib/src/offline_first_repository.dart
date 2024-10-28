@@ -304,9 +304,9 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   @visibleForTesting
   Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
     bool notifyWhenEmpty = true,
-    Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionByQuery,
+    Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionsByQuery,
   }) async {
-    final queriesControllers = (subscriptionByQuery ?? subscriptions[TModel])?.entries;
+    final queriesControllers = (subscriptionsByQuery ?? subscriptions[TModel])?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
     // create a copy of the controllers to avoid concurrent modification while looping
@@ -337,6 +337,12 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   Future<void> reset() async {
     await sqliteProvider.resetDb();
     memoryCacheProvider.reset();
+    for (final subscription in subscriptions.values) {
+      for (final controller in subscription.values) {
+        await controller.close();
+      }
+    }
+    subscriptions.clear();
   }
 
   /// Listen for streaming changes when the [sqliteProvider].

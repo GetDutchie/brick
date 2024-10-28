@@ -2,6 +2,7 @@
 
 - Added `subscriptionByQuery` to `OfflineFirstRepository#notifySubscriptionsWithLocalData` to pass a custom map of `StreamControllers`
 - Add `GetFirstMixin` for convenient retrieval of the first results of `OfflineFirstRepository#get`
+- Close all controllers in `OfflineFirstRepository#subscriptions` and clear the map on `OfflineFirstRepository#reset`
 
 ## 3.2.1
 

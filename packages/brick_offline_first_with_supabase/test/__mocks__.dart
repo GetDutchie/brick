@@ -39,10 +39,14 @@ class Customer extends OfflineFirstWithSupabaseModel {
   });
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => id.hashCode ^ firstName.hashCode ^ lastName.hashCode;
 
   @override
-  bool operator ==(Object other) => other is Customer && other.id == id;
+  bool operator ==(Object other) =>
+      other is Customer &&
+      other.id == id &&
+      other.firstName == firstName &&
+      other.lastName == lastName;
 }
 
 @ConnectOfflineFirstWithSupabase(

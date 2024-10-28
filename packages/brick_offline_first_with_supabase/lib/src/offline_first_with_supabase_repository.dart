@@ -170,6 +170,19 @@ abstract class OfflineFirstWithSupabaseRepository
     );
   }
 
+  @override
+  Future<void> reset() async {
+    await super.reset();
+    for (final subscription in supabaseRealtimeSubscriptions.values) {
+      for (final eventType in subscription.values) {
+        for (final controller in eventType.values) {
+          await controller.close();
+        }
+      }
+    }
+    supabaseRealtimeSubscriptions.clear();
+  }
+
   /// Subscribes to realtime updates using
   /// [Supabase channels](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart).
   /// **This will only work if your Supabase table has realtime enabled.**
@@ -182,10 +195,7 @@ abstract class OfflineFirstWithSupabaseRepository
   ///
   /// See [subscribe] for reactivity without using realtime.
   ///
-  /// `eventType` is the triggering remote event. It is **strongly recommended to not use
-  /// `PostgresChangeEvent.all`**. This event type requires manual reconcilliation
-  /// of local and remote data and can be extremely expensive. Instead, use individual
-  /// events like `PostgresChangeEvent.insert` or `PostgresChangeEvent.delete`.
+  /// `eventType` is the triggering remote event.
   ///
   /// `policy` determines how data is fetched (local or remote). When `.localOnly`,
   /// Supabase channels will not be used.
@@ -221,6 +231,11 @@ abstract class OfflineFirstWithSupabaseRepository
           filter: queryToPostgresChangeFilter<TModel>(query),
           callback: (payload) async {
             switch (payload.eventType) {
+              // This code path is likely never hit; `PostgresChangeEvent.all` is used
+              // to listen to changes but as far as can be determined is not delivered within
+              // the payload of the callback.
+              //
+              // It's handled just in case this behavior changes.
               case PostgresChangeEvent.all:
                 final localResults = await sqliteProvider.get<TModel>(repository: this);
                 final remoteResults =
@@ -263,12 +278,15 @@ abstract class OfflineFirstWithSupabaseRepository
                   provider: remoteProvider,
                   repository: this,
                 );
-                await sqliteProvider.delete<TModel>(instance as TModel, repository: this);
+                final primaryKey =
+                    await sqliteProvider.primaryKeyByUniqueColumns<TModel>(instance as TModel);
+                instance.primaryKey = primaryKey;
+                await sqliteProvider.delete<TModel>(instance, repository: this);
                 memoryCacheProvider.delete<TModel>(instance, repository: this);
             }
 
             await notifySubscriptionsWithLocalData<TModel>(
-              subscriptionByQuery: supabaseRealtimeSubscriptions[TModel]![eventType],
+              subscriptionsByQuery: supabaseRealtimeSubscriptions[TModel]![eventType],
             );
           },
         )

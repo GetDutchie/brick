@@ -37,11 +37,14 @@ class SupabaseMockServer {
     await client.dispose();
     await client.removeAllChannels();
 
+    await listener?.cancel();
+
+    hasListener = false;
+
     listeners.clear();
 
     await webSocket?.close();
 
-    await listener?.cancel();
     await server.close(force: true);
   }
 
@@ -95,28 +98,30 @@ class SupabaseMockServer {
 
       if (matching == null) return;
 
-      final replyString = jsonEncode({
-        'event': 'phx_reply',
-        'payload': {
-          'response': {
-            'postgres_changes': matching.value.flattenedResponses.map((r) {
-              final data = Map<String, dynamic>.from(r.data as Map);
+      if (requestJson['payload']['config']['postgres_changes'].first['event'] != '*') {
+        final replyString = jsonEncode({
+          'event': 'phx_reply',
+          'payload': {
+            'response': {
+              'postgres_changes': matching.value.flattenedResponses.map((r) {
+                final data = Map<String, dynamic>.from(r.data as Map);
 
-              return {
-                'id': _realtimeEventToId(r.realtimeEvent!),
-                'event': r.realtimeEvent!.name.toUpperCase(),
-                'schema': data['payload']['data']['schema'],
-                'table': data['payload']['data']['table'],
-                if (realtimeFilter != null) 'filter': realtimeFilter,
-              };
-            }).toList(),
+                return {
+                  'id': _realtimeEventToId(r.realtimeEvent!),
+                  'event': r.realtimeEvent!.name.toUpperCase(),
+                  'schema': data['payload']['data']['schema'],
+                  'table': data['payload']['data']['table'],
+                  if (realtimeFilter != null) 'filter': realtimeFilter,
+                };
+              }).toList(),
+            },
+            'status': 'ok',
           },
-          'status': 'ok',
-        },
-        'ref': ref,
-        'topic': topic,
-      });
-      webSocket!.add(replyString);
+          'ref': ref,
+          'topic': topic,
+        });
+        webSocket!.add(replyString);
+      }
 
       for (final realtimeResponses in matching.value.flattenedResponses) {
         await Future.delayed(matching.value.realtimeDelayBetweenResponses);
@@ -179,7 +184,7 @@ class SupabaseMockServer {
       case PostgresChangeEvent.delete:
         return 48673474;
       case PostgresChangeEvent.all:
-        return 12345678;
+        return 0;
     }
   }
 
@@ -193,6 +198,8 @@ class SupabaseMockServer {
     PostgresChangeEvent? realtimeEvent,
     ModelRepository<SupabaseModel>? repository,
   }) async {
+    assert(realtimeEvent != PostgresChangeEvent.all, '.all realtime events are not serialized');
+
     final adapter = modelDictionary.adapterFor[TModel]!;
     final serialized = await adapter.toSupabase(
       instance,

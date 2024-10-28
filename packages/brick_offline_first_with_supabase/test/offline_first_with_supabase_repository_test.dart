@@ -86,7 +86,7 @@ void main() async {
 
         final customers = await repository.get<Customer>();
         expect(customers, hasLength(1));
-        final localPizzas = await repository.sqliteProvider.get<Pizza>();
+        final localPizzas = await repository.sqliteProvider.get<Pizza>(repository: repository);
         expect(localPizzas, hasLength(1));
       });
     });
@@ -197,79 +197,90 @@ void main() async {
       });
     });
 
-    group('#subscribeToRealtime', () {
-      group('#supabaseRealtimeSubscriptions', () {
-        test('adds controller and query to #supabaseRealtimeSubscriptions', () async {
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-          final query = Query.where('firstName', 'Thomas');
-          repository.subscribeToRealtime<Customer>(query: query);
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
-          expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
-                .first.key,
-            query,
-          );
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
-                .first.value,
-            isNotNull,
-          );
-        });
+    group('#supabaseRealtimeSubscriptions', () {
+      test('adds controller and query to #supabaseRealtimeSubscriptions', () async {
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        final query = Query.where('firstName', 'Thomas');
+        final subscription = repository.subscribeToRealtime<Customer>(query: query).listen((_) {});
 
-        test('subscription succeeds when policy is non-default .alwaysHydrate', () async {
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-          final query = Query.where('firstName', 'Thomas');
-          repository.subscribeToRealtime<Customer>(
-            policy: OfflineFirstGetPolicy.alwaysHydrate,
-            query: query,
-          );
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!,
-            hasLength(1),
-          );
-        });
-
-        test('adds controller and null query to #supabaseRealtimeSubscriptions', () async {
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-          repository.subscribeToRealtime<Customer>();
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
-          expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
-                .first.key,
-            isNotNull,
-          );
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
-                .first.value,
-            isNotNull,
-          );
-        });
-
-        test('cancelling removes from #supabaseRealtimeSubscriptions', () async {
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-          final subscription = repository.subscribeToRealtime<Customer>().listen((event) {});
-          expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
-          await subscription.cancel();
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-        });
-
-        test('pausing does not remove from #supabaseRealtimeSubscriptions', () async {
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-          final subscription = repository.subscribeToRealtime<Customer>().listen((event) {});
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
-          subscription.pause();
-          expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
-          expect(
-            repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
-                .first.value.isPaused,
-            isTrue,
-          );
-        });
+        expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
+        expect(
+          repository
+              .supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries.first.key,
+          query,
+        );
+        expect(
+          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
+              .first.value,
+          isNotNull,
+        );
+        await subscription.cancel();
+        await Future.delayed(Duration(milliseconds: 10));
       });
 
+      test('subscription succeeds when policy is non-default .alwaysHydrate', () async {
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        final query = Query.where('firstName', 'Thomas');
+        final subscription = repository
+            .subscribeToRealtime<Customer>(
+              policy: OfflineFirstGetPolicy.alwaysHydrate,
+              query: query,
+            )
+            .listen((_) {});
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
+        expect(
+          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!,
+          hasLength(1),
+        );
+        await subscription.cancel();
+        await Future.delayed(Duration(milliseconds: 10));
+      });
+
+      test('adds controller and null query to #supabaseRealtimeSubscriptions', () async {
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        final subscription = repository.subscribeToRealtime<Customer>().listen((_) {});
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
+        expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
+        expect(
+          repository
+              .supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries.first.key,
+          isNotNull,
+        );
+        expect(
+          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
+              .first.value,
+          isNotNull,
+        );
+        await subscription.cancel();
+        await Future.delayed(Duration(milliseconds: 10));
+      });
+
+      test('cancelling removes from #supabaseRealtimeSubscriptions', () async {
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        final subscription = repository.subscribeToRealtime<Customer>().listen((event) {});
+        expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
+        await subscription.cancel();
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        await Future.delayed(Duration(milliseconds: 10));
+      });
+
+      test('pausing does not remove from #supabaseRealtimeSubscriptions', () async {
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
+        final subscription = repository.subscribeToRealtime<Customer>().listen((event) {});
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
+        subscription.pause();
+        expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
+        expect(
+          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!.entries
+              .first.value.isPaused,
+          isTrue,
+        );
+        await subscription.cancel();
+        await Future.delayed(Duration(milliseconds: 10));
+      });
+    });
+
+    group('#subscribeToRealtime', () {
       test('uses #subscribe for localOnly', () async {
         final customer = Customer(
           id: 1,
@@ -287,85 +298,261 @@ void main() async {
         expect(customers, emits([customer]));
       });
 
-      test('PostgresChangeEvent.insert', () async {
-        final customer = Customer(
-          id: 1,
-          firstName: 'Thomas',
-          lastName: 'Guy',
-          pizzas: [
-            Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
-          ],
-        );
+      group('eventType:', () {
+        test('PostgresChangeEvent.insert', () async {
+          final customer = Customer(
+            id: 1,
+            firstName: 'Thomas',
+            lastName: 'Guy',
+            pizzas: [
+              Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+            ],
+          );
 
-        final sqliteResults = await repository.sqliteProvider.get<Customer>();
-        expect(sqliteResults, isEmpty);
+          final sqliteResults =
+              await repository.sqliteProvider.get<Customer>(repository: repository);
+          expect(sqliteResults, isEmpty);
 
-        final customers =
-            repository.subscribeToRealtime<Customer>(eventType: PostgresChangeEvent.insert);
-        expect(
-          customers,
-          emitsInOrder([
-            [],
-            [customer],
-          ]),
-        );
+          final customers =
+              repository.subscribeToRealtime<Customer>(eventType: PostgresChangeEvent.insert);
+          expect(
+            customers,
+            emitsInOrder([
+              [],
+              [customer],
+            ]),
+          );
 
-        final req = SupabaseRequest<Customer>();
-        final resp = SupabaseResponse(
-          await mock.serialize(
-            customer,
+          final req = SupabaseRequest<Customer>();
+          final resp = SupabaseResponse(
+            await mock.serialize(
+              customer,
+              realtimeEvent: PostgresChangeEvent.insert,
+              repository: repository,
+            ),
             realtimeEvent: PostgresChangeEvent.insert,
-            repository: repository,
-          ),
-          realtimeEvent: PostgresChangeEvent.insert,
-        );
-        mock.handle({req: resp});
+          );
+          mock.handle({req: resp});
 
-        await Future.delayed(const Duration(milliseconds: 100));
+          // Wait for request to be handled
+          await Future.delayed(const Duration(milliseconds: 200));
 
-        final results = await repository.sqliteProvider.get<Customer>(repository: repository);
-        expect(results, [customer]);
-      });
+          final results = await repository.sqliteProvider.get<Customer>(repository: repository);
+          expect(results, [customer]);
+        });
 
-      test('PostgresChangeEvent.delete', () async {
-        final customer = Customer(
-          id: 1,
-          firstName: 'Thomas',
-          lastName: 'Guy',
-          pizzas: [
-            Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
-          ],
-        );
+        test('PostgresChangeEvent.delete', () async {
+          final customer = Customer(
+            id: 1,
+            firstName: 'Thomas',
+            lastName: 'Guy',
+            pizzas: [
+              Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+            ],
+          );
 
-        final id =
-            await repository.sqliteProvider.upsert<Customer>(customer, repository: repository);
-        expect(id, isNotNull);
+          final id =
+              await repository.sqliteProvider.upsert<Customer>(customer, repository: repository);
+          expect(id, isNotNull);
 
-        final customers =
-            repository.subscribeToRealtime<Customer>(eventType: PostgresChangeEvent.delete);
-        expect(
-          customers,
-          emitsInOrder([
-            [customer],
-            [],
-          ]),
-        );
+          final customers =
+              repository.subscribeToRealtime<Customer>(eventType: PostgresChangeEvent.delete);
+          expect(
+            customers,
+            emitsInOrder([
+              [customer],
+              [],
+            ]),
+          );
 
-        final req = SupabaseRequest<Customer>();
-        final resp = SupabaseResponse(
-          await mock.serialize(
-            customer,
+          final req = SupabaseRequest<Customer>();
+          final resp = SupabaseResponse(
+            await mock.serialize(
+              customer,
+              realtimeEvent: PostgresChangeEvent.delete,
+              repository: repository,
+            ),
             realtimeEvent: PostgresChangeEvent.delete,
-            repository: repository,
-          ),
-          realtimeEvent: PostgresChangeEvent.delete,
-        );
-        mock.handle({req: resp});
+          );
+          mock.handle({req: resp});
 
-        await Future.delayed(const Duration(milliseconds: 100));
+          // Wait for request to be handled
+          await Future.delayed(const Duration(milliseconds: 200));
 
-        final results = await repository.sqliteProvider.get<Customer>(repository: repository);
-        expect(results, isEmpty);
+          final results = await repository.sqliteProvider.get<Customer>(repository: repository);
+          expect(results, isEmpty);
+        });
+
+        test('PostgresChangeEvent.update', () async {
+          final customer1 = Customer(
+            id: 1,
+            firstName: 'Thomas',
+            lastName: 'Guy',
+            pizzas: [
+              Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+            ],
+          );
+          final customer2 = Customer(
+            id: 1,
+            firstName: 'Guy',
+            lastName: 'Thomas',
+            pizzas: [
+              Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+            ],
+          );
+
+          final id =
+              await repository.sqliteProvider.upsert<Customer>(customer1, repository: repository);
+          expect(id, isNotNull);
+
+          final customers =
+              repository.subscribeToRealtime<Customer>(eventType: PostgresChangeEvent.update);
+          expect(
+            customers,
+            emitsInOrder([
+              [customer1],
+              [customer2],
+            ]),
+          );
+
+          final req = SupabaseRequest<Customer>();
+          final resp = SupabaseResponse(
+            await mock.serialize(
+              customer2,
+              realtimeEvent: PostgresChangeEvent.update,
+              repository: repository,
+            ),
+            realtimeEvent: PostgresChangeEvent.update,
+          );
+          mock.handle({req: resp});
+        });
+
+        group('as .all and ', () {
+          test('PostgresChangeEvent.insert', () async {
+            final customer = Customer(
+              id: 1,
+              firstName: 'Thomas',
+              lastName: 'Guy',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+
+            final sqliteResults =
+                await repository.sqliteProvider.get<Customer>(repository: repository);
+            expect(sqliteResults, isEmpty);
+
+            final customers = repository.subscribeToRealtime<Customer>();
+            expect(
+              customers,
+              emitsInOrder([
+                [],
+                [customer],
+              ]),
+            );
+
+            final req = SupabaseRequest<Customer>();
+            final resp = SupabaseResponse(
+              await mock.serialize(
+                customer,
+                realtimeEvent: PostgresChangeEvent.insert,
+                repository: repository,
+              ),
+              realtimeEvent: PostgresChangeEvent.insert,
+            );
+            mock.handle({req: resp});
+
+            // Wait for request to be handled
+            await Future.delayed(const Duration(milliseconds: 100));
+
+            final results = await repository.sqliteProvider.get<Customer>(repository: repository);
+            expect(results, [customer]);
+          });
+
+          test('PostgresChangeEvent.delete', () async {
+            final customer = Customer(
+              id: 1,
+              firstName: 'Thomas',
+              lastName: 'Guy',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+
+            final id =
+                await repository.sqliteProvider.upsert<Customer>(customer, repository: repository);
+            expect(id, isNotNull);
+
+            final customers = repository.subscribeToRealtime<Customer>();
+            expect(
+              customers,
+              emitsInOrder([
+                [customer],
+                [],
+              ]),
+            );
+
+            final req = SupabaseRequest<Customer>();
+            final resp = SupabaseResponse(
+              await mock.serialize(
+                customer,
+                realtimeEvent: PostgresChangeEvent.delete,
+                repository: repository,
+              ),
+              realtimeEvent: PostgresChangeEvent.delete,
+            );
+            mock.handle({req: resp});
+
+            // Wait for request to be handled
+            await Future.delayed(const Duration(milliseconds: 200));
+
+            final results = await repository.sqliteProvider.get<Customer>(repository: repository);
+            expect(results, isEmpty);
+          });
+
+          test('PostgresChangeEvent.update', () async {
+            final customer1 = Customer(
+              id: 1,
+              firstName: 'Thomas',
+              lastName: 'Guy',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+            final customer2 = Customer(
+              id: 1,
+              firstName: 'Guy',
+              lastName: 'Thomas',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+
+            final id =
+                await repository.sqliteProvider.upsert<Customer>(customer1, repository: repository);
+            expect(id, isNotNull);
+
+            final customers = repository.subscribeToRealtime<Customer>();
+            expect(
+              customers,
+              emitsInOrder([
+                [customer1],
+                [customer2],
+              ]),
+            );
+
+            final req = SupabaseRequest<Customer>();
+            final resp = SupabaseResponse(
+              await mock.serialize(
+                customer2,
+                realtimeEvent: PostgresChangeEvent.update,
+                repository: repository,
+              ),
+              realtimeEvent: PostgresChangeEvent.update,
+            );
+            mock.handle({req: resp});
+          });
+        });
       });
     });
   });

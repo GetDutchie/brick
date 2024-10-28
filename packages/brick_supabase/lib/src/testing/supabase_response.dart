@@ -12,10 +12,16 @@ class SupabaseResponse {
   final List<SupabaseResponse> realtimeResponses;
 
   List<SupabaseResponse> get flattenedResponses {
-    return realtimeResponses.fold(<SupabaseResponse>[this], (acc, r) {
+    final starter = <SupabaseResponse>[];
+    if (realtimeEvent != PostgresChangeEvent.all) {
+      starter.add(this);
+    }
+    return realtimeResponses.fold(starter, (acc, r) {
       void recurse(SupabaseResponse response) {
         if (response.realtimeResponses.isNotEmpty) {
-          acc.addAll(response.realtimeResponses);
+          acc.addAll(
+            response.realtimeResponses.where((e) => e.realtimeEvent != PostgresChangeEvent.all),
+          );
           response.realtimeResponses.forEach(recurse);
         }
       }
