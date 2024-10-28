@@ -170,6 +170,8 @@ class SupabaseMockServer {
       final asMap = Map<String, dynamic>.from(matchingRequest.value.data);
       if (asMap.containsKey('payload') && asMap['payload'] != null) {
         resp.write(jsonEncode([]));
+      } else {
+        resp.write(jsonEncode(matchingRequest.value.data));
       }
     }
     return resp;
