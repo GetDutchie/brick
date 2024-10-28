@@ -14,7 +14,7 @@ class Pizza extends OfflineFirstWithSupabaseModel {
   final bool frozen;
 
   @Supabase(foreignKey: 'customer_id')
-  final Customer customer;
+  final TestModel customer;
 
   // If the association will be created by the app, specify
   // a field that maps directly to the foreign key column

@@ -72,7 +72,7 @@ class PizzaTile extends StatelessWidget {
       children: <Widget>[
         Text('id: ${pizza.id}'),
         Text('frozen: ${pizza.frozen}'),
-        Text('name: ${pizza.customer.firstName} ${pizza.customer.lastName}'),
+        Text('name: ${pizza.customer.id} ${pizza.customer.id}'),
       ],
     );
   }

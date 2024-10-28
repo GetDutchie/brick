@@ -9,32 +9,24 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20240920063917_up = [
+const List<MigrationCommand> _migration_20241028154657_up = [
   InsertTable('Customer'),
   InsertTable('Pizza'),
   InsertColumn('id', Column.varchar, onTable: 'Customer', unique: true),
-  InsertColumn('first_name', Column.varchar, onTable: 'Customer'),
-  InsertColumn('last_name', Column.varchar, onTable: 'Customer'),
+  InsertColumn('name', Column.varchar, onTable: 'Customer', nullable: false),
   InsertColumn('id', Column.varchar, onTable: 'Pizza', unique: true),
   InsertColumn('frozen', Column.boolean, onTable: 'Pizza'),
-  InsertForeignKey(
-    'Pizza',
-    'Customer',
-    foreignKeyColumn: 'customer_Customer_brick_id',
-    onDeleteCascade: false,
-    onDeleteSetDefault: false,
-  ),
+  CreateIndex(columns: ['id'], onTable: 'Customer', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20240920063917_down = [
+const List<MigrationCommand> _migration_20241028154657_down = [
   DropTable('Customer'),
   DropTable('Pizza'),
   DropColumn('id', onTable: 'Customer'),
-  DropColumn('first_name', onTable: 'Customer'),
-  DropColumn('last_name', onTable: 'Customer'),
+  DropColumn('name', onTable: 'Customer'),
   DropColumn('id', onTable: 'Pizza'),
   DropColumn('frozen', onTable: 'Pizza'),
-  DropColumn('customer_Customer_brick_id', onTable: 'Pizza'),
+  DropIndex('index_Customer_on_id')
 ];
 
 //
@@ -42,15 +34,15 @@ const List<MigrationCommand> _migration_20240920063917_down = [
 //
 
 @Migratable(
-  version: '20240920063917',
-  up: _migration_20240920063917_up,
-  down: _migration_20240920063917_down,
+  version: '20241028154657',
+  up: _migration_20241028154657_up,
+  down: _migration_20241028154657_down,
 )
-class Migration20240920063917 extends Migration {
-  const Migration20240920063917()
-      : super(
-          version: 20240920063917,
-          up: _migration_20240920063917_up,
-          down: _migration_20240920063917_down,
-        );
+class Migration20241028154657 extends Migration {
+  const Migration20241028154657()
+    : super(
+        version: 20241028154657,
+        up: _migration_20241028154657_up,
+        down: _migration_20241028154657_down,
+      );
 }
