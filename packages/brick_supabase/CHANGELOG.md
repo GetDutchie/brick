@@ -3,6 +3,14 @@
 - Reorganized `testing.dart` to `src/testing`
 - Added support for stream mocking to `SupabaseMockServer`
 
+## 1.0.5
+
+- Add `onConflict` to `SupabaseProvider#upsert` requests (#467) @sonbs21
+
+## 1.0.4
+
+- Expose private methods `SupabaseProvider#upsertByType` and `SupabaseProvider#recursiveAssociationUpsert` as protected methods
+
 ## 1.0.3
 
 - Remove `select` from `#delete`
