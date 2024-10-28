@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Reorganized `testing.dart` to `src/testing`
+- Added support for stream mocking to `SupabaseMockServer`
+
 ## 1.0.3
 
 - Remove `select` from `#delete`

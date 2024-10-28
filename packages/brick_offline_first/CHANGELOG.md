@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Added `subscriptionByQuery` to `OfflineFirstRepository#notifySubscriptionsWithLocalData` to pass a custom map of `StreamControllers`
+
 ## 3.2.1
 
 - Add `OfflineFirstSerdes#toSupabase` abstract method

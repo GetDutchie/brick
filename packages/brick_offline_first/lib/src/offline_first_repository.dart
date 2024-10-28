@@ -304,8 +304,9 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   @visibleForTesting
   Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
     bool notifyWhenEmpty = true,
+    Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionByQuery,
   }) async {
-    final queriesControllers = subscriptions[TModel]?.entries;
+    final queriesControllers = (subscriptionByQuery ?? subscriptions[TModel])?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
     // create a copy of the controllers to avoid concurrent modification while looping
@@ -338,7 +339,10 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     memoryCacheProvider.reset();
   }
 
-  /// Listen for streaming changes when the [sqliteProvider] is `upsert`ed. This method utilizes [remoteProvider]'s [get].
+  /// Listen for streaming changes when the [sqliteProvider].
+  /// This method utilizes [remoteProvider]'s [get]. For example, whenever new
+  /// data is acquired from remote, or data is upserted locally, or data is
+  /// deleted locally, the stream will be notified with a local fetch of [query].
   ///
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData].
