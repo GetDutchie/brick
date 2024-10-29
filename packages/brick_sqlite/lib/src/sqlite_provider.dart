@@ -203,14 +203,6 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
     }
   }
 
-  /// Retrieve a primary key by querying its unique columns.
-  /// Advanced use only.
-  Future<int?> primaryKeyByUniqueColumns<TModel extends CModel>(TModel instance) async {
-    final adapter = modelDictionary.adapterFor[TModel]!;
-    final db = await getDb();
-    return await adapter.primaryKeyByUniqueColumns(instance, db);
-  }
-
   /// Fetch results for model with a custom SQL statement.
   /// It is recommended to use [get] whenever possible. **Advanced use only**.
   Future<List<TModel>> rawGet<TModel extends CModel>(

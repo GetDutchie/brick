@@ -91,6 +91,126 @@ void main() async {
       });
     });
 
+    group('#queryFromSupabaseDeletePayload', () {
+      test('simple', () {
+        final payload = {
+          'id': 1,
+        };
+
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'name': RuntimeSupabaseColumnDefinition(columnName: 'name'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, hasLength(1));
+        expect(query.where!.first.evaluatedField, 'id');
+        expect(query.where!.first.value, 1);
+        expect(query.providerArgs, equals({'limit': 1}));
+      });
+
+      test('payload entries not present in supabaseDefinitions', () {
+        final payload = {
+          'id': 1,
+          'unknown_field': 'some value',
+        };
+
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'name': RuntimeSupabaseColumnDefinition(columnName: 'name'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, hasLength(1));
+        expect(query.where!.first.evaluatedField, 'id');
+        expect(query.where!.first.value, 1);
+        expect(query.providerArgs, equals({'limit': 1}));
+      });
+
+      test('empty payload', () {
+        final payload = <String, dynamic>{};
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, isEmpty);
+      });
+
+      test('payload with no matching definitions', () {
+        final payload = {
+          'unknown_field': 'some value',
+        };
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, isEmpty);
+      });
+
+      test('different column names', () {
+        final payload = {
+          'user_id': 1,
+        };
+
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
+          'name': RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, hasLength(1));
+        expect(query.where!.first.evaluatedField, 'id');
+        expect(query.where!.first.value, 1);
+        expect(query.providerArgs, equals({'limit': 1}));
+      });
+
+      test('multiple columns', () {
+        final payload = {
+          'user_id': 1,
+          'full_name': 'Thomas',
+        };
+
+        final supabaseDefinitions = {
+          'id': RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
+          'name': RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
+        };
+
+        final query = repository.queryFromSupabaseDeletePayload(
+          payload,
+          supabaseDefinitions: supabaseDefinitions,
+        );
+
+        expect(query.where, hasLength(2));
+        expect(query.where!.first.evaluatedField, 'id');
+        expect(query.where!.first.value, 1);
+        expect(query.where!.last.evaluatedField, 'name');
+        expect(query.where!.last.value, 'Thomas');
+        expect(query.providerArgs, equals({'limit': 1}));
+      });
+    });
+
     group('#queryToPostgresChangeFilter', () {
       group('returns null', () {
         test('for complex queries', () {
@@ -111,21 +231,19 @@ void main() async {
 
       group('Compare', () {
         test('.between', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.between)]);
+          final query = Query(where: [Where('firstName').isBetween(1, 2)]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
           expect(filter, isNull);
         });
 
         test('.doesNotContain', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.doesNotContain)]);
+          final query = Query(where: [Where('firstName').doesNotContain('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
           expect(filter, isNull);
         });
 
         test('.exact', () {
-          final query = Query(where: [Where('firstName', value: 'Thomas', compare: Compare.exact)]);
+          final query = Query(where: [Where.exact('firstName', 'Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.eq);
@@ -134,8 +252,7 @@ void main() async {
         });
 
         test('.greaterThan', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.greaterThan)]);
+          final query = Query(where: [Where('firstName').isGreaterThan('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.gt);
@@ -145,7 +262,7 @@ void main() async {
 
         test('.greaterThanOrEqualTo', () {
           final query = Query(
-            where: [Where('firstName', value: 'Thomas', compare: Compare.greaterThanOrEqualTo)],
+            where: [Where('firstName').isGreaterThanOrEqualTo('Thomas')],
           );
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
@@ -155,8 +272,7 @@ void main() async {
         });
 
         test('.lessThan', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.lessThan)]);
+          final query = Query(where: [Where('firstName').isLessThan('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.lt);
@@ -166,7 +282,7 @@ void main() async {
 
         test('.lessThanOrEqualTo', () {
           final query = Query(
-            where: [Where('firstName', value: 'Thomas', compare: Compare.lessThanOrEqualTo)],
+            where: [Where('firstName').isLessThanOrEqualTo('Thomas')],
           );
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
@@ -176,8 +292,7 @@ void main() async {
         });
 
         test('.notEqual', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.notEqual)]);
+          final query = Query(where: [Where('firstName').isNot('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.neq);
@@ -186,8 +301,7 @@ void main() async {
         });
 
         test('.contains', () {
-          final query =
-              Query(where: [Where('firstName', value: 'Thomas', compare: Compare.contains)]);
+          final query = Query(where: [Where('firstName').contains('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.inFilter);

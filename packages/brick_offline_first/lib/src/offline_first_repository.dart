@@ -345,10 +345,9 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     subscriptions.clear();
   }
 
-  /// Listen for streaming changes when the [sqliteProvider].
-  /// This method utilizes [remoteProvider]'s [get]. For example, whenever new
-  /// data is acquired from remote, or data is upserted locally, or data is
-  /// deleted locally, the stream will be notified with a local fetch of [query].
+  /// Listen for streaming changes when the [sqliteProvider] is invoked. For example,
+  /// whenever new data is acquired from remote, or data is upserted locally, or
+  /// data is deleted locally, the stream will be notified with a local fetch of [query].
   ///
   /// [get] is invoked on the [memoryCacheProvider] and [sqliteProvider] following an [upsert]
   /// invocation. For more, see [notifySubscriptionsWithLocalData].

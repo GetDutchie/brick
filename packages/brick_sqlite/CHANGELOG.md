@@ -1,7 +1,5 @@
 ## Unreleased
 
-- Add `#primaryKeyByUniqueColumns` to `SqliteProvider` to expose forward functionality
-
 ## 3.1.1
 
 - Expose a generic type for `MemoryCacheProvider` models

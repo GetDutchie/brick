@@ -147,6 +147,33 @@ abstract class OfflineFirstWithSupabaseRepository
     await offlineRequestQueue.client.requestManager.migrate();
   }
 
+  /// Supabase's realtime payload only returns unique columns;
+  /// the instance must be discovered from these values so it
+  /// can be deleted by all providers.
+  @protected
+  @visibleForOverriding
+  @visibleForTesting
+  Query queryFromSupabaseDeletePayload(
+    Map<String, dynamic> payload, {
+    required Map<String, RuntimeSupabaseColumnDefinition> supabaseDefinitions,
+  }) {
+    final fieldsWithValues = payload.entries.fold(<String, dynamic>{}, (acc, entry) {
+      for (final f in supabaseDefinitions.entries) {
+        if (f.value.columnName == entry.key) {
+          acc[f.key] = entry.value;
+          break;
+        }
+      }
+
+      return acc;
+    });
+
+    return Query(
+      where: fieldsWithValues.entries.map((entry) => Where.exact(entry.key, entry.value)).toList(),
+      providerArgs: {'limit': 1},
+    );
+  }
+
   @protected
   @visibleForTesting
   @visibleForOverriding
@@ -195,12 +222,12 @@ abstract class OfflineFirstWithSupabaseRepository
   ///
   /// See [subscribe] for reactivity without using realtime.
   ///
-  /// `eventType` is the triggering remote event.
+  /// [eventType] is the triggering remote event.
   ///
-  /// `policy` determines how data is fetched (local or remote). When `.localOnly`,
+  /// [policy] determines how data is fetched (local or remote). When [OfflineFirstGetPolicy.localOnly],
   /// Supabase channels will not be used.
   ///
-  /// `query` is an optional query to filter the data. The query **must be** one level -
+  /// [query] is an optional query to filter the data. The query **must be** one level -
   /// `Query.where('user', Query.exact('name', 'Tom'))` is invalid but `Query.where('name', 'Tom')`
   /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
   /// See [_compareToFilterParam] for a precise breakdown.
@@ -247,46 +274,37 @@ abstract class OfflineFirstWithSupabaseRepository
                   memoryCacheProvider.delete<TModel>(deletableModel, repository: this);
                 }
 
-              case PostgresChangeEvent.insert:
-                // Convert Supabase JSON to Brick model instance
-                final instance = await adapter.fromSupabase(
-                  payload.newRecord,
-                  provider: remoteProvider,
-                  repository: this,
-                );
-                // Save to local SQLite database for offline access
-                await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
-                // Update memory cache for fast retrieval
-                memoryCacheProvider.upsert<TModel>(instance, repository: this);
-
-              case PostgresChangeEvent.update:
-                // Convert Supabase JSON to Brick model instance
-                final instance = await adapter.fromSupabase(
-                  payload.newRecord,
-                  provider: remoteProvider,
-                  repository: this,
-                );
-                // Save to local SQLite database for offline access
-                await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
-                // Update memory cache for fast retrieval
-                memoryCacheProvider.upsert<TModel>(instance, repository: this);
-
               case PostgresChangeEvent.delete:
-                // Convert Supabase JSON to Brick model instance
-                final instance = await adapter.fromSupabase(
+                final query = queryFromSupabaseDeletePayload(
                   payload.oldRecord,
+                  supabaseDefinitions: adapter.fieldsToSupabaseColumns,
+                );
+
+                if (query.where?.isEmpty ?? true) return;
+
+                final results = await get<TModel>(
+                  query: query,
+                  policy: OfflineFirstGetPolicy.localOnly,
+                  seedOnly: true,
+                );
+                if (results.isEmpty) return;
+
+                await sqliteProvider.delete<TModel>(results.first, repository: this);
+                memoryCacheProvider.delete<TModel>(results.first, repository: this);
+
+              case PostgresChangeEvent.insert || PostgresChangeEvent.update:
+                final instance = await adapter.fromSupabase(
+                  payload.newRecord,
                   provider: remoteProvider,
                   repository: this,
                 );
-                final primaryKey =
-                    await sqliteProvider.primaryKeyByUniqueColumns<TModel>(instance as TModel);
-                instance.primaryKey = primaryKey;
-                await sqliteProvider.delete<TModel>(instance, repository: this);
-                memoryCacheProvider.delete<TModel>(instance, repository: this);
+
+                await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
+                memoryCacheProvider.upsert<TModel>(instance, repository: this);
             }
 
             await notifySubscriptionsWithLocalData<TModel>(
-              subscriptionsByQuery: supabaseRealtimeSubscriptions[TModel]![eventType],
+              subscriptionsByQuery: supabaseRealtimeSubscriptions[TModel]![eventType]!,
             );
           },
         )

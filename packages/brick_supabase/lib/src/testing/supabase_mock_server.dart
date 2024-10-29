@@ -200,7 +200,7 @@ class SupabaseMockServer {
     PostgresChangeEvent? realtimeEvent,
     ModelRepository<SupabaseModel>? repository,
   }) async {
-    assert(realtimeEvent != PostgresChangeEvent.all, '.all realtime events are not serialized');
+    assert(realtimeEvent != PostgresChangeEvent.all, '.all events are not serialized');
 
     final adapter = modelDictionary.adapterFor[TModel]!;
     final serialized = await adapter.toSupabase(
@@ -210,6 +210,15 @@ class SupabaseMockServer {
     );
 
     if (realtimeEvent == null) return serialized;
+
+    // Delete records from realtime are strictly unique/indexed fields;
+    // uniqueness is not tracked by [RuntimeSupabaseColumnDefinition]
+    // so filtering out associations is the closest simulation of an incomplete payload
+    if (realtimeEvent == PostgresChangeEvent.delete) {
+      for (final value in adapter.fieldsToSupabaseColumns.values) {
+        if (value.association) serialized.remove(value.columnName);
+      }
+    }
 
     return {
       'ref': null,
