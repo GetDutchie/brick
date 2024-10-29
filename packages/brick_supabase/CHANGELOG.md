@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.0
+
 - Reorganized `testing.dart` to `src/testing`
 - Added support for stream mocking to `SupabaseMockServer`
 
