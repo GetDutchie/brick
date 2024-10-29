@@ -444,7 +444,6 @@ void main() async {
               realtimeEvent: PostgresChangeEvent.insert,
               repository: repository,
             ),
-            realtimeEvent: PostgresChangeEvent.insert,
           );
           mock.handle({req: resp});
 
@@ -486,7 +485,6 @@ void main() async {
               realtimeEvent: PostgresChangeEvent.delete,
               repository: repository,
             ),
-            realtimeEvent: PostgresChangeEvent.delete,
           );
           mock.handle({req: resp});
 
@@ -536,7 +534,6 @@ void main() async {
               realtimeEvent: PostgresChangeEvent.update,
               repository: repository,
             ),
-            realtimeEvent: PostgresChangeEvent.update,
           );
           mock.handle({req: resp});
         });
@@ -572,7 +569,6 @@ void main() async {
                 realtimeEvent: PostgresChangeEvent.insert,
                 repository: repository,
               ),
-              realtimeEvent: PostgresChangeEvent.insert,
             );
             mock.handle({req: resp});
 
@@ -613,7 +609,6 @@ void main() async {
                 realtimeEvent: PostgresChangeEvent.delete,
                 repository: repository,
               ),
-              realtimeEvent: PostgresChangeEvent.delete,
             );
             mock.handle({req: resp});
 
@@ -662,7 +657,54 @@ void main() async {
                 realtimeEvent: PostgresChangeEvent.update,
                 repository: repository,
               ),
-              realtimeEvent: PostgresChangeEvent.update,
+            );
+            mock.handle({req: resp});
+          });
+
+          test('with multiple events', () async {
+            final customer1 = Customer(
+              id: 1,
+              firstName: 'Thomas',
+              lastName: 'Guy',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+            final customer2 = Customer(
+              id: 1,
+              firstName: 'Guy',
+              lastName: 'Thomas',
+              pizzas: [
+                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
+              ],
+            );
+
+            final customers = repository.subscribeToRealtime<Customer>();
+            expect(
+              customers,
+              emitsInOrder([
+                [],
+                [customer1],
+                [customer2],
+              ]),
+            );
+
+            final req = SupabaseRequest<Customer>();
+            final resp = SupabaseResponse(
+              await mock.serialize(
+                customer1,
+                realtimeEvent: PostgresChangeEvent.insert,
+                repository: repository,
+              ),
+              realtimeSubsequentReplies: [
+                SupabaseResponse(
+                  await mock.serialize(
+                    customer2,
+                    realtimeEvent: PostgresChangeEvent.update,
+                    repository: repository,
+                  ),
+                ),
+              ],
             );
             mock.handle({req: resp});
           });

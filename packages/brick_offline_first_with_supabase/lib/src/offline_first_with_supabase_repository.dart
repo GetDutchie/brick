@@ -157,14 +157,14 @@ abstract class OfflineFirstWithSupabaseRepository
     Map<String, dynamic> payload, {
     required Map<String, RuntimeSupabaseColumnDefinition> supabaseDefinitions,
   }) {
-    final fieldsWithValues = payload.entries.fold(<String, dynamic>{}, (acc, entry) {
-      for (final f in supabaseDefinitions.entries) {
-        if (f.value.columnName == entry.key) {
-          acc[f.key] = entry.value;
-          break;
-        }
-      }
+    final columnsToFields = supabaseDefinitions.entries.fold(<String, String>{}, (acc, entry) {
+      acc[entry.value.columnName] = entry.key;
+      return acc;
+    });
 
+    final fieldsWithValues = payload.entries.fold(<String, dynamic>{}, (acc, entry) {
+      if (columnsToFields[entry.key] == null) return acc;
+      acc[columnsToFields[entry.key]!] = entry.value;
       return acc;
     });
 

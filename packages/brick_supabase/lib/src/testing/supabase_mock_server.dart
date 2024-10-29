@@ -107,8 +107,8 @@ class SupabaseMockServer {
                 final data = Map<String, dynamic>.from(r.data as Map);
 
                 return {
-                  'id': _realtimeEventToId(r.realtimeEvent!),
-                  'event': r.realtimeEvent!.name.toUpperCase(),
+                  'id': data['payload']['ids'][0],
+                  'event': data['payload']['data']['type'],
                   'schema': data['payload']['data']['schema'],
                   'table': data['payload']['data']['table'],
                   if (realtimeFilter != null) 'filter': realtimeFilter,
@@ -124,7 +124,7 @@ class SupabaseMockServer {
       }
 
       for (final realtimeResponses in matching.value.flattenedResponses) {
-        await Future.delayed(matching.value.realtimeDelayBetweenResponses);
+        await Future.delayed(matching.value.realtimeSubsequentReplyDelay);
         final data = Map<String, dynamic>.from(realtimeResponses.data as Map);
         final serialized = jsonEncode({...data, 'topic': topic});
         webSocket!.add(serialized);
@@ -177,19 +177,6 @@ class SupabaseMockServer {
     return resp;
   }
 
-  int _realtimeEventToId(PostgresChangeEvent event) {
-    switch (event) {
-      case PostgresChangeEvent.insert:
-        return 77086988;
-      case PostgresChangeEvent.update:
-        return 25993878;
-      case PostgresChangeEvent.delete:
-        return 48673474;
-      case PostgresChangeEvent.all:
-        return 0;
-    }
-  }
-
   /// Convert a model to a Supabase response.
   ///
   /// For realtime responses, include the `realtimeEvent` argument.
@@ -224,7 +211,7 @@ class SupabaseMockServer {
       'ref': null,
       'event': 'postgres_changes',
       'payload': {
-        'ids': [_realtimeEventToId(realtimeEvent)],
+        'ids': [realtimeEvent.index],
         'data': {
           'columns': adapter.fieldsToSupabaseColumns.entries.map((entry) {
             return {'name': entry.value.columnName, 'type': 'text', 'type_modifier': 4294967295};

@@ -1,28 +1,14 @@
-import 'package:supabase/supabase.dart';
-
 class SupabaseResponse {
   final dynamic data;
 
-  final Map<String, String>? headers;
-
-  final Duration realtimeDelayBetweenResponses;
-
-  final PostgresChangeEvent? realtimeEvent;
-
-  final List<SupabaseResponse> realtimeResponses;
-
+  /// All recursively-discovered [realtimeSubsequentReplies]
   List<SupabaseResponse> get flattenedResponses {
-    final starter = <SupabaseResponse>[];
-    if (realtimeEvent != PostgresChangeEvent.all) {
-      starter.add(this);
-    }
-    return realtimeResponses.fold(starter, (acc, r) {
+    return realtimeSubsequentReplies.fold(<SupabaseResponse>[this], (acc, r) {
       void recurse(SupabaseResponse response) {
-        if (response.realtimeResponses.isNotEmpty) {
-          acc.addAll(
-            response.realtimeResponses.where((e) => e.realtimeEvent != PostgresChangeEvent.all),
-          );
-          response.realtimeResponses.forEach(recurse);
+        acc.add(response);
+        if (response.realtimeSubsequentReplies.isNotEmpty) {
+          acc.addAll(response.realtimeSubsequentReplies);
+          response.realtimeSubsequentReplies.forEach(recurse);
         }
       }
 
@@ -31,11 +17,22 @@ class SupabaseResponse {
     });
   }
 
+  final Map<String, String>? headers;
+
+  /// Additional replies sent after this instance's [data].
+  /// Replies will be staggered by [realtimeSubsequentReplyDelay].
+  ///
+  /// While [flattenedResponses] supports recursion, it should never be
+  /// necessary to have deeply nested responses.
+  final List<SupabaseResponse> realtimeSubsequentReplies;
+
+  /// Amount of time to delay each [realtimeSubsequentReplies]
+  final Duration realtimeSubsequentReplyDelay;
+
   SupabaseResponse(
     this.data, {
     this.headers,
-    this.realtimeEvent,
-    this.realtimeDelayBetweenResponses = const Duration(milliseconds: 10),
-    this.realtimeResponses = const [],
+    this.realtimeSubsequentReplies = const [],
+    this.realtimeSubsequentReplyDelay = const Duration(milliseconds: 10),
   });
 }
