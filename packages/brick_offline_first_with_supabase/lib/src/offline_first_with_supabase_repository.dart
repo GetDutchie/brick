@@ -158,14 +158,13 @@ abstract class OfflineFirstWithSupabaseRepository
       acc.addEntries(eventMap.entries);
       return acc;
     });
-    final subs = {
-      ...?subscriptionsByQuery,
-      ...?subscriptions[TModel],
-      ...?supabaseControllers,
-    };
     await super.notifySubscriptionsWithLocalData<TModel>(
       notifyWhenEmpty: notifyWhenEmpty,
-      subscriptionsByQuery: subs,
+      subscriptionsByQuery: {
+        ...?subscriptionsByQuery,
+        ...?subscriptions[TModel],
+        ...?supabaseControllers,
+      },
     );
   }
 
