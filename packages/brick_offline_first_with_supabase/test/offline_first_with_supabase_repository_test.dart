@@ -433,6 +433,7 @@ void main() async {
             customers,
             emitsInOrder([
               [],
+              [],
               [customer],
             ]),
           );
@@ -473,6 +474,7 @@ void main() async {
           expect(
             customers,
             emitsInOrder([
+              [customer],
               [customer],
               [],
             ]),
@@ -523,6 +525,7 @@ void main() async {
             customers,
             emitsInOrder([
               [customer1],
+              [customer1],
               [customer2],
             ]),
           );
@@ -557,6 +560,7 @@ void main() async {
             expect(
               customers,
               emitsInOrder([
+                [],
                 [],
                 [customer],
               ]),
@@ -597,6 +601,7 @@ void main() async {
             expect(
               customers,
               emitsInOrder([
+                [customer],
                 [customer],
                 [],
               ]),
@@ -646,6 +651,7 @@ void main() async {
               customers,
               emitsInOrder([
                 [customer1],
+                [customer1],
                 [customer2],
               ]),
             );
@@ -683,6 +689,7 @@ void main() async {
             expect(
               customers,
               emitsInOrder([
+                [],
                 [],
                 [customer1],
                 [customer2],

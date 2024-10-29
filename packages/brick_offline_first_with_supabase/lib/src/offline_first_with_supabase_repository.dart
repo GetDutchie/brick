@@ -147,6 +147,28 @@ abstract class OfflineFirstWithSupabaseRepository
     await offlineRequestQueue.client.requestManager.migrate();
   }
 
+  @override
+  Future<void> notifySubscriptionsWithLocalData<TModel extends OfflineFirstWithSupabaseModel>({
+    bool notifyWhenEmpty = true,
+    Map<Query?, StreamController<List<OfflineFirstWithSupabaseModel>>>? subscriptionsByQuery,
+  }) async {
+    final supabaseControllers = supabaseRealtimeSubscriptions[TModel]
+        ?.values
+        .fold(<Query, StreamController<List<OfflineFirstWithSupabaseModel>>>{}, (acc, eventMap) {
+      acc.addEntries(eventMap.entries);
+      return acc;
+    });
+    final subs = {
+      ...?subscriptionsByQuery,
+      ...?subscriptions[TModel],
+      ...?supabaseControllers,
+    };
+    await super.notifySubscriptionsWithLocalData<TModel>(
+      notifyWhenEmpty: notifyWhenEmpty,
+      subscriptionsByQuery: subs,
+    );
+  }
+
   /// Supabase's realtime payload only returns unique columns;
   /// the instance must be discovered from these values so it
   /// can be deleted by all providers.
@@ -303,9 +325,7 @@ abstract class OfflineFirstWithSupabaseRepository
                 memoryCacheProvider.upsert<TModel>(instance, repository: this);
             }
 
-            await notifySubscriptionsWithLocalData<TModel>(
-              subscriptionsByQuery: supabaseRealtimeSubscriptions[TModel]![eventType]!,
-            );
+            await notifySubscriptionsWithLocalData<TModel>();
           },
         )
         .subscribe();

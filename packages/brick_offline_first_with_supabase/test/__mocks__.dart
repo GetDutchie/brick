@@ -47,6 +47,11 @@ class Customer extends OfflineFirstWithSupabaseModel {
       other.id == id &&
       other.firstName == firstName &&
       other.lastName == lastName;
+
+  @override
+  String toString() {
+    return 'Customer(id: $id, firstName: $firstName, lastName: $lastName, pizzas: $pizzas)';
+  }
 }
 
 @ConnectOfflineFirstWithSupabase(

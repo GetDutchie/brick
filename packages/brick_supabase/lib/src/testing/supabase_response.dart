@@ -33,6 +33,6 @@ class SupabaseResponse {
     this.data, {
     this.headers,
     this.realtimeSubsequentReplies = const [],
-    this.realtimeSubsequentReplyDelay = const Duration(milliseconds: 10),
+    this.realtimeSubsequentReplyDelay = const Duration(milliseconds: 30),
   });
 }

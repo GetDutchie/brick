@@ -302,6 +302,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// Iterate through subscriptions after an upsert and notify any [subscribe] listeners.
   @protected
   @visibleForTesting
+  @visibleForOverriding
   Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
     bool notifyWhenEmpty = true,
     Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionsByQuery,
