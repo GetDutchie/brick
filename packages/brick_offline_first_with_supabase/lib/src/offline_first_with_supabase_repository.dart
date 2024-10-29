@@ -238,6 +238,10 @@ abstract class OfflineFirstWithSupabaseRepository
   /// Follow [Supabase's documentation](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart#realtime-api)
   /// to setup your table.
   ///
+  /// The resulting stream will also notify for locally-made changes. In an online state, this
+  /// will result in duplicate events on the stream - the local copy is updated and notifies
+  /// the caller, then the Supabase realtime event is received and notifies the caller again.
+  ///
   /// Supabase's channels can
   /// [become expensive quickly](https://supabase.com/docs/guides/realtime/quotas);
   /// please consider scale when utilizing this method.
