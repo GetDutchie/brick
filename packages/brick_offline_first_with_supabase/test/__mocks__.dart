@@ -37,6 +37,21 @@ class Customer extends OfflineFirstWithSupabaseModel {
     this.lastName,
     required this.pizzas,
   });
+
+  @override
+  int get hashCode => id.hashCode ^ firstName.hashCode ^ lastName.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Customer &&
+      other.id == id &&
+      other.firstName == firstName &&
+      other.lastName == lastName;
+
+  @override
+  String toString() {
+    return 'Customer(id: $id, firstName: $firstName, lastName: $lastName, pizzas: $pizzas)';
+  }
 }
 
 @ConnectOfflineFirstWithSupabase(

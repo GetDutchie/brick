@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.0
+
+- Added `OfflineFirstWithSupabaseRepository#subscribeToRealtime`to sync Brick data with Supabase changes (#472, #454)
+
 ## 1.0.0
 
 - Stable release

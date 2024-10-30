@@ -1,4 +1,4 @@
-/// Used to define types in [SqliteAdapter#sqliteFieldsToColumns]. The build runner package
+/// Used to define types in [SqliteAdapter#fieldsToSqliteColumns]. The build runner package
 /// extracts types and associations that would've been otherwise inaccessible at runtime.
 class RuntimeSqliteColumnDefinition {
   /// Whether this column relates to another SqliteModel

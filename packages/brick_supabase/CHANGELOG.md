@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.1.0
+
+- Reorganized `testing.dart` to `src/testing`
+- Added support for stream mocking to `SupabaseMockServer`
+
 ## 1.0.5
 
 - Add `onConflict` to `SupabaseProvider#upsert` requests (#467) @sonbs21

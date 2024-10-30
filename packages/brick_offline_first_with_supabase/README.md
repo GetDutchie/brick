@@ -92,6 +92,27 @@ final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
 
 :warning: This is an admittedly brittle solution for ignoring core Supabase paths. If you change the default values for `ignorePaths`, you are responsible for maintaining the right paths when Supabase changes or upgrades their endpoint paths.
 
+## Realtime
+
+Brick can automatically update with [Supabase realtime events](https://supabase.com/docs/guides/realtime). After setting up [your table](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart#realtime-api) to broadcast, listen for changes in your application:
+
+```dart
+// Listen to all changes
+final customers = MyRepository().subscribeToRealtime<Customer>();
+// Or listen to results of a specific filter
+final customers = MyRepository().subscribeToRealtime<Customer>(query: Query.where('id', 1));
+
+// Use the stream results
+final customersSubscription = customers.listen((value) {});
+
+// Always close your streams
+await customersSubscription.cancel();
+```
+
+Complex queries more than one level deep (e.g. with associations) or with comparison operators that are not [supported by Supabase's `PostgresChangeFilterType`](https://github.com/supabase/supabase-flutter/blob/main/packages/realtime_client/lib/src/types.dart#L239-L260) will be ignored - when such invalid queries are used, the realtime connection will be unfiltered even though Brick will respect the query in the stream's results.
+
+:warning: Realtime can become [expensive quickly](https://supabase.com/pricing). Be sure to design your application for appropriate scale. For cheaper, on-device reactivity, use `.subscribe()` instead.
+
 ## Models
 
 ### @ConnectOfflineFirstWithSupabase

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/offline_queue.dart';
 import 'package:brick_offline_first_with_supabase/src/offline_first_with_supabase_model.dart';
@@ -50,6 +52,14 @@ abstract class OfflineFirstWithSupabaseRepository
   /// In most cases, this queue can be generated using [clientQueue].
   @protected
   final RestOfflineRequestQueue offlineRequestQueue;
+
+  @protected
+  @visibleForTesting
+  final Map<
+          Type,
+          Map<PostgresChangeEvent,
+              Map<Query, StreamController<List<OfflineFirstWithSupabaseModel>>>>>
+      supabaseRealtimeSubscriptions = {};
 
   OfflineFirstWithSupabaseRepository({
     super.autoHydrate,
@@ -138,6 +148,221 @@ abstract class OfflineFirstWithSupabaseRepository
   }
 
   @override
+  Future<void> notifySubscriptionsWithLocalData<TModel extends OfflineFirstWithSupabaseModel>({
+    bool notifyWhenEmpty = true,
+    Map<Query?, StreamController<List<OfflineFirstWithSupabaseModel>>>? subscriptionsByQuery,
+  }) async {
+    final supabaseControllers = supabaseRealtimeSubscriptions[TModel]
+        ?.values
+        .fold(<Query, StreamController<List<OfflineFirstWithSupabaseModel>>>{}, (acc, eventMap) {
+      acc.addEntries(eventMap.entries);
+      return acc;
+    });
+    await super.notifySubscriptionsWithLocalData<TModel>(
+      notifyWhenEmpty: notifyWhenEmpty,
+      subscriptionsByQuery: {
+        ...?subscriptionsByQuery,
+        ...?subscriptions[TModel],
+        ...?supabaseControllers,
+      },
+    );
+  }
+
+  /// Supabase's realtime payload only returns unique columns;
+  /// the instance must be discovered from these values so it
+  /// can be deleted by all providers.
+  @protected
+  @visibleForOverriding
+  @visibleForTesting
+  Query queryFromSupabaseDeletePayload(
+    Map<String, dynamic> payload, {
+    required Map<String, RuntimeSupabaseColumnDefinition> supabaseDefinitions,
+  }) {
+    final columnsToFields = supabaseDefinitions.entries.fold(<String, String>{}, (acc, entry) {
+      acc[entry.value.columnName] = entry.key;
+      return acc;
+    });
+
+    final fieldsWithValues = payload.entries.fold(<String, dynamic>{}, (acc, entry) {
+      if (columnsToFields[entry.key] != null) {
+        acc[columnsToFields[entry.key]!] = entry.value;
+      }
+      return acc;
+    });
+
+    return Query(
+      where: fieldsWithValues.entries.map((entry) => Where.exact(entry.key, entry.value)).toList(),
+      providerArgs: {'limit': 1},
+    );
+  }
+
+  @protected
+  @visibleForTesting
+  @visibleForOverriding
+  PostgresChangeFilter? queryToPostgresChangeFilter<TModel extends OfflineFirstWithSupabaseModel>(
+    Query query,
+  ) {
+    final adapter = remoteProvider.modelDictionary.adapterFor[TModel]!;
+    if (query.where?.isEmpty ?? true) return null;
+    final condition = query.where!.first;
+    final column = adapter.fieldsToSupabaseColumns[condition.evaluatedField]?.columnName;
+
+    if (column == null) return null;
+
+    final type = _compareToFilterParam(condition.compare);
+    if (type == null) return null;
+
+    return PostgresChangeFilter(
+      type: type,
+      column: column,
+      value: condition.value,
+    );
+  }
+
+  @override
+  Future<void> reset() async {
+    await super.reset();
+    for (final subscription in supabaseRealtimeSubscriptions.values) {
+      for (final eventType in subscription.values) {
+        for (final controller in eventType.values) {
+          await controller.close();
+        }
+      }
+    }
+    supabaseRealtimeSubscriptions.clear();
+  }
+
+  /// Subscribes to realtime updates using
+  /// [Supabase channels](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart).
+  /// **This will only work if your Supabase table has realtime enabled.**
+  /// Follow [Supabase's documentation](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart#realtime-api)
+  /// to setup your table.
+  ///
+  /// The resulting stream will also notify for locally-made changes. In an online state, this
+  /// will result in duplicate events on the stream - the local copy is updated and notifies
+  /// the caller, then the Supabase realtime event is received and notifies the caller again.
+  ///
+  /// Supabase's channels can
+  /// [become expensive quickly](https://supabase.com/docs/guides/realtime/quotas);
+  /// please consider scale when utilizing this method.
+  ///
+  /// See [subscribe] for reactivity without using realtime.
+  ///
+  /// [eventType] is the triggering remote event.
+  ///
+  /// [policy] determines how data is fetched (local or remote). When [OfflineFirstGetPolicy.localOnly],
+  /// Supabase channels will not be used.
+  ///
+  /// [query] is an optional query to filter the data. The query **must be** one level -
+  /// `Query.where('user', Query.exact('name', 'Tom'))` is invalid but `Query.where('name', 'Tom')`
+  /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
+  /// See [_compareToFilterParam] for a precise breakdown.
+  Stream<List<TModel>> subscribeToRealtime<TModel extends OfflineFirstWithSupabaseModel>({
+    PostgresChangeEvent eventType = PostgresChangeEvent.all,
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.alwaysHydrate,
+    Query? query,
+    String schema = 'public',
+  }) {
+    query ??= Query();
+
+    if (supabaseRealtimeSubscriptions[TModel]?[eventType]?[query] != null) {
+      return supabaseRealtimeSubscriptions[TModel]![eventType]![query]!.stream
+          as Stream<List<TModel>>;
+    }
+
+    final adapter = remoteProvider.modelDictionary.adapterFor[TModel]!;
+    if (policy == OfflineFirstGetPolicy.localOnly) {
+      return subscribe<TModel>(policy: policy, query: query);
+    }
+
+    final channel = remoteProvider.client
+        .channel(adapter.supabaseTableName)
+        .onPostgresChanges(
+          event: eventType,
+          schema: schema,
+          table: adapter.supabaseTableName,
+          filter: queryToPostgresChangeFilter<TModel>(query),
+          callback: (payload) async {
+            switch (payload.eventType) {
+              // This code path is likely never hit; `PostgresChangeEvent.all` is used
+              // to listen to changes but as far as can be determined is not delivered within
+              // the payload of the callback.
+              //
+              // It's handled just in case this behavior changes.
+              case PostgresChangeEvent.all:
+                final localResults = await sqliteProvider.get<TModel>(repository: this);
+                final remoteResults =
+                    await get<TModel>(query: query, policy: OfflineFirstGetPolicy.awaitRemote);
+                final toDelete = localResults.where((r) => !remoteResults.contains(r));
+
+                for (final deletableModel in toDelete) {
+                  await sqliteProvider.delete<TModel>(deletableModel, repository: this);
+                  memoryCacheProvider.delete<TModel>(deletableModel, repository: this);
+                }
+
+              case PostgresChangeEvent.delete:
+                final query = queryFromSupabaseDeletePayload(
+                  payload.oldRecord,
+                  supabaseDefinitions: adapter.fieldsToSupabaseColumns,
+                );
+
+                if (query.where?.isEmpty ?? true) return;
+
+                final results = await get<TModel>(
+                  query: query,
+                  policy: OfflineFirstGetPolicy.localOnly,
+                  seedOnly: true,
+                );
+                if (results.isEmpty) return;
+
+                await sqliteProvider.delete<TModel>(results.first, repository: this);
+                memoryCacheProvider.delete<TModel>(results.first, repository: this);
+
+              case PostgresChangeEvent.insert || PostgresChangeEvent.update:
+                final instance = await adapter.fromSupabase(
+                  payload.newRecord,
+                  provider: remoteProvider,
+                  repository: this,
+                );
+
+                await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
+                memoryCacheProvider.upsert<TModel>(instance, repository: this);
+            }
+
+            await notifySubscriptionsWithLocalData<TModel>();
+          },
+        )
+        .subscribe();
+
+    final controller = StreamController<List<TModel>>(
+      onCancel: () async {
+        await channel.unsubscribe();
+        await supabaseRealtimeSubscriptions[TModel]?[eventType]?[query]?.close();
+        supabaseRealtimeSubscriptions[TModel]?[eventType]?.remove(query);
+
+        if (supabaseRealtimeSubscriptions[TModel]?[eventType]?.isEmpty ?? false) {
+          supabaseRealtimeSubscriptions[TModel]?.remove(eventType);
+        }
+
+        if (supabaseRealtimeSubscriptions[TModel]?.isEmpty ?? false) {
+          supabaseRealtimeSubscriptions.remove(TModel);
+        }
+      },
+    );
+    supabaseRealtimeSubscriptions[TModel] ??= {};
+    supabaseRealtimeSubscriptions[TModel]![eventType] ??= {};
+    supabaseRealtimeSubscriptions[TModel]![eventType]![query] = controller;
+
+    // Fetch initial data
+    // ignore: discarded_futures
+    get<TModel>(query: query, policy: policy).then((results) {
+      if (!controller.isClosed) controller.add(results);
+    });
+
+    return controller.stream;
+  }
+
+  @override
   Future<TModel> upsert<TModel extends OfflineFirstWithSupabaseModel>(
     TModel instance, {
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
@@ -153,6 +378,29 @@ abstract class OfflineFirstWithSupabaseRepository
       }
 
       return instance;
+    }
+  }
+
+  PostgresChangeFilterType? _compareToFilterParam(Compare compare) {
+    switch (compare) {
+      case Compare.exact:
+        return PostgresChangeFilterType.eq;
+      case Compare.contains:
+        return PostgresChangeFilterType.inFilter;
+      case Compare.greaterThan:
+        return PostgresChangeFilterType.gt;
+      case Compare.greaterThanOrEqualTo:
+        return PostgresChangeFilterType.gte;
+      case Compare.lessThan:
+        return PostgresChangeFilterType.lt;
+      case Compare.lessThanOrEqualTo:
+        return PostgresChangeFilterType.lte;
+      case Compare.notEqual:
+        return PostgresChangeFilterType.neq;
+      case Compare.between:
+        return null;
+      case Compare.doesNotContain:
+        return null;
     }
   }
 
