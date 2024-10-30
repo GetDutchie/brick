@@ -184,8 +184,9 @@ abstract class OfflineFirstWithSupabaseRepository
     });
 
     final fieldsWithValues = payload.entries.fold(<String, dynamic>{}, (acc, entry) {
-      if (columnsToFields[entry.key] == null) return acc;
-      acc[columnsToFields[entry.key]!] = entry.value;
+      if (columnsToFields[entry.key] != null) {
+        acc[columnsToFields[entry.key]!] = entry.value;
+      }
       return acc;
     });
 
