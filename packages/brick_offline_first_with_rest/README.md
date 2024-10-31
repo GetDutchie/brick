@@ -135,13 +135,7 @@ setUpAll() async {
 }
 ```
 
-### FAQ
-
-#### Why can't I declare a model argument?
-
-Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a custom model cannot be passed to the repository as a type argument.
-
 ## Unsupported Field Types
 
-* Any unsupported field types from `RestProvider`, or `SqliteProvider`
-* Future iterables of future models (i.e. `Future<List<Future<Model>>>`.
+- Any unsupported field types from `RestProvider`, or `SqliteProvider`
+- Future iterables of future models (i.e. `Future<List<Future<Model>>>`.
