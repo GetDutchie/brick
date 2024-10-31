@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 ///
 /// MemoryCacheProvider does not have a type argument due to a build_runner
 /// exception: https://github.com/dart-lang/sdk/issues/38309
-class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
+class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<TProviderModel> {
   @protected
   final Logger logger = Logger('MemoryCacheProvider');
 
@@ -23,7 +23,7 @@ class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
   final modelDictionary = _MemoryCacheModelDictionary();
 
   /// A complete hash table of the
-  Map<Type, Map<int, CModel>> managedObjects = {};
+  Map<Type, Map<int, TProviderModel>> managedObjects = {};
 
   /// Is the [type] cached by this provider?
   bool manages(Type type) => managedModelTypes.contains(type);
@@ -40,13 +40,13 @@ class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
   /// basic lookups such as a single field (primary key).
   /// However, if the provider is extended to support complex [Where] statements in [get],
   /// this method should also be extended.
-  bool canFind<TModel extends CModel>([Query? query]) {
+  bool canFind<TModel extends TProviderModel>([Query? query]) {
     final byPrimaryKey = Where.firstByField(InsertTable.PRIMARY_KEY_FIELD, query?.where);
     return manages(TModel) && byPrimaryKey?.value != null;
   }
 
   @override
-  bool delete<TModel extends CModel>(instance, {query, repository}) {
+  bool delete<TModel extends TProviderModel>(instance, {query, repository}) {
     if (!manages(TModel)) return false;
     logger.finest('#delete: $TModel, $instance, $query');
 
@@ -56,7 +56,7 @@ class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
   }
 
   @override
-  List<TModel>? get<TModel extends CModel>({query, repository}) {
+  List<TModel>? get<TModel extends TProviderModel>({query, repository}) {
     if (!manages(TModel)) return null;
     managedObjects[TModel] ??= {};
 
@@ -79,7 +79,7 @@ class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
   /// For convenience, the return value is the argument [models],
   /// **not** the complete set of managed [TModel]s.
   /// If the managed models are desired instead, use [get].
-  List<TModel> hydrate<TModel extends CModel>(List<TModel> models) {
+  List<TModel> hydrate<TModel extends TProviderModel>(List<TModel> models) {
     if (!manages(TModel)) return models;
     managedObjects[TModel] ??= {};
 
@@ -98,7 +98,7 @@ class MemoryCacheProvider<CModel extends SqliteModel> extends Provider<CModel> {
   }
 
   @override
-  TModel? upsert<TModel extends CModel>(instance, {query, repository}) {
+  TModel? upsert<TModel extends TProviderModel>(instance, {query, repository}) {
     if (!manages(TModel)) return null;
     logger.finest('#upsert: $TModel, $instance, $query');
     hydrate<TModel>([instance]);

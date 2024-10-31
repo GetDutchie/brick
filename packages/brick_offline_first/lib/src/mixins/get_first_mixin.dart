@@ -1,13 +1,14 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 
 /// A convenience mixin for single-instance get operations.
-mixin GetFirstMixin<CModel extends OfflineFirstModel> on OfflineFirstRepository<CModel> {
+mixin GetFirstMixin<TRepositoryModel extends OfflineFirstModel>
+    on OfflineFirstRepository<TRepositoryModel> {
   /// Retrieves the first instance of [TModel] with certainty that it exists.
   /// If no instances exist, a [StateError] is thrown from within Dart's core
   /// `Iterable#first` method. It is recommended to use [getFirstOrNull] instead.
   ///
   /// Automatically applies `'limit': 1` to the query's `providerArgs`
-  Future<TModel> getFirst<TModel extends CModel>({
+  Future<TModel> getFirst<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
@@ -25,7 +26,7 @@ mixin GetFirstMixin<CModel extends OfflineFirstModel> on OfflineFirstRepository<
   /// according to the [query], but returns `null` if no instances exist.
   ///
   /// Automatically applies `'limit': 1` to the query's `providerArgs`
-  Future<TModel?> getFirstOrNull<TModel extends CModel>({
+  Future<TModel?> getFirstOrNull<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,

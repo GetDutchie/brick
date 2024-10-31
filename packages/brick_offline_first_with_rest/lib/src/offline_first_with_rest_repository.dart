@@ -14,8 +14,8 @@ import 'package:meta/meta.dart';
 /// is unable to make contact with the [remoteProvider], the queue automatically retries in
 /// sequence until it receives a response. Please note that a response may still be an error
 /// code such as `404` or `500`. The queue is **only** concerned with connectivity.
-abstract class OfflineFirstWithRestRepository<RepositoryModel extends OfflineFirstWithRestModel>
-    extends OfflineFirstRepository<RepositoryModel> {
+abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFirstWithRestModel>
+    extends OfflineFirstRepository<TRepositoryModel> {
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [RestProvider]'s client directly.
   @override
@@ -95,7 +95,7 @@ abstract class OfflineFirstWithRestRepository<RepositoryModel extends OfflineFir
   }
 
   @override
-  Future<bool> delete<TModel extends RepositoryModel>(
+  Future<bool> delete<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
@@ -115,7 +115,7 @@ abstract class OfflineFirstWithRestRepository<RepositoryModel extends OfflineFir
   }
 
   @override
-  Future<List<TModel>> get<TModel extends RepositoryModel>({
+  Future<List<TModel>> get<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
@@ -160,7 +160,7 @@ abstract class OfflineFirstWithRestRepository<RepositoryModel extends OfflineFir
   /// [OfflineFirstException] for responses that include a code within `reattemptForStatusCodes`.
   /// Defaults `false`.
   @override
-  Future<TModel> upsert<TModel extends RepositoryModel>(
+  Future<TModel> upsert<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,
@@ -181,7 +181,7 @@ abstract class OfflineFirstWithRestRepository<RepositoryModel extends OfflineFir
 
   @protected
   @override
-  Future<List<TModel>> hydrate<TModel extends RepositoryModel>({
+  Future<List<TModel>> hydrate<TModel extends TRepositoryModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {

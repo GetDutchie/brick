@@ -37,8 +37,8 @@ import 'package:supabase/supabase.dart';
 /// }
 /// ```
 abstract class OfflineFirstWithSupabaseRepository<
-        RepositoryModel extends OfflineFirstWithSupabaseModel>
-    extends OfflineFirstRepository<RepositoryModel> {
+        TRepositoryModel extends OfflineFirstWithSupabaseModel>
+    extends OfflineFirstRepository<TRepositoryModel> {
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [SupabaseProvider]'s client directly.
   @override
@@ -51,7 +51,7 @@ abstract class OfflineFirstWithSupabaseRepository<
 
   @protected
   @visibleForTesting
-  final Map<Type, Map<PostgresChangeEvent, Map<Query, StreamController<List<RepositoryModel>>>>>
+  final Map<Type, Map<PostgresChangeEvent, Map<Query, StreamController<List<TRepositoryModel>>>>>
       supabaseRealtimeSubscriptions = {};
 
   OfflineFirstWithSupabaseRepository({
@@ -68,7 +68,7 @@ abstract class OfflineFirstWithSupabaseRepository<
         );
 
   @override
-  Future<bool> delete<TModel extends RepositoryModel>(
+  Future<bool> delete<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
@@ -87,7 +87,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   }
 
   @override
-  Future<List<TModel>> get<TModel extends RepositoryModel>({
+  Future<List<TModel>> get<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
@@ -111,7 +111,7 @@ abstract class OfflineFirstWithSupabaseRepository<
 
   @protected
   @override
-  Future<List<TModel>> hydrate<TModel extends RepositoryModel>({
+  Future<List<TModel>> hydrate<TModel extends TRepositoryModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
@@ -141,13 +141,13 @@ abstract class OfflineFirstWithSupabaseRepository<
   }
 
   @override
-  Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
+  Future<void> notifySubscriptionsWithLocalData<TModel extends TRepositoryModel>({
     bool notifyWhenEmpty = true,
-    Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionsByQuery,
+    Map<Query?, StreamController<List<TRepositoryModel>>>? subscriptionsByQuery,
   }) async {
     final supabaseControllers = supabaseRealtimeSubscriptions[TModel]
         ?.values
-        .fold(<Query, StreamController<List<RepositoryModel>>>{}, (acc, eventMap) {
+        .fold(<Query, StreamController<List<TRepositoryModel>>>{}, (acc, eventMap) {
       acc.addEntries(eventMap.entries);
       return acc;
     });
@@ -192,7 +192,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   @protected
   @visibleForTesting
   @visibleForOverriding
-  PostgresChangeFilter? queryToPostgresChangeFilter<TModel extends RepositoryModel>(
+  PostgresChangeFilter? queryToPostgresChangeFilter<TModel extends TRepositoryModel>(
     Query query,
   ) {
     final adapter = remoteProvider.modelDictionary.adapterFor[TModel]!;
@@ -250,7 +250,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   /// `Query.where('user', Query.exact('name', 'Tom'))` is invalid but `Query.where('name', 'Tom')`
   /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
   /// See [_compareToFilterParam] for a precise breakdown.
-  Stream<List<TModel>> subscribeToRealtime<TModel extends RepositoryModel>({
+  Stream<List<TModel>> subscribeToRealtime<TModel extends TRepositoryModel>({
     PostgresChangeEvent eventType = PostgresChangeEvent.all,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.alwaysHydrate,
     Query? query,
@@ -356,7 +356,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   }
 
   @override
-  Future<TModel> upsert<TModel extends RepositoryModel>(
+  Future<TModel> upsert<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,
