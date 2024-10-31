@@ -201,17 +201,17 @@ void main() {
       });
     });
 
-    group('#onRequestError', () {
+    group('#onRequestException', () {
       test('callback is triggered for a failed response', () async {
         Request? capturedRequest;
-        Object? capturedError;
+        Object? capturedonException;
 
         final mockLink = stubGraphqlLink({}, errors: ['Test failure']);
         final client = GraphqlOfflineQueueLink(
           requestManager,
-          onRequestError: (r, err) {
-            capturedRequest = r;
-            capturedError = err;
+          onRequestException: (request, exception) {
+            capturedRequest = request;
+            capturedonException = exception;
           },
         ).concat(mockLink);
 
@@ -224,20 +224,20 @@ void main() {
         await client.request(mutationRequest).first;
 
         expect(capturedRequest, isNotNull);
-        expect(capturedError, isNotNull);
-        expect(capturedError.toString(), contains('Test failure'));
+        expect(capturedonException, isNotNull);
+        expect(capturedonException.toString(), contains('Test failure'));
       });
 
       test('callback is not triggered on successful response', () async {
         Request? capturedRequest;
-        Object? capturedError;
+        Object? capturedException;
 
         final mockLink = MockLink();
         final client = GraphqlOfflineQueueLink(
           requestManager,
-          onRequestError: (r, err) {
-            capturedRequest = r;
-            capturedError = err;
+          onRequestException: (request, exception) {
+            capturedRequest = request;
+            capturedException = exception;
           },
         ).concat(mockLink);
 
@@ -256,7 +256,7 @@ void main() {
         );
 
         expect(capturedRequest, isNull);
-        expect(capturedError, isNull);
+        expect(capturedException, isNull);
       });
     });
 

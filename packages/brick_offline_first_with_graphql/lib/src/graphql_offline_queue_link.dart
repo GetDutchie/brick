@@ -19,12 +19,12 @@ class GraphqlOfflineQueueLink extends Link {
   final void Function(Request request)? onReattemptableResponse;
 
   /// A callback triggered when a request throws an exception during execution.
-  final void Function(Request request, Object error)? onRequestError;
+  final void Function(Request request, Object error)? onRequestException;
 
   GraphqlOfflineQueueLink(
     this.requestManager, {
     this.onReattemptableResponse,
-    this.onRequestError,
+    this.onRequestException,
   }) : _logger = Logger('GraphqlOfflineQueueLink#${requestManager.databaseName}');
 
   @override
@@ -42,7 +42,7 @@ class GraphqlOfflineQueueLink extends Link {
     yield* forward!(request).handleError(
       (e) async {
         _logger.warning('GraphqlOfflineQueueLink#request: error $e');
-        onRequestError?.call(request, e);
+        onRequestException?.call(request, e);
         final db = await requestManager.getDb();
         await cacheItem.unlock(db);
       },
@@ -57,7 +57,7 @@ class GraphqlOfflineQueueLink extends Link {
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
       } else if (response.errors != null) {
-        onRequestError?.call(request, response.errors!);
+        onRequestException?.call(request, response.errors!);
       }
 
       onReattemptableResponse?.call(request);

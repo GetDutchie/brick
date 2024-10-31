@@ -235,9 +235,9 @@ void main() {
           expect(callbackTriggered, isFalse);
         });
 
-        test('onRequestError callback is triggered for SocketException', () async {
+        test('onRequestException callback is triggered for SocketException', () async {
           http.Request? capturedRequest;
-          Object? capturedError;
+          Object? capturedException;
 
           final inner = MockClient((req) async {
             throw SocketException('test error');
@@ -246,9 +246,9 @@ void main() {
           final client = RestOfflineQueueClient(
             inner,
             requestManager,
-            onRequestError: (request, error) {
+            onRequestException: (request, exception) {
               capturedRequest = request;
-              capturedError = error;
+              capturedException = exception;
             },
           );
 
@@ -258,18 +258,18 @@ void main() {
 
           expect(capturedRequest?.method, equals('POST'));
           expect(capturedRequest?.url, equals(uri));
-          expect(capturedError, isA<SocketException>());
-          expect((capturedError as SocketException).message, equals('test error'));
+          expect(capturedException, isA<SocketException>());
+          expect((capturedException as SocketException).message, equals('test error'));
         });
 
-        test('onRequestError is not triggered for successful request', () async {
+        test('onRequestException is not triggered for successful request', () async {
           bool callbackTriggered = false;
 
           final inner = stubResult(statusCode: 200);
           final client = RestOfflineQueueClient(
             inner,
             requestManager,
-            onRequestError: (request, error) {
+            onRequestException: (request, exception) {
               callbackTriggered = true;
             },
           );

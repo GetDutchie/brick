@@ -24,7 +24,7 @@ class RestOfflineQueueClient extends http.BaseClient {
   /// A callback triggered when a request throws an exception during execution.
   ///
   /// `SocketException`s (errors thrown due to missing connectivity) will also be forwarded to this callback.
-  void Function(http.Request request, Object error)? onRequestError;
+  void Function(http.Request request, Object error)? onRequestException;
 
   final RequestSqliteCacheManager<http.Request> requestManager;
 
@@ -47,7 +47,7 @@ class RestOfflineQueueClient extends http.BaseClient {
     this._inner,
     this.requestManager, {
     this.onReattemptableResponse,
-    this.onRequestError,
+    this.onRequestException,
     List<int>? reattemptForStatusCodes,
 
     /// Any request URI that begins with one of these paths will not be
@@ -117,7 +117,7 @@ class RestOfflineQueueClient extends http.BaseClient {
       return resp;
     } catch (e) {
       // e.g. SocketExceptions will be caught here
-      onRequestError?.call(request, e);
+      onRequestException?.call(request, e);
       _logger.warning('#send: $e');
     } finally {
       // unlock the request for a later a reattempt

@@ -39,7 +39,7 @@ abstract class OfflineFirstWithRestRepository
   /// A callback triggered when a request throws an exception during execution.
   ///
   /// Forwarded to [RestOfflineQueueClient].
-  void Function(http.Request, Object)? onRequestError;
+  void Function(http.Request, Object)? onRequestException;
 
   OfflineFirstWithRestRepository({
     super.autoHydrate,
@@ -63,7 +63,7 @@ abstract class OfflineFirstWithRestRepository
     this.onReattemptableResponse,
 
     /// This property is forwarded to `RestOfflineQueueClient`.
-    this.onRequestError,
+    this.onRequestException,
     required RestProvider restProvider,
     required super.sqliteProvider,
   })  : remoteProvider = restProvider,
@@ -74,7 +74,7 @@ abstract class OfflineFirstWithRestRepository
       restProvider.client,
       offlineQueueManager,
       onReattemptableResponse: onReattemptableResponse,
-      onRequestError: onRequestError,
+      onRequestException: onRequestException,
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = RestOfflineRequestQueue(

@@ -23,7 +23,7 @@ final link = GraphqlOfflineQueueLink(
 
 For tracking the status of queued requests, the `GraphqlOfflineQueueLink` and `RestOfflineQueueClient` constructors accept callback functions which are triggered for specific events:
 
-- `onRequestError`: Invoked when a request encounters an exception during execution (e.g. a `SocketException`). The function receives both the request and an object containing the thrown exception.
+- `onRequestException`: Invoked when a request encounters an exception during execution (e.g. a `SocketException`). The function receives both the request and an object containing the thrown exception.
 - `onReattemptableResponse`: Invoked when a request will be retried. For REST, this is when the response has a status code listed in the `reattemptForStatusCodes` list.
 
 These callbacks provide practical ways to detect the state of the queue (e.g. if the client is offline, the queue is being processed, or the queue is blocked during serial processing). For more, refer to the [discussion on this topic](https://github.com/GetDutchie/brick/issues/393).

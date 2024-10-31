@@ -15,7 +15,7 @@ GraphqlProvider(
       GraphqlRequestSqliteCacheManager('myAppRequestQueue.sqlite'),
       // Optionally specify callbacks for queue retries and errors
       onReattemptableResponse: onReattemptableResponse,
-      onRequestError: onRequestError,
+      onRequestException: onRequestException,
     ),
     HttpLink(endpoint)
   ]),
