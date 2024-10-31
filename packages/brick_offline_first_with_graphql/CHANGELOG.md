@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.2.0
+
+- Add optional `onRequestException` callback function to `GraphqlOfflineQueueLink`
+- Add optional `onReattempt` callback function to `RestOfflineQueueClient`
+
 ## 3.1.1
 
 - Loosen constraints for `gql`, `gql_exec`, and `gql_link`

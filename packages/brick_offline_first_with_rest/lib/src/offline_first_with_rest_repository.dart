@@ -47,6 +47,17 @@ abstract class OfflineFirstWithRestRepository
     /// This property is forwarded to `RestOfflineQueueClient` and assumes
     /// its defaults
     List<int>? reattemptForStatusCodes,
+
+    /// A callback triggered when the response of a request has a status code
+    /// which is present in the [reattemptForStatusCodes] list.
+    ///
+    /// Forwarded to [RestOfflineQueueClient].
+    void Function(http.Request request, int statusCode)? onReattempt,
+
+    /// A callback triggered when a request throws an exception during execution.
+    ///
+    /// Forwarded to [RestOfflineQueueClient].
+    void Function(http.Request, Object)? onRequestException,
     required RestProvider restProvider,
     required super.sqliteProvider,
   })  : remoteProvider = restProvider,
@@ -56,6 +67,8 @@ abstract class OfflineFirstWithRestRepository
     remoteProvider.client = RestOfflineQueueClient(
       restProvider.client,
       offlineQueueManager,
+      onReattempt: onReattempt,
+      onRequestException: onRequestException,
       reattemptForStatusCodes: reattemptForStatusCodes,
     );
     offlineRequestQueue = RestOfflineRequestQueue(

@@ -17,6 +17,15 @@ class RestOfflineQueueClient extends http.BaseClient {
   /// as detailed by [the Dart team](https://github.com/dart-lang/http/blob/378179845420caafbf7a34d47b9c22104753182a/README.md#using)
   final http.Client _inner;
 
+  /// A callback triggered when the response of a request has a status code
+  /// which is present in the [reattemptForStatusCodes] list.
+  void Function(http.Request request, int statusCode)? onReattempt;
+
+  /// A callback triggered when a request throws an exception during execution.
+  ///
+  /// `SocketException`s (errors thrown due to missing connectivity) will also be forwarded to this callback.
+  void Function(http.Request request, Object error)? onRequestException;
+
   final RequestSqliteCacheManager<http.Request> requestManager;
 
   /// If the response returned from the client is one of these error codes, the request
@@ -37,6 +46,8 @@ class RestOfflineQueueClient extends http.BaseClient {
   RestOfflineQueueClient(
     this._inner,
     this.requestManager, {
+    this.onReattempt,
+    this.onRequestException,
     List<int>? reattemptForStatusCodes,
 
     /// Any request URI that begins with one of these paths will not be
@@ -89,17 +100,27 @@ class RestOfflineQueueClient extends http.BaseClient {
       // Attempt to make HTTP Request
       final resp = await _inner.send(request);
 
-      if (cacheItem.requestIsPush && !reattemptForStatusCodes.contains(resp.statusCode)) {
-        final db = await requestManager.getDb();
-        // request was successfully sent and can be removed
-        _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
-        await cacheItem.delete(db);
+      if (cacheItem.requestIsPush) {
+        if (!reattemptForStatusCodes.contains(resp.statusCode)) {
+          final db = await requestManager.getDb();
+          // request was successfully sent and can be removed
+          _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
+          await cacheItem.delete(db);
+        } else if (onReattempt != null) {
+          _logger.finest(
+            'request failed, will be reattempted: ${cacheItem.toSqlite()}',
+          );
+          onReattempt?.call(request, resp.statusCode);
+        }
       }
 
       return resp;
     } catch (e) {
+      // e.g. SocketExceptions will be caught here
+      onRequestException?.call(request, e);
       _logger.warning('#send: $e');
     } finally {
+      // unlock the request for a later a reattempt
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
     }

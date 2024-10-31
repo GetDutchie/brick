@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.2.0
+
+- Add optional `onRequestException` callback function to `RestOfflineQueueClient`
+- Add optional `onReattempt` callback function to `RestOfflineQueueClient`
+
 ## 3.1.0
 
 - Expose offline queue functionality in `offline_queue.dart`

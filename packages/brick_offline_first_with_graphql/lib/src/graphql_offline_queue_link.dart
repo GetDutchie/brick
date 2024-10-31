@@ -15,8 +15,17 @@ class GraphqlOfflineQueueLink extends Link {
 
   final GraphqlRequestSqliteCacheManager requestManager;
 
-  GraphqlOfflineQueueLink(this.requestManager)
-      : _logger = Logger('GraphqlOfflineQueueLink#${requestManager.databaseName}');
+  /// A callback triggered when a request failed, but will be reattempted.
+  final void Function(Request request)? onReattempt;
+
+  /// A callback triggered when a request throws an exception during execution.
+  final void Function(Request request, Object error)? onRequestException;
+
+  GraphqlOfflineQueueLink(
+    this.requestManager, {
+    this.onReattempt,
+    this.onRequestException,
+  }) : _logger = Logger('GraphqlOfflineQueueLink#${requestManager.databaseName}');
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
@@ -33,6 +42,7 @@ class GraphqlOfflineQueueLink extends Link {
     yield* forward!(request).handleError(
       (e) async {
         _logger.warning('GraphqlOfflineQueueLink#request: error $e');
+        onRequestException?.call(request, e);
         final db = await requestManager.getDb();
         await cacheItem.unlock(db);
       },
@@ -46,7 +56,11 @@ class GraphqlOfflineQueueLink extends Link {
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
+      } else if (response.errors != null) {
+        onRequestException?.call(request, response.errors!);
       }
+
+      onReattempt?.call(request);
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
 

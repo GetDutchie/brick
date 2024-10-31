@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';
@@ -186,6 +189,92 @@ void main() {
 
           await client.patch(Uri.parse('http://0.0.0.0:3000'), body: 'new record');
           expect(await requestManager.unprocessedRequests(), hasLength(4));
+        });
+
+        test('onReattempt callback is triggered for reattemptable status code', () async {
+          http.Request? capturedRequest;
+          int? capturedStatusCode;
+
+          final inner = stubResult(statusCode: 429);
+          final client = RestOfflineQueueClient(
+            inner,
+            requestManager,
+            reattemptForStatusCodes: [429],
+            onReattempt: (request, statusCode) {
+              capturedRequest = request;
+              capturedStatusCode = statusCode;
+            },
+          );
+
+          final uri = Uri.parse('http://0.0.0.0:3000');
+
+          await client.post(uri, body: 'test');
+
+          expect(capturedRequest?.method, equals('POST'));
+          expect(capturedRequest?.url, equals(uri));
+          expect(capturedStatusCode, equals(429));
+        });
+
+        test('onReattempt is not triggered for non-reattemptable status code', () async {
+          bool callbackTriggered = false;
+
+          final inner = stubResult(statusCode: 404);
+          final client = RestOfflineQueueClient(
+            inner,
+            requestManager,
+            reattemptForStatusCodes: [429],
+            onReattempt: (request, statusCode) {
+              callbackTriggered = true;
+            },
+          );
+
+          await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'test');
+
+          expect(callbackTriggered, isFalse);
+        });
+
+        test('onRequestException callback is triggered for SocketException', () async {
+          http.Request? capturedRequest;
+          Object? capturedException;
+
+          final inner = MockClient((req) async {
+            throw SocketException('test error');
+          });
+
+          final client = RestOfflineQueueClient(
+            inner,
+            requestManager,
+            onRequestException: (request, exception) {
+              capturedRequest = request;
+              capturedException = exception;
+            },
+          );
+
+          final uri = Uri.parse('http://0.0.0.0:3000');
+
+          await client.post(uri, body: 'test');
+
+          expect(capturedRequest?.method, equals('POST'));
+          expect(capturedRequest?.url, equals(uri));
+          expect(capturedException, isA<SocketException>());
+          expect((capturedException as SocketException).message, equals('test error'));
+        });
+
+        test('onRequestException is not triggered for successful request', () async {
+          bool callbackTriggered = false;
+
+          final inner = stubResult(statusCode: 200);
+          final client = RestOfflineQueueClient(
+            inner,
+            requestManager,
+            onRequestException: (request, exception) {
+              callbackTriggered = true;
+            },
+          );
+
+          await client.post(Uri.parse('http://0.0.0.0:3000'), body: 'test');
+
+          expect(callbackTriggered, isFalse);
         });
       });
     });
