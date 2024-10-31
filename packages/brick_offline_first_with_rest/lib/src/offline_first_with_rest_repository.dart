@@ -30,17 +30,6 @@ abstract class OfflineFirstWithRestRepository
   @protected
   late RestOfflineRequestQueue offlineRequestQueue;
 
-  /// A callback triggered when the response of a request has a status code
-  /// which is present in the [reattemptForStatusCodes] list.
-  ///
-  /// Forwarded to [RestOfflineQueueClient].
-  void Function(http.Request request, int statusCode)? onReattempt;
-
-  /// A callback triggered when a request throws an exception during execution.
-  ///
-  /// Forwarded to [RestOfflineQueueClient].
-  void Function(http.Request, Object)? onRequestException;
-
   OfflineFirstWithRestRepository({
     super.autoHydrate,
     super.loggerName,
@@ -59,11 +48,16 @@ abstract class OfflineFirstWithRestRepository
     /// its defaults
     List<int>? reattemptForStatusCodes,
 
-    /// This property is forwarded to `RestOfflineQueueClient`.
-    this.onReattempt,
+    /// A callback triggered when the response of a request has a status code
+    /// which is present in the [reattemptForStatusCodes] list.
+    ///
+    /// Forwarded to [RestOfflineQueueClient].
+    void Function(http.Request request, int statusCode)? onReattempt,
 
-    /// This property is forwarded to `RestOfflineQueueClient`.
-    this.onRequestException,
+    /// A callback triggered when a request throws an exception during execution.
+    ///
+    /// Forwarded to [RestOfflineQueueClient].
+    void Function(http.Request, Object)? onRequestException,
     required RestProvider restProvider,
     required super.sqliteProvider,
   })  : remoteProvider = restProvider,
