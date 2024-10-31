@@ -34,7 +34,7 @@ abstract class OfflineFirstWithRestRepository
   /// which is present in the [reattemptForStatusCodes] list.
   ///
   /// Forwarded to [RestOfflineQueueClient].
-  void Function(http.Request request, int statusCode)? onReattemptableResponse;
+  void Function(http.Request request, int statusCode)? onReattempt;
 
   /// A callback triggered when a request throws an exception during execution.
   ///
@@ -60,7 +60,7 @@ abstract class OfflineFirstWithRestRepository
     List<int>? reattemptForStatusCodes,
 
     /// This property is forwarded to `RestOfflineQueueClient`.
-    this.onReattemptableResponse,
+    this.onReattempt,
 
     /// This property is forwarded to `RestOfflineQueueClient`.
     this.onRequestException,
@@ -73,7 +73,7 @@ abstract class OfflineFirstWithRestRepository
     remoteProvider.client = RestOfflineQueueClient(
       restProvider.client,
       offlineQueueManager,
-      onReattemptableResponse: onReattemptableResponse,
+      onReattempt: onReattempt,
       onRequestException: onRequestException,
       reattemptForStatusCodes: reattemptForStatusCodes,
     );

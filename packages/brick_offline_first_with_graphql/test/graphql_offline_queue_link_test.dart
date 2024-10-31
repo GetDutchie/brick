@@ -152,14 +152,14 @@ void main() {
       });
     });
 
-    group('#onReattemptableResponse', () {
+    group('#onReattempt', () {
       test('callback is triggered when request retries', () async {
         Request? capturedRequest;
 
         final mockLink = stubGraphqlLink({}, errors: ['Test failure']);
         final client = GraphqlOfflineQueueLink(
           requestManager,
-          onReattemptableResponse: (r) => capturedRequest = r,
+          onReattempt: (r) => capturedRequest = r,
         ).concat(mockLink);
 
         final mutationRequest = Request(
@@ -180,7 +180,7 @@ void main() {
         final mockLink = MockLink();
         final client = GraphqlOfflineQueueLink(
           requestManager,
-          onReattemptableResponse: (r) => capturedRequest = r,
+          onReattempt: (r) => capturedRequest = r,
         ).concat(mockLink);
 
         when(

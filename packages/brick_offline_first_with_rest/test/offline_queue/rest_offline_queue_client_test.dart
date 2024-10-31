@@ -191,8 +191,7 @@ void main() {
           expect(await requestManager.unprocessedRequests(), hasLength(4));
         });
 
-        test('onReattemptableResponse callback is triggered for reattemptable status code',
-            () async {
+        test('onReattempt callback is triggered for reattemptable status code', () async {
           http.Request? capturedRequest;
           int? capturedStatusCode;
 
@@ -201,7 +200,7 @@ void main() {
             inner,
             requestManager,
             reattemptForStatusCodes: [429],
-            onReattemptableResponse: (request, statusCode) {
+            onReattempt: (request, statusCode) {
               capturedRequest = request;
               capturedStatusCode = statusCode;
             },
@@ -216,8 +215,7 @@ void main() {
           expect(capturedStatusCode, equals(429));
         });
 
-        test('onReattemptableResponse is not triggered for non-reattemptable status code',
-            () async {
+        test('onReattempt is not triggered for non-reattemptable status code', () async {
           bool callbackTriggered = false;
 
           final inner = stubResult(statusCode: 404);
@@ -225,7 +223,7 @@ void main() {
             inner,
             requestManager,
             reattemptForStatusCodes: [429],
-            onReattemptableResponse: (request, statusCode) {
+            onReattempt: (request, statusCode) {
               callbackTriggered = true;
             },
           );

@@ -16,14 +16,14 @@ class GraphqlOfflineQueueLink extends Link {
   final GraphqlRequestSqliteCacheManager requestManager;
 
   /// A callback triggered when a request failed, but will be reattempted.
-  final void Function(Request request)? onReattemptableResponse;
+  final void Function(Request request)? onReattempt;
 
   /// A callback triggered when a request throws an exception during execution.
   final void Function(Request request, Object error)? onRequestException;
 
   GraphqlOfflineQueueLink(
     this.requestManager, {
-    this.onReattemptableResponse,
+    this.onReattempt,
     this.onRequestException,
   }) : _logger = Logger('GraphqlOfflineQueueLink#${requestManager.databaseName}');
 
@@ -60,7 +60,7 @@ class GraphqlOfflineQueueLink extends Link {
         onRequestException?.call(request, response.errors!);
       }
 
-      onReattemptableResponse?.call(request);
+      onReattempt?.call(request);
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
 
