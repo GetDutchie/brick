@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.2.0
+
 ## 3.1.1
 
 - Loosen constraints for `gql`, `gql_exec`, and `gql_link`
