@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Allow a class-generic type argument for `OfflineFirstWithSupabaseRepository`
+
 ## 1.1.0
 
 - Added `OfflineFirstWithSupabaseRepository#subscribeToRealtime`to sync Brick data with Supabase changes (#472, #454)
