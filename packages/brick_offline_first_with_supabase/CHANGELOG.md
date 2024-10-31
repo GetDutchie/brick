@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Allow a class-generic type argument for `OfflineFirstWithSupabaseRepository`
+- Allow a generic type argument for `OfflineFirstWithSupabaseRepository`
 
 ## 1.1.0
 

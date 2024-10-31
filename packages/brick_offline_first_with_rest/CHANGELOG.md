@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Allow a class-generic type argument for `OfflineFirstWithRestRepository`
+- Allow a generic type argument for `OfflineFirstWithRestRepository`
 
 ## 3.2.0
 

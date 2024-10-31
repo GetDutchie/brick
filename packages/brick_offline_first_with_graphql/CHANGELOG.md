@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Allow a class-generic type argument for `OfflineFirstWithGraphqlRepository`
+- Allow a generic type argument for `OfflineFirstWithGraphqlRepository`
 
 ## 3.2.0
 
