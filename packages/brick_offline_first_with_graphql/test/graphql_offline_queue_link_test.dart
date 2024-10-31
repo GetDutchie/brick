@@ -152,6 +152,114 @@ void main() {
       });
     });
 
+    group('#onReattemptableResponse', () {
+      test('callback is triggered when request retries', () async {
+        Request? capturedRequest;
+
+        final mockLink = stubGraphqlLink({}, errors: ['Test failure']);
+        final client = GraphqlOfflineQueueLink(
+          requestManager,
+          onReattemptableResponse: (r) => capturedRequest = r,
+        ).concat(mockLink);
+
+        final mutationRequest = Request(
+          operation: Operation(
+            document: parseString('''mutation {}'''),
+            operationName: 'fakeMutate',
+          ),
+        );
+        await client.request(mutationRequest).first;
+
+        expect(capturedRequest, isNotNull);
+        expect(capturedRequest, mutationRequest);
+      });
+
+      test('callback is not triggered when request succeeds', () async {
+        Request? capturedRequest;
+
+        final mockLink = MockLink();
+        final client = GraphqlOfflineQueueLink(
+          requestManager,
+          onReattemptableResponse: (r) => capturedRequest = r,
+        ).concat(mockLink);
+
+        when(
+          mockLink.request(request),
+        ).thenAnswer(
+          (_) => Stream.fromIterable([response]),
+        );
+
+        client.request(
+          Request(
+            operation: Operation(
+              document: parseString('''mutation {}'''),
+            ),
+          ),
+        );
+
+        expect(capturedRequest, isNull);
+      });
+    });
+
+    group('#onRequestError', () {
+      test('callback is triggered for a failed response', () async {
+        Request? capturedRequest;
+        Object? capturedError;
+
+        final mockLink = stubGraphqlLink({}, errors: ['Test failure']);
+        final client = GraphqlOfflineQueueLink(
+          requestManager,
+          onRequestError: (r, err) {
+            capturedRequest = r;
+            capturedError = err;
+          },
+        ).concat(mockLink);
+
+        final mutationRequest = Request(
+          operation: Operation(
+            document: parseString('''mutation {}'''),
+            operationName: 'fakeMutate',
+          ),
+        );
+        await client.request(mutationRequest).first;
+
+        expect(capturedRequest, isNotNull);
+        expect(capturedError, isNotNull);
+        expect(capturedError.toString(), contains('Test failure'));
+      });
+
+      test('callback is not triggered on successful response', () async {
+        Request? capturedRequest;
+        Object? capturedError;
+
+        final mockLink = MockLink();
+        final client = GraphqlOfflineQueueLink(
+          requestManager,
+          onRequestError: (r, err) {
+            capturedRequest = r;
+            capturedError = err;
+          },
+        ).concat(mockLink);
+
+        when(
+          mockLink.request(request),
+        ).thenAnswer(
+          (_) => Stream.fromIterable([response]),
+        );
+
+        client.request(
+          Request(
+            operation: Operation(
+              document: parseString('''mutation {}'''),
+            ),
+          ),
+        );
+
+        expect(capturedRequest, isNull);
+        expect(capturedError, isNull);
+      });
+    });
+
     test('request deletes after a successful response', () async {
       final mockLink = MockLink();
       final client = GraphqlOfflineQueueLink(requestManager).concat(mockLink);

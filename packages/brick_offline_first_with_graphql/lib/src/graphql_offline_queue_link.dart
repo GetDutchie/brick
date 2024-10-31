@@ -16,7 +16,7 @@ class GraphqlOfflineQueueLink extends Link {
   final GraphqlRequestSqliteCacheManager requestManager;
 
   /// A callback triggered when a request failed, but will be reattempted.
-  final void Function(Request request, int statusCode)? onReattemptableResponse;
+  final void Function(Request request)? onReattemptableResponse;
 
   /// A callback triggered when a request throws an exception during execution.
   final void Function(Request request, Object error)? onRequestError;
@@ -56,10 +56,11 @@ class GraphqlOfflineQueueLink extends Link {
         // request was successfully sent and can be removed
         _logger.finest('removing from queue: ${cacheItem.toSqlite()}');
         await cacheItem.delete(db);
-      } else if (response.response.containsKey('statusCode') &&
-          response.response['statusCode'] is int) {
-        onReattemptableResponse?.call(request, response.response['statusCode']);
+      } else if (response.errors != null) {
+        onRequestError?.call(request, response.errors!);
       }
+
+      onReattemptableResponse?.call(request);
       final db = await requestManager.getDb();
       await cacheItem.unlock(db);
 
