@@ -164,12 +164,6 @@ Ideally, `@OfflineFirst(where:)` shouldn't be necessary to specify to make the a
 final Pizza pizza;
 ```
 
-### FAQ
-
-#### Why can't I declare a model argument?
-
-Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a custom model cannot be passed to the repository as a type argument.
-
 ## Unsupported Field Types
 
 - Any unsupported field types from `SupabaseProvider`, or `SqliteProvider`

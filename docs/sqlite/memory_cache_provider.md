@@ -9,9 +9,3 @@ MemoryCacheProvider([Hat])
 ```
 
 It is not recommended to use this provider with parent models that have child associations, as those children may be updated in the future without notifying the parent.
-
-## FAQ
-
-### Why can't I declare a model argument?
-
-Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a custom model cannot be passed to the repository as a type argument.

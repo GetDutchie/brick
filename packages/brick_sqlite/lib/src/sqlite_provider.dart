@@ -15,7 +15,7 @@ import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 import 'package:synchronized/synchronized.dart';
 
 /// Retrieves from a Sqlite database
-class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
+class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TProviderModel> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms.
   @protected
@@ -51,7 +51,7 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
 
   /// Remove record from SQLite. [query] is ignored.
   @override
-  Future<int> delete<TModel extends CModel>(instance, {query, repository}) async {
+  Future<int> delete<TModel extends TProviderModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
@@ -73,9 +73,9 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
   ///
   /// If [query.where] is `null`, existence for **any** record is executed.
   @override
-  Future<bool> exists<TModel extends CModel>({
+  Future<bool> exists<TModel extends TProviderModel>({
     Query? query,
-    ModelRepository<CModel>? repository,
+    ModelRepository<TProviderModel>? repository,
   }) async {
     final sqlQuery = QuerySqlTransformer<TModel>(
       modelDictionary: modelDictionary,
@@ -119,7 +119,7 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
   /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   @override
-  Future<List<TModel>> get<TModel extends CModel>({
+  Future<List<TModel>> get<TModel extends TProviderModel>({
     query,
     repository,
   }) async {
@@ -205,10 +205,10 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
 
   /// Fetch results for model with a custom SQL statement.
   /// It is recommended to use [get] whenever possible. **Advanced use only**.
-  Future<List<TModel>> rawGet<TModel extends CModel>(
+  Future<List<TModel>> rawGet<TModel extends TProviderModel>(
     String sql,
     List arguments, {
-    ModelRepository<CModel>? repository,
+    ModelRepository<TProviderModel>? repository,
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
 
@@ -272,7 +272,7 @@ class SqliteProvider<CModel extends SqliteModel> implements Provider<CModel> {
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
   @override
-  Future<int?> upsert<TModel extends CModel>(instance, {query, repository}) async {
+  Future<int?> upsert<TModel extends TProviderModel>(instance, {query, repository}) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
 

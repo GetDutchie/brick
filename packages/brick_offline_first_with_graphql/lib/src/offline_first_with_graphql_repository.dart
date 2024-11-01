@@ -13,13 +13,9 @@ import 'package:meta/meta.dart';
 /// from the [remoteProvider] pass through a seperate SQLite queue. If the app
 /// is unable to make contact with the [remoteProvider], the queue automatically retries in
 /// sequence until it receives a response.
-///
-/// OfflineFirstWithGraphqlRepository should accept a type argument such as
-/// <_RepositoryModel extends OfflineFirstWithGraphqlModel>, however, this causes a type bound
-/// error on runtime. The argument should be reintroduced with a future version of the
-/// compiler/analyzer.
-abstract class OfflineFirstWithGraphqlRepository
-    extends OfflineFirstRepository<OfflineFirstWithGraphqlModel> {
+abstract class OfflineFirstWithGraphqlRepository<
+        TRepositoryModel extends OfflineFirstWithGraphqlModel>
+    extends OfflineFirstRepository<TRepositoryModel> {
   /// The type declaration is important here for the rare circumstances that
   /// require interfacting with [GraphqlProvider]'s client directly.
   @override
@@ -71,7 +67,7 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<bool> delete<TModel extends OfflineFirstWithGraphqlModel>(
+  Future<bool> delete<TModel extends TRepositoryModel>(
     TModel instance, {
     Query? query,
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
@@ -86,9 +82,9 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<List<TModel>> get<TModel extends OfflineFirstWithGraphqlModel>({
+  Future<List<TModel>> get<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-    query,
+    Query? query,
     bool seedOnly = false,
   }) async {
     try {
@@ -105,7 +101,7 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<bool> exists<TModel extends OfflineFirstWithGraphqlModel>({Query? query}) {
+  Future<bool> exists<TModel extends TRepositoryModel>({Query? query}) {
     try {
       return super.exists<TModel>(query: query);
     } on GraphQLError catch (e) {
@@ -117,7 +113,7 @@ abstract class OfflineFirstWithGraphqlRepository
 
   @protected
   @override
-  Future<List<TModel>> hydrate<TModel extends OfflineFirstWithGraphqlModel>({
+  Future<List<TModel>> hydrate<TModel extends TRepositoryModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
@@ -156,7 +152,7 @@ abstract class OfflineFirstWithGraphqlRepository
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
   @override
-  Stream<List<TModel>> subscribe<TModel extends OfflineFirstWithGraphqlModel>({
+  Stream<List<TModel>> subscribe<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
   }) {
@@ -207,7 +203,7 @@ abstract class OfflineFirstWithGraphqlRepository
   }
 
   @override
-  Future<TModel> upsert<TModel extends OfflineFirstWithGraphqlModel>(
+  Future<TModel> upsert<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
     Query? query,

@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Allow a generic type argument for `OfflineFirstWithGraphqlRepository`
+
 ## 3.2.0
 
 - Add optional `onRequestException` callback function to `GraphqlOfflineQueueLink`

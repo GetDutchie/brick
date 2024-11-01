@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Allow a generic type argument for `OfflineFirstWithRestRepository`
+
 ## 3.2.0
 
 - Add optional `onRequestException` callback function to `RestOfflineQueueClient`

@@ -6,7 +6,7 @@ The `OfflineFirstWithRest` domain uses all the same configurations and annotatio
 
 ![OfflineFirst#get](https://user-images.githubusercontent.com/865897/72176226-cdd8ca00-3392-11ea-867d-42f5f4620153.jpg)
 
-:bulb: You can change default behavior on a per-request basis using `policy:` (e.g. `get<Person>(policy: OfflineFirstUpsertPolicy.localOnly)`). This is available for `delete`, `get`, `getBatched`, `subscribe`, and `upsert`.
+?> You can change default behavior on a per-request basis using `policy:` (e.g. `get<Person>(policy: OfflineFirstUpsertPolicy.localOnly)`). This is available for `delete`, `get`, `getBatched`, `subscribe`, and `upsert`.
 
 ## Generating Models from a REST Endpoint
 

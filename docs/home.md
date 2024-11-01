@@ -67,6 +67,7 @@
 - Example: [Simple Associations using the OfflineFirstWithRest domain](https://github.com/GetDutchie/brick/blob/main/example_rest)
 - Example: [Simple Associations using the OfflineFirstWithSupabase domain](https://github.com/GetDutchie/brick/blob/main/example_supabase)
 - Tutorial: [Setting up a simple app with Brick](http://www.flutterbyexample.com/#/posts/2_adding_a_repository)
+- Blog: [Building offline-first mobile apps with Supabase, Flutter and Brick](https://supabase.com/blog/offline-first-flutter-apps)
 
 ## Glossary
 

@@ -10,12 +10,12 @@ Local storage for Flutter apps using [Brick](https://github.com/GetDutchie/brick
 
 The following map exactly to their SQLite keywords. The values will be inserted into a SQLite statement **without being prepared**.
 
-* `collate`
-* `having`
-* `groupBy`
-* `limit`
-* `offset`
-* `orderBy`
+- `collate`
+- `having`
+- `groupBy`
+- `limit`
+- `offset`
+- `orderBy`
 
 As the values are directly inserted, use the field name:
 
@@ -109,39 +109,41 @@ instanceFromSqlite.associations.length // => 0
 
 The following are not serialized to SQLite. However, unsupported types can still be accessed in the model as non-final fields.
 
-* Nested `List<>` e.g. `<List<List<int>>>`
-* Many-to-many associations
+- Nested `List<>` e.g. `<List<List<int>>>`
+- Many-to-many associations
 
 ## Multiplatform Support
 
 Brick SQLite can be used when developing for Windows, MacOS, and Linux platforms. **The following is not required for iOS and Android development except in a test environment.**.
 
 1. Add sqflite_common packages to your pubspec. If you're stubbing SQLite responses for testing, the packages only need to be added under `dev_dependencies:`.
-    ```yaml
-    sqflite_common: any
-    sqflite_common_ffi: any
-    ```
+
+   ```yaml
+   sqflite_common: any
+   sqflite_common_ffi: any
+   ```
 
 1. Use the [SQLite FFI](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi) database factory when initializing your provider:
-    ```dart
-    import 'package:sqflite_common/sqlite_api.dart';
-    import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-    MyRepository(
-      sqliteProvider: SqliteProvider(
-        inMemoryDatabase,
-        databaseFactory: databaseFactoryFfi,
-      ),
-    );
-    ```
+   ```dart
+   import 'package:sqflite_common/sqlite_api.dart';
+   import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+   MyRepository(
+     sqliteProvider: SqliteProvider(
+       inMemoryDatabase,
+       databaseFactory: databaseFactoryFfi,
+     ),
+   );
+   ```
 
 1. Make sure FFI is initialized when starting your app or running unit tests:
-    ```dart
-    void main() {
-      sqfliteFfiInit();
-      runApp(MyApp())
-    }
-    ```
+   ```dart
+   void main() {
+     sqfliteFfiInit();
+     runApp(MyApp())
+   }
+   ```
 
 ## Testing
 
@@ -186,9 +188,3 @@ MemoryCacheProvider([Hat])
 ```
 
 It is not recommended to use this provider with parent models that have child associations, as those children may be updated in the future without notifying the parent.
-
-## FAQ
-
-### Why can't I declare a model argument?
-
-Due to [an open analyzer bug](https://github.com/dart-lang/sdk/issues/38309), a custom model cannot be passed to the repository as a type argument.
