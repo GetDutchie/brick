@@ -175,3 +175,48 @@ class Address extends OfflineFirstWithSupabaseModel{
 ```
 
 !> If your association is nullable (e.g. `Address?`), the Supabase response may include all `User`s from the database from a loosely-specified query. This is caused by PostgREST's [filtering](https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#top-level-filtering). Brick does not use `!inner` to query tables because there is no guarantee that a model does not have multiple fields relating to the same association; it instead explicitly declares the foreign key with [not.is.null](https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#null-filtering-on-embedded-resources) filtering. If a Dart association is nullable, Brick will not append the `not.is.null` which could return [all results](https://github.com/GetDutchie/brick/issues/429#issuecomment-2325941205). If you have a use case that requires a nullable association and you cannot circumvent this problem with [Supabase's policies](https://supabase.com/docs/guides/database/postgres/row-level-security), please open an issue and provide extensive detail.
+
+### Recursive/Looped Associations
+
+If a request includes a nested parent-child recursion, the generated Supabase query will remove the association to prevent a stack overflow.
+
+For example, given the following models:
+
+```dart
+class Parent extends OfflineFirstWithSupabaseModel {
+  final String parentId;
+  final List<Child> children;
+}
+class Child extends OfflineFirstWithSupabaseModel {
+  final String childId;
+  final Parent parent;
+}
+```
+
+A query for `MyRepository().get<Parent>()` would generate a Supabase query that only gets the shallow properties of Parent on the second level of recursion:
+
+```
+parent:parent_table(
+  parentId,
+  children:child_table(
+    childId,
+    parent:parent_table(
+      parentId
+    )
+  )
+)
+```
+
+Implementations using looping associations like this should design for their parent (first-level) models to accept `null` or empty child associations:
+
+```dart
+class Parent extends OfflineFirstWithSupabaseModel {
+  final String parentId;
+  final List<Child> children;
+
+  Parent({
+    required this.parentId,
+    List<Child>? children,
+  }) : children = children ?? List<Child>[];
+}
+```

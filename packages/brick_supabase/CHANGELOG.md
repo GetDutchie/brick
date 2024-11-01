@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 1.1.1
+
+- Fix a query builder infinite recursion bug where a parent has a child that has a parent association
+- Use declared Supabase `columnName` when requesting an association from Supabase
+- Do not declare a `:tableName` on a Supabase query if no table name is available on the adapter. This should never happen since the code is generated
+
 ## 1.1.0
 
 - Reorganized `testing.dart` to `src/testing`

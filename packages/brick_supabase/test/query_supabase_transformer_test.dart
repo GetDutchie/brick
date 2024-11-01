@@ -44,7 +44,7 @@ void main() {
   group('QuerySupabaseTransformer', () {
     group('#selectFields', () {
       test('no association', () {
-        final transformer = _buildTransformer<DemoModel>();
+        final transformer = _buildTransformer<Demo>();
         expect(transformer.selectFields, 'id,name,age');
       });
 
@@ -52,7 +52,7 @@ void main() {
         final transformer = _buildTransformer<DemoAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age)',
+          'id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age)',
         );
       });
 
@@ -60,15 +60,23 @@ void main() {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,nested:demo_associations(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
+          'id,name,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
+        );
+      });
+
+      test('recursive associations', () {
+        final transformer = _buildTransformer<RecursiveParent>();
+        expect(
+          transformer.selectFields,
+          'child:recursive_children(parent:recursive_parents(parent_id),child_id,other_assoc:demos(id,name,age)),parent_id',
         );
       });
     });
 
     group('#select', () {
       test('no query', () {
-        final select = _buildTransformer<DemoModel>()
-            .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+        final select =
+            _buildTransformer<Demo>().select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
         expect(select.query, 'select=id,name,age');
       });
@@ -77,8 +85,8 @@ void main() {
         group('eq', () {
           test('by field', () {
             final query = Query.where('name', 'Jens');
-            final select = _buildTransformer<DemoModel>(query)
-                .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            final select = _buildTransformer<Demo>(query)
+                .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
             expect(select.query, 'select=id,name,age&name=eq.Jens');
           });
@@ -90,7 +98,7 @@ void main() {
 
             expect(
               select.query,
-              'select=id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
+              'select=id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
             );
           });
         });
@@ -99,8 +107,8 @@ void main() {
           final query = Query(
             where: [Where('name', value: 'Jens', compare: Compare.notEqual)],
           );
-          final select = _buildTransformer<DemoModel>(query)
-              .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
           expect(select.query, 'select=id,name,age&name=neq.Jens');
         });
@@ -114,8 +122,8 @@ void main() {
               Where('age', value: '21', compare: Compare.greaterThanOrEqualTo),
             ],
           );
-          final select = _buildTransformer<DemoModel>(query)
-              .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
           expect(
             select.query,
@@ -127,8 +135,8 @@ void main() {
           final query = Query(
             where: [Where('name', value: 'search', compare: Compare.contains)],
           );
-          final select = _buildTransformer<DemoModel>(query)
-              .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
           expect(select.query, 'select=id,name,age&name=like.search');
         });
@@ -139,8 +147,8 @@ void main() {
               Where('name', value: 'search', compare: Compare.doesNotContain),
             ],
           );
-          final select = _buildTransformer<DemoModel>(query)
-              .select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
           expect(select.query, 'select=id,name,age&name=not.like.search');
         });
@@ -150,9 +158,9 @@ void main() {
     group('#applyProviderArgs', () {
       test('orderBy', () {
         final query = Query(providerArgs: {'orderBy': 'name asc'});
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
@@ -163,9 +171,9 @@ void main() {
 
       test('orderBy with descending order', () {
         final query = Query(providerArgs: {'orderBy': 'name desc'});
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
@@ -178,9 +186,9 @@ void main() {
         final query = Query(
           providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'foreign_tables'},
         );
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
@@ -191,9 +199,9 @@ void main() {
 
       test('limit', () {
         final query = Query(providerArgs: {'limit': 10});
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(transformBuilder.query, 'select=id,name,age&limit=10');
@@ -201,9 +209,9 @@ void main() {
 
       test('limit with referenced table', () {
         final query = Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'foreign_tables'});
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(transformBuilder.query, 'select=id,name,age&foreign_tables.limit=10');
@@ -211,9 +219,9 @@ void main() {
 
       test('combined orderBy and limit', () {
         final query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
-        final queryTransformer = _buildTransformer<DemoModel>(query);
+        final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoModelAdapter().supabaseTableName));
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
         expect(
@@ -231,7 +239,7 @@ void main() {
         );
         expect(
           result,
-          containsAll(['id', 'name', 'assoc:demos!assoc_id(id,name,age)']),
+          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,age)']),
         );
       });
 
@@ -242,7 +250,7 @@ void main() {
         );
         expect(
           result,
-          containsAll(['id', 'name', 'assoc:demos!assoc_id(id,name,age)']),
+          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,age)']),
         );
       });
 
@@ -256,7 +264,7 @@ void main() {
           containsAll([
             'id',
             'name',
-            'nested:demo_associations(id,name,assoc:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
+            'nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
           ]),
         );
       });
