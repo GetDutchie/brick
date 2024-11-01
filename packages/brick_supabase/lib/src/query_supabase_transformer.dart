@@ -24,7 +24,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   }) : adapter = adapter ?? modelDictionary.adapterFor[_Model]!;
 
   String get selectFields {
-    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns).join(',');
+    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns, _Model).join(',');
   }
 
   PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
@@ -55,8 +55,10 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   @protected
   @visibleForTesting
   List<String> destructureAssociationProperties(
-    Map<String, RuntimeSupabaseColumnDefinition>? columns,
-  ) {
+    Map<String, RuntimeSupabaseColumnDefinition>? columns, [
+    Type? destructuringFromType,
+    int recursionDepth = 0,
+  ]) {
     final selectedFields = <String>[];
 
     if (columns == null) return selectedFields;
@@ -64,16 +66,39 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     for (final entry in columns.entries) {
       final field = entry.value;
       if (field.association && field.associationType != null) {
-        var associationOutput =
-            '${entry.key}:${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}';
+        var associationOutput = field.columnName;
+        if (modelDictionary.adapterFor[field.associationType!]?.supabaseTableName != null) {
+          associationOutput +=
+              ':${modelDictionary.adapterFor[field.associationType!]?.supabaseTableName}';
+        }
         if (field.foreignKey != null) {
           associationOutput += '!${field.foreignKey}';
         }
         associationOutput += '(';
+
+        // If a request includes a nested parent-child recursion, prevent the destructurization
+        // from hitting a stack overflow by removing the association from the child destructure.
+        //
+        // For example, given `Parent(id:, child: Child(id:, parent:))`, this would strip the
+        // association query without touching the parennt's original properties as
+        // `parent(id, child(id, parent(id)))`.
+        //
+        // Implementations using looping associations like this should design for their
+        // parent (first-level) models to accept null or empty child associations.
+        var fieldsToDestructure =
+            modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns;
+        if (recursionDepth >= 1) {
+          // Clone to avoid concurrent writes to the map
+          fieldsToDestructure = {...?fieldsToDestructure}
+            ..removeWhere((k, v) => v.associationType == destructuringFromType);
+        }
         final fields = destructureAssociationProperties(
-          modelDictionary.adapterFor[field.associationType!]?.fieldsToSupabaseColumns,
+          fieldsToDestructure,
+          field.associationType,
+          recursionDepth + 1,
         );
         associationOutput += fields.join(',');
+
         associationOutput += ')';
 
         selectedFields.add(associationOutput);

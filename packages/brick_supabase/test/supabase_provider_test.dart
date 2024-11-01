@@ -15,22 +15,22 @@ void main() {
     tearDown(mock.tearDown);
 
     test('#delete', () async {
-      final req = SupabaseRequest<DemoModel>(
+      final req = SupabaseRequest<Demo>(
         requestMethod: 'DELETE',
         filter: 'id=eq.1',
       );
-      final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
+      final instance = Demo(age: 1, name: 'Demo 1', id: '1');
       final resp = SupabaseResponse(await mock.serialize(instance));
 
       mock.handle({req: resp});
       final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
-      final didDelete = await provider.delete<DemoModel>(instance);
+      final didDelete = await provider.delete<Demo>(instance);
       expect(didDelete, true);
     });
 
     test('#exists', () async {
-      final req = SupabaseRequest<DemoModel>();
-      final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
+      final req = SupabaseRequest<Demo>();
+      final instance = Demo(age: 1, name: 'Demo 1', id: '1');
       final resp = SupabaseResponse(
         [await mock.serialize(instance)],
         headers: {'content-range': '*/1'},
@@ -38,19 +38,19 @@ void main() {
 
       mock.handle({req: resp});
       final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
-      final doesExist = await provider.exists<DemoModel>();
+      final doesExist = await provider.exists<Demo>();
       expect(doesExist, true);
     });
 
     test('#get', () async {
-      final req = SupabaseRequest<DemoModel>();
+      final req = SupabaseRequest<Demo>();
       final resp = SupabaseResponse([
-        await mock.serialize(DemoModel(age: 1, name: 'Demo 1', id: '1')),
-        await mock.serialize(DemoModel(age: 2, name: 'Demo 2', id: '2')),
+        await mock.serialize(Demo(age: 1, name: 'Demo 1', id: '1')),
+        await mock.serialize(Demo(age: 2, name: 'Demo 2', id: '2')),
       ]);
       mock.handle({req: resp});
       final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
-      final retrieved = await provider.get<DemoModel>();
+      final retrieved = await provider.get<Demo>();
       expect(retrieved, hasLength(2));
       expect(retrieved[0].id, '1');
       expect(retrieved[1].id, '2');
@@ -62,37 +62,37 @@ void main() {
 
     group('#upsert', () {
       test('no associations', () async {
-        final req = SupabaseRequest<DemoModel>(
+        final req = SupabaseRequest<Demo>(
           requestMethod: 'POST',
           filter: 'id=eq.1',
           limit: 1,
         );
-        final instance = DemoModel(age: 1, name: 'Demo 1', id: '1');
+        final instance = Demo(age: 1, name: 'Demo 1', id: '1');
         final resp = SupabaseResponse(await mock.serialize(instance));
         mock.handle({req: resp});
 
         final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
-        final inserted = await provider.upsert<DemoModel>(instance);
+        final inserted = await provider.upsert<Demo>(instance);
         expect(inserted.id, instance.id);
         expect(inserted.age, instance.age);
         expect(inserted.name, instance.name);
       });
 
       test('one association', () async {
-        final demoModelReq = SupabaseRequest<DemoModel>(
+        final demoModelReq = SupabaseRequest<Demo>(
           requestMethod: 'POST',
           filter: 'id=eq.2',
           limit: 1,
         );
         final demoModelResp =
-            SupabaseResponse(await mock.serialize(DemoModel(age: 1, name: 'Demo 1', id: '1')));
+            SupabaseResponse(await mock.serialize(Demo(age: 1, name: 'Demo 1', id: '1')));
         final assocReq = SupabaseRequest<DemoAssociationModel>(
           requestMethod: 'POST',
           filter: 'id=eq.1',
           limit: 1,
         );
         final instance = DemoAssociationModel(
-          assoc: DemoModel(age: 1, name: 'Nested', id: '2'),
+          assoc: Demo(age: 1, name: 'Nested', id: '2'),
           name: 'Demo 1',
           id: '1',
         );
