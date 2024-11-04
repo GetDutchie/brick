@@ -41,8 +41,8 @@ import 'package:meta/meta.dart';
 ///   }
 /// }
 /// ```
-abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
-    implements ModelRepository<RepositoryModel> {
+abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel>
+    implements ModelRepository<TRepositoryModel> {
   /// Refetch results in the background from remote source when any request is made.
   /// Defaults to [false].
   final bool autoHydrate;
@@ -67,7 +67,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
 
   @protected
   @visibleForTesting
-  final Map<Type, Map<Query?, StreamController<List<RepositoryModel>>>> subscriptions = {};
+  final Map<Type, Map<Query?, StreamController<List<TRepositoryModel>>>> subscriptions = {};
 
   /// User for low-level debugging. The logger name can be defined in the default constructor;
   /// it defaults to `OfflineFirstRepository`.
@@ -101,7 +101,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
 
   /// Remove a model from SQLite and the [remoteProvider]
   @override
-  Future<bool> delete<TModel extends RepositoryModel>(
+  Future<bool> delete<TModel extends TRepositoryModel>(
     TModel instance, {
     OfflineFirstDeletePolicy policy = OfflineFirstDeletePolicy.optimisticLocal,
     Query? query,
@@ -140,7 +140,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     return rowsDeleted > 0;
   }
 
-  Future<int> _deleteLocal<TModel extends RepositoryModel>(TModel instance, {Query? query}) async {
+  Future<int> _deleteLocal<TModel extends TRepositoryModel>(TModel instance, {Query? query}) async {
     final rowsDeleted = await sqliteProvider.delete<TModel>(
       instance,
       query: query,
@@ -153,7 +153,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// Check if a [TModel] is accessible locally.
   /// First checks if there's a matching query in [memoryCacheProvider] and then check [sqliteProvider].
   /// Does **not** query [remoteProvider].
-  Future<bool> exists<TModel extends RepositoryModel>({
+  Future<bool> exists<TModel extends TRepositoryModel>({
     Query? query,
   }) async {
     if (memoryCacheProvider.canFind<TModel>(query)) {
@@ -173,7 +173,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
-  Future<List<TModel>> get<TModel extends RepositoryModel>({
+  Future<List<TModel>> get<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
@@ -221,7 +221,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   }
 
   /// Used exclusively by the [OfflineFirstAdapter]. If there are no results, returns `null`.
-  Future<List<TModel>?> getAssociation<TModel extends RepositoryModel>(Query query) async {
+  Future<List<TModel>?> getAssociation<TModel extends TRepositoryModel>(Query query) async {
     logger.finest('#getAssociation: $TModel $query');
     final results = await get<TModel>(
       query: query,
@@ -241,7 +241,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
-  Future<List<TModel>> getBatched<TModel extends RepositoryModel>({
+  Future<List<TModel>> getBatched<TModel extends TRepositoryModel>({
     int batchSize = 50,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -303,16 +303,16 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   @protected
   @visibleForTesting
   @visibleForOverriding
-  Future<void> notifySubscriptionsWithLocalData<TModel extends RepositoryModel>({
+  Future<void> notifySubscriptionsWithLocalData<TModel extends TRepositoryModel>({
     bool notifyWhenEmpty = true,
-    Map<Query?, StreamController<List<RepositoryModel>>>? subscriptionsByQuery,
+    Map<Query?, StreamController<List<TRepositoryModel>>>? subscriptionsByQuery,
   }) async {
     final queriesControllers = (subscriptionsByQuery ?? subscriptions[TModel])?.entries;
     if (queriesControllers?.isEmpty ?? true) return;
 
     // create a copy of the controllers to avoid concurrent modification while looping
     final cachedControllers =
-        List<MapEntry<Query?, StreamController<List<RepositoryModel>>>>.from(queriesControllers!);
+        List<MapEntry<Query?, StreamController<List<TRepositoryModel>>>>.from(queriesControllers!);
     for (final queryController in cachedControllers) {
       final query = queryController.key;
       final controller = queryController.value;
@@ -359,7 +359,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// It is **strongly recommended** that this invocation be immediately `.listen`ed assigned
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
-  Stream<List<TModel>> subscribe<TModel extends RepositoryModel>({
+  Stream<List<TModel>> subscribe<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.localOnly,
     Query? query,
   }) {
@@ -391,7 +391,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
 
   /// Send a model to [remoteProvider] and [hydrate].
   @override
-  Future<TModel> upsert<TModel extends RepositoryModel>(
+  Future<TModel> upsert<TModel extends TRepositoryModel>(
     TModel instance, {
     Query? query,
     OfflineFirstUpsertPolicy policy = OfflineFirstUpsertPolicy.optimisticLocal,
@@ -431,7 +431,10 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
     return instance;
   }
 
-  Future<int?> _upsertLocal<TModel extends RepositoryModel>(TModel instance, {Query? query}) async {
+  Future<int?> _upsertLocal<TModel extends TRepositoryModel>(
+    TModel instance, {
+    Query? query,
+  }) async {
     final modelId = await sqliteProvider.upsert<TModel>(
       instance,
       query: query,
@@ -448,7 +451,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable. Defaults to `true`.
   @protected
-  Future<List<TModel>> hydrate<TModel extends RepositoryModel>({
+  Future<List<TModel>> hydrate<TModel extends TRepositoryModel>({
     bool deserializeSqlite = true,
     Query? query,
   }) async {
@@ -481,7 +484,7 @@ abstract class OfflineFirstRepository<RepositoryModel extends OfflineFirstModel>
   /// the new [models]. See [notifySubscriptionsWithLocalData].
   @protected
   @visibleForTesting
-  Future<List<TModel>> storeRemoteResults<TModel extends RepositoryModel>(
+  Future<List<TModel>> storeRemoteResults<TModel extends TRepositoryModel>(
     List<TModel> models, {
     bool shouldNotify = true,
   }) async {
