@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.2
+
+- Add `'offset'` to Supabase's handled `Query(providerArgs:)`
+
 ## 1.1.1
 
 - Fix a query builder infinite recursion bug where a parent has a child that has a parent association
