@@ -6,6 +6,7 @@
 | -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `'limit'`                  | `int`     | Forwards to Supabase's `limit` [param](https://supabase.com/docs/reference/dart/limit) in Brick's `#get` action                                       |
 | `'limitByReferencedTable'` | `String?` | Forwards to Supabase's `referencedTable` [property](https://supabase.com/docs/reference/dart/limit)                                                   |
+| `'offset'`                 | `int`     | Start from a specific offset, inclusive.                                                                                                              |
 | `'orderBy'`                | `String`  | Use field names not column names and always specify direction.For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`. |
 | `'orderByReferencedTable'` | `String?` | Forwards to Supabase's `referencedTable` [property](https://supabase.com/docs/reference/dart/order)                                                   |
 

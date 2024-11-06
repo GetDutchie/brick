@@ -33,9 +33,17 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     if (query?.providerArgs['orderBy'] != null) {
       builder = order(builder);
     }
+
+    if (query?.providerArgs['offset'] != null) {
+      final url =
+          builder.overrideSearchParams('offset', (query!.providerArgs['offset'] as int).toString());
+      builder = builder.copyWithUrl(url);
+    }
+
     if (query?.providerArgs['limit'] != null) {
       return limit(builder);
     }
+
     return builder;
   }
 
