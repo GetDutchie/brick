@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Change `OfflineFirstRepository#exists` behavior: the check against memory cache will only return `true` if results have been found, otherwise it will continue to the SQLite provider
+
 ## 3.3.0
 
 - Added `subscriptionByQuery` to `OfflineFirstRepository#notifySubscriptionsWithLocalData` to pass a custom map of `StreamControllers`

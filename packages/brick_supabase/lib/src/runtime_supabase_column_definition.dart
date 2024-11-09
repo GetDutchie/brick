@@ -23,11 +23,15 @@ class RuntimeSupabaseColumnDefinition {
   /// (e.g. `customer:customers(...)`)
   final String? foreignKey;
 
+  /// Forwarded from `@Supabase(query:)`, this overrides the generated query.
+  final String? query;
+
   const RuntimeSupabaseColumnDefinition({
     this.association = false,
     this.associationIsNullable = false,
     this.associationType,
     required this.columnName,
     this.foreignKey,
+    this.query,
   });
 }

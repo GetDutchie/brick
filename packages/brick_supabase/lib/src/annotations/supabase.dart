@@ -54,6 +54,14 @@ class Supabase implements FieldSerializable {
   @override
   final bool ignoreTo;
 
+  /// Override the generated Supabase PostgREST query.
+  /// This will replace **all contents** of the query, including any
+  /// generated nested associations.
+  ///
+  /// Advanced use only. It is strongly recommended to allow Brick to
+  /// generate the query at runtime based on the model definition.
+  final String? query;
+
   /// This field reflects a unique index in the Supabase table, such as a primary key,
   /// most often `id`.
   ///
@@ -90,6 +98,7 @@ class Supabase implements FieldSerializable {
     bool? ignore,
     bool? ignoreFrom,
     bool? ignoreTo,
+    this.query,
     bool? unique,
     this.name,
     bool? nullable,

@@ -159,7 +159,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     if (memoryCacheProvider.canFind<TModel>(query)) {
       final results = memoryCacheProvider.get<TModel>(query: query, repository: this);
 
-      return results?.isNotEmpty ?? false;
+      if (results?.isNotEmpty ?? false) return true;
     }
 
     return await sqliteProvider.exists<TModel>(query: query, repository: this);

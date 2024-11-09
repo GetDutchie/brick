@@ -45,14 +45,14 @@ void main() {
     group('#selectFields', () {
       test('no association', () {
         final transformer = _buildTransformer<Demo>();
-        expect(transformer.selectFields, 'id,name,age');
+        expect(transformer.selectFields, 'id,name,custom_age');
       });
 
       test('association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age)',
+          'id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age)',
         );
       });
 
@@ -60,7 +60,7 @@ void main() {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
+          'id,name,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))',
         );
       });
 
@@ -68,7 +68,7 @@ void main() {
         final transformer = _buildTransformer<RecursiveParent>();
         expect(
           transformer.selectFields,
-          'child:recursive_children(parent:recursive_parents(parent_id),child_id,other_assoc:demos(id,name,age)),parent_id',
+          'child:recursive_children(parent:recursive_parents(parent_id),child_id,other_assoc:demos(id,name,custom_age)),parent_id',
         );
       });
     });
@@ -78,7 +78,7 @@ void main() {
         final select =
             _buildTransformer<Demo>().select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-        expect(select.query, 'select=id,name,age');
+        expect(select.query, 'select=id,name,custom_age');
       });
 
       group('with query', () {
@@ -88,7 +88,7 @@ void main() {
             final select = _buildTransformer<Demo>(query)
                 .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-            expect(select.query, 'select=id,name,age&name=eq.Jens');
+            expect(select.query, 'select=id,name,custom_age&name=eq.Jens');
           });
 
           test('by association field', () {
@@ -98,7 +98,7 @@ void main() {
 
             expect(
               select.query,
-              'select=id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age)&demos.name=eq.Thomas&assoc=not.is.null',
+              'select=id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age)&demos.name=eq.Thomas&assoc=not.is.null',
             );
           });
         });
@@ -110,7 +110,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,age&name=neq.Jens');
+          expect(select.query, 'select=id,name,custom_age&name=neq.Jens');
         });
 
         test('lt/gt/lte/gte', () {
@@ -127,7 +127,7 @@ void main() {
 
           expect(
             select.query,
-            'select=id,name,age&age=lt.30&age=gt.18&age=lte.25&age=gte.21',
+            'select=id,name,custom_age&age=lt.30&age=gt.18&age=lte.25&age=gte.21',
           );
         });
 
@@ -138,7 +138,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,age&name=like.search');
+          expect(select.query, 'select=id,name,custom_age&name=like.search');
         });
 
         test('does not contain', () {
@@ -150,7 +150,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,age&name=not.like.search');
+          expect(select.query, 'select=id,name,custom_age&name=not.like.search');
         });
       });
     });
@@ -165,7 +165,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,age&order=name.asc.nullslast',
+          'select=id,name,custom_age&order=name.asc.nullslast',
         );
       });
 
@@ -178,7 +178,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,age&order=name.desc.nullslast',
+          'select=id,name,custom_age&order=name.desc.nullslast',
         );
       });
 
@@ -193,7 +193,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,age&foreign_tables.order=name.desc.nullslast',
+          'select=id,name,custom_age&foreign_tables.order=name.desc.nullslast',
         );
       });
 
@@ -204,7 +204,7 @@ void main() {
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
-        expect(transformBuilder.query, 'select=id,name,age&limit=10');
+        expect(transformBuilder.query, 'select=id,name,custom_age&limit=10');
       });
 
       test('limit with referenced table', () {
@@ -214,7 +214,7 @@ void main() {
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
-        expect(transformBuilder.query, 'select=id,name,age&foreign_tables.limit=10');
+        expect(transformBuilder.query, 'select=id,name,custom_age&foreign_tables.limit=10');
       });
 
       test('combined orderBy and limit', () {
@@ -226,7 +226,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,age&order=name.desc.nullslast&limit=20',
+          'select=id,name,custom_age&order=name.desc.nullslast&limit=20',
         );
       });
     });
@@ -239,7 +239,7 @@ void main() {
         );
         expect(
           result,
-          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,age)']),
+          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,custom_age)']),
         );
       });
 
@@ -250,7 +250,7 @@ void main() {
         );
         expect(
           result,
-          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,age)']),
+          containsAll(['id', 'name', 'assoc_id:demos!assoc_id(id,name,custom_age)']),
         );
       });
 
@@ -264,7 +264,7 @@ void main() {
           containsAll([
             'id',
             'name',
-            'nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,age),assocs:demos(id,name,age))',
+            'nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))',
           ]),
         );
       });

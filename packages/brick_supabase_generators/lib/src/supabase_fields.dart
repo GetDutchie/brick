@@ -46,6 +46,7 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
             SupabaseSerializable.defaults.fieldRename,
           ),
       nullable: obj.getField('nullable')!.toBoolValue() ?? Supabase.defaults.nullable,
+      query: obj.getField('query')?.toStringValue(),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
       unique: obj.getField('unique')!.toBoolValue() ?? Supabase.defaults.unique,
     );

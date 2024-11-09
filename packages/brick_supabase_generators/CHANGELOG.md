@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Interpret `@Supabase(query:)` in `SupabaseFields`
+
 ## 1.0.1
 
 - Apply `@Supabase(foreignKey:)` to `RuntimeSupabaseColumnDefinition#foreignKey`

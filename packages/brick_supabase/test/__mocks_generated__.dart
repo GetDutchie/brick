@@ -41,6 +41,7 @@ class DemoAdapter extends SupabaseAdapter<Demo> {
     'age': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'age',
+      query: 'custom_age',
     ),
   };
 

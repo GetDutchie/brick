@@ -33,6 +33,7 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       if (isAssociation) definition += 'associationType: ${checker.withoutNullResultType},';
       if (isAssociation) definition += 'associationIsNullable: ${checker.isNullable},';
       if (annotation.foreignKey != null) definition += "foreignKey: '${annotation.foreignKey}',";
+      if (annotation.query != null) definition += "query: '''${annotation.query}''',";
       definition += ')';
       fieldsToColumns.add(definition);
 
