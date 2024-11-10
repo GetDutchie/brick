@@ -97,6 +97,8 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'name',
+      // Test blank query to ensure it isn't added to request
+      query: '',
     ),
     'nested': const RuntimeSupabaseColumnDefinition(
       association: true,

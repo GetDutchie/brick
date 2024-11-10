@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.3
+
 - Add `query:` to `@Supabase` to override the generated query at runtime
 - Support `@Supabase(query:)` in `QuerySupabaseTransformer` and `RuntimeSupabaseColumnDefinition`
 

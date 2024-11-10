@@ -74,7 +74,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     for (final entry in columns.entries) {
       final field = entry.value;
       if (field.query != null) {
-        selectedFields.add(field.query!);
+        if (field.query! != '') selectedFields.add(field.query!);
         continue;
       }
 

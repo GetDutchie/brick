@@ -60,7 +60,7 @@ void main() {
         final transformer = _buildTransformer<DemoNestedAssociationModel>();
         expect(
           transformer.selectFields,
-          'id,name,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))',
+          'id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))',
         );
       });
 
@@ -263,7 +263,6 @@ void main() {
           result,
           containsAll([
             'id',
-            'name',
             'nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))',
           ]),
         );
