@@ -18,7 +18,9 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(Map<String, dynamic> data,
       nullableAssoc: data['assocs_id'] == null
           ? null
           : await AssocAdapter().fromSupabase(data['assocs_id'],
-              provider: provider, repository: repository));
+              provider: provider, repository: repository),
+      queried: data['queried'] as bool,
+      queriedMultiline: data['queried_multiline'] as bool);
 }
 
 Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
@@ -36,7 +38,9 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
     'assocs_id': instance.nullableAssoc != null
         ? await AssocAdapter().toSupabase(instance.nullableAssoc!,
             provider: provider, repository: repository)
-        : null
+        : null,
+    'queried': instance.queried,
+    'queried_multiline': instance.queriedMultiline
   };
 }
 
@@ -70,6 +74,19 @@ class SupabaseRuntimeAdapter extends SupabaseFirstAdapter<SupabaseRuntime> {
       columnName: 'assocs_id',
       associationType: Assoc,
       associationIsNullable: true,
+    ),
+    'queried': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'queried',
+      query: '''queried_custom_id''',
+    ),
+    'queriedMultiline': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'queried_multiline',
+      query: '''queried_custom_id:table(
+    id,
+    name
+  )''',
     )
   };
   @override
@@ -104,11 +121,24 @@ class SupabaseRuntime extends SupabaseModel {
   @Supabase(name: 'assocs_id')
   final Assoc? nullableAssoc;
 
+  @Supabase(query: 'queried_custom_id')
+  final bool queried;
+
+  @Supabase(
+    query: '''queried_custom_id:table(
+    id,
+    name
+  )''',
+  )
+  final bool queriedMultiline;
+
   SupabaseRuntime({
     required this.unannotatedAssoc,
     required this.annotatedAssoc,
     required this.someField,
     this.nullableAssoc,
+    required this.queried,
+    required this.queriedMultiline,
   });
 }
 

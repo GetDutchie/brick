@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.1.1
+
 - Allow a generic type argument for `OfflineFirstWithSupabaseRepository`
 
 ## 1.1.0

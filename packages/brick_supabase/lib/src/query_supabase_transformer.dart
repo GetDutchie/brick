@@ -73,6 +73,11 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
     for (final entry in columns.entries) {
       final field = entry.value;
+      if (field.query != null) {
+        if (field.query! != '') selectedFields.add(field.query!);
+        continue;
+      }
+
       if (field.association && field.associationType != null) {
         var associationOutput = field.columnName;
         if (modelDictionary.adapterFor[field.associationType!]?.supabaseTableName != null) {
