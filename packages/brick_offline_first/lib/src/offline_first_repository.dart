@@ -382,9 +382,14 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     subscriptions[TModel]?[query] = controller;
 
     // ignore: discarded_futures
-    get<TModel>(query: query, policy: policy).then((results) {
-      if (!controller.isClosed) controller.add(results);
-    });
+    get<TModel>(query: query, policy: policy).then(
+      (results) {
+        if (!controller.isClosed) controller.add(results);
+      },
+      onError: (error) {
+        if (!controller.isClosed) controller.addError(error);
+      },
+    );
 
     return controller.stream;
   }
