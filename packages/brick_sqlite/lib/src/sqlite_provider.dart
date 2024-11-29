@@ -111,12 +111,12 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   /// * `orderBy` - a SQL `ORDER BY` clause
   ///
   /// Use field names not column names. For example, given a `final DateTime createdAt;` field:
-  /// `providerArgs: { 'orderBy': 'createdAt ASC' }`. If the column cannot be found for the first value
+  /// `orderBy: [OrderBy.asc('createdAt')]`. If the column cannot be found for the first value
   /// before a space, the value is left unchanged.
   ///
   /// In a more complex query using multiple tables and lookups like `createdAt ASC, name ASC`
   /// to produce `SELECT * FROM "TableName" ORDER BY created_at ASC, name ASC;`, `providerArgs` would
-  /// equal `'providerArgs': { 'orderBy': 'created_at ASC, name ASC' }` with column names defined.
+  /// equal `orderBy: [OrderBy.asc('created_at'), OrderBy.asc('name')]` with column names defined.
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   @override
   Future<List<TModel>> get<TModel extends TProviderModel>({

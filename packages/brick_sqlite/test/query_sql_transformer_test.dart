@@ -391,7 +391,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'limit': 1}),
+          query: Query(limit: 1),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -404,10 +404,8 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(
-            providerArgs: {
-              'limit': 1,
-              'offset': 1,
-            },
+            limit: 1,
+            offset: 1,
           ),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
@@ -421,7 +419,7 @@ void main() {
           const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
-            query: Query(providerArgs: {'orderBy': 'id DESC'}),
+            query: Query(orderBy: [OrderBy.desc('id')]),
           );
           await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -434,7 +432,7 @@ void main() {
               'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY last_name DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
-            query: Query(providerArgs: {'orderBy': 'lastName DESC'}),
+            query: Query(orderBy: [OrderBy.desc('lastName')]),
           );
           await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -447,7 +445,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'orderBy': 'manyAssoc DESC'}),
+          query: Query(orderBy: [OrderBy.desc('manyAssoc')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -461,9 +459,7 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(
-            providerArgs: {
-              'orderBy': 'manyAssoc DESC, complexFieldName ASC',
-            },
+            orderBy: [OrderBy.desc('manyAssoc'), OrderBy.asc('complexFieldName')],
           ),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
@@ -478,8 +474,8 @@ void main() {
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: Query(
+            orderBy: [OrderBy.asc('complexFieldName')],
             providerArgs: {
-              'orderBy': 'complexFieldName ASC',
               'having': 'complexFieldName > 1000',
               'groupBy': 'complexFieldName',
             },
@@ -497,7 +493,7 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(simple_time) DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'orderBy': 'simpleTime DESC'}),
+          query: Query(orderBy: [OrderBy.desc('simpleTime')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -514,7 +510,7 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'orderBy': 'complex_field_name DESC'}),
+          query: Query(orderBy: [OrderBy.desc('complex_field_name')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 

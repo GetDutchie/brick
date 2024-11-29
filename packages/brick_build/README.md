@@ -19,6 +19,7 @@ If you're not using `watch`, be sure to run `build` twice for the schema to dete
 ```
 
 An application directory **will/must** resemble the following:
+
 ```
 | my-app
 |--lib
@@ -33,41 +34,41 @@ This ensures a consistent path to access child data, such as models, [by build g
 
 - [Glossary](#glossary)
 - [API Considerations](#api-considerations)
-  * [Provider](#provider)
+  - [Provider](#provider)
     - [Class-level Configuration](#class-level-configuration)
     - [Field-level Configuration](#field-level-configuration)
-  * [Query](#query)
+  - [Query](#query)
     - [providerArgs:](#providerargs)
     - [where:](#where)
-  * [Adapters](#adapters)
-  * [Models](#models)
-  * [Repository](#repository)
+  - [Adapters](#adapters)
+  - [Models](#models)
+  - [Repository](#repository)
     - [Class-level Configuration](#class-level-configuration-1)
     - [Field-level Configuration](#field-level-configuration-1)
     - [Associations](#associations)
 - [Code Generation](#code-generation)
-  * [Package Setup](#package-setup)
-  * [Provider](#provider-1)
+  - [Package Setup](#package-setup)
+  - [Provider](#provider-1)
     - [Class-level Configuration](#class-level-configuration-2)
     - [Field-level Annotation](#discovering-and-interpreting-field-level-annotation)
     - [Adapters](#adapters-1)
     - [Invoking the Generators](#invoking-the-generators)
-  * [Domain](#domain)
+  - [Domain](#domain)
     - [Class-level Annotation](#the-class-level-annotation)
     - [Model Dictionary (brick.g.dart)](#model-dictionary-brickgdart)
     - [Builder](#builder)
 - [Testing](#testing)
 - [Advanced Techniques](#advanced-techniques)
-  * [Custom Type Checking](#custom-type-checking)
+  - [Custom Type Checking](#custom-type-checking)
 - [FAQ](#faq)
 
 # Glossary
 
-* **generator** - code producer. The output of a generator is most often a function that converts input to normalized data. The output of a generator does not always constitute a complete file (e.g. one generator is a serializer, another generator is a deserializer, and both generators are combined in a super adapter generator).
-* **builder** - a class that interfaces between source files and generator(s) before writing generated code to file(s). They are invoked and configured by build.yaml. Builders are primarly concerned with annotations that exist in the source (e.g. a Flutter app).
-* **serdes** - shorthand for serialize/deserialize
-* **checker** - an accessible utility that type checks analyzed type from a source. For example, `isBool` for a source of `final bool isDeleted` would return `true`. With a source of `final String isDeleted`, `isBool` would return `false`.
-* **domain** - the encompassing system. For example, the `OfflineFirstWithRest` domain builds REST serdes and SQLite serdes within an adapter and is discovered via its own annotation.
+- **generator** - code producer. The output of a generator is most often a function that converts input to normalized data. The output of a generator does not always constitute a complete file (e.g. one generator is a serializer, another generator is a deserializer, and both generators are combined in a super adapter generator).
+- **builder** - a class that interfaces between source files and generator(s) before writing generated code to file(s). They are invoked and configured by build.yaml. Builders are primarly concerned with annotations that exist in the source (e.g. a Flutter app).
+- **serdes** - shorthand for serialize/deserialize
+- **checker** - an accessible utility that type checks analyzed type from a source. For example, `isBool` for a source of `final bool isDeleted` would return `true`. With a source of `final String isDeleted`, `isBool` would return `false`.
+- **domain** - the encompassing system. For example, the `OfflineFirstWithRest` domain builds REST serdes and SQLite serdes within an adapter and is discovered via its own annotation.
 
 # API Considerations
 
@@ -122,18 +123,25 @@ As the field-level annotations are the most often written, they have the most ac
 
 Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
 
-### `providerArgs:`
+### `limit:`
 
-`providerArgs` describe how to interact with a provider's source.
+The ceiling for how many results a provider should return from the source.
 
-```dart
-providerArgs: {
-  // limit describes how many results the provider requires from the source
-  'limit': 10,
-},
+```
+Query(limit: 10)
 ```
 
-As `providerArgs` can vary from provider to provider and IDE suggestions are unavailable to a string-key map, `providerArgs` should be clearly and accessibly documented within every new provider.
+### `offset:`
+
+The starting index for a provider's search for results.
+
+```
+Query(offset: 10)
+```
+
+### `forProviders:`
+
+Available arguments can vary from provider to provider; this allows implementations to query exclusive statements from a specific source.
 
 ### `where:`
 
@@ -299,10 +307,10 @@ brick_cloud_firestore
 |--|--brick_offline_first_with_cloud_firestore_build
 ```
 
-* [ ] If the provider has a Flutter dependency, a separate package for annotations and configuration exists as a `_abstract` package
-* [ ] The `_generators` package **does not** include a `build.yaml` (multiple `build.yaml` files can cause race collisions)
-* [ ] `<Provider>Fields`, `<Provider>SerializeGenerator`, `<Provider>DeserializeGenerator`, and `<Provider>ModelSerdesGenerator` can be accessed outside the `_generators` package
-* [ ] Only one class-level annotation is discovered per `_build` package
+- [ ] If the provider has a Flutter dependency, a separate package for annotations and configuration exists as a `_abstract` package
+- [ ] The `_generators` package **does not** include a `build.yaml` (multiple `build.yaml` files can cause race collisions)
+- [ ] `<Provider>Fields`, `<Provider>SerializeGenerator`, `<Provider>DeserializeGenerator`, and `<Provider>ModelSerdesGenerator` can be accessed outside the `_generators` package
+- [ ] Only one class-level annotation is discovered per `_build` package
 
 ## Provider
 
@@ -324,6 +332,7 @@ These configurations may be injected directly into the adapater (like `endpoint`
 This class **should not** be used as an annotation. Instead, it is received as a member of a class-level annotation discovered by the [domain](#domain).
 
 #### Interpreting Class-level Configurations
+
 Once a class is discovered by a builder, the configuration is pulled from the annotation and expanded into easily-digestible Dart form:
 
 ```dart

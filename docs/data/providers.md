@@ -31,18 +31,25 @@ Underscore prefixing of type declarations ensure that 1) they will likely not co
 
 Every public instance method should support a named argument of `{Query query}`. `Query` is the glue between an application and an abstracted provider or repository. It is accessed by both the repository and the provider, but as the last mile, the provider should interpret the `Query` at its barest level.
 
-### `providerArgs:`
+### `limit:`
 
-`providerArgs` describe how to interact with a provider's source.
+The ceiling for how many results a provider should return from the source.
 
-```dart
-providerArgs: {
-  // limit describes how many results the provider requires from the source
-  'limit': 10,
-},
+```
+Query(limit: 10)
 ```
 
-As `providerArgs` can vary from provider to provider and IDE suggestions are unavailable to a string-key map, `providerArgs` should be clearly and accessibly documented within every new provider.
+### `offset:`
+
+The starting index for a provider's search for results.
+
+```
+Query(offset: 10)
+```
+
+### `forProviders:`
+
+Available arguments can vary from provider to provider; this allows implementations to query exclusive statements from a specific source.
 
 ### `where:`
 

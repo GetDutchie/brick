@@ -235,7 +235,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// Useful for large queries or remote results.
   ///
   /// [batchSize] will map to the [query]'s `limit`, and the [query]'s pagination number will be
-  /// incremented in `query.providerArgs['offset']`. The endpoint for [TModel] should expect these
+  /// incremented in `query.offset`. The endpoint for [TModel] should expect these
   /// arguments. The stream will recurse until the return size does not equal [batchSize].
   ///
   /// [seedOnly] does not load data from SQLite after inserting records. Association queries
@@ -250,7 +250,8 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     final withPolicy = applyPolicyToQuery(query, get: policy);
     query = withPolicy ?? Query();
     final queryWithLimit = query.copyWith(
-      providerArgs: {...query.providerArgs, 'limit': batchSize},
+      limit: batchSize,
+      providerArgs: {...query.providerArgs},
     );
     final total = <TModel>[];
 
@@ -259,7 +260,8 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     Future<List<TModel>> getFrom(int offset) async {
       // add offset to the existing query
       final recursiveQuery = queryWithLimit.copyWith(
-        providerArgs: {...queryWithLimit.providerArgs, 'offset': offset},
+        offset: offset,
+        providerArgs: {...queryWithLimit.providerArgs},
       );
 
       final results = await get<TModel>(

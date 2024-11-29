@@ -110,7 +110,7 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('payload entries not present in supabaseDefinitions', () {
@@ -132,7 +132,7 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('empty payload', () {
@@ -183,7 +183,7 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('multiple columns', () {
@@ -207,7 +207,7 @@ void main() async {
         expect(query.where!.first.value, 1);
         expect(query.where!.last.evaluatedField, 'name');
         expect(query.where!.last.value, 'Thomas');
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
     });
 

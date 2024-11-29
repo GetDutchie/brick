@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+
 import '__mocks__.dart';
 
 void main() {
@@ -8,7 +9,7 @@ void main() {
     test('#get', () async {
       final res = await provider.get();
       expect(res, isList);
-      expect(res.first, TypeMatcher<DemoModel>());
+      expect(res.first, const TypeMatcher<DemoModel>());
       expect(res.first.name, 'Thomas');
     });
 
@@ -19,7 +20,7 @@ void main() {
 
     test('#modelDictionary', () {
       expect(provider.modelDictionary.adapterFor.containsKey(DemoModel), isTrue);
-      expect(provider.modelDictionary.adapterFor[DemoModel], TypeMatcher<DemoAdapter>());
+      expect(provider.modelDictionary.adapterFor[DemoModel], const TypeMatcher<DemoAdapter>());
       expect(provider.modelDictionary.adapterFor, mappings);
     });
   });
