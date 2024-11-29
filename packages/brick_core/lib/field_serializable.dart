@@ -24,7 +24,7 @@ abstract class FieldSerializable {
   ///
   /// `data` and `provider` is available as the deserialized version of the model.
   ///
-  /// Placeholders can be used in the value of this field.
+  /// Placeholders (i.e. `%DATA_PROPERTY%`) can be used in the value of this field.
   String? get fromGenerator;
 
   /// `true` if the generator should ignore this field completely.
@@ -54,7 +54,7 @@ abstract class FieldSerializable {
   ///
   /// `instance` and `provider` is available as the invoking model.
   ///
-  /// Placeholders can be used in the value of this field.
+  /// Placeholders (i.e. `%INSTANCE_PROPERTY%`) can be used in the value of this field.
   String? get toGenerator;
 
   /// Placeholder. Replaces with name (e.g. `@Rest(name:)` or `@Sqlite(name:)`).

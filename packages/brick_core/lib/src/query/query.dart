@@ -1,27 +1,45 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:convert';
 
+import 'package:brick_core/src/model_repository.dart';
+import 'package:brick_core/src/provider.dart';
+import 'package:brick_core/src/query/provider_query.dart';
+import 'package:brick_core/src/query/sort_by.dart';
 import 'package:brick_core/src/query/where.dart';
-import 'package:collection/collection.dart' show MapEquality, ListEquality;
+import 'package:collection/collection.dart' show ListEquality, MapEquality;
 
 const _mapEquality = MapEquality();
 const _listEquality = ListEquality();
 
-/// An interface to request data from a [Provider] or [Repository].
+/// An interface to request data from a [Provider] or [ModelRepository].
 class Query {
   /// How this query interacts with its invoking provider.
   ///
-  /// Often the invoking [Repository] will appropriately adjust the [action] when
+  /// Often the invoking [ModelRepository] will appropriately adjust the [action] when
   /// interacting with the provider. For example:
   /// ```dart
   ///   upsert(query) => final q = query.copyWith(action: QueryAction.upsert)
   /// ```
   final QueryAction? action;
 
+  /// [Provider]-specific query arguments.
+  final List<ProviderQuery> forProviders;
+
+  /// The response should not exceed this number.
+  final int? limit;
+
+  /// The response should start at this index.
+  final int? offset;
+
   /// Properties that interact with the provider's source. For example, `'limit'`.
   /// The value **must** be serializable by `jsonEncode`.
+  @Deprecated('Use limit, offset, sortBy, or forProviders instead')
   final Map<String, dynamic> providerArgs;
 
-  bool get unlimited => providerArgs['limit'] == null || providerArgs['limit'] < 1;
+  final List<SortBy> sortBy;
+
+  bool get unlimited => limit == null || limit! < 1;
 
   /// Model properties to be interpreted by the [Provider].
   /// When creating [WhereCondition]s, the first positional `fieldName` argument
@@ -44,27 +62,23 @@ class Query {
   /// will only return results where the ID is 1 **and** the name is Thomas.
   final List<WhereCondition>? where;
 
-  Query({
+  const Query({
     this.action,
-    Map<String, dynamic>? providerArgs,
+    this.forProviders = const [],
+    this.limit,
+    this.offset,
+    @Deprecated('Use limit, offset, sortBy, or forProviders instead.') this.providerArgs = const {},
+    this.sortBy = const [],
     this.where,
-  }) : providerArgs = providerArgs ?? {} {
-    /// Number of results first returned from query; `0` returns all. Must be greater than -1
-    if (this.providerArgs['limit'] != null) {
-      assert(this.providerArgs['limit'] > -1);
-    }
-
-    /// Offset results returned from query. Must be greater than -1 and must be used with limit
-    if (this.providerArgs['offset'] != null) {
-      assert(this.providerArgs['offset'] > -1);
-      assert(this.providerArgs['limit'] != null);
-    }
-  }
+  });
 
   factory Query.fromJson(Map<String, dynamic> json) {
     return Query(
       action: json['action'] == null ? null : QueryAction.values[json['action']],
+      limit: json['limit'] as int?,
+      offset: json['offset'] as int?,
       providerArgs: json['providerArgs'],
+      sortBy: json['sortBy']?.map(SortBy.fromJson).toList() ?? [],
       where: json['where']?.map(WhereCondition.fromJson),
     );
   }
@@ -75,34 +89,41 @@ class Query {
   /// [limit1] adds a limit param when `true`. Defaults to `false`.
   factory Query.where(
     String evaluatedField,
-    dynamic value, {
+    value, {
     Compare? compare,
     bool limit1 = false,
   }) {
     compare ??= Where.defaults.compare;
     return Query(
       where: [Where(evaluatedField, value: value, compare: compare)],
-      providerArgs: {
-        if (limit1) 'limit': 1,
-      },
+      limit: limit1 ? 1 : null,
     );
   }
 
   Query copyWith({
     QueryAction? action,
+    int? limit,
+    int? offset,
     Map<String, dynamic>? providerArgs,
+    List<SortBy>? sortBy,
     List<WhereCondition>? where,
   }) =>
       Query(
         action: action ?? this.action,
+        limit: limit ?? this.limit,
+        offset: offset ?? this.offset,
         providerArgs: providerArgs ?? this.providerArgs,
+        sortBy: sortBy ?? this.sortBy,
         where: where ?? this.where,
       );
 
   Map<String, dynamic> toJson() {
     return {
       if (action != null) 'action': QueryAction.values.indexOf(action!),
+      if (limit != null) 'limit': limit,
+      if (offset != null) 'offset': offset,
       'providerArgs': providerArgs,
+      if (sortBy.isNotEmpty) 'sortBy': sortBy.map((s) => s.toJson()).toList(),
       if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
     };
   }
@@ -115,11 +136,20 @@ class Query {
       identical(this, other) ||
       other is Query &&
           action == other.action &&
+          limit == other.limit &&
+          offset == other.offset &&
           _mapEquality.equals(providerArgs, other.providerArgs) &&
+          _listEquality.equals(sortBy, other.sortBy) &&
           _listEquality.equals(where, other.where);
 
   @override
-  int get hashCode => action.hashCode ^ providerArgs.hashCode ^ where.hashCode;
+  int get hashCode =>
+      action.hashCode ^
+      limit.hashCode ^
+      offset.hashCode ^
+      providerArgs.hashCode ^
+      sortBy.hashCode ^
+      where.hashCode;
 }
 
 /// How the query interacts with the provider

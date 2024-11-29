@@ -24,8 +24,7 @@ class DemoProvider extends Provider<DemoModel> {
 
   @override
   Future<List<DemoModel>> get<_Model extends DemoModel>({query, repository}) {
-    final list = <DemoModel>[];
-    list.add(DemoModel('Thomas'));
+    final list = <DemoModel>[DemoModel('Thomas')];
     return Future.value(list);
   }
 
@@ -48,4 +47,4 @@ class DemoAdapter extends Adapter<DemoModel> {
 const Map<Type, DemoAdapter> mappings = {
   DemoModel: DemoAdapter(),
 };
-final modelDictionary = DemoModelDictionary(mappings);
+const modelDictionary = DemoModelDictionary(mappings);

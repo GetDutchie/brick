@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:brick_core/core.dart';
 import 'package:collection/collection.dart' show ListEquality;
 
 const _listEquality = ListEquality();
@@ -23,7 +24,7 @@ abstract class WhereCondition {
   /// Nested conditions. Leave unchanged for [WhereCondition]s that do not nest.
   final List<WhereCondition>? conditions = null;
 
-  /// The kind of comparison of the [evaluatedField] to the [value]. Defaults to [Compare.equals].
+  /// The kind of comparison of the [evaluatedField] to the [value]. Defaults to [Compare.exact].
   /// It is the responsibility of the [Provider] to ignore or interpret the requested comparison.
   Compare get compare;
 
@@ -106,7 +107,7 @@ class Where extends WhereCondition {
 
   /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
   ///
-  /// This class should be exposed by the implemented [Repository] and not imported from
+  /// This class should be exposed by the implemented [ModelRepository] and not imported from
   /// this package as repositories may choose to extend or inhibit functionality.
   const Where(
     this.evaluatedField, {
@@ -116,14 +117,14 @@ class Where extends WhereCondition {
   })  : isRequired = isRequired ?? true,
         compare = compare ?? Compare.exact;
 
-  /// A condition written with brevity. [required] defaults `true`.
-  factory Where.exact(String evaluatedField, dynamic value, {bool isRequired = true}) =>
+  /// A condition written with brevity. [isRequired] defaults `true`.
+  factory Where.exact(String evaluatedField, value, {bool isRequired = true}) =>
       Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
-  Where isExactly(dynamic value) =>
+  Where isExactly(value) =>
       Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
-  Where isBetween(dynamic value1, dynamic value2) {
+  Where isBetween(value1, value2) {
     assert(value1.runtimeType == value2.runtimeType, 'Comparison values must be the same type');
     return Where(
       evaluatedField,
@@ -133,33 +134,33 @@ class Where extends WhereCondition {
     );
   }
 
-  Where contains(dynamic value) =>
+  Where contains(value) =>
       Where(evaluatedField, value: value, compare: Compare.contains, isRequired: isRequired);
 
-  Where doesNotContain(dynamic value) =>
+  Where doesNotContain(value) =>
       Where(evaluatedField, value: value, compare: Compare.doesNotContain, isRequired: isRequired);
 
-  Where isLessThan(dynamic value) =>
+  Where isLessThan(value) =>
       Where(evaluatedField, value: value, compare: Compare.lessThan, isRequired: isRequired);
 
-  Where isLessThanOrEqualTo(dynamic value) => Where(
+  Where isLessThanOrEqualTo(value) => Where(
         evaluatedField,
         value: value,
         compare: Compare.lessThanOrEqualTo,
         isRequired: isRequired,
       );
 
-  Where isGreaterThan(dynamic value) =>
+  Where isGreaterThan(value) =>
       Where(evaluatedField, value: value, compare: Compare.greaterThan, isRequired: isRequired);
 
-  Where isGreaterThanOrEqualTo(dynamic value) => Where(
+  Where isGreaterThanOrEqualTo(value) => Where(
         evaluatedField,
         value: value,
         compare: Compare.greaterThanOrEqualTo,
         isRequired: isRequired,
       );
 
-  Where isNot(dynamic value) =>
+  Where isNot(value) =>
       Where(evaluatedField, value: value, compare: Compare.notEqual, isRequired: isRequired);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
@@ -247,7 +248,7 @@ class WherePhrase extends WhereCondition {
   }) : isRequired = isRequired ?? false;
 }
 
-/// Specify how to evalute the [value] against the [evaluatedField] in a [WhereCondition].
+/// Specify how to evalute the [WhereCondition.value] against the [WhereCondition.evaluatedField] in a [WhereCondition].
 /// For size operators, a left side comparison is done.
 ///
 /// For example, [lessThan] would produce `evaluatedField < value`
