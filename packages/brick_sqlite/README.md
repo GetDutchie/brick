@@ -26,7 +26,7 @@ final String lastName;
 
 Query(
   where: [Where.exact('lastName', 'Mustermann')],
-  providerArgs: {'orderBy': 'lastName ASC'},
+  orderBy: [OrderBy.asc('lastName')]
 )
 ```
 

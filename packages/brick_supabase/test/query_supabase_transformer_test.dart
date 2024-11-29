@@ -157,7 +157,7 @@ void main() {
 
     group('#applyProviderArgs', () {
       test('orderBy', () {
-        final query = Query(providerArgs: {'orderBy': 'name asc'});
+        final query = Query(orderBy: [OrderBy('name')]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
@@ -170,7 +170,7 @@ void main() {
       });
 
       test('orderBy with descending order', () {
-        final query = Query(providerArgs: {'orderBy': 'name desc'});
+        final query = Query(orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
@@ -184,7 +184,7 @@ void main() {
 
       test('orderBy with referenced table', () {
         final query = Query(
-          providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'foreign_tables'},
+          orderBy: [OrderBy.desc('name', model: DemoAssociationModel)],
         );
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
@@ -193,12 +193,12 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,custom_age&foreign_tables.order=name.desc.nullslast',
+          'select=id,name,custom_age&demo_associations.order=name.desc.nullslast',
         );
       });
 
       test('limit', () {
-        final query = Query(providerArgs: {'limit': 10});
+        final query = Query(limit: 10);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
@@ -208,17 +208,17 @@ void main() {
       });
 
       test('limit with referenced table', () {
-        final query = Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'foreign_tables'});
+        final query = Query(limitBy: [LimitBy(10, model: DemoAssociationModel)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
 
-        expect(transformBuilder.query, 'select=id,name,custom_age&foreign_tables.limit=10');
+        expect(transformBuilder.query, 'select=id,name,custom_age&demo_associations.limit=10');
       });
 
       test('combined orderBy and limit', () {
-        final query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
+        final query = Query(limit: 20, orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));

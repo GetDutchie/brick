@@ -22,7 +22,7 @@ abstract class WhereCondition {
   String get evaluatedField;
 
   /// Nested conditions. Leave unchanged for [WhereCondition]s that do not nest.
-  final List<WhereCondition>? conditions = null;
+  List<WhereCondition>? get conditions;
 
   /// The kind of comparison of the [evaluatedField] to the [value]. Defaults to [Compare.exact].
   /// It is the responsibility of the [Provider] to ignore or interpret the requested comparison.
@@ -37,8 +37,18 @@ abstract class WhereCondition {
   /// The value to compare on the [evaluatedField].
   dynamic get value;
 
+  /// Lower-level control over the value of a `Query#where` map.
+  ///
+  /// Example:
+  /// ```dart
+  /// Query(where: [
+  ///   Where.exact('myField', 'must_match_this_value')
+  ///   Where('myOtherField').contains('must_contain_this_value'),
+  /// ])
+  /// ```
   const WhereCondition();
 
+  /// Deserialize from JSON
   factory WhereCondition.fromJson(Map<String, dynamic> data) {
     if (data['subclass'] == 'WherePhrase') {
       return WherePhrase(
@@ -55,16 +65,15 @@ abstract class WhereCondition {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'subclass': runtimeType.toString(),
-      if (evaluatedField.isNotEmpty) 'evaluatedField': evaluatedField,
-      'compare': Compare.values.indexOf(compare),
-      if (conditions != null) 'conditions': conditions!.map((s) => s.toJson()).toList(),
-      'required': isRequired,
-      if (value != null) 'value': value,
-    };
-  }
+  /// Serialize to JSON
+  Map<String, dynamic> toJson() => {
+        'subclass': runtimeType.toString(),
+        if (evaluatedField.isNotEmpty) 'evaluatedField': evaluatedField,
+        'compare': Compare.values.indexOf(compare),
+        if (conditions != null) 'conditions': conditions!.map((s) => s.toJson()).toList(),
+        'required': isRequired,
+        if (value != null) 'value': value,
+      };
 
   @override
   String toString() => jsonEncode(toJson());
@@ -90,6 +99,10 @@ abstract class WhereCondition {
       value.hashCode;
 }
 
+/// A condition that evaluates to `true` in the [Provider] should return [Model](s).
+///
+/// This class should be exposed by the implemented [ModelRepository] and not imported from
+/// this package as repositories may choose to extend or inhibit functionality.
 class Where extends WhereCondition {
   @override
   final String evaluatedField;
@@ -98,14 +111,18 @@ class Where extends WhereCondition {
   final Compare compare;
 
   @override
+  final List<WhereCondition>? conditions;
+
+  @override
   final bool isRequired;
 
   @override
   final dynamic value;
 
+  /// Default values for [Where]
   static const defaults = Where('');
 
-  /// A condition that evaluates to `true`  in the [Provider] should return [Model](s).
+  /// A condition that evaluates to `true` in the [Provider] should return [Model](s).
   ///
   /// This class should be exposed by the implemented [ModelRepository] and not imported from
   /// this package as repositories may choose to extend or inhibit functionality.
@@ -115,16 +132,19 @@ class Where extends WhereCondition {
     Compare? compare,
     bool? isRequired,
   })  : isRequired = isRequired ?? true,
-        compare = compare ?? Compare.exact;
+        compare = compare ?? Compare.exact,
+        conditions = null;
 
   /// A condition written with brevity. [isRequired] defaults `true`.
   factory Where.exact(String evaluatedField, value, {bool isRequired = true}) =>
       Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
-  Where isExactly(value) =>
+  /// Convenience function to create a [Where] with [Compare.exact].
+  Where isExactly(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
 
-  Where isBetween(value1, value2) {
+  /// Convenience function to create a [Where] with [Compare.between].
+  Where isBetween(dynamic value1, dynamic value2) {
     assert(value1.runtimeType == value2.runtimeType, 'Comparison values must be the same type');
     return Where(
       evaluatedField,
@@ -134,33 +154,40 @@ class Where extends WhereCondition {
     );
   }
 
-  Where contains(value) =>
+  /// Convenience function to create a [Where] with [Compare.contains].
+  Where contains(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.contains, isRequired: isRequired);
 
-  Where doesNotContain(value) =>
+  /// Convenience function to create a [Where] with [Compare.doesNotContain].
+  Where doesNotContain(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.doesNotContain, isRequired: isRequired);
 
-  Where isLessThan(value) =>
+  /// Convenience function to create a [Where] with [Compare.lessThan].
+  Where isLessThan(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.lessThan, isRequired: isRequired);
 
-  Where isLessThanOrEqualTo(value) => Where(
+  /// Convenience function to create a [Where] with [Compare.lessThanOrEqualTo].
+  Where isLessThanOrEqualTo(dynamic value) => Where(
         evaluatedField,
         value: value,
         compare: Compare.lessThanOrEqualTo,
         isRequired: isRequired,
       );
 
-  Where isGreaterThan(value) =>
+  /// Convenience function to create a [Where] with [Compare.greaterThan].
+  Where isGreaterThan(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.greaterThan, isRequired: isRequired);
 
-  Where isGreaterThanOrEqualTo(value) => Where(
+  /// Convenience function to create a [Where] with [Compare.greaterThanOrEqualTo].
+  Where isGreaterThanOrEqualTo(dynamic value) => Where(
         evaluatedField,
         value: value,
         compare: Compare.greaterThanOrEqualTo,
         isRequired: isRequired,
       );
 
-  Where isNot(value) =>
+  /// Convenience function to create a [Where] with [Compare.notEqual].
+  Where isNot(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.notEqual, isRequired: isRequired);
 
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
@@ -192,15 +219,38 @@ class Where extends WhereCondition {
   }
 }
 
+/// A collection of conditions that are evaluated together.
+///
+/// If mixing `required:true` `required:false` is necessary, use separate [WherePhrase]s.
+/// [WherePhrase]s can be mixed with [Where].
+///
+/// Invalid:
+/// ```dart
+/// WherePhrase([
+///   Where.exact('myField', true),
+///   Or('myOtherField').isExactly(0),
+/// ])
+/// ```
+///
+/// Valid:
+/// ```dart
+/// WherePhrase([
+///   Where.exact('myField', true),
+///   WherePhrase([
+///     Or('myOtherField').isExactly(0),
+///     Or('myOtherField').isExactly(1),
+///   )]
+/// ])
+/// ```
 class WherePhrase extends WhereCondition {
   @override
-  final evaluatedField = '';
+  String get evaluatedField => '';
 
   @override
-  final compare = Compare.exact;
+  Compare get compare => Compare.exact;
 
   @override
-  final value = null;
+  dynamic get value => null;
 
   /// Whether all [conditions] must evaulate to `true` for the query to return results.
   ///
@@ -209,7 +259,6 @@ class WherePhrase extends WhereCondition {
   final bool isRequired;
 
   @override
-  // ignore: overridden_fields
   final List<WhereCondition> conditions;
 
   /// A collection of conditions that are evaluated together.

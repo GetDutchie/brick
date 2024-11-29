@@ -185,7 +185,7 @@ abstract class OfflineFirstWithSupabaseRepository<
 
     return Query(
       where: fieldsWithValues.entries.map((entry) => Where.exact(entry.key, entry.value)).toList(),
-      providerArgs: {'limit': 1},
+      limit: 1,
     );
   }
 

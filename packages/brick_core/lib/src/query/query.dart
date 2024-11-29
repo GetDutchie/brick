@@ -4,8 +4,9 @@ import 'dart:convert';
 
 import 'package:brick_core/src/model_repository.dart';
 import 'package:brick_core/src/provider.dart';
+import 'package:brick_core/src/query/limit_by.dart';
+import 'package:brick_core/src/query/order_by.dart';
 import 'package:brick_core/src/query/provider_query.dart';
-import 'package:brick_core/src/query/sort_by.dart';
 import 'package:brick_core/src/query/where.dart';
 import 'package:collection/collection.dart' show ListEquality, MapEquality;
 
@@ -24,21 +25,37 @@ class Query {
   final QueryAction? action;
 
   /// [Provider]-specific query arguments.
+  /// Only one [ProviderQuery] per [Provider] is permitted.
   final List<ProviderQuery> forProviders;
 
   /// The response should not exceed this number.
+  /// For advanced cases, see [limitBy].
   final int? limit;
+
+  /// Directions for limiting associated model results before they're returned to the caller.
+  /// [limit] will restrict the top-level queried model.
+  final List<LimitBy> limitBy;
 
   /// The response should start at this index.
   final int? offset;
 
+  /// Directions for sorting results before they're returned to the caller.
+  final List<OrderBy> orderBy;
+
   /// Properties that interact with the provider's source. For example, `'limit'`.
   /// The value **must** be serializable by `jsonEncode`.
-  @Deprecated('Use limit, offset, sortBy, or forProviders instead')
+  @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead')
   final Map<String, dynamic> providerArgs;
 
-  final List<SortBy> sortBy;
+  /// Available for [Provider]s to easily access their relevant
+  /// [ProviderQuery]s.
+  Map<Type, ProviderQuery> get providerQueries =>
+      forProviders.fold(<Type, ProviderQuery>{}, (acc, p) {
+        acc[p.provider] = p;
+        return acc;
+      });
 
+  /// When [limit] is undefined or less than 1, the query is considered "unlimited".
   bool get unlimited => limit == null || limit! < 1;
 
   /// Model properties to be interpreted by the [Provider].
@@ -62,26 +79,29 @@ class Query {
   /// will only return results where the ID is 1 **and** the name is Thomas.
   final List<WhereCondition>? where;
 
+  /// An interface to request data from a [Provider] or [ModelRepository].
   const Query({
     this.action,
     this.forProviders = const [],
     this.limit,
+    this.limitBy = const [],
     this.offset,
-    @Deprecated('Use limit, offset, sortBy, or forProviders instead.') this.providerArgs = const {},
-    this.sortBy = const [],
+    @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead.')
+    this.providerArgs = const {},
+    this.orderBy = const [],
     this.where,
   });
 
-  factory Query.fromJson(Map<String, dynamic> json) {
-    return Query(
-      action: json['action'] == null ? null : QueryAction.values[json['action']],
-      limit: json['limit'] as int?,
-      offset: json['offset'] as int?,
-      providerArgs: json['providerArgs'],
-      sortBy: json['sortBy']?.map(SortBy.fromJson).toList() ?? [],
-      where: json['where']?.map(WhereCondition.fromJson),
-    );
-  }
+  /// Deserialize from JSON
+  factory Query.fromJson(Map<String, dynamic> json) => Query(
+        action: json['action'] == null ? null : QueryAction.values[json['action']],
+        limit: json['limit'] as int?,
+        limitBy: json['limitBy']?.map(LimitBy.fromJson).toList() ?? [],
+        offset: json['offset'] as int?,
+        orderBy: json['orderBy']?.map(OrderBy.fromJson).toList() ?? [],
+        providerArgs: json['providerArgs'],
+        where: json['where']?.map(WhereCondition.fromJson),
+      );
 
   /// Make a _very_ simple query with a single [Where] statement.
   /// For example `Query.where('id', 1)`.
@@ -100,33 +120,36 @@ class Query {
     );
   }
 
+  /// Reconstruct the [Query] with passed overrides
   Query copyWith({
     QueryAction? action,
     int? limit,
+    List<LimitBy>? limitBy,
     int? offset,
+    List<OrderBy>? orderBy,
     Map<String, dynamic>? providerArgs,
-    List<SortBy>? sortBy,
     List<WhereCondition>? where,
   }) =>
       Query(
         action: action ?? this.action,
         limit: limit ?? this.limit,
+        limitBy: limitBy ?? this.limitBy,
         offset: offset ?? this.offset,
+        orderBy: orderBy ?? this.orderBy,
         providerArgs: providerArgs ?? this.providerArgs,
-        sortBy: sortBy ?? this.sortBy,
         where: where ?? this.where,
       );
 
-  Map<String, dynamic> toJson() {
-    return {
-      if (action != null) 'action': QueryAction.values.indexOf(action!),
-      if (limit != null) 'limit': limit,
-      if (offset != null) 'offset': offset,
-      'providerArgs': providerArgs,
-      if (sortBy.isNotEmpty) 'sortBy': sortBy.map((s) => s.toJson()).toList(),
-      if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
-    };
-  }
+  /// Serialize to JSON
+  Map<String, dynamic> toJson() => {
+        if (action != null) 'action': QueryAction.values.indexOf(action!),
+        if (limit != null) 'limit': limit,
+        if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
+        if (offset != null) 'offset': offset,
+        'providerArgs': providerArgs,
+        if (orderBy.isNotEmpty) 'orderBy': orderBy.map((s) => s.toJson()).toList(),
+        if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
+      };
 
   @override
   String toString() => jsonEncode(toJson());
@@ -138,17 +161,19 @@ class Query {
           action == other.action &&
           limit == other.limit &&
           offset == other.offset &&
+          _listEquality.equals(limitBy, other.limitBy) &&
+          _listEquality.equals(orderBy, other.orderBy) &&
           _mapEquality.equals(providerArgs, other.providerArgs) &&
-          _listEquality.equals(sortBy, other.sortBy) &&
           _listEquality.equals(where, other.where);
 
   @override
   int get hashCode =>
       action.hashCode ^
       limit.hashCode ^
+      limitBy.hashCode ^
       offset.hashCode ^
+      orderBy.hashCode ^
       providerArgs.hashCode ^
-      sortBy.hashCode ^
       where.hashCode;
 }
 

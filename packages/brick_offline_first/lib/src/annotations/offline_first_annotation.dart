@@ -8,7 +8,7 @@ class OfflineFirst {
   /// configuration `{'id' : "data['assoc']['id']"}`, a REST adapter would generate
   /// ```
   /// await repository?.getAssociation<Association>(
-  ///   Query(where: [Where.exact('id', data['assoc']['id])], providerArgs: {'limit': 1})
+  ///   Query(where: [Where.exact('id', data['assoc']['id])], limit: 1)
   /// )
   /// ```
   ///

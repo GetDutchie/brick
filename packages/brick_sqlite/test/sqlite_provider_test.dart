@@ -118,7 +118,7 @@ void main() {
       test('with an offset', () async {
         await provider.upsert<DemoModel>(DemoModel(name: 'Guy'));
         final existingModels = await provider.get<DemoModel>();
-        final query = Query(providerArgs: {'limit': 1, 'offset': existingModels.length});
+        final query = Query(limit: 1, offset: existingModels.length);
 
         final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);
         expect(doesExistWithoutModel, isFalse);
@@ -134,7 +134,8 @@ void main() {
           .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
       final query = Query(
         where: [const Where('manyAssoc').isExactly(const Where('name').isExactly('Thomas'))],
-        providerArgs: {'limit': 1, 'offset': 1},
+        limit: 1,
+        offset: 1,
       );
 
       final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);
