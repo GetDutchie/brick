@@ -60,6 +60,40 @@ void main() {
       expect(retrieved[1].age, 2);
     });
 
+    test('#insert', () async {
+      final req = SupabaseRequest<Demo>(
+        requestMethod: 'POST',
+        filter: 'id=eq.1',
+        limit: 1,
+      );
+      final instance = Demo(age: 1, name: 'Demo 1', id: '1');
+      final resp = SupabaseResponse(await mock.serialize(instance));
+      mock.handle({req: resp});
+
+      final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+      final inserted = await provider.insert<Demo>(instance);
+      expect(inserted.id, instance.id);
+      expect(inserted.age, instance.age);
+      expect(inserted.name, instance.name);
+    });
+
+    test('#update', () async {
+      final req = SupabaseRequest<Demo>(
+        requestMethod: 'PATCH',
+        filter: 'id=eq.1',
+        limit: 1,
+      );
+      final instance = Demo(age: 1, name: 'Demo 1', id: '1');
+      final resp = SupabaseResponse(await mock.serialize(instance));
+      mock.handle({req: resp});
+
+      final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+      final inserted = await provider.update<Demo>(instance);
+      expect(inserted.id, instance.id);
+      expect(inserted.age, instance.age);
+      expect(inserted.name, instance.name);
+    });
+
     group('#upsert', () {
       test('no associations', () async {
         final req = SupabaseRequest<Demo>(

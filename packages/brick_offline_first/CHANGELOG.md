@@ -1,6 +1,9 @@
 ## Unreleased
 
+## 3.4.0
+
 - Change `OfflineFirstRepository#exists` behavior: the check against memory cache will only return `true` if results have been found, otherwise it will continue to the SQLite provider
+- Forward errors from `OfflineFirstRepository#subscribe` streams to their callers (@sonbs21 #484)
 
 ## 3.3.0
 
