@@ -3,6 +3,7 @@
 ## 1.2.0
 
 - Add `SupabaseProvider#update` and `SupabaseProvider#insert` to conform to Supabase policy restrictions
+- Use `columnName` instead of `evaluatedField` in `QuerySupabaseTransformer` when searching for non null associations
 
 ## 1.1.3
 
