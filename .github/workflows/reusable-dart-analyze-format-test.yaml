@@ -19,6 +19,9 @@ jobs:
       matrix:
         sdk_version: [beta, stable]
     steps:
+      - name: Install SQLite3
+        run: sudo apt-get update && sudo apt-get -y install sqlite3 libsqlite3-dev
+
       - uses: dart-lang/setup-dart@v1.0
         with:
           sdk: ${{ matrix.sdk_version }}
