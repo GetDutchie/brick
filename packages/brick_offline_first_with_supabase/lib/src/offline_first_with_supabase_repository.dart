@@ -402,6 +402,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   /// the queue is used to add offline to the repository.
   static (RestOfflineQueueClient, RestOfflineRequestQueue) clientQueue({
     required DatabaseFactory databaseFactory,
+    String databasePath = 'brick_offline_queue.sqlite',
 
     /// These paths will not be stored in the offline queue.
     /// By default, Supabase Auth and Storage paths are ignored.
@@ -436,7 +437,7 @@ abstract class OfflineFirstWithSupabaseRepository<
     final client = RestOfflineQueueClient(
       innerClient ?? http.Client(),
       RestRequestSqliteCacheManager(
-        'brick_offline_queue.sqlite',
+        databasePath,
         databaseFactory: databaseFactory,
         processingInterval: processingInterval,
         serialProcessing: serialProcessing,
