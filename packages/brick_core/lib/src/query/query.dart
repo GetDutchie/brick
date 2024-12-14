@@ -90,7 +90,8 @@ class Query {
     this.providerArgs = const {},
     this.orderBy = const [],
     this.where,
-  });
+  })  : assert(limit == null || limit > -1, 'limit must be greater than 0'),
+        assert(offset == null || offset > -1, 'offset must be greater than 0');
 
   /// Deserialize from JSON
   factory Query.fromJson(Map<String, dynamic> json) => Query(
@@ -99,7 +100,7 @@ class Query {
         limitBy: json['limitBy']?.map(LimitBy.fromJson).toList() ?? [],
         offset: json['offset'] as int?,
         orderBy: json['orderBy']?.map(OrderBy.fromJson).toList() ?? [],
-        providerArgs: json['providerArgs'],
+        providerArgs: Map<String, dynamic>.from(json['providerArgs'] as Map? ?? {}),
         where: json['where']?.map(WhereCondition.fromJson),
       );
 
@@ -123,6 +124,7 @@ class Query {
   /// Reconstruct the [Query] with passed overrides
   Query copyWith({
     QueryAction? action,
+    List<ProviderQuery>? forProviders,
     int? limit,
     List<LimitBy>? limitBy,
     int? offset,
@@ -132,6 +134,7 @@ class Query {
   }) =>
       Query(
         action: action ?? this.action,
+        forProviders: forProviders ?? this.forProviders,
         limit: limit ?? this.limit,
         limitBy: limitBy ?? this.limitBy,
         offset: offset ?? this.offset,
@@ -143,11 +146,11 @@ class Query {
   /// Serialize to JSON
   Map<String, dynamic> toJson() => {
         if (action != null) 'action': QueryAction.values.indexOf(action!),
+        if (forProviders.isNotEmpty) 'forProviders': forProviders.map((p) => p.toJson()).toList(),
         if (limit != null) 'limit': limit,
         if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
         if (offset != null) 'offset': offset,
-        'providerArgs': providerArgs,
-        if (forProviders.isNotEmpty) 'forProviders': forProviders.map((p) => p.toJson()).toList(),
+        if (providerArgs.isNotEmpty) 'providerArgs': providerArgs,
         if (orderBy.isNotEmpty) 'orderBy': orderBy.map((s) => s.toJson()).toList(),
         if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
       };
@@ -162,6 +165,7 @@ class Query {
           action == other.action &&
           limit == other.limit &&
           offset == other.offset &&
+          _listEquality.equals(forProviders, other.forProviders) &&
           _listEquality.equals(limitBy, other.limitBy) &&
           _listEquality.equals(orderBy, other.orderBy) &&
           _mapEquality.equals(providerArgs, other.providerArgs) &&
@@ -170,6 +174,7 @@ class Query {
   @override
   int get hashCode =>
       action.hashCode ^
+      forProviders.hashCode ^
       limit.hashCode ^
       limitBy.hashCode ^
       offset.hashCode ^

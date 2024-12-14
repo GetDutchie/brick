@@ -6,6 +6,12 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase/supabase.dart';
 
+enum UpsertMethod {
+  insert,
+  update,
+  upsert,
+}
+
 /// Retrieves from an HTTP endpoint
 class SupabaseProvider implements Provider<SupabaseModel> {
   final SupabaseClient client;
@@ -73,6 +79,36 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     );
   }
 
+  /// In almost all cases, use [upsert]. This method is provided for cases when a table's
+  /// policy permits inserts without updates.
+  Future<TModel> insert<TModel extends SupabaseModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final output = await adapter.toSupabase(instance, provider: this, repository: repository);
+
+    return await recursiveAssociationUpsert(
+      output,
+      method: UpsertMethod.insert,
+      type: TModel,
+      query: query,
+      repository: repository,
+    ) as TModel;
+  }
+
+  /// In almost all cases, use [upsert]. This method is provided for cases when a table's
+  /// policy permits updates without inserts.
+  Future<TModel> update<TModel extends SupabaseModel>(instance, {query, repository}) async {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final output = await adapter.toSupabase(instance, provider: this, repository: repository);
+
+    return await recursiveAssociationUpsert(
+      output,
+      method: UpsertMethod.update,
+      type: TModel,
+      query: query,
+      repository: repository,
+    ) as TModel;
+  }
+
   /// Association models are upserted recursively before the requested instance is upserted.
   /// Because it's unknown if there has been any change from the local association to the remote
   /// association, all associations and their associations are upserted on a parent's upsert.
@@ -97,6 +133,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   @protected
   Future<SupabaseModel> upsertByType(
     Map<String, dynamic> serializedInstance, {
+    UpsertMethod method = UpsertMethod.upsert,
     required Type type,
     Query? query,
     ModelRepository<SupabaseModel>? repository,
@@ -108,10 +145,20 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     final queryTransformer =
         QuerySupabaseTransformer(adapter: adapter, modelDictionary: modelDictionary, query: query);
 
-    final builder = adapter.uniqueFields.fold(
-        client
-            .from(adapter.supabaseTableName)
-            .upsert(serializedInstance, onConflict: adapter.onConflict), (acc, uniqueFieldName) {
+    final builderFilter = () {
+      switch (method) {
+        case UpsertMethod.insert:
+          return client.from(adapter.supabaseTableName).insert(serializedInstance);
+        case UpsertMethod.update:
+          return client.from(adapter.supabaseTableName).update(serializedInstance);
+        case UpsertMethod.upsert:
+          return client
+              .from(adapter.supabaseTableName)
+              .upsert(serializedInstance, onConflict: adapter.onConflict);
+      }
+    }();
+
+    final builder = adapter.uniqueFields.fold(builderFilter, (acc, uniqueFieldName) {
       final columnName = adapter.fieldsToSupabaseColumns[uniqueFieldName]!.columnName;
       if (serializedInstance.containsKey(columnName)) {
         return acc.eq(columnName, serializedInstance[columnName]);
@@ -132,6 +179,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   @protected
   Future<SupabaseModel> recursiveAssociationUpsert(
     Map<String, dynamic> serializedInstance, {
+    UpsertMethod method = UpsertMethod.upsert,
     required Type type,
     Query? query,
     ModelRepository<SupabaseModel>? repository,
@@ -153,6 +201,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
       await recursiveAssociationUpsert(
         Map<String, dynamic>.from(serializedInstance[association.columnName]),
+        method: method,
         type: association.associationType!,
         query: query,
         repository: repository,
@@ -162,6 +211,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
     return await upsertByType(
       serializedInstance,
+      method: method,
       type: type,
       query: query,
       repository: repository,

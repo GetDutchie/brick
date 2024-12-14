@@ -4,7 +4,8 @@ import 'package:brick_core/src/provider.dart';
 /// For example, configuring a REST's POST method.
 ///
 /// Implementations must specify the generic type argument as [Provider]
-/// will read `Query` for this type.
+/// will read `Query` for this type. Implementations should also specify
+/// equality operators.
 ///
 /// [Provider] implementations should expect only one [ProviderQuery] per [T].
 abstract class ProviderQuery<T extends Provider> {
