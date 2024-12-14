@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brick_rest/brick_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<RestUnserializableFieldWithGenerator>
     _$RestUnserializableFieldWithGeneratorFromRest(Map<String, dynamic> data,
         {required RestProvider provider,
