@@ -133,9 +133,11 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
 
     group('.defaultOperation', () {
       test('with specified document', () {
-        final query = Query(
+        const query = Query(
           forProviders: [
-            GraphqlProviderQuery(operation: GraphqlOperation(document: upsertPersonWithNodes)),
+            GraphqlProviderQuery(
+              operation: GraphqlOperation(document: upsertPersonWithNodes),
+            ),
           ],
         );
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
@@ -149,7 +151,7 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
   upsertPerson(input: $input) {'''),
         );
 
-        final query0 =
+        const query0 =
             // ignore: deprecated_member_use
             Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
         final transformer0 = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
@@ -214,7 +216,7 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
             dictionary,
             action: QueryAction.get,
-            query: Query(action: QueryAction.get),
+            query: const Query(action: QueryAction.get),
           );
           expect(
             lang.printNode(transformer!.document),
@@ -254,7 +256,7 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
             dictionary,
             action: QueryAction.subscribe,
-            query: Query(action: QueryAction.get),
+            query: const Query(action: QueryAction.get),
           );
           expect(
             lang.printNode(transformer!.document),

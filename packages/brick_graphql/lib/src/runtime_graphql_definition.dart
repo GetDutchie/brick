@@ -20,6 +20,8 @@ class RuntimeGraphqlDefinition {
   /// In other words, the runtime type.
   final Type type;
 
+  /// Used to define types in [GraphqlAdapter#fieldsToGraphqlRuntimeDefinition]. The build runner package
+  /// extracts types and associations that would've been otherwise inaccessible at runtime.
   const RuntimeGraphqlDefinition({
     this.association = false,
     required this.documentNodeName,

@@ -12,12 +12,11 @@ import '__mocks__.dart';
 GraphqlProvider generateProvider(
   dynamic response, {
   List<String>? errors,
-}) {
-  return GraphqlProvider(
-    modelDictionary: dictionary,
-    link: stubResponse({'upsertPerson': response}, errors: errors),
-  );
-}
+}) =>
+    GraphqlProvider(
+      modelDictionary: dictionary,
+      link: stubResponse({'upsertPerson': response}, errors: errors),
+    );
 
 class SampleContextEntry extends ContextEntry {
   final String useEntry;
@@ -51,7 +50,9 @@ void main() {
           modelDictionary: provider.modelDictionary,
           query: Query(
             forProviders: [
-              GraphqlProviderQuery(context: Context().withEntry(SampleContextEntry('myValue'))),
+              GraphqlProviderQuery(
+                context: const Context().withEntry(const SampleContextEntry('myValue')),
+              ),
             ],
           ),
         ).request;
@@ -60,7 +61,7 @@ void main() {
         final request0 = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(
+          query: const Query(
             // ignore: deprecated_member_use
             providerArgs: {
               'context': {'SampleContextEntry': SampleContextEntry('myValue')},
@@ -184,8 +185,8 @@ void main() {
       test('skips associations', () {
         final query = Query(
           where: [
-            Where('lastName').isExactly(1),
-            Where('assoc').isExactly(Where('name').isExactly(1)),
+            const Where('lastName').isExactly(1),
+            const Where('assoc').isExactly(const Where('name').isExactly(1)),
           ],
         );
         expect(request.queryToVariables(query), {'lastName': 1});

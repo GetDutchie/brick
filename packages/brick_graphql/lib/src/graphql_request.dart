@@ -3,19 +3,27 @@ import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql_exec/gql_exec.dart';
 
+/// A request to a [GraphqlProvider]
 class GraphqlRequest<TModel extends GraphqlModel> {
+  /// The action to perform on the API
   final QueryAction action;
 
+  /// The instance to use. Not relevant for [QueryAction.get]
   final TModel? instance;
 
+  /// The repository definition of other adapters know the GraphQL
   final GraphqlModelDictionary modelDictionary;
 
+  /// The invoking [Query]
   final Query? query;
 
+  /// The top-level name to nest subsquent variables
   final String? variableNamespace;
 
+  /// Available variables.
   final Map<String, dynamic>? variables;
 
+  /// A request to a [GraphqlProvider]
   const GraphqlRequest({
     required this.action,
     this.instance,
@@ -25,6 +33,7 @@ class GraphqlRequest<TModel extends GraphqlModel> {
     this.variableNamespace,
   });
 
+  /// The transformed [Request] for use with an eventual `Link`
   Request? get request {
     final defaultOperation = ModelFieldsDocumentTransformer.defaultOperation<TModel>(
       modelDictionary,
@@ -50,10 +59,11 @@ class GraphqlRequest<TModel extends GraphqlModel> {
         document: defaultOperation.document,
       ),
       variables: requestVariables ?? {},
-      context: context ?? argContext ?? Context(),
+      context: context ?? argContext ?? const Context(),
     );
   }
 
+  /// Declared variables from the operation and the query
   Map<String, dynamic>? get requestVariables {
     final opVariables = operationVariables(action, instance: instance, query: query);
     var vars = opVariables ?? variables ?? queryToVariables(query);
