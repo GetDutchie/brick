@@ -30,21 +30,18 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    if (query?.providerArgs['orderBy'] != null) {
+    final orderBy = (query?.orderBy.isNotEmpty ?? false) || query?.providerArgs['orderBy'] != null;
+    if (orderBy) {
       builder = order(builder);
     }
 
-    if (query?.providerArgs['offset'] != null) {
-      final url =
-          builder.overrideSearchParams('offset', (query!.providerArgs['offset'] as int).toString());
+    final offset = query?.offset ?? query?.providerArgs['offset'] as int?;
+    if (offset != null) {
+      final url = builder.overrideSearchParams('offset', (offset).toString());
       builder = builder.copyWithUrl(url);
     }
 
-    if (query?.providerArgs['limit'] != null) {
-      return limit(builder);
-    }
-
-    return builder;
+    return limit(builder);
   }
 
   PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) {
@@ -197,15 +194,22 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    if (query?.providerArgs['limit'] == null) return builder;
+    final limit0 = query?.limit ?? query?.providerArgs['limit'] as int?;
+    final hasLimit = limit0 != null || (query?.limitBy.isNotEmpty ?? false);
+    if (!hasLimit) return builder;
 
-    final limit = query!.providerArgs['limit'] as int;
     final referencedTable = query!.providerArgs['limitReferencedTable'] as String?;
-
     final key = referencedTable == null ? 'limit' : '$referencedTable.limit';
+    final url = builder.appendSearchParams(key, limit0.toString());
+    final withProviderArgs = PostgrestTransformBuilder(builder.copyWithUrl(url));
 
-    final url = builder.appendSearchParams(key, '$limit');
-    return PostgrestTransformBuilder(builder.copyWithUrl(url));
+    return query!.limitBy.fold(withProviderArgs, (builder, limitBy) {
+      final tableName = modelDictionary.adapterFor[limitBy.model]?.supabaseTableName;
+      if (tableName == null) return builder;
+
+      final url = builder.appendSearchParams('$tableName.limit', limitBy.amount.toString());
+      return PostgrestTransformBuilder(builder.copyWithUrl(url));
+    });
   }
 
   @protected
@@ -213,7 +217,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestFilterBuilder<List<Map<String, dynamic>>> order(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    if (query?.providerArgs['orderBy'] == null) return builder;
+    if (query?.providerArgs['orderBy'] == null || (query?.orderBy.isEmpty ?? true)) return builder;
 
     final orderBy = query!.providerArgs['orderBy'] as String;
     final ascending = orderBy.toLowerCase().endsWith(' asc');
@@ -223,7 +227,19 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     final columnName = adapter.fieldsToSupabaseColumns[fieldName]!.columnName;
     final value = '$columnName.${ascending ? 'asc' : 'desc'}.nullslast';
     final url = builder.overrideSearchParams(key, value);
-    return builder.copyWithUrl(url);
+    final withProviderArgs = builder.copyWithUrl(url);
+
+    return query!.orderBy.fold(withProviderArgs, (builder, orderBy) {
+      final tableName = orderBy.model == null
+          ? null
+          : modelDictionary.adapterFor[orderBy.model]?.supabaseTableName;
+
+      final url = builder.appendSearchParams(
+        tableName == null ? 'order' : '$tableName.order',
+        '${orderBy.evaluatedField}.${ascending ? 'asc' : 'desc'}.nullslast',
+      );
+      return builder.copyWithUrl(url);
+    });
   }
 
   static String _compareToSearchParam(Compare compare) {

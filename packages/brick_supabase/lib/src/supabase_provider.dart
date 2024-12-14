@@ -59,11 +59,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   }
 
   /// [Query]'s `providerArgs` can extend the [get] functionality:
-  /// * `'limit'` e.g. `{'limit': 10}`
   /// * `'limitByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
-  /// * `'offset'` Start from a specific offset, inclusive.
-  /// * `'orderBy'` Use field names not column names and always specify direction.
-  /// For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`.
   /// If the column cannot be found for the first value before a space, the value is left unchanged.
   /// * `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
   @override

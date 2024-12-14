@@ -31,9 +31,7 @@ class DemoRestRequestTransformer extends RestRequestTransformer {
   @override
   RestRequest get get {
     final url = () {
-      if (query != null &&
-          query!.providerArgs['limit'] != null &&
-          query!.providerArgs['limit'] > 1) {
+      if (query != null && query!.limit != null && query!.limit! > 1) {
         return '/people';
       }
 

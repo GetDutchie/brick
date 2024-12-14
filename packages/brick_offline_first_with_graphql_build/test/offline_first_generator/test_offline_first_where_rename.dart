@@ -14,7 +14,7 @@ Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromGraphql(
       someField: await repository!
           .getAssociation<Assoc>(Query(
               where: [Where.exact('name', data['name'])],
-              providerArgs: {'limit': 1}))
+              limit: 1))
           .then((r) => r!.first));
 }
 

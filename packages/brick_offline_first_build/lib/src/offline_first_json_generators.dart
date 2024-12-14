@@ -215,7 +215,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
         final getAssociationStatement =
-            getAssociationMethod(type, query: "Query(where: $where, providerArgs: {'limit': 1})");
+            getAssociationMethod(type, query: 'Query(where: $where, limit: 1)');
         final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
         if (!isNullable) repositoryHasBeenForceCast = true;
 

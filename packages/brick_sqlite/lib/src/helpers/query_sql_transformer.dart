@@ -336,7 +336,7 @@ class AllOtherClausesFragment {
 
   /// These operators declare a column to compare against. The fields provided in [providerArgs]
   /// will have to be converted to their column name.
-  /// For example, `'orderBy': 'createdAt ASC'` must become `ORDER BY created_at ASC`.
+  /// For example, `orderBy: [OrderBy.asc('createdAt')]` must become `ORDER BY created_at ASC`.
   static const _operatorsDeclaringFields = <String>{'ORDER BY', 'GROUP BY', 'HAVING'};
 
   AllOtherClausesFragment(

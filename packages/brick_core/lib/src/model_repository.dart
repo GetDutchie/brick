@@ -1,36 +1,42 @@
+// ignore_for_file: type_annotate_public_apis, always_declare_return_types
+
 import 'dart:async';
 
 import 'package:brick_core/src/model.dart';
 import 'package:brick_core/src/provider.dart';
 import 'package:brick_core/src/query/query.dart';
 
-/// A Repository is the top-level means of relaying data between [Model]s and [Provider]s.
+/// A [ModelRepository] is the top-level means of relaying data between [Model]s and [Provider]s.
 /// A conventional implementation would adhere to the singleton pattern.
 ///
 /// It should handle the app's caching strategy between [Provider]s. For example, if an app has
-/// an offline-first caching strategy, the Repository first fetches from a `SqliteProvider`
-/// and then a `RestProvider` before returning one result. An app should have one [Repository] for
+/// an offline-first caching strategy, the [ModelRepository] first fetches from a `SqliteProvider`
+/// and then a `RestProvider` before returning one result. An app should have one `Repository` for
 /// one data flow (similar to having one Redux store as the source of truth).
 ///
-/// `implement`ing this class is not necessary. It's supplied as a standardized, opinionated way to
-/// structure your `Store`.
+/// `implement`ing this class is not necessary.
 abstract class ModelRepository<ManagedModel extends Model> {
+  /// A [ModelRepository] is the top-level means of relaying data between [Model]s and [Provider]s.
+  /// A conventional implementation would adhere to the singleton pattern.
+  ///
+  /// It should handle the app's caching strategy between [Provider]s. For example, if an app has
+  /// an offline-first caching strategy, the [ModelRepository] first fetches from a `SqliteProvider`
+  /// and then a `RestProvider` before returning one result. An app should have one `Repository` for
+  /// one data flow (similar to having one Redux store as the source of truth).
+  ///
+  /// `implement`ing this class is not necessary.
   const ModelRepository();
 
   /// Delete a model from all [Provider]s.
   ///
-  /// Optionally, the repository can
-  /// be passed to the same provider method with a named argument (`repository: this`) to use in
-  /// the [Adapter].
-  // ignore: always_declare_return_types
+  /// Optionally, the repository can be passed to the same provider method
+  /// with a named argument (`repository: this`) to use in the `Adapter`.
   delete<TModel extends ManagedModel>(TModel instance, {Query query});
 
   /// Query for raw data from all [Provider]s.
   ///
-  /// Optionally, the repository can
-  /// be passed to the same provider method with a named argument (`repository: this`) to use in
-  /// the [Adapter].
-  // ignore: always_declare_return_types
+  /// Optionally, the repository can be passed to the same provider method
+  /// with a named argument (`repository: this`) to use in the `Adapter`.
   get<TModel extends ManagedModel>({Query query});
 
   /// Perform required setup work. For example, migrating a database, starting a queue,
@@ -40,18 +46,17 @@ abstract class ModelRepository<ManagedModel extends Model> {
 
   /// Insert or update a model in all [Provider]s
   ///
-  /// Optionally, the repository can
-  /// be passed to the same provider method with a named argument (`repository: this`) to use in
-  /// the [Adapter].
-  // ignore: always_declare_return_types
+  /// Optionally, the repository can be passed to the same provider method
+  /// with a named argument (`repository: this`) to use in the `Adapter`.
   upsert<TModel extends ManagedModel>(TModel model, {Query query});
 }
 
 /// Helper for mono provider systems
 abstract class SingleProviderRepository<TModel extends Model> implements ModelRepository<TModel> {
-  /// The only provider for the store
+  /// The only provider for the repository
   final Provider<TModel> provider;
 
+  /// Helper for mono provider systems
   const SingleProviderRepository(this.provider);
 
   /// Remove models from providers

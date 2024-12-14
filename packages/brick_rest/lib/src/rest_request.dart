@@ -29,7 +29,7 @@ class RestRequest {
   /// The URL of the endpoint to invoke. This is **appended** to `baseEndpoint`.
   /// **Example**:
   /// ```dart
-  /// if (query.providerArgs['limit'] == 1) {
+  /// if (query.limit == 1) {
   ///   return "/person/${query.providerArgs['id']}";
   /// }
   ///
