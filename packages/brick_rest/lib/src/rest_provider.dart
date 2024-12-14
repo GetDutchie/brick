@@ -27,9 +27,11 @@ class RestProvider implements Provider<RestModel> {
   /// All requests pass through this client.
   http.Client client;
 
+  /// Internal logger
   @protected
   final Logger logger;
 
+  /// Retrieves data from an HTTP endpoint
   RestProvider(
     this.baseEndpoint, {
     required this.modelDictionary,
@@ -39,7 +41,11 @@ class RestProvider implements Provider<RestModel> {
 
   /// Sends a DELETE request method to the endpoint
   @override
-  Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
+  Future<http.Response?> delete<TModel extends RestModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter =
         adapter.restRequest != null ? adapter.restRequest!(query, instance).delete : null;
@@ -65,7 +71,10 @@ class RestProvider implements Provider<RestModel> {
   }
 
   @override
-  Future<bool> exists<TModel extends RestModel>({query, repository}) async {
+  Future<bool> exists<TModel extends RestModel>({
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
     final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
@@ -84,7 +93,10 @@ class RestProvider implements Provider<RestModel> {
   }
 
   @override
-  Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
+  Future<List<TModel>> get<TModel extends RestModel>({
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
     final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
@@ -106,9 +118,7 @@ class RestProvider implements Provider<RestModel> {
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
           .where((msg) => msg != null)
-          .map((msg) {
-            return adapter.fromRest(msg, provider: this, repository: repository);
-          })
+          .map((msg) => adapter.fromRest(msg, provider: this, repository: repository))
           .toList()
           .cast<Future<TModel>>();
 
@@ -120,7 +130,11 @@ class RestProvider implements Provider<RestModel> {
   }
 
   @override
-  Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
+  Future<http.Response?> upsert<TModel extends RestModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final fromAdapter =
@@ -201,7 +215,7 @@ class RestProvider implements Provider<RestModel> {
     Map<String, dynamic>? body,
   }) async {
     final combinedBody = body ?? {};
-    final url = Uri.parse([baseEndpoint, request.url!].join(''));
+    final url = Uri.parse([baseEndpoint, request.url!].join());
     final requestFromQuery =
         (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
             (query?.providerArgs['request'] as RestRequest?);
@@ -243,6 +257,7 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
+  /// Whether the status code is between 200 and 300
   static bool statusCodeIsSuccessful(int? statusCode) =>
       statusCode != null && 200 <= statusCode && statusCode < 300;
 }

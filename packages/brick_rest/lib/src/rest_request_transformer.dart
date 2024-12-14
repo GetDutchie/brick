@@ -34,5 +34,20 @@ abstract class RestRequestTransformer {
   /// The operation used for any inserting or updating data operations.
   RestRequest? get upsert => null;
 
+  /// Specify request formatting (such as `method` or `url`) for each Brick operation.
+  ///
+  /// This class should be subclassed for each model. For example:
+  ///
+  /// ```dart
+  /// @RestSerializable(
+  ///   requestTransformer: MyModelOperationTransformer.new,
+  /// )
+  /// class MyModel extends RestModel {}
+  /// class MyModelOperationTransformer extends RestRequestTransformer<MyModel> {
+  ///   final get = RestRequest(
+  ///     url: 'https://myapi.com/mymodel'
+  ///   );
+  /// }
+  /// ```
   const RestRequestTransformer(this.query, this.instance);
 }

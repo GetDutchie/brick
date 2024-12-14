@@ -6,13 +6,12 @@ import 'package:test/test.dart';
 
 import '__mocks__.dart';
 
-RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) {
-  return RestProvider(
-    'http://0.0.0.0:3000',
-    modelDictionary: restModelDictionary,
-    client: generateClient(response, requestBody: requestBody, requestMethod: requestMethod),
-  );
-}
+RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) =>
+    RestProvider(
+      'http://0.0.0.0:3000',
+      modelDictionary: restModelDictionary,
+      client: generateClient(response, requestBody: requestBody, requestMethod: requestMethod),
+    );
 
 void main() {
   group('RestProviderQuery', () {
@@ -30,7 +29,7 @@ void main() {
       );
 
       final instance = DemoRestModel('Guy');
-      final query = Query(
+      const query = Query(
         forProviders: [
           RestProviderQuery(
             request: RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
@@ -47,7 +46,7 @@ void main() {
       final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 
       final instance = DemoRestModel('Guy');
-      final query =
+      const query =
           Query(forProviders: [RestProviderQuery(request: RestRequest(method: 'PUT', url: '/'))]);
       final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
@@ -59,7 +58,7 @@ void main() {
       final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PATCH');
 
       final instance = DemoRestModel('Guy');
-      final query = Query(
+      const query = Query(
         forProviders: [RestProviderQuery(request: RestRequest(method: 'PATCH', url: '/'))],
       );
       final resp = await provider.upsert<DemoRestModel>(instance, query: query);
@@ -76,7 +75,7 @@ void main() {
       );
 
       final instance = DemoRestModel('Guy');
-      final query = Query(
+      const query = Query(
         forProviders: [RestProviderQuery(request: RestRequest(topLevelKey: 'top', url: '/'))],
       );
       final resp = await provider.upsert<DemoRestModel>(instance, query: query);
@@ -93,7 +92,7 @@ void main() {
           requestBody: '{"other_name":{"first_name":"Thomas"}}',
         );
 
-        final query = Query(
+        const query = Query(
           forProviders: [
             RestProviderQuery(
               request: RestRequest(
@@ -119,7 +118,7 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        final query = Query(
+        const query = Query(
           forProviders: [
             RestProviderQuery(
               request: RestRequest(

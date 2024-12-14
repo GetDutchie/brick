@@ -1,5 +1,6 @@
-/// A cohesive definition for [RestRequestTransformer]'s instance fields.
+/// A cohesive definition for `RestRequestTransformer`'s instance fields.
 class RestRequest {
+  /// HTTP headers
   final Map<String, String>? headers;
 
   /// The [HTTP method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
@@ -37,6 +38,7 @@ class RestRequest {
   /// ```
   final String? url;
 
+  /// A cohesive definition for `RestRequestTransformer`'s instance fields.
   const RestRequest({
     this.headers,
     this.method,
@@ -45,23 +47,40 @@ class RestRequest {
     this.url,
   });
 
-  factory RestRequest.fromJson(Map<String, dynamic> data) {
-    return RestRequest(
-      headers: data['headers'],
-      method: data['method'],
-      supplementalTopLevelData: data['supplementalTopLevelData'],
-      topLevelKey: data['topLevelKey'],
-      url: data['url'],
-    );
-  }
+  /// Deserialize a request from JSON
+  factory RestRequest.fromJson(Map<String, dynamic> data) => RestRequest(
+        headers: data['headers'],
+        method: data['method'],
+        supplementalTopLevelData: data['supplementalTopLevelData'],
+        topLevelKey: data['topLevelKey'],
+        url: data['url'],
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'headers': headers,
-      'method': method,
-      'supplementalTopLevelData': supplementalTopLevelData,
-      'topLevelKey': topLevelKey,
-      'url': url,
-    };
-  }
+  /// Serialize a request to JSON
+  Map<String, dynamic> toJson() => {
+        'headers': headers,
+        'method': method,
+        'supplementalTopLevelData': supplementalTopLevelData,
+        'topLevelKey': topLevelKey,
+        'url': url,
+      };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestRequest &&
+          runtimeType == other.runtimeType &&
+          headers == other.headers &&
+          method == other.method &&
+          supplementalTopLevelData == other.supplementalTopLevelData &&
+          topLevelKey == other.topLevelKey &&
+          url == other.url;
+
+  @override
+  int get hashCode =>
+      headers.hashCode ^
+      method.hashCode ^
+      supplementalTopLevelData.hashCode ^
+      topLevelKey.hashCode ^
+      url.hashCode;
 }
