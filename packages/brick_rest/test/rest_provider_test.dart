@@ -75,6 +75,33 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
+      test('RestProviderQuery#headers', () async {
+        final provider = RestProvider(
+          'http://0.0.0.0:3000',
+          modelDictionary: restModelDictionary,
+          client: MockClient((req) async {
+            if (req.method == 'POST' && req.headers['Authorization'] == 'Basic xyz') {
+              return http.Response('{"name": "Thomas"}', 200);
+            }
+
+            throw StateError('No response');
+          }),
+        );
+
+        final instance = DemoRestModel('Guy');
+        final query = Query(
+          forProviders: [
+            RestProviderQuery(
+              request: RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
+            ),
+          ],
+        );
+        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
+
+        expect(resp!.statusCode, 200);
+        expect(resp.body, '{"name": "Thomas"}');
+      });
+
       test('providerArgs["request"].method PUT', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 

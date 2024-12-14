@@ -147,6 +147,7 @@ class Query {
         if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
         if (offset != null) 'offset': offset,
         'providerArgs': providerArgs,
+        if (forProviders.isNotEmpty) 'forProviders': forProviders.map((p) => p.toJson()).toList(),
         if (orderBy.isNotEmpty) 'orderBy': orderBy.map((s) => s.toJson()).toList(),
         if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
       };
