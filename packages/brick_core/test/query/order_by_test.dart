@@ -41,7 +41,7 @@ void main() {
     });
 
     test('.desc', () {
-      expect(OrderBy.asc('name'), const OrderBy('name', ascending: false));
+      expect(OrderBy.desc('name'), const OrderBy('name', ascending: false));
     });
 
     test('.fromJson', () {

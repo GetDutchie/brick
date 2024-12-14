@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.1.2
+
+- Support a custom database path when creating the cache manager (#490)
+
 ## 1.1.1
 
 - Allow a generic type argument for `OfflineFirstWithSupabaseRepository`

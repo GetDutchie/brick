@@ -98,7 +98,7 @@ void main() {
 
             expect(
               select.query,
-              'select=id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age)&demos.name=eq.Thomas&assoc=not.is.null',
+              'select=id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age)&demos.name=eq.Thomas&assoc_id=not.is.null',
             );
           });
         });

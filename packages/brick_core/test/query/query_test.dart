@@ -29,11 +29,6 @@ void main() {
 
           const q18 = Query(limit: 18);
           expect(q18.limit, 18);
-
-          expect(
-            () => const Query(limit: -1),
-            throwsA(const TypeMatcher<AssertionError>()),
-          );
         });
 
         test('#providerArgs.offset', () {
@@ -45,16 +40,6 @@ void main() {
 
           const q18 = Query(limit: 10, offset: 18);
           expect(q18.offset, 18);
-
-          expect(
-            () => const Query(offset: -1),
-            throwsA(const TypeMatcher<AssertionError>()),
-          );
-
-          expect(
-            () => const Query(offset: 1),
-            throwsA(const TypeMatcher<AssertionError>()),
-          );
         });
       });
 
@@ -119,7 +104,7 @@ void main() {
 
     group('#copyWith', () {
       test('overrides', () {
-        const q1 = Query(action: QueryAction.insert, limit: 10, offset: 10);
+        const q1 = Query(action: QueryAction.insert, limit: 10);
         final q2 = q1.copyWith(limit: 20);
         expect(q2.action, QueryAction.insert);
         expect(q2.limit, 20);

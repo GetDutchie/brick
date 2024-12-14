@@ -174,7 +174,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
           condition.value as WhereCondition, associationAdapter, newLeadingAssociations, [
         if (!definition.associationIsNullable)
           {
-            condition.evaluatedField: 'not.is.null',
+            definition.columnName: 'not.is.null',
           },
         ...associationConditions,
       ]);

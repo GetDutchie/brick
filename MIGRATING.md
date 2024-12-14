@@ -15,6 +15,7 @@ Brick 4 away from loosely-defined `Query` arguments in favor of standardized fie
 
 - `OrderBy` will support association ordering and multiple values
 - `Query` is constructed with `const`
+- `Query#offset` no longer requires companion `limit` parameter
 
 ## Migrating from Brick 2 to Brick 3
 
