@@ -123,6 +123,7 @@ class Query {
   /// Reconstruct the [Query] with passed overrides
   Query copyWith({
     QueryAction? action,
+    List<ProviderQuery>? forProviders,
     int? limit,
     List<LimitBy>? limitBy,
     int? offset,
@@ -132,6 +133,7 @@ class Query {
   }) =>
       Query(
         action: action ?? this.action,
+        forProviders: forProviders ?? this.forProviders,
         limit: limit ?? this.limit,
         limitBy: limitBy ?? this.limitBy,
         offset: offset ?? this.offset,
@@ -143,6 +145,7 @@ class Query {
   /// Serialize to JSON
   Map<String, dynamic> toJson() => {
         if (action != null) 'action': QueryAction.values.indexOf(action!),
+        if (forProviders.isNotEmpty) 'forProviders': forProviders.map((p) => p.toJson()).toList(),
         if (limit != null) 'limit': limit,
         if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
         if (offset != null) 'offset': offset,
@@ -161,6 +164,7 @@ class Query {
           action == other.action &&
           limit == other.limit &&
           offset == other.offset &&
+          _listEquality.equals(forProviders, other.forProviders) &&
           _listEquality.equals(limitBy, other.limitBy) &&
           _listEquality.equals(orderBy, other.orderBy) &&
           _mapEquality.equals(providerArgs, other.providerArgs) &&
@@ -169,6 +173,7 @@ class Query {
   @override
   int get hashCode =>
       action.hashCode ^
+      forProviders.hashCode ^
       limit.hashCode ^
       limitBy.hashCode ^
       offset.hashCode ^
