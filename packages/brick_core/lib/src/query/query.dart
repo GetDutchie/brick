@@ -90,7 +90,8 @@ class Query {
     this.providerArgs = const {},
     this.orderBy = const [],
     this.where,
-  });
+  })  : assert(limit == null || limit > -1, 'limit must be greater than 0'),
+        assert(offset == null || offset > -1, 'offset must be greater than 0');
 
   /// Deserialize from JSON
   factory Query.fromJson(Map<String, dynamic> json) => Query(
@@ -99,7 +100,7 @@ class Query {
         limitBy: json['limitBy']?.map(LimitBy.fromJson).toList() ?? [],
         offset: json['offset'] as int?,
         orderBy: json['orderBy']?.map(OrderBy.fromJson).toList() ?? [],
-        providerArgs: json['providerArgs'],
+        providerArgs: Map<String, dynamic>.from(json['providerArgs'] as Map? ?? {}),
         where: json['where']?.map(WhereCondition.fromJson),
       );
 
@@ -149,7 +150,7 @@ class Query {
         if (limit != null) 'limit': limit,
         if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
         if (offset != null) 'offset': offset,
-        'providerArgs': providerArgs,
+        if (providerArgs.isNotEmpty) 'providerArgs': providerArgs,
         if (orderBy.isNotEmpty) 'orderBy': orderBy.map((s) => s.toJson()).toList(),
         if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
       };
