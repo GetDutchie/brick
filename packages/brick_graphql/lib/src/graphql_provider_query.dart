@@ -19,8 +19,8 @@ class GraphqlProviderQuery extends ProviderQuery<GraphqlProvider> {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (context != null) 'context': context,
-        if (operation != null) 'operation': operation,
+        if (context != null) 'context': context.toString(),
+        if (operation != null) 'operation': operation!.toJson(),
       };
 
   @override
