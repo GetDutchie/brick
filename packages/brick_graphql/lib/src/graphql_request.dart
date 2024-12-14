@@ -1,6 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/graphql_model.dart';
-import 'package:brick_graphql/src/graphql_model_dictionary.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql_exec/gql_exec.dart';
 
@@ -36,17 +35,22 @@ class GraphqlRequest<TModel extends GraphqlModel> {
 
     if (defaultOperation == null) return null;
 
+    final context = (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.context;
+    // ignore: deprecated_member_use
+    final argContextMap = query?.providerArgs['context'] as Map<String, ContextEntry>?;
+    final argContext = argContextMap != null
+        ? Context.fromMap(
+            Map<String, ContextEntry>.from(argContextMap)
+                .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
+          )
+        : null;
+
     return Request(
       operation: Operation(
         document: defaultOperation.document,
       ),
       variables: requestVariables ?? {},
-      context: query?.providerArgs['context'] != null
-          ? Context.fromMap(
-              Map<String, ContextEntry>.from(query?.providerArgs['context'])
-                  .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
-            )
-          : Context(),
+      context: context ?? argContext ?? Context(),
     );
   }
 
@@ -57,7 +61,12 @@ class GraphqlRequest<TModel extends GraphqlModel> {
       vars = {variableNamespace!: vars};
     }
 
-    return query?.providerArgs['operation']?.variables ?? vars;
+    final operation =
+        (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation ??
+            // ignore: deprecated_member_use
+            query?.providerArgs['operation'] as GraphqlOperation?;
+
+    return operation?.variables ?? vars;
   }
 
   /// Retrive variables defined by the annotation in [GraphqlQueryOperationTransformer]

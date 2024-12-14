@@ -43,7 +43,7 @@ abstract class OfflineFirstWithGraphqlRepository<
         );
 
   /// As some links may consume [OfflineFirstGraphqlPolicy] from the request's
-  /// context, this adds the policy to the `providerArgs#context`
+  /// context, this adds the policy to [Query.providerQueries].
   @override
   Query? applyPolicyToQuery(
     Query? query, {
@@ -51,18 +51,31 @@ abstract class OfflineFirstWithGraphqlRepository<
     OfflineFirstGetPolicy? get,
     OfflineFirstUpsertPolicy? upsert,
   }) {
+    final queryContext =
+        (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.context;
+    final argContextMap = query?.providerArgs['context'] as Map<String, ContextEntry>?;
+    final argContext = argContextMap != null
+        ? Context.fromMap(
+            Map<String, ContextEntry>.from(argContextMap)
+                .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
+          )
+        : null;
+    final context = (queryContext ?? argContext ?? Context()).withEntry(
+      OfflineFirstGraphqlPolicy(
+        delete: delete,
+        get: get,
+        upsert: upsert,
+      ),
+    );
+
     return query?.copyWith(
-      providerArgs: {
-        ...query.providerArgs,
-        'context': <String, ContextEntry>{
-          'OfflineFirstGraphqlPolicy': OfflineFirstGraphqlPolicy(
-            delete: delete,
-            get: get,
-            upsert: upsert,
-          ),
-          ...?query.providerArgs['context'] as Map<String, ContextEntry>?,
-        },
-      },
+      forProviders: [
+        ...query.forProviders,
+        GraphqlProviderQuery(
+          operation: (query.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation,
+          context: context,
+        ),
+      ],
     );
   }
 

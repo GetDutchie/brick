@@ -123,6 +123,7 @@ class Query {
   /// Reconstruct the [Query] with passed overrides
   Query copyWith({
     QueryAction? action,
+    List<ProviderQuery>? forProviders,
     int? limit,
     List<LimitBy>? limitBy,
     int? offset,
@@ -132,6 +133,7 @@ class Query {
   }) =>
       Query(
         action: action ?? this.action,
+        forProviders: forProviders ?? this.forProviders,
         limit: limit ?? this.limit,
         limitBy: limitBy ?? this.limitBy,
         offset: offset ?? this.offset,

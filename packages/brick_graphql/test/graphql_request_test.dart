@@ -45,17 +45,29 @@ void main() {
         );
       });
 
-      test('providerArgs#context:', () {
+      test('GraphqlProviderQuery#context:', () {
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
           query: Query(
+            forProviders: [
+              GraphqlProviderQuery(context: Context().withEntry(SampleContextEntry('myValue'))),
+            ],
+          ),
+        ).request;
+        expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          query: Query(
+            // ignore: deprecated_member_use
             providerArgs: {
               'context': {'SampleContextEntry': SampleContextEntry('myValue')},
             },
           ),
         ).request;
-        expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+        expect(request0!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
     });
 
@@ -75,26 +87,54 @@ void main() {
         expect(request.requestVariables, variables);
       });
 
-      test('providerArgs#variables:', () {
+      test('GraphqlProviderQuery#operation:', () {
         final variables = {'name': 'Thomas'};
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
+          query: Query(
+            forProviders: [
+              GraphqlProviderQuery(
+                operation: GraphqlOperation(variables: variables),
+              ),
+            ],
+          ),
         );
         expect(request.requestVariables, variables);
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          // ignore: deprecated_member_use
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
+        );
+        expect(request0.requestVariables, variables);
       });
 
       test('use providerArgs before passed variables', () {
         final variables = {'name': 'Thomas'};
         final providerVariables = {'name': 'Guy'};
+
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
+          query: Query(
+            forProviders: [
+              GraphqlProviderQuery(operation: GraphqlOperation(variables: providerVariables)),
+            ],
+          ),
           variables: variables,
         );
         expect(request.requestVariables, providerVariables);
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          // ignore: deprecated_member_use
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
+          variables: variables,
+        );
+        expect(request0.requestVariables, providerVariables);
       });
 
       test('without variablesNamespace', () {

@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:test/test.dart';
@@ -133,8 +133,11 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
 
     group('.defaultOperation', () {
       test('with specified document', () {
-        final query =
-            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
+        final query = Query(
+          forProviders: [
+            GraphqlProviderQuery(operation: GraphqlOperation(document: upsertPersonWithNodes)),
+          ],
+        );
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
           dictionary,
           action: QueryAction.get,
@@ -142,6 +145,20 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
         );
         expect(
           lang.printNode(transformer!.document),
+          startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
+  upsertPerson(input: $input) {'''),
+        );
+
+        final query0 =
+            // ignore: deprecated_member_use
+            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
+        final transformer0 = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+          dictionary,
+          action: QueryAction.get,
+          query: query0,
+        );
+        expect(
+          lang.printNode(transformer0!.document),
           startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
   upsertPerson(input: $input) {'''),
         );
