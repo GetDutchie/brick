@@ -21,9 +21,8 @@ class _FakeMethodCall {
     this.rawFactory = false,
   });
 
-  factory _FakeMethodCall.fromFactory(String method, dynamic arguments) {
-    return _FakeMethodCall(method, arguments, rawFactory: true);
-  }
+  factory _FakeMethodCall.fromFactory(String method, dynamic arguments) =>
+      _FakeMethodCall(method, arguments, rawFactory: true);
 
   @override
   String toString() {
@@ -259,7 +258,7 @@ void main() {
         const statement = 'SELECT COUNT(*) FROM `DemoModel`';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(
+          query: const Query(
             where: [
               WherePhrase([], isRequired: false),
             ],
@@ -355,7 +354,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'collate': 'NOCASE'}),
+          query: const Query(providerArgs: {'collate': 'NOCASE'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -367,7 +366,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'groupBy': 'id'}),
+          query: const Query(providerArgs: {'groupBy': 'id'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -379,7 +378,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'having': 'id'}),
+          query: const Query(providerArgs: {'having': 'id'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -391,7 +390,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(limit: 1),
+          query: const Query(limit: 1),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -403,7 +402,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(
+          query: const Query(
             limit: 1,
             offset: 1,
           ),
@@ -489,7 +488,7 @@ void main() {
       });
 
       test('date time is converted', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(simple_time) DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -506,7 +505,7 @@ void main() {
       // future Brick releases.
       // https://github.com/GetDutchie/brick/issues/429
       test('incorrectly cased columns are forwarded as is', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
@@ -523,11 +522,11 @@ void main() {
       // guaranteed in future Brick releases.
       // https://github.com/GetDutchie/brick/issues/429
       test('ordering by association is forwarded as is', () async {
-        final statement =
+        const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY other_table.complex_field_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(providerArgs: {'orderBy': 'other_table.complex_field_name DESC'}),
+          query: const Query(providerArgs: {'orderBy': 'other_table.complex_field_name DESC'}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 

@@ -1,4 +1,4 @@
-import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
@@ -38,7 +38,7 @@ void main() {
       final table = SchemaTable('users', columns: <SchemaColumn>{});
 
       test('shouldDrop:false', () {
-        expect(table.toCommand(shouldDrop: false), const InsertTable('users'));
+        expect(table.toCommand(), const InsertTable('users'));
       });
 
       test('shouldDrop:true', () {
@@ -87,7 +87,7 @@ void main() {
     test('isPrimaryKey must be int', () {
       expect(
         () => SchemaColumn(InsertTable.PRIMARY_KEY_COLUMN, Column.varchar, isPrimaryKey: true),
-        throwsA(TypeMatcher<AssertionError>()),
+        throwsA(const TypeMatcher<AssertionError>()),
       );
     });
 
@@ -139,33 +139,30 @@ void main() {
     });
 
     test('#toCommand', () {
-      var column = SchemaColumn('first_name', Column.varchar);
-      column.tableName = 'demo';
+      var column = SchemaColumn('first_name', Column.varchar)..tableName = 'demo';
       expect(column.toCommand(), const InsertColumn('first_name', Column.varchar, onTable: 'demo'));
 
-      column = SchemaColumn('_brick_id', Column.integer, autoincrement: true, isPrimaryKey: true);
-      column.tableName = 'demo';
+      column = SchemaColumn('_brick_id', Column.integer, autoincrement: true, isPrimaryKey: true)
+        ..tableName = 'demo';
       expect(
         column.toCommand(),
         const InsertColumn('_brick_id', Column.integer, onTable: 'demo', autoincrement: true),
       );
 
-      column = SchemaColumn('amount', Column.integer, defaultValue: 0);
-      column.tableName = 'demo';
+      column = SchemaColumn('amount', Column.integer, defaultValue: 0)..tableName = 'demo';
       expect(
         column.toCommand(),
         const InsertColumn('amount', Column.integer, onTable: 'demo', defaultValue: 0),
       );
 
-      column = SchemaColumn('last_name', Column.varchar, nullable: false);
-      column.tableName = 'demo';
+      column = SchemaColumn('last_name', Column.varchar, nullable: false)..tableName = 'demo';
       expect(
         column.toCommand(),
         const InsertColumn('last_name', Column.varchar, onTable: 'demo', nullable: false),
       );
 
-      column = SchemaColumn('Hat_id', Column.integer, isForeignKey: true, foreignTableName: 'hat');
-      column.tableName = 'demo';
+      column = SchemaColumn('Hat_id', Column.integer, isForeignKey: true, foreignTableName: 'hat')
+        ..tableName = 'demo';
       expect(column.toCommand(), const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id'));
 
       column = SchemaColumn(
@@ -174,8 +171,7 @@ void main() {
         isForeignKey: true,
         foreignTableName: 'hat',
         onDeleteCascade: true,
-      );
-      column.tableName = 'demo';
+      )..tableName = 'demo';
       expect(
         column.toCommand(),
         const InsertForeignKey('demo', 'hat', foreignKeyColumn: 'Hat_id', onDeleteCascade: true),
@@ -187,8 +183,7 @@ void main() {
         isForeignKey: true,
         foreignTableName: 'hat',
         onDeleteSetDefault: true,
-      );
-      column.tableName = 'demo';
+      )..tableName = 'demo';
       expect(
         column.toCommand(),
         const InsertForeignKey(

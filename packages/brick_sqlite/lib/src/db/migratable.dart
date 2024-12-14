@@ -1,3 +1,4 @@
+import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Annotation required by the generator for AOT discoverability. Decorates classes
@@ -18,6 +19,8 @@ class Migratable {
   /// the version should still match `RegExp("^\d+$")`.
   final String version;
 
+  /// Annotation required by the generator for AOT discoverability. Decorates classes
+  /// that `extends Migration`.
   const Migratable({
     required this.down,
     required this.up,

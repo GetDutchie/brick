@@ -14,7 +14,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/utils/utils.dart' as sqlite_utils;
 import 'package:synchronized/synchronized.dart';
 
-/// Retrieves from a Sqlite database
+/// Retrieves from a SQLite database
 class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TProviderModel> {
   /// Access the [SQLite](https://github.com/tekartik/sqflite/tree/master/sqflite_common_ffi),
   /// instance agnostically across platforms.
@@ -42,6 +42,7 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
 
   static const _migrationVersionsTableName = 'MigrationVersions';
 
+  /// Retrieves from a SQLite database
   SqliteProvider(
     this.dbName, {
     required this.databaseFactory,
@@ -51,7 +52,11 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
 
   /// Remove record from SQLite. [query] is ignored.
   @override
-  Future<int> delete<TModel extends TProviderModel>(instance, {query, repository}) async {
+  Future<int> delete<TModel extends TProviderModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
     final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, db);
@@ -71,7 +76,7 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
 
   /// Returns `true` if [TModel] exists in SQLite.
   ///
-  /// If [query.where] is `null`, existence for **any** record is executed.
+  /// If [Query.where] is `null`, existence for **any** record is executed.
   @override
   Future<bool> exists<TModel extends TProviderModel>({
     Query? query,
@@ -91,9 +96,11 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     /// Instead, when an OFFSET is defined, a single column managed by is queried
     /// and that result is counted via Dart
     if (offsetIsPresent) {
-      statement = statement.replaceFirstMapped(RegExp(r'SELECT COUNT\(\*\) FROM ([\S]+)'), (match) {
-        return 'SELECT ${match.group(1)}.${InsertTable.PRIMARY_KEY_COLUMN} FROM ${match.group(1)}';
-      });
+      statement = statement.replaceFirstMapped(
+        RegExp(r'SELECT COUNT\(\*\) FROM ([\S]+)'),
+        (match) =>
+            'SELECT ${match.group(1)}.${InsertTable.PRIMARY_KEY_COLUMN} FROM ${match.group(1)}',
+      );
     }
 
     final countQuery = await (await getDb()).rawQuery(statement, sqlQuery.values);
@@ -120,8 +127,8 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   /// As Brick manages column names, this is not recommended and should be written only when necessary.
   @override
   Future<List<TModel>> get<TModel extends TProviderModel>({
-    query,
-    repository,
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
   }) async {
     final sqlQuery = QuerySqlTransformer<TModel>(
       modelDictionary: modelDictionary,
@@ -141,6 +148,7 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     return _openDb!;
   }
 
+  /// The latest migration version committed to SQLite
   Future<int> lastMigrationVersion() async {
     final db = await getDb();
 
@@ -160,7 +168,7 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
       return -1;
     }
 
-    return sqliteVersions.first['version'] as int;
+    return sqliteVersions.first['version']! as int;
   }
 
   /// Update database structure with latest migrations. Note that this will run
@@ -180,8 +188,8 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
       return;
     }
 
-    for (var migration in migrations) {
-      for (var command in migration.up) {
+    for (final migration in migrations) {
+      for (final command in migration.up) {
         _logger.finer(
           'Running migration (${migration.version}): ${command.statement ?? command.forGenerator}',
         );
@@ -212,9 +220,7 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
 
-    final results = await _lock.synchronized(() async {
-      return (await getDb()).rawQuery(sql, arguments);
-    });
+    final results = await _lock.synchronized(() async => (await getDb()).rawQuery(sql, arguments));
 
     if (results.isEmpty || results.first.isEmpty) {
       // otherwise an empty sql result will generate a blank model
@@ -229,19 +235,16 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   }
 
   /// Execute a raw SQL statement. **Advanced use only**.
-  Future<void> rawExecute(String sql, [List? arguments]) async {
-    return await (await getDb()).execute(sql, arguments);
-  }
+  Future<void> rawExecute(String sql, [List? arguments]) async =>
+      await (await getDb()).execute(sql, arguments);
 
   /// Insert with a raw SQL statement. **Advanced use only**.
-  Future<int> rawInsert(String sql, [List? arguments]) async {
-    return await (await getDb()).rawInsert(sql, arguments);
-  }
+  Future<int> rawInsert(String sql, [List? arguments]) async =>
+      await (await getDb()).rawInsert(sql, arguments);
 
   /// Query with a raw SQL statement. **Advanced use only**.
-  Future<List<Map<String, Object?>>> rawQuery(String sql, [List? arguments]) async {
-    return await (await getDb()).rawQuery(sql, arguments);
-  }
+  Future<List<Map<String, Object?>>> rawQuery(String sql, [List? arguments]) async =>
+      await (await getDb()).rawQuery(sql, arguments);
 
   /// Reset the DB by deleting and recreating it.
   ///
@@ -265,14 +268,16 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   /// access DB methods and properties from [transaction]. **Advanced use only**.
   Future<T> transaction<T>(Future<T> Function(Transaction transaction) callback) async {
     final db = await getDb();
-    return await _lock.synchronized(() async {
-      return await db.transaction<T>(callback);
-    });
+    return await _lock.synchronized(() async => await db.transaction<T>(callback));
   }
 
   /// Insert record into SQLite. Returns the primary key of the record inserted
   @override
-  Future<int?> upsert<TModel extends TProviderModel>(instance, {query, repository}) async {
+  Future<int?> upsert<TModel extends TProviderModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final db = await getDb();
 
@@ -280,8 +285,8 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     await instance.beforeSave(provider: this, repository: repository);
     final data = await adapter.toSqlite(instance, provider: this, repository: repository);
 
-    final id = await _lock.synchronized(() async {
-      return await db.transaction<int?>((txn) async {
+    final id = await _lock.synchronized(
+      () async => await db.transaction<int?>((txn) async {
         final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, txn);
 
         if (instance.isNewRecord && existingPrimaryKey == null) {
@@ -299,8 +304,8 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
           whereArgs: [primaryKey],
         );
         return primaryKey;
-      });
-    });
+      }),
+    );
 
     instance.primaryKey = id;
     await adapter.afterSave(instance, provider: this, repository: repository);

@@ -1,31 +1,40 @@
-import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
-import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
-import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
-import 'package:brick_sqlite/src/db/schema/schema.dart';
-import 'package:brick_sqlite/src/db/schema/schema_column.dart';
-import 'package:brick_sqlite/src/db/schema/schema_index.dart';
-import 'package:brick_sqlite/src/db/schema/schema_table.dart';
+import 'package:brick_sqlite/db.dart';
 import 'package:collection/collection.dart';
 
 /// Compares two schemas to produce migrations that conver the difference
 class SchemaDifference {
+  ///
   final Schema oldSchema;
+
+  ///
   final Schema newSchema;
 
-  SchemaDifference(this.oldSchema, this.newSchema) : assert(oldSchema.version < newSchema.version);
+  /// Compares two schemas to produce migrations that conver the difference
+  SchemaDifference(this.oldSchema, this.newSchema)
+      : assert(
+          oldSchema.version < newSchema.version,
+          'Old schema is a newer version than the new schema',
+        );
 
+  ///
   Set<SchemaTable> get droppedTables => oldSchema.tables.difference(newSchema.tables);
 
+  ///
   Set<SchemaTable> get insertedTables => newSchema.tables.difference(oldSchema.tables);
 
+  ///
   Set<SchemaIndex> get droppedIndices => _compareIndices(oldSchema, newSchema);
 
+  ///
   Set<SchemaIndex> get createdIndices => _compareIndices(newSchema, oldSchema);
 
+  ///
   Set<SchemaColumn> get droppedColumns => _compareColumns(oldSchema, newSchema);
 
+  ///
   Set<SchemaColumn> get insertedColumns => _compareColumns(newSchema, oldSchema);
 
+  /// If there is a significant difference between both schemas
   bool get hasDifference =>
       droppedTables.isNotEmpty ||
       insertedTables.isNotEmpty ||
@@ -36,27 +45,22 @@ class SchemaDifference {
 
   /// Generates migration commands from the schemas' differences
   List<MigrationCommand> toMigrationCommands() {
-    final removedTables = droppedTables.map((item) {
-      return item.toCommand(shouldDrop: true);
-    }).cast<DropTable>();
+    final removedTables =
+        droppedTables.map((item) => item.toCommand(shouldDrop: true)).cast<DropTable>();
 
-    // TODO detect if dropped column is a foreign key joins association AND WRITE TEST
+    // TODOdetect if dropped column is a foreign key joins association AND WRITE TEST
 
     // Only drop column if the table isn't being dropped too
     final removedColumns = droppedColumns
-        .where((item) {
-          return !removedTables.any((command) => command.name == item.tableName);
-        })
+        .where((item) => !removedTables.any((command) => command.name == item.tableName))
         .map((c) => c.toCommand(shouldDrop: true))
         .cast<DropColumn>();
 
     final addedColumns = insertedColumns.where((c) => !c.isPrimaryKey).toSet();
     final added = [insertedTables, addedColumns]
-        .map((generatedSet) {
-          return generatedSet.map((item) {
-            return item.toCommand();
-          });
-        })
+        .map(
+          (generatedSet) => generatedSet.map((item) => item.toCommand()),
+        )
         .expand((s) => s)
         .cast<MigrationCommand>();
 
@@ -82,6 +86,7 @@ class SchemaDifference {
       final fromColumns = <SchemaColumn>{}..addAll(fromTable.columns);
 
       // Primary keys are added on [InsertTable]
+      // ignore: cascade_invocations
       fromColumns.removeWhere((c) => c.isPrimaryKey);
       toColumns.removeWhere((c) => c.isPrimaryKey);
 

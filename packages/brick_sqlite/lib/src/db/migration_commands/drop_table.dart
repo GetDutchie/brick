@@ -3,8 +3,10 @@ import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Drop table from DB if it exists
 class DropTable extends MigrationCommand {
+  ///
   final String name;
 
+  /// Drop table from DB if it exists
   const DropTable(this.name);
 
   @override

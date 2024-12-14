@@ -222,7 +222,7 @@ class SqliteSchemaGenerator {
     if (checker.isDartCoreType) {
       return SchemaColumn(
         column.name!,
-        Migration.fromDartPrimitive(checker.asPrimitive),
+        Column.fromDartPrimitive(checker.asPrimitive),
         nullable: column.nullable,
         unique: column.unique,
       );
