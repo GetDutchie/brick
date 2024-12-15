@@ -11,9 +11,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return OfflineFirstWhere(
       applied: await repository
-          ?.getAssociation<Assoc>(Query(
-              where: [Where.exact('id', data['id'])],
-              providerArgs: {'limit': 1}))
+          ?.getAssociation<Assoc>(
+              Query(where: [Where.exact('id', data['id'])], limit: 1))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
       notApplied: data['not_applied'] == null
           ? null
