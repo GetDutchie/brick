@@ -17,44 +17,39 @@ class AdapterGenerator {
   final String superAdapterName;
 
   /// Generated adapter methods
-  String get allAdapterMethods {
-    return generators.fold<Set<String>>(<String>{}, (acc, generator) {
-      final expectedOutput = 'Future<${generator.adapterMethodOutputType}>';
-      final methodAction = generator.doesDeserialize ? 'from' : 'to';
-      final methodArguments =
-          '${generator.adapterMethodInputType} input, {required provider, covariant ${superAdapterName}Repository? repository}';
-      final methodName = '$methodAction${generator.providerName}($methodArguments)';
+  String get allAdapterMethods => generators.fold<Set<String>>(<String>{}, (acc, generator) {
+        final expectedOutput = 'Future<${generator.adapterMethodOutputType}>';
+        final methodAction = generator.doesDeserialize ? 'from' : 'to';
+        final methodArguments =
+            '${generator.adapterMethodInputType} input, {required provider, covariant ${superAdapterName}Repository? repository}';
+        final methodName = '$methodAction${generator.providerName}($methodArguments)';
 
-      acc.add('@override\n$expectedOutput $methodName async => ${generator.adapterMethod};');
-      return acc;
-    }).join('\n');
-  }
+        acc.add('@override\n$expectedOutput $methodName async => ${generator.adapterMethod};');
+        return acc;
+      }).join('\n');
 
   /// Any special instance fields the serdes generator needs to forward to the adapter
-  String get allInstanceFieldsAndMethods {
-    return generators.fold<Set<String>>(<String>{}, (acc, generator) {
-      final fromGenerator =
-          generator.instanceFieldsAndMethods.fold<Set<String>>(<String>{}, (acc2, field) {
-        final didAdd = acc2.add(field);
-        if (!didAdd) {
-          throw InvalidGenerationSourceError(
-            '$field has already been declared by another generator',
-          );
-        }
-        return acc2;
-      });
-      acc.addAll(fromGenerator);
-      return acc;
-    }).join('\n');
-  }
+  String get allInstanceFieldsAndMethods =>
+      generators.fold<Set<String>>(<String>{}, (acc, generator) {
+        final fromGenerator =
+            generator.instanceFieldsAndMethods.fold<Set<String>>(<String>{}, (acc2, field) {
+          final didAdd = acc2.add(field);
+          if (!didAdd) {
+            throw InvalidGenerationSourceError(
+              '$field has already been declared by another generator',
+            );
+          }
+          return acc2;
+        });
+        acc.addAll(fromGenerator);
+        return acc;
+      }).join('\n');
 
   /// The functions that serialize or deserialize, ultimately used by the adapter method
-  String get serializerFunctions {
-    return generators.fold<Set<String>>(<String>{}, (acc, generator) {
-      acc.add(generator.generate());
-      return acc;
-    }).join('\n');
-  }
+  String get serializerFunctions => generators.fold<Set<String>>(<String>{}, (acc, generator) {
+        acc.add(generator.generate());
+        return acc;
+      }).join('\n');
 
   const AdapterGenerator({
     required this.superAdapterName,

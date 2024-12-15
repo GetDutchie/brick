@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '__helpers__.dart';
 
 final _generator = TestGenerator();
-final folder = 'provider_serializable_generator';
+const folder = 'provider_serializable_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
@@ -15,7 +15,7 @@ void main() {
         final reader = await generateReader('annotated_method');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
@@ -23,7 +23,7 @@ void main() {
         final reader = await generateReader('annotated_top_level_variable');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
@@ -31,7 +31,7 @@ void main() {
         final reader = await generateReader('future_iterable_future');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
     });
