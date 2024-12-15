@@ -1,5 +1,6 @@
 import 'package:brick_core/query.dart';
 import 'package:brick_sqlite/src/helpers/query_sql_transformer.dart';
+import 'package:brick_sqlite/src/sqlite_provider_query.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/src/mixin/factory.dart';
 import 'package:test/test.dart';
@@ -390,7 +391,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: const Query(limit: 1),
+          query: const Query(providerArgs: {'limit': 1}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -402,10 +403,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: const Query(
-            limit: 1,
-            offset: 1,
-          ),
+          query: const Query(providerArgs: {'limit': 1, 'offset': 1}),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -414,6 +412,191 @@ void main() {
       });
 
       group('providerArgs.orderBy', () {
+        test('simple', () async {
+          const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
+          final sqliteQuery = QuerySqlTransformer<DemoModel>(
+            modelDictionary: dictionary,
+            query: const Query(providerArgs: {'orderBy': 'id DESC'}),
+          );
+          await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+          expect(statement, sqliteQuery.statement);
+          sqliteStatementExpectation(statement);
+        });
+
+        test('discovered columns share similar names', () async {
+          const statement =
+              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY last_name DESC';
+          final sqliteQuery = QuerySqlTransformer<DemoModel>(
+            modelDictionary: dictionary,
+            query: const Query(providerArgs: {'orderBy': 'lastName DESC'}),
+          );
+          await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+          expect(statement, sqliteQuery.statement);
+          sqliteStatementExpectation(statement);
+        });
+      });
+
+      test('providerArgs.orderBy expands field names to column names', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(providerArgs: {'orderBy': 'manyAssoc DESC'}),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('providerArgs.orderBy compound values are expanded to column names', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, complex_field_name ASC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(
+            providerArgs: {
+              'orderBy': 'manyAssoc DESC, complexFieldName ASC',
+            },
+          ),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('fields convert to column names in providerArgs values', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(
+            providerArgs: {
+              'having': 'complexFieldName > 1000',
+              'groupBy': 'complexFieldName',
+              'orderBy': 'complexFieldName ASC',
+            },
+          ),
+        );
+
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('date time is converted', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(simple_time) DESC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(providerArgs: {'orderBy': 'simpleTime DESC'}),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      // This behavior is not explicitly supported - field names should be used.
+      // This is considered functionality behavior and is not guaranteed in
+      // future Brick releases.
+      // https://github.com/GetDutchie/brick/issues/429
+      test('incorrectly cased columns are forwarded as is', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name DESC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(providerArgs: {'orderBy': 'complex_field_name DESC'}),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      // This behavior is not explicitly supported because table names are autogenerated
+      // and not configurable. This is considered functionality behavior and is not
+      // guaranteed in future Brick releases.
+      // https://github.com/GetDutchie/brick/issues/429
+      test('ordering by association is forwarded as is', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY other_table.complex_field_name DESC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(providerArgs: {'orderBy': 'other_table.complex_field_name DESC'}),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+    });
+
+    group('Query', () {
+      test('#collate', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` COLLATE NOCASE';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(forProviders: [SqliteProviderQuery(collate: 'NOCASE')]),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('#groupBy', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(forProviders: [SqliteProviderQuery(groupBy: 'id')]),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('#having', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(forProviders: [SqliteProviderQuery(having: 'id')]),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('#limit', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(limit: 1),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      test('#offset', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` LIMIT 1 OFFSET 1';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(limit: 1, offset: 1),
+        );
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+
+        expect(statement, sqliteQuery.statement);
+        sqliteStatementExpectation(statement);
+      });
+
+      group('#orderBy', () {
         test('simple', () async {
           const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
@@ -474,10 +657,12 @@ void main() {
           modelDictionary: dictionary,
           query: Query(
             orderBy: [OrderBy.asc('complexFieldName')],
-            providerArgs: {
-              'having': 'complexFieldName > 1000',
-              'groupBy': 'complexFieldName',
-            },
+            forProviders: [
+              const SqliteProviderQuery(
+                having: 'complexFieldName > 1000',
+                groupBy: 'complexFieldName',
+              ),
+            ],
           ),
         );
 
@@ -526,7 +711,7 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY other_table.complex_field_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: const Query(providerArgs: {'orderBy': 'other_table.complex_field_name DESC'}),
+          query: Query(orderBy: [OrderBy.desc('other_table.complex_field_name')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 

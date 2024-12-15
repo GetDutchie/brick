@@ -5,6 +5,8 @@ import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 import 'package:brick_sqlite/src/sqlite_adapter.dart';
 import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
+import 'package:brick_sqlite/src/sqlite_provider.dart';
+import 'package:brick_sqlite/src/sqlite_provider_query.dart';
 import 'package:meta/meta.dart' show protected;
 
 /// Create a prepared SQLite statement for eventual execution. Only [statement] and [values]
@@ -89,7 +91,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     _statement.add(
       AllOtherClausesFragment(
-        query?.providerArgs ?? {},
+        query,
         fieldsToColumns: adapter.fieldsToSqliteColumns,
       ).toString(),
     );
@@ -343,7 +345,7 @@ class AllOtherClausesFragment {
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToColumns;
 
   ///
-  final Map<String, dynamic> providerArgs;
+  final Query? query;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
   static const _supportedOperators = <String, String>{
@@ -355,48 +357,62 @@ class AllOtherClausesFragment {
     'offset': 'OFFSET',
   };
 
-  /// These operators declare a column to compare against. The fields provided in [providerArgs]
-  /// will have to be converted to their column name.
+  /// These operators declare a column to compare against. The fields provided in
+  /// [Query] or [SqliteProviderQuery] will have to be converted to their column name.
   /// For example, `orderBy: [OrderBy.asc('createdAt')]` must become `ORDER BY created_at ASC`.
   static const _operatorsDeclaringFields = <String>{'ORDER BY', 'GROUP BY', 'HAVING'};
 
   /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
   AllOtherClausesFragment(
-    Map<String, dynamic>? providerArgs, {
+    this.query, {
     required this.fieldsToColumns,
-  }) : providerArgs = providerArgs ?? {};
+  });
 
   @override
-  String toString() => _supportedOperators.entries.fold<List<String>>(<String>[], (acc, entry) {
-        final op = entry.value;
-        var value = providerArgs[entry.key];
+  String toString() {
+    final providerQuery = query?.providerQueries[SqliteProvider] as SqliteProviderQuery?;
+    final argsToSqlStatments = {
+      ...?query?.providerArgs,
+      if (providerQuery?.collate != null) 'collate': providerQuery?.collate,
+      if (query?.limit != null) 'limit': query?.limit,
+      if (query?.offset != null) 'offset': query?.offset,
+      if (query?.orderBy.isNotEmpty ?? false)
+        'orderBy': query?.orderBy.map((p) => p.toString()).join(', '),
+      if (providerQuery?.groupBy != null) 'groupBy': providerQuery?.groupBy,
+      if (providerQuery?.having != null) 'having': providerQuery?.having,
+    };
 
-        if (value == null) return acc;
+    return _supportedOperators.entries.fold<List<String>>(<String>[], (acc, entry) {
+      final op = entry.value;
+      var value = argsToSqlStatments[entry.key];
 
-        if (_operatorsDeclaringFields.contains(op)) {
-          value = value.toString().split(',').fold<String>(value.toString(),
-              (modValue, innerValueClause) {
-            final fragment = innerValueClause.trim().split(' ');
-            if (fragment.isEmpty) return modValue;
+      if (value == null) return acc;
 
-            final fieldName = fragment.first;
-            final columnDefinition = fieldsToColumns[fieldName];
-            var columnName = columnDefinition?.columnName;
-            if (columnName != null && modValue.contains(fieldName)) {
-              if (columnDefinition!.type == DateTime) {
-                columnName = 'datetime($columnName)';
-              }
-              return modValue.replaceAll(fieldName, columnName);
+      if (_operatorsDeclaringFields.contains(op)) {
+        value = value.toString().split(',').fold<String>(value.toString(),
+            (modValue, innerValueClause) {
+          final fragment = innerValueClause.trim().split(' ');
+          if (fragment.isEmpty) return modValue;
+
+          final fieldName = fragment.first;
+          final columnDefinition = fieldsToColumns[fieldName];
+          var columnName = columnDefinition?.columnName;
+          if (columnName != null && modValue.contains(fieldName)) {
+            if (columnDefinition!.type == DateTime) {
+              columnName = 'datetime($columnName)';
             }
+            return modValue.replaceAll(fieldName, columnName);
+          }
 
-            return modValue;
-          });
-        }
+          return modValue;
+        });
+      }
 
-        acc.add('$op $value');
+      acc.add('$op $value');
 
-        return acc;
-      }).join(' ');
+      return acc;
+    }).join(' ');
+  }
 }
 
 // Taken directly from the Dart collection package
