@@ -1,17 +1,24 @@
 import 'package:brick_core/query.dart';
+import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase/src/query_supabase_transformer.dart';
-import 'package:brick_supabase/src/supabase_model.dart';
-import 'package:brick_supabase/src/supabase_model_dictionary.dart';
+import 'package:brick_supabase/src/testing/supabase_mock_server.dart';
+import 'package:brick_supabase/testing.dart';
 
+/// Construct a request for Supabase data. The primary purpose of this class is to
+/// DRY code for URL requests to the [SupabaseMockServer]. For example:
+/// `final req = SupabaseRequest<MyModel>();`
 class SupabaseRequest<TModel extends SupabaseModel> {
   /// If `fields` are not provided, they will try to be inferred using the
   /// [SupabaseMockServer]'s `modelDictionary`.
   final String? fields;
 
+  /// A PostgREST-style filter, such as `id=eq.1`
   final String? filter;
 
+  ///
   final int? limit;
 
+  /// An HTTP request method, e.g. `GET`, `POST`, `PUT`, `DELETE`
   final String? requestMethod;
 
   /// If a `tableName` is not provided, it will try to be inferred using the
@@ -19,7 +26,10 @@ class SupabaseRequest<TModel extends SupabaseModel> {
   /// `SupabaseAdapter`'s `supabaseTableName`.
   final String? tableName;
 
-  SupabaseRequest({
+  /// Construct a request for Supabase data. The primary purpose of this class is to
+  /// DRY code for URL requests to the [SupabaseMockServer]. For example:
+  /// `final req = SupabaseRequest<MyModel>();`
+  const SupabaseRequest({
     this.tableName,
     this.fields,
     this.filter,
@@ -27,6 +37,7 @@ class SupabaseRequest<TModel extends SupabaseModel> {
     this.requestMethod = 'GET',
   });
 
+  /// Convert the request to a PostgREST URL
   Uri toUri(SupabaseModelDictionary? modelDictionary) {
     final generatedFields = modelDictionary != null
         ? SupabaseRequest.fieldsFromDictionary<TModel>(modelDictionary)

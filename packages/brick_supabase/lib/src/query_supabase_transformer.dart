@@ -8,55 +8,57 @@ import 'package:supabase/supabase.dart';
 
 /// Create a prepared Supabase URI for eventual execution
 class QuerySupabaseTransformer<_Model extends SupabaseModel> {
+  ///
   final SupabaseAdapter adapter;
 
+  ///
   final SupabaseModelDictionary modelDictionary;
 
-  /// Must-haves for the [statement], mainly used to build clauses
+  ///
   final Query? query;
 
-  /// [selectStatement] will output [statement] as a `SELECT FROM`. When false, the [statement]
-  /// output will be a `SELECT COUNT(*)`. Defaults `true`.
+  /// Create a prepared Supabase URI for eventual execution
   QuerySupabaseTransformer({
     required this.modelDictionary,
     this.query,
     SupabaseAdapter? adapter,
   }) : adapter = adapter ?? modelDictionary.adapterFor[_Model]!;
 
-  String get selectFields {
-    return destructureAssociationProperties(adapter.fieldsToSupabaseColumns, _Model).join(',');
-  }
+  /// All fields to be selected by the request, including associations and
+  /// associations' fields
+  String get selectFields =>
+      destructureAssociationProperties(adapter.fieldsToSupabaseColumns, _Model).join(',');
 
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> applyProviderArgs(
+  /// Translate all valid query properties to a composed PostgREST filter
+  PostgrestTransformBuilder<List<Map<String, dynamic>>> applyQuery(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    final orderBy = (query?.orderBy.isNotEmpty ?? false) || query?.providerArgs['orderBy'] != null;
-    if (orderBy) {
-      builder = order(builder);
-    }
+    var computedBuilder = order(builder);
 
     final offset = query?.offset ?? query?.providerArgs['offset'] as int?;
     if (offset != null) {
       final url = builder.overrideSearchParams('offset', (offset).toString());
-      builder = builder.copyWithUrl(url);
+      computedBuilder = computedBuilder.copyWithUrl(url);
     }
 
-    return limit(builder);
+    return limit(computedBuilder);
   }
 
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) {
-    return (query?.where ?? []).fold(builder.select(selectFields), (acc, condition) {
-      final whereStatement = expandCondition(condition);
-      for (final where in whereStatement) {
-        for (final entry in where.entries) {
-          final newUri = acc.appendSearchParams(entry.key, entry.value);
-          acc = acc.copyWithUrl(newUri);
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) =>
+      (query?.where ?? []).fold(builder.select(selectFields), (acc, condition) {
+        final whereStatement = expandCondition(condition);
+        for (final where in whereStatement) {
+          for (final entry in where.entries) {
+            final newUri = acc.appendSearchParams(entry.key, entry.value);
+            acc = acc.copyWithUrl(newUri);
+          }
         }
-      }
-      return acc;
-    });
-  }
+        return acc;
+      });
 
+  /// Convert association requests to a lookup by inferred association
+  /// (`assoc(*)`) or by a rename (`my_assoc:assoc(*)`) or by a
+  /// foreign key (`my_assoc:assoc!fk(*)`).
   @protected
   @visibleForTesting
   List<String> destructureAssociationProperties(
@@ -191,6 +193,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     ];
   }
 
+  /// Produce a `limit` PostgREST filter from [Query.limit] and [Query.limitBy].
   PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
@@ -212,6 +215,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     });
   }
 
+  /// Produce an `orderBy` PostgREST filter from [Query.orderBy].
   @protected
   @visibleForTesting
   PostgrestFilterBuilder<List<Map<String, dynamic>>> order(

@@ -9,12 +9,11 @@ import '__mocks__.dart';
 
 QuerySupabaseTransformer<T> _buildTransformer<T extends SupabaseModel>([
   Query? query,
-]) {
-  return QuerySupabaseTransformer<T>(
-    modelDictionary: supabaseModelDictionary,
-    query: query,
-  );
-}
+]) =>
+    QuerySupabaseTransformer<T>(
+      modelDictionary: supabaseModelDictionary,
+      query: query,
+    );
 
 final _supabaseClient = SupabaseClient(
   'http://localhost:3000',
@@ -35,9 +34,7 @@ extension _PostgrestBuilderExtension on PostgrestBuilder {
   }
 
   /// Get the decoded query from the URI of the builder.
-  String get query {
-    return Uri.decodeQueryComponent(uri.query);
-  }
+  String get query => Uri.decodeQueryComponent(uri.query);
 }
 
 void main() {
@@ -104,7 +101,7 @@ void main() {
         });
 
         test('neq', () {
-          final query = Query(
+          const query = Query(
             where: [Where('name', value: 'Jens', compare: Compare.notEqual)],
           );
           final select = _buildTransformer<Demo>(query)
@@ -114,7 +111,7 @@ void main() {
         });
 
         test('lt/gt/lte/gte', () {
-          final query = Query(
+          const query = Query(
             where: [
               Where('age', value: '30', compare: Compare.lessThan),
               Where('age', value: '18', compare: Compare.greaterThan),
@@ -132,7 +129,7 @@ void main() {
         });
 
         test('contains', () {
-          final query = Query(
+          const query = Query(
             where: [Where('name', value: 'search', compare: Compare.contains)],
           );
           final select = _buildTransformer<Demo>(query)
@@ -142,7 +139,7 @@ void main() {
         });
 
         test('does not contain', () {
-          final query = Query(
+          const query = Query(
             where: [
               Where('name', value: 'search', compare: Compare.doesNotContain),
             ],
@@ -157,11 +154,11 @@ void main() {
 
     group('#applyProviderArgs', () {
       test('orderBy', () {
-        final query = Query(orderBy: [OrderBy('name')]);
+        const query = Query(orderBy: [OrderBy('name')]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(
           transformBuilder.query,
@@ -170,11 +167,11 @@ void main() {
       });
 
       test('orderBy with descending order', () {
-        final query = Query(orderBy: [OrderBy('name', ascending: false)]);
+        const query = Query(orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(
           transformBuilder.query,
@@ -189,7 +186,7 @@ void main() {
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(
           transformBuilder.query,
@@ -198,31 +195,31 @@ void main() {
       });
 
       test('limit', () {
-        final query = Query(limit: 10);
+        const query = Query(limit: 10);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(transformBuilder.query, 'select=id,name,custom_age&limit=10');
       });
 
       test('limit with referenced table', () {
-        final query = Query(limitBy: [LimitBy(10, model: DemoAssociationModel)]);
+        const query = Query(limitBy: [LimitBy(10, model: DemoAssociationModel)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(transformBuilder.query, 'select=id,name,custom_age&demo_associations.limit=10');
       });
 
       test('combined orderBy and limit', () {
-        final query = Query(limit: 20, orderBy: [OrderBy('name', ascending: false)]);
+        const query = Query(limit: 20, orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyProviderArgs(filterBuilder);
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(
           transformBuilder.query,

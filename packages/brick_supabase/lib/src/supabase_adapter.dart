@@ -1,4 +1,5 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_supabase/src/annotations/supabase_serializable.dart';
 import 'package:brick_supabase/src/runtime_supabase_column_definition.dart';
 import 'package:brick_supabase/src/supabase_model.dart';
 import 'package:brick_supabase/src/supabase_provider.dart';
