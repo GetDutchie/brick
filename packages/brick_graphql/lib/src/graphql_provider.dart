@@ -12,8 +12,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   @override
   final GraphqlModelDictionary modelDictionary;
 
+  /// The invoking [Link] used to access the GraphQL API.
+  /// Can be overriden by repositories.
   Link link;
 
+  /// Internal use logger.
   @protected
   final Logger logger;
 
@@ -29,6 +32,7 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   /// This **does not** affect variables passed via `providerArgs`.
   final String? variableNamespace;
 
+  /// A [Provider] fetches raw data from GraphQL and creates [Model]s. An app can have many [Provider]s.
   GraphqlProvider({
     required this.modelDictionary,
     required this.link,
@@ -36,7 +40,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }) : logger = Logger('GraphqlProvider');
 
   @override
-  Future<bool> delete<TModel extends GraphqlModel>(instance, {query, repository}) async {
+  Future<bool> delete<TModel extends GraphqlModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     final request = GraphqlRequest<TModel>(
       action: QueryAction.delete,
       instance: instance,
@@ -52,7 +60,10 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<bool> exists<TModel extends GraphqlModel>({query, repository}) async {
+  Future<bool> exists<TModel extends GraphqlModel>({
+    Query? query,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     final request = GraphqlRequest<TModel>(
       action: QueryAction.get,
       modelDictionary: modelDictionary,
@@ -67,7 +78,10 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<List<TModel>> get<TModel extends GraphqlModel>({query, repository}) async {
+  Future<List<TModel>> get<TModel extends GraphqlModel>({
+    Query? query,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final request = GraphqlRequest<TModel>(
       action: QueryAction.get,
@@ -108,6 +122,8 @@ class GraphqlProvider extends Provider<GraphqlModel> {
     return <TModel>[];
   }
 
+  /// Invokes the `subscribe` GraphQL operation and returns a [Stream] of [Model]s.
+  /// The GraphQL API **must** support subscriptions.
   Stream<List<TModel>> subscribe<TModel extends GraphqlModel>({
     Query? query,
     ModelRepository<GraphqlModel>? repository,
@@ -140,7 +156,11 @@ class GraphqlProvider extends Provider<GraphqlModel> {
   }
 
   @override
-  Future<Response?> upsert<TModel extends GraphqlModel>(instance, {query, repository}) async {
+  Future<Response?> upsert<TModel extends GraphqlModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final variables = await adapter.toGraphql(instance, provider: this, repository: repository);
     final request = GraphqlRequest<TModel>(

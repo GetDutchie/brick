@@ -1,8 +1,8 @@
-import 'package:brick_graphql/brick_graphql.dart' show GraphqlSerializable, Graphql;
+import 'package:brick_graphql/brick_graphql.dart' show Graphql, GraphqlSerializable;
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
-final output = r'''
+const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
@@ -12,9 +12,8 @@ Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromGraphql(
     OfflineFirstRepository? repository}) async {
   return GraphqlConfigEndpoint(
       someField: await repository!
-          .getAssociation<Assoc>(Query(
-              where: [Where.exact('name', data['name'])],
-              limit: 1))
+          .getAssociation<Assoc>(
+              Query(where: [Where.exact('name', data['name'])], limit: 1))
           .then((r) => r!.first));
 }
 
@@ -120,7 +119,7 @@ class GraphqlConfigEndpointAdapter
 ''';
 
 @ConnectOfflineFirstWithGraphql(
-  graphqlConfig: GraphqlSerializable(),
+  graphqlConfig: GraphqlSerializable.defaults,
 )
 class GraphqlConfigEndpoint extends OfflineFirstModel {
   @OfflineFirst(where: {'name': "data['name']"})
