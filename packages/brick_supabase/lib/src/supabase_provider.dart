@@ -77,10 +77,6 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     return resp.count > 0;
   }
 
-  /// [Query]'s `providerArgs` can extend the [get] functionality:
-  /// * `'limitByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
-  /// If the column cannot be found for the first value before a space, the value is left unchanged.
-  /// * `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
   @override
   Future<List<TModel>> get<TModel extends SupabaseModel>({
     Query? query,
