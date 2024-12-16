@@ -14,6 +14,8 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
   /// should not be included.
   final String? repositoryName;
 
+  /// Digest a `restConfig` (`@ConnectOfflineFirstWithRest`) from [reader] and manage serdes generators
+  /// to and from a `RestProvider`.
   RestModelSerdesGenerator(
     super.element,
     super.reader, {
@@ -23,7 +25,7 @@ class RestModelSerdesGenerator extends ProviderSerializableGenerator<RestSeriali
   @override
   RestSerializableExtended get config {
     if (reader.peek(configKey) == null) {
-      return RestSerializableExtended();
+      return const RestSerializableExtended();
     }
 
     final fieldRenameIndex =
