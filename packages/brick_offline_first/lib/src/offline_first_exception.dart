@@ -12,6 +12,7 @@ class OfflineFirstException implements Exception {
   /// is not important to the requested behavior.
   OfflineFirstException(this.originalError);
 
+  ///
   String get message => originalError.toString();
 
   @override

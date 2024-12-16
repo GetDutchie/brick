@@ -11,19 +11,20 @@ Future<SupabaseOfflineFirstWhere> _$SupabaseOfflineFirstWhereFromSupabase(
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
   return SupabaseOfflineFirstWhere(
-      association: await repository!
-          .getAssociation<Assoc>(Query(
-              where: [Where.exact('id', data["association"]["id"])],
-              providerArgs: {'limit': 1}))
-          .then((r) => r!.first),
+      association:
+          await repository!.getAssociation<Assoc>(Query(where: [Where.exact('id', data["association"]["id"])], limit: 1)).then(
+              (r) => r!.first),
       associations: await Future.wait<Assoc>(data['associations']
               ?.map((d) => AssocAdapter()
                   .fromSupabase(d, provider: provider, repository: repository))
               .toList()
               .cast<Future<Assoc>>() ??
           []),
-      nullableAssociations: await Future.wait<Assoc>(
-          data['nullable_associations']?.map((d) => AssocAdapter().fromSupabase(d, provider: provider, repository: repository)).toList().cast<Future<Assoc>>() ?? []));
+      nullableAssociations: await Future.wait<Assoc>(data['nullable_associations']
+              ?.map((d) => AssocAdapter().fromSupabase(d, provider: provider, repository: repository))
+              .toList()
+              .cast<Future<Assoc>>() ??
+          []));
 }
 
 Future<Map<String, dynamic>> _$SupabaseOfflineFirstWhereToSupabase(
