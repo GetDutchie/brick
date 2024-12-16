@@ -1,3 +1,4 @@
+import 'package:brick_core/src/model_repository.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
 part '__mocks_generated__.dart';
