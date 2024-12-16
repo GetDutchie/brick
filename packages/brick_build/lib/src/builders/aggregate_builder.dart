@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/src/builders/base.dart';
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
@@ -21,10 +22,19 @@ class AggregateBuilder implements Builder {
   /// For example: `['import 'package:brick_sqlite/db.dart';']`
   final List<String> requiredImports;
 
+  ///
   static final adapterFiles = Glob('lib/brick/adapters/*.g.dart');
+
+  ///
   static final importRegex = RegExp(r'(^import\s.*;)', multiLine: true);
+
+  ///
   static final migrationFiles = Glob('lib/brick/db/*.migration.dart');
+
+  ///
   static final modelFiles = Glob('lib/**/*.model.dart');
+
+  ///
   static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
 
   const AggregateBuilder({this.requiredImports = const <String>[]});
@@ -33,11 +43,10 @@ class AggregateBuilder implements Builder {
   Future<void> build(BuildStep buildStep) async {
     brickLogger.info('Aggregating models and migrations...');
 
-    final imports = <String>{};
-    imports.addAll([
+    final imports = <String>{
       'library big_messy_models_migrations_file;',
-    ]);
-    imports.addAll(requiredImports);
+      ...requiredImports,
+    };
 
     final files = <String>[];
     for (final glob in [migrationFiles, modelFiles]) {
@@ -61,9 +70,8 @@ class AggregateBuilder implements Builder {
   }
 
   /// All unique `import:package` within a large body of text
-  static Set<String> findAllImports(String contents) {
-    return importRegex.allMatches(contents).map((m) => m[0]!).toSet();
-  }
+  static Set<String> findAllImports(String contents) =>
+      importRegex.allMatches(contents).map((m) => m[0]!).toSet();
 
   @override
   final buildExtensions = const {

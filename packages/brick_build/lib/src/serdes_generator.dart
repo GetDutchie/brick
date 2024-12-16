@@ -29,9 +29,8 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   /// **Must** begin with the unnamed argument `input` and `await` the output
   /// [serializingFunctionName].
   /// Can access `input` and `provider`.
-  String get adapterMethod {
-    return 'await $serializingFunctionName(input, provider: provider, repository: repository)';
-  }
+  String get adapterMethod =>
+      'await $serializingFunctionName(input, provider: provider, repository: repository)';
 
   /// The expected input type for the [adapterMethod]
   String get adapterMethodInputType => doesDeserialize ? deserializeInputType : className;
@@ -39,6 +38,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   /// The expected output type of the [adapterMethod]
   String get adapterMethodOutputType => doesDeserialize ? className : serializeOutputType;
 
+  ///
   String get className => element.name;
 
   /// Discover factories within the class that rely on the provider.
@@ -54,17 +54,16 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   /// Mash the [element]'s fields into a list for serialization or deserialization
   @visibleForTesting
   @visibleForOverriding
-  String get fieldsForGenerator {
-    return fields.stableInstanceFields.fold<List<String>>(<String>[], (acc, field) {
-      final fieldAnnotation = fields.annotationForField(field);
-      final serialization = addField(field, fieldAnnotation);
-      if (serialization != null) {
-        acc.add(serialization);
-      }
+  String get fieldsForGenerator =>
+      fields.stableInstanceFields.fold<List<String>>(<String>[], (acc, field) {
+        final fieldAnnotation = fields.annotationForField(field);
+        final serialization = addField(field, fieldAnnotation);
+        if (serialization != null) {
+          acc.add(serialization);
+        }
 
-      return acc;
-    }).join(',\n');
-  }
+        return acc;
+      }).join(',\n');
 
   /// Code to follow after a class has been instantiated.
   /// **Must** end with semicolon.
@@ -114,16 +113,19 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
 
   /// All fields that are serializable by this generator and are not declared
   /// to be ignored by an annotation.
-  Iterable<FieldElement> get unignoredFields {
-    return fields.stableInstanceFields.where((field) {
-      final annotation = fields.annotationForField(field);
-      final checker = checkerForType(field.type);
+  Iterable<FieldElement> get unignoredFields => fields.stableInstanceFields.where((field) {
+        final annotation = fields.annotationForField(field);
+        final checker = checkerForType(field.type);
 
-      return (!annotation.ignore && checker.isSerializable) ||
-          checker.isSerializableViaJson(doesDeserialize);
-    });
-  }
+        return (!annotation.ignore && checker.isSerializable) ||
+            checker.isSerializableViaJson(doesDeserialize);
+      });
 
+  /// A generator that converts raw input into Dart code or Dart code into raw input. Most
+  /// [Provider]s will require a `SerdesGenerator` to help the Repository normalize data.
+  ///
+  /// [FieldAnnotation] describes the field-level class, such as @`Rest`
+  /// [_SiblingModel] describes the domain or provider model, such as `SqliteModel`
   SerdesGenerator(this.element, this.fields);
 
   /// Given each field, determine whether it can be added to the serdes function
@@ -253,11 +255,11 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   String? digestPlaceholders(String? input, String annotatedName, String fieldName) {
     if (input == null) return null;
 
-    input = input
+    final newInput = input
         .replaceAll(FieldSerializable.ANNOTATED_NAME_VARIABLE, annotatedName)
         .replaceAll(FieldSerializable.DATA_PROPERTY_VARIABLE, "data['$annotatedName']")
         .replaceAll(FieldSerializable.INSTANCE_PROPERTY_VARIABLE, 'instance.$fieldName');
-    return SerdesGenerator.digestCustomGeneratorPlaceholders(input);
+    return SerdesGenerator.digestCustomGeneratorPlaceholders(newInput);
   }
 
   /// Injected between the field member in the constructor and the contents
@@ -265,11 +267,10 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     required FieldElement field,
     required FieldAnnotation fieldAnnotation,
     required String name,
-  }) {
-    return fieldAnnotation.nullable && field.type.nullabilitySuffix != NullabilitySuffix.none
-        ? "data['$name'] == null ? null :"
-        : '';
-  }
+  }) =>
+      fieldAnnotation.nullable && field.type.nullabilitySuffix != NullabilitySuffix.none
+          ? "data['$name'] == null ? null :"
+          : '';
 
   /// Convert placeholders in `fromGenerator` and `toGenerator` to functions.
   String? expandGenerators(
@@ -307,14 +308,14 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   /// If this class possesses a factory such as `fromRest`
   @protected
   bool hasConstructor(DartType type) {
-    final classElement = type.element as ClassElement;
+    final classElement = type.element! as ClassElement;
     return classElement.getNamedConstructor(constructorName) != null;
   }
 
   /// If this class possesses a serializing method such as `toSqlite`
   @protected
   bool hasSerializer(DartType type) {
-    final classElement = type.element as ClassElement;
+    final classElement = type.element! as ClassElement;
     return classElement.getMethod(serializeMethod) != null;
   }
 
@@ -364,9 +365,8 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   }
 
   /// If the annotation includes a [defaultValue], use it when the received value is null
-  static String defaultValueSuffix(FieldSerializable fieldAnnotation) {
-    return fieldAnnotation.defaultValue != null ? ' ?? ${fieldAnnotation.defaultValue}' : '';
-  }
+  static String defaultValueSuffix(FieldSerializable fieldAnnotation) =>
+      fieldAnnotation.defaultValue != null ? ' ?? ${fieldAnnotation.defaultValue}' : '';
 
   /// If a custom generator is provided, replace variables with desired values
   /// Useful for hacking around `const` functions when duplicating logic
@@ -417,7 +417,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
 
 // from dart:collections, instead of importing a whole package
 T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T item) test) {
-  for (var item in items) {
+  for (final item in items) {
     if (test(item)) return item;
   }
   return null;

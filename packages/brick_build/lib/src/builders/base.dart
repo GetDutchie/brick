@@ -42,14 +42,14 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
 
     if (!dirName.contains('.dart')) {
       final dir = Directory(p.join('lib', 'brick', dirName));
-      final dirExists = await dir.exists();
+      final dirExists = dir.existsSync();
       if (!dirExists) {
         await dir.create();
       }
     }
 
     final newFile = File(p.join('lib', 'brick', path));
-    final fileExists = await newFile.exists();
+    final fileExists = newFile.existsSync();
     if (!fileExists) {
       await newFile.create();
     }
@@ -60,7 +60,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   /// Replace contents of file
   Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
     final file = File(p.join('lib', 'brick', path));
-    final fileExists = await file.exists();
+    final fileExists = file.existsSync();
     if (!fileExists) return null;
 
     final contents = await file.readAsString();
