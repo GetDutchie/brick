@@ -10,21 +10,22 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return OfflineFirstWhere(
-      assoc:
-          repository!.getAssociation<OtherAssoc>(Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1})).then(
-              (r) => r!.first),
+      assoc: repository!
+          .getAssociation<OtherAssoc>(
+              Query(where: [Where.exact('id', data['id'])], limit: 1))
+          .then((r) => r!.first),
       assocs: (data['assocs'] ?? [])
           .map<Future<Assoc>>((s) =>
               repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then(
                   (r) => r!.first))
           .toList(),
-      loadedAssoc:
-          await repository.getAssociation<Assoc>(Query(where: [Where.exact('id', data['id'])], providerArgs: {'limit': 1})).then(
-              (r) => r?.isNotEmpty ?? false ? r!.first : null),
-      loadedAssocs:
-          (await Future.wait<Assoc?>((data['loaded_assocs'] ?? []).map<Future<Assoc?>>((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r?.isNotEmpty ?? false ? r!.first : null))))
-              .whereType<Assoc>()
-              .toList(),
+      loadedAssoc: await repository
+          .getAssociation<Assoc>(
+              Query(where: [Where.exact('id', data['id'])], limit: 1))
+          .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
+      loadedAssocs: (await Future.wait<Assoc?>((data['loaded_assocs'] ?? []).map<Future<Assoc?>>((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s)])).then((r) => r?.isNotEmpty ?? false ? r!.first : null))))
+          .whereType<Assoc>()
+          .toList(),
       multiLookupCustomGenerator: (data['multi_lookup_custom_generator'] ?? [])
           .map<Future<Assoc>>((s) => repository.getAssociation<Assoc>(Query(where: [Where.exact('id', s), Where.exact('otherVar', s)])).then((r) => r!.first))
           .toList());

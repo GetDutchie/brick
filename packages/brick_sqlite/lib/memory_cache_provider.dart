@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 /// MemoryCacheProvider does not have a type argument due to a build_runner
 /// exception: https://github.com/dart-lang/sdk/issues/38309
 class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<TProviderModel> {
+  ///
   @protected
   final Logger logger = Logger('MemoryCacheProvider');
 
@@ -29,7 +30,7 @@ class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<T
   bool manages(Type type) => managedModelTypes.contains(type);
 
   /// It is strongly recommended to use this provider with smaller, frequently-accessed
-  /// and shared [TModel]s.
+  /// and shared [TProviderModel]s.
   MemoryCacheProvider([
     this.managedModelTypes = const <Type>[],
   ]);
@@ -46,7 +47,11 @@ class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<T
   }
 
   @override
-  bool delete<TModel extends TProviderModel>(instance, {query, repository}) {
+  bool delete<TModel extends TProviderModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) {
     if (!manages(TModel)) return false;
     logger.finest('#delete: $TModel, $instance, $query');
 
@@ -56,7 +61,10 @@ class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<T
   }
 
   @override
-  List<TModel>? get<TModel extends TProviderModel>({query, repository}) {
+  List<TModel>? get<TModel extends TProviderModel>({
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) {
     if (!manages(TModel)) return null;
     managedObjects[TModel] ??= {};
 
@@ -98,11 +106,15 @@ class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<T
   }
 
   @override
-  TModel? upsert<TModel extends TProviderModel>(instance, {query, repository}) {
+  TModel? upsert<TModel extends TProviderModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) {
     if (!manages(TModel)) return null;
     logger.finest('#upsert: $TModel, $instance, $query');
     hydrate<TModel>([instance]);
-    return managedObjects[TModel]![instance.primaryKey] as TModel;
+    return managedObjects[TModel]![instance.primaryKey]! as TModel;
   }
 }
 

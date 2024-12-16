@@ -27,55 +27,6 @@ class Migration20 extends Migration {
 
 void main() {
   group('Migration', () {
-    test('.ofDefinition', () {
-      expect(Migration.ofDefinition(Column.bigint), 'BIGINT');
-      expect(Migration.ofDefinition(Column.blob), 'BLOB');
-      expect(Migration.ofDefinition(Column.boolean), 'BOOLEAN');
-      expect(Migration.ofDefinition(Column.date), 'DATE');
-      expect(Migration.ofDefinition(Column.datetime), 'DATETIME');
-      expect(Migration.ofDefinition(Column.Double), 'DOUBLE');
-      expect(Migration.ofDefinition(Column.integer), 'INTEGER');
-      expect(Migration.ofDefinition(Column.float), 'FLOAT');
-      expect(Migration.ofDefinition(Column.num), 'DOUBLE');
-      expect(Migration.ofDefinition(Column.text), 'TEXT');
-      expect(Migration.ofDefinition(Column.varchar), 'VARCHAR');
-      expect(
-        () => Migration.ofDefinition(Column.undefined),
-        throwsA(const TypeMatcher<ArgumentError>()),
-      );
-    });
-
-    test('.fromDartPrimitive', () {
-      expect(Migration.fromDartPrimitive(bool), Column.boolean);
-      expect(Migration.fromDartPrimitive(DateTime), Column.datetime);
-      expect(Migration.fromDartPrimitive(double), Column.Double);
-      expect(Migration.fromDartPrimitive(int), Column.integer);
-      expect(Migration.fromDartPrimitive(num), Column.num);
-      expect(Migration.fromDartPrimitive(String), Column.varchar);
-      expect(
-        () => Migration.fromDartPrimitive(dynamic),
-        throwsA(const TypeMatcher<ArgumentError>()),
-      );
-    });
-
-    test('.toDartPrimitive', () {
-      expect(Migration.toDartPrimitive(Column.bigint), num);
-      expect(Migration.toDartPrimitive(Column.blob), List);
-      expect(Migration.toDartPrimitive(Column.boolean), bool);
-      expect(Migration.toDartPrimitive(Column.date), DateTime);
-      expect(Migration.toDartPrimitive(Column.datetime), DateTime);
-      expect(Migration.toDartPrimitive(Column.Double), double);
-      expect(Migration.toDartPrimitive(Column.integer), int);
-      expect(Migration.toDartPrimitive(Column.float), num);
-      expect(Migration.toDartPrimitive(Column.num), num);
-      expect(Migration.toDartPrimitive(Column.text), String);
-      expect(Migration.toDartPrimitive(Column.varchar), String);
-      expect(
-        () => Migration.toDartPrimitive(Column.undefined),
-        throwsA(const TypeMatcher<ArgumentError>()),
-      );
-    });
-
     group('.generate', () {
       test('one command', () {
         final output = Migration.generate([const InsertTable('demo')], 1);
@@ -121,8 +72,8 @@ class Migration1 extends Migration {
 
       test('multiple commands', () {
         final commands = [
-          InsertTable('demo'),
-          RenameColumn('first_name', 'last_name', onTable: 'people'),
+          const InsertTable('demo'),
+          const RenameColumn('first_name', 'last_name', onTable: 'people'),
         ];
 
         final output = Migration.generate(commands, 15);
@@ -170,8 +121,8 @@ class Migration15 extends Migration {
 
       test('null drop commands are not reported', () {
         final commands = [
-          DropColumn('first_name', onTable: 'people'),
-          DropColumn('last_name', onTable: 'people'),
+          const DropColumn('first_name', onTable: 'people'),
+          const DropColumn('last_name', onTable: 'people'),
         ];
 
         final output = Migration.generate(commands, 15);

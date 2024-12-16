@@ -4,7 +4,10 @@ import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Create a foreign key column to reference another table
 class InsertForeignKey extends MigrationCommand {
+  /// Table where the foreign key is defined
   final String localTableName;
+
+  /// Table referenced by the foreign key
   final String foreignTableName;
 
   /// Defaults to lowercase `${foreignTableName}_brick_id`
@@ -20,6 +23,7 @@ class InsertForeignKey extends MigrationCommand {
   /// usually `NULL` unless otherwise declared. Defaults `false`.
   final bool onDeleteSetDefault;
 
+  /// Create a foreign key column to reference another table
   const InsertForeignKey(
     this.localTableName,
     this.foreignTableName, {
@@ -76,9 +80,8 @@ class InsertForeignKey extends MigrationCommand {
   /// The downside of this pattern is the inevitable data duplication for such many-to-many
   /// relationships and the inability to query relationships without declaring them on
   /// parent/child models.
-  static String joinsTableName(String columnName, {required String localTableName}) {
-    return ['_brick', localTableName, columnName].join('_');
-  }
+  static String joinsTableName(String columnName, {required String localTableName}) =>
+      ['_brick', localTableName, columnName].join('_');
 
   /// In the rare case of a many-to-many association of the same model, the columns must be prefixed.
   /// For example, `final List<Friend> friends` on class `Friend`.

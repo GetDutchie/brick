@@ -3,10 +3,13 @@ import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 
 /// Create an index on a table if it doesn't already exists
 class CreateIndex extends MigrationCommand {
+  ///
   final List<String> columns;
 
+  ///
   final String onTable;
 
+  ///
   final bool unique;
 
   /// As a migration, this may fail if existing data is in conflict with the index.
@@ -18,6 +21,7 @@ class CreateIndex extends MigrationCommand {
     this.unique = false,
   });
 
+  ///
   String get name => generateName(columns, onTable);
 
   @override
@@ -37,6 +41,7 @@ class CreateIndex extends MigrationCommand {
   @override
   MigrationCommand get down => DropIndex(name);
 
+  /// Combines columns and table name to create an index name
   static String generateName(List<String> columns, String onTable) {
     final columnNames = columns.join('_');
     return ['index', onTable, 'on', columnNames].join('_');

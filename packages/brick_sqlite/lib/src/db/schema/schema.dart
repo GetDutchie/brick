@@ -1,5 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
@@ -17,32 +18,37 @@ import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 import 'package:brick_sqlite/src/db/schema/schema_table.dart';
 import 'package:meta/meta.dart' show visibleForTesting;
 
+/// A definition of all the tables and columns in the SQLite database
 class Schema {
   /// The last version successfully migrated to SQLite.
   /// This should be before or equal to [MigrationManager]'s `#version`.
   /// if [MigrationManager] is used.
   final int version;
 
+  ///
   final Set<SchemaTable> tables;
 
   /// Version used to produce this scheme
   final int generatorVersion;
 
+  /// A definition of all the tables and columns in the SQLite database
   Schema(this.version, {required this.tables, this.generatorVersion = GENERATOR_VERSION});
 
+  /// Generator used to produce this schema; not intended for public use
   // ignore: constant_identifier_names
   static const int GENERATOR_VERSION = 1;
 
+  ///
   @visibleForTesting
   static List<MigrationCommand> expandMigrations(Set<Migration> migrations) {
-    final sorted = migrations.toList();
-    sorted.sort((a, b) {
-      if (a.version == b.version) {
-        return 0;
-      }
+    final sorted = migrations.toList()
+      ..sort((a, b) {
+        if (a.version == b.version) {
+          return 0;
+        }
 
-      return a.version > b.version ? 1 : -1;
-    });
+        return a.version > b.version ? 1 : -1;
+      });
 
     return sorted.map((m) => m.up).expand((c) => c).toList();
   }
@@ -50,7 +56,7 @@ class Schema {
   /// Create a schema from a set of migrations. If [version] is not provided,
   /// the highest migration version will be used
   factory Schema.fromMigrations(Set<Migration> migrations, [int? version]) {
-    assert((version == null) || (version > -1));
+    assert((version == null) || (version > -1), 'version must be greater than -1');
     version = version ?? MigrationManager.latestMigrationVersion(migrations);
     final commands = expandMigrations(migrations);
     final tables = commands.fold(<SchemaTable>{}, _commandToSchema);
@@ -61,14 +67,12 @@ class Schema {
     );
   }
 
-  /// A sub-function of [fromMigrations], convert a migration command into a `SchemaObject`.
+  /// A sub-function of [Schema.fromMigrations], convert a migration command into a `SchemaObject`.
   static Set<SchemaTable> _commandToSchema(Set<SchemaTable> tables, MigrationCommand command) {
-    SchemaTable findTable(String tableName) {
-      return tables.firstWhere(
-        (s) => s.name == tableName,
-        orElse: () => throw StateError('Table $tableName must be inserted first'),
-      );
-    }
+    SchemaTable findTable(String tableName) => tables.firstWhere(
+          (s) => s.name == tableName,
+          orElse: () => throw StateError('Table $tableName must be inserted first'),
+        );
 
     if (command is InsertTable) {
       tables.add(SchemaTable(command.name));
@@ -86,6 +90,7 @@ class Schema {
     } else if (command is RenameTable) {
       final table = findTable(command.oldName);
       tables.add(SchemaTable(command.newName, columns: table.columns..toSet()));
+      // ignore: cascade_invocations
       tables.remove(table);
     } else if (command is DropTable) {
       final table = findTable(command.name);
@@ -98,7 +103,6 @@ class Schema {
           command.definitionType,
           autoincrement: command.autoincrement,
           defaultValue: command.defaultValue,
-          isPrimaryKey: false,
           nullable: command.nullable,
           unique: command.unique,
         ),

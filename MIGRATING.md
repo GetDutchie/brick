@@ -6,16 +6,42 @@ Brick 4 away from loosely-defined `Query` arguments in favor of standardized fie
 
 ### Breaking Changes
 
+**`providerArgs` will be supported until Brick 4 is officially released**. It is still recommended you migrate to the new `Query` for better `orderBy` and `limitBy`.
+
 - `Query(providerArgs: {'limit':})` is now `Query(limit:)`
 - `Query(providerArgs: {'offset':})` is now `Query(offset:)`
-- `Query(providerArgs: {'orderBy':})` is now `Query(orderBy:)`. This is a more significant change than `limit` or `offset`. `orderBy` is now defined by a class that permits multiple commands. For example, `'orderBy': 'name ASC'` becomes `[OrderBy('name', ascending: true)]`.
-- `Query(providerArgs: {'restRequest':})` is now `Query(forProviders: [RestProviderQuery(request:)])`. This is a similarly significant chang that allows providers to be detected by static analysis and reduces the need for manual documentation.
+- `Query(providerArgs: {'orderBy':})` is now `Query(orderBy:)`. This is a more significant change than `limit` or `offset`. `orderBy` is now defined by a class that permits multiple commands. For example, `'orderBy': 'name ASC'` becomes `[OrderBy('name', ascending: true)]`. First-class Brick providers (SQLite and Supabase) also support association-based querying by declaring a `model:`.
+
+#### brick_graphql
+
+- `Query(providerArgs: {'context':})` is now `Query(forProviders: [GraphqlProviderQuery(context:)])`
+- `Query(providerArgs: {'operation':})` is now `Query(forProviders: [GraphqlProviderQuery(operation:)])`
+
+#### brick_rest
+
+- `Query(providerArgs: {'request':})` is now `Query(forProviders: [RestProviderQuery(request:)])`. This is a similarly significant chang that allows providers to be detected by static analysis and reduces the need for manual documentation.
+
+#### brick_sqlite
+
+- `Query(providerArgs: {'collate':})` is now `Query(forProviders: [SqliteProviderQuery(collate:)])`
+- `Query(providerArgs: {'having':})` is now `Query(forProviders: [SqliteProviderQuery(having:)])`
+- `Query(providerArgs: {'groupBy':})` is now `Query(forProviders: [SqliteProviderQuery(groupBy:)])`
+
+#### brick_supabase
+
+- `Query(providerArgs: {'limitReferencedTable':})` has been removed in favor of `Query(limitBy:)`
+- `Query(providerArgs: {'orderByReferencedTable':})` has been removed in favor of `Query(orderBy:)`
 
 ### Improvements
 
 - `OrderBy` will support association ordering and multiple values
 - `Query` is constructed with `const`
 - `Query#offset` no longer requires companion `limit` parameter
+- `brick_sqlite` and `brick_supabase` support association ordering. For example, `Query(orderBy: [OrderBy.desc('name', model: DemoModelAssoc)])` on `DemoModel` will produce the following SQL statement:
+  ```sql
+  'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModelAssoc`.name DESC'
+  ```
+- `brick_supabase` supports advanced limiting. For example, `Query(limitBy: [LimitBy(1, model: DemoModel))` is the equivalent of `.limit(1, referencedTable: 'demo_model')`
 
 ## Migrating from Brick 2 to Brick 3
 
