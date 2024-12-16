@@ -3,7 +3,7 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_rest/brick_rest.dart' show RestSerializable;
 
-final output = r'''
+const output = r'''
 Future<RestConfigNoRename> _$RestConfigNoRenameFromRest(
     Map<String, dynamic> data,
     {required RestProvider provider,
@@ -131,7 +131,7 @@ class RestConfigNoRename extends OfflineFirstModel {
 }
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(fieldRename: FieldRename.snake),
+  restConfig: RestSerializable.defaults,
 )
 class RestConfigSnakeRename extends OfflineFirstModel {
   final int someLongField;

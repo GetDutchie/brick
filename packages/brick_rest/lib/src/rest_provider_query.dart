@@ -12,6 +12,14 @@ class RestProviderQuery extends ProviderQuery<RestProvider> {
     this.request,
   });
 
+  /// Creates a copy of this [RestProviderQuery] with the given fields replaced.
+  RestProviderQuery copyWith({
+    RestRequest? request,
+  }) =>
+      RestProviderQuery(
+        request: request ?? this.request,
+      );
+
   @override
   Map<String, dynamic> toJson() => {
         if (request != null) 'request': request?.toJson(),

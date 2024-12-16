@@ -1,12 +1,14 @@
+import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite_generators/src/builders/sqlite_base_builder.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
-/// Create a new [Migration] from the contents of all [ConnectOfflineFirstWithRest] models
+/// Create a new [Migration] from the contents of all `ConnectOfflineFirstWith` models
 class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnnotation> {
   @override
   final outputExtension = '.migration_builder.dart';
 
+  /// Create a new [Migration] from the contents of all `ConnectOfflineFirstWith` models
   NewMigrationBuilder();
 
   @override
@@ -15,14 +17,13 @@ class NewMigrationBuilder<_ClassAnnotation> extends SqliteBaseBuilder<_ClassAnno
     final fieldses = await sqliteFieldsFromBuildStep(buildStep);
     final now = DateTime.now().toUtc();
     final timestamp =
-        [now.month, now.day, now.hour, now.minute, now.second].map(_padToTwo).toList().join('');
+        [now.month, now.day, now.hour, now.minute, now.second].map(_padToTwo).toList().join();
     final version = int.parse('${now.year}$timestamp');
     final output = schemaGenerator.createMigration(libraryReader, fieldses, version: version);
 
     if (output == null) return;
 
-    final stopwatch = Stopwatch();
-    stopwatch.start();
+    final stopwatch = Stopwatch()..start();
 
     // in a perfect world, the schema would not be edited in such a brittle way
     // however, reruning the schema generator here doesn't pick up the new migration

@@ -14,7 +14,7 @@ void main() {
     final requestManager = RestRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
-      processingInterval: const Duration(seconds: 0),
+      processingInterval: Duration.zero,
     );
 
     setUpAll(() async {
@@ -36,7 +36,7 @@ void main() {
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
-        processingInterval: const Duration(seconds: 0),
+        processingInterval: Duration.zero,
       );
       final client = RestOfflineQueueClient(inner, requestManager);
 
@@ -106,7 +106,7 @@ void main() {
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         await asCacheItem.unlock(await requestManager.getDb());
 
-        final requests = await requestManager.unprocessedRequests(onlyLocked: false);
+        final requests = await requestManager.unprocessedRequests();
         expect(requests, hasLength(1));
 
         final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
@@ -140,7 +140,7 @@ void main() {
         );
 
         expect(await requestManager.unprocessedRequests(onlyLocked: true), hasLength(1));
-        expect(await requestManager.unprocessedRequests(onlyLocked: false), hasLength(1));
+        expect(await requestManager.unprocessedRequests(), hasLength(1));
 
         expect(await requestManager.prepareNextRequestToProcess(), isNull);
 

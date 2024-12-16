@@ -9,6 +9,7 @@ abstract class OfflineRequestQueue<TRequest> {
   /// If the queue is processing
   bool get isRunning => _timer?.isActive ?? false;
 
+  ///
   @protected
   final Logger logger;
 
@@ -16,12 +17,15 @@ abstract class OfflineRequestQueue<TRequest> {
   /// not occur as the Timer runs in sub routines or isolates
   bool _processingInBackground = false;
 
+  /// How often requests are reattempted
   final Duration processingInterval;
 
+  ///
   final RequestSqliteCacheManager requestManager;
 
   Timer? _timer;
 
+  /// Repeatedly reattempts requests in an interval
   OfflineRequestQueue({
     required this.processingInterval,
     required this.requestManager,
@@ -45,7 +49,7 @@ abstract class OfflineRequestQueue<TRequest> {
     }
   }
 
-  /// Start the processing queue, resending requests every [interval].
+  /// Start the processing queue, resending requests every [processingInterval].
   /// Stops the existing timer if it was already running.
   void start() {
     stop();

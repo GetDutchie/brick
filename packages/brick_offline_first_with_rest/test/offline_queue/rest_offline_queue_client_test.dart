@@ -216,7 +216,7 @@ void main() {
         });
 
         test('onReattempt is not triggered for non-reattemptable status code', () async {
-          bool callbackTriggered = false;
+          var callbackTriggered = false;
 
           final inner = stubResult(statusCode: 404);
           final client = RestOfflineQueueClient(
@@ -238,7 +238,7 @@ void main() {
           Object? capturedException;
 
           final inner = MockClient((req) async {
-            throw SocketException('test error');
+            throw const SocketException('test error');
           });
 
           final client = RestOfflineQueueClient(
@@ -257,11 +257,11 @@ void main() {
           expect(capturedRequest?.method, equals('POST'));
           expect(capturedRequest?.url, equals(uri));
           expect(capturedException, isA<SocketException>());
-          expect((capturedException as SocketException).message, equals('test error'));
+          expect((capturedException! as SocketException).message, equals('test error'));
         });
 
         test('onRequestException is not triggered for successful request', () async {
-          bool callbackTriggered = false;
+          var callbackTriggered = false;
 
           final inner = stubResult(statusCode: 200);
           final client = RestOfflineQueueClient(

@@ -19,8 +19,7 @@ void main() {
       final queue = GraphqlOfflineRequestQueue(
         link: offlineClient,
         requestManager: requestManager,
-      );
-      queue.start();
+      )..start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
@@ -29,8 +28,7 @@ void main() {
       final queue = GraphqlOfflineRequestQueue(
         link: offlineClient,
         requestManager: requestManager,
-      );
-      queue.start();
+      )..start();
       expect(queue.isRunning, isTrue);
       queue.stop();
       expect(queue.isRunning, isFalse);

@@ -22,9 +22,14 @@ abstract class OfflineFirstWithGraphqlRepository<
   // ignore: overridden_fields
   final GraphqlProvider remoteProvider;
 
+  ///
   @protected
   late final GraphqlOfflineRequestQueue offlineRequestQueue;
 
+  /// Ensures the [remoteProvider] is a [GraphqlProvider]. All requests to and
+  /// from the [remoteProvider] pass through a seperate SQLite queue. If the app
+  /// is unable to make contact with the [remoteProvider], the queue automatically retries in
+  /// sequence until it receives a response.
   OfflineFirstWithGraphqlRepository({
     super.autoHydrate,
     required GraphqlProvider graphqlProvider,
@@ -60,7 +65,7 @@ abstract class OfflineFirstWithGraphqlRepository<
                 .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
           )
         : null;
-    final context = (queryContext ?? argContext ?? Context()).withEntry(
+    final context = (queryContext ?? argContext ?? const Context()).withEntry(
       OfflineFirstGraphqlPolicy(
         delete: delete,
         get: get,
@@ -169,7 +174,7 @@ abstract class OfflineFirstWithGraphqlRepository<
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
   }) {
-    query ??= Query();
+    query ??= const Query();
     if (subscriptions[TModel]?[query] != null) {
       return subscriptions[TModel]![query]!.stream as Stream<List<TModel>>;
     }

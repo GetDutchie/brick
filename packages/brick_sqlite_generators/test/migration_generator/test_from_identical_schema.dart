@@ -16,7 +16,6 @@ class Migration1 extends Migration {
 
 final schema = Schema(
   2,
-  generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
       'User',

@@ -15,13 +15,16 @@ class ModelDictionaryBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotat
   /// Include both single and double strings around package imports for safety. Regex is not supported.
   final List<String> expectedImportRemovals;
 
+  ///
   final ModelDictionaryGenerator modelDictionaryGenerator;
 
   @override
   final outputExtension = '.model_dictionary_builder.dart';
 
+  ///
   static final modelFiles = Glob('lib/**/*.model.dart');
 
+  /// Writes [ModelDictionary] code to connect model and adapters. Outputs to brick/brick.g.dart
   ModelDictionaryBuilder(
     this.modelDictionaryGenerator, {
     this.expectedImportRemovals = const <String>[],
@@ -53,6 +56,7 @@ class ModelDictionaryBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotat
     logStopwatch('Generated brick.g.dart', stopwatch);
   }
 
+  ///
   static Map<String, String> classFilePathsFromAnnotations(
     Iterable<AnnotatedElement> annotations,
     Map<String, String> filesToContents,

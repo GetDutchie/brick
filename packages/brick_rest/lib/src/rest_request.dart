@@ -56,6 +56,22 @@ class RestRequest {
         url: data['url'],
       );
 
+  /// Copy a request with overriden parameters
+  RestRequest copyWith({
+    Map<String, String>? headers,
+    String? method,
+    Map<String, dynamic>? supplementalTopLevelData,
+    String? topLevelKey,
+    String? url,
+  }) =>
+      RestRequest(
+        headers: headers ?? this.headers,
+        method: method ?? this.method,
+        supplementalTopLevelData: supplementalTopLevelData ?? this.supplementalTopLevelData,
+        topLevelKey: topLevelKey ?? this.topLevelKey,
+        url: url ?? this.url,
+      );
+
   /// Serialize a request to JSON
   Map<String, dynamic> toJson() => {
         'headers': headers,

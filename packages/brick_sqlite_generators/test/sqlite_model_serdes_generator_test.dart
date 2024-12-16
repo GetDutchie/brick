@@ -18,7 +18,7 @@ import 'sqlite_model_serdes_generator/test_sqlite_unique.dart' as sqlite_unique;
 import 'sqlite_model_serdes_generator/test_to_json_from_json.dart' as to_json_from_json;
 
 final _generator = TestGenerator();
-final folder = 'sqlite_model_serdes_generator';
+const folder = 'sqlite_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {
@@ -28,7 +28,7 @@ void main() {
         final reader = await generateReader('id_field');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
@@ -36,7 +36,7 @@ void main() {
         final reader = await generateReader('primary_key_field');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
@@ -44,7 +44,7 @@ void main() {
         final reader = await generateReader('column_type_without_generator');
         expect(
           () async => await _generator.generate(reader, MockBuildStep()),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
     });

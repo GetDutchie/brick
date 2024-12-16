@@ -2,7 +2,7 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 Future<SupabaseDefault> _$SupabaseDefaultFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
@@ -176,7 +176,7 @@ Future<Map<String, dynamic>> _$SupabaseRenameWithOverrideToSqlite(
 ''';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(),
+  supabaseConfig: SupabaseSerializable.defaults,
 )
 class SupabaseDefault extends OfflineFirstModel {
   final int someLongField;
@@ -194,7 +194,7 @@ class SupabaseNoRename extends OfflineFirstModel {
 }
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(fieldRename: FieldRename.snake),
+  supabaseConfig: SupabaseSerializable.defaults,
 )
 class SupabaseSnakeRename extends OfflineFirstModel {
   final int someLongField;

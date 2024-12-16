@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_mixin
+
 import 'dart:io';
 
 import 'package:brick_core/core.dart';
@@ -9,7 +11,7 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import '__mocks__.dart';
 
 class TestProvider extends Provider<TestModel> {
-  var methodsCalled = <String>[];
+  List<String> methodsCalled = <String>[];
 
   @override
   final TestModelDictionary modelDictionary;
@@ -72,6 +74,7 @@ abstract class TestAdapter<TModel extends TestModel> implements Adapter<TModel> 
 
 /// Associates app models with their [TestAdapter]
 class TestModelDictionary extends ModelDictionary<TestModel, TestAdapter<TestModel>> {
+  // ignore: use_super_parameters
   const TestModelDictionary(Map<Type, TestAdapter<TestModel>> mappings) : super(mappings);
 }
 

@@ -364,7 +364,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     return 'instance.${field.name}';
   }
 
-  /// If the annotation includes a [defaultValue], use it when the received value is null
+  /// If the annotation includes a [FieldSerializable.defaultValue], use it when the received value is null
   static String defaultValueSuffix(FieldSerializable fieldAnnotation) =>
       fieldAnnotation.defaultValue != null ? ' ?? ${fieldAnnotation.defaultValue}' : '';
 

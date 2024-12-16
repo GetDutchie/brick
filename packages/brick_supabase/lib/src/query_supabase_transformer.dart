@@ -44,6 +44,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return limit(computedBuilder);
   }
 
+  ///
   PostgrestFilterBuilder<List<Map<String, dynamic>>> select(SupabaseQueryBuilder builder) =>
       (query?.where ?? []).fold(builder.select(selectFields), (acc, condition) {
         final whereStatement = expandCondition(condition);
