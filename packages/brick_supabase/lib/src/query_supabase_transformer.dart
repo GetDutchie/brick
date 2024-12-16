@@ -197,21 +197,30 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    final limit0 = query?.limit ?? query?.providerArgs['limit'] as int?;
-    final hasLimit = limit0 != null || (query?.limitBy.isNotEmpty ?? false);
-    if (!hasLimit) return builder;
+    if (query == null) return builder;
 
-    final referencedTable = query!.providerArgs['limitReferencedTable'] as String?;
+    final topLevelLimit = query?.providerArgs['limit'] as int? ?? query?.limit;
+    final withTopLevelLimit = topLevelLimit != null
+        ? PostgrestTransformBuilder(
+            builder.copyWithUrl(builder.appendSearchParams('limit', topLevelLimit.toString())),
+          )
+        : builder;
+
+    final referencedTable = query?.providerArgs['limitReferencedTable'] as String?;
     final key = referencedTable == null ? 'limit' : '$referencedTable.limit';
-    final url = builder.appendSearchParams(key, limit0.toString());
-    final withProviderArgs = PostgrestTransformBuilder(builder.copyWithUrl(url));
+    final withProviderArgs = topLevelLimit != null
+        ? PostgrestTransformBuilder(
+            withTopLevelLimit
+                .copyWithUrl(builder.appendSearchParams(key, topLevelLimit.toString())),
+          )
+        : withTopLevelLimit;
 
-    return query!.limitBy.fold(withProviderArgs, (builder, limitBy) {
+    return query!.limitBy.fold(withProviderArgs, (acc, limitBy) {
       final tableName = modelDictionary.adapterFor[limitBy.model]?.supabaseTableName;
-      if (tableName == null) return builder;
+      if (tableName == null) return acc;
 
-      final url = builder.appendSearchParams('$tableName.limit', limitBy.amount.toString());
-      return PostgrestTransformBuilder(builder.copyWithUrl(url));
+      final url = acc.appendSearchParams('$tableName.limit', limitBy.amount.toString());
+      return PostgrestTransformBuilder(acc.copyWithUrl(url));
     });
   }
 
@@ -221,28 +230,28 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestFilterBuilder<List<Map<String, dynamic>>> order(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    if (query?.providerArgs['orderBy'] == null || (query?.orderBy.isEmpty ?? true)) return builder;
+    if (query?.providerArgs['orderBy'] == null && (query?.orderBy.isEmpty ?? true)) return builder;
 
-    final orderBy = query!.providerArgs['orderBy'] as String;
-    final ascending = orderBy.toLowerCase().endsWith(' asc');
+    final orderBy = query!.providerArgs['orderBy'] as String?;
+    final ascending = orderBy?.toLowerCase().endsWith(' asc') ?? true;
     final referencedTable = query!.providerArgs['orderByReferencedTable'] as String?;
     final key = referencedTable == null ? 'order' : '$referencedTable.order';
-    final fieldName = orderBy.split(' ')[0];
-    final columnName = adapter.fieldsToSupabaseColumns[fieldName]!.columnName;
-    final value = '$columnName.${ascending ? 'asc' : 'desc'}.nullslast';
-    final url = builder.overrideSearchParams(key, value);
-    final withProviderArgs = builder.copyWithUrl(url);
+    final fieldName = orderBy?.split(' ')[0];
+    final columnName = adapter.fieldsToSupabaseColumns[fieldName]?.columnName;
+    final url =
+        builder.overrideSearchParams(key, '$columnName.${ascending ? 'asc' : 'desc'}.nullslast');
+    final withProviderArgs = orderBy == null ? builder : builder.copyWithUrl(url);
 
-    return query!.orderBy.fold(withProviderArgs, (builder, orderBy) {
+    return query!.orderBy.fold(withProviderArgs, (acc, orderBy) {
       final tableName = orderBy.model == null
           ? null
           : modelDictionary.adapterFor[orderBy.model]?.supabaseTableName;
 
-      final url = builder.appendSearchParams(
+      final url = acc.appendSearchParams(
         tableName == null ? 'order' : '$tableName.order',
-        '${orderBy.evaluatedField}.${ascending ? 'asc' : 'desc'}.nullslast',
+        '${orderBy.evaluatedField}.${orderBy.ascending ? 'asc' : 'desc'}.nullslast',
       );
-      return builder.copyWithUrl(url);
+      return acc.copyWithUrl(url);
     });
   }
 

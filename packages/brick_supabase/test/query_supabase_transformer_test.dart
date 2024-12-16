@@ -152,7 +152,83 @@ void main() {
       });
     });
 
-    group('#applyProviderArgs', () {
+    group('#applyQuery', () {
+      test('orderBy', () {
+        const query = Query(providerArgs: {'orderBy': 'name asc'});
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,custom_age&order=name.asc.nullslast',
+        );
+      });
+
+      test('orderBy with descending order', () {
+        const query = Query(providerArgs: {'orderBy': 'name desc'});
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,custom_age&order=name.desc.nullslast',
+        );
+      });
+
+      test('orderBy with referenced table', () {
+        const query = Query(
+          providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'foreign_tables'},
+        );
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,custom_age&foreign_tables.order=name.desc.nullslast',
+        );
+      });
+
+      test('limit', () {
+        const query = Query(providerArgs: {'limit': 10});
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(transformBuilder.query, 'select=id,name,custom_age&limit=10');
+      });
+
+      test('limit with referenced table', () {
+        const query = Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'foreign_tables'});
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(transformBuilder.query, 'select=id,name,custom_age&foreign_tables.limit=10');
+      });
+
+      test('combined orderBy and limit', () {
+        const query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
+        final queryTransformer = _buildTransformer<Demo>(query);
+        final filterBuilder =
+            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,name,custom_age&order=name.desc.nullslast&limit=20',
+        );
+      });
+    });
+
+    group('#query', () {
       test('orderBy', () {
         const query = Query(orderBy: [OrderBy('name')]);
         final queryTransformer = _buildTransformer<Demo>(query);
