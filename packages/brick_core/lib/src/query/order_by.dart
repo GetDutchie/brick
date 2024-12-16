@@ -38,14 +38,13 @@ class OrderBy {
   factory OrderBy.fromJson(Map<String, dynamic> json) => OrderBy(
         json['evaluatedField'],
         ascending: json['ascending'],
-        model: json['model'],
       );
 
   /// Serialize to JSON
   Map<String, dynamic> toJson() => {
         'ascending': ascending,
         'evaluatedField': evaluatedField,
-        if (model != null) 'model': model,
+        if (model != null) 'model': model?.toString(),
       };
 
   @override

@@ -93,6 +93,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
       AllOtherClausesFragment(
         query,
         fieldsToColumns: adapter.fieldsToSqliteColumns,
+        modelDictionary: modelDictionary,
       ).toString(),
     );
   }
@@ -345,6 +346,9 @@ class AllOtherClausesFragment {
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToColumns;
 
   ///
+  final SqliteModelDictionary modelDictionary;
+
+  ///
   final Query? query;
 
   /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
@@ -366,6 +370,7 @@ class AllOtherClausesFragment {
   AllOtherClausesFragment(
     this.query, {
     required this.fieldsToColumns,
+    required this.modelDictionary,
   });
 
   @override
@@ -377,7 +382,13 @@ class AllOtherClausesFragment {
       if (query?.limit != null) 'limit': query?.limit,
       if (query?.offset != null) 'offset': query?.offset,
       if (query?.orderBy.isNotEmpty ?? false)
-        'orderBy': query?.orderBy.map((p) => p.toString()).join(', '),
+        'orderBy': query?.orderBy
+            .map(
+              (p) => p.model != null
+                  ? '`${modelDictionary.adapterFor[p.model]?.tableName}`.${modelDictionary.adapterFor[p.model]?.fieldsToSqliteColumns[p.evaluatedField]?.columnName} ${p.ascending ? 'ASC' : 'DESC'}'
+                  : p.toString(),
+            )
+            .join(', '),
       if (providerQuery?.groupBy != null) 'groupBy': providerQuery?.groupBy,
       if (providerQuery?.having != null) 'having': providerQuery?.having,
     };
@@ -391,6 +402,8 @@ class AllOtherClausesFragment {
       if (_operatorsDeclaringFields.contains(op)) {
         value = value.toString().split(',').fold<String>(value.toString(),
             (modValue, innerValueClause) {
+          // TODO(tshedor): revisit and remove providerArgs hacks here after
+          // providerArgs is fully deprecated
           final fragment = innerValueClause.trim().split(' ');
           if (fragment.isEmpty) return modValue;
 
@@ -402,6 +415,19 @@ class AllOtherClausesFragment {
               columnName = 'datetime($columnName)';
             }
             return modValue.replaceAll(fieldName, columnName);
+          }
+
+          final tableFragment = innerValueClause.trim().split('.');
+          if (fragment.isEmpty) return modValue;
+
+          final tabledFieldName = tableFragment.last;
+          final tabledColumnDefinition = fieldsToColumns[fieldName];
+          var tabledColumnName = tabledColumnDefinition?.columnName;
+          if (tabledColumnName != null && modValue.contains(fieldName)) {
+            if (columnDefinition!.type == DateTime) {
+              tabledColumnName = 'datetime($tabledColumnName)';
+            }
+            return modValue.replaceAll(tabledFieldName, tabledColumnName);
           }
 
           return modValue;
