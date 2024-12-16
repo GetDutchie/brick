@@ -10,6 +10,7 @@ export 'package:brick_build/src/annotation_super_generator.dart';
 ///
 final brickLogger = Logger('Brick');
 
+///
 abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   ///
   Logger get logger => brickLogger;

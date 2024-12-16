@@ -86,7 +86,7 @@ class AggregateBuilder implements Builder {
       importRegex.allMatches(contents).map((m) => m[0]!).toSet();
 
   @override
-  final buildExtensions = const {
-    r'$lib$': [outputFileName],
-  };
+  Map<String, List<String>> get buildExtensions => const {
+        r'$lib$': [outputFileName],
+      };
 }
