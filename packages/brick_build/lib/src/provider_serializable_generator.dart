@@ -27,6 +27,7 @@ abstract class ProviderSerializableGenerator<Config> {
   /// The reader generated from the annotation
   final ConstantReader reader;
 
+  /// Given an element and annotation, output a digestable config
   ProviderSerializableGenerator(
     this.element,
     this.reader, {

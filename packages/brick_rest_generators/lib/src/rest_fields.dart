@@ -8,12 +8,14 @@ import 'package:brick_rest_generators/src/rest_serializable_extended.dart';
 /// Find `@Rest` given a field
 class RestAnnotationFinder extends AnnotationFinder<Rest>
     with AnnotationFinderWithFieldRename<Rest> {
+  ///
   final RestSerializable? config;
 
+  /// Find `@Rest` given a field
   RestAnnotationFinder([this.config]);
 
   @override
-  Rest from(element) {
+  Rest from(FieldElement element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -51,8 +53,11 @@ class RestAnnotationFinder extends AnnotationFinder<Rest>
 class RestFields extends FieldsForClass<Rest> {
   @override
   final RestAnnotationFinder finder;
+
+  ///
   final RestSerializableExtended? config;
 
+  /// Converts all fields to [Rest]s for later consumption
   RestFields(ClassElement element, [this.config])
       : finder = RestAnnotationFinder(config),
         super(element: element);

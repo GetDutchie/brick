@@ -1,4 +1,4 @@
-import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
@@ -238,7 +238,7 @@ void main() {
         expect(
           diff.toMigrationCommands(),
           [
-            InsertTable('demo'),
+            const InsertTable('demo'),
             InsertColumn(column.name, Column.varchar, onTable: column.tableName!),
           ],
         );
@@ -254,7 +254,7 @@ void main() {
         expect(
           diff.toMigrationCommands(),
           [
-            InsertTable('demo'),
+            const InsertTable('demo'),
             InsertColumn(column.name, Column.varchar, onTable: column.tableName!),
           ],
         );
@@ -276,7 +276,7 @@ void main() {
         final newSchema = Schema(1, tables: {});
 
         final diff = SchemaDifference(oldSchema, newSchema);
-        expect(diff.toMigrationCommands(), [DropTable('demo')]);
+        expect(diff.toMigrationCommands(), [const DropTable('demo')]);
         expect(diff.droppedTables, hasLength(1));
         expect(diff.insertedTables, isEmpty);
       });
@@ -320,22 +320,20 @@ void main() {
 
         final diff = SchemaDifference(oldSchema, newSchema);
         expect(diff.toMigrationCommands(), [
-          InsertTable('_brick_People_friend'),
-          InsertForeignKey(
+          const InsertTable('_brick_People_friend'),
+          const InsertForeignKey(
             '_brick_People_friend',
             'People',
             foreignKeyColumn: 'l_People_brick_id',
-            onDeleteCascade: false,
             onDeleteSetDefault: true,
           ),
-          InsertForeignKey(
+          const InsertForeignKey(
             '_brick_People_friend',
             'Friend',
             foreignKeyColumn: 'f_Friend_brick_id',
-            onDeleteCascade: false,
             onDeleteSetDefault: true,
           ),
-          CreateIndex(
+          const CreateIndex(
             columns: ['l_People_brick_id', 'f_Friend_brick_id'],
             onTable: '_brick_People_friend',
             unique: true,
@@ -368,7 +366,7 @@ void main() {
       final old = Schema(2, tables: <SchemaTable>{});
       final fresh = Schema(1, tables: <SchemaTable>{});
 
-      expect(() => SchemaDifference(old, fresh), throwsA(TypeMatcher<AssertionError>()));
+      expect(() => SchemaDifference(old, fresh), throwsA(const TypeMatcher<AssertionError>()));
     });
   });
 }

@@ -12,6 +12,8 @@ class SqliteModelSerdesGenerator extends ProviderSerializableGenerator<SqliteSer
   /// Repository prefix passed to the generators. Does not include `Repository`.
   final String repositoryName;
 
+  /// Digest a `sqliteConfig` from [reader] and manage serdes generators
+  /// to and from a `SqliteProvider`.
   SqliteModelSerdesGenerator(
     super.element,
     super.reader, {

@@ -4,13 +4,19 @@ import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_json_generators/json_serdes_generator.dart';
 
+/// Default deserialize implementation of [coderForField] for JSON-based providers
 mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonSerdesGenerator<TModel, Annotation> {
   @override
   final doesDeserialize = true;
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Annotation fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
     if (fieldAnnotation.ignoreFrom) return null;
@@ -89,12 +95,12 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
 
       // Iterable<fromJson>
       if (argTypeChecker.fromJsonConstructor != null) {
-        final klass = argTypeChecker.targetType.element as ClassElement;
+        final klass = argTypeChecker.targetType.element! as ClassElement;
         final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
         final nullableSuffix = checker.isNullable ? '?' : '';
 
         return '''$fieldValue$nullableSuffix.map(
-          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()})
         )$castIterable$defaultValue''';
       }
 
@@ -134,11 +140,11 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
     } else if (checker.isMap) {
       return '$fieldValue$defaultValue';
     } else if (checker.fromJsonConstructor != null) {
-      final klass = checker.targetType.element as ClassElement;
+      final klass = checker.targetType.element! as ClassElement;
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
 
       final output =
-          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString(withNullability: true)})';
+          '${klass.displayName}.fromJson($fieldValue as ${parameterType.getDisplayString()})';
       if (checker.isNullable) return '$fieldValue != null ? $output : null';
       return output;
     }

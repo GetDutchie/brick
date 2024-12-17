@@ -5,11 +5,14 @@ import 'package:build/build.dart';
 /// Writes adapter code (model serialization/deserialization).
 /// Outputs to brick/adapters/<MODEL>_adapter.g.dart
 class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
+  ///
   final AnnotationSuperGenerator generator;
 
   @override
   final outputExtension = '.adapter_builder.dart';
 
+  /// Writes adapter code (model serialization/deserialization).
+  /// Outputs to brick/adapters/<MODEL>_adapter.g.dart
   AdapterBuilder(this.generator);
 
   @override
@@ -18,8 +21,7 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
 
     final allOutputs = <String>[];
     for (final annotatedElement in annotatedElements) {
-      final stopwatch = Stopwatch();
-      stopwatch.start();
+      final stopwatch = Stopwatch()..start();
 
       final output = generator.generateAdapter(
         annotatedElement.element,

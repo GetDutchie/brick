@@ -2,16 +2,18 @@
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
-import 'package:brick_sqlite/brick_sqlite.dart' show SqliteSerializable, Sqlite, Column;
+import 'package:brick_sqlite/brick_sqlite.dart' show Column, Sqlite, SqliteSerializable;
 
 /// Find `@Sqlite` given a field
 class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
+  ///
   final SqliteSerializable? config;
 
+  /// Find `@Sqlite` given a field
   SqliteAnnotationFinder([this.config]);
 
   @override
-  Sqlite from(element) {
+  Sqlite from(FieldElement element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -58,8 +60,11 @@ class SqliteAnnotationFinder extends AnnotationFinder<Sqlite> {
 class SqliteFields extends FieldsForClass<Sqlite> {
   @override
   final SqliteAnnotationFinder finder;
+
+  ///
   final SqliteSerializable? config;
 
+  /// Converts all fields to [Sqlite]s for later consumption
   SqliteFields(ClassElement element, [this.config])
       : finder = SqliteAnnotationFinder(config),
         super(element: element);

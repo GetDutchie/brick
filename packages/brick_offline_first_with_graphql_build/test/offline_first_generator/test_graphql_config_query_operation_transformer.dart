@@ -1,7 +1,7 @@
 import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
-final output = r'''
+const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
@@ -106,7 +106,7 @@ class QueryOperationTransformerExampleAdapter
 
 class QueryOperationTransformerExampleTransformer extends GraphqlQueryOperationTransformer {
   @override
-  GraphqlOperation get get => GraphqlOperation(
+  GraphqlOperation get get => const GraphqlOperation(
         document: '''
           query {
             getAll()

@@ -2,7 +2,7 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 
 enum Casing { snake, camel }
 
-final output = '''
+const output = '''
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';

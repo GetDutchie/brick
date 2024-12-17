@@ -1,14 +1,16 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_core/src/model.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_sqlite/db.dart' show InsertForeignKey, InsertTable;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 
 /// Generate a function to produce a [ClassElement] to SQLite data
 class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
+  /// Generate a function to produce a [ClassElement] to SQLite data
   SqliteSerialize(
     super.element,
     super.fields, {
@@ -18,6 +20,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   @override
   final doesDeserialize = false;
 
+  ///
   String get tableName => element.name;
 
   @override
@@ -69,7 +72,12 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Sqlite fieldAnnotation,
+  }) {
     final name = providerNameForField(fieldAnnotation.name, checker: checker);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     if (name == InsertTable.PRIMARY_KEY_COLUMN) {
@@ -247,7 +255,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   }
 
   @override
-  bool ignoreCoderForField(field, annotation, checker) {
+  bool ignoreCoderForField(FieldElement field, Sqlite annotation, SharedChecker<Model> checker) {
     if (annotation.columnType != null) return false;
     return super.ignoreCoderForField(field, annotation, checker);
   }

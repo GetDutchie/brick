@@ -27,8 +27,11 @@ class _MigrationImpl extends Migration {
 /// Recreate existing migrations as manageable objects.
 /// Eventually used in [SchemaDifference] to generate new [Migration]s
 class MigrationGenerator extends Generator {
+  ///
   static final emptySchema = Schema(0, tables: <SchemaTable>{});
 
+  /// Recreate existing migrations as manageable objects.
+  /// Eventually used in [SchemaDifference] to generate new [Migration]s
   const MigrationGenerator();
 
   /// Search [library] for all classes that extend [Migration]. Recreate these in Dart Code
@@ -129,7 +132,7 @@ class MigrationGenerator extends Generator {
 
   /// Creates a new migration from the delta between the existing migration and a new schema
   @override
-  String? generate(library, BuildStep? buildStep, {Schema? newSchema, int? version}) {
+  String? generate(LibraryReader library, BuildStep? buildStep, {Schema? newSchema, int? version}) {
     final allMigrations = expandAllMigrations(library);
     final oldSchema = Schema.fromMigrations(allMigrations.toSet());
 

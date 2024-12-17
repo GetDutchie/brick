@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 Future<SupabaseUnserializableFieldWithGenerator>
     _$SupabaseUnserializableFieldWithGeneratorFromSupabase(
         Map<String, dynamic> data,

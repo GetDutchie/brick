@@ -11,25 +11,36 @@ import 'package:brick_supabase/src/testing/supabase_response.dart';
 import 'package:collection/collection.dart';
 import 'package:supabase/supabase.dart';
 
+/// An all-in-one mock for Supabase repsonses in unit tests.
 class SupabaseMockServer {
+  /// A mock Supabase API key. Can be a blank string.
   final String apiKey;
 
+  /// A real SupabaseClient that does not connect to Supabase
   late SupabaseClient client;
 
+  /// If a stream listener has been registered
   bool hasListener = false;
 
+  /// The active stream listener
   StreamSubscription<dynamic>? listener;
 
+  /// Active stream listeners
   final Set<String> listeners = {};
 
+  ///
   final SupabaseModelDictionary modelDictionary;
 
+  /// The created and reassigned [HttpServer]
   late HttpServer server;
 
+  /// The simulated server URL
   String get serverUrl => 'http://${server.address.host}:${server.port}';
 
+  /// The stubbed websocket that can be listed to for streams
   WebSocket? webSocket;
 
+  /// An all-in-one mock for Supabase repsonses in unit tests.
   SupabaseMockServer({this.apiKey = 'supabaseKey', required this.modelDictionary});
 
   /// Invoke within a group as `tearDown(mock.tearDown)`
@@ -64,6 +75,7 @@ class SupabaseMockServer {
     }
   }
 
+  /// Handle realtime/stream requests
   Future<void> handleRealtime(
     HttpRequest request,
     Map<SupabaseRequest, SupabaseResponse> responses,
@@ -92,9 +104,8 @@ class SupabaseMockServer {
 
       final realtimeFilter = requestJson['payload']['config']['postgres_changes'].first['filter'];
 
-      final matching = responses.entries.firstWhereOrNull((r) {
-        return realtimeFilter == null || realtimeFilter == r.key.filter;
-      });
+      final matching = responses.entries
+          .firstWhereOrNull((r) => realtimeFilter == null || realtimeFilter == r.key.filter);
 
       if (matching == null) return;
 
@@ -132,6 +143,7 @@ class SupabaseMockServer {
     });
   }
 
+  /// Handle regular REST requests
   HttpResponse handleRest(HttpRequest request, Map<SupabaseRequest, SupabaseResponse> responses) {
     final url = request.uri.toString();
 
@@ -213,9 +225,12 @@ class SupabaseMockServer {
       'payload': {
         'ids': [realtimeEvent.index],
         'data': {
-          'columns': adapter.fieldsToSupabaseColumns.entries.map((entry) {
-            return {'name': entry.value.columnName, 'type': 'text', 'type_modifier': 4294967295};
-          }).toList(),
+          'columns': adapter.fieldsToSupabaseColumns.entries
+              .map(
+                (entry) =>
+                    {'name': entry.value.columnName, 'type': 'text', 'type_modifier': 4294967295},
+              )
+              .toList(),
           'commit_timestamp': '2021-08-01T08:00:30Z',
           'errors': null,
           if (realtimeEvent != PostgresChangeEvent.insert) 'old_record': serialized,

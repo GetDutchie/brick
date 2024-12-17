@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<EnumFactorySerialize> _$EnumFactorySerializeFromTest(
     Map<String, dynamic> data,
     {required TestProvider provider,

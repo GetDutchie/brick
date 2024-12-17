@@ -22,15 +22,18 @@ class SharedChecker<_SiblingModel extends Model> {
   /// The checked type
   final DartType targetType;
 
+  /// A utility to legibly assert a [DartType] against core types
+  ///
+  /// Optionally declare a model to discover "sibling" models, or models that share
+  /// the same domain or provider (e.g. `SqliteModel`).
   SharedChecker(this.targetType);
 
   /// Retrieves type argument, i.e. `Type` in `Future<Type>` or `List<Type>`
-  DartType get argType {
-    return (targetType as InterfaceType).typeArguments.first;
-  }
+  DartType get argType => (targetType as InterfaceType).typeArguments.first;
 
+  ///
   Type get asPrimitive {
-    assert(isDartCoreType);
+    assert(isDartCoreType, 'type must be a core type');
     if (isBool) return bool;
     if (isDateTime) return DateTime;
     if (isDouble) return double;
@@ -39,11 +42,13 @@ class SharedChecker<_SiblingModel extends Model> {
     return String;
   }
 
+  ///
   bool get canSerializeArgType {
     final checker = SharedChecker<_SiblingModel>(argType);
     return checker.isSerializable;
   }
 
+  ///
   String? enumDeserializeFactory(String providerName) {
     if (!isEnum) return null;
     final element = (targetType as InterfaceType).element as EnumElement;
@@ -56,6 +61,7 @@ class SharedChecker<_SiblingModel extends Model> {
     return null;
   }
 
+  ///
   String? enumSerializeMethod(String providerName) {
     if (!isEnum) return null;
     final element = (targetType as InterfaceType).element as EnumElement;
@@ -72,7 +78,7 @@ class SharedChecker<_SiblingModel extends Model> {
   /// If the constructor can't be found, `null` is returned.
   ConstructorElement? get fromJsonConstructor {
     if (targetType.element is ClassElement) {
-      for (final constructor in (targetType.element as ClassElement).constructors) {
+      for (final constructor in (targetType.element! as ClassElement).constructors) {
         if (constructor.name == 'fromJson') return constructor;
       }
     }
@@ -80,11 +86,10 @@ class SharedChecker<_SiblingModel extends Model> {
     return null;
   }
 
-  bool get isArgTypeAFuture {
-    return argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
-  }
+  ///
+  bool get isArgTypeAFuture => argType.isDartAsyncFuture || argType.isDartAsyncFutureOr;
 
-  /// If the sub type has super type [SqliteModel]
+  /// If the sub type has super type of a related [Model]
   /// Returns true for `Future<SqliteModel>`,
   /// `List<Future<SqliteModel>>`, and `List<SqliteModel>`.
   bool get isArgTypeASibling {
@@ -96,34 +101,44 @@ class SharedChecker<_SiblingModel extends Model> {
     return _siblingClassChecker.isAssignableFromType(argType);
   }
 
+  ///
   bool get isBool => targetType.isDartCoreBool;
 
   /// If this is a [bool], [DateTime], [double], [int], [num], or [String]
   bool get isDartCoreType => isBool || isDateTime || isDouble || isInt || isNum || isString;
 
+  ///
   bool get isDateTime => _dateTimeChecker.isExactlyType(targetType);
 
+  ///
   bool get isDouble => targetType.isDartCoreDouble;
 
-  bool get isEnum {
-    return targetType is InterfaceType && (targetType as InterfaceType).element is EnumElement;
-  }
+  ///
+  bool get isEnum =>
+      targetType is InterfaceType && (targetType as InterfaceType).element is EnumElement;
 
+  ///
   bool get isFuture => targetType.isDartAsyncFuture || targetType.isDartAsyncFutureOr;
 
+  ///
   bool get isInt => targetType.isDartCoreInt;
 
+  ///
   bool get isIterable =>
       _iterableChecker.isExactlyType(targetType) ||
       _listChecker.isExactlyType(targetType) ||
       _setChecker.isExactlyType(targetType);
 
+  ///
   bool get isList => _listChecker.isExactlyType(targetType);
 
+  ///
   bool get isMap => _mapChecker.isExactlyType(targetType);
 
+  ///
   bool get isNullable => targetType.nullabilitySuffix != NullabilitySuffix.none;
 
+  ///
   bool get isNum => _numChecker.isExactlyType(targetType);
 
   /// Not all [Type]s are parseable. For consistency, one catchall before smaller checks
@@ -140,6 +155,7 @@ class SharedChecker<_SiblingModel extends Model> {
     return isDartCoreType || isEnum || isMap || isSibling || (isFuture && canSerializeArgType);
   }
 
+  ///
   bool isSerializableViaJson(bool doesDeserialize) {
     if (isIterable) {
       final argTypeChecker = SharedChecker<_SiblingModel>(argType);
@@ -150,6 +166,7 @@ class SharedChecker<_SiblingModel extends Model> {
     return doesDeserialize ? fromJsonConstructor != null : toJsonMethod != null;
   }
 
+  ///
   bool get isSet => _setChecker.isExactlyType(targetType);
 
   /// If this is a class similarly annotated by the current generator.
@@ -157,8 +174,10 @@ class SharedChecker<_SiblingModel extends Model> {
   /// Useful for verifying whether or not to generate Serialize/Deserializers methods.
   bool get isSibling => _siblingClassChecker.isAssignableFromType(targetType);
 
+  /// If this is a [String]
   bool get isString => _stringChecker.isExactlyType(targetType);
 
+  /// If the type is a `Future` or `FutureOr`, returns the nullability of the type of the Future.
   bool get isUnFuturedTypeNullable => unFuturedType.nullabilitySuffix != NullabilitySuffix.none;
 
   /// Returns type arguments of [targetType]. For example, given `Map<Key, Value>`,
@@ -177,13 +196,13 @@ class SharedChecker<_SiblingModel extends Model> {
   /// For example, a field `final Currency amount` with a type definition
   /// `class Currency extends OfflineFirstSerdes<T, X, Y> {}` would return `[T, X, Y]`.
   List<DartType> get superClassTypeArgs {
-    final classElement = targetType.element as ClassElement;
-    if (classElement.supertype?.typeArguments == null ||
-        classElement.supertype!.typeArguments.isEmpty) {
+    final classElement = targetType.element as ClassElement?;
+    if (classElement?.supertype?.typeArguments == null ||
+        classElement!.supertype!.typeArguments.isEmpty) {
       throw InvalidGenerationSourceError(
-        'Type argument for ${targetType.getDisplayString(withNullability: true)} is undefined.',
+        'Type argument for ${targetType.getDisplayString()} is undefined.',
         todo:
-            'Define the type on class ${targetType.element}, e.g. `extends ${withoutNullability(classElement.supertype!)}<int>`',
+            'Define the type on class ${targetType.element}, e.g. `extends ${withoutNullability(classElement!.supertype!)}<int>`',
         element: targetType.element,
       );
     }
@@ -195,7 +214,7 @@ class SharedChecker<_SiblingModel extends Model> {
   /// If the method can't be found, `null` is returned.
   MethodElement? get toJsonMethod {
     if (targetType.element is ClassElement) {
-      for (final method in (targetType.element as ClassElement).methods) {
+      for (final method in (targetType.element! as ClassElement).methods) {
         if (method.name == 'toJson') return method;
       }
     }
@@ -243,8 +262,7 @@ class SharedChecker<_SiblingModel extends Model> {
   }
 
   /// Print the `DartType` without nullability
-  static String withoutNullability(DartType type) =>
-      type.getDisplayString(withNullability: true).replaceAll('?', '');
+  static String withoutNullability(DartType type) => type.getDisplayString().replaceAll('?', '');
 
   /// Destructs a type to determine the bottom type after going through Futures and Iterables.
   ///

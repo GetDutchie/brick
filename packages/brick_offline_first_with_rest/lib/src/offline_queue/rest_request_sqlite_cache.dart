@@ -4,9 +4,12 @@ import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_request_sqlite_cache_manager.dart';
 import 'package:http/http.dart' as http;
 
+/// REST implementation of [RequestSqliteCache]
 class RestRequestSqliteCache extends RequestSqliteCache<http.Request> {
+  ///
   bool get requestIsPush => ['POST', 'PUT', 'DELETE', 'PATCH'].contains(request.method);
 
+  /// REST implementation of [RequestSqliteCache]
   RestRequestSqliteCache(http.Request request)
       : super(
           attemptColumn: HTTP_JOBS_ATTEMPTS_COLUMN,

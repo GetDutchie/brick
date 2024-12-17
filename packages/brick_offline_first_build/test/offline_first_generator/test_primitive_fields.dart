@@ -2,7 +2,7 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 
 enum Casing { snake, camel }
 
-final output = r'''
+const output = r'''
 Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {

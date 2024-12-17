@@ -16,6 +16,8 @@ class RuntimeSqliteColumnDefinition {
   /// In other words, the runtime type.
   final Type type;
 
+  /// Used to define types in [SqliteAdapter#fieldsToSqliteColumns]. The build runner package
+  /// extracts types and associations that would've been otherwise inaccessible at runtime.
   const RuntimeSqliteColumnDefinition({
     this.association = false,
     required this.columnName,

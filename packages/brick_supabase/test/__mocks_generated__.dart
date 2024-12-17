@@ -1,28 +1,34 @@
+// ignore_for_file: type_annotate_public_apis
+
 part of '__mocks__.dart';
 
-Demo _$DemoFromSupabase(Map<String, dynamic> json) {
-  return Demo(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    age: json['age'] as int,
-  );
-}
+Demo _$DemoFromSupabase(Map<String, dynamic> json) => Demo(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      age: json['age'] as int,
+    );
 
-Future<Map<String, dynamic>> _$DemoToSupabase(Demo instance) async {
-  return <String, dynamic>{
-    'id': instance.id,
-    'name': instance.name,
-    'age': instance.age,
-  };
-}
+Future<Map<String, dynamic>> _$DemoToSupabase(Demo instance) async => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'age': instance.age,
+    };
 
 class DemoAdapter extends SupabaseAdapter<Demo> {
   @override
-  Future<Demo> fromSupabase(data, {required provider, repository}) async =>
+  Future<Demo> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       _$DemoFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(
+    Demo instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       await _$DemoToSupabase(instance);
 
   @override
@@ -31,15 +37,12 @@ class DemoAdapter extends SupabaseAdapter<Demo> {
   @override
   final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'id',
     ),
     'name': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'name',
     ),
     'age': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'age',
       query: 'custom_age',
     ),
@@ -58,31 +61,37 @@ class DemoAdapter extends SupabaseAdapter<Demo> {
   final uniqueFields = {'id'};
 }
 
-DemoNestedAssociationModel _$DemoNestedAssociationModelFromSupabase(Map<String, dynamic> json) {
-  return DemoNestedAssociationModel(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    nested: _$DemoAssociationModelFromSupabase(json['nested'] as Map<String, dynamic>),
-  );
-}
+DemoNestedAssociationModel _$DemoNestedAssociationModelFromSupabase(Map<String, dynamic> json) =>
+    DemoNestedAssociationModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      nested: _$DemoAssociationModelFromSupabase(json['nested'] as Map<String, dynamic>),
+    );
 
 Future<Map<String, dynamic>> _$DemoNestedAssociationModelToSupabase(
   DemoNestedAssociationModel instance,
-) async {
-  return <String, dynamic>{
-    'id': instance.id,
-    'name': instance.name,
-    'nested': await _$DemoAssociationModelToSupabase(instance.nested),
-  };
-}
+) async =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'nested': await _$DemoAssociationModelToSupabase(instance.nested),
+    };
 
 class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssociationModel> {
   @override
-  Future<DemoNestedAssociationModel> fromSupabase(data, {required provider, repository}) async =>
+  Future<DemoNestedAssociationModel> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       _$DemoNestedAssociationModelFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(
+    DemoNestedAssociationModel instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       await _$DemoNestedAssociationModelToSupabase(instance);
 
   @override
@@ -91,11 +100,9 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
   @override
   final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'id',
     ),
     'name': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'name',
       // Test blank query to ensure it isn't added to request
       query: '',
@@ -120,41 +127,47 @@ class DemoNestedAssociationModelAdapter extends SupabaseAdapter<DemoNestedAssoci
   final uniqueFields = {'id'};
 }
 
-DemoAssociationModel _$DemoAssociationModelFromSupabase(Map<String, dynamic> json) {
-  return DemoAssociationModel(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    assoc: _$DemoFromSupabase(json['assoc'] as Map<String, dynamic>),
-  );
-}
+DemoAssociationModel _$DemoAssociationModelFromSupabase(Map<String, dynamic> json) =>
+    DemoAssociationModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      assoc: _$DemoFromSupabase(json['assoc'] as Map<String, dynamic>),
+    );
 
 Future<Map<String, dynamic>> _$DemoAssociationModelToSupabase(
   DemoAssociationModel instance, {
   provider,
   repository,
-}) async {
-  return <String, dynamic>{
-    'id': instance.id,
-    'name': instance.name,
-    'assocs': await Future.wait<Map<String, dynamic>>(
-      instance.assocs
-              ?.map(
-                (s) => DemoAdapter().toSupabase(s, provider: provider, repository: repository),
-              )
-              .toList() ??
-          [],
-    ),
-    'assoc': await _$DemoToSupabase(instance.assoc),
-  };
-}
+}) async =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'assocs': await Future.wait<Map<String, dynamic>>(
+        instance.assocs
+                ?.map(
+                  (s) => DemoAdapter().toSupabase(s, provider: provider, repository: repository),
+                )
+                .toList() ??
+            [],
+      ),
+      'assoc': await _$DemoToSupabase(instance.assoc),
+    };
 
 class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> {
   @override
-  Future<DemoAssociationModel> fromSupabase(data, {required provider, repository}) async =>
+  Future<DemoAssociationModel> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       _$DemoAssociationModelFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(
+    DemoAssociationModel instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       await _$DemoAssociationModelToSupabase(instance);
 
   @override
@@ -163,16 +176,13 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
   @override
   final fieldsToSupabaseColumns = {
     'id': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'id',
     ),
     'name': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'name',
     ),
     'assoc': const RuntimeSupabaseColumnDefinition(
       association: true,
-      associationIsNullable: false,
       columnName: 'assoc_id',
       foreignKey: 'assoc_id',
       associationType: Demo,
@@ -198,26 +208,31 @@ class DemoAssociationModelAdapter extends SupabaseAdapter<DemoAssociationModel> 
   final uniqueFields = {'id'};
 }
 
-RecursiveParent _$RecursiveParentFromSupabase(Map<String, dynamic> json) {
-  return RecursiveParent(
-    child: _$RecursiveChildFromSupabase(json['child'] as Map<String, dynamic>),
-    parentId: json['parent_id'] as String,
-  );
-}
+RecursiveParent _$RecursiveParentFromSupabase(Map<String, dynamic> json) => RecursiveParent(
+      child: _$RecursiveChildFromSupabase(json['child'] as Map<String, dynamic>),
+      parentId: json['parent_id'] as String,
+    );
 
-Future<Map<String, dynamic>> _$RecursiveParentToSupabase(RecursiveParent instance) async {
-  return <String, dynamic>{
-    'child': await _$RecursiveChildToSupabase(instance.child),
-  };
-}
+Future<Map<String, dynamic>> _$RecursiveParentToSupabase(RecursiveParent instance) async =>
+    <String, dynamic>{
+      'child': await _$RecursiveChildToSupabase(instance.child),
+    };
 
 class RecursiveParentAdapter extends SupabaseAdapter<RecursiveParent> {
   @override
-  Future<RecursiveParent> fromSupabase(data, {required provider, repository}) async =>
+  Future<RecursiveParent> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       _$RecursiveParentFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(
+    RecursiveParent instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       await _$RecursiveParentToSupabase(instance);
 
   @override
@@ -231,7 +246,6 @@ class RecursiveParentAdapter extends SupabaseAdapter<RecursiveParent> {
       associationType: RecursiveChild,
     ),
     'parentId': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'parent_id',
     ),
   };
@@ -249,29 +263,34 @@ class RecursiveParentAdapter extends SupabaseAdapter<RecursiveParent> {
   final uniqueFields = {'parentId'};
 }
 
-RecursiveChild _$RecursiveChildFromSupabase(Map<String, dynamic> json) {
-  return RecursiveChild(
-    parent: _$RecursiveParentFromSupabase(json['parent'] as Map<String, dynamic>),
-    childId: json['child_id'] as String,
-    otherAssoc: _$DemoFromSupabase(json['other_assoc'] as Map<String, dynamic>),
-  );
-}
+RecursiveChild _$RecursiveChildFromSupabase(Map<String, dynamic> json) => RecursiveChild(
+      parent: _$RecursiveParentFromSupabase(json['parent'] as Map<String, dynamic>),
+      childId: json['child_id'] as String,
+      otherAssoc: _$DemoFromSupabase(json['other_assoc'] as Map<String, dynamic>),
+    );
 
-Future<Map<String, dynamic>> _$RecursiveChildToSupabase(RecursiveChild instance) async {
-  return <String, dynamic>{
-    'parent': await _$RecursiveParentToSupabase(instance.parent),
-    'child_id': instance.childId,
-    'other_assoc': await _$DemoToSupabase(instance.otherAssoc),
-  };
-}
+Future<Map<String, dynamic>> _$RecursiveChildToSupabase(RecursiveChild instance) async =>
+    <String, dynamic>{
+      'parent': await _$RecursiveParentToSupabase(instance.parent),
+      'child_id': instance.childId,
+      'other_assoc': await _$DemoToSupabase(instance.otherAssoc),
+    };
 
 class RecursiveChildAdapter extends SupabaseAdapter<RecursiveChild> {
   @override
-  Future<RecursiveChild> fromSupabase(data, {required provider, repository}) async =>
+  Future<RecursiveChild> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       _$RecursiveChildFromSupabase(data);
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSupabase(
+    RecursiveChild instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async =>
       await _$RecursiveChildToSupabase(instance);
 
   @override
@@ -285,7 +304,6 @@ class RecursiveChildAdapter extends SupabaseAdapter<RecursiveChild> {
       associationType: RecursiveParent,
     ),
     'childId': const RuntimeSupabaseColumnDefinition(
-      association: false,
       columnName: 'child_id',
     ),
     'otherAssoc': const RuntimeSupabaseColumnDefinition(

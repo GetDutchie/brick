@@ -9,8 +9,8 @@ import 'package:brick_rest_generators/rest_model_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
-final _generator = OfflineFirstWithTestGenerator();
-final folder = 'offline_first_generator';
+const _generator = OfflineFirstWithTestGenerator();
+const folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 Future<void> generateExpectation(
@@ -100,9 +100,6 @@ class OfflineFirstWithTestGenerator extends OfflineFirstGenerator<ConnectOffline
         OfflineFirstTestModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
     final sqlite =
         OfflineFirstSqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
-    final generators = <SerdesGenerator>[];
-    generators.addAll(rest.generators);
-    generators.addAll(sqlite.generators);
-    return generators;
+    return <SerdesGenerator>[...rest.generators, ...sqlite.generators];
   }
 }

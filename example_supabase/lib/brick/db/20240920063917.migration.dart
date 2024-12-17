@@ -1,6 +1,8 @@
 // GENERATED CODE EDIT WITH CAUTION
 // THIS FILE **WILL NOT** BE REGENERATED
 // This file should be version controlled and can be manually edited.
+// ignore_for_file: public_member_api_docs, constant_identifier_names
+
 part of 'schema.g.dart';
 
 // While migrations are intelligently created, the difference between some commands, such as
@@ -21,8 +23,6 @@ const List<MigrationCommand> _migration_20240920063917_up = [
     'Pizza',
     'Customer',
     foreignKeyColumn: 'customer_Customer_brick_id',
-    onDeleteCascade: false,
-    onDeleteSetDefault: false,
   ),
 ];
 

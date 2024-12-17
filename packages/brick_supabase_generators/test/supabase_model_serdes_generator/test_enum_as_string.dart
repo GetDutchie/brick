@@ -1,6 +1,6 @@
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 Future<EnumAsString> _$EnumAsStringFromSupabase(Map<String, dynamic> data,
     {required SupabaseProvider provider,
     SupabaseFirstRepository? repository}) async {

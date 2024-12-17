@@ -2,7 +2,7 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 import 'package:brick_rest/brick_rest.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-final output = r'''
+const output = r'''
 Future<NullableField> _$NullableFieldFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
@@ -66,7 +66,7 @@ Future<Map<String, dynamic>> _$NullableFieldToSqlite(NullableField instance,
 ''';
 
 @ConnectOfflineFirstWithRest(
-  restConfig: RestSerializable(nullable: false),
+  restConfig: RestSerializable.defaults,
   sqliteConfig: SqliteSerializable(nullable: false),
 )
 class NullableField {

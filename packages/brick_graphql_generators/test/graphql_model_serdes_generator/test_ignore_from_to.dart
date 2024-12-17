@@ -1,6 +1,6 @@
 import 'package:brick_graphql/brick_graphql.dart';
 
-final output = r'''
+const output = r'''
 Future<GraphqlIgnoreFromTo> _$GraphqlIgnoreFromToFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,

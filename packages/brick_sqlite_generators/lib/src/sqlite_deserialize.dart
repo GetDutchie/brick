@@ -1,12 +1,14 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart' show SerdesGenerator, SharedChecker;
+import 'package:brick_core/src/model.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart' show InsertTable, InsertForeignKey;
+import 'package:brick_sqlite/db.dart' show InsertForeignKey, InsertTable;
 import 'package:brick_sqlite_generators/src/sqlite_serdes_generator.dart';
 import 'package:source_gen/source_gen.dart' show InvalidGenerationSourceError;
 
 /// Generate a function to produce a [ClassElement] from SQLite data
 class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<_Model> {
+  /// Generate a function to produce a [ClassElement] from SQLite data
   SqliteDeserialize(
     super.element,
     super.fields, {
@@ -21,7 +23,11 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       "..${InsertTable.PRIMARY_KEY_FIELD} = data['${InsertTable.PRIMARY_KEY_COLUMN}'] as int;";
 
   @override
-  String deserializerNullableClause({required field, required fieldAnnotation, required name}) {
+  String deserializerNullableClause({
+    required FieldElement field,
+    required Sqlite fieldAnnotation,
+    required String name,
+  }) {
     final checker = checkerForType(field.type);
     if (checker.isIterable && checker.isArgTypeASibling) {
       return '';
@@ -35,7 +41,12 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
   }
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Sqlite fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
     if (field.name == InsertTable.PRIMARY_KEY_FIELD) {
@@ -81,7 +92,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       if (checker.isArgTypeASibling) {
         final awaited = wrappedInFuture ? 'async => await' : '=>';
-        final query = '''
+        const query = '''
           Query.where('${InsertTable.PRIMARY_KEY_FIELD}', ${InsertTable.PRIMARY_KEY_FIELD}, limit1: true),
         ''';
         final argTypeAsString = SharedChecker.withoutNullability(argType);
@@ -137,7 +148,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         final discoveredByIndex =
             'jsonDecode($fieldValue).map((d) => d as int > -1 ? ${SharedChecker.withoutNullability(argType)}.values[d] : null)';
         final nullableSuffix = checker.isNullable ? '?' : '';
-        return '$discoveredByIndex$nullableSuffix.whereType<${argType.getDisplayString(withNullability: true)}>()$castIterable';
+        return '$discoveredByIndex$nullableSuffix.whereType<${argType.getDisplayString()}>()$castIterable';
       }
 
       // Iterable<bool>
@@ -147,12 +158,12 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
 
       // Iterable<fromJson>
       if (argTypeChecker.fromJsonConstructor != null) {
-        final klass = argTypeChecker.targetType.element as ClassElement;
+        final klass = argTypeChecker.targetType.element! as ClassElement;
         final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
         final nullableSuffix = checker.isNullable ? " ?? '[]'" : '';
 
         return '''jsonDecode($fieldValue$nullableSuffix).map(
-          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString(withNullability: true)})
+          (d) => ${klass.displayName}.fromJson(d as ${parameterType.getDisplayString()})
         )$castIterable$defaultValue''';
       }
 
@@ -208,9 +219,9 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
     } else if (checker.isMap) {
       return 'jsonDecode($fieldValue)';
     } else if (checker.fromJsonConstructor != null) {
-      final klass = checker.targetType.element as ClassElement;
+      final klass = checker.targetType.element! as ClassElement;
       final parameterType = checker.fromJsonConstructor!.parameters.first.type;
-      return '${klass.displayName}.fromJson(jsonDecode($fieldValue as String) as ${parameterType.getDisplayString(withNullability: true)})';
+      return '${klass.displayName}.fromJson(jsonDecode($fieldValue as String) as ${parameterType.getDisplayString()})';
     }
 
     return null;

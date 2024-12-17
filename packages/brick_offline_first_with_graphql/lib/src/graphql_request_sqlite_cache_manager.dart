@@ -6,7 +6,9 @@ import 'package:brick_offline_first/offline_queue.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:gql_exec/gql_exec.dart';
 
+/// GraphQL implementation of [RequestSqliteCacheManager]
 class GraphqlRequestSqliteCacheManager extends RequestSqliteCacheManager<Request> {
+  /// GraphQL implementation of [RequestSqliteCacheManager]
   GraphqlRequestSqliteCacheManager(
     super.databaseName, {
     required super.databaseFactory,
@@ -72,7 +74,7 @@ const GRAPHQL_JOBS_PRIMARY_KEY_COLUMN = 'id';
 /// json-encoded String
 const GRAPHQL_JOBS_VARIABLES_COLUMN = 'variables';
 
-// String
+/// String
 const GRAPHQL_JOBS_TABLE_NAME = 'GraphqlJobs';
 
 /// int; millisecondsSinceEpoch

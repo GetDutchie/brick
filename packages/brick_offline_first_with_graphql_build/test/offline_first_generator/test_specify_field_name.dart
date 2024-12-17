@@ -2,7 +2,7 @@ import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-final output = r'''
+const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,

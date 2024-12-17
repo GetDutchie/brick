@@ -49,11 +49,16 @@ abstract class OfflineFirstWithSupabaseRepository<
   @protected
   final RestOfflineRequestQueue offlineRequestQueue;
 
+  /// Tracks the realtime stream controllers
   @protected
   @visibleForTesting
   final Map<Type, Map<PostgresChangeEvent, Map<Query, StreamController<List<TRepositoryModel>>>>>
       supabaseRealtimeSubscriptions = {};
 
+  /// Ensures the [remoteProvider] is a [SupabaseProvider].
+  ///
+  /// Care should be given to attach an offline queue to the provider using the static convenience
+  /// method [clientQueue].
   OfflineFirstWithSupabaseRepository({
     super.autoHydrate,
     super.loggerName,
@@ -185,10 +190,11 @@ abstract class OfflineFirstWithSupabaseRepository<
 
     return Query(
       where: fieldsWithValues.entries.map((entry) => Where.exact(entry.key, entry.value)).toList(),
-      providerArgs: {'limit': 1},
+      limit: 1,
     );
   }
 
+  /// Convert a query to a [PostgresChangeFilter] for use with [subscribeToRealtime].
   @protected
   @visibleForTesting
   @visibleForOverriding
@@ -256,7 +262,7 @@ abstract class OfflineFirstWithSupabaseRepository<
     Query? query,
     String schema = 'public',
   }) {
-    query ??= Query();
+    query ??= const Query();
 
     if (supabaseRealtimeSubscriptions[TModel]?[eventType]?[query] != null) {
       return supabaseRealtimeSubscriptions[TModel]![eventType]![query]!.stream

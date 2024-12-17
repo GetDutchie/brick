@@ -1,4 +1,5 @@
 import 'package:brick_core/core.dart' show Query;
+import 'package:brick_core/src/model_repository.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
@@ -8,66 +9,64 @@ Future<DemoModel> _$DemoModelFromSqlite(
   Map<String, dynamic> data, {
   SqliteProvider? provider,
   repository,
-}) async {
-  return DemoModel(
-    name: data['full_name'] == null ? null : data['full_name'] as String,
-    assoc: data['assoc_DemoModelAssoc_brick_id'] == null
-        ? null
-        : (data['assoc_DemoModelAssoc_brick_id'] > -1
-            ? (await repository?.getAssociation<DemoModelAssoc>(
-                Query.where(
-                  'primaryKey',
-                  data['assoc_DemoModelAssoc_brick_id'] as int,
-                  limit1: true,
-                ),
-              ))
-                ?.first
-            : null),
-    complexFieldName:
-        data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
-    lastName: data['last_name'] == null ? null : data['last_name'] as String,
-    manyAssoc: (await provider?.rawQuery(
-      'SELECT DISTINCT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE l_DemoModel_brick_id = ?',
-      [data['_brick_id'] as int],
-    ).then((results) {
-      final ids = results.map((r) => r['f_DemoModelAssoc_brick_id']);
-      return Future.wait<DemoModelAssoc>(
-        ids.map(
-          (primaryKey) => repository
-              ?.getAssociation<DemoModelAssoc>(
-                Query.where('primaryKey', primaryKey, limit1: true),
-              )
-              ?.then((r) => (r?.isEmpty ?? true) ? null : r.first),
-        ),
-      );
-    }))
-        ?.toList(),
-    simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
-    simpleTime: data['simple_time'] == null
-        ? null
-        : data['simple_time'] == null
-            ? null
-            : DateTime.tryParse(data['simple_time'] as String),
-  )..primaryKey = data['_brick_id'] as int;
-}
+}) async =>
+    DemoModel(
+      name: data['full_name'] == null ? null : data['full_name'] as String,
+      assoc: data['assoc_DemoModelAssoc_brick_id'] == null
+          ? null
+          : (data['assoc_DemoModelAssoc_brick_id'] > -1
+              ? (await repository?.getAssociation<DemoModelAssoc>(
+                  Query.where(
+                    'primaryKey',
+                    data['assoc_DemoModelAssoc_brick_id'] as int,
+                    limit1: true,
+                  ),
+                ))
+                  ?.first
+              : null),
+      complexFieldName:
+          data['complex_field_name'] == null ? null : data['complex_field_name'] as String,
+      lastName: data['last_name'] == null ? null : data['last_name'] as String,
+      manyAssoc: (await provider?.rawQuery(
+        'SELECT DISTINCT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE l_DemoModel_brick_id = ?',
+        [data['_brick_id'] as int],
+      ).then((results) {
+        final ids = results.map((r) => r['f_DemoModelAssoc_brick_id']);
+        return Future.wait<DemoModelAssoc>(
+          ids.map(
+            (primaryKey) => repository
+                ?.getAssociation<DemoModelAssoc>(
+                  Query.where('primaryKey', primaryKey, limit1: true),
+                )
+                ?.then((r) => (r?.isEmpty ?? true) ? null : r.first),
+          ),
+        );
+      }))
+          ?.toList(),
+      simpleBool: data['simple_bool'] == null ? null : data['simple_bool'] == 1,
+      simpleTime: data['simple_time'] == null
+          ? null
+          : data['simple_time'] == null
+              ? null
+              : DateTime.tryParse(data['simple_time'] as String),
+    )..primaryKey = data['_brick_id'] as int;
 
 Future<Map<String, dynamic>> _$DemoModelToSqlite(
   DemoModel instance, {
   required SqliteProvider provider,
   repository,
-}) async {
-  return {
-    'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
-        (instance.assoc != null
-            ? await provider.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
-            : null),
-    'complex_field_name': instance.complexFieldName,
-    'last_name': instance.lastName,
-    'full_name': instance.name,
-    'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0),
-    'simple_time': instance.simpleTime?.toIso8601String(),
-  };
-}
+}) async =>
+    {
+      'assoc_DemoModelAssoc_brick_id': instance.assoc?.primaryKey ??
+          (instance.assoc != null
+              ? await provider.upsert<DemoModelAssoc>(instance.assoc!, repository: repository)
+              : null),
+      'complex_field_name': instance.complexFieldName,
+      'last_name': instance.lastName,
+      'full_name': instance.name,
+      'simple_bool': instance.simpleBool == null ? null : (instance.simpleBool! ? 1 : 0),
+      'simple_time': instance.simpleTime?.toIso8601String(),
+    };
 
 /// Construct a [DemoModel]
 class DemoModelAdapter extends SqliteAdapter<DemoModel> {
@@ -76,39 +75,28 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'id': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'id',
-      iterable: false,
       type: int,
     ),
     'someField': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'some_field',
-      iterable: false,
       type: bool,
     ),
     'assoc': const RuntimeSqliteColumnDefinition(
       association: true,
       columnName: 'assoc_DemoModelAssoc_brick_id',
-      iterable: false,
       type: DemoModelAssoc,
     ),
     'complexFieldName': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'complex_field_name',
-      iterable: false,
       type: String,
     ),
     'lastName': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'last_name',
-      iterable: false,
       type: String,
     ),
     'manyAssoc': const RuntimeSqliteColumnDefinition(
@@ -118,21 +106,15 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
       type: DemoModelAssoc,
     ),
     'name': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'full_name',
-      iterable: false,
       type: String,
     ),
     'simpleBool': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'simple_bool',
-      iterable: false,
       type: bool,
     ),
-    'simpleTime': RuntimeSqliteColumnDefinition(
-      association: false,
+    'simpleTime': const RuntimeSqliteColumnDefinition(
       columnName: 'simple_time',
-      iterable: false,
       type: DateTime,
     ),
   };
@@ -144,7 +126,11 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   @override
   final String tableName = 'DemoModel';
   @override
-  Future<void> afterSave(instance, {required provider, repository}) async {
+  Future<void> afterSave(
+    DemoModel instance, {
+    required SqliteProvider<SqliteModel> provider,
+    ModelRepository<SqliteModel>? repository,
+  }) async {
     if (instance.primaryKey != null) {
       final oldColumns = await provider.rawQuery(
         'SELECT `f_DemoModelAssoc_brick_id` FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ?',
@@ -155,12 +141,12 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
       final idsToDelete = oldIds.where((id) => !newIds.contains(id));
 
       await Future.wait<void>(
-        idsToDelete.map((id) async {
-          return await provider.rawExecute(
+        idsToDelete.map(
+          (id) async => await provider.rawExecute(
             'DELETE FROM `_brick_DemoModel_many_assoc` WHERE `l_DemoModel_brick_id` = ? AND `f_DemoModelAssoc_brick_id` = ?',
             [instance.primaryKey, id],
-          );
-        }),
+          ),
+        ),
       );
 
       await Future.wait<int?>(
@@ -178,9 +164,17 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   }
 
   @override
-  Future<DemoModel> fromSqlite(Map<String, dynamic> input, {required provider, repository}) async =>
+  Future<DemoModel> fromSqlite(
+    Map<String, dynamic> input, {
+    required SqliteProvider<SqliteModel> provider,
+    ModelRepository<SqliteModel>? repository,
+  }) async =>
       await _$DemoModelFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(DemoModel input, {required provider, repository}) async =>
+  Future<Map<String, dynamic>> toSqlite(
+    DemoModel input, {
+    required SqliteProvider<SqliteModel> provider,
+    ModelRepository<SqliteModel>? repository,
+  }) async =>
       await _$DemoModelToSqlite(input, provider: provider, repository: repository);
 }

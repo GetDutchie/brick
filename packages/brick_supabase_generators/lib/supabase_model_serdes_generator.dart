@@ -13,6 +13,8 @@ class SupabaseModelSerdesGenerator extends ProviderSerializableGenerator<Supabas
   /// should not be included.
   final String? repositoryName;
 
+  /// Digest a `supabaseConfig` (e.g. from a `@ConnectOfflineFirstWithSupabase`) from [reader] and manage serdes generators
+  /// to and from a `SupabaseProvider`.
   SupabaseModelSerdesGenerator(
     super.element,
     super.reader, {

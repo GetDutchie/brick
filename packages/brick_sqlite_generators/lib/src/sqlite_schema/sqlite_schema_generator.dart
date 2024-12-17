@@ -11,15 +11,18 @@ import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:source_gen/source_gen.dart';
 
 final _formatter = dart_style.DartFormatter();
+
+///
 const migrationGenerator = MigrationGenerator();
 
-/// Produces a [Schema] from all @[OfflineFirst] annotations
+/// Produces a [Schema] from all SQLite-enabled annotations
 class SqliteSchemaGenerator {
+  /// Produces a [Schema] from all SQLite-enabled annotations
   const SqliteSchemaGenerator();
 
   /// Complete schema file output
   ///
-  /// [classes] are all classes by their table name with the @[OfflineFirst] annotation
+  /// [fieldses] are all classes by their table name
   String generate(LibraryReader library, List<SqliteFields> fieldses) {
     final newSchema = _createNewSchema(library, fieldses);
     final existingMigrations = migrationGenerator.expandAllMigrations(library);
@@ -113,7 +116,6 @@ class SqliteSchemaGenerator {
           foreignTableName: localTableName,
           nullable: foreignTableColumnDefinition.nullable,
           onDeleteCascade: true,
-          onDeleteSetDefault: false,
         ),
         SchemaColumn(
           InsertForeignKey.joinsTableForeignColumnName(foreignTableName),
@@ -122,7 +124,6 @@ class SqliteSchemaGenerator {
           foreignTableName: foreignTableName,
           nullable: foreignTableColumnDefinition.nullable,
           onDeleteCascade: true,
-          onDeleteSetDefault: false,
         ),
       },
       indices: {
@@ -142,17 +143,17 @@ class SqliteSchemaGenerator {
   }
 
   SchemaTable _createTable(String tableName, SqliteFields fields) {
-    final columns = _createColumns(fields).where((c) => c != null).toList();
-    columns.insert(
-      0,
-      SchemaColumn(
-        InsertTable.PRIMARY_KEY_COLUMN,
-        Column.integer,
-        autoincrement: true,
-        isPrimaryKey: true,
-        nullable: false,
-      ),
-    );
+    final columns = _createColumns(fields).where((c) => c != null).toList()
+      ..insert(
+        0,
+        SchemaColumn(
+          InsertTable.PRIMARY_KEY_COLUMN,
+          Column.integer,
+          autoincrement: true,
+          isPrimaryKey: true,
+          nullable: false,
+        ),
+      );
 
     final indices = _createIndices(tableName, fields);
 
@@ -163,6 +164,7 @@ class SqliteSchemaGenerator {
     );
   }
 
+  ///
   @visibleForOverriding
   SharedChecker checkerForField(FieldElement field) {
     var checker = checkerForType(field.type);
@@ -205,9 +207,11 @@ class SqliteSchemaGenerator {
     });
   }
 
+  ///
   @visibleForOverriding
   SharedChecker<SqliteModel> checkerForType(DartType type) => SharedChecker<SqliteModel>(type);
 
+  ///
   @mustCallSuper
   SchemaColumn? schemaColumn(Sqlite column, {required SharedChecker checker}) {
     if (column.columnType != null) {
@@ -222,7 +226,7 @@ class SqliteSchemaGenerator {
     if (checker.isDartCoreType) {
       return SchemaColumn(
         column.name!,
-        Migration.fromDartPrimitive(checker.asPrimitive),
+        Column.fromDartPrimitive(checker.asPrimitive),
         nullable: column.nullable,
         unique: column.unique,
       );
@@ -266,6 +270,7 @@ class SqliteSchemaGenerator {
     return null;
   }
 
+  ///
   @visibleForOverriding
   SchemaIndex? schemaIndex(Sqlite column, {required SharedChecker checker}) {
     final isIterableAssociation = checker.isIterable && checker.isArgTypeASibling;

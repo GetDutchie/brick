@@ -2,7 +2,7 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 
 class NonSqliteAssoc {}
 
-final output = r'''
+const output = r'''
 Future<UnreleatedAssociation> _$UnreleatedAssociationFromTest(
     Map<String, dynamic> data,
     {required TestProvider provider,

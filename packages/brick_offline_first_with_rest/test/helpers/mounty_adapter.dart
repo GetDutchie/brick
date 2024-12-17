@@ -43,15 +43,11 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'name': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'name',
-      iterable: false,
       type: String,
     ),
   };
@@ -64,28 +60,28 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   @override
   Future<Mounty> fromRest(
     Map<String, dynamic> input, {
-    required provider,
+    required RestProvider provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$MountyFromRest(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toRest(
     Mounty input, {
-    required provider,
+    required RestProvider provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$MountyToRest(input, provider: provider, repository: repository);
   @override
   Future<Mounty> fromSqlite(
     Map<String, dynamic> input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$MountyFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(
     Mounty input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$MountyToSqlite(input, provider: provider, repository: repository);

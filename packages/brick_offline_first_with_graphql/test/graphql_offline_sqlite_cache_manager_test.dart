@@ -37,7 +37,7 @@ void main() {
     final requestManager = GraphqlRequestSqliteCacheManager(
       inMemoryDatabasePath,
       databaseFactory: databaseFactoryFfi,
-      processingInterval: const Duration(seconds: 0),
+      processingInterval: Duration.zero,
     );
 
     setUpAll(() async {
@@ -58,7 +58,7 @@ void main() {
         inMemoryDatabasePath,
         databaseFactory: databaseFactoryFfi,
         serialProcessing: false,
-        processingInterval: const Duration(seconds: 0),
+        processingInterval: Duration.zero,
       );
       final client = GraphqlOfflineQueueLink(requestManager)
           .concat(stubGraphqlLink({}, errors: ['Unable to connect']));
@@ -100,7 +100,7 @@ void main() {
         final request = await requestManager.prepareNextRequestToProcess();
         expect(request?.operation.operationName, 'UpsertPerson');
 
-        final asCacheItem = GraphqlRequestSqliteCache(request!);
+        final asCacheItem = GraphqlRequestSqliteCache(request);
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         // Do not retry request if the row is locked and serial processing is active
         final req = await requestManager.prepareNextRequestToProcess();
@@ -143,7 +143,7 @@ void main() {
         await asCacheItem.insertOrUpdate(await requestManager.getDb());
         await asCacheItem.unlock(await requestManager.getDb());
 
-        final requests = await requestManager.unprocessedRequests(onlyLocked: false);
+        final requests = await requestManager.unprocessedRequests();
         expect(requests, hasLength(1));
 
         final lockedRequests = await requestManager.unprocessedRequests(onlyLocked: true);
@@ -184,7 +184,7 @@ void main() {
         );
 
         expect(await requestManager.unprocessedRequests(onlyLocked: true), hasLength(1));
-        expect(await requestManager.unprocessedRequests(onlyLocked: false), hasLength(1));
+        expect(await requestManager.unprocessedRequests(), hasLength(1));
 
         expect(await requestManager.prepareNextRequestToProcess(), isNull);
 

@@ -11,15 +11,21 @@ class AlterColumnHelper {
   /// The command to restructure the table
   final MigrationCommand command;
 
+  ///
   bool get isDrop => command is DropColumn;
+
+  ///
   bool get isRename => command is RenameColumn;
+
+  ///
   bool get isUniqueInsert => command is InsertColumn && (command as InsertColumn).unique;
 
   /// Declares if this command requires extra SQLite work to be migrated
   bool get requiresSchema => isDrop || isRename || isUniqueInsert;
 
+  ///
   String get tableName {
-    assert(requiresSchema);
+    assert(requiresSchema, 'Command does not require schema');
 
     if (isDrop) {
       return (command as DropColumn).onTable;
@@ -32,12 +38,14 @@ class AlterColumnHelper {
     return (command as InsertColumn).onTable;
   }
 
-  AlterColumnHelper(this.command);
+  /// Workaround for SQLite commands that require altering the table instead of the column.
+  ///
+  /// Supports [DropColumn], [RenameColumn], [InsertColumn]
+  const AlterColumnHelper(this.command);
 
   /// Get info about existing columns
-  Future<List<Map<String, dynamic>>> tableInfo(Database db) async {
-    return await db.rawQuery('PRAGMA table_info("$tableName");');
-  }
+  Future<List<Map<String, dynamic>>> tableInfo(Database db) async =>
+      await db.rawQuery('PRAGMA table_info("$tableName");');
 
   /// Create new table with updated column data
   List<Map<String, dynamic>> _newColumns(List<Map<String, dynamic>> columns) {
@@ -73,29 +81,28 @@ class AlterColumnHelper {
   }
 
   /// Given new columns, create the SQLite statement
-  String _newColumnsExpression(List<Map<String, dynamic>> columns) {
-    return columns.map((Map<String, dynamic> column) {
-      final definition = [column['name'] as String, column['type'] as String];
+  String _newColumnsExpression(List<Map<String, dynamic>> columns) =>
+      columns.map((Map<String, dynamic> column) {
+        final definition = [column['name'] as String, column['type'] as String];
 
-      if (column['notnull'] == 1) {
-        definition.add('NOT NULL');
-      }
+        if (column['notnull'] == 1) {
+          definition.add('NOT NULL');
+        }
 
-      if (column['dflt_value'] != null) {
-        definition.add('DEFAULT ${column['dflt_value']}');
-      }
+        if (column['dflt_value'] != null) {
+          definition.add('DEFAULT ${column['dflt_value']}');
+        }
 
-      if (column['pk'] == 1) {
-        definition.add('PRIMARY KEY');
-      }
+        if (column['pk'] == 1) {
+          definition.add('PRIMARY KEY');
+        }
 
-      if (column['unique'] == true) {
-        definition.add('UNIQUE');
-      }
+        if (column['unique'] == true) {
+          definition.add('UNIQUE');
+        }
 
-      return definition.join(' ');
-    }).join(', ');
-  }
+        return definition.join(' ');
+      }).join(', ');
 
   /// Perform the necessary SQLite operation
   Future<void> execute(Database db) async {

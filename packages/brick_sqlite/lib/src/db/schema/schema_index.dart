@@ -2,15 +2,21 @@ import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 import 'package:brick_sqlite/src/db/schema/schema_base.dart';
 
+/// A definition for the schema of an index
 class SchemaIndex extends BaseSchemaObject {
+  ///
   String? name;
 
+  ///
   final List<String> columns;
 
+  ///
   String? tableName;
 
+  ///
   final bool unique;
 
+  /// A definition for the schema of an index
   SchemaIndex({
     required this.columns,
     this.tableName,

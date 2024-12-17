@@ -9,13 +9,12 @@ GraphqlProvider generateProvider(
   dynamic response, {
   List<String>? errors,
   String? variablesNamespace,
-}) {
-  return GraphqlProvider(
-    modelDictionary: dictionary,
-    link: stubResponse({'upsertPerson': response}, errors: errors),
-    variableNamespace: variablesNamespace,
-  );
-}
+}) =>
+    GraphqlProvider(
+      modelDictionary: dictionary,
+      link: stubResponse({'upsertPerson': response}, errors: errors),
+      variableNamespace: variablesNamespace,
+    );
 
 void main() {
   group('GraphqlProvider', () {

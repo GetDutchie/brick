@@ -1,4 +1,6 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_graphql/brick_graphql.dart';
+import 'package:brick_graphql/src/graphql_provider.dart';
 
 /// This class should be subclassed for each model. For example:
 ///
@@ -65,6 +67,23 @@ abstract class GraphqlQueryOperationTransformer {
   /// ```
   GraphqlOperation? get upsert => null;
 
+  /// This class should be subclassed for each model. For example:
+  ///
+  /// ```dart
+  /// @GraphqlSerializable(
+  ///   queryOperationTransformer: MyModelOperationTransformer.new,
+  /// )
+  /// class MyModel extends GraphqlModel {}
+  /// class MyModelOperationTransformer extends GraphqlQueryOperationTransformer<MyModel> {
+  ///   final get = GraphqlOperation(
+  ///     document: r'''
+  ///       query GetPeople() {
+  ///         getPerson() {}
+  ///       }
+  ///     '''
+  ///   );
+  /// }
+  /// ```
   const GraphqlQueryOperationTransformer(this.query, this.instance);
 }
 
@@ -85,10 +104,13 @@ class GraphqlOperation {
   /// `variableNamespace` if it is defined.
   final Map<String, dynamic>? variables;
 
+  /// A cohesive definition for [GraphqlQueryOperationTransformer]'s instance fields.
   const GraphqlOperation({this.document, this.variables});
 
+  /// Deserialize
   factory GraphqlOperation.fromJson(Map<String, dynamic> data) =>
       GraphqlOperation(document: data['document'], variables: data['variables']);
 
+  /// Serialize
   Map<String, dynamic> toJson() => {'document': document, 'variables': variables};
 }

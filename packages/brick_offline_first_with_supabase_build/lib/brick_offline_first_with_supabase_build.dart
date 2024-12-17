@@ -19,22 +19,27 @@ class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithSup
   final schemaGenerator = _schemaGenerator;
 }
 
-final offlineFirstGenerator = const OfflineFirstWithSupabaseGenerator(
+///
+const offlineFirstGenerator = OfflineFirstWithSupabaseGenerator(
   superAdapterName: 'OfflineFirstWithSupabase',
   repositoryName: 'OfflineFirstWithSupabase',
 );
 
 /// These functions act as builder factories used by `build.yaml`
-Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(
+Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
       requiredImports: [
         "import 'package:brick_offline_first/brick_offline_first.dart';",
         "import 'package:brick_core/query.dart';",
         "import 'package:brick_sqlite/db.dart';",
       ],
     );
-Builder offlineFirstAdaptersBuilder(options) =>
+
+///
+Builder offlineFirstAdaptersBuilder(_) =>
     AdapterBuilder<ConnectOfflineFirstWithSupabase>(offlineFirstGenerator);
-Builder offlineFirstModelDictionaryBuilder(options) =>
+
+///
+Builder offlineFirstModelDictionaryBuilder(_) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithSupabase>(
       const OfflineFirstModelDictionaryGenerator('Supabase'),
       expectedImportRemovals: [
@@ -42,5 +47,9 @@ Builder offlineFirstModelDictionaryBuilder(options) =>
         'import "package:brick_offline_first/brick_offline_first.dart";',
       ],
     );
-Builder offlineFirstNewMigrationBuilder(options) => OfflineFirstMigrationBuilder();
-Builder offlineFirstSchemaBuilder(options) => OfflineFirstSchemaBuilder();
+
+///
+Builder offlineFirstNewMigrationBuilder(_) => OfflineFirstMigrationBuilder();
+
+///
+Builder offlineFirstSchemaBuilder(_) => OfflineFirstSchemaBuilder();

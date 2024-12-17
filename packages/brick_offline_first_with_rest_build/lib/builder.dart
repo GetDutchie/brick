@@ -7,23 +7,26 @@ import 'package:build/build.dart';
 
 final _schemaGenerator = OfflineFirstSchemaGenerator();
 
+///
 class OfflineFirstMigrationBuilder extends NewMigrationBuilder<ConnectOfflineFirstWithRest> {
   @override
   final schemaGenerator = _schemaGenerator;
 }
 
+///
 class OfflineFirstSchemaBuilder extends SchemaBuilder<ConnectOfflineFirstWithRest> {
   @override
   final schemaGenerator = _schemaGenerator;
 }
 
-final offlineFirstGenerator = const OfflineFirstWithRestGenerator(
+///
+const offlineFirstGenerator = OfflineFirstWithRestGenerator(
   superAdapterName: 'OfflineFirstWithRest',
   repositoryName: 'OfflineFirstWithRest',
 );
 
 /// These functions act as builder factories used by `build.yaml`
-Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(
+Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
       requiredImports: [
         "import 'package:brick_offline_first_abstract/annotations.dart';",
         "import 'package:brick_offline_first/brick_offline_first.dart';",
@@ -31,9 +34,13 @@ Builder offlineFirstAggregateBuilder(options) => AggregateBuilder(
         "import 'package:brick_sqlite/db.dart';",
       ],
     );
-Builder offlineFirstAdaptersBuilder(options) =>
+
+///
+Builder offlineFirstAdaptersBuilder(_) =>
     AdapterBuilder<ConnectOfflineFirstWithRest>(offlineFirstGenerator);
-Builder offlineFirstModelDictionaryBuilder(options) =>
+
+///
+Builder offlineFirstModelDictionaryBuilder(_) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithRest>(
       const OfflineFirstModelDictionaryGenerator('Rest'),
       expectedImportRemovals: [
@@ -43,5 +50,9 @@ Builder offlineFirstModelDictionaryBuilder(options) =>
         'import "package:brick_offline_first/brick_offline_first.dart";',
       ],
     );
-Builder offlineFirstNewMigrationBuilder(options) => OfflineFirstMigrationBuilder();
-Builder offlineFirstSchemaBuilder(options) => OfflineFirstSchemaBuilder();
+
+///
+Builder offlineFirstNewMigrationBuilder(_) => OfflineFirstMigrationBuilder();
+
+///
+Builder offlineFirstSchemaBuilder(_) => OfflineFirstSchemaBuilder();

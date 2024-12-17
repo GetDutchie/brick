@@ -1,6 +1,6 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/schema_builder.dart)
 // Unfortunately, some key differences such as inability to use mirrors and the sqlite vs postgres capabilities make DIY a more palatable option than retrofitting
-import 'package:brick_sqlite/src/db/migration.dart' show Column;
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
@@ -10,20 +10,44 @@ import 'package:brick_sqlite/src/db/schema/schema_base.dart';
 /// Describes a column object managed by SQLite
 /// This should not exist outside of a SchemaTable
 class SchemaColumn extends BaseSchemaObject {
+  ///
   String name;
+
+  /// If this column has an autoincrement value
   final bool autoincrement;
+
+  ///
   final Column columnType;
+
+  ///
   final dynamic defaultValue;
+
+  ///
   final bool nullable;
+
+  ///
   final bool isPrimaryKey;
+
+  ///
   final bool isForeignKey;
+
+  ///
   final String? foreignTableName;
+
+  /// Remove row when a referenced foreign key is deleted
   final bool onDeleteCascade;
+
+  /// Update column's value to default when a referenced foreign key is deleted
   final bool onDeleteSetDefault;
+
+  /// If this column's value is unique within the table
   final bool unique;
 
+  ///
   String? tableName;
 
+  /// Describes a column object managed by SQLite
+  /// This should not exist outside of a SchemaTable
   SchemaColumn(
     this.name,
     this.columnType, {
@@ -40,7 +64,10 @@ class SchemaColumn extends BaseSchemaObject {
         nullable = nullable ?? InsertColumn.defaults.nullable,
         unique = unique ?? InsertColumn.defaults.unique,
         assert(!isPrimaryKey || columnType == Column.integer, 'Primary key must be an integer'),
-        assert(!isForeignKey || (foreignTableName != null));
+        assert(
+          !isForeignKey || (foreignTableName != null),
+          'Foreign key must have a foreign table name',
+        );
 
   @override
   String get forGenerator {
@@ -63,10 +90,12 @@ class SchemaColumn extends BaseSchemaObject {
     }
 
     if (isForeignKey) {
-      parts.add('isForeignKey: $isForeignKey');
-      parts.add("foreignTableName: '$foreignTableName'");
-      parts.add('onDeleteCascade: $onDeleteCascade');
-      parts.add('onDeleteSetDefault: $onDeleteSetDefault');
+      parts.addAll([
+        'isForeignKey: $isForeignKey',
+        "foreignTableName: '$foreignTableName'",
+        'onDeleteCascade: $onDeleteCascade',
+        'onDeleteSetDefault: $onDeleteSetDefault',
+      ]);
     }
 
     if (unique != InsertColumn.defaults.unique) {

@@ -19,7 +19,7 @@ query MyOperation($vars: MyInputClass!) {
 }
 ```
 
-?> `providerArgs['operation'].variables` will **never** be wrapped by `variablesNamespace`
+?> `GraphqlProviderQuery#.variables` will **never** be wrapped by `variablesNamespace`
 
 ## `where:`
 

@@ -12,12 +12,11 @@ import '__mocks__.dart';
 GraphqlProvider generateProvider(
   dynamic response, {
   List<String>? errors,
-}) {
-  return GraphqlProvider(
-    modelDictionary: dictionary,
-    link: stubResponse({'upsertPerson': response}, errors: errors),
-  );
-}
+}) =>
+    GraphqlProvider(
+      modelDictionary: dictionary,
+      link: stubResponse({'upsertPerson': response}, errors: errors),
+    );
 
 class SampleContextEntry extends ContextEntry {
   final String useEntry;
@@ -45,17 +44,31 @@ void main() {
         );
       });
 
-      test('providerArgs#context:', () {
+      test('GraphqlProviderQuery#context:', () {
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
           query: Query(
+            forProviders: [
+              GraphqlProviderQuery(
+                context: const Context().withEntry(const SampleContextEntry('myValue')),
+              ),
+            ],
+          ),
+        ).request;
+        expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          query: const Query(
+            // ignore: deprecated_member_use
             providerArgs: {
               'context': {'SampleContextEntry': SampleContextEntry('myValue')},
             },
           ),
         ).request;
-        expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
+        expect(request0!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
     });
 
@@ -75,26 +88,54 @@ void main() {
         expect(request.requestVariables, variables);
       });
 
-      test('providerArgs#variables:', () {
+      test('GraphqlProviderQuery#operation:', () {
         final variables = {'name': 'Thomas'};
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
+          query: Query(
+            forProviders: [
+              GraphqlProviderQuery(
+                operation: GraphqlOperation(variables: variables),
+              ),
+            ],
+          ),
         );
         expect(request.requestVariables, variables);
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          // ignore: deprecated_member_use
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
+        );
+        expect(request0.requestVariables, variables);
       });
 
       test('use providerArgs before passed variables', () {
         final variables = {'name': 'Thomas'};
         final providerVariables = {'name': 'Guy'};
+
         final request = GraphqlRequest<DemoModel>(
           action: QueryAction.upsert,
           modelDictionary: provider.modelDictionary,
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
+          query: Query(
+            forProviders: [
+              GraphqlProviderQuery(operation: GraphqlOperation(variables: providerVariables)),
+            ],
+          ),
           variables: variables,
         );
         expect(request.requestVariables, providerVariables);
+
+        final request0 = GraphqlRequest<DemoModel>(
+          action: QueryAction.upsert,
+          modelDictionary: provider.modelDictionary,
+          // ignore: deprecated_member_use
+          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
+          variables: variables,
+        );
+        expect(request0.requestVariables, providerVariables);
       });
 
       test('without variablesNamespace', () {
@@ -144,8 +185,8 @@ void main() {
       test('skips associations', () {
         final query = Query(
           where: [
-            Where('lastName').isExactly(1),
-            Where('assoc').isExactly(Where('name').isExactly(1)),
+            const Where('lastName').isExactly(1),
+            const Where('assoc').isExactly(const Where('name').isExactly(1)),
           ],
         );
         expect(request.queryToVariables(query), {'lastName': 1});

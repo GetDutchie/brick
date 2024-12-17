@@ -18,6 +18,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     });
   }
 
+  /// Generate a function to produce a [ClassElement] from GraphQL data
   GraphqlSerialize(
     super.element,
     super.fields, {
@@ -37,6 +38,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
     ];
   }
 
+  /// Produce a map entry of a [RuntimeGraphqlDefinition] from a [FieldElement].
   String generateGraphqlDefinition(FieldElement field) {
     final annotation = fields.annotationForField(field);
     final checker = checkerForType(field.type);
@@ -70,7 +72,7 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
 
     if (checker.toJsonMethod != null && checker.toJsonMethod!.returnType.isDartCoreMap) {
       if (type.element is ClassElement) {
-        final klass = type.element as ClassElement;
+        final klass = type.element! as ClassElement;
         final subfields = klass.fields.where((field) {
           return field.isPublic &&
               ((field.isFinal || field.isConst) && field.getter != null) &&

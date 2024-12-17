@@ -11,6 +11,7 @@ Future<LibraryReader> _libraryForFolder(String folder, String filename) async {
   );
 }
 
+///
 typedef LibraryGenerator = Future<LibraryReader> Function(String filename);
 
 /// Thunks a reader generator that assumes the filename is prefixed `test_`
@@ -31,6 +32,7 @@ Future<AnnotatedElement> annotationForFile<_Annotation>(String folder, String fi
 }
 
 // ignore: subtype_of_sealed_class
+///
 class MockBuildStep extends BuildStep {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

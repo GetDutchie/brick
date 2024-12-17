@@ -11,8 +11,8 @@ import 'offline_first_generator/test_graphql_config_query_operation_transformer.
 import 'offline_first_generator/test_offline_first_where_rename.dart' as offline_first_where_rename;
 import 'offline_first_generator/test_specify_field_name.dart' as specify_field_name;
 
-final _generator = OfflineFirstWithGraphqlGenerator();
-final folder = 'offline_first_generator';
+const _generator = OfflineFirstWithGraphqlGenerator();
+const folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {

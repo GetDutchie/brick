@@ -1,4 +1,6 @@
 import 'package:brick_core/core.dart';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/runtime_sqlite_column_definition.dart';
 import 'package:brick_sqlite/src/sqlite_provider.dart';
@@ -29,11 +31,14 @@ abstract class SqliteAdapter<TModel extends Model> implements Adapter<TModel> {
     ModelRepository<SqliteModel>? repository,
   }) async {}
 
+  ///
   Future<TModel> fromSqlite(
     Map<String, dynamic> input, {
     required SqliteProvider provider,
     ModelRepository<SqliteModel>? repository,
   });
+
+  ///
   Future<Map<String, dynamic>> toSqlite(
     TModel input, {
     required SqliteProvider provider,

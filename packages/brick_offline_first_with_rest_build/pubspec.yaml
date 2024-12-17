@@ -27,9 +27,9 @@ dependencies:
   source_gen: ">=1.2.2 <2.0.0"
 
 dev_dependencies:
-  build_verify: ^2.0.0
-  source_gen_test: ^1.0.0
-  test: ^1.20.1
-  lints: ^2.0.1
   brick_build_test:
     path: ../brick_build_test
+  build_verify:
+  lints:
+  source_gen_test:
+  test:

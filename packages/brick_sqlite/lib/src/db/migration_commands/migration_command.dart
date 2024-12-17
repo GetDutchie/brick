@@ -9,6 +9,7 @@ abstract class MigrationCommand {
   /// Outputs the opposite command to be used in a generator
   MigrationCommand? get down => null;
 
+  /// Extendible interface for SQLite migrations
   const MigrationCommand();
 
   /// Alias for [statement]

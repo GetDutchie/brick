@@ -15,6 +15,7 @@ Link stubGraphqlLink(
   final link = MockLink();
 
   if (wrapInTopLevelKeyAndArray) {
+    // ignore: parameter_assignments
     response = {
       'result': [response],
     };
@@ -28,7 +29,6 @@ Link stubGraphqlLink(
         data: response,
         response: {'body': jsonEncode(response)},
         errors: errors?.map((e) => GraphQLError(message: e)).toList().cast<GraphQLError>(),
-        context: const Context(),
       ),
     ]),
   );

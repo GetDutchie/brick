@@ -15,7 +15,7 @@ void main() {
     tearDown(mock.tearDown);
 
     test('#delete', () async {
-      final req = SupabaseRequest<Demo>(
+      const req = SupabaseRequest<Demo>(
         requestMethod: 'DELETE',
         filter: 'id=eq.1',
       );
@@ -29,7 +29,7 @@ void main() {
     });
 
     test('#exists', () async {
-      final req = SupabaseRequest<Demo>();
+      const req = SupabaseRequest<Demo>();
       final instance = Demo(age: 1, name: 'Demo 1', id: '1');
       final resp = SupabaseResponse(
         [await mock.serialize(instance)],
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('#get', () async {
-      final req = SupabaseRequest<Demo>();
+      const req = SupabaseRequest<Demo>();
       final resp = SupabaseResponse([
         await mock.serialize(Demo(age: 1, name: 'Demo 1', id: '1')),
         await mock.serialize(Demo(age: 2, name: 'Demo 2', id: '2')),
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('#insert', () async {
-      final req = SupabaseRequest<Demo>(
+      const req = SupabaseRequest<Demo>(
         requestMethod: 'POST',
         filter: 'id=eq.1',
         limit: 1,
@@ -78,7 +78,7 @@ void main() {
     });
 
     test('#update', () async {
-      final req = SupabaseRequest<Demo>(
+      const req = SupabaseRequest<Demo>(
         requestMethod: 'PATCH',
         filter: 'id=eq.1',
         limit: 1,
@@ -96,7 +96,7 @@ void main() {
 
     group('#upsert', () {
       test('no associations', () async {
-        final req = SupabaseRequest<Demo>(
+        const req = SupabaseRequest<Demo>(
           requestMethod: 'POST',
           filter: 'id=eq.1',
           limit: 1,
@@ -113,14 +113,14 @@ void main() {
       });
 
       test('one association', () async {
-        final demoModelReq = SupabaseRequest<Demo>(
+        const demoModelReq = SupabaseRequest<Demo>(
           requestMethod: 'POST',
           filter: 'id=eq.2',
           limit: 1,
         );
         final demoModelResp =
             SupabaseResponse(await mock.serialize(Demo(age: 1, name: 'Demo 1', id: '1')));
-        final assocReq = SupabaseRequest<DemoAssociationModel>(
+        const assocReq = SupabaseRequest<DemoAssociationModel>(
           requestMethod: 'POST',
           filter: 'id=eq.1',
           limit: 1,

@@ -2,17 +2,30 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseExecutor;
 
-/// Serialize and Deserialize a [Request] from SQLite.
+/// Serialize and Deserialize a [TRequest] from SQLite.
 abstract class RequestSqliteCache<TRequest> {
+  /// Column that tracks the number of attempts
   final String attemptColumn;
+
+  ///
   final String createdAtColumn;
+
+  /// Column that tracks if the request is locked
   final String lockedColumn;
+
+  /// Column that tracks the primary key
   final String primaryKeyColumn;
+
+  ///
   final TRequest request;
 
   /// Columns used to uniquely identify the request (e.g. body, headers, url, method).
   final List<String> requestColumns;
+
+  ///
   final String tableName;
+
+  ///
   final String updateAtColumn;
 
   /// Matches any HTTP requests that send data (or 'push'). 'Pull' requests most often have an
@@ -51,6 +64,7 @@ abstract class RequestSqliteCache<TRequest> {
     return 0;
   }
 
+  ///
   @protected
   Future<Map<String, dynamic>?> findRequestInDatabase(DatabaseExecutor db) async {
     final whereStatement = requestColumns.join(' = ? AND ');
@@ -101,7 +115,7 @@ abstract class RequestSqliteCache<TRequest> {
   TRequest sqliteToRequest(Map<String, dynamic> data);
 
   /// Builds request into a new SQLite-insertable row
-  /// Only available if [request] was initialized from [fromRequest]
+  /// Only available if [request] was initialized from [sqliteToRequest]
   ///
   /// This is a function to ensure `DateTime.now()` is invoked predictably.
   Map<String, dynamic> toSqlite();
@@ -121,6 +135,7 @@ abstract class RequestSqliteCache<TRequest> {
     });
   }
 
+  ///
   static Future<int> lockRequest({
     required DatabaseExecutor db,
     required Map<String, dynamic> data,
@@ -130,6 +145,7 @@ abstract class RequestSqliteCache<TRequest> {
   }) async =>
       await _updateLock(true, data, db, tableName, lockedColumn, primaryKeyColumn);
 
+  ///
   static Future<int> unlockRequest({
     required DatabaseExecutor db,
     required Map<String, dynamic> data,

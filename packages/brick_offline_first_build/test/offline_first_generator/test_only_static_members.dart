@@ -1,6 +1,8 @@
+// ignore_for_file: avoid_classes_with_only_static_members
+
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<OnlyStaticMembers> _$OnlyStaticMembersFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
@@ -33,7 +35,7 @@ Future<Map<String, dynamic>> _$OnlyStaticMembersToSqlite(
 class OnlyStaticMembers {
   // To ensure static members are not considered for serialization.
   static const answer = 42;
-  static final reason = 42;
+  static const reason = 42;
 
   static int get understand => 42;
 }

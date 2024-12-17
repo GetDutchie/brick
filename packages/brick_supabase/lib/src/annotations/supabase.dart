@@ -1,4 +1,5 @@
 import 'package:brick_core/field_serializable.dart';
+import 'package:brick_supabase/src/supabase_adapter.dart';
 
 /// An annotation used to specify how a field is serialized for a [SupabaseAdapter].
 ///

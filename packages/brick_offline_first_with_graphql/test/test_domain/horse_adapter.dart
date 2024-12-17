@@ -69,7 +69,7 @@ Future<Map<String, dynamic>> _$HorseToSqlite(
 
 class HorseOperationTransformer extends GraphqlQueryOperationTransformer {
   @override
-  GraphqlOperation get delete => GraphqlOperation(
+  GraphqlOperation get delete => const GraphqlOperation(
         document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
       deleteDemoModel(input: $input) {}
     }''',
@@ -104,7 +104,7 @@ class HorseOperationTransformer extends GraphqlQueryOperationTransformer {
   }
 
   @override
-  GraphqlOperation get upsert => GraphqlOperation(
+  GraphqlOperation get upsert => const GraphqlOperation(
         document: r'''mutation UpsertDemoModels($input: DemoModelInput) {
       upsertDemoModel(input: $input) {}
     }''',
@@ -123,15 +123,11 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   @override
   final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
     'primaryKey': const RuntimeGraphqlDefinition(
-      association: false,
       documentNodeName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'name': const RuntimeGraphqlDefinition(
-      association: false,
       documentNodeName: 'name',
-      iterable: false,
       type: String,
     ),
     'mounties': const RuntimeGraphqlDefinition(
@@ -145,15 +141,11 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'name': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'name',
-      iterable: false,
       type: String,
     ),
     'mounties': const RuntimeSqliteColumnDefinition(
@@ -169,7 +161,11 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   @override
   final String tableName = 'Horse';
   @override
-  Future<void> afterSave(instance, {required provider, repository}) async {
+  Future<void> afterSave(
+    Horse instance, {
+    required SqliteProvider<SqliteModel> provider,
+    ModelRepository<SqliteModel>? repository,
+  }) async {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(
         instance.mounties.map((s) async {
@@ -186,28 +182,28 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   @override
   Future<Horse> fromGraphql(
     Map<String, dynamic> input, {
-    required provider,
+    required GraphqlProvider provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$HorseFromGraphql(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toGraphql(
     Horse input, {
-    required provider,
+    required GraphqlProvider provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$HorseToGraphql(input, provider: provider, repository: repository);
   @override
   Future<Horse> fromSqlite(
     Map<String, dynamic> input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$HorseFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(
     Horse input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$HorseToSqlite(input, provider: provider, repository: repository);

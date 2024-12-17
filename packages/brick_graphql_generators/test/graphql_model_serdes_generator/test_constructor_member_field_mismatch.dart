@@ -1,6 +1,6 @@
 import 'package:brick_graphql/brick_graphql.dart';
 
-final output = r'''
+const output = r'''
 Future<GraphqlConstructorMemberFieldMismatch>
     _$GraphqlConstructorMemberFieldMismatchFromGraphql(
         Map<String, dynamic> data,

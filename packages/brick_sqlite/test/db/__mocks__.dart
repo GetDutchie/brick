@@ -1,3 +1,4 @@
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/drop_index.dart';

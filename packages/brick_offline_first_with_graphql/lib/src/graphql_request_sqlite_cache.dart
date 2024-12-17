@@ -7,6 +7,7 @@ import 'package:gql_exec/gql_exec.dart';
 
 /// Serialize and Deserialize a [Request] from SQLite.
 class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
+  /// Serialize and Deserialize a [Request] from SQLite.
   GraphqlRequestSqliteCache(request)
       : super(
           attemptColumn: GRAPHQL_JOBS_ATTEMPTS_COLUMN,
@@ -41,7 +42,7 @@ class GraphqlRequestSqliteCache extends RequestSqliteCache<Request> {
   }
 
   /// Builds request into a new SQLite-insertable row
-  /// Only available if [request] was initialized from [fromRequest]
+  /// Only available if [request] was initialized from [sqliteToRequest]
   ///
   /// This is a function to ensure `DateTime.now()` is invoked predictably.
   @override

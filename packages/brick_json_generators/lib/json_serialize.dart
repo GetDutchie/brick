@@ -1,16 +1,23 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
 import 'package:brick_json_generators/json_serdes_generator.dart';
 
+/// Default serialize implementation of [coderForField] for JSON-based providers
 mixin JsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonSerdesGenerator<TModel, Annotation> {
   @override
   final doesDeserialize = false;
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Annotation fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     if (fieldAnnotation.ignoreTo) return null;
 

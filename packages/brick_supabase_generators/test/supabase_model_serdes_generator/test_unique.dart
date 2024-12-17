@@ -1,6 +1,6 @@
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r"""
+const output = r"""
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 

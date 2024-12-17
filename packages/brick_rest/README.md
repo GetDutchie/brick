@@ -63,8 +63,8 @@ class User extends OfflineFirstModel {}
 ```dart
 class UserRequestTransformer extends RestRequestTransformer {
   RestRequest? get get {
-    if (query?.providerArgs.isNotEmpty && query.providerArgs['limit'] != null) {
-      return RestRequest(url: "/users?limit=${query.providerArgs['limit']}");
+    if (query?.providerArgs.isNotEmpty && query.limit != null) {
+      return RestRequest(url: "/users?limit=${query.limit}");
     }
     const RestRequest(url: '/users');
   }

@@ -26,7 +26,7 @@ void main() {
 
     test('#applyPolicyToQuery', () async {
       const policy = OfflineFirstGetPolicy.localOnly;
-      final query = TestRepository().applyPolicyToQuery(Query(), get: policy);
+      final query = TestRepository().applyPolicyToQuery(const Query(), get: policy);
       expect(query?.providerArgs, {'policy': policy.index});
     });
 

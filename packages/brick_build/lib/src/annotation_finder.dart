@@ -12,6 +12,7 @@ abstract class AnnotationFinder<Annotation extends Object> {
   /// Holder of previously generated [Annotation]s
   final _columnExpando = Expando<Annotation>();
 
+  /// Find an [Annotation] per field.
   AnnotationFinder();
 
   /// Given a field element, retrieve the [Annotation] equivalent

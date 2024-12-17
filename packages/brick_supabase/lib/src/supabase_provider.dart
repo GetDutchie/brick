@@ -6,23 +6,35 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase/supabase.dart';
 
+/// An internal definition for remote requests.
+/// In rare cases, a specific `update` or `insert` is preferable to `upsert`;
+/// this enum explicitly declares the desired behavior.
 enum UpsertMethod {
+  /// Translates to a Supabase `.insert`
   insert,
+
+  /// Translates to a Supabase `.update`
   update,
+
+  /// Translates to a Supabase `.upsert`
   upsert,
 }
 
-/// Retrieves from an HTTP endpoint
+/// Retrieves from a Supabase server
 class SupabaseProvider implements Provider<SupabaseModel> {
+  /// The client used to connect to the Supabase server.
+  /// For some cases, like offline repositories, the offl
   final SupabaseClient client;
 
   /// The glue between app models and generated adapters.
   @override
   final SupabaseModelDictionary modelDictionary;
 
+  ///
   @protected
   final Logger logger;
 
+  /// Retrieves from a Supabase server
   SupabaseProvider(
     this.client, {
     required this.modelDictionary,
@@ -30,7 +42,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
   /// Sends a DELETE request method to the endpoint
   @override
-  Future<bool> delete<TModel extends SupabaseModel>(instance, {query, repository}) async {
+  Future<bool> delete<TModel extends SupabaseModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final tableBuilder = client.from(adapter.supabaseTableName);
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
@@ -48,7 +64,10 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   }
 
   @override
-  Future<bool> exists<TModel extends SupabaseModel>({query, repository}) async {
+  Future<bool> exists<TModel extends SupabaseModel>({
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
@@ -58,22 +77,17 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     return resp.count > 0;
   }
 
-  /// [Query]'s `providerArgs` can extend the [get] functionality:
-  /// * `'limit'` e.g. `{'limit': 10}`
-  /// * `'limitByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/limit
-  /// * `'offset'` Start from a specific offset, inclusive.
-  /// * `'orderBy'` Use field names not column names and always specify direction.
-  /// For example, given a `final DateTime createdAt;` field: `{'orderBy': 'createdAt ASC'}`.
-  /// If the column cannot be found for the first value before a space, the value is left unchanged.
-  /// * `'orderByReferencedTable'` forwards to Supabase's `referencedTable` property https://supabase.com/docs/reference/dart/order
   @override
-  Future<List<TModel>> get<TModel extends SupabaseModel>({query, repository}) async {
+  Future<List<TModel>> get<TModel extends SupabaseModel>({
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final queryTransformer =
         QuerySupabaseTransformer<TModel>(modelDictionary: modelDictionary, query: query);
     final builder = queryTransformer.select(client.from(adapter.supabaseTableName));
 
-    final resp = await queryTransformer.applyProviderArgs(builder);
+    final resp = await queryTransformer.applyQuery(builder);
 
     return Future.wait<TModel>(
       resp
@@ -85,7 +99,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
   /// In almost all cases, use [upsert]. This method is provided for cases when a table's
   /// policy permits inserts without updates.
-  Future<TModel> insert<TModel extends SupabaseModel>(instance, {query, repository}) async {
+  Future<TModel> insert<TModel extends SupabaseModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
@@ -100,7 +118,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
 
   /// In almost all cases, use [upsert]. This method is provided for cases when a table's
   /// policy permits updates without inserts.
-  Future<TModel> update<TModel extends SupabaseModel>(instance, {query, repository}) async {
+  Future<TModel> update<TModel extends SupabaseModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
@@ -120,7 +142,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   /// For example, given model `Room` has association `Bed` and `Bed` has association `Pillow`,
   /// when `Room` is upserted, `Pillow` is upserted and then `Bed` is upserted.
   @override
-  Future<TModel> upsert<TModel extends SupabaseModel>(instance, {query, repository}) async {
+  Future<TModel> upsert<TModel extends SupabaseModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
 
@@ -142,7 +168,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     Query? query,
     ModelRepository<SupabaseModel>? repository,
   }) async {
-    assert(modelDictionary.adapterFor.containsKey(type));
+    assert(modelDictionary.adapterFor.containsKey(type), '$type not found in the model dictionary');
 
     final adapter = modelDictionary.adapterFor[type]!;
 
@@ -188,7 +214,7 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     Query? query,
     ModelRepository<SupabaseModel>? repository,
   }) async {
-    assert(modelDictionary.adapterFor.containsKey(type));
+    assert(modelDictionary.adapterFor.containsKey(type), '$type not found in the model dictionary');
 
     final adapter = modelDictionary.adapterFor[type]!;
     final associations = adapter.fieldsToSupabaseColumns.values

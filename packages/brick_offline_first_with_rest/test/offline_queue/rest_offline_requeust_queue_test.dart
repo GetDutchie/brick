@@ -17,15 +17,13 @@ void main() {
 
   group('RestOfflineRequestQueue', () {
     test('#start', () {
-      final queue = RestOfflineRequestQueue(client: offlineClient);
-      queue.start();
+      final queue = RestOfflineRequestQueue(client: offlineClient)..start();
       expect(queue.isRunning, isTrue);
       queue.stop();
     });
 
     test('#stop', () {
-      final queue = RestOfflineRequestQueue(client: offlineClient);
-      queue.start();
+      final queue = RestOfflineRequestQueue(client: offlineClient)..start();
       expect(queue.isRunning, isTrue);
       queue.stop();
       expect(queue.isRunning, isFalse);

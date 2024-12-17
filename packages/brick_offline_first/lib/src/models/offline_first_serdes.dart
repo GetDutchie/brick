@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// A class that isn't connected to the `OfflineFirstRepository` but is still used
 /// by `OfflineFirstModels` (such as a `Cash` class that declares `amount` and `currency`).
 /// [OfflineFirstSerdes] **must** extend the class in end implementation.

@@ -10,12 +10,16 @@ import 'package:brick_sqlite/src/db/schema/schema_index.dart';
 
 /// Describes a table object managed by SQLite
 class SchemaTable extends BaseSchemaObject {
+  ///
   final String name;
 
+  ///
   Set<SchemaColumn> columns;
 
+  ///
   Set<SchemaIndex> indices;
 
+  /// Describes a table object managed by SQLite
   SchemaTable(
     this.name, {
     Set<SchemaColumn>? columns,

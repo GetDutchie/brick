@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 final _formatter = dart_style.DartFormatter();
 
@@ -26,9 +28,15 @@ class RestToOfflineFirstConverter {
   late Client _client;
 
   /// Only set client when testing
-  set client(value) => _client = value;
+  @visibleForTesting
+  set client(Client value) => _client = value;
+
+  ///
   Client get client => _client;
 
+  /// Convert a JSON API payload into an [OfflineFirstModel], output via [generate] or [saveToFile].
+  ///
+  /// This will not map associations or non-primitive types.
   RestToOfflineFirstConverter({
     required this.endpoint,
     this.headers,
@@ -67,8 +75,7 @@ class RestToOfflineFirstConverter {
 
   /// Produce instance fields
   String generateFields(Map<String, dynamic> fields) {
-    final keys = fields.keys.toList();
-    keys.sort();
+    final keys = fields.keys.toList()..sort();
     return keys.fold<List<String>>(<String>[], (acc, key) {
       final valueType = fields[key].runtimeType.toString();
       return acc..add('  final $valueType ${toCamelCase(key)};');
@@ -77,8 +84,7 @@ class RestToOfflineFirstConverter {
 
   /// Produce fields to be invoked in the default constructor
   String generateConstructorFields(Map<String, dynamic> fields) {
-    final keys = fields.keys.toList();
-    keys.sort();
+    final keys = fields.keys.toList()..sort();
     return keys.fold<List<String>>(<String>[], (acc, key) {
       return acc..add('    this.${toCamelCase(key)}');
     }).join(',\n');

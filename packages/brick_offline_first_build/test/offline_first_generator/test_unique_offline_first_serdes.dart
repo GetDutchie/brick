@@ -2,7 +2,7 @@ import 'package:brick_offline_first/brick_offline_first.dart' show OfflineFirstS
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-final output = r"""
+const output = r"""
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 

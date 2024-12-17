@@ -5,8 +5,10 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_offline_first_with_supabase_build/src/offline_first_supabase_generators.dart';
 import 'package:source_gen/source_gen.dart';
 
+///
 class OfflineFirstWithSupabaseGenerator
     extends OfflineFirstGenerator<ConnectOfflineFirstWithSupabase> {
+  ///
   const OfflineFirstWithSupabaseGenerator({
     super.repositoryName,
     super.superAdapterName,
@@ -22,9 +24,6 @@ class OfflineFirstWithSupabaseGenerator
     );
     final sqlite =
         OfflineFirstSqliteModelSerdesGenerator(element, annotation, repositoryName: repositoryName);
-    final generators = <SerdesGenerator>[];
-    generators.addAll(supabase.generators);
-    generators.addAll(sqlite.generators);
-    return generators;
+    return <SerdesGenerator>[...supabase.generators, ...sqlite.generators];
   }
 }

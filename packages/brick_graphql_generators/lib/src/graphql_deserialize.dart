@@ -19,6 +19,7 @@ class GraphqlDeserialize extends GraphqlSerdesGenerator
     ];
   }
 
+  /// Generate a function to produce a [ClassElement] from GraphQL data
   GraphqlDeserialize(
     super.element,
     super.fields, {

@@ -7,7 +7,7 @@ class SqliteAssoc extends OfflineFirstWithRestModel {
   final int key = -1;
 }
 
-final output = '''
+const output = '''
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';

@@ -13,6 +13,7 @@ abstract class OfflineFirstGenerator<_ClassAnnotation>
   @override
   final String superAdapterName;
 
+  /// Output serializing code for all models with the @[_ClassAnnotation] annotation
   const OfflineFirstGenerator({
     String? superAdapterName,
     String? repositoryName,

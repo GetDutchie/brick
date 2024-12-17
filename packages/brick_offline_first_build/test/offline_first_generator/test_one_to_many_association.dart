@@ -22,7 +22,7 @@ class SqliteAssoc extends OfflineFirstModel {
   int key = -1;
 }
 
-final output = r'''
+const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 

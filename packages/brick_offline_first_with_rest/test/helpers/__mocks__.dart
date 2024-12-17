@@ -12,8 +12,8 @@ part 'horse_adapter.dart';
 part 'mounty.dart';
 part 'mounty_adapter.dart';
 
-/// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
-/// while [DemoModel] is not.
+/// The exact same as [Mounty], except this class is tracked by the Memory Cache Provider
+/// while [Mounty] is not.
 class MemoryDemoModel extends Mounty {
   MemoryDemoModel(String name) : super(name: name);
 }
@@ -46,7 +46,8 @@ class DemoModelMigration extends Migration {
 }
 
 class TestRepository extends OfflineFirstWithRestRepository {
-  static TestRepository? _singleton;
+  static late TestRepository? _singleton;
+  factory TestRepository() => _singleton!;
 
   TestRepository._(
     RestProvider restProvider,
@@ -61,7 +62,6 @@ class TestRepository extends OfflineFirstWithRestRepository {
             databaseFactory: databaseFactoryFfi,
           ),
         );
-  factory TestRepository() => _singleton!;
 
   factory TestRepository.withProviders(RestProvider restProvider, SqliteProvider sqliteProvider) =>
       TestRepository._(restProvider, sqliteProvider);

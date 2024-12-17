@@ -1,126 +1,35 @@
 // Heavily, heavily inspired by [Aqueduct](https://github.com/stablekernel/aqueduct/blob/master/aqueduct/lib/src/db/schema/migration.dart)
-
 import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
+import 'package:brick_sqlite/src/db/schema/schema.dart';
 
-/// SQLite data types.
-///
-/// While SQLite only supports 5 datatypes, it will still cast these
-/// into an [intelligent affinity](https://www.sqlite.org/datatype3.html).
-enum Column {
-  undefined,
-  bigint,
-  blob,
-  boolean,
-  date,
-  datetime,
-  // ignore: constant_identifier_names
-  Double,
-  integer,
-  float,
-
-  /// DOUBLE column type is used
-  num,
-  text,
-  varchar
-}
-
+/// A collection of [MigrationCommand]s to update the [Schema].
 abstract class Migration {
   /// Order to run; should be unique and sequential with other [Migration]s
   final int version;
 
+  /// Desired changes to the [Schema].
   final List<MigrationCommand> up;
+
+  /// Reverts [up]
   final List<MigrationCommand> down;
 
+  /// A collection of [MigrationCommand]s to update the [Schema].
   const Migration({
     required this.version,
     required this.up,
     required this.down,
   });
 
+  /// Alias of [upStatement]
   String get statement => upStatement;
 
+  /// Generate SQL statements for all commands
   String get upStatement => '${up.map((c) => c.statement).join(';\n')};';
 
+  /// Revert of [upStatement]
   String get downStatement => '${down.map((c) => c.statement).join(';\n')};';
 
-  /// Convert `Column` to SQLite data types
-  static String ofDefinition(Column definition) {
-    switch (definition) {
-      case Column.bigint:
-        return 'BIGINT';
-      case Column.boolean:
-        return 'BOOLEAN';
-      case Column.blob:
-        return 'BLOB';
-      case Column.date:
-        return 'DATE';
-      case Column.datetime:
-        return 'DATETIME';
-      case Column.Double:
-      case Column.num:
-        return 'DOUBLE';
-      case Column.integer:
-        return 'INTEGER';
-      case Column.float:
-        return 'FLOAT';
-      case Column.text:
-        return 'TEXT';
-      case Column.varchar:
-        return 'VARCHAR';
-      default:
-        return throw ArgumentError('$definition not found in Column');
-    }
-  }
-
-  /// Convert native Dart to `Column`
-  static Column fromDartPrimitive(Type type) {
-    switch (type) {
-      case bool:
-        return Column.boolean;
-      case DateTime:
-        return Column.datetime;
-      case double:
-        return Column.Double;
-      case int:
-        return Column.integer;
-      case num:
-        return Column.num;
-      case String:
-        return Column.varchar;
-      default:
-        return throw ArgumentError('$type not associated with a Column');
-    }
-  }
-
-  /// Convert `Column` to native Dart
-  static Type toDartPrimitive(Column definition) {
-    switch (definition) {
-      case Column.bigint:
-        return num;
-      case Column.boolean:
-        return bool;
-      case Column.blob:
-        return List;
-      case Column.date:
-        return DateTime;
-      case Column.datetime:
-        return DateTime;
-      case Column.Double:
-        return double;
-      case Column.integer:
-        return int;
-      case Column.float:
-      case Column.num:
-        return num;
-      case Column.text:
-        return String;
-      case Column.varchar:
-        return String;
-      default:
-        return throw ArgumentError('$definition not found in Column');
-    }
-  }
-
+  /// SQL command to produce the migration
   static String generate(List<MigrationCommand> commands, int version) {
     final upCommands = commands.map((m) => m.forGenerator);
     final downCommands = commands.map((m) => m.down?.forGenerator).toList().whereType<String>();

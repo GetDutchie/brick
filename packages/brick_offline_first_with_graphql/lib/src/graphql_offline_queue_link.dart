@@ -13,6 +13,7 @@ import 'package:logging/logging.dart';
 class GraphqlOfflineQueueLink extends Link {
   final Logger _logger;
 
+  ///
   final GraphqlRequestSqliteCacheManager requestManager;
 
   /// A callback triggered when a request failed, but will be reattempted.
@@ -21,6 +22,7 @@ class GraphqlOfflineQueueLink extends Link {
   /// A callback triggered when a request throws an exception during execution.
   final void Function(Request request, Object error)? onRequestException;
 
+  /// Stores all mutation requests in a SQLite database
   GraphqlOfflineQueueLink(
     this.requestManager, {
     this.onReattempt,

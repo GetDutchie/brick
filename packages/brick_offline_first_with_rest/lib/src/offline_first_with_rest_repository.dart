@@ -5,7 +5,7 @@ import 'package:brick_offline_first/offline_queue.dart';
 import 'package:brick_offline_first_with_rest/src/models/offline_first_with_rest_model.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_queue_client.dart';
 import 'package:brick_offline_first_with_rest/src/offline_queue/rest_offline_request_queue.dart';
-import 'package:brick_rest/brick_rest.dart' show RestProvider, RestException;
+import 'package:brick_rest/brick_rest.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -22,9 +22,14 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
   // ignore: overridden_fields
   final RestProvider remoteProvider;
 
+  /// If the app is unable to make contact with the [remoteProvider], the queue automatically
+  /// retries in sequence until it receives a response. Please note that a response may still
+  /// be an error code such as `404` or `500`. The queue is **only** concerned with connectivity.
   @protected
   late RestOfflineRequestQueue offlineRequestQueue;
 
+  /// Ensures the [remoteProvider] is a [RestProvider]. All requests to and
+  /// from the [remoteProvider] pass through a seperate SQLite queue. See [offlineRequestQueue].
   OfflineFirstWithRestRepository({
     super.autoHydrate,
     super.loggerName,
@@ -82,7 +87,23 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
     final headerValue = delete?.toString().split('.').last ??
         get?.toString().split('.').last ??
         upsert?.toString().split('.').last;
+    final existingProviderQuery =
+        query?.providerQueries[RestProvider] as RestProviderQuery? ?? const RestProviderQuery();
+    final existingProviderQueryRequest = existingProviderQuery.request ?? const RestRequest();
+
     return query?.copyWith(
+      forProviders: [
+        ...query.forProviders,
+        existingProviderQuery.copyWith(
+          request: existingProviderQueryRequest.copyWith(
+            headers: {
+              // This header is removed by the [RestOfflineQueueClient]
+              if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
+              ...?existingProviderQueryRequest.headers,
+            },
+          ),
+        ),
+      ],
       providerArgs: {
         ...query.providerArgs,
         'headers': {

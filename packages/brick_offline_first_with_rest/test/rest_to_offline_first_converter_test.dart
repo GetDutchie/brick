@@ -13,16 +13,16 @@ void main() {
   group('RestToOfflineFirstConverter', () {
     group('#getRestPayload', () {
       test('with top-level array', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
-        converter.client = _generateResponse('[{"name": "Thomas"}]');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people')
+          ..client = _generateResponse('[{"name": "Thomas"}]');
 
         final result = await converter.getRestPayload();
         expect(result, {'name': 'Thomas'});
       });
 
       test('with top-level map', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/person');
-        converter.client = _generateResponse('[{"name": "Thomas"}]');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/person')
+          ..client = _generateResponse('[{"name": "Thomas"}]');
 
         final result = await converter.getRestPayload();
         expect(result, {'name': 'Thomas'});
@@ -32,8 +32,7 @@ void main() {
         final converter = RestToOfflineFirstConverter(
           endpoint: 'http://0.0.0.0:3000/person',
           topLevelKey: 'person',
-        );
-        converter.client = _generateResponse('{ "person": { "name": "Thomas"} }');
+        )..client = _generateResponse('{ "person": { "name": "Thomas"} }');
 
         final result = await converter.getRestPayload();
         expect(result, {'name': 'Thomas'});
@@ -97,8 +96,8 @@ class People extends OfflineFirstModel {
       });
 
       test('from rest', () async {
-        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people');
-        converter.client = _generateResponse('[{"name": "Thomas"}]');
+        final converter = RestToOfflineFirstConverter(endpoint: 'http://0.0.0.0:3000/people')
+          ..client = _generateResponse('[{"name": "Thomas"}]');
 
         final output = await converter.generate();
         expect(output, expectedOutput);
@@ -108,8 +107,7 @@ class People extends OfflineFirstModel {
         final converter = RestToOfflineFirstConverter(
           endpoint: 'http://0.0.0.0:3000/people',
           topLevelKey: 'people',
-        );
-        converter.client = _generateResponse('{"people": [{"name": "Thomas"}]}');
+        )..client = _generateResponse('{"people": [{"name": "Thomas"}]}');
 
         final output = await converter.generate();
         expect(output, contains("topLevelKey: 'people',"));

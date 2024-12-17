@@ -1,5 +1,6 @@
 import 'package:brick_build/generators.dart' show ModelDictionaryGenerator;
 
+///
 class OfflineFirstModelDictionaryGenerator extends ModelDictionaryGenerator {
   /// The capitalized domain, e.g. `Rest`.
   final String remoteProviderName;

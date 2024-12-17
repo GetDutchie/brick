@@ -3,7 +3,7 @@ import 'package:brick_graphql/brick_graphql.dart' show GraphqlSerializable;
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphql.dart';
 
-final output = r'''
+const output = r'''
 Future<GraphqlConfigNoRename> _$GraphqlConfigNoRenameFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
@@ -125,6 +125,7 @@ Future<Map<String, dynamic>> _$GraphqlConfigPascalRenameToSqlite(
 ''';
 
 @ConnectOfflineFirstWithGraphql(
+  // ignore: use_named_constants
   graphqlConfig: GraphqlSerializable(fieldRename: FieldRename.none),
 )
 class GraphqlConfigNoRename extends OfflineFirstModel {

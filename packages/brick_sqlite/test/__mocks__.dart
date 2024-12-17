@@ -1,3 +1,4 @@
+import 'package:brick_sqlite/src/db/column.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
@@ -22,21 +23,17 @@ const _demoModelMigrationCommands = [
     'DemoModel',
     foreignKeyColumn: 'l_DemoModel_brick_id',
     onDeleteCascade: true,
-    onDeleteSetDefault: false,
   ),
   InsertForeignKey(
     '_brick_DemoModel_many_assoc',
     'DemoModelAssoc',
     foreignKeyColumn: 'f_DemoModelAssoc_brick_id',
     onDeleteCascade: true,
-    onDeleteSetDefault: false,
   ),
   InsertForeignKey(
     'DemoModel',
     'DemoModelAssoc',
     foreignKeyColumn: 'assoc_DemoModelAssoc_brick_id',
-    onDeleteCascade: false,
-    onDeleteSetDefault: false,
   ),
   InsertColumn('complex_field_name', Column.varchar, onTable: 'DemoModel'),
   InsertColumn('last_name', Column.varchar, onTable: 'DemoModel'),

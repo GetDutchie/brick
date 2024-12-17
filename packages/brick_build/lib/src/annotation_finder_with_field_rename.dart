@@ -2,6 +2,7 @@ import 'package:brick_build/src/annotation_finder.dart';
 import 'package:brick_build/src/utils/string_helpers.dart';
 import 'package:brick_core/field_rename.dart';
 
+/// Rename the field name to the value of [FieldRename]
 mixin AnnotationFinderWithFieldRename<Annotation extends Object> on AnnotationFinder<Annotation> {
   /// Change serialization key based on the configuration.
   /// `name` defined with a field annotation takes precedence.

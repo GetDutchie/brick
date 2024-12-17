@@ -1,6 +1,6 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<NoFinalNoConst> _$NoFinalNoConstFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
@@ -42,9 +42,9 @@ Future<Map<String, dynamic>> _$NoFinalNoConstToSqlite(NoFinalNoConst instance,
 @ConnectOfflineFirstWithRest()
 class NoFinalNoConst {
   int declaredVar = 5;
-  var regularVar = true;
+  bool regularVar = true;
 
   int get computedField => _privateVarField;
   int _privateVarField = 0;
-  set computedField(value) => _privateVarField = value;
+  set computedField(dynamic value) => _privateVarField = value;
 }

@@ -1,5 +1,5 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql/language.dart' as lang;
 import 'package:test/test.dart';
@@ -133,8 +133,13 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
 
     group('.defaultOperation', () {
       test('with specified document', () {
-        final query =
-            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
+        const query = Query(
+          forProviders: [
+            GraphqlProviderQuery(
+              operation: GraphqlOperation(document: upsertPersonWithNodes),
+            ),
+          ],
+        );
         final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
           dictionary,
           action: QueryAction.get,
@@ -142,6 +147,20 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
         );
         expect(
           lang.printNode(transformer!.document),
+          startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
+  upsertPerson(input: $input) {'''),
+        );
+
+        const query0 =
+            // ignore: deprecated_member_use
+            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
+        final transformer0 = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
+          dictionary,
+          action: QueryAction.get,
+          query: query0,
+        );
+        expect(
+          lang.printNode(transformer0!.document),
           startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
   upsertPerson(input: $input) {'''),
         );
@@ -197,7 +216,7 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
             dictionary,
             action: QueryAction.get,
-            query: Query(action: QueryAction.get),
+            query: const Query(action: QueryAction.get),
           );
           expect(
             lang.printNode(transformer!.document),
@@ -237,7 +256,7 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
           final transformer = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
             dictionary,
             action: QueryAction.subscribe,
-            query: Query(action: QueryAction.get),
+            query: const Query(action: QueryAction.get),
           );
           expect(
             lang.printNode(transformer!.document),

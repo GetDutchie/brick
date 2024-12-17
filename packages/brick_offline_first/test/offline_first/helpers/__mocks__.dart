@@ -1,3 +1,4 @@
+import 'package:brick_core/src/model_repository.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/db.dart';
@@ -11,8 +12,8 @@ part 'horse_adapter.dart';
 part 'mounty.dart';
 part 'mounty_adapter.dart';
 
-/// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
-/// while [DemoModel] is not.
+/// The exact same as [Mounty], except this class is tracked by the Memory Cache Provider
+/// while [Mounty] is not.
 class MemoryDemoModel extends Mounty {
   MemoryDemoModel(String name) : super(name: name);
 }
@@ -45,10 +46,12 @@ class DemoModelMigration extends Migration {
 }
 
 class TestRepository extends OfflineFirstWithTestRepository {
-  static TestRepository? _singleton;
+  static late TestRepository? _singleton;
 
   /// A hack to similuate a failure in the remote provider
   static bool throwOnNextRemoteMutation = false;
+
+  factory TestRepository() => _singleton!;
 
   TestRepository._(
     TestProvider testProvider,
@@ -59,8 +62,6 @@ class TestRepository extends OfflineFirstWithTestRepository {
           cacheProvider: MemoryCacheProvider([MemoryDemoModel]),
           migrations: {const DemoModelMigration()},
         );
-
-  factory TestRepository() => _singleton!;
 
   factory TestRepository.withProviders(TestProvider testProvider, SqliteProvider sqliteProvider) =>
       TestRepository._(testProvider, sqliteProvider);

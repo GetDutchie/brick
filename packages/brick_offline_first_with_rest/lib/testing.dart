@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
+import 'package:brick_rest/brick_rest.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:path/path.dart' as p;
 
+// ignore: public_member_api_docs
 enum StubHttpMethod { get, post, put, delete, any }
 
+/// The expected response from a request.
 class StubOfflineFirstRestResponse {
   /// The path where the [response] should be returned. Avoid leading slashes.
   ///
@@ -23,6 +26,7 @@ class StubOfflineFirstRestResponse {
   /// The text returned from the HTTP request.
   final String response;
 
+  ///
   static String get currentDirectory {
     // `flutter test` and `dart test` resolve with different values
     // https://github.com/flutter/flutter/issues/20907
@@ -38,12 +42,14 @@ class StubOfflineFirstRestResponse {
     return p.join(directory, 'test');
   }
 
+  /// The expected response from a request.
   StubOfflineFirstRestResponse(
     this.response, {
     required this.endpoint,
     StubHttpMethod? method,
   }) : method = method ?? StubHttpMethod.any;
 
+  ///
   factory StubOfflineFirstRestResponse.fromFile(
     String filePath, {
     required String endpoint,
@@ -108,6 +114,10 @@ class StubOfflineFirstWithRest {
         return http.Response('endpoint ${req.method} ${req.url} is not stubbed', 422);
       });
 
+  /// Generate mocks for an [OfflineFirstWithRestModel]. Instantiation automatically stubs REST responses.
+  ///
+  /// For convenience, your data structure only needs to be defined once. Include a sample API
+  /// response in a sibling `/api/` directory (`api` can be changed by overwriting `apiResponse`).
   StubOfflineFirstWithRest({
     required this.baseEndpoint,
     required this.responses,
@@ -120,7 +130,7 @@ class StubOfflineFirstWithRest {
   /// }
   /// ```
   ///
-  /// Responses will be returned on all HTTP methods. The [filePath] is
+  /// Responses will be returned on all HTTP methods. The [endpointsAndFilePaths] is
   /// **relative to the top-level /test directory**.
   factory StubOfflineFirstWithRest.fromFiles(
     String baseEndpoint,

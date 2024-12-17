@@ -1,6 +1,6 @@
 import 'package:brick_graphql/brick_graphql.dart';
 
-final output = r'''
+const output = r'''
 Future<EnumAsString> _$EnumAsStringFromGraphql(Map<String, dynamic> data,
     {required GraphqlProvider provider,
     GraphqlFirstRepository? repository}) async {

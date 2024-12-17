@@ -18,7 +18,6 @@ class Migration1 extends Migration {
 
 final schema = Schema(
   2,
-  generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
       'User',
@@ -37,7 +36,7 @@ final schema = Schema(
   },
 );
 
-final output = '''
+const output = '''
 // GENERATED CODE EDIT WITH CAUTION
 // THIS FILE **WILL NOT** BE REGENERATED
 // This file should be version controlled and can be manually edited.

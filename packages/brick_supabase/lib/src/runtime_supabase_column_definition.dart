@@ -26,6 +26,8 @@ class RuntimeSupabaseColumnDefinition {
   /// Forwarded from `@Supabase(query:)`, this overrides the generated query.
   final String? query;
 
+  /// Used to define types in [SupabaseAdapter#supabaseFieldsToColumns]. The build runner package
+  /// extracts types and associations that would've been otherwise inaccessible at runtime.
   const RuntimeSupabaseColumnDefinition({
     this.association = false,
     this.associationIsNullable = false,

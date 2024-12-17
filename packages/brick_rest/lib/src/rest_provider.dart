@@ -1,9 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 
 import 'package:brick_core/core.dart';
 import 'package:brick_rest/rest_exception.dart';
 import 'package:brick_rest/src/rest_model.dart';
 import 'package:brick_rest/src/rest_model_dictionary.dart';
+import 'package:brick_rest/src/rest_provider_query.dart';
 import 'package:brick_rest/src/rest_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -24,9 +27,11 @@ class RestProvider implements Provider<RestModel> {
   /// All requests pass through this client.
   http.Client client;
 
+  /// Internal logger
   @protected
   final Logger logger;
 
+  /// Retrieves data from an HTTP endpoint
   RestProvider(
     this.baseEndpoint, {
     required this.modelDictionary,
@@ -36,11 +41,17 @@ class RestProvider implements Provider<RestModel> {
 
   /// Sends a DELETE request method to the endpoint
   @override
-  Future<http.Response?> delete<TModel extends RestModel>(instance, {query, repository}) async {
+  Future<http.Response?> delete<TModel extends RestModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter =
         adapter.restRequest != null ? adapter.restRequest!(query, instance).delete : null;
-    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+        (query?.providerArgs['request'] as RestRequest?) ??
+        fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
@@ -60,10 +71,15 @@ class RestProvider implements Provider<RestModel> {
   }
 
   @override
-  Future<bool> exists<TModel extends RestModel>({query, repository}) async {
+  Future<bool> exists<TModel extends RestModel>({
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
-    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+        (query?.providerArgs['request'] as RestRequest?) ??
+        fromAdapter;
 
     final url = request?.url;
     if (url == null) return false;
@@ -76,15 +92,16 @@ class RestProvider implements Provider<RestModel> {
     return statusCodeIsSuccessful(resp.statusCode);
   }
 
-  /// [Query]'s `providerArgs` can extend the [get] functionality:
-  /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
-  /// (however, when defined, `['request'].topLevelKey` is prioritized). Note that when no key is defined, the first value is returned
-  /// regardless of the first key (in the example, `{"id"...}`).
   @override
-  Future<List<TModel>> get<TModel extends RestModel>({query, repository}) async {
+  Future<List<TModel>> get<TModel extends RestModel>({
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
-    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+        (query?.providerArgs['request'] as RestRequest?) ??
+        fromAdapter;
 
     final url = request?.url;
     if (url == null) return <TModel>[];
@@ -101,9 +118,7 @@ class RestProvider implements Provider<RestModel> {
       final body = parsed is Iterable ? parsed : [parsed];
       final results = body
           .where((msg) => msg != null)
-          .map((msg) {
-            return adapter.fromRest(msg, provider: this, repository: repository);
-          })
+          .map((msg) => adapter.fromRest(msg, provider: this, repository: repository))
           .toList()
           .cast<Future<TModel>>();
 
@@ -114,15 +129,19 @@ class RestProvider implements Provider<RestModel> {
     }
   }
 
-  /// [Query]'s `providerArgs` can extend the [upsert] functionality:
-  /// * `'request'` (`RestRequest`) Specifies configurable information about the request like HTTP method or top level key
   @override
-  Future<http.Response?> upsert<TModel extends RestModel>(instance, {query, repository}) async {
+  Future<http.Response?> upsert<TModel extends RestModel>(
+    TModel instance, {
+    Query? query,
+    ModelRepository<RestModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final fromAdapter =
         adapter.restRequest != null ? adapter.restRequest!(query, instance).upsert : null;
-    final request = (query?.providerArgs['request'] as RestRequest?) ?? fromAdapter;
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+        (query?.providerArgs['request'] as RestRequest?) ??
+        fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
@@ -156,7 +175,9 @@ class RestProvider implements Provider<RestModel> {
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery(Query? query, Map<String, String>? requestHeaders) {
-    if ((query == null || query.providerArgs['request']?.headers == null) &&
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+        (query?.providerArgs['request'] as RestRequest?);
+    if ((query == null || request?.headers == null) &&
         requestHeaders == null &&
         defaultHeaders != null) {
       return defaultHeaders!;
@@ -166,7 +187,7 @@ class RestProvider implements Provider<RestModel> {
       ..addAll({'Content-Type': 'application/json'})
       ..addAll(defaultHeaders ?? <String, String>{})
       ..addAll(requestHeaders ?? <String, String>{})
-      ..addAll(query?.providerArgs['request']?.headers ?? <String, String>{});
+      ..addAll(request?.headers ?? <String, String>{});
   }
 
   /// If a [key] is defined from the adapter and it is not null in the response, use it to narrow the response.
@@ -194,9 +215,11 @@ class RestProvider implements Provider<RestModel> {
     Map<String, dynamic>? body,
   }) async {
     final combinedBody = body ?? {};
-    final url = Uri.parse([baseEndpoint, request.url!].join(''));
-    final method =
-        (query?.providerArgs ?? {})['request']?.method ?? request.method ?? operation.httpMethod;
+    final url = Uri.parse([baseEndpoint, request.url!].join());
+    final requestFromQuery =
+        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
+            (query?.providerArgs['request'] as RestRequest?);
+    final method = requestFromQuery?.method ?? request.method ?? operation.httpMethod;
     final headers = headersForQuery(query, request.headers);
 
     logger.fine('$method $url');
@@ -208,8 +231,8 @@ class RestProvider implements Provider<RestModel> {
     }
 
     // if supplementalTopLevelData is specified it, insert alongside normal payload
-    final topLevelData = (query?.providerArgs ?? {})['request']?.supplementalTopLevelData ??
-        request.supplementalTopLevelData;
+    final topLevelData =
+        requestFromQuery?.supplementalTopLevelData ?? request.supplementalTopLevelData;
     if (topLevelData != null) {
       combinedBody.addAll(topLevelData);
     }
@@ -229,11 +252,12 @@ class RestProvider implements Provider<RestModel> {
         return await client.put(url, body: serializedBody, headers: headers);
       default:
         throw StateError(
-          "Request method $method is unhandled; use providerArgs['request'] or RestRequest#method",
+          'Request method $method is unhandled; use RestProviderQuery or RestRequest#method',
         );
     }
   }
 
+  /// Whether the status code is between 200 and 300
   static bool statusCodeIsSuccessful(int? statusCode) =>
       statusCode != null && 200 <= statusCode && statusCode < 300;
 }

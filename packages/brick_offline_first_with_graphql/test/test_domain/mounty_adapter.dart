@@ -35,7 +35,7 @@ Future<Map<String, dynamic>> _$MountyToSqlite(
 
 class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
   @override
-  GraphqlOperation get delete => GraphqlOperation(
+  GraphqlOperation get delete => const GraphqlOperation(
         document: r'''mutation DeleteDemoModel($input: DemoModelInput!) {
       deleteDemoModel(input: $input) {}
     }''',
@@ -70,7 +70,7 @@ class MountyOperationTransformer extends GraphqlQueryOperationTransformer {
   }
 
   @override
-  GraphqlOperation get upsert => GraphqlOperation(
+  GraphqlOperation get upsert => const GraphqlOperation(
         document: r'''mutation UpsertDemoModels($input: DemoModelInput) {
       upsertDemoModel(input: $input) {}
     }''',
@@ -89,15 +89,11 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'name': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'name',
-      iterable: false,
       type: String,
     ),
   };
@@ -105,9 +101,7 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
   @override
   final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
     'name': const RuntimeGraphqlDefinition(
-      association: false,
       documentNodeName: 'name',
-      iterable: false,
       type: String,
     ),
   };
@@ -120,28 +114,28 @@ class MountyAdapter extends OfflineFirstWithGraphqlAdapter<Mounty> {
   @override
   Future<Mounty> fromGraphql(
     Map<String, dynamic> input, {
-    required provider,
+    required GraphqlProvider provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$MountyFromGraphql(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toGraphql(
     Mounty input, {
-    required provider,
+    required GraphqlProvider provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$MountyToGraphql(input, provider: provider, repository: repository);
   @override
   Future<Mounty> fromSqlite(
     Map<String, dynamic> input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$MountyFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(
     Mounty input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithGraphqlRepository? repository,
   }) async =>
       await _$MountyToSqlite(input, provider: provider, repository: repository);

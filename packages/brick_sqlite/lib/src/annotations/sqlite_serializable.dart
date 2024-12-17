@@ -1,3 +1,5 @@
+import 'package:brick_sqlite/src/annotations/sqlite.dart';
+
 /// An annotation used to specify a class to generate code for.
 ///
 /// Creates a serialize/deserialize function and a Schema output
