@@ -51,6 +51,7 @@ class AdapterGenerator {
         return acc;
       }).join('\n');
 
+  /// Given a model, outputs generated code to use as a Brick adapter.
   const AdapterGenerator({
     required this.superAdapterName,
     required this.className,

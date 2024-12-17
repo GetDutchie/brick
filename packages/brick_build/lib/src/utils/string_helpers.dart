@@ -1,4 +1,7 @@
+// ignore: avoid_classes_with_only_static_members
+///
 class StringHelpers {
+  /// See [_EscapedDartString].
   static String escape(String contents) => _EscapedDartString(contents).toString();
 
   /// Convert a camelized string to snake_case
@@ -17,7 +20,7 @@ class StringHelpers {
 
 // Borrowed from [JsonSerializable](https://github.com/dart-lang/json_serializable/blob/9fcee71528f17f8e9e80e90003264e84d048977b/json_serializable/lib/src/utils.dart)
 
-/// Returns a quoted String literal for [value] that can be used in generated
+/// Returns a quoted String literal for [contents] that can be used in generated
 /// Dart code.
 class _EscapedDartString {
   final String contents;

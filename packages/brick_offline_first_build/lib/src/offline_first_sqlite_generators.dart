@@ -1,10 +1,15 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_core/src/model.dart';
 import 'package:brick_offline_first_build/src/offline_first_checker.dart';
+import 'package:brick_sqlite/src/annotations/sqlite.dart';
 import 'package:brick_sqlite_generators/generators.dart';
 import 'package:brick_sqlite_generators/sqlite_model_serdes_generator.dart';
 
+///
 class OfflineFirstSqliteSerialize extends SqliteSerialize {
+  ///
   OfflineFirstSqliteSerialize(
     super.element,
     super.fields, {
@@ -12,10 +17,15 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
   });
 
   @override
-  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
+  OfflineFirstChecker checkerForType(DartType type) => OfflineFirstChecker(type);
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Sqlite fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     if (checker.isIterable) {
@@ -52,7 +62,7 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
   }
 
   @override
-  String uniqueValueForField(fieldName, {required checker}) {
+  String uniqueValueForField(String? fieldName, {required SharedChecker<Model> checker}) {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       return '$fieldName.toSqlite()';
     }
@@ -61,7 +71,9 @@ class OfflineFirstSqliteSerialize extends SqliteSerialize {
   }
 }
 
+///
 class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
+  ///
   OfflineFirstSqliteDeserialize(
     super.element,
     super.fields, {
@@ -69,10 +81,15 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
   });
 
   @override
-  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
+  OfflineFirstChecker checkerForType(DartType type) => OfflineFirstChecker(type);
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Sqlite fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
 
     // Iterable
@@ -91,8 +108,7 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
       if (argTypeChecker.hasSerdes) {
         final doesHaveConstructor = hasConstructor(checker.argType);
         if (doesHaveConstructor) {
-          final serializableType =
-              argTypeChecker.superClassTypeArgs.last.getDisplayString(withNullability: true);
+          final serializableType = argTypeChecker.superClassTypeArgs.last.getDisplayString();
           return '''
             jsonDecode($fieldValue).map(
               (c) => $argType.$constructorName(c as $serializableType)
@@ -106,8 +122,7 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
     if ((checker as OfflineFirstChecker).hasSerdes) {
       final doesHaveConstructor = hasConstructor(field.type);
       if (doesHaveConstructor) {
-        final serializableType =
-            checker.superClassTypeArgs.last.getDisplayString(withNullability: true);
+        final serializableType = checker.superClassTypeArgs.last.getDisplayString();
         return '${SharedChecker.withoutNullability(field.type)}.$constructorName($fieldValue as $serializableType)';
       }
     }
@@ -121,7 +136,9 @@ class OfflineFirstSqliteDeserialize extends SqliteDeserialize {
   }
 }
 
+///
 class OfflineFirstSqliteModelSerdesGenerator extends SqliteModelSerdesGenerator {
+  ///
   OfflineFirstSqliteModelSerdesGenerator(
     super.element,
     super.reader, {

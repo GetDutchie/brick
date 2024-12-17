@@ -2,7 +2,7 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
     Map<String, dynamic> data,
     {required SupabaseProvider provider,

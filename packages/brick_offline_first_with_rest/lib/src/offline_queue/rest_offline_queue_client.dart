@@ -26,6 +26,7 @@ class RestOfflineQueueClient extends http.BaseClient {
   /// `SocketException`s (errors thrown due to missing connectivity) will also be forwarded to this callback.
   void Function(http.Request request, Object error)? onRequestException;
 
+  ///
   final RequestSqliteCacheManager<http.Request> requestManager;
 
   /// If the response returned from the client is one of these error codes, the request
@@ -39,10 +40,11 @@ class RestOfflineQueueClient extends http.BaseClient {
   final Logger _logger;
 
   /// Describes the type of policy that came from the request, stringified
-  /// from the [OfflineFirstPolicy] enum. The property will be removed before
+  /// from the `OfflineFirstPolicy` enum. The property will be removed before
   /// forwarding the request to [_inner].
   static const policyHeader = 'X-Brick-OfflineFirstPolicy';
 
+  /// Stores all requests in a SQLite database
   RestOfflineQueueClient(
     this._inner,
     this.requestManager, {

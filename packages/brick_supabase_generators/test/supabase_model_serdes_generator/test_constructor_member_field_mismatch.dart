@@ -1,6 +1,6 @@
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 Future<SupabaseConstructorMemberFieldMismatch>
     _$SupabaseConstructorMemberFieldMismatchFromSupabase(
         Map<String, dynamic> data,

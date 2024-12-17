@@ -9,11 +9,15 @@ export 'package:brick_build/src/annotation_super_generator.dart';
 
 const _schemaGenerator = SqliteSchemaGenerator();
 
+///
 abstract class SqliteBaseBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
+  ///
   SqliteSchemaGenerator get schemaGenerator => _schemaGenerator;
 
+  ///
   SqliteBaseBuilder();
 
+  ///
   Future<List<SqliteFields>> sqliteFieldsFromBuildStep(BuildStep buildStep) async {
     final annotatedElements = await getAnnotatedElements(buildStep);
     return annotatedElements.where((e) => e.element is ClassElement).map((e) {

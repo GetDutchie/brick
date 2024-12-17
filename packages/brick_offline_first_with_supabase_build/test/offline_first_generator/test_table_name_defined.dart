@@ -2,7 +2,7 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 
-final output = r'''
+const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 

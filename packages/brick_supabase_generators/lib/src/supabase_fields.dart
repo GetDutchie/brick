@@ -10,10 +10,11 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
   /// Model-level settings
   final SupabaseSerializable? config;
 
+  /// Find `@Supabase` given a field
   SupabaseAnnotationFinder([this.config]);
 
   @override
-  Supabase from(element) {
+  Supabase from(FieldElement element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -57,8 +58,11 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
 class SupabaseFields extends FieldsForClass<Supabase> {
   @override
   final SupabaseAnnotationFinder finder;
+
+  ///
   final SupabaseSerializable? config;
 
+  /// Converts all fields to [Supabase]s for later consumption
   SupabaseFields(ClassElement element, [this.config])
       : finder = SupabaseAnnotationFinder(config),
         super(element: element);

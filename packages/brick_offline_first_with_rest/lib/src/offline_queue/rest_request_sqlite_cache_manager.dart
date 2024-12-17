@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'package:brick_offline_first/offline_queue.dart';
 import 'package:http/http.dart' as http;
 
+/// REST implementation of [RequestSqliteCacheManager]
 class RestRequestSqliteCacheManager extends RequestSqliteCacheManager<http.Request> {
+  /// REST implementation of [RequestSqliteCacheManager]
   RestRequestSqliteCacheManager(
     super.databaseName, {
     required super.databaseFactory,
@@ -96,6 +98,7 @@ const HTTP_JOBS_PRIMARY_KEY_COLUMN = 'id';
 /// String
 const HTTP_JOBS_REQUEST_METHOD_COLUMN = 'request_method';
 
+/// String
 const HTTP_JOBS_TABLE_NAME = 'HttpJobs';
 
 /// int; millisecondsSinceEpoch

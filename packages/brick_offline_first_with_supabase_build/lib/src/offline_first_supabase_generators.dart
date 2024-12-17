@@ -29,7 +29,9 @@ class _OfflineFirstSupabaseDeserialize extends SupabaseDeserialize
   }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
+///
 class OfflineFirstSupabaseModelSerdesGenerator extends SupabaseModelSerdesGenerator {
+  ///
   OfflineFirstSupabaseModelSerdesGenerator(
     super.element,
     super.reader, {

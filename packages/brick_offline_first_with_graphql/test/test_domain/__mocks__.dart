@@ -12,8 +12,8 @@ part 'horse_adapter.dart';
 part 'mounty.dart';
 part 'mounty_adapter.dart';
 
-/// The exact same as [DemoModel], except this class is tracked by the Memory Cache Provider
-/// while [DemoModel] is not.
+/// The exact same as [Mounty], except this class is tracked by the Memory Cache Provider
+/// while [Mounty] is not.
 class MemoryDemoModel extends Mounty {
   MemoryDemoModel(String name) : super(name: name);
 }

@@ -5,9 +5,9 @@ void main() {
   group('OfflineFirstModelDictionaryGenerator', () {
     group('#generate', () {
       test('basic', () {
-        final generated = OfflineFirstModelDictionaryGenerator('Rest')
+        final generated = const OfflineFirstModelDictionaryGenerator('Rest')
             .generate({'Person': 'person.dart', 'User': 'path/user.dart'});
-        final output = '''
+        const output = '''
 // GENERATED CODE DO NOT EDIT
 // ignore: unused_import
 import 'dart:convert';

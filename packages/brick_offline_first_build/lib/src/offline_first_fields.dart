@@ -7,10 +7,10 @@ class _OfflineFirstSerdesFinder extends AnnotationFinder<OfflineFirst> {
   _OfflineFirstSerdesFinder();
 
   @override
-  OfflineFirst from(element) {
+  OfflineFirst from(FieldElement element) {
     final obj = objectForField(element);
 
-    if (obj == null) return const OfflineFirst();
+    if (obj == null) return OfflineFirst.defaults;
 
     final where = obj
         .getField('where')
@@ -30,5 +30,6 @@ class OfflineFirstFields extends FieldsForClass<OfflineFirst> {
   @override
   final finder = _OfflineFirstSerdesFinder();
 
+  /// Discover all fields with `@OfflineFirst`
   OfflineFirstFields(ClassElement element) : super(element: element);
 }

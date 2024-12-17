@@ -72,15 +72,11 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: '_brick_id',
-      iterable: false,
       type: int,
     ),
     'name': const RuntimeSqliteColumnDefinition(
-      association: false,
       columnName: 'name',
-      iterable: false,
       type: String,
     ),
     'mounties': const RuntimeSqliteColumnDefinition(
@@ -96,7 +92,11 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   final String tableName = 'Horse';
   @override
-  Future<void> afterSave(instance, {required provider, repository}) async {
+  Future<void> afterSave(
+    Horse instance, {
+    required SqliteProvider<SqliteModel> provider,
+    ModelRepository<SqliteModel>? repository,
+  }) async {
     if (instance.primaryKey != null) {
       await Future.wait<int?>(
         instance.mounties.map((s) async {
@@ -113,28 +113,28 @@ class HorseAdapter extends OfflineFirstWithRestAdapter<Horse> {
   @override
   Future<Horse> fromRest(
     Map<String, dynamic> input, {
-    required provider,
+    required RestProvider provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$HorseFromRest(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toRest(
     Horse input, {
-    required provider,
+    required RestProvider provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$HorseToRest(input, provider: provider, repository: repository);
   @override
   Future<Horse> fromSqlite(
     Map<String, dynamic> input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$HorseFromSqlite(input, provider: provider, repository: repository);
   @override
   Future<Map<String, dynamic>> toSqlite(
     Horse input, {
-    required provider,
+    required SqliteProvider<SqliteModel> provider,
     covariant OfflineFirstWithRestRepository? repository,
   }) async =>
       await _$HorseToSqlite(input, provider: provider, repository: repository);

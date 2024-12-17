@@ -4,7 +4,7 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 @ConnectOfflineFirstWithRest()
 class OfflineFirstGeneratorArguments extends OfflineFirstModel {}
 
-final repositoryNameAdapterExpectation = r'''
+const repositoryNameAdapterExpectation = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
@@ -86,7 +86,7 @@ class OfflineFirstGeneratorArgumentsAdapter
 }
 ''';
 
-final superAdapterNameAdapterExpectation = r'''
+const superAdapterNameAdapterExpectation = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 

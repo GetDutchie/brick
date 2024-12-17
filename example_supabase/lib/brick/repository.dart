@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
@@ -10,6 +12,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class Repository extends OfflineFirstWithSupabaseRepository {
   static late Repository? _singleton;
 
+  factory Repository() => _singleton!;
+
   Repository._({
     required super.supabaseProvider,
     required super.sqliteProvider,
@@ -17,8 +21,6 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     required super.offlineRequestQueue,
     super.memoryCacheProvider,
   });
-
-  factory Repository() => _singleton!;
 
   static Future<void> initializeSupabaseAndConfigure({
     required String supabaseUrl,

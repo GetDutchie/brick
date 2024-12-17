@@ -10,7 +10,7 @@ class SqliteAssoc extends OfflineFirstModel {
   int key = -1;
 }
 
-final output = r'''
+const output = r'''
 Future<SqliteAssoc> _$SqliteAssocFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {

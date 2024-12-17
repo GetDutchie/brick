@@ -37,6 +37,18 @@ class AggregateBuilder implements Builder {
   ///
   static const outputFileName = 'models_and_migrations${BaseBuilder.aggregateExtension}.dart';
 
+  /// Combine all `@ConnectOfflineFirstWithRest` and `@Migratable` classes and annotations
+  ///
+  /// Since [LibraryElement] only reads from one file and not an entire directory, all relevant
+  /// classes and annotation are inserted into copies of all input files. If there is ever a
+  /// performance concern with build times, start here. Only one file is needed, but it is impossible
+  /// to access [LibraryReader]s outside the build step of the created asset, and this was the only
+  /// successful way amongst dozens.
+  /// This does **not** output a file used by Brick in the app implementation.
+  ///
+  /// See the
+  /// [`build` docs](https://github.com/dart-lang/build/blob/master/docs/writing_an_aggregate_builder.md#defining-your-builder)
+  /// example for more.
   const AggregateBuilder({this.requiredImports = const <String>[]});
 
   @override
@@ -74,7 +86,7 @@ class AggregateBuilder implements Builder {
       importRegex.allMatches(contents).map((m) => m[0]!).toSet();
 
   @override
-  final buildExtensions = const {
-    r'$lib$': [outputFileName],
-  };
+  Map<String, List<String>> get buildExtensions => const {
+        r'$lib$': [outputFileName],
+      };
 }

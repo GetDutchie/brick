@@ -7,9 +7,12 @@ import 'package:source_gen/source_gen.dart';
 
 export 'package:brick_build/src/annotation_super_generator.dart';
 
+///
 final brickLogger = Logger('Brick');
 
+///
 abstract class BaseBuilder<_ClassAnnotation> implements Builder {
+  ///
   Logger get logger => brickLogger;
 
   @override
@@ -20,8 +23,10 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   /// The cached file this will produce
   String get outputExtension;
 
+  ///
   final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
 
+  ///
   static const aggregateExtension = '.brick_aggregate';
 
   /// Classes with the class-level annotation. For example, `ConnectOfflineFirstWithRest`.

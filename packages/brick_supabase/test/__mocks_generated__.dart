@@ -1,3 +1,5 @@
+// ignore_for_file: type_annotate_public_apis
+
 part of '__mocks__.dart';
 
 Demo _$DemoFromSupabase(Map<String, dynamic> json) => Demo(

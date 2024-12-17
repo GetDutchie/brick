@@ -2,7 +2,7 @@ import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart
 import 'package:brick_rest/brick_rest.dart' show Rest;
 import 'package:brick_sqlite/brick_sqlite.dart';
 
-final output = r'''
+const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromRest(Map<String, dynamic> data,
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
