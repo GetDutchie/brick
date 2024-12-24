@@ -29,7 +29,7 @@ dependencies:
 dev_dependencies:
   brick_build_test:
     path: ../brick_build_test
-  brick_core: ^1.1.1
+  brick_core:
   build_verify:
   lints:
   source_gen_test:

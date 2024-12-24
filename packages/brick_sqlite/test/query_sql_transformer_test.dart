@@ -588,7 +588,7 @@ void main() {
         const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel`';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: const Query(limitBy: [LimitBy(1, model: DemoModelAssoc)]),
+          query: const Query(limitBy: [LimitBy(1, evaluatedField: 'name')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 
@@ -720,7 +720,7 @@ void main() {
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModelAssoc`.full_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
-          query: Query(orderBy: [OrderBy.desc('name', model: DemoModelAssoc)]),
+          query: Query(orderBy: [OrderBy.desc('assoc', associationField: 'name')]),
         );
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
 

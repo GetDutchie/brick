@@ -382,13 +382,17 @@ class AllOtherClausesFragment {
       if (query?.limit != null) 'limit': query?.limit,
       if (query?.offset != null) 'offset': query?.offset,
       if (query?.orderBy.isNotEmpty ?? false)
-        'orderBy': query?.orderBy
-            .map(
-              (p) => p.model != null
-                  ? '`${modelDictionary.adapterFor[p.model]?.tableName}`.${modelDictionary.adapterFor[p.model]?.fieldsToSqliteColumns[p.evaluatedField]?.columnName} ${p.ascending ? 'ASC' : 'DESC'}'
-                  : p.toString(),
-            )
-            .join(', '),
+        'orderBy': query?.orderBy.map((p) {
+          final isAssociation = fieldsToColumns[p.evaluatedField]?.association ?? false;
+          if (!isAssociation) return p.toString();
+
+          if (p.associationField == null) return p.toString();
+
+          final associationAdapter =
+              modelDictionary.adapterFor[fieldsToColumns[p.evaluatedField]?.type];
+
+          return '`${associationAdapter?.tableName}`.${associationAdapter?.fieldsToSqliteColumns[p.associationField]?.columnName} ${p.ascending ? 'ASC' : 'DESC'}';
+        }).join(', '),
       if (providerQuery?.groupBy != null) 'groupBy': providerQuery?.groupBy,
       if (providerQuery?.having != null) 'having': providerQuery?.having,
     };

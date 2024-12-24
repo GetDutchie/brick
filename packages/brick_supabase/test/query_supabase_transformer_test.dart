@@ -257,16 +257,31 @@ void main() {
 
       test('orderBy with referenced table', () {
         final query = Query(
-          orderBy: [OrderBy.desc('name', model: DemoAssociationModel)],
+          orderBy: [OrderBy.desc('nested')],
         );
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
+        final filterBuilder = queryTransformer
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
         expect(
           transformBuilder.query,
-          'select=id,name,custom_age&demo_associations.order=name.desc.nullslast',
+          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=nested.desc.nullslast',
+        );
+      });
+
+      test('orderBy with referenced table and column', () {
+        final query = Query(
+          orderBy: [OrderBy.desc('nested', associationField: 'name')],
+        );
+        final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
+        final filterBuilder = queryTransformer
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=name.desc.nullslast',
         );
       });
 
@@ -281,13 +296,16 @@ void main() {
       });
 
       test('limit with referenced table', () {
-        const query = Query(limitBy: [LimitBy(10, model: DemoAssociationModel)]);
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        const query = Query(limitBy: [LimitBy(10, evaluatedField: 'nested')]);
+        final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
+        final filterBuilder = queryTransformer
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
-        expect(transformBuilder.query, 'select=id,name,custom_age&demo_associations.limit=10');
+        expect(
+          transformBuilder.query,
+          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.limit=10',
+        );
       });
 
       test('combined orderBy and limit', () {

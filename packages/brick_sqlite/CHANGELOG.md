@@ -1,5 +1,20 @@
 ## Unreleased
 
+## 3.2.0
+
+- **DEPRECATION** `Query(providerArgs: {'collate':})` is now `Query(forProviders: [SqliteProviderQuery(collate:)])`
+- **DEPRECATION** `Query(providerArgs: {'having':})` is now `Query(forProviders: [SqliteProviderQuery(having:)])`
+- **DEPRECATION** `Query(providerArgs: {'groupBy':})` is now `Query(forProviders: [SqliteProviderQuery(groupBy:)])`
+- Association ordering is supported. For example, `Query(orderBy: [OrderBy.desc('assoc', associationField: 'name')])` on `DemoModel` will produce the following SQL statement:
+  ```sql
+  'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModelAssoc`.name DESC'
+  ```
+- New `SqliteProviderQuery` adds Sqlite-specific support for the new `Query`.
+- `Column` enum is enhanced, performing the conversion between Dart and SQLite column types on the enum instead of in `Migration`.
+- Barrel files are no longer imported to `src/` implementations
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 3.1.1
 
 - Expose a generic type for `MemoryCacheProvider` models

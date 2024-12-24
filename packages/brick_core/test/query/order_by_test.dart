@@ -5,12 +5,16 @@ void main() {
   group('OrderBy', () {
     test('equality', () {
       expect(
-        const OrderBy('name'),
-        OrderBy.fromJson(const {'evaluatedField': 'name', 'ascending': true}),
+        const OrderBy('name', associationField: 'assoc'),
+        OrderBy.fromJson(
+          const {'evaluatedField': 'name', 'ascending': true, 'associationField': 'assoc'},
+        ),
       );
       expect(
-        const OrderBy('name', ascending: false),
-        OrderBy.fromJson(const {'evaluatedField': 'name', 'ascending': false}),
+        const OrderBy('name', ascending: false, associationField: 'assoc'),
+        OrderBy.fromJson(
+          const {'evaluatedField': 'name', 'ascending': false, 'associationField': 'assoc'},
+        ),
       );
     });
 
@@ -20,8 +24,8 @@ void main() {
         {'evaluatedField': 'name', 'ascending': true},
       );
       expect(
-        const OrderBy('name', ascending: false).toJson(),
-        {'evaluatedField': 'name', 'ascending': false},
+        const OrderBy('name', ascending: false, associationField: 'assoc').toJson(),
+        {'evaluatedField': 'name', 'ascending': false, 'associationField': 'assoc'},
       );
     });
 
@@ -34,14 +38,26 @@ void main() {
         const OrderBy('name', ascending: false).toString(),
         'name DESC',
       );
+      expect(
+        const OrderBy('name', ascending: false, associationField: 'assoc').toString(),
+        'name DESC',
+      );
     });
 
     test('.asc', () {
       expect(OrderBy.asc('name'), const OrderBy('name'));
+      expect(
+        OrderBy.asc('name', associationField: 'assoc'),
+        const OrderBy('name', associationField: 'assoc'),
+      );
     });
 
     test('.desc', () {
       expect(OrderBy.desc('name'), const OrderBy('name', ascending: false));
+      expect(
+        OrderBy.desc('name', associationField: 'assoc'),
+        const OrderBy('name', ascending: false, associationField: 'assoc'),
+      );
     });
 
     test('.fromJson', () {
@@ -52,6 +68,12 @@ void main() {
       expect(
         OrderBy.fromJson(const {'evaluatedField': 'name', 'ascending': false}),
         const OrderBy('name', ascending: false),
+      );
+      expect(
+        OrderBy.fromJson(
+          const {'evaluatedField': 'name', 'ascending': false, 'associationField': 'assoc'},
+        ),
+        const OrderBy('name', ascending: false, associationField: 'assoc'),
       );
     });
   });

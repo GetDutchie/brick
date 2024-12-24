@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Allow a generic type argument for `OfflineFirstWithGraphqlRepository`
+- Update analysis to modern lints
 
 ## 3.2.0
 

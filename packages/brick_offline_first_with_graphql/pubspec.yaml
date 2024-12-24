@@ -5,13 +5,13 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_offline_f
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 3.2.0
+version: 3.3.0
 
 environment:
   sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
-  brick_core: ^1.1.1
+  brick_core: ^1.3.0
   brick_graphql: ">=3.0.0 <4.0.0"
   brick_offline_first: ">=3.0.0 <4.0.0"
   brick_sqlite: ">=3.0.0 <4.0.0"

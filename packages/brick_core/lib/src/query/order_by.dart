@@ -1,10 +1,6 @@
-import 'package:brick_core/src/model.dart';
-import 'package:brick_core/src/model_dictionary.dart';
 import 'package:brick_core/src/provider.dart';
-import 'package:meta/meta.dart';
 
 /// Construct directions for a provider to sort its results.
-@immutable
 class OrderBy {
   /// Defaults to `true`.
   final bool ascending;
@@ -15,36 +11,39 @@ class OrderBy {
   /// and the remote source's expected name.
   final String evaluatedField;
 
-  /// Some providers may support ordering based on a model retrieved by the query.
-  /// This [Model] should be accessible to the [Provider]'s [ModelDictionary].
-  final Type? model;
+  /// The Dart name of the field of the association model
+  /// if the [evaluatedField] is an association.
+  ///
+  /// If [evaluatedField] is not an association, this should be `null`.
+  final String? associationField;
 
   /// Construct directions for a provider to sort its results.
   const OrderBy(
     this.evaluatedField, {
     this.ascending = true,
-    this.model,
+    this.associationField,
   });
 
   /// Sort by [ascending] order (A-Z).
-  factory OrderBy.asc(String evaluatedField, {Type? model}) =>
-      OrderBy(evaluatedField, model: model);
+  factory OrderBy.asc(String evaluatedField, {String? associationField}) =>
+      OrderBy(evaluatedField, associationField: associationField);
 
   /// Sort by descending order (Z-A).
-  factory OrderBy.desc(String evaluatedField, {Type? model}) =>
-      OrderBy(evaluatedField, ascending: false, model: model);
+  factory OrderBy.desc(String evaluatedField, {String? associationField}) =>
+      OrderBy(evaluatedField, ascending: false, associationField: associationField);
 
   /// Construct an [OrderBy] from a JSON map.
   factory OrderBy.fromJson(Map<String, dynamic> json) => OrderBy(
         json['evaluatedField'],
         ascending: json['ascending'],
+        associationField: json['associationField'],
       );
 
   /// Serialize to JSON
   Map<String, dynamic> toJson() => {
         'ascending': ascending,
+        if (associationField != null) 'associationField': associationField,
         'evaluatedField': evaluatedField,
-        if (model != null) 'model': model?.toString(),
       };
 
   @override
@@ -56,8 +55,8 @@ class OrderBy {
       other is OrderBy &&
           evaluatedField == other.evaluatedField &&
           ascending == other.ascending &&
-          model == other.model;
+          associationField == other.associationField;
 
   @override
-  int get hashCode => evaluatedField.hashCode ^ ascending.hashCode ^ model.hashCode;
+  int get hashCode => evaluatedField.hashCode ^ ascending.hashCode ^ associationField.hashCode;
 }

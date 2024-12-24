@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.2.0
+
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 1.1.2
 
 - Support a custom database path when creating the cache manager (#490)
