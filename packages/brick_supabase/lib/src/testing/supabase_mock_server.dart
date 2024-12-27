@@ -105,7 +105,7 @@ class SupabaseMockServer {
       final realtimeFilter = requestJson['payload']['config']['postgres_changes'].first['filter'];
 
       final matching = responses.entries
-          .firstWhereOrNull((r) => realtimeFilter == null || realtimeFilter == r.key.filter);
+          .firstWhereOrNull((r) => r.key.realtime && realtimeFilter == r.key.filter);
 
       if (matching == null) return;
 
@@ -148,6 +148,7 @@ class SupabaseMockServer {
     final url = request.uri.toString();
 
     final matchingRequest = responses.entries.firstWhereOrNull((r) {
+      if (r.key.realtime) return false;
       final matchesRequestMethod =
           r.key.requestMethod == request.method || r.key.requestMethod == null;
       final matchesPath = request.uri.path == r.key.toUri(modelDictionary).path;
@@ -213,10 +214,10 @@ class SupabaseMockServer {
     // Delete records from realtime are strictly unique/indexed fields;
     // uniqueness is not tracked by [RuntimeSupabaseColumnDefinition]
     // so filtering out associations is the closest simulation of an incomplete payload
-    if (realtimeEvent == PostgresChangeEvent.delete) {
-      for (final value in adapter.fieldsToSupabaseColumns.values) {
-        if (value.association) serialized.remove(value.columnName);
-      }
+    //
+    // Associations are not provided by insert/update either
+    for (final value in adapter.fieldsToSupabaseColumns.values) {
+      if (value.association) serialized.remove(value.columnName);
     }
 
     return {
