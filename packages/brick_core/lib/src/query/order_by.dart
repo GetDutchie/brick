@@ -25,12 +25,10 @@ class OrderBy {
   });
 
   /// Sort by [ascending] order (A-Z).
-  factory OrderBy.asc(String evaluatedField, {String? associationField}) =>
-      OrderBy(evaluatedField, associationField: associationField);
+  const OrderBy.asc(this.evaluatedField, {this.associationField}) : ascending = true;
 
   /// Sort by descending order (Z-A).
-  factory OrderBy.desc(String evaluatedField, {String? associationField}) =>
-      OrderBy(evaluatedField, ascending: false, associationField: associationField);
+  const OrderBy.desc(this.evaluatedField, {this.associationField}) : ascending = false;
 
   /// Construct an [OrderBy] from a JSON map.
   factory OrderBy.fromJson(Map<String, dynamic> json) => OrderBy(

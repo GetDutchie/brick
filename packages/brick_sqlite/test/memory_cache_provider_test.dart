@@ -55,7 +55,7 @@ void main() {
         final instance = Person()..primaryKey = 1;
         provider.hydrate<Person>([instance]);
         final results = provider.get<Person>(
-          query: Query(
+          query: const Query(
             where: [Where.exact(InsertTable.PRIMARY_KEY_FIELD, 1)],
             limit: 1,
           ),

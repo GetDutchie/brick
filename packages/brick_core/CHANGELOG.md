@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.3.1
+
+- `const`antize `Where.exactly` and `OrderBy.{desc|asc}`
+- Add deprecation annotation to `Query#copyWith#providerArgs`
+
 ## 1.3.0
 
 - **DEPRECATION** `Query(providerArgs: {'limit':})` is now `Query(limit:)`

@@ -45,17 +45,17 @@ void main() {
     });
 
     test('.asc', () {
-      expect(OrderBy.asc('name'), const OrderBy('name'));
+      expect(const OrderBy.asc('name'), const OrderBy('name'));
       expect(
-        OrderBy.asc('name', associationField: 'assoc'),
+        const OrderBy.asc('name', associationField: 'assoc'),
         const OrderBy('name', associationField: 'assoc'),
       );
     });
 
     test('.desc', () {
-      expect(OrderBy.desc('name'), const OrderBy('name', ascending: false));
+      expect(const OrderBy.desc('name'), const OrderBy('name', ascending: false));
       expect(
-        OrderBy.desc('name', associationField: 'assoc'),
+        const OrderBy.desc('name', associationField: 'assoc'),
         const OrderBy('name', ascending: false, associationField: 'assoc'),
       );
     });

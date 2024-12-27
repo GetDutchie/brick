@@ -136,8 +136,9 @@ class Where extends WhereCondition {
         conditions = null;
 
   /// A condition written with brevity. [isRequired] defaults `true`.
-  factory Where.exact(String evaluatedField, value, {bool isRequired = true}) =>
-      Where(evaluatedField, value: value, compare: Compare.exact, isRequired: isRequired);
+  const Where.exact(this.evaluatedField, this.value, {this.isRequired = true})
+      : compare = Compare.exact,
+        conditions = null;
 
   /// Convenience function to create a [Where] with [Compare.exact].
   Where isExactly(dynamic value) =>

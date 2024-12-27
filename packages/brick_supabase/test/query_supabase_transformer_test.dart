@@ -89,7 +89,7 @@ void main() {
           });
 
           test('by association field', () {
-            final query = Query.where('assoc', Where.exact('name', 'Thomas'));
+            final query = Query.where('assoc', const Where.exact('name', 'Thomas'));
             final select = _buildTransformer<DemoAssociationModel>(query)
                 .select(_supabaseClient.from(DemoAssociationModelAdapter().supabaseTableName));
 
@@ -154,82 +154,19 @@ void main() {
 
     group('#applyQuery', () {
       test('orderBy', () {
-        const query = Query(providerArgs: {'orderBy': 'name asc'});
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+        const result = 'select=id,name,custom_age&order=name.asc.nullslast';
+
+        const withProviderArgs = Query(providerArgs: {'orderBy': 'name asc'});
+        final providerQueryTransformer = _buildTransformer<Demo>(withProviderArgs);
+        final providerFilterBuilder =
+            providerQueryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final providerTransformBuilder = providerQueryTransformer.applyQuery(providerFilterBuilder);
 
         expect(
-          transformBuilder.query,
-          'select=id,name,custom_age&order=name.asc.nullslast',
+          providerTransformBuilder.query,
+          result,
         );
-      });
 
-      test('orderBy with descending order', () {
-        const query = Query(providerArgs: {'orderBy': 'name desc'});
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(
-          transformBuilder.query,
-          'select=id,name,custom_age&order=name.desc.nullslast',
-        );
-      });
-
-      test('orderBy with referenced table', () {
-        const query = Query(
-          providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'foreign_tables'},
-        );
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(
-          transformBuilder.query,
-          'select=id,name,custom_age&foreign_tables.order=name.desc.nullslast',
-        );
-      });
-
-      test('limit', () {
-        const query = Query(providerArgs: {'limit': 10});
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(transformBuilder.query, 'select=id,name,custom_age&limit=10');
-      });
-
-      test('limit with referenced table', () {
-        const query = Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'foreign_tables'});
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(transformBuilder.query, 'select=id,name,custom_age&foreign_tables.limit=10');
-      });
-
-      test('combined orderBy and limit', () {
-        const query = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
-        final queryTransformer = _buildTransformer<Demo>(query);
-        final filterBuilder =
-            queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(
-          transformBuilder.query,
-          'select=id,name,custom_age&order=name.desc.nullslast&limit=20',
-        );
-      });
-    });
-
-    group('#query', () {
-      test('orderBy', () {
         const query = Query(orderBy: [OrderBy('name')]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
@@ -238,12 +175,25 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,custom_age&order=name.asc.nullslast',
+          result,
         );
       });
 
       test('orderBy with descending order', () {
-        const query = Query(orderBy: [OrderBy('name', ascending: false)]);
+        const result = 'select=id,name,custom_age&order=age.desc.nullslast';
+
+        const query0 = Query(providerArgs: {'orderBy': 'age desc'});
+        final queryTransformer0 = _buildTransformer<Demo>(query0);
+        final filterBuilder0 =
+            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
+
+        expect(
+          transformBuilder0.query,
+          result,
+        );
+
+        const query = Query(orderBy: [OrderBy('age', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
@@ -251,12 +201,42 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,custom_age&order=name.desc.nullslast',
+          result,
         );
       });
 
       test('orderBy with referenced table', () {
-        final query = Query(
+        const result =
+            'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=name.desc.nullslast';
+        const query0 = Query(
+          providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'demo_associations'},
+        );
+        final queryTransformer0 = _buildTransformer<DemoNestedAssociationModel>(query0);
+        final filterBuilder0 = queryTransformer0
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
+        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
+
+        expect(
+          transformBuilder0.query,
+          result,
+        );
+
+        const query = Query(
+          orderBy: [OrderBy.desc('nested', associationField: 'name')],
+        );
+        final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
+        final filterBuilder = queryTransformer
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
+        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
+
+        expect(
+          transformBuilder.query,
+          result,
+        );
+      });
+
+      test('orderBy with referenced table, no association field', () {
+        const query = Query(
           orderBy: [OrderBy.desc('nested')],
         );
         final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
@@ -270,32 +250,37 @@ void main() {
         );
       });
 
-      test('orderBy with referenced table and column', () {
-        final query = Query(
-          orderBy: [OrderBy.desc('nested', associationField: 'name')],
-        );
-        final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
-        final filterBuilder = queryTransformer
-            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
-        final transformBuilder = queryTransformer.applyQuery(filterBuilder);
-
-        expect(
-          transformBuilder.query,
-          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=name.desc.nullslast',
-        );
-      });
-
       test('limit', () {
+        const result = 'select=id,name,custom_age&limit=10';
+        const query0 = Query(providerArgs: {'limit': 10});
+        final queryTransformer0 = _buildTransformer<Demo>(query0);
+        final filterBuilder0 =
+            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
+
+        expect(transformBuilder0.query, result);
+
         const query = Query(limit: 10);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
             queryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
         final transformBuilder = queryTransformer.applyQuery(filterBuilder);
 
-        expect(transformBuilder.query, 'select=id,name,custom_age&limit=10');
+        expect(transformBuilder.query, result);
       });
 
       test('limit with referenced table', () {
+        const result =
+            'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.limit=10';
+        const query0 =
+            Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'demo_associations'});
+        final queryTransformer0 = _buildTransformer<DemoNestedAssociationModel>(query0);
+        final filterBuilder0 = queryTransformer0
+            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
+        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
+
+        expect(transformBuilder0.query, result);
+
         const query = Query(limitBy: [LimitBy(10, evaluatedField: 'nested')]);
         final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
         final filterBuilder = queryTransformer
@@ -304,11 +289,24 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.limit=10',
+          result,
         );
       });
 
       test('combined orderBy and limit', () {
+        const result = 'select=id,name,custom_age&order=name.desc.nullslast&limit=20';
+
+        const query0 = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
+        final queryTransformer0 = _buildTransformer<Demo>(query0);
+        final filterBuilder0 =
+            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
+
+        expect(
+          transformBuilder0.query,
+          result,
+        );
+
         const query = Query(limit: 20, orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
@@ -317,7 +315,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,name,custom_age&order=name.desc.nullslast&limit=20',
+          result,
         );
       });
     });
@@ -364,14 +362,14 @@ void main() {
       test('missing field', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
 
-        expect(transformer.expandCondition(Where.exact('made_up_field', 1)), isEmpty);
+        expect(transformer.expandCondition(const Where.exact('made_up_field', 1)), isEmpty);
       });
 
       test('matching a value to an association', () {
         final transformer = _buildTransformer<DemoAssociationModel>();
 
         expect(
-          () => transformer.expandCondition(Where.exact('assoc', 1)),
+          () => transformer.expandCondition(const Where.exact('assoc', 1)),
           throwsA(const TypeMatcher<ArgumentError>()),
         );
       });
@@ -380,7 +378,7 @@ void main() {
         final transformer = _buildTransformer<DemoAssociationModel>();
         final result = transformer.expandCondition(
           WherePhrase([
-            Where.exact('id', 1),
+            const Where.exact('id', 1),
             const Or('name').isExactly('Guy'),
           ]),
         );

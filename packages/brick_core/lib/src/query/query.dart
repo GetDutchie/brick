@@ -129,6 +129,7 @@ class Query {
     List<LimitBy>? limitBy,
     int? offset,
     List<OrderBy>? orderBy,
+    @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead.')
     Map<String, dynamic>? providerArgs,
     List<WhereCondition>? where,
   }) =>
