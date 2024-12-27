@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite/src/db/migration.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
@@ -250,17 +248,13 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
   ///
   /// **WARNING:** This is a destructive, irrevisible action.
   Future<void> resetDb() async {
-    try {
-      await (await getDb()).close();
+    await (await getDb()).close();
 
-      await databaseFactory.deleteDatabase(dbName);
+    await databaseFactory.deleteDatabase(dbName);
 
-      // recreate
-      _openDb = null;
-      await getDb();
-    } on FileSystemException {
-      // noop
-    }
+    // recreate
+    _openDb = null;
+    await getDb();
   }
 
   /// Perform actions within a database transaction.

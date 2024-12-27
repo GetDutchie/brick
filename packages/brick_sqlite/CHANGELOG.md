@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.2.1
+
+- Remove `dart:io` dependency
+
 ## 3.2.0
 
 - **DEPRECATION** `Query(providerArgs: {'collate':})` is now `Query(forProviders: [SqliteProviderQuery(collate:)])`
