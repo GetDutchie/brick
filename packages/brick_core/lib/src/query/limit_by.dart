@@ -1,34 +1,33 @@
 import 'dart:convert';
 
-import 'package:brick_core/src/model.dart';
-import 'package:brick_core/src/model_dictionary.dart';
-import 'package:brick_core/src/provider.dart';
+import 'package:brick_core/src/adapter.dart';
 
 /// Construct directions for a provider to limit its results.
 class LimitBy {
-  /// The ceiling for how many results can be returned for a [model].
+  /// The ceiling for how many results can be returned for [evaluatedField].
   final int amount;
 
   /// Some providers may support limiting based on a model retrieved by the query.
-  /// This [Model] should be accessible to the [Provider]'s [ModelDictionary].
-  final Type model;
+  /// This Dart field name should be accessible to the [Adapter]'s definitions
+  /// (e.g. a `RuntimeSqliteColumnDefinition` map).
+  final String evaluatedField;
 
   /// Construct directions for a provider to limit its results.
   const LimitBy(
     this.amount, {
-    required this.model,
+    required this.evaluatedField,
   });
 
   /// Construct a [LimitBy] from a JSON map.
   factory LimitBy.fromJson(Map<String, dynamic> json) => LimitBy(
         json['amount'],
-        model: json['model'],
+        evaluatedField: json['evaluatedField'],
       );
 
   /// Serialize to JSON
   Map<String, dynamic> toJson() => {
         'amount': amount,
-        'model': model,
+        'evaluatedField': evaluatedField,
       };
 
   @override
@@ -36,8 +35,9 @@ class LimitBy {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is LimitBy && amount == other.amount && model == other.model;
+      identical(this, other) ||
+      other is LimitBy && amount == other.amount && evaluatedField == other.evaluatedField;
 
   @override
-  int get hashCode => amount.hashCode ^ model.hashCode;
+  int get hashCode => amount.hashCode ^ evaluatedField.hashCode;
 }

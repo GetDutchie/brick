@@ -217,7 +217,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         : withTopLevelLimit;
 
     return query!.limitBy.fold(withProviderArgs, (acc, limitBy) {
-      final tableName = modelDictionary.adapterFor[limitBy.model]?.supabaseTableName;
+      final definition = adapter.fieldsToSupabaseColumns[limitBy.evaluatedField];
+      final tableName = modelDictionary.adapterFor[definition?.associationType]?.supabaseTableName;
       if (tableName == null) return acc;
 
       final url = acc.appendSearchParams('$tableName.limit', limitBy.amount.toString());
@@ -244,13 +245,12 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     final withProviderArgs = orderBy == null ? builder : builder.copyWithUrl(url);
 
     return query!.orderBy.fold(withProviderArgs, (acc, orderBy) {
-      final tableName = orderBy.model == null
-          ? null
-          : modelDictionary.adapterFor[orderBy.model]?.supabaseTableName;
+      final definition = adapter.fieldsToSupabaseColumns[orderBy.evaluatedField];
+      final tableName = modelDictionary.adapterFor[definition?.associationType]?.supabaseTableName;
 
       final url = acc.appendSearchParams(
         tableName == null ? 'order' : '$tableName.order',
-        '${orderBy.evaluatedField}.${orderBy.ascending ? 'asc' : 'desc'}.nullslast',
+        '${orderBy.associationField ?? orderBy.evaluatedField}.${orderBy.ascending ? 'asc' : 'desc'}.nullslast',
       );
       return acc.copyWithUrl(url);
     });

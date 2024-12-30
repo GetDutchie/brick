@@ -1,6 +1,11 @@
 ## Unreleased
 
+## 3.3.0
+
 - Allow a generic type argument for `OfflineFirstWithRestRepository`
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+- `OfflineFirstException` has been moved to the `brick_offline_first` package
 
 ## 3.2.0
 

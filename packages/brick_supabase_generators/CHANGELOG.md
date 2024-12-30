@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.1.0
+
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 1.0.2
 
 - Interpret `@Supabase(query:)` in `SupabaseFields`

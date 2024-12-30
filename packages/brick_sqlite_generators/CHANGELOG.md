@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.3.0
+
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 3.2.2
 
 - Revert `.getDisplayString()` change due to Flutter 3.22 being restricted to analyzer <6.4.1. `meta` is pinned to `1.12` in this version of Flutter, and `analyzer >=6.5.0`, where the change was made, requires `meta >= 1.15`. This change will eventually be re-reverted.

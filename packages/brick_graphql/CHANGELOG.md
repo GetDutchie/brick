@@ -1,5 +1,13 @@
 ## Unreleased
 
+## 3.2.0
+
+- **DEPRECATION** `Query(providerArgs: {'context':})` is now `Query(forProviders: [GraphqlProviderQuery(context:)])`
+- **DEPRECATION** `Query(providerArgs: {'operation':})` is now `Query(forProviders: [GraphqlProviderQuery(operation:)])`
+- New `GraphqlProviderQuery` adds GraphQL-specific support for the new `Query`.
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 3.1.2
 
 - Loosen constraints for `gql`, `gql_exec`, and `gql_link`

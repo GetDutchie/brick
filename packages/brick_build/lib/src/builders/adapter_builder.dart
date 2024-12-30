@@ -3,7 +3,7 @@ import 'package:brick_build/src/utils/string_helpers.dart';
 import 'package:build/build.dart';
 
 /// Writes adapter code (model serialization/deserialization).
-/// Outputs to brick/adapters/<MODEL>_adapter.g.dart
+/// Outputs to brick/adapters/{MODEL}_adapter.g.dart
 class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
   ///
   final AnnotationSuperGenerator generator;
@@ -12,7 +12,7 @@ class AdapterBuilder<_ClassAnnotation> extends BaseBuilder<_ClassAnnotation> {
   final outputExtension = '.adapter_builder.dart';
 
   /// Writes adapter code (model serialization/deserialization).
-  /// Outputs to brick/adapters/<MODEL>_adapter.g.dart
+  /// Outputs to brick/adapters/{MODEL}_adapter.g.dart
   AdapterBuilder(this.generator);
 
   @override

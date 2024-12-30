@@ -93,7 +93,7 @@ void main() {
 
   group('.firstByField', () {
     test('single field', () {
-      final conditions = [Where.exact('id', 1), Where.exact('name', 'Thomas')];
+      final conditions = [const Where.exact('id', 1), const Where.exact('name', 'Thomas')];
       final result = Where.firstByField('id', conditions);
       expect(result, conditions.first);
     });

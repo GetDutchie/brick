@@ -1,6 +1,10 @@
 ## Unreleased
 
+## 3.3.0
+
 - Add documentation to increase pub.dev score
+- Update minimum `brick_core` to `1.3.0`
+- Update analysis to modern lints
 
 ## 3.2.1
 

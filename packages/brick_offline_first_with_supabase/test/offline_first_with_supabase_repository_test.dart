@@ -214,7 +214,7 @@ void main() async {
     group('#queryToPostgresChangeFilter', () {
       group('returns null', () {
         test('for complex queries', () {
-          final query = Query.where('pizza', Where.exact('id', 2));
+          final query = Query.where('pizza', const Where.exact('id', 2));
           expect(repository.queryToPostgresChangeFilter<Customer>(query), isNull);
         });
 
@@ -243,7 +243,7 @@ void main() async {
         });
 
         test('.exact', () {
-          final query = Query(where: [Where.exact('firstName', 'Thomas')]);
+          const query = Query(where: [Where.exact('firstName', 'Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.eq);

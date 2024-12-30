@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 3.1.0
+
+- **DEPRECATION** `Query(providerArgs: {'request':})` is now `Query(forProviders: [RestProviderQuery(request:)])`.
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+- New `RestProviderQuery` adds REST-specific support for the new `Query`.
+
 ## 3.0.4
 
 - Access `FieldRename` from `brick_core` instead of declaring within this package

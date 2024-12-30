@@ -5,26 +5,22 @@ void main() {
   group('LimitBy', () {
     test('equality', () {
       expect(
-        const LimitBy(2, model: num),
-        LimitBy.fromJson(const {'amount': 2, 'model': num}),
+        const LimitBy(2, evaluatedField: 'name'),
+        LimitBy.fromJson(const {'amount': 2, 'evaluatedField': 'name'}),
       );
     });
 
     test('#toJson', () {
       expect(
-        const LimitBy(2, model: int).toJson(),
-        {'amount': 2, 'model': int},
-      );
-      expect(
-        const LimitBy(2, model: String).toJson(),
-        {'amount': 2, 'model': String},
+        const LimitBy(2, evaluatedField: 'name').toJson(),
+        {'amount': 2, 'evaluatedField': 'name'},
       );
     });
 
     test('.fromJson', () {
       expect(
-        LimitBy.fromJson(const {'amount': 2, 'model': String}),
-        const LimitBy(2, model: String),
+        LimitBy.fromJson(const {'amount': 2, 'evaluatedField': 'longerName'}),
+        const LimitBy(2, evaluatedField: 'longerName'),
       );
     });
   });

@@ -1,4 +1,5 @@
-import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/schema/schema.dart';
 import 'package:meta/meta.dart';
 
 /// Holds all migrations and outputs statements for SQLite to consume
