@@ -2,7 +2,7 @@ import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_rest/brick_rest.dart';
 
-final output = r'''
+const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
@@ -11,9 +11,8 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(Map<String, dynamic> data,
     OfflineFirstRepository? repository}) async {
   return OfflineFirstWhere(
       applied: await repository
-          ?.getAssociation<Assoc>(Query(
-              where: [Where.exact('id', data['id'])],
-              providerArgs: {'limit': 1}))
+          ?.getAssociation<Assoc>(
+              Query(where: [Where.exact('id', data['id'])], limit: 1))
           .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
       notApplied: data['not_applied'] == null
           ? null

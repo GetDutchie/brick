@@ -4,7 +4,9 @@ import 'package:source_gen/source_gen.dart' show TypeChecker;
 
 const _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
 
+///
 class OfflineFirstChecker extends SharedChecker<OfflineFirstModel> {
+  ///
   OfflineFirstChecker(super.targetType);
 
   @override

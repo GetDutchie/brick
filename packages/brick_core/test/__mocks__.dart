@@ -1,3 +1,5 @@
+// ignore_for_file: type_annotate_public_apis
+
 import 'package:brick_core/core.dart';
 
 export 'package:brick_core/core.dart';
@@ -13,26 +15,33 @@ class DemoProvider extends Provider<DemoModel> {
   final DemoModelDictionary modelDictionary;
 
   @override
-  bool delete<_Model extends DemoModel>(instance, {query, repository}) {
-    return true;
-  }
+  bool delete<_Model extends DemoModel>(
+    instance, {
+    Query? query,
+    ModelRepository<DemoModel>? repository,
+  }) =>
+      true;
 
   @override
-  bool exists<_Model extends DemoModel>({query, repository}) {
-    return true;
-  }
+  bool exists<_Model extends DemoModel>({Query? query, ModelRepository<DemoModel>? repository}) =>
+      true;
 
   @override
-  Future<List<DemoModel>> get<_Model extends DemoModel>({query, repository}) {
-    final list = <DemoModel>[];
-    list.add(DemoModel('Thomas'));
+  Future<List<DemoModel>> get<_Model extends DemoModel>({
+    Query? query,
+    ModelRepository<DemoModel>? repository,
+  }) {
+    final list = <DemoModel>[DemoModel('Thomas')];
     return Future.value(list);
   }
 
   @override
-  bool upsert<_Model extends DemoModel>(instance, {query, repository}) {
-    return true;
-  }
+  bool upsert<_Model extends DemoModel>(
+    instance, {
+    Query? query,
+    ModelRepository<DemoModel>? repository,
+  }) =>
+      true;
 }
 
 class DemoModel extends Model {
@@ -48,4 +57,4 @@ class DemoAdapter extends Adapter<DemoModel> {
 const Map<Type, DemoAdapter> mappings = {
   DemoModel: DemoAdapter(),
 };
-final modelDictionary = DemoModelDictionary(mappings);
+const modelDictionary = DemoModelDictionary(mappings);

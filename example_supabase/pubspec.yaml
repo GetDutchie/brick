@@ -10,32 +10,32 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
+  brick_offline_first_with_supabase:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  brick_offline_first_with_supabase:
   sqflite:
   supabase_flutter:
 
 dependency_overrides:
-  brick_offline_first_with_supabase:
-    path: ../packages/brick_offline_first_with_supabase
-  brick_supabase:
-    path: ../packages/brick_supabase
-  brick_sqlite_generators:
-    path: ../packages/brick_sqlite_generators
-  brick_offline_first_with_supabase_build:
-    path: ../packages/brick_offline_first_with_supabase_build
   brick_build:
     path: ../packages/brick_build
-  brick_supabase_generators:
-    path: ../packages/brick_supabase_generators
+  brick_json_generators:
+    path: ../packages/brick_json_generators
   brick_offline_first_build:
     path: ../packages/brick_offline_first_build
   brick_offline_first_with_rest:
     path: ../packages/brick_offline_first_with_rest
-  brick_json_generators:
-    path: ../packages/brick_json_generators
+  brick_offline_first_with_supabase:
+    path: ../packages/brick_offline_first_with_supabase
+  brick_offline_first_with_supabase_build:
+    path: ../packages/brick_offline_first_with_supabase_build
+  brick_sqlite_generators:
+    path: ../packages/brick_sqlite_generators
+  brick_supabase:
+    path: ../packages/brick_supabase
+  brick_supabase_generators:
+    path: ../packages/brick_supabase_generators
 
 dev_dependencies:
   brick_offline_first_with_supabase_build:

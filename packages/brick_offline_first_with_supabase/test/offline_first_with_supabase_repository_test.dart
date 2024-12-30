@@ -24,7 +24,7 @@ class TestRepository extends OfflineFirstWithSupabaseRepository {
           },
         );
 
-  static TestRepository configure(SupabaseMockServer mock) {
+  factory TestRepository.configure(SupabaseMockServer mock) {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactoryFfi,
       reattemptForStatusCodes: [],
@@ -69,7 +69,7 @@ void main() async {
 
     group('#get', () {
       test('stores locally', () async {
-        final req = SupabaseRequest<Customer>();
+        const req = SupabaseRequest<Customer>();
         final resp = SupabaseResponse([
           await mock.serialize(
             Customer(
@@ -98,8 +98,8 @@ void main() async {
         };
 
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
-          'name': RuntimeSupabaseColumnDefinition(columnName: 'name'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'name': const RuntimeSupabaseColumnDefinition(columnName: 'name'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -110,7 +110,7 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('payload entries not present in supabaseDefinitions', () {
@@ -120,8 +120,8 @@ void main() async {
         };
 
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
-          'name': RuntimeSupabaseColumnDefinition(columnName: 'name'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'name': const RuntimeSupabaseColumnDefinition(columnName: 'name'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -132,13 +132,13 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('empty payload', () {
         final payload = <String, dynamic>{};
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'id'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -154,7 +154,7 @@ void main() async {
           'unknown_field': 'some value',
         };
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'id'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'id'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -171,8 +171,8 @@ void main() async {
         };
 
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
-          'name': RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
+          'name': const RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -183,7 +183,7 @@ void main() async {
         expect(query.where, hasLength(1));
         expect(query.where!.first.evaluatedField, 'id');
         expect(query.where!.first.value, 1);
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
 
       test('multiple columns', () {
@@ -193,8 +193,8 @@ void main() async {
         };
 
         final supabaseDefinitions = {
-          'id': RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
-          'name': RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
+          'id': const RuntimeSupabaseColumnDefinition(columnName: 'user_id'),
+          'name': const RuntimeSupabaseColumnDefinition(columnName: 'full_name'),
         };
 
         final query = repository.queryFromSupabaseDeletePayload(
@@ -207,19 +207,19 @@ void main() async {
         expect(query.where!.first.value, 1);
         expect(query.where!.last.evaluatedField, 'name');
         expect(query.where!.last.value, 'Thomas');
-        expect(query.providerArgs, equals({'limit': 1}));
+        expect(query.limit, 1);
       });
     });
 
     group('#queryToPostgresChangeFilter', () {
       group('returns null', () {
         test('for complex queries', () {
-          final query = Query.where('pizza', Where.exact('id', 2));
+          final query = Query.where('pizza', const Where.exact('id', 2));
           expect(repository.queryToPostgresChangeFilter<Customer>(query), isNull);
         });
 
         test('for empty queries', () {
-          final query = Query();
+          const query = Query();
           expect(repository.queryToPostgresChangeFilter<Customer>(query), isNull);
         });
 
@@ -231,19 +231,19 @@ void main() async {
 
       group('Compare', () {
         test('.between', () {
-          final query = Query(where: [Where('firstName').isBetween(1, 2)]);
+          final query = Query(where: [const Where('firstName').isBetween(1, 2)]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
           expect(filter, isNull);
         });
 
         test('.doesNotContain', () {
-          final query = Query(where: [Where('firstName').doesNotContain('Thomas')]);
+          final query = Query(where: [const Where('firstName').doesNotContain('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
           expect(filter, isNull);
         });
 
         test('.exact', () {
-          final query = Query(where: [Where.exact('firstName', 'Thomas')]);
+          const query = Query(where: [Where.exact('firstName', 'Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.eq);
@@ -252,7 +252,7 @@ void main() async {
         });
 
         test('.greaterThan', () {
-          final query = Query(where: [Where('firstName').isGreaterThan('Thomas')]);
+          final query = Query(where: [const Where('firstName').isGreaterThan('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.gt);
@@ -262,7 +262,7 @@ void main() async {
 
         test('.greaterThanOrEqualTo', () {
           final query = Query(
-            where: [Where('firstName').isGreaterThanOrEqualTo('Thomas')],
+            where: [const Where('firstName').isGreaterThanOrEqualTo('Thomas')],
           );
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
@@ -272,7 +272,7 @@ void main() async {
         });
 
         test('.lessThan', () {
-          final query = Query(where: [Where('firstName').isLessThan('Thomas')]);
+          final query = Query(where: [const Where('firstName').isLessThan('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.lt);
@@ -282,7 +282,7 @@ void main() async {
 
         test('.lessThanOrEqualTo', () {
           final query = Query(
-            where: [Where('firstName').isLessThanOrEqualTo('Thomas')],
+            where: [const Where('firstName').isLessThanOrEqualTo('Thomas')],
           );
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
@@ -292,7 +292,7 @@ void main() async {
         });
 
         test('.notEqual', () {
-          final query = Query(where: [Where('firstName').isNot('Thomas')]);
+          final query = Query(where: [const Where('firstName').isNot('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.neq);
@@ -301,7 +301,7 @@ void main() async {
         });
 
         test('.contains', () {
-          final query = Query(where: [Where('firstName').contains('Thomas')]);
+          final query = Query(where: [const Where('firstName').contains('Thomas')]);
           final filter = repository.queryToPostgresChangeFilter<Customer>(query);
 
           expect(filter!.type, PostgresChangeFilterType.inFilter);
@@ -329,7 +329,7 @@ void main() async {
           isNotNull,
         );
         await subscription.cancel();
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       });
 
       test('subscription succeeds when policy is non-default .alwaysHydrate', () async {
@@ -343,11 +343,11 @@ void main() async {
             .listen((_) {});
         expect(repository.supabaseRealtimeSubscriptions, hasLength(1));
         expect(
-          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all]!,
+          repository.supabaseRealtimeSubscriptions[Customer]![PostgresChangeEvent.all],
           hasLength(1),
         );
         await subscription.cancel();
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       });
 
       test('adds controller and null query to #supabaseRealtimeSubscriptions', () async {
@@ -366,7 +366,7 @@ void main() async {
           isNotNull,
         );
         await subscription.cancel();
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       });
 
       test('cancelling removes from #supabaseRealtimeSubscriptions', () async {
@@ -375,7 +375,7 @@ void main() async {
         expect(repository.supabaseRealtimeSubscriptions[Customer], hasLength(1));
         await subscription.cancel();
         expect(repository.supabaseRealtimeSubscriptions, hasLength(0));
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       });
 
       test('pausing does not remove from #supabaseRealtimeSubscriptions', () async {
@@ -390,7 +390,7 @@ void main() async {
           isTrue,
         );
         await subscription.cancel();
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       });
     });
 
@@ -438,7 +438,7 @@ void main() async {
             ]),
           );
 
-          final req = SupabaseRequest<Customer>();
+          const req = SupabaseRequest<Customer>();
           final resp = SupabaseResponse(
             await mock.serialize(
               customer,
@@ -480,7 +480,7 @@ void main() async {
             ]),
           );
 
-          final req = SupabaseRequest<Customer>();
+          const req = SupabaseRequest<Customer>();
           final resp = SupabaseResponse(
             await mock.serialize(
               customer,
@@ -530,7 +530,7 @@ void main() async {
             ]),
           );
 
-          final req = SupabaseRequest<Customer>();
+          const req = SupabaseRequest<Customer>();
           final resp = SupabaseResponse(
             await mock.serialize(
               customer2,
@@ -566,7 +566,7 @@ void main() async {
               ]),
             );
 
-            final req = SupabaseRequest<Customer>();
+            const req = SupabaseRequest<Customer>();
             final resp = SupabaseResponse(
               await mock.serialize(
                 customer,
@@ -607,7 +607,7 @@ void main() async {
               ]),
             );
 
-            final req = SupabaseRequest<Customer>();
+            const req = SupabaseRequest<Customer>();
             final resp = SupabaseResponse(
               await mock.serialize(
                 customer,
@@ -656,7 +656,7 @@ void main() async {
               ]),
             );
 
-            final req = SupabaseRequest<Customer>();
+            const req = SupabaseRequest<Customer>();
             final resp = SupabaseResponse(
               await mock.serialize(
                 customer2,
@@ -696,7 +696,7 @@ void main() async {
               ]),
             );
 
-            final req = SupabaseRequest<Customer>();
+            const req = SupabaseRequest<Customer>();
             final resp = SupabaseResponse(
               await mock.serialize(
                 customer1,

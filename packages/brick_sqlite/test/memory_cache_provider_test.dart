@@ -36,8 +36,7 @@ void main() {
     });
 
     test('#delete', () {
-      final instance = Person();
-      instance.primaryKey = 1;
+      final instance = Person()..primaryKey = 1;
       provider.hydrate<Person>([instance]);
       expect(provider.managedObjects, isNotEmpty);
       expect(provider.managedObjects[Person], isNotEmpty);
@@ -53,13 +52,12 @@ void main() {
       });
 
       test('.id queries', () {
-        final instance = Person();
-        instance.primaryKey = 1;
+        final instance = Person()..primaryKey = 1;
         provider.hydrate<Person>([instance]);
         final results = provider.get<Person>(
-          query: Query(
+          query: const Query(
             where: [Where.exact(InsertTable.PRIMARY_KEY_FIELD, 1)],
-            providerArgs: {'limit': 1},
+            limit: 1,
           ),
         );
         expect(results, isNotEmpty);
@@ -67,8 +65,7 @@ void main() {
       });
 
       test('unlimited queries', () {
-        final instance = Person();
-        instance.primaryKey = 1;
+        final instance = Person()..primaryKey = 1;
         provider.hydrate<Person>([instance]);
         final results = provider.get<Person>();
 
@@ -79,8 +76,7 @@ void main() {
     test('#hydrate<Person>', () {
       expect(provider.managedObjects, isEmpty);
 
-      final instance = Person();
-      instance.primaryKey = 1;
+      final instance = Person()..primaryKey = 1;
       provider.hydrate<Person>([instance]);
       expect(provider.managedObjects, isNotEmpty);
       expect(provider.managedObjects[Person], isNotNull);
@@ -95,8 +91,7 @@ void main() {
     });
 
     test('#reset', () {
-      final instance = Person();
-      instance.primaryKey = 1;
+      final instance = Person()..primaryKey = 1;
       provider.hydrate<Person>([instance]);
       expect(provider.managedObjects[Person], isNotEmpty);
       provider.reset();

@@ -1,5 +1,20 @@
 ## Unreleased
 
+## 1.3.1
+
+- `const`antize `Where.exactly` and `OrderBy.{desc|asc}`
+- Add deprecation annotation to `Query#copyWith#providerArgs`
+
+## 1.3.0
+
+- **DEPRECATION** `Query(providerArgs: {'limit':})` is now `Query(limit:)`
+- **DEPRECATION** `Query(providerArgs: {'offset':})` is now `Query(offset:)`
+- **DEPRECATION** `Query(providerArgs: {'orderBy':})` is now `Query(orderBy:)`. `orderBy` is now defined by a class that permits multiple commands. For example, `'orderBy': 'name ASC'` becomes `[OrderBy('name', ascending: true)]`.
+- **DEPRECATION** `providerArgs` will be removed in the next major release
+- `OrderBy` will support association ordering and multiple values
+- `Query` is constructed with `const`
+- `Query#offset` no longer requires companion `limit` parameter
+
 ## 1.2.1
 
 - Add `FieldRename` to `FieldSerializable`

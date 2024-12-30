@@ -9,12 +9,14 @@ import 'package:brick_graphql_generators/src/graphql_serializable_query_transfor
 /// Find `@Graphql` given a field
 class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
     with AnnotationFinderWithFieldRename {
+  ///
   final GraphqlSerializable? config;
 
+  /// Find `@Graphql` given a field
   GraphqlAnnotationFinder([this.config]);
 
   @override
-  Graphql from(element) {
+  Graphql from(FieldElement element) {
     final obj = objectForField(element);
 
     if (obj == null) {
@@ -53,20 +55,21 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
     if (unconvertedMap == null) return {};
     return {
       for (final entry in unconvertedMap.entries)
-        entry.key!.toStringValue()!: entry.value?.toStringValue() == null
-            ? _convertMapToMap(entry.value!.toMapValue()!)
-            : {},
+        entry.key!.toStringValue()!:
+            entry.value?.toStringValue() == null ? _convertMapToMap(entry.value!.toMapValue()) : {},
     };
   }
 }
 
 /// Converts all fields to [Graphql]s for later consumption
 class GraphqlFields extends FieldsForClass<Graphql> {
+  ///
   final GraphqlSerializableExtended? config;
 
   @override
   final GraphqlAnnotationFinder finder;
 
+  /// Converts all fields to [Graphql]s for later consumption
   GraphqlFields(ClassElement element, [this.config])
       : finder = GraphqlAnnotationFinder(config),
         super(element: element);

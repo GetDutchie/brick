@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.3.0
+
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
+
 ## 3.2.1
 
 - Use `renameField` from `brick_build`'s `AnnotationFinderWithFieldRename` mixin

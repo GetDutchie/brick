@@ -4,9 +4,10 @@ import 'package:brick_supabase/brick_supabase.dart';
 import 'package:brick_supabase_generators/src/supabase_fields.dart';
 import 'package:brick_supabase_generators/src/supabase_serdes_generator.dart';
 
-/// Generate a function to produce a [ClassElement] from REST data
+/// Generate a function to produce a [ClassElement] from Supabase data
 class SupabaseDeserialize extends SupabaseSerdesGenerator
     with JsonDeserialize<SupabaseModel, Supabase> {
+  /// Generate a function to produce a [ClassElement] from Supabase data
   SupabaseDeserialize(
     super.element,
     super.fields, {

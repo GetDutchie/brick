@@ -1,3 +1,5 @@
+import 'package:brick_core/field_serializable.dart';
+
 /// Low-level field config for the `OfflineFirst` domain.
 class OfflineFirst {
   /// When `true` (the default), [where] will be used to fetch associations by their defined keys.
@@ -8,7 +10,7 @@ class OfflineFirst {
   /// configuration `{'id' : "data['assoc']['id']"}`, a REST adapter would generate
   /// ```
   /// await repository?.getAssociation<Association>(
-  ///   Query(where: [Where.exact('id', data['assoc']['id])], providerArgs: {'limit': 1})
+  ///   Query(where: [Where.exact('id', data['assoc']['id])], limit: 1)
   /// )
   /// ```
   ///
@@ -38,7 +40,7 @@ class OfflineFirst {
   ///
   /// If [where] is not defined for an association, Brick will attempt to instantiate the
   /// association from the data in the payload. When [where] is included, the field will
-  /// not be generated for the serializer of the remote provider unless [toGenerator] is defined **or** only one pair is defined.
+  /// not be generated for the serializer of the remote provider unless [FieldSerializable.toGenerator] is defined **or** only one pair is defined.
   final Map<String, String>? where;
 
   /// Annotates classes that require extra manipulation to map to the expected field type
@@ -47,5 +49,6 @@ class OfflineFirst {
     this.where,
   });
 
-  static const defaults = OfflineFirst(applyToRemoteDeserialization: true);
+  ///
+  static const defaults = OfflineFirst();
 }

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brick_graphql/brick_graphql.dart';
 
-final output = r'''
+const output = r'''
 Future<GraphqlUnserializableFieldWithGenerator>
     _$GraphqlUnserializableFieldWithGeneratorFromGraphql(
         Map<String, dynamic> data,

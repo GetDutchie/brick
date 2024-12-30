@@ -1,6 +1,6 @@
 import 'package:brick_rest/brick_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<RestIgnoreFromTo> _$RestIgnoreFromToFromRest(Map<String, dynamic> data,
     {required RestProvider provider, RestFirstRepository? repository}) async {
   return RestIgnoreFromTo(

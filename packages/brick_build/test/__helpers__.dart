@@ -41,7 +41,7 @@ class FieldAnnotationFinder extends AnnotationFinder<FieldAnnotation> {
   FieldAnnotationFinder();
 
   @override
-  FieldAnnotation from(element) => FieldAnnotation(element.name);
+  FieldAnnotation from(FieldElement element) => FieldAnnotation(element.name);
 }
 
 class TestFields extends FieldsForClass<FieldAnnotation> {
@@ -59,7 +59,12 @@ class DefaultSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final providerName = 'DefaultSerdes';
 
   @override
-  String? coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) =>
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required FieldAnnotation fieldAnnotation,
+    required bool wrappedInFuture,
+  }) =>
       null;
 }
 
@@ -103,7 +108,12 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final repositoryName = 'Some';
 
   @override
-  String coderForField(field, checker, {required fieldAnnotation, required wrappedInFuture}) {
+  String coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required FieldAnnotation fieldAnnotation,
+    required bool wrappedInFuture,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final wrappedCheckerType =
         wrappedInFuture ? 'Future<${checker.targetType}>' : checker.targetType.toString();

@@ -1,3 +1,4 @@
+/// Behaviors for how the repository should handle delete requests
 enum OfflineFirstDeletePolicy {
   /// Delete local results before waiting for the remote provider to respond
   optimisticLocal,
@@ -26,6 +27,7 @@ enum OfflineFirstGetPolicy {
   localOnly,
 }
 
+/// Behaviors for how the repository should handle upsert requests
 enum OfflineFirstUpsertPolicy {
   /// Save results to local before waiting for the remote provider to respond
   optimisticLocal,

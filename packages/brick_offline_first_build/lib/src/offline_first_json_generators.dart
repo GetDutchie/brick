@@ -1,4 +1,6 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:brick_build/generators.dart';
 import 'package:brick_core/core.dart';
 import 'package:brick_core/field_serializable.dart';
@@ -11,10 +13,11 @@ import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 /// (e.g. `class OfflineFirstRestSerialize extends RestSerialize with OfflineFirstJsonSerialize`)
 mixin OfflineFirstJsonSerialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonSerialize<TModel, Annotation> {
+  ///
   OfflineFirstFields get offlineFirstFields;
 
   @override
-  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
+  OfflineFirstChecker checkerForType(DartType type) => OfflineFirstChecker(type);
 
   @override
   List<String> get instanceFieldsAndMethods {
@@ -49,7 +52,12 @@ mixin OfflineFirstJsonSerialize<TModel extends Model, Annotation extends FieldSe
   }
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Annotation fieldAnnotation,
+  }) {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
 
     if (offlineFirstAnnotation.where != null && offlineFirstAnnotation.where!.length > 1) {
@@ -122,13 +130,19 @@ mixin OfflineFirstJsonSerialize<TModel extends Model, Annotation extends FieldSe
 /// (e.g. `class OfflineFirstRestDeserialize extends RestDeserialize with OfflineFirstJsonDeserialize`)
 mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends FieldSerializable>
     on JsonDeserialize<TModel, Annotation> {
+  ///
   OfflineFirstFields get offlineFirstFields;
 
   @override
-  OfflineFirstChecker checkerForType(type) => OfflineFirstChecker(type);
+  OfflineFirstChecker checkerForType(DartType type) => OfflineFirstChecker(type);
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required Annotation fieldAnnotation,
+  }) {
     final offlineFirstAnnotation = offlineFirstFields.annotationForField(field);
     final fieldValue = serdesValueForField(field, fieldAnnotation.name!, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
@@ -198,8 +212,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
       if (argTypeChecker.hasSerdes) {
         final doesHaveConstructor = hasConstructor(checker.argType);
         if (doesHaveConstructor) {
-          final serializableType =
-              argTypeChecker.superClassTypeArgs.first.getDisplayString(withNullability: true);
+          final serializableType = argTypeChecker.superClassTypeArgs.first.getDisplayString();
           final nullabilityOperator = checker.isNullable ? '?' : '';
           return '$fieldValue$nullabilityOperator.map((c) => ${SharedChecker.withoutNullability(checker.argType)}.$constructorName(c as $serializableType))$castIterable$defaultValue';
         }
@@ -215,7 +228,7 @@ mixin OfflineFirstJsonDeserialize<TModel extends Model, Annotation extends Field
         final type = checker.unFuturedType;
         final where = _convertSqliteLookupToString(offlineFirstAnnotation.where!);
         final getAssociationStatement =
-            getAssociationMethod(type, query: "Query(where: $where, providerArgs: {'limit': 1})");
+            getAssociationMethod(type, query: 'Query(where: $where, limit: 1)');
         final isNullable = type.nullabilitySuffix != NullabilitySuffix.none;
         if (!isNullable) repositoryHasBeenForceCast = true;
 

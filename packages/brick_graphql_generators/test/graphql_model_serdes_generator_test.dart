@@ -18,7 +18,7 @@ import 'graphql_model_serdes_generator/test_unserializable_field_with_generator.
     as unserializable_field_with_generator;
 
 final _generator = TestGenerator();
-final folder = 'graphql_model_serdes_generator';
+const folder = 'graphql_model_serdes_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {

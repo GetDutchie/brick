@@ -1,5 +1,6 @@
 import 'package:gql/ast.dart';
 
+/// An internal class to help transform operations
 class GraphqlVariable {
   /// The `UpdatePersonInput` in `mutation UpdatePerson($input: UpdatePersonInput)`
   final String className;
@@ -12,23 +13,24 @@ class GraphqlVariable {
   /// Defaults `false`.
   final bool nullable;
 
+  /// An internal class to help transform operations
   const GraphqlVariable({
     required this.className,
     required this.name,
     this.nullable = false,
   });
 
-  factory GraphqlVariable.fromVariableDefinitionNode(VariableDefinitionNode node) {
-    return GraphqlVariable(
-      className: (node.type as NamedTypeNode).name.value,
-      name: node.variable.name.value,
-    );
-  }
+  /// Convert a [VariableDefinitionNode] to a [GraphqlVariable]
+  factory GraphqlVariable.fromVariableDefinitionNode(VariableDefinitionNode node) =>
+      GraphqlVariable(
+        className: (node.type as NamedTypeNode).name.value,
+        name: node.variable.name.value,
+      );
 
-  static List<GraphqlVariable> fromOperationNode(OperationDefinitionNode node) {
-    return node.variableDefinitions
-        .map(GraphqlVariable.fromVariableDefinitionNode)
-        .toList()
-        .cast<GraphqlVariable>();
-  }
+  /// Convert an [OperationDefinitionNode] to a list of [GraphqlVariable]
+  static List<GraphqlVariable> fromOperationNode(OperationDefinitionNode node) =>
+      node.variableDefinitions
+          .map(GraphqlVariable.fromVariableDefinitionNode)
+          .toList()
+          .cast<GraphqlVariable>();
 }

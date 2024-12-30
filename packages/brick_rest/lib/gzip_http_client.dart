@@ -15,6 +15,8 @@ class GZipHttpClient extends http.BaseClient {
   @protected
   final http.Client innerClient;
 
+  /// Gzip all incoming requests and mutate them so that the payload is encoded.
+  /// Additionally, (over)writes the header `{'Content-Encoding': 'gzip'}`.
   GZipHttpClient({
     http.Client? innerClient,
 

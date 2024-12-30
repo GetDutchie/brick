@@ -1,6 +1,8 @@
 ## Unreleased
 
 - Allow a generic type argument for `OfflineFirstWithGraphqlRepository`
+- Update analysis to modern lints
+- Upgrade `brick_core` to `1.3.0`
 
 ## 3.2.0
 

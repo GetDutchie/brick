@@ -7,9 +7,12 @@ import 'package:source_gen/source_gen.dart';
 
 export 'package:brick_build/src/annotation_super_generator.dart';
 
+///
 final brickLogger = Logger('Brick');
 
+///
 abstract class BaseBuilder<_ClassAnnotation> implements Builder {
+  ///
   Logger get logger => brickLogger;
 
   @override
@@ -20,8 +23,10 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   /// The cached file this will produce
   String get outputExtension;
 
+  ///
   final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
 
+  ///
   static const aggregateExtension = '.brick_aggregate';
 
   /// Classes with the class-level annotation. For example, `ConnectOfflineFirstWithRest`.
@@ -42,14 +47,14 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
 
     if (!dirName.contains('.dart')) {
       final dir = Directory(p.join('lib', 'brick', dirName));
-      final dirExists = await dir.exists();
+      final dirExists = dir.existsSync();
       if (!dirExists) {
         await dir.create();
       }
     }
 
     final newFile = File(p.join('lib', 'brick', path));
-    final fileExists = await newFile.exists();
+    final fileExists = newFile.existsSync();
     if (!fileExists) {
       await newFile.create();
     }
@@ -60,7 +65,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   /// Replace contents of file
   Future<File?> replaceWithinFile(String path, Pattern from, String to) async {
     final file = File(p.join('lib', 'brick', path));
-    final fileExists = await file.exists();
+    final fileExists = file.existsSync();
     if (!fileExists) return null;
 
     final contents = await file.readAsString();

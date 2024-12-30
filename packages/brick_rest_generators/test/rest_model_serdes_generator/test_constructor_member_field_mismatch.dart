@@ -1,6 +1,6 @@
 import 'package:brick_rest/brick_rest.dart';
 
-final output = r'''
+const output = r'''
 Future<RestConstructorMemberFieldMismatch>
     _$RestConstructorMemberFieldMismatchFromRest(Map<String, dynamic> data,
         {required RestProvider provider,

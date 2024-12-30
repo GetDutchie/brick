@@ -7,7 +7,7 @@ mixin GetFirstMixin<TRepositoryModel extends OfflineFirstModel>
   /// If no instances exist, a [StateError] is thrown from within Dart's core
   /// `Iterable#first` method. It is recommended to use [getFirstOrNull] instead.
   ///
-  /// Automatically applies `'limit': 1` to the query's `providerArgs`
+  /// Automatically applies `'limit': 1` to the query.
   Future<TModel> getFirst<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -15,7 +15,7 @@ mixin GetFirstMixin<TRepositoryModel extends OfflineFirstModel>
   }) async {
     final result = await super.get<TModel>(
       policy: policy,
-      query: query?.copyWith(providerArgs: {'limit': 1}),
+      query: query?.copyWith(limit: 1),
       seedOnly: seedOnly,
     );
 
@@ -25,7 +25,7 @@ mixin GetFirstMixin<TRepositoryModel extends OfflineFirstModel>
   /// A safer version of [getFirst] that attempts to get the first instance of [TModel]
   /// according to the [query], but returns `null` if no instances exist.
   ///
-  /// Automatically applies `'limit': 1` to the query's `providerArgs`
+  /// Automatically applies `'limit': 1` to the query.
   Future<TModel?> getFirstOrNull<TModel extends TRepositoryModel>({
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -33,7 +33,7 @@ mixin GetFirstMixin<TRepositoryModel extends OfflineFirstModel>
   }) async {
     final result = await super.get<TModel>(
       policy: policy,
-      query: query?.copyWith(providerArgs: {'limit': 1}),
+      query: query?.copyWith(limit: 1),
       seedOnly: seedOnly,
     );
 

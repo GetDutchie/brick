@@ -97,14 +97,14 @@ void main() {
     });
 
     test('#generate', () {
-      final defaultOutput = r'''
+      const defaultOutput = r'''
 Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
     {required DefaultSerdesProvider provider,
     ModelRepository? repository}) async {
   return Simple();
 }
 ''';
-      final customOutput = '''
+      const customOutput = '''
 Future<Bar> unspecificPublicMethod(Map,
     {provider, SomeRepository repository}) async {
   return {'someField': instance.someField as int}..nullableField = true;
@@ -120,7 +120,7 @@ Future<Bar> unspecificPublicMethod(Map,
           () => SerdesGenerator.digestCustomGeneratorPlaceholders(
             '%UNDECLARED_VARIABLE%otherserialization',
           ),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 
@@ -129,7 +129,7 @@ Future<Bar> unspecificPublicMethod(Map,
           () => SerdesGenerator.digestCustomGeneratorPlaceholders(
             '%UNDEFINED_VALUE%otherserialization@UNDEFINED_VALUE@',
           ),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
 
         // Malformed declaration
@@ -137,7 +137,7 @@ Future<Bar> unspecificPublicMethod(Map,
           () => SerdesGenerator.digestCustomGeneratorPlaceholders(
             '%UNDEFINED_VALUE%otherserialization@UNDEFINED_VALUE',
           ),
-          throwsA(TypeMatcher<InvalidGenerationSourceError>()),
+          throwsA(const TypeMatcher<InvalidGenerationSourceError>()),
         );
       });
 

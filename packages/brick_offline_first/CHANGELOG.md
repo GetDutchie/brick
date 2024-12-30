@@ -2,6 +2,8 @@
 
 ## 3.4.0
 
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
 - Change `OfflineFirstRepository#exists` behavior: the check against memory cache will only return `true` if results have been found, otherwise it will continue to the SQLite provider
 - Forward errors from `OfflineFirstRepository#subscribe` streams to their callers (@sonbs21 #484)
 

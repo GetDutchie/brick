@@ -2,6 +2,16 @@
 
 ## 1.2.0
 
+- **DEPRECATION** `Query(providerArgs: {'limitReferencedTable':})` has been removed in favor of `Query(limitBy:)`
+- **DEPRECATION** `Query(providerArgs: {'orderByReferencedTable':})` has been removed in favor of `Query(orderBy:)`
+- Association, plural ordering is supported. For example, `Query(orderBy: [OrderBy.desc('assoc', associationField: 'name')])` on `DemoModel` would produce the PostgREST filter:
+  ```javascript
+  orderBy('name', referencedTable: 'association_table')
+  ```
+- New `SupabaseProviderQuery` adds Supabase-specific support for the new `Query`.
+- Advanced, plural limiting is supported. For example, `Query(limitBy: [LimitBy(1, evaluatedField: 'assoc'))` is the equivalent of `.limit(1, referencedTable: 'demo_model')`. `Query#limit` can be used in conjunction on the parent model request.
+- Upgrade `brick_core` to `1.3.0`
+- Update analysis to modern lints
 - Add `SupabaseProvider#update` and `SupabaseProvider#insert` to conform to Supabase policy restrictions
 - Use `columnName` instead of `evaluatedField` in `QuerySupabaseTransformer` when searching for non null associations
 

@@ -1,6 +1,5 @@
 import 'package:brick_core/core.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_sqlite/db.dart';
 import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';
@@ -118,7 +117,7 @@ void main() {
       test('with an offset', () async {
         await provider.upsert<DemoModel>(DemoModel(name: 'Guy'));
         final existingModels = await provider.get<DemoModel>();
-        final query = Query(providerArgs: {'limit': 1, 'offset': existingModels.length});
+        final query = Query(limit: 1, offset: existingModels.length);
 
         final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);
         expect(doesExistWithoutModel, isFalse);
@@ -134,7 +133,8 @@ void main() {
           .upsert<DemoModel>(DemoModel(name: 'Guy', manyAssoc: [DemoModelAssoc(name: 'Thomas')]));
       final query = Query(
         where: [const Where('manyAssoc').isExactly(const Where('name').isExactly('Thomas'))],
-        providerArgs: {'limit': 1, 'offset': 1},
+        limit: 1,
+        offset: 1,
       );
 
       final doesExistWithoutModel = await provider.exists<DemoModel>(query: query);

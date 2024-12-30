@@ -29,7 +29,9 @@ class _OfflineFirstRestDeserialize extends RestDeserialize
   }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
+///
 class OfflineFirstRestModelSerdesGenerator extends RestModelSerdesGenerator {
+  ///
   OfflineFirstRestModelSerdesGenerator(
     super.element,
     super.reader, {

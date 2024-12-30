@@ -15,6 +15,8 @@ class GraphqlModelSerdesGenerator
   /// should not be included.
   final String repositoryName;
 
+  /// Digest a `graphqlConfig` (`@ConnectOfflineFirstWithGraphQL`) from [reader] and manage serdes generators
+  /// to and from a `GraphqlProvider`.
   GraphqlModelSerdesGenerator(
     super.element,
     super.reader, {
@@ -24,7 +26,7 @@ class GraphqlModelSerdesGenerator
   @override
   GraphqlSerializableExtended get config {
     if (reader.peek(configKey) == null) {
-      return GraphqlSerializableExtended();
+      return const GraphqlSerializableExtended();
     }
 
     final fieldRenameIndex =

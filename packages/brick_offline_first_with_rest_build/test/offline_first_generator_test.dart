@@ -8,8 +8,8 @@ import 'offline_first_generator/test_rest_config_endpoint.dart' as rest_config_e
 import 'offline_first_generator/test_rest_config_field_rename.dart' as rest_config_field_rename;
 import 'offline_first_generator/test_specify_field_name.dart' as specify_field_name;
 
-final _generator = OfflineFirstWithRestGenerator();
-final folder = 'offline_first_generator';
+const _generator = OfflineFirstWithRestGenerator();
+const folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {

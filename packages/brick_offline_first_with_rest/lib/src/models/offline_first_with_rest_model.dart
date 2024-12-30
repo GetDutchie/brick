@@ -1,4 +1,6 @@
 import 'package:brick_offline_first/brick_offline_first.dart' show OfflineFirstModel;
-import 'package:brick_rest/brick_rest.dart' show RestModel;
+import 'package:brick_rest/brick_rest.dart';
 
+/// An offline-first enabled model for use with the [RestProvider]
+// ignore: prefer_mixin
 abstract class OfflineFirstWithRestModel extends OfflineFirstModel with RestModel {}

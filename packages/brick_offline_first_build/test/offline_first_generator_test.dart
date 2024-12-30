@@ -27,7 +27,7 @@ void main() {
   group('OfflineFirstJsonGenerators', () {
     group('constructor arguments', () {
       test('repositoryName', () async {
-        final generator = OfflineFirstWithTestGenerator(repositoryName: 'MyCustom');
+        const generator = OfflineFirstWithTestGenerator(repositoryName: 'MyCustom');
         await generateAdapterExpectation(
           'constructor_arguments',
           constructor_arguments.repositoryNameAdapterExpectation,
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('superAdapterName', () async {
-        final generator = OfflineFirstWithTestGenerator(superAdapterName: 'SuperDuper');
+        const generator = OfflineFirstWithTestGenerator(superAdapterName: 'SuperDuper');
         await generateAdapterExpectation(
           'constructor_arguments',
           constructor_arguments.superAdapterNameAdapterExpectation,

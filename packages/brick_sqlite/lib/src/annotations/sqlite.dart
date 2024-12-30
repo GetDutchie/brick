@@ -1,7 +1,8 @@
 import 'package:brick_core/field_serializable.dart';
-import 'package:brick_sqlite/src/db/migration.dart' show Column;
+import 'package:brick_sqlite/src/annotations/sqlite_serializable.dart';
+import 'package:brick_sqlite/src/db/column.dart';
 
-export 'package:brick_sqlite/src/db/migration.dart' show Column;
+export 'package:brick_sqlite/src/db/column.dart';
 
 /// An annotation used to specify how a field is serialized.
 /// Heavily inspired by [JsonKey](https://github.com/dart-lang/json_serializable/blob/master/json_annotation/lib/src/json_key.dart)
@@ -62,7 +63,7 @@ class Sqlite implements FieldSerializable {
   @override
   final bool nullable;
 
-  /// When true, deletion of the referenced record by [foreignKeyColumn] on the [foreignTableName]
+  /// When true, deletion of the referenced record by `foreignKeyColumn` on the `foreignTableName`
   /// this record. For example, if the foreign table is "departments" and the local table
   /// is "employees," whenever that department is deleted, "employee"
   /// will be deleted. Defaults `false`.

@@ -1,6 +1,6 @@
 import 'package:brick_offline_first/src/offline_queue/request_sqlite_cache.dart';
 import 'package:meta/meta.dart';
-import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseFactory, DatabaseExecutor;
+import 'package:sqflite_common/sqlite_api.dart' show Database, DatabaseExecutor, DatabaseFactory;
 
 /// Fetch and delete [RequestSqliteCache]s.
 abstract class RequestSqliteCacheManager<RequestMethod> {
@@ -15,15 +15,25 @@ abstract class RequestSqliteCacheManager<RequestMethod> {
   /// With [databaseFactory], this is most commonly the
   /// `sqlite_common` constant `inMemoryDatabasePath`.
   final String createdAtColumn;
+
+  /// Database file path
   final String databaseName;
+
+  /// Column that tracks if the request is locked
   final String lockedColumn;
+
+  /// Column that tracks the primary key
   final String primaryKeyColumn;
+
+  ///
   final String updateAtColumn;
 
   Future<Database>? _db;
 
+  ///
   final String tableName;
 
+  ///
   String get orderByStatement {
     if (!serialProcessing) {
       return '$updateAtColumn ASC';
@@ -39,6 +49,7 @@ abstract class RequestSqliteCacheManager<RequestMethod> {
   /// Defaults `true`.
   final bool serialProcessing;
 
+  /// Fetch and delete [RequestSqliteCache]s.
   RequestSqliteCacheManager(
     this.databaseName, {
     required this.createdAtColumn,
@@ -68,6 +79,7 @@ abstract class RequestSqliteCacheManager<RequestMethod> {
     return result > 0;
   }
 
+  ///
   Future<Database> getDb() {
     _db ??= databaseFactory.openDatabase(databaseName);
 
@@ -138,7 +150,7 @@ abstract class RequestSqliteCacheManager<RequestMethod> {
       tableName,
       distinct: true,
       where: '$lockedColumn = ? AND $createdAtColumn <= ?',
-      whereArgs: [whereLocked ? 1 : 0, nowMinusNextPoll],
+      whereArgs: [if (whereLocked) 1 else 0, nowMinusNextPoll],
       orderBy: orderByStatement,
       limit: 1,
     );

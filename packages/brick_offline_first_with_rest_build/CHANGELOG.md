@@ -1,10 +1,10 @@
 ## Unreleased
 
-- (test) remove analysis options override for non-standard library prefixes
-- Apply minimum constraint on `brick_offline_first_build` to `3.2.0`
-
 ## 3.2.0
 
+- (test) remove analysis options override for non-standard library prefixes
+- Apply minimum constraint on `brick_offline_first_build` to `3.2.0`
+- Upgrade `brick_core` to `1.3.0`
 - Apply standardized lints
 - Update `analyzer` constraints to `>=6.0.0 <7.0.0`
 - Format CHANGELOG.md

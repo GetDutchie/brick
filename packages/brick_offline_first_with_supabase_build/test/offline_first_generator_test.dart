@@ -12,8 +12,8 @@ import 'offline_first_generator/test_on_conflict.dart' as on_conflict;
 import 'offline_first_generator/test_table_name_defined.dart' as table_name_defined;
 import 'offline_first_generator/test_table_name_undefined.dart' as table_name_undefined;
 
-final _generator = OfflineFirstWithSupabaseGenerator();
-final folder = 'offline_first_generator';
+const _generator = OfflineFirstWithSupabaseGenerator();
+const folder = 'offline_first_generator';
 final generateReader = generateLibraryForFolder(folder);
 
 void main() {

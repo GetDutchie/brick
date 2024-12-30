@@ -1,22 +1,29 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_graphql/src/graphql_model.dart';
-import 'package:brick_graphql/src/graphql_model_dictionary.dart';
+import 'package:brick_graphql/brick_graphql.dart';
 import 'package:brick_graphql/src/transformers/model_fields_document_transformer.dart';
 import 'package:gql_exec/gql_exec.dart';
 
+/// A request to a [GraphqlProvider]
 class GraphqlRequest<TModel extends GraphqlModel> {
+  /// The action to perform on the API
   final QueryAction action;
 
+  /// The instance to use. Not relevant for [QueryAction.get]
   final TModel? instance;
 
+  /// The repository definition of other adapters know the GraphQL
   final GraphqlModelDictionary modelDictionary;
 
+  /// The invoking [Query]
   final Query? query;
 
+  /// The top-level name to nest subsquent variables
   final String? variableNamespace;
 
+  /// Available variables.
   final Map<String, dynamic>? variables;
 
+  /// A request to a [GraphqlProvider]
   const GraphqlRequest({
     required this.action,
     this.instance,
@@ -26,6 +33,7 @@ class GraphqlRequest<TModel extends GraphqlModel> {
     this.variableNamespace,
   });
 
+  /// The transformed [Request] for use with an eventual `Link`
   Request? get request {
     final defaultOperation = ModelFieldsDocumentTransformer.defaultOperation<TModel>(
       modelDictionary,
@@ -36,20 +44,26 @@ class GraphqlRequest<TModel extends GraphqlModel> {
 
     if (defaultOperation == null) return null;
 
+    final context = (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.context;
+    // ignore: deprecated_member_use
+    final argContextMap = query?.providerArgs['context'] as Map<String, ContextEntry>?;
+    final argContext = argContextMap != null
+        ? Context.fromMap(
+            Map<String, ContextEntry>.from(argContextMap)
+                .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
+          )
+        : null;
+
     return Request(
       operation: Operation(
         document: defaultOperation.document,
       ),
       variables: requestVariables ?? {},
-      context: query?.providerArgs['context'] != null
-          ? Context.fromMap(
-              Map<String, ContextEntry>.from(query?.providerArgs['context'])
-                  .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
-            )
-          : Context(),
+      context: context ?? argContext ?? const Context(),
     );
   }
 
+  /// Declared variables from the operation and the query
   Map<String, dynamic>? get requestVariables {
     final opVariables = operationVariables(action, instance: instance, query: query);
     var vars = opVariables ?? variables ?? queryToVariables(query);
@@ -57,7 +71,12 @@ class GraphqlRequest<TModel extends GraphqlModel> {
       vars = {variableNamespace!: vars};
     }
 
-    return query?.providerArgs['operation']?.variables ?? vars;
+    final operation =
+        (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation ??
+            // ignore: deprecated_member_use
+            query?.providerArgs['operation'] as GraphqlOperation?;
+
+    return operation?.variables ?? vars;
   }
 
   /// Retrive variables defined by the annotation in [GraphqlQueryOperationTransformer]

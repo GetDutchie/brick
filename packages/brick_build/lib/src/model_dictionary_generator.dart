@@ -6,11 +6,13 @@ abstract class ModelDictionaryGenerator {
   /// so any methods that incorporate Type definitions should be listed here.
   /// For example, importing a `SqliteProvider` or a `DatabaseExecutor`.
   /// Consider adding analyzer ignores to disable 'unused_import' warnings.
-  final requiredImports = '';
+  String get requiredImports => '';
 
+  ///
   // ignore: constant_identifier_names
   static const HEADER = '// GENERATED CODE DO NOT EDIT';
 
+  /// Given a list of models, output generated code to use as `brick.g.dart` file
   const ModelDictionaryGenerator();
 
   /// Adapter part imports
@@ -18,6 +20,7 @@ abstract class ModelDictionaryGenerator {
       .map((k) => "part 'adapters/${StringHelpers.snakeCase(k)}_adapter.g.dart';")
       .join('\n');
 
+  ///
   String dictionaryFromFiles(Map<String, String> classNamesToFileNames) =>
       classNamesToFileNames.keys.map((k) => '$k: ${k}Adapter()').join(',\n  ');
 

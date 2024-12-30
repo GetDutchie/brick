@@ -50,7 +50,9 @@ class _OfflineFirstGraphqlDeserialize extends GraphqlDeserialize
   }) : offlineFirstFields = OfflineFirstFields(element);
 }
 
+/// Produces code for `@ConnectOfflineFirstWithGraphQL`
 class OfflineFirstGraphqlModelSerdesGenerator extends GraphqlModelSerdesGenerator {
+  /// Produces code for `@ConnectOfflineFirstWithGraphQL`
   OfflineFirstGraphqlModelSerdesGenerator(
     super.element,
     super.reader, {

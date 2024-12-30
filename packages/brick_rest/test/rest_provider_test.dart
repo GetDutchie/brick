@@ -6,13 +6,12 @@ import 'package:test/test.dart';
 
 import '__mocks__.dart';
 
-RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) {
-  return RestProvider(
-    'http://0.0.0.0:3000',
-    modelDictionary: restModelDictionary,
-    client: generateClient(response, requestBody: requestBody, requestMethod: requestMethod),
-  );
-}
+RestProvider generateProvider(String response, {String? requestBody, String? requestMethod}) =>
+    RestProvider(
+      'http://0.0.0.0:3000',
+      modelDictionary: restModelDictionary,
+      client: generateClient(response, requestBody: requestBody, requestMethod: requestMethod),
+    );
 
 void main() {
   group('RestProvider', () {
@@ -33,9 +32,7 @@ void main() {
 
     test('#defaultHeaders', () async {
       final headers = {'Authorization': 'token=12345'};
-      final provider = generateProvider('[{"name": "Guy"}]');
-
-      provider.defaultHeaders = headers;
+      final provider = generateProvider('[{"name": "Guy"}]')..defaultHeaders = headers;
       final instance = await provider.get<DemoRestModel>();
       expect(instance.first.name, 'Guy');
     });
@@ -64,10 +61,38 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        final query = Query(
+        const query = Query(
+          // ignore: deprecated_member_use
           providerArgs: {
             'request': RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
           },
+        );
+        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
+
+        expect(resp!.statusCode, 200);
+        expect(resp.body, '{"name": "Thomas"}');
+      });
+
+      test('RestProviderQuery#headers', () async {
+        final provider = RestProvider(
+          'http://0.0.0.0:3000',
+          modelDictionary: restModelDictionary,
+          client: MockClient((req) async {
+            if (req.method == 'POST' && req.headers['Authorization'] == 'Basic xyz') {
+              return http.Response('{"name": "Thomas"}', 200);
+            }
+
+            throw StateError('No response');
+          }),
+        );
+
+        final instance = DemoRestModel('Guy');
+        const query = Query(
+          forProviders: [
+            RestProviderQuery(
+              request: RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
+            ),
+          ],
         );
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
@@ -79,7 +104,8 @@ void main() {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(method: 'PUT', url: '/')});
+        // ignore: deprecated_member_use
+        const query = Query(providerArgs: {'request': RestRequest(method: 'PUT', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
@@ -90,7 +116,8 @@ void main() {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PATCH');
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(method: 'PATCH', url: '/')});
+        // ignore: deprecated_member_use
+        const query = Query(providerArgs: {'request': RestRequest(method: 'PATCH', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
@@ -105,7 +132,8 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        final query = Query(providerArgs: {'request': RestRequest(topLevelKey: 'top', url: '/')});
+        // ignore: deprecated_member_use
+        const query = Query(providerArgs: {'request': RestRequest(topLevelKey: 'top', url: '/')});
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
@@ -120,7 +148,8 @@ void main() {
             requestBody: '{"other_name":{"first_name":"Thomas"}}',
           );
 
-          final query = Query(
+          const query = Query(
+            // ignore: deprecated_member_use
             providerArgs: {
               'request': RestRequest(
                 url: '/',
@@ -144,7 +173,8 @@ void main() {
           );
 
           final instance = DemoRestModel('Guy');
-          final query = Query(
+          const query = Query(
+            // ignore: deprecated_member_use
             providerArgs: {
               'request': RestRequest(
                 topLevelKey: 'top',
