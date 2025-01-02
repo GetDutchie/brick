@@ -268,7 +268,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     required FieldAnnotation fieldAnnotation,
     required String name,
   }) =>
-      fieldAnnotation.nullable && field.type.nullabilitySuffix != NullabilitySuffix.none
+      field.type.nullabilitySuffix != NullabilitySuffix.none
           ? "data['$name'] == null ? null :"
           : '';
 

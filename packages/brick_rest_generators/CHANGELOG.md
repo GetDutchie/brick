@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.3.1
+
+- Upgrade `brick_core` to `1.4.0`
+
 ## 3.3.0
 
 - Upgrade `brick_core` to `1.3.0`

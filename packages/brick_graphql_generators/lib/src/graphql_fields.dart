@@ -29,7 +29,6 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
           config?.fieldRename,
           GraphqlSerializable.defaults.fieldRename,
         ),
-        nullable: Graphql.defaults.nullable,
         enumAsString: Graphql.defaults.enumAsString,
       );
     }
@@ -43,7 +42,6 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
       ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ??
           renameField(element.name, config?.fieldRename, GraphqlSerializable.defaults.fieldRename),
-      nullable: obj.getField('nullable')?.toBoolValue() ?? Graphql.defaults.nullable,
       subfields: _convertMapToMap(obj.getField('subfields')?.toMapValue()),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );

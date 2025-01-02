@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 3.3.1
+
+- Upgrade `brick_core` to `1.4.0`
+- Upgrade `brick_build` to `3.3.1`
+- Ignore `Graphql#nullable`
+
 ## 3.3.0
 
 - Upgrade `brick_core` to `1.3.0`

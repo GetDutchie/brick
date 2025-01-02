@@ -4,7 +4,7 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_core
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 1.3.1
+version: 1.4.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

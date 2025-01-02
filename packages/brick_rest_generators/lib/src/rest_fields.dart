@@ -28,7 +28,6 @@ class RestAnnotationFinder extends AnnotationFinder<Rest>
           config?.fieldRename,
           RestSerializable.defaults.fieldRename,
         ),
-        nullable: config?.nullable ?? Rest.defaults.nullable,
         enumAsString: Rest.defaults.enumAsString,
       );
     }
@@ -42,8 +41,6 @@ class RestAnnotationFinder extends AnnotationFinder<Rest>
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
       name: obj.getField('name')!.toStringValue() ??
           renameField(element.name, config?.fieldRename, RestSerializable.defaults.fieldRename),
-      nullable:
-          obj.getField('nullable')!.toBoolValue() ?? config?.nullable ?? Rest.defaults.nullable,
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }

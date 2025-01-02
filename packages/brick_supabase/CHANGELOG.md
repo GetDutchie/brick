@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+- **DEPRECATION** remove `Supabase#nullable`. Builders should evaluate the nullable suffix of the field instead
+
 ## 1.2.0
 
 - **DEPRECATION** `Query(providerArgs: {'limitReferencedTable':})` has been removed in favor of `Query(limitBy:)`

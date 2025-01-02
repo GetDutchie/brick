@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.2.0
+
+- Remove `Supabase#nullable`
+- Upgrade `brick_core` to `1.4.0`
+
 ## 1.1.0
 
 - Upgrade `brick_core` to `1.3.0`

@@ -27,7 +27,6 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
           config?.fieldRename,
           SupabaseSerializable.defaults.fieldRename,
         ),
-        nullable: Supabase.defaults.nullable,
         enumAsString: Supabase.defaults.enumAsString,
       );
     }
@@ -46,7 +45,6 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
             config?.fieldRename,
             SupabaseSerializable.defaults.fieldRename,
           ),
-      nullable: obj.getField('nullable')!.toBoolValue() ?? Supabase.defaults.nullable,
       query: obj.getField('query')?.toStringValue(),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
       unique: obj.getField('unique')!.toBoolValue() ?? Supabase.defaults.unique,

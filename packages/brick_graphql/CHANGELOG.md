@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.3.0
+
+- **DEPRECATION** remove `Graphql#nullable`. Builders should evaluate the nullable suffix of the field instead
+
 ## 3.2.0
 
 - **DEPRECATION** `Query(providerArgs: {'context':})` is now `Query(forProviders: [GraphqlProviderQuery(context:)])`

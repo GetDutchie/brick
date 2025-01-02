@@ -52,7 +52,7 @@ class EnumAsString {
   @Graphql(enumAsString: true)
   final Hat hat;
 
-  @Graphql(enumAsString: true, nullable: true)
+  @Graphql(enumAsString: true)
   final Hat? nullableHat;
 
   @Graphql(enumAsString: true)

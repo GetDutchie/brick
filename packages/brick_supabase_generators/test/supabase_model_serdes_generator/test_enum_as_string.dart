@@ -52,7 +52,7 @@ class EnumAsString {
   @Supabase(enumAsString: true)
   final Hat hat;
 
-  @Supabase(enumAsString: true, nullable: true)
+  @Supabase(enumAsString: true)
   final Hat? nullableHat;
 
   @Supabase(enumAsString: true)
