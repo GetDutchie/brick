@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.3.0
+
+- If a model requested in a realtime subscription has an association, an extra fetch is performed (#514)
+
 ## 1.2.0
 
 - Upgrade `brick_core` to `1.3.0`

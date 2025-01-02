@@ -74,6 +74,15 @@ class Pizza extends OfflineFirstWithSupabaseModel {
     required this.toppings,
     required this.frozen,
   });
+
+  @override
+  int get hashCode => id.hashCode ^ frozen.hashCode;
+
+  @override
+  bool operator ==(Object other) => other is Pizza && other.id == id && other.frozen == frozen;
+
+  @override
+  String toString() => 'Pizza(id: $id, toppings: $toppings, frozen: $frozen)';
 }
 
 enum Topping { olive, pepperoni }
