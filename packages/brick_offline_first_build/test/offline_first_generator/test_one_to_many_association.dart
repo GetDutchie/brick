@@ -37,12 +37,14 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromTest(
               .toList()
               .cast<Future<SqliteAssoc>>() ??
           []),
-      nullableAssoc: await Future.wait<SqliteAssoc>(data['nullable_assoc']
-              ?.map((d) => SqliteAssocAdapter()
-                  .fromTest(d, provider: provider, repository: repository))
-              .toList()
-              .cast<Future<SqliteAssoc>>() ??
-          []));
+      nullableAssoc: data['nullable_assoc'] == null
+          ? null
+          : await Future.wait<SqliteAssoc>(data['nullable_assoc']
+                  ?.map((d) => SqliteAssocAdapter()
+                      .fromTest(d, provider: provider, repository: repository))
+                  .toList()
+                  .cast<Future<SqliteAssoc>>() ??
+              []));
 }
 
 Future<Map<String, dynamic>> _$OneToManyAssociationToTest(

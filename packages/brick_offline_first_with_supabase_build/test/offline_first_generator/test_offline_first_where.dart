@@ -20,11 +20,13 @@ Future<SupabaseOfflineFirstWhere> _$SupabaseOfflineFirstWhereFromSupabase(
               .toList()
               .cast<Future<Assoc>>() ??
           []),
-      nullableAssociations: await Future.wait<Assoc>(data['nullable_associations']
-              ?.map((d) => AssocAdapter().fromSupabase(d, provider: provider, repository: repository))
-              .toList()
-              .cast<Future<Assoc>>() ??
-          []));
+      nullableAssociations: data['nullable_associations'] == null
+          ? null
+          : await Future.wait<Assoc>(data['nullable_associations']
+                  ?.map((d) => AssocAdapter().fromSupabase(d, provider: provider, repository: repository))
+                  .toList()
+                  .cast<Future<Assoc>>() ??
+              []));
 }
 
 Future<Map<String, dynamic>> _$SupabaseOfflineFirstWhereToSupabase(

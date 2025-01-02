@@ -11,7 +11,9 @@ Future<Futures> _$FuturesFromTest(Map<String, dynamic> data,
   return Futures(
       string: data['string'] as Future<String>,
       strings: data['strings'].toList().cast<Future<String>>(),
-      futureStrings: data['future_strings']?.toList().cast<String>(),
+      futureStrings: data['future_strings'] == null
+          ? null
+          : data['future_strings']?.toList().cast<String>(),
       assoc: AssocAdapter()
           .fromTest(data['assoc'], provider: provider, repository: repository),
       assocs: Future.wait<Assoc>(data['assocs']
@@ -20,11 +22,13 @@ Future<Futures> _$FuturesFromTest(Map<String, dynamic> data,
               .toList()
               .cast<Future<Assoc>>() ??
           []),
-      futureAssocs: data['future_assocs']
-          ?.map((d) => AssocAdapter()
-              .fromTest(d, provider: provider, repository: repository))
-          .toList()
-          .cast<Future<Assoc>>());
+      futureAssocs: data['future_assocs'] == null
+          ? null
+          : data['future_assocs']
+              ?.map((d) => AssocAdapter()
+                  .fromTest(d, provider: provider, repository: repository))
+              .toList()
+              .cast<Future<Assoc>>());
 }
 
 Future<Map<String, dynamic>> _$FuturesToTest(Futures instance,

@@ -7,25 +7,44 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return PrimitiveFields(
-      nullableInteger: data['nullable_integer'] as int?,
-      nullableBoolean: data['nullable_boolean'] as bool?,
-      nullableDub: data['nullable_dub'] as double?,
-      nullableString: data['nullable_string'] as String?,
-      nullableList: data['nullable_list']?.toList().cast<int>(),
-      nullableSet: data['nullable_set']?.toSet().cast<int>(),
-      nullableMap: data['nullable_map'],
+      nullableInteger: data['nullable_integer'] == null
+          ? null
+          : data['nullable_integer'] as int?,
+      nullableBoolean: data['nullable_boolean'] == null
+          ? null
+          : data['nullable_boolean'] as bool?,
+      nullableDub:
+          data['nullable_dub'] == null ? null : data['nullable_dub'] as double?,
+      nullableString: data['nullable_string'] == null
+          ? null
+          : data['nullable_string'] as String?,
+      nullableList: data['nullable_list'] == null
+          ? null
+          : data['nullable_list']?.toList().cast<int>(),
+      nullableSet: data['nullable_set'] == null
+          ? null
+          : data['nullable_set']?.toSet().cast<int>(),
+      nullableMap: data['nullable_map'] == null ? null : data['nullable_map'],
       nullableLongerCamelizedVariable:
-          data['nullable_longer_camelized_variable'] as String?,
-      nullableCasing: data['nullable_casing'] is int
-          ? Casing.values[data['nullable_casing'] as int]
-          : null,
-      nullableListCasing: data['nullable_list_casing']
-          .map((e) => Casing.values[e])
-          .toList()
-          .cast<Casing>(),
+          data['nullable_longer_camelized_variable'] == null
+              ? null
+              : data['nullable_longer_camelized_variable'] as String?,
+      nullableCasing: data['nullable_casing'] == null
+          ? null
+          : data['nullable_casing'] is int
+              ? Casing.values[data['nullable_casing'] as int]
+              : null,
+      nullableListCasing: data['nullable_list_casing'] == null
+          ? null
+          : data['nullable_list_casing']
+              .map((e) => Casing.values[e])
+              .toList()
+              .cast<Casing>(),
       nullableDateTime: data['nullable_date_time'] == null
           ? null
-          : DateTime.tryParse(data['nullable_date_time'] as String),
+          : data['nullable_date_time'] == null
+              ? null
+              : DateTime.tryParse(data['nullable_date_time'] as String),
       integer: data['integer'] as int,
       boolean: data['boolean'] as bool,
       dub: data['dub'] as double,

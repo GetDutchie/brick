@@ -6,7 +6,10 @@ const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromRest(Map<String, dynamic> data,
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
-  return SpecifyFieldName(email: data['email_address'] as String?);
+  return SpecifyFieldName(
+      email: data['email_address'] == null
+          ? null
+          : data['email_address'] as String?);
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToRest(SpecifyFieldName instance,

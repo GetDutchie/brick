@@ -7,13 +7,16 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
-      string: Serializable.fromTest(data['string']),
+      string:
+          data['string'] == null ? null : Serializable.fromTest(data['string']),
       constructorFieldNullabilityMismatch:
           data['constructor_field_nullability_mismatch'] as bool?,
-      strings: data['strings']
-          ?.map((c) => Serializable.fromTest(c as Map<String, dynamic>))
-          .toList()
-          .cast<Serializable>());
+      strings: data['strings'] == null
+          ? null
+          : data['strings']
+              ?.map((c) => Serializable.fromTest(c as Map<String, dynamic>))
+              .toList()
+              .cast<Serializable>());
 }
 
 Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToTest(

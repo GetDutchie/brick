@@ -123,7 +123,7 @@ mixin JsonDeserialize<TModel extends Model, Annotation extends FieldSerializable
     } else if (checker.isEnum) {
       final deserializeFactory = checker.enumDeserializeFactory(providerName);
       if (deserializeFactory != null) {
-        return '${checker.isNullable ? "$fieldValue == null ? null :" : ""} ${SharedChecker.withoutNullability(field.type)}.$deserializeFactory($fieldValue)';
+        return '${SharedChecker.withoutNullability(field.type)}.$deserializeFactory($fieldValue)';
       }
 
       if (fieldAnnotation.enumAsString) {
