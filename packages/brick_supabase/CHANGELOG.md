@@ -1,8 +1,13 @@
 ## Unreleased
 
-## 1.3.0
+## 1.4.0
 
 - **DEPRECATION** remove `Supabase#nullable`. Builders should evaluate the nullable suffix of the field instead
+
+## 1.3.0
+
+- When testing realtime responses, `realtime: true` must be defined in `SupabaseRequest`. This also resolves a duplicate `emits` bug in tests; the most common resolution is to remove the first duplicated expected response (e.g. `emitsInOrder([[], [], [resp]])` becomes `emitsInOrder([[], [resp]])`)
+- Associations are not serialized in the `SupabaseResponse`; only subscribed table data is provided
 
 ## 1.2.0
 
