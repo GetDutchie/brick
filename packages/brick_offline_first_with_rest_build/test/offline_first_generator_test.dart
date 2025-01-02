@@ -25,8 +25,6 @@ void main() {
         await generateAdapterExpectation('rest_config_endpoint', rest_config_endpoint.output);
       });
 
-      test('restSerializable#nullable', () {}, skip: 'Write implementation and then write test');
-
       test('restSerializable#fieldRename', () async {
         await generateExpectation('rest_config_field_rename', rest_config_field_rename.output);
       });
