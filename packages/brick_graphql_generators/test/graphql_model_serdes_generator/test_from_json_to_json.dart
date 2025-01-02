@@ -9,17 +9,19 @@ Future<ToFromJson> _$ToFromJsonFromGraphql(Map<String, dynamic> data,
     GraphqlFirstRepository? repository}) async {
   return ToFromJson(
       assoc: ToFromJsonAssoc.fromJson(data['assoc'] as String),
-      assocNullable: data['assocNullable'] != null
-          ? ToFromJsonAssoc.fromJson(data['assocNullable'] as String)
-          : null,
+      assocNullable: data['assocNullable'] == null
+          ? null
+          : ToFromJsonAssoc.fromJson(data['assocNullable'] as String),
       assocIterable: data['assocIterable']
           .map((d) => ToFromJsonAssoc.fromJson(d as String))
           .toList()
           .cast<ToFromJsonAssoc>(),
-      assocIterableNullable: data['assocIterableNullable']
-          ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
-          .toList()
-          .cast<ToFromJsonAssoc>());
+      assocIterableNullable: data['assocIterableNullable'] == null
+          ? null
+          : data['assocIterableNullable']
+              ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
+              .toList()
+              .cast<ToFromJsonAssoc>());
 }
 
 Future<Map<String, dynamic>> _$ToFromJsonToGraphql(ToFromJson instance,
