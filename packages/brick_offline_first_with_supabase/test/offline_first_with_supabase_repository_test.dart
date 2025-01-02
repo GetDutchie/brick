@@ -433,20 +433,26 @@ void main() async {
             customers,
             emitsInOrder([
               [],
-              [],
+              [customer],
               [customer],
             ]),
           );
 
-          const req = SupabaseRequest<Customer>();
-          final resp = SupabaseResponse(
-            await mock.serialize(
-              customer,
-              realtimeEvent: PostgresChangeEvent.insert,
-              repository: repository,
+          mock.handle({
+            const SupabaseRequest<Customer>(realtime: true): SupabaseResponse(
+              await mock.serialize(
+                customer,
+                realtimeEvent: PostgresChangeEvent.insert,
+                repository: repository,
+              ),
             ),
-          );
-          mock.handle({req: resp});
+            const SupabaseRequest<Customer>(): SupabaseResponse([
+              await mock.serialize(
+                customer,
+                repository: repository,
+              ),
+            ]),
+          });
 
           // Wait for request to be handled
           await Future.delayed(const Duration(milliseconds: 200));
@@ -475,12 +481,11 @@ void main() async {
             customers,
             emitsInOrder([
               [customer],
-              [customer],
               [],
             ]),
           );
 
-          const req = SupabaseRequest<Customer>();
+          const req = SupabaseRequest<Customer>(realtime: true);
           final resp = SupabaseResponse(
             await mock.serialize(
               customer,
@@ -515,6 +520,22 @@ void main() async {
             ],
           );
 
+          mock.handle({
+            const SupabaseRequest<Customer>(realtime: true): SupabaseResponse(
+              await mock.serialize(
+                customer2,
+                realtimeEvent: PostgresChangeEvent.update,
+                repository: repository,
+              ),
+            ),
+            const SupabaseRequest<Customer>(): SupabaseResponse([
+              await mock.serialize(
+                customer2,
+                repository: repository,
+              ),
+            ]),
+          });
+
           final id =
               await repository.sqliteProvider.upsert<Customer>(customer1, repository: repository);
           expect(id, isNotNull);
@@ -525,20 +546,10 @@ void main() async {
             customers,
             emitsInOrder([
               [customer1],
-              [customer1],
+              [customer2],
               [customer2],
             ]),
           );
-
-          const req = SupabaseRequest<Customer>();
-          final resp = SupabaseResponse(
-            await mock.serialize(
-              customer2,
-              realtimeEvent: PostgresChangeEvent.update,
-              repository: repository,
-            ),
-          );
-          mock.handle({req: resp});
         });
 
         group('as .all and ', () {
@@ -556,25 +567,31 @@ void main() async {
                 await repository.sqliteProvider.get<Customer>(repository: repository);
             expect(sqliteResults, isEmpty);
 
+            mock.handle({
+              const SupabaseRequest<Customer>(realtime: true): SupabaseResponse(
+                await mock.serialize(
+                  customer,
+                  realtimeEvent: PostgresChangeEvent.insert,
+                  repository: repository,
+                ),
+              ),
+              const SupabaseRequest<Customer>(): SupabaseResponse([
+                await mock.serialize(
+                  customer,
+                  repository: repository,
+                ),
+              ]),
+            });
+
             final customers = repository.subscribeToRealtime<Customer>();
             expect(
               customers,
               emitsInOrder([
                 [],
-                [],
+                [customer],
                 [customer],
               ]),
             );
-
-            const req = SupabaseRequest<Customer>();
-            final resp = SupabaseResponse(
-              await mock.serialize(
-                customer,
-                realtimeEvent: PostgresChangeEvent.insert,
-                repository: repository,
-              ),
-            );
-            mock.handle({req: resp});
 
             // Wait for request to be handled
             await Future.delayed(const Duration(milliseconds: 100));
@@ -602,12 +619,11 @@ void main() async {
               customers,
               emitsInOrder([
                 [customer],
-                [customer],
                 [],
               ]),
             );
 
-            const req = SupabaseRequest<Customer>();
+            const req = SupabaseRequest<Customer>(realtime: true);
             final resp = SupabaseResponse(
               await mock.serialize(
                 customer,
@@ -651,69 +667,70 @@ void main() async {
               customers,
               emitsInOrder([
                 [customer1],
-                [customer1],
+                [customer2],
                 [customer2],
               ]),
             );
 
-            const req = SupabaseRequest<Customer>();
-            final resp = SupabaseResponse(
-              await mock.serialize(
-                customer2,
-                realtimeEvent: PostgresChangeEvent.update,
-                repository: repository,
+            mock.handle({
+              const SupabaseRequest<Customer>(realtime: true): SupabaseResponse(
+                await mock.serialize(
+                  customer2,
+                  realtimeEvent: PostgresChangeEvent.update,
+                  repository: repository,
+                ),
               ),
-            );
-            mock.handle({req: resp});
+              const SupabaseRequest<Customer>(): SupabaseResponse(
+                [
+                  await mock.serialize(
+                    customer2,
+                    repository: repository,
+                  ),
+                ],
+              ),
+            });
           });
 
           test('with multiple events', () async {
-            final customer1 = Customer(
+            final pizza1 = Pizza(
               id: 1,
-              firstName: 'Thomas',
-              lastName: 'Guy',
-              pizzas: [
-                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
-              ],
+              toppings: [],
+              frozen: false,
             );
-            final customer2 = Customer(
+            final pizza2 = Pizza(
               id: 1,
-              firstName: 'Guy',
-              lastName: 'Thomas',
-              pizzas: [
-                Pizza(id: 2, toppings: [Topping.pepperoni], frozen: false),
-              ],
+              toppings: [],
+              frozen: true,
             );
 
-            final customers = repository.subscribeToRealtime<Customer>();
+            final pizzas = repository.subscribeToRealtime<Pizza>();
             expect(
-              customers,
+              pizzas,
               emitsInOrder([
                 [],
-                [],
-                [customer1],
-                [customer2],
+                [pizza1],
+                [pizza2],
               ]),
             );
 
-            const req = SupabaseRequest<Customer>();
-            final resp = SupabaseResponse(
-              await mock.serialize(
-                customer1,
-                realtimeEvent: PostgresChangeEvent.insert,
-                repository: repository,
-              ),
-              realtimeSubsequentReplies: [
-                SupabaseResponse(
-                  await mock.serialize(
-                    customer2,
-                    realtimeEvent: PostgresChangeEvent.update,
-                    repository: repository,
-                  ),
+            mock.handle({
+              const SupabaseRequest<Pizza>(realtime: true): SupabaseResponse(
+                await mock.serialize<Pizza>(
+                  pizza1,
+                  realtimeEvent: PostgresChangeEvent.insert,
+                  repository: repository,
                 ),
-              ],
-            );
-            mock.handle({req: resp});
+                realtimeSubsequentReplies: [
+                  SupabaseResponse(
+                    await mock.serialize<Pizza>(
+                      pizza2,
+                      realtimeEvent: PostgresChangeEvent.update,
+                      repository: repository,
+                    ),
+                  ),
+                ],
+              ),
+            });
           });
         });
       });

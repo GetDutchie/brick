@@ -318,6 +318,22 @@ abstract class OfflineFirstWithSupabaseRepository<
                 memoryCacheProvider.delete<TModel>(results.first, repository: this);
 
               case PostgresChangeEvent.insert || PostgresChangeEvent.update:
+                // The supabase payload is not configurable and will not supply associations.
+                // For models that have associations, an additional network call must be
+                // made to retrieve all scoped data.
+                final modelHasAssociations = adapter.fieldsToSupabaseColumns.entries
+                    .any((entry) => entry.value.association && !entry.value.associationIsNullable);
+
+                if (modelHasAssociations) {
+                  await get<TModel>(
+                    query: query,
+                    policy: OfflineFirstGetPolicy.alwaysHydrate,
+                    seedOnly: true,
+                  );
+
+                  return;
+                }
+
                 final instance = await adapter.fromSupabase(
                   payload.newRecord,
                   provider: remoteProvider,

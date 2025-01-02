@@ -18,6 +18,9 @@ class SupabaseRequest<TModel extends SupabaseModel> {
   ///
   final int? limit;
 
+  ///
+  final bool realtime;
+
   /// An HTTP request method, e.g. `GET`, `POST`, `PUT`, `DELETE`
   final String? requestMethod;
 
@@ -34,6 +37,7 @@ class SupabaseRequest<TModel extends SupabaseModel> {
     this.fields,
     this.filter,
     this.limit,
+    this.realtime = false,
     this.requestMethod = 'GET',
   });
 
@@ -45,13 +49,15 @@ class SupabaseRequest<TModel extends SupabaseModel> {
     final generatedTableName =
         modelDictionary != null ? modelDictionary.adapterFor[TModel]?.supabaseTableName : tableName;
 
+    final prefix = realtime ? 'realtime' : 'rest';
+
     if (requestMethod == 'DELETE') {
-      final url = '/rest/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}';
+      final url = '/$prefix/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}';
       return Uri.parse(url);
     }
 
     final url =
-        '/rest/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}select=${Uri.encodeComponent(generatedFields ?? '')}${limit != null ? '&limit=$limit' : ''}';
+        '/$prefix/v1/$generatedTableName${filter != null ? '?$filter&' : '?'}select=${Uri.encodeComponent(generatedFields ?? '')}${limit != null ? '&limit=$limit' : ''}';
     return Uri.parse(url);
   }
 
