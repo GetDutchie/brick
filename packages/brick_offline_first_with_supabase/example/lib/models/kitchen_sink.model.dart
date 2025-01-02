@@ -1,8 +1,12 @@
+// ignore_for_file: always_use_package_imports
+
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_offline_first_with_supabase_example/models/mounty.model.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
+
+import 'hat.dart';
+import 'mounty.model.dart';
 
 @ConnectOfflineFirstWithSupabase()
 class KitchenSink extends OfflineFirstWithSupabaseModel {
@@ -44,7 +48,6 @@ class KitchenSink extends OfflineFirstWithSupabaseModel {
   @Supabase(defaultValue: "'a default value'")
   final String? restAnnotationDefaultValue;
 
-  @Supabase(nullable: true)
   final String? restAnnotationNullable;
 
   @Supabase(ignore: true)
@@ -65,7 +68,6 @@ class KitchenSink extends OfflineFirstWithSupabaseModel {
   @Supabase(enumAsString: true)
   final AnyEnum? enumFromString;
 
-  @Sqlite(nullable: true)
   final String? sqliteAnnotationNullable;
 
   @Sqlite(defaultValue: "'default value'")

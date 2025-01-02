@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 3.3.1
+
+- Remove `FieldSerializable#nullable` requirement on `deserializerNullableClause`
+- Update minimum `brick_core` to `1.4.0`
+
 ## 3.3.0
 
 - Add documentation to increase pub.dev score

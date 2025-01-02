@@ -1,17 +1,19 @@
 import 'package:brick_core/core.dart';
-import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_rest/brick_rest.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
+import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/hat.dart';
 import 'package:brick_offline_first_with_rest_example/brick/models/mounty.model.dart';
+import 'package:brick_rest/brick_rest.dart';
+import 'package:brick_sqlite/brick_sqlite.dart';
 
 class KitchenSinkRequest extends RestRequestTransformer {
-  final get = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sinks');
+  @override
+  final get = const RestRequest(url: '/my-path', topLevelKey: 'kitchen_sinks');
 
-  final upsert = RestRequest(url: '/my-path', topLevelKey: 'kitchen_sink');
+  @override
+  final upsert = const RestRequest(url: '/my-path', topLevelKey: 'kitchen_sink');
 
-  KitchenSinkRequest(Query? query, Model? instance) : super(query, instance);
+  KitchenSinkRequest(super.query, super.instance);
 }
 
 @ConnectOfflineFirstWithRest(
@@ -58,7 +60,6 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Rest(defaultValue: "'a default value'")
   final String? restAnnotationDefaultValue;
 
-  @Rest(nullable: true)
   final String? restAnnotationNullable;
 
   @Rest(ignore: true)
@@ -79,7 +80,6 @@ class KitchenSink extends OfflineFirstWithRestModel {
   @Rest(enumAsString: true)
   final AnyEnum? enumFromString;
 
-  @Sqlite(nullable: true)
   final String? sqliteAnnotationNullable;
 
   @Sqlite(defaultValue: "'default value'")

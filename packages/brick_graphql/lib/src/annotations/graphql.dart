@@ -34,6 +34,7 @@ class Graphql implements FieldSerializable {
   /// This indicates that the payload from GraphQL could be `null` and is not related to
   /// Dart nullability. Defaults to `false`.
   @override
+  @Deprecated('Use a nullable type instead')
   final bool nullable;
 
   /// Supply subfields that should be requested from the server.
@@ -58,7 +59,7 @@ class Graphql implements FieldSerializable {
     bool? ignoreFrom,
     bool? ignoreTo,
     this.name,
-    bool? nullable,
+    @Deprecated('Use a nullable type instead') bool? nullable,
     this.subfields,
     this.toGenerator,
   })  : enumAsString = enumAsString ?? false,

@@ -44,6 +44,7 @@ class Rest implements FieldSerializable {
   /// This indicates that the payload from REST could be `null` and is not related to
   /// Dart nullability. Defaults to `false`.
   @override
+  @Deprecated('Use a nullable type instead')
   final bool nullable;
 
   @override
@@ -60,7 +61,7 @@ class Rest implements FieldSerializable {
     bool? ignoreFrom,
     bool? ignoreTo,
     this.name,
-    bool? nullable,
+    @Deprecated('Use a nullable type instead') bool? nullable,
     this.toGenerator,
   })  : enumAsString = enumAsString ?? false,
         ignore = ignore ?? false,

@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.4.0
+
+- **DEPRECATION** remove `FieldSerializable#nullable`. Builders should evaluate the nullable suffix of the field instead
+
 ## 1.3.1
 
 - `const`antize `Where.exactly` and `OrderBy.{desc|asc}`

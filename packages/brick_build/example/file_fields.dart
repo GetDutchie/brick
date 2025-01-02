@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:brick_core/field_serializable.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_core/field_serializable.dart';
 
 // in a real-world equivalent, this is an annotation
 class File implements FieldSerializable {
@@ -52,7 +52,7 @@ class _FileSerdesFinder extends AnnotationFinder<File> {
   _FileSerdesFinder();
 
   @override
-  File from(element) {
+  File from(FieldElement element) {
     final obj = objectForField(element);
 
     if (obj == null) {

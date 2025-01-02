@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.2.0
+
+- **DEPRECATION** remove `Rest#nullable`. Builders should evaluate the nullable suffix of the field instead
+
 ## 3.1.0
 
 - **DEPRECATION** `Query(providerArgs: {'request':})` is now `Query(forProviders: [RestProviderQuery(request:)])`.

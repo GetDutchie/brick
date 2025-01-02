@@ -50,7 +50,7 @@ class EnumAsString {
   @Rest(enumAsString: true)
   final Hat hat;
 
-  @Rest(enumAsString: true, nullable: true)
+  @Rest(enumAsString: true)
   final Hat? nullableHat;
 
   @Rest(enumAsString: true)
