@@ -7,7 +7,10 @@ Future<SpecifyFieldName> _$SpecifyFieldNameFromGraphql(
     Map<String, dynamic> data,
     {required GraphqlProvider provider,
     OfflineFirstRepository? repository}) async {
-  return SpecifyFieldName(email: data['email_address'] as String?);
+  return SpecifyFieldName(
+      email: data['email_address'] == null
+          ? null
+          : data['email_address'] as String?);
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToGraphql(

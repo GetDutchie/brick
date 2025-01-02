@@ -7,7 +7,10 @@ Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
     Map<String, dynamic> data,
     {required SupabaseProvider provider,
     OfflineFirstRepository? repository}) async {
-  return SpecifyFieldName(email: data['supa_email_address'] as String?);
+  return SpecifyFieldName(
+      email: data['supa_email_address'] == null
+          ? null
+          : data['supa_email_address'] as String?);
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToSupabase(

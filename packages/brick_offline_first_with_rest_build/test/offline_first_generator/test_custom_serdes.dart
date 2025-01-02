@@ -7,7 +7,9 @@ Future<CustomSerdes> _$CustomSerdesFromRest(Map<String, dynamic> data,
     {required RestProvider provider,
     OfflineFirstRepository? repository}) async {
   return CustomSerdes(
-      string: data['string'].split('').map((s) => '$s.1').join(''));
+      string: data['string'] == null
+          ? null
+          : data['string'].split('').map((s) => '$s.1').join(''));
 }
 
 Future<Map<String, dynamic>> _$CustomSerdesToRest(CustomSerdes instance,

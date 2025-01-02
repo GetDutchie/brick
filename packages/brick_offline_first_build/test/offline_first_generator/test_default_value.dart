@@ -6,7 +6,10 @@ const output = r'''
 Future<DefaultValue> _$DefaultValueFromTest(Map<String, dynamic> data,
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
-  return DefaultValue(string: data['string'] as String? ?? "Thomas");
+  return DefaultValue(
+      string: data['string'] == null
+          ? null
+          : data['string'] as String? ?? "Thomas");
 }
 
 Future<Map<String, dynamic>> _$DefaultValueToTest(DefaultValue instance,

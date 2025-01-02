@@ -11,7 +11,9 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
     {required TestProvider provider,
     OfflineFirstRepository? repository}) async {
   return CustomOfflineFirstSerdes(
-      string: Serializable.fromTest(data['string']));
+      string: data['string'] == null
+          ? null
+          : Serializable.fromTest(data['string']));
 }
 
 Future<Map<String, dynamic>> _$CustomOfflineFirstSerdesToTest(
