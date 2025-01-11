@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.4.1
+
+- Add `SupabaseProviderQuery`
+- Support defining `upsertMethod` via `SupabaseProviderQuery`
+
 ## 1.4.0
 
 - **DEPRECATION** remove `Supabase#nullable`. Builders should evaluate the nullable suffix of the field instead

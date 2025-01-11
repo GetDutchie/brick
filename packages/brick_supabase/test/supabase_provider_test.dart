@@ -1,6 +1,8 @@
 // ignore_for_file: unawaited_futures
 
+import 'package:brick_core/query.dart';
 import 'package:brick_supabase/src/supabase_provider.dart';
+import 'package:brick_supabase/src/supabase_provider_query.dart';
 import 'package:brick_supabase/testing.dart';
 import 'package:test/test.dart';
 
@@ -139,6 +141,28 @@ void main() {
         expect(inserted.id, instance.id);
         expect(inserted.assoc.age, instance.assoc.age);
         expect(inserted.assoc.id, instance.assoc.id);
+        expect(inserted.name, instance.name);
+      });
+
+      test('with non-default method from query', () async {
+        const req = SupabaseRequest<Demo>(
+          requestMethod: 'PATCH',
+          filter: 'id=eq.1',
+          limit: 1,
+        );
+        final instance = Demo(age: 1, name: 'Demo 1', id: '1');
+        final resp = SupabaseResponse(await mock.serialize(instance));
+        mock.handle({req: resp});
+
+        final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+        final inserted = await provider.upsert<Demo>(
+          instance,
+          query: const Query(
+            forProviders: [SupabaseProviderQuery(upsertMethod: UpsertMethod.update)],
+          ),
+        );
+        expect(inserted.id, instance.id);
+        expect(inserted.age, instance.age);
         expect(inserted.name, instance.name);
       });
     });
