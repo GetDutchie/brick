@@ -1,9 +1,10 @@
 ## Unreleased
 
-## 1.4.1
+## 1.4.1+1
 
 - Add `SupabaseProviderQuery`
 - Support defining `upsertMethod` via `SupabaseProviderQuery`
+- Fix `orderBy` queries to use the column name instead of the field name when constructing PostgREST queries
 
 ## 1.4.0
 

@@ -247,10 +247,12 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return query!.orderBy.fold(withProviderArgs, (acc, orderBy) {
       final definition = adapter.fieldsToSupabaseColumns[orderBy.evaluatedField];
       final tableName = modelDictionary.adapterFor[definition?.associationType]?.supabaseTableName;
+      final columnName = adapter
+          .fieldsToSupabaseColumns[orderBy.associationField ?? orderBy.evaluatedField]?.columnName;
 
       final url = acc.appendSearchParams(
         tableName == null ? 'order' : '$tableName.order',
-        '${orderBy.associationField ?? orderBy.evaluatedField}.${orderBy.ascending ? 'asc' : 'desc'}.nullslast',
+        '$columnName.${orderBy.ascending ? 'asc' : 'desc'}.nullslast',
       );
       return acc.copyWithUrl(url);
     });
