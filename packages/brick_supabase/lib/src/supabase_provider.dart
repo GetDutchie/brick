@@ -2,6 +2,7 @@ import 'package:brick_core/core.dart';
 import 'package:brick_supabase/src/query_supabase_transformer.dart';
 import 'package:brick_supabase/src/supabase_model.dart';
 import 'package:brick_supabase/src/supabase_model_dictionary.dart';
+import 'package:brick_supabase/src/supabase_provider_query.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase/supabase.dart';
@@ -149,9 +150,11 @@ class SupabaseProvider implements Provider<SupabaseModel> {
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final output = await adapter.toSupabase(instance, provider: this, repository: repository);
+    final providerQuery = query?.providerQueries[SupabaseProvider] as SupabaseProviderQuery?;
 
     return await recursiveAssociationUpsert(
       output,
+      method: providerQuery?.upsertMethod ?? UpsertMethod.upsert,
       type: TModel,
       query: query,
       repository: repository,

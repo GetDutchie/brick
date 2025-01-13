@@ -246,7 +246,7 @@ void main() {
 
         expect(
           transformBuilder.query,
-          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=nested.desc.nullslast',
+          'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=nested_column.desc.nullslast',
         );
       });
 
