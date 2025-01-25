@@ -175,7 +175,8 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(PrimitiveFields instance,
     'nullable_set': instance.nullableSet == null
         ? null
         : jsonEncode(instance.nullableSet.toList()),
-    'nullable_map': jsonEncode(instance.nullableMap ?? {}),
+    'nullable_map':
+        instance.nullableMap != null ? jsonEncode(instance.nullableMap) : null,
     'nullable_longer_camelized_variable':
         instance.nullableLongerCamelizedVariable,
     'nullable_casing': instance.nullableCasing != null

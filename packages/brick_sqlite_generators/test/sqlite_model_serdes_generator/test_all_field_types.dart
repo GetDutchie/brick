@@ -23,12 +23,16 @@ Future<AllFieldTypes> _$AllFieldTypesFromSqlite(Map<String, dynamic> data,
           .whereType<Casing>()
           .toList()
           .cast<Casing>(),
-      nullableList: data['nullable_list'] == null
-          ? null
-          : jsonDecode(data['nullable_list']).toList().cast<int>(),
       longerCamelizedVariable: data['longer_camelized_variable'] == null
           ? null
           : data['longer_camelized_variable'] as String?,
+      map: jsonDecode(data['map']),
+      nullableList: data['nullable_list'] == null
+          ? null
+          : jsonDecode(data['nullable_list']).toList().cast<int>(),
+      nullableMap: data['nullable_map'] == null
+          ? null
+          : jsonDecode(data['nullable_map']),
       string: data['string'] == null ? null : data['string'] as String?,
       stringSet: jsonDecode(data['string_set']).toSet().cast<String>())
     ..primaryKey = data['_brick_id'] as int;
@@ -46,10 +50,13 @@ Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(AllFieldTypes instance,
         : null,
     'enum_list': jsonEncode(
         instance.enumList.map((s) => Casing.values.indexOf(s)).toList()),
+    'longer_camelized_variable': instance.longerCamelizedVariable,
+    'map': jsonEncode(instance.map),
     'nullable_list': instance.nullableList == null
         ? null
         : jsonEncode(instance.nullableList),
-    'longer_camelized_variable': instance.longerCamelizedVariable,
+    'nullable_map':
+        instance.nullableMap != null ? jsonEncode(instance.nullableMap) : null,
     'string': instance.string,
     'string_set': jsonEncode(instance.stringSet.toList())
   };
@@ -97,17 +104,29 @@ class AllFieldTypesAdapter extends SqliteAdapter<AllFieldTypes> {
       iterable: true,
       type: Casing,
     ),
+    'longerCamelizedVariable': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'longer_camelized_variable',
+      iterable: false,
+      type: String,
+    ),
+    'map': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'map',
+      iterable: false,
+      type: Map,
+    ),
     'nullableList': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'nullable_list',
       iterable: true,
       type: int,
     ),
-    'longerCamelizedVariable': const RuntimeSqliteColumnDefinition(
+    'nullableMap': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'longer_camelized_variable',
+      columnName: 'nullable_map',
       iterable: false,
-      type: String,
+      type: Map,
     ),
     'string': const RuntimeSqliteColumnDefinition(
       association: false,
@@ -154,8 +173,10 @@ class AllFieldTypes {
     this.dub,
     this.enumField,
     required this.enumList,
-    this.nullableList,
     this.longerCamelizedVariable,
+    this.nullableList,
+    this.nullableMap,
+    required this.map,
     this.string,
     required this.stringSet,
   });
@@ -165,8 +186,10 @@ class AllFieldTypes {
   final double? dub;
   final Casing? enumField;
   final List<Casing> enumList;
-  final List<int>? nullableList;
   final String? longerCamelizedVariable;
+  final Map<String, dynamic> map;
+  final List<int>? nullableList;
+  final Map<String, dynamic>? nullableMap;
   final String? string;
   final Set<String> stringSet;
 }
