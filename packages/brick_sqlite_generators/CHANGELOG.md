@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.3.1
+
+- Fix: nullable maps are not cast to a default value on serialization (#531)
+
 ## 3.3.0
 
 - Upgrade `brick_core` to `1.3.0`

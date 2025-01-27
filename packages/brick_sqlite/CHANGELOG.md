@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 3.2.2
+
+- Fix: nullable maps are not cast to a default value on serialization (#531)
+
 ## 3.2.1
 
 - Remove `dart:io` dependency
