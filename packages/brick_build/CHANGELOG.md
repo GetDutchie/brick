@@ -4,7 +4,6 @@
 
 - Dart minimum SDK is updated to `3.4.0`
 - All dependency restrictions are updated to include the minimum released version.
-- Support `dart_style: >= 3.0.0`
 
 ## 3.3.1
 

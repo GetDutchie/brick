@@ -12,8 +12,7 @@ environment:
   sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
-  brick_build: ">=3.0.0"
   build: ">=2.4.2 <3.0.0"
-  path: ">=1.9.1 <2.0.0"
-  source_gen: ">=2.0.0 <3.0.0"
+  path: ">=1.9.0 <2.0.0"
+  source_gen: ">=1.5.0 <3.0.0"
   source_gen_test: ">=1.0.0 <2.0.0"
