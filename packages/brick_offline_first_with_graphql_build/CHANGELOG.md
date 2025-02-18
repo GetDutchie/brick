@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 4.0.0
+
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+- Update `analyzer` constraint to `>=6.11.0 <7.0.0`
 - (test) remove analysis options override for non-standard library prefixes
 - Apply minimum constraint on `brick_offline_first_build` to `3.2.0`
 - Update analysis to modern lints

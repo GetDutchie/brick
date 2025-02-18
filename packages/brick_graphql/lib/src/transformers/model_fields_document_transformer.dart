@@ -6,7 +6,6 @@ import 'package:brick_graphql/src/graphql_provider.dart';
 import 'package:brick_graphql/src/graphql_provider_query.dart';
 import 'package:brick_graphql/src/runtime_graphql_definition.dart';
 import 'package:brick_graphql/src/transformers/graphql_argument.dart';
-import 'package:brick_graphql/src/transformers/graphql_query_operation_transformer.dart';
 import 'package:brick_graphql/src/transformers/graphql_variable.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart' as lang;
@@ -172,10 +171,7 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
     TModel? instance,
     Query? query,
   }) {
-    final operation =
-        (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation ??
-            // ignore: deprecated_member_use
-            query?.providerArgs['operation'] as GraphqlOperation?;
+    final operation = (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation;
     if (operation?.document != null) {
       return fromString<TModel>(operation!.document!, modelDictionary);
     }

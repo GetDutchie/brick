@@ -9,7 +9,7 @@ class _DefaultGraphqlTransformer extends GraphqlQueryOperationTransformer {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class GraphqlAdapter<TModel extends Model> implements Adapter<TModel> {
+abstract mixin class GraphqlAdapter<TModel extends Model> implements Adapter<TModel> {
   /// The transformer to change a [Query] to a [GraphqlOperation]
   GraphqlQueryOperationTransformer Function(Query?, GraphqlModel?)? get queryOperationTransformer =>
       _DefaultGraphqlTransformer.new;

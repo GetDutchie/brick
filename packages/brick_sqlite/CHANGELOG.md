@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 4.0.0
+
+- **BREAKING CHANGE** Require `brick_core: >= 2.0.0` and remove support for `Query(providerArgs:)`; see [migration steps](https://github.com/GetDutchie/brick/issues/510)
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 3.2.2
 
 - Fix: nullable maps are not cast to a default value on serialization (#531)
@@ -10,9 +16,9 @@
 
 ## 3.2.0
 
-- **DEPRECATION** `Query(providerArgs: {'collate':})` is now `Query(forProviders: [SqliteProviderQuery(collate:)])`
-- **DEPRECATION** `Query(providerArgs: {'having':})` is now `Query(forProviders: [SqliteProviderQuery(having:)])`
-- **DEPRECATION** `Query(providerArgs: {'groupBy':})` is now `Query(forProviders: [SqliteProviderQuery(groupBy:)])`
+- **DEPRECATION** `Query(providerArgs: {'collate':})` is now `Query(forProviders: [SqliteProviderQuery(collate:)])` #510
+- **DEPRECATION** `Query(providerArgs: {'having':})` is now `Query(forProviders: [SqliteProviderQuery(having:)])` #510
+- **DEPRECATION** `Query(providerArgs: {'groupBy':})` is now `Query(forProviders: [SqliteProviderQuery(groupBy:)])` #510
 - Association ordering is supported. For example, `Query(orderBy: [OrderBy.desc('assoc', associationField: 'name')])` on `DemoModel` will produce the following SQL statement:
   ```sql
   'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModelAssoc`.name DESC'

@@ -47,33 +47,7 @@ void main() {
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test('providerArgs["request"].headers', () async {
-        final provider = RestProvider(
-          'http://0.0.0.0:3000',
-          modelDictionary: restModelDictionary,
-          client: MockClient((req) async {
-            if (req.method == 'POST' && req.headers['Authorization'] == 'Basic xyz') {
-              return http.Response('{"name": "Thomas"}', 200);
-            }
-
-            throw StateError('No response');
-          }),
-        );
-
-        final instance = DemoRestModel('Guy');
-        const query = Query(
-          // ignore: deprecated_member_use
-          providerArgs: {
-            'request': RestRequest(headers: {'Authorization': 'Basic xyz'}, url: '/'),
-          },
-        );
-        final resp = await provider.upsert<DemoRestModel>(instance, query: query);
-
-        expect(resp!.statusCode, 200);
-        expect(resp.body, '{"name": "Thomas"}');
-      });
-
-      test('RestProviderQuery#headers', () async {
+      test('RestProviderQuery#request#headers', () async {
         final provider = RestProvider(
           'http://0.0.0.0:3000',
           modelDictionary: restModelDictionary,
@@ -100,31 +74,41 @@ void main() {
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      test('providerArgs["request"].method PUT', () async {
+      test('RestProviderQuery#request#method PUT', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PUT');
 
         final instance = DemoRestModel('Guy');
-        // ignore: deprecated_member_use
-        const query = Query(providerArgs: {'request': RestRequest(method: 'PUT', url: '/')});
+        const query = Query(
+          forProviders: [
+            RestProviderQuery(
+              request: RestRequest(method: 'PUT', url: '/'),
+            ),
+          ],
+        );
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test('providerArgs["request"].method PATCH', () async {
+      test('RestProviderQuery#request#method PATCH', () async {
         final provider = generateProvider('{"name": "Guy"}', requestMethod: 'PATCH');
 
         final instance = DemoRestModel('Guy');
-        // ignore: deprecated_member_use
-        const query = Query(providerArgs: {'request': RestRequest(method: 'PATCH', url: '/')});
+        const query = Query(
+          forProviders: [
+            RestProviderQuery(
+              request: RestRequest(method: 'PATCH', url: '/'),
+            ),
+          ],
+        );
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Guy"}');
       });
 
-      test("providerArgs['request'].topLevelKey", () async {
+      test('RestProviderQuery#request#topLevelKey', () async {
         final provider = generateProvider(
           '{"name": "Thomas"}',
           requestMethod: 'POST',
@@ -132,15 +116,20 @@ void main() {
         );
 
         final instance = DemoRestModel('Guy');
-        // ignore: deprecated_member_use
-        const query = Query(providerArgs: {'request': RestRequest(topLevelKey: 'top', url: '/')});
+        const query = Query(
+          forProviders: [
+            RestProviderQuery(
+              request: RestRequest(topLevelKey: 'top', url: '/'),
+            ),
+          ],
+        );
         final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 
         expect(resp!.statusCode, 200);
         expect(resp.body, '{"name": "Thomas"}');
       });
 
-      group("providerArgs['request'].supplementalTopLevelData", () {
+      group('RestProviderQuery#request#supplementalTopLevelData', () {
         test('#get', () async {
           final provider = generateProvider(
             '[{"name": "Thomas"}]',
@@ -149,16 +138,17 @@ void main() {
           );
 
           const query = Query(
-            // ignore: deprecated_member_use
-            providerArgs: {
-              'request': RestRequest(
-                url: '/',
-                method: 'POST',
-                supplementalTopLevelData: {
-                  'other_name': {'first_name': 'Thomas'},
-                },
+            forProviders: [
+              RestProviderQuery(
+                request: RestRequest(
+                  url: '/',
+                  method: 'POST',
+                  supplementalTopLevelData: {
+                    'other_name': {'first_name': 'Thomas'},
+                  },
+                ),
               ),
-            },
+            ],
           );
           final instance = await provider.get<DemoRestModel>(query: query);
 
@@ -174,16 +164,17 @@ void main() {
 
           final instance = DemoRestModel('Guy');
           const query = Query(
-            // ignore: deprecated_member_use
-            providerArgs: {
-              'request': RestRequest(
-                topLevelKey: 'top',
-                url: '/',
-                supplementalTopLevelData: {
-                  'other_name': {'first_name': 'Thomas'},
-                },
+            forProviders: [
+              RestProviderQuery(
+                request: RestRequest(
+                  topLevelKey: 'top',
+                  url: '/',
+                  supplementalTopLevelData: {
+                    'other_name': {'first_name': 'Thomas'},
+                  },
+                ),
               ),
-            },
+            ],
           );
           final resp = await provider.upsert<DemoRestModel>(instance, query: query);
 

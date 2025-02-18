@@ -79,13 +79,6 @@ class Supabase implements FieldSerializable {
   @override
   final String? name;
 
-  /// When `true`, `null` fields are handled gracefully when encoding from JSON.
-  /// This indicates that the payload from Supabase could be `null` and is not related to
-  /// Dart nullability. Defaults to `false`.
-  @override
-  @Deprecated('Use a nullable type instead')
-  final bool nullable;
-
   @override
   final String? toGenerator;
 
@@ -103,14 +96,12 @@ class Supabase implements FieldSerializable {
     this.query,
     bool? unique,
     this.name,
-    @Deprecated('Use a nullable type instead') bool? nullable,
     this.toGenerator,
   })  : enumAsString = enumAsString ?? false,
         ignore = ignore ?? false,
         ignoreFrom = ignoreFrom ?? false,
         ignoreTo = ignoreTo ?? false,
-        unique = unique ?? false,
-        nullable = nullable ?? false;
+        unique = unique ?? false;
 
   /// An instance of [Supabase] with all fields set to their default values.
   static const defaults = Supabase();

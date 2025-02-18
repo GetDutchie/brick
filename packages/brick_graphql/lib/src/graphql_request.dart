@@ -45,21 +45,13 @@ class GraphqlRequest<TModel extends GraphqlModel> {
     if (defaultOperation == null) return null;
 
     final context = (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.context;
-    // ignore: deprecated_member_use
-    final argContextMap = query?.providerArgs['context'] as Map<String, ContextEntry>?;
-    final argContext = argContextMap != null
-        ? Context.fromMap(
-            Map<String, ContextEntry>.from(argContextMap)
-                .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
-          )
-        : null;
 
     return Request(
       operation: Operation(
         document: defaultOperation.document,
       ),
       variables: requestVariables ?? {},
-      context: context ?? argContext ?? const Context(),
+      context: context ?? const Context(),
     );
   }
 
@@ -71,11 +63,7 @@ class GraphqlRequest<TModel extends GraphqlModel> {
       vars = {variableNamespace!: vars};
     }
 
-    final operation =
-        (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation ??
-            // ignore: deprecated_member_use
-            query?.providerArgs['operation'] as GraphqlOperation?;
-
+    final operation = (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.operation;
     return operation?.variables ?? vars;
   }
 

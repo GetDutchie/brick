@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 2.0.0
+
+- **BREAKING CHANGE** `Query(providerArgs:)` is no longer accepted. See [1.3.0](#1.3.0) for migration steps.
+- **BREAKING CHANGE** `Query#copyWith` no longer accepts `providerArgs`. See [1.3.0](#1.3.0) for migration steps.
+- **BREAKING CHANGE** `FieldSerializable#nullable` is removed. See [1.4.0](#1.4.0) for migration steps.
+- Dart minimum SDK is updated to `3.4.0`
+
 ## 1.4.0
 
 - **DEPRECATION** remove `FieldSerializable#nullable`. Builders should evaluate the nullable suffix of the field instead
@@ -11,10 +18,10 @@
 
 ## 1.3.0
 
-- **DEPRECATION** `Query(providerArgs: {'limit':})` is now `Query(limit:)`
-- **DEPRECATION** `Query(providerArgs: {'offset':})` is now `Query(offset:)`
-- **DEPRECATION** `Query(providerArgs: {'orderBy':})` is now `Query(orderBy:)`. `orderBy` is now defined by a class that permits multiple commands. For example, `'orderBy': 'name ASC'` becomes `[OrderBy('name', ascending: true)]`.
-- **DEPRECATION** `providerArgs` will be removed in the next major release
+- **DEPRECATION** `Query(providerArgs: {'limit':})` is now `Query(limit:)` #510
+- **DEPRECATION** `Query(providerArgs: {'offset':})` is now `Query(offset:)` #510
+- **DEPRECATION** `Query(providerArgs: {'orderBy':})` is now `Query(orderBy:)`. `orderBy` is now defined by a class that permits multiple commands. For example, `'orderBy': 'name ASC'` becomes `[OrderBy('name', ascending: true)]`. #510
+- **DEPRECATION** `providerArgs` will be removed in the next major release #510
 - `OrderBy` will support association ordering and multiple values
 - `Query` is constructed with `const`
 - `Query#offset` no longer requires companion `limit` parameter

@@ -150,20 +150,6 @@ mutation UpsertPerson($input: UpsertPersonInput!) {
           startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
   upsertPerson(input: $input) {'''),
         );
-
-        const query0 =
-            // ignore: deprecated_member_use
-            Query(providerArgs: {'operation': GraphqlOperation(document: upsertPersonWithNodes)});
-        final transformer0 = ModelFieldsDocumentTransformer.defaultOperation<DemoModel>(
-          dictionary,
-          action: QueryAction.get,
-          query: query0,
-        );
-        expect(
-          lang.printNode(transformer0!.document),
-          startsWith(r'''mutation UpsertPerson($input: UpsertPersonInput!) {
-  upsertPerson(input: $input) {'''),
-        );
       });
 
       test('with delete action', () {

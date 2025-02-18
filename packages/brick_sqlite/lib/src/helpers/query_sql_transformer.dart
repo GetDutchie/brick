@@ -377,7 +377,6 @@ class AllOtherClausesFragment {
   String toString() {
     final providerQuery = query?.providerQueries[SqliteProvider] as SqliteProviderQuery?;
     final argsToSqlStatments = {
-      ...?query?.providerArgs,
       if (providerQuery?.collate != null) 'collate': providerQuery?.collate,
       if (query?.limit != null) 'limit': query?.limit,
       if (query?.offset != null) 'offset': query?.offset,

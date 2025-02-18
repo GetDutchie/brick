@@ -4,20 +4,20 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_rest_gene
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 3.3.1+1
+version: 4.0.0
 
 environment:
-  sdk: ">=2.18.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
-  analyzer: ">=6.0.0 <7.0.0"
-  brick_build: ">=3.3.1 <4.0.0"
-  brick_core: ">=1.4.0 <2.0.0"
-  brick_json_generators: ">=3.2.0 <4.0.0"
-  brick_rest: ">=3.2.0 <4.0.0"
-  build: ">=2.0.0 <3.0.0"
-  dart_style: ">=2.0.0 <3.0.0"
-  source_gen: ">=1.2.2 <2.0.0"
+  analyzer: ">=6.11.0 <8.0.0"
+  brick_build: ">=4.0.0 <5.0.0"
+  brick_core: ">=2.0.0 <3.0.0"
+  brick_json_generators: ">=4.0.0 <5.0.0"
+  brick_rest: ">=4.0.0 <5.0.0"
+  build: ">=2.4.2 <3.0.0"
+  dart_style: ">=3.0.0 <4.0.0"
+  source_gen: ">=2.0.0 <3.0.0"
 
 dev_dependencies:
   brick_build_test:

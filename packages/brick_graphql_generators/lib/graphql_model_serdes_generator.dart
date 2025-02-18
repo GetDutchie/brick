@@ -33,7 +33,7 @@ class GraphqlModelSerdesGenerator
         withinConfigKey('fieldRename')?.objectValue.getField('index')?.toIntValue();
     final fieldRename = fieldRenameIndex != null ? FieldRename.values[fieldRenameIndex] : null;
     final function = withinConfigKey('queryOperationTransformer')?.objectValue.toFunctionValue();
-    var functionName = function?.enclosingElement.name;
+    var functionName = function?.enclosingElement3.name;
     if (function is ConstructorElement) {
       functionName = '$functionName.new';
     }

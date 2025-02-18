@@ -1,12 +1,19 @@
 ## Unreleased
 
+## 4.0.0
+
+- **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported; see [3.1.0](#3.1.0) for migration steps
+- **BREAKING CHANGE** `Rest(nullable:)` is no longer supported; see [3.2.0](#3.2.0) for migration steps
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 3.2.0
 
 - **DEPRECATION** remove `Rest#nullable`. Builders should evaluate the nullable suffix of the field instead
 
 ## 3.1.0
 
-- **DEPRECATION** `Query(providerArgs: {'request':})` is now `Query(forProviders: [RestProviderQuery(request:)])`.
+- **DEPRECATION** `Query(providerArgs: {'request':})` is now `Query(forProviders: [RestProviderQuery(request:)])`. #510
 - Upgrade `brick_core` to `1.3.0`
 - Update analysis to modern lints
 - New `RestProviderQuery` adds REST-specific support for the new `Query`.

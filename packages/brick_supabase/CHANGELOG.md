@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 4.0.0
+
+- **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported; see [1.2.0](#1.2.0) for migration steps
+- **BREAKING CHANGE** `Supabase(nullable:)` is no longer supported; see [1.4.0](#1.4.0) for migration steps
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 1.4.1+1
 
 - Add `SupabaseProviderQuery`
@@ -17,8 +24,8 @@
 
 ## 1.2.0
 
-- **DEPRECATION** `Query(providerArgs: {'limitReferencedTable':})` has been removed in favor of `Query(limitBy:)`
-- **DEPRECATION** `Query(providerArgs: {'orderByReferencedTable':})` has been removed in favor of `Query(orderBy:)`
+- **DEPRECATION** `Query(providerArgs: {'limitReferencedTable':})` has been removed in favor of `Query(limitBy:)` #510
+- **DEPRECATION** `Query(providerArgs: {'orderByReferencedTable':})` has been removed in favor of `Query(orderBy:)` #510
 - Association, plural ordering is supported. For example, `Query(orderBy: [OrderBy.desc('assoc', associationField: 'name')])` on `DemoModel` would produce the PostgREST filter:
   ```javascript
   orderBy('name', referencedTable: 'association_table')

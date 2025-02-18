@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 4.0.0
+
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 3.2.0
 
 - (test) remove analysis options override for non-standard library prefixes

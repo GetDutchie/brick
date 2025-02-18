@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 4.0.0
+
+- **BREAKING CHANGE** Require `brick_core: >= 2.0.0` and remove support for `Query(providerArgs:)`; see [migration steps](https://github.com/GetDutchie/brick/issues/510)
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 3.4.0
 
 - Upgrade `brick_core` to `1.3.0`

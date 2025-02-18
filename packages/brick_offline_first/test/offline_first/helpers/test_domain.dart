@@ -59,7 +59,7 @@ class TestProvider extends Provider<TestModel> {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class TestAdapter<TModel extends TestModel> implements Adapter<TModel> {
+abstract mixin class TestAdapter<TModel extends TestModel> implements Adapter<TModel> {
   Future<TModel> fromTest(
     Map<String, dynamic> input, {
     required TestProvider provider,
@@ -79,7 +79,7 @@ class TestModelDictionary extends ModelDictionary<TestModel, TestAdapter<TestMod
 }
 
 /// Models accessible to the [TestProvider]
-abstract class TestModel implements Model {}
+abstract mixin class TestModel implements Model {}
 
 abstract class OfflineFirstWithTestModel extends OfflineFirstModel with TestModel {}
 

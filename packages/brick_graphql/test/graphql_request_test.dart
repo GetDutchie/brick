@@ -57,18 +57,6 @@ void main() {
           ),
         ).request;
         expect(request!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
-
-        final request0 = GraphqlRequest<DemoModel>(
-          action: QueryAction.upsert,
-          modelDictionary: provider.modelDictionary,
-          query: const Query(
-            // ignore: deprecated_member_use
-            providerArgs: {
-              'context': {'SampleContextEntry': SampleContextEntry('myValue')},
-            },
-          ),
-        ).request;
-        expect(request0!.context.entry<SampleContextEntry>()?.useEntry, 'myValue');
       });
     });
 
@@ -102,14 +90,6 @@ void main() {
           ),
         );
         expect(request.requestVariables, variables);
-
-        final request0 = GraphqlRequest<DemoModel>(
-          action: QueryAction.upsert,
-          modelDictionary: provider.modelDictionary,
-          // ignore: deprecated_member_use
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: variables)}),
-        );
-        expect(request0.requestVariables, variables);
       });
 
       test('use providerArgs before passed variables', () {
@@ -127,15 +107,6 @@ void main() {
           variables: variables,
         );
         expect(request.requestVariables, providerVariables);
-
-        final request0 = GraphqlRequest<DemoModel>(
-          action: QueryAction.upsert,
-          modelDictionary: provider.modelDictionary,
-          // ignore: deprecated_member_use
-          query: Query(providerArgs: {'operation': GraphqlOperation(variables: providerVariables)}),
-          variables: variables,
-        );
-        expect(request0.requestVariables, providerVariables);
       });
 
       test('without variablesNamespace', () {

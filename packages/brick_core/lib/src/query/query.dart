@@ -8,9 +8,8 @@ import 'package:brick_core/src/query/limit_by.dart';
 import 'package:brick_core/src/query/order_by.dart';
 import 'package:brick_core/src/query/provider_query.dart';
 import 'package:brick_core/src/query/where.dart';
-import 'package:collection/collection.dart' show ListEquality, MapEquality;
+import 'package:collection/collection.dart' show ListEquality;
 
-const _mapEquality = MapEquality();
 const _listEquality = ListEquality();
 
 /// An interface to request data from a [Provider] or [ModelRepository].
@@ -41,11 +40,6 @@ class Query {
 
   /// Directions for sorting results before they're returned to the caller.
   final List<OrderBy> orderBy;
-
-  /// Properties that interact with the provider's source. For example, `'limit'`.
-  /// The value **must** be serializable by `jsonEncode`.
-  @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead')
-  final Map<String, dynamic> providerArgs;
 
   /// Available for [Provider]s to easily access their relevant
   /// [ProviderQuery]s.
@@ -86,8 +80,6 @@ class Query {
     this.limit,
     this.limitBy = const [],
     this.offset,
-    @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead.')
-    this.providerArgs = const {},
     this.orderBy = const [],
     this.where,
   })  : assert(limit == null || limit > -1, 'limit must be greater than 0'),
@@ -100,7 +92,6 @@ class Query {
         limitBy: json['limitBy']?.map(LimitBy.fromJson).toList() ?? [],
         offset: json['offset'] as int?,
         orderBy: json['orderBy']?.map(OrderBy.fromJson).toList() ?? [],
-        providerArgs: Map<String, dynamic>.from(json['providerArgs'] as Map? ?? {}),
         where: json['where']?.map(WhereCondition.fromJson),
       );
 
@@ -114,9 +105,14 @@ class Query {
     Compare? compare,
     bool limit1 = false,
   }) {
-    compare ??= Where.defaults.compare;
     return Query(
-      where: [Where(evaluatedField, value: value, compare: compare)],
+      where: [
+        Where(
+          evaluatedField,
+          value: value,
+          compare: compare ?? Where.defaults.compare,
+        ),
+      ],
       limit: limit1 ? 1 : null,
     );
   }
@@ -129,8 +125,6 @@ class Query {
     List<LimitBy>? limitBy,
     int? offset,
     List<OrderBy>? orderBy,
-    @Deprecated('Use limit, offset, limitBy, orderBy, or forProviders instead.')
-    Map<String, dynamic>? providerArgs,
     List<WhereCondition>? where,
   }) =>
       Query(
@@ -140,7 +134,6 @@ class Query {
         limitBy: limitBy ?? this.limitBy,
         offset: offset ?? this.offset,
         orderBy: orderBy ?? this.orderBy,
-        providerArgs: providerArgs ?? this.providerArgs,
         where: where ?? this.where,
       );
 
@@ -151,7 +144,6 @@ class Query {
         if (limit != null) 'limit': limit,
         if (limitBy.isNotEmpty) 'limitBy': limitBy.map((l) => l.toJson()).toList(),
         if (offset != null) 'offset': offset,
-        if (providerArgs.isNotEmpty) 'providerArgs': providerArgs,
         if (orderBy.isNotEmpty) 'orderBy': orderBy.map((s) => s.toJson()).toList(),
         if (where != null) 'where': where!.map((w) => w.toJson()).toList(),
       };
@@ -169,7 +161,6 @@ class Query {
           _listEquality.equals(forProviders, other.forProviders) &&
           _listEquality.equals(limitBy, other.limitBy) &&
           _listEquality.equals(orderBy, other.orderBy) &&
-          _mapEquality.equals(providerArgs, other.providerArgs) &&
           _listEquality.equals(where, other.where);
 
   @override
@@ -180,7 +171,6 @@ class Query {
       limitBy.hashCode ^
       offset.hashCode ^
       orderBy.hashCode ^
-      providerArgs.hashCode ^
       where.hashCode;
 }
 

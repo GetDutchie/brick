@@ -253,7 +253,6 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     query = withPolicy ?? const Query();
     final queryWithLimit = query.copyWith(
       limit: batchSize,
-      providerArgs: {...query.providerArgs},
     );
     final total = <TModel>[];
 
@@ -263,7 +262,6 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       // add offset to the existing query
       final recursiveQuery = queryWithLimit.copyWith(
         offset: offset,
-        providerArgs: {...queryWithLimit.providerArgs},
       );
 
       final results = await get<TModel>(

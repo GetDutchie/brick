@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 4.0.0
+
+- **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported. See #510 for migration steps.
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
+
 ## 3.3.0
 
 - Allow a generic type argument for `OfflineFirstWithRestRepository`
