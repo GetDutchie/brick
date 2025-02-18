@@ -65,7 +65,7 @@ class RestOfflineQueueClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    if (_ignorePattern != null && request.url.path.startsWith(_ignorePattern!)) {
+    if (_ignorePattern != null && request.url.path.startsWith(_ignorePattern)) {
       return await _inner.send(request);
     }
 

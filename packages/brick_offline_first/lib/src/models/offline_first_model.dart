@@ -4,4 +4,4 @@ import 'package:brick_sqlite/brick_sqlite.dart' show SqliteModel;
 ///
 /// Why isn't this in the `offline_first.dart` file in the SQLite package?
 /// This is model required by the generator which cannot include Flutter as a dependency.
-abstract mixin class OfflineFirstModel extends SqliteModel {}
+abstract class OfflineFirstModel extends SqliteModel {}
