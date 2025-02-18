@@ -171,6 +171,22 @@ void main() {
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
         sqliteStatementExpectation(statement, ['%Thomas%']);
       });
+
+      test('.isNot', () async {
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name != ?';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(
+            where: [
+              const Where('name').isNot('01'),
+            ],
+          ),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, ['01']);
+      });
     });
 
     group('SELECT COUNT', () {
