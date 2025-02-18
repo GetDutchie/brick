@@ -8,7 +8,7 @@ class _DefaultRestTransformer extends RestRequestTransformer {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class RestAdapter<TModel extends RestModel> implements Adapter<TModel> {
+abstract mixin class RestAdapter<TModel extends RestModel> implements Adapter<TModel> {
   /// Deserialize data from a REST response
   Future<TModel> fromRest(
     Map<String, dynamic> input, {

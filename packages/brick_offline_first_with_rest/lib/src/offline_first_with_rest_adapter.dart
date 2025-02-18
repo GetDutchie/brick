@@ -5,7 +5,6 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 
 /// This adapter holds logic necessary to work with [SqliteProvider] and [RestProvider].
 abstract class OfflineFirstWithRestAdapter<_Model extends OfflineFirstWithRestModel>
-    // ignore: prefer_mixin
     extends OfflineFirstAdapter<_Model> with RestAdapter<_Model> {
   /// This adapter holds logic necessary to work with [SqliteProvider] and [RestProvider].
   OfflineFirstWithRestAdapter();

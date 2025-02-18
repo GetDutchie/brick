@@ -6,7 +6,8 @@ import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-final _formatter = dart_style.DartFormatter();
+final _formatter =
+    dart_style.DartFormatter(languageVersion: dart_style.DartFormatter.latestLanguageVersion);
 
 /// Convert a JSON API payload into an [OfflineFirstModel], output via [generate] or [saveToFile].
 ///
