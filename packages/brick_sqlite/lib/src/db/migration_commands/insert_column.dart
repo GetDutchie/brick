@@ -95,7 +95,7 @@ class InsertColumn extends MigrationCommand {
   MigrationCommand get down => DropColumn(name, onTable: onTable);
 
   /// Defaults
-  static const InsertColumn defaults = InsertColumn(
+  static const defaults = InsertColumn(
     'PLACEHOLDER',
     Column.varchar,
     onTable: 'PLACEHOLDER',

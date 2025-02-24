@@ -26,7 +26,7 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
   DemoModelAssocAdapter();
 
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -76,7 +76,7 @@ class DemoModelAssocAdapter extends SqliteAdapter<DemoModelAssoc> {
       instance.primaryKey;
 
   @override
-  final String tableName = 'DemoModelAssoc';
+  final tableName = 'DemoModelAssoc';
 
   @override
   Future<DemoModelAssoc> fromSqlite(

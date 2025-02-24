@@ -20,6 +20,7 @@ class SupabaseMockServer {
   late SupabaseClient client;
 
   /// If a stream listener has been registered
+  // ignore: omit_obvious_property_types
   bool hasListener = false;
 
   /// The active stream listener

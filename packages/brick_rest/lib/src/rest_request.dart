@@ -21,7 +21,7 @@ class RestRequest {
   ///
   /// **Example**
   /// Given the payload:
-  /// ```
+  /// ```dart
   /// { "user" : {"id" : 1, "name" : "Thomas" }}
   /// ```
   /// The [topLevelKey] would be `"user"`.

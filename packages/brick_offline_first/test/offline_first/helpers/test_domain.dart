@@ -11,7 +11,7 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import '__mocks__.dart';
 
 class TestProvider extends Provider<TestModel> {
-  List<String> methodsCalled = <String>[];
+  final methodsCalled = <String>[];
 
   @override
   final TestModelDictionary modelDictionary;

@@ -84,6 +84,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
 
   /// Avoid linter error on subsequent passes for the repository.
   /// For example, if repository has already been casted to `!` it should not be recast
+  // ignore: omit_obvious_property_types
   bool repositoryHasBeenForceCast = false;
 
   /// For example, `OfflineFirst`

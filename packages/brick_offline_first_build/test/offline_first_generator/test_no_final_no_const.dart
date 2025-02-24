@@ -1,3 +1,5 @@
+// ignore_for_file: omit_obvious_property_types
+
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
 const output = r'''

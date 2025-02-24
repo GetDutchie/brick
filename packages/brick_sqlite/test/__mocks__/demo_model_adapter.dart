@@ -73,7 +73,7 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
   DemoModelAdapter();
 
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -124,7 +124,7 @@ class DemoModelAdapter extends SqliteAdapter<DemoModel> {
       instance.primaryKey;
 
   @override
-  final String tableName = 'DemoModel';
+  final tableName = 'DemoModel';
   @override
   Future<void> afterSave(
     DemoModel instance, {
