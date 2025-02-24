@@ -8,12 +8,22 @@ environment:
 dependency_overrides:
   brick_offline_first_with_rest:
     path: ../
-  brick_rest_generators:
-    path: ../../brick_rest_generators
+  brick_json_generators:
+    path: ../../brick_json_generators
+  brick_offline_first:
+    path: ../../brick_offline_first
   brick_offline_first_build:
     path: ../../brick_offline_first_build
   brick_offline_first_with_rest_build:
     path: ../../brick_offline_first_with_rest_build
+  brick_rest:
+    path: ../../brick_rest
+  brick_rest_generators:
+    path: ../../brick_rest_generators
+  brick_sqlite:
+    path: ../../brick_sqlite
+  brick_sqlite_generators:
+    path: ../../brick_sqlite_generators
 
 dev_dependencies:
   build_runner:

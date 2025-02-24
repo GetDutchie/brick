@@ -4,35 +4,43 @@ const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<ToFromJson> _$ToFromJsonFromGraphql(Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    GraphqlFirstRepository? repository}) async {
+Future<ToFromJson> _$ToFromJsonFromGraphql(
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  GraphqlFirstRepository? repository,
+}) async {
   return ToFromJson(
-      assoc: ToFromJsonAssoc.fromJson(data['assoc'] as String),
-      assocNullable: data['assocNullable'] == null
-          ? null
-          : ToFromJsonAssoc.fromJson(data['assocNullable'] as String),
-      assocIterable: data['assocIterable']
-          .map((d) => ToFromJsonAssoc.fromJson(d as String))
-          .toList()
-          .cast<ToFromJsonAssoc>(),
-      assocIterableNullable: data['assocIterableNullable'] == null
-          ? null
-          : data['assocIterableNullable']
-              ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
-              .toList()
-              .cast<ToFromJsonAssoc>());
+    assoc: ToFromJsonAssoc.fromJson(data['assoc'] as String),
+    assocNullable:
+        data['assocNullable'] == null
+            ? null
+            : ToFromJsonAssoc.fromJson(data['assocNullable'] as String),
+    assocIterable:
+        data['assocIterable']
+            .map((d) => ToFromJsonAssoc.fromJson(d as String))
+            .toList()
+            .cast<ToFromJsonAssoc>(),
+    assocIterableNullable:
+        data['assocIterableNullable'] == null
+            ? null
+            : data['assocIterableNullable']
+                ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
+                .toList()
+                .cast<ToFromJsonAssoc>(),
+  );
 }
 
-Future<Map<String, dynamic>> _$ToFromJsonToGraphql(ToFromJson instance,
-    {required GraphqlProvider provider,
-    GraphqlFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$ToFromJsonToGraphql(
+  ToFromJson instance, {
+  required GraphqlProvider provider,
+  GraphqlFirstRepository? repository,
+}) async {
   return {
     'assoc': instance.assoc.toJson(),
     'assocNullable': instance.assocNullable?.toJson(),
     'assocIterable': instance.assocIterable.map((s) => s.toJson()).toList(),
     'assocIterableNullable':
-        instance.assocIterableNullable?.map((s) => s.toJson()).toList()
+        instance.assocIterableNullable?.map((s) => s.toJson()).toList(),
   };
 }
 
@@ -48,7 +56,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       iterable: false,
       subfields: <String, Map<String, dynamic>>{
         'integer': {},
-        'sub': {'prop': {}, 'subProp': {}}
+        'sub': {'prop': {}, 'subProp': {}},
       },
       type: Map,
     ),
@@ -58,7 +66,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       iterable: false,
       subfields: <String, Map<String, dynamic>>{
         'integer': {},
-        'sub': {'prop': {}, 'subProp': {}}
+        'sub': {'prop': {}, 'subProp': {}},
       },
       type: Map,
     ),
@@ -68,7 +76,7 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       iterable: true,
       subfields: <String, Map<String, dynamic>>{
         'integer': {},
-        'sub': {'prop': {}, 'subProp': {}}
+        'sub': {'prop': {}, 'subProp': {}},
       },
       type: Map,
     ),
@@ -78,24 +86,32 @@ class ToFromJsonAdapter extends GraphqlFirstAdapter<ToFromJson> {
       iterable: true,
       subfields: <String, Map<String, dynamic>>{
         'integer': {},
-        'sub': {'prop': {}, 'subProp': {}}
+        'sub': {'prop': {}, 'subProp': {}},
       },
       type: Map,
-    )
+    ),
   };
 
   @override
-  Future<ToFromJson> fromGraphql(Map<String, dynamic> input,
-          {required provider,
-          covariant GraphqlFirstRepository? repository}) async =>
-      await _$ToFromJsonFromGraphql(input,
-          provider: provider, repository: repository);
+  Future<ToFromJson> fromGraphql(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant GraphqlFirstRepository? repository,
+  }) async => await _$ToFromJsonFromGraphql(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toGraphql(ToFromJson input,
-          {required provider,
-          covariant GraphqlFirstRepository? repository}) async =>
-      await _$ToFromJsonToGraphql(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toGraphql(
+    ToFromJson input, {
+    required provider,
+    covariant GraphqlFirstRepository? repository,
+  }) async => await _$ToFromJsonToGraphql(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 ''';
 

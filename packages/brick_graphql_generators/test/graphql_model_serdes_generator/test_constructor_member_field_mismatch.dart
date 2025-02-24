@@ -2,32 +2,49 @@ import 'package:brick_graphql/brick_graphql.dart';
 
 const output = r'''
 Future<GraphqlConstructorMemberFieldMismatch>
-    _$GraphqlConstructorMemberFieldMismatchFromGraphql(
-        Map<String, dynamic> data,
-        {required GraphqlProvider provider,
-        GraphqlFirstRepository? repository}) async {
+_$GraphqlConstructorMemberFieldMismatchFromGraphql(
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  GraphqlFirstRepository? repository,
+}) async {
   return GraphqlConstructorMemberFieldMismatch(
-      nullableConstructor: data['nullableConstructor'] as String?,
-      nonNullableConstructor: data['nonNullableConstructor'] as String,
-      someField: await Future.wait<Assoc>(data['someField']
-              ?.map((d) => AssocAdapter()
-                  .fromGraphql(d, provider: provider, repository: repository))
+    nullableConstructor: data['nullableConstructor'] as String?,
+    nonNullableConstructor: data['nonNullableConstructor'] as String,
+    someField: await Future.wait<Assoc>(
+      data['someField']
+              ?.map(
+                (d) => AssocAdapter().fromGraphql(
+                  d,
+                  provider: provider,
+                  repository: repository,
+                ),
+              )
               .toList()
               .cast<Future<Assoc>>() ??
-          []));
+          [],
+    ),
+  );
 }
 
 Future<Map<String, dynamic>> _$GraphqlConstructorMemberFieldMismatchToGraphql(
-    GraphqlConstructorMemberFieldMismatch instance,
-    {required GraphqlProvider provider,
-    GraphqlFirstRepository? repository}) async {
+  GraphqlConstructorMemberFieldMismatch instance, {
+  required GraphqlProvider provider,
+  GraphqlFirstRepository? repository,
+}) async {
   return {
     'nullableConstructor': instance.nullableConstructor,
     'nonNullableConstructor': instance.nonNullableConstructor,
-    'someField': await Future.wait<Map<String, dynamic>>(instance.someField
-        .map((s) => AssocAdapter()
-            .toGraphql(s, provider: provider, repository: repository))
-        .toList())
+    'someField': await Future.wait<Map<String, dynamic>>(
+      instance.someField
+          .map(
+            (s) => AssocAdapter().toGraphql(
+              s,
+              provider: provider,
+              repository: repository,
+            ),
+          )
+          .toList(),
+    ),
   };
 }
 ''';
