@@ -1,5 +1,3 @@
-## Unreleased
-
 ## 4.0.0
 
 - **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported; see [3.1.0](#3.1.0) for migration steps

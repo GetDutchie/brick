@@ -1,5 +1,3 @@
-## Unreleased
-
 ## 4.0.0
 
 - **BREAKING CHANGE** Require `brick_core: >= 2.0.0` and remove support for `Query(providerArgs:)`; see [migration steps](https://github.com/GetDutchie/brick/issues/510)
