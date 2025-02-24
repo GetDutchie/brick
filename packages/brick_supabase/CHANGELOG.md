@@ -1,4 +1,4 @@
-## 4.0.0
+## 2.0.0
 
 - **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported; see [1.2.0](#1.2.0) for migration steps
 - **BREAKING CHANGE** `Supabase(nullable:)` is no longer supported; see [1.4.0](#1.4.0) for migration steps
