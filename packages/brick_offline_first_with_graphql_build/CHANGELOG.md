@@ -1,5 +1,6 @@
 ## 4.0.0
 
+- **BREAKING CHANGE** `brick_offline_first_with_graphql_build/builder.dart` has been renamed to `brick_offline_first_with_graphql_build/brick_offline_first_with_graphql_build.dart`. This will only affect implementations that have overridden `build.yaml`.
 - Dart minimum SDK is updated to `3.4.0`
 - All dependency restrictions are updated to include the minimum released version.
 - Update `analyzer` constraint to `>=6.11.0 <7.0.0`
