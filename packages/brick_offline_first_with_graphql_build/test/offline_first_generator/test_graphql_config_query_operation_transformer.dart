@@ -6,31 +6,37 @@ const output = r'''
 part of '../brick.g.dart';
 
 Future<QueryOperationTransformerExample>
-    _$QueryOperationTransformerExampleFromGraphql(Map<String, dynamic> data,
-        {required GraphqlProvider provider,
-        OfflineFirstRepository? repository}) async {
+_$QueryOperationTransformerExampleFromGraphql(
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return QueryOperationTransformerExample(name: data['name'] as String);
 }
 
 Future<Map<String, dynamic>> _$QueryOperationTransformerExampleToGraphql(
-    QueryOperationTransformerExample instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  QueryOperationTransformerExample instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'name': instance.name};
 }
 
 Future<QueryOperationTransformerExample>
-    _$QueryOperationTransformerExampleFromSqlite(Map<String, dynamic> data,
-        {required SqliteProvider provider,
-        OfflineFirstRepository? repository}) async {
+_$QueryOperationTransformerExampleFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return QueryOperationTransformerExample(name: data['name'] as String)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$QueryOperationTransformerExampleToSqlite(
-    QueryOperationTransformerExample instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  QueryOperationTransformerExample instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'name': instance.name};
 }
 
@@ -50,7 +56,7 @@ class QueryOperationTransformerExampleAdapter
       iterable: false,
       subfields: <String, Map<String, dynamic>>{},
       type: String,
-    )
+    ),
   };
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
@@ -65,42 +71,56 @@ class QueryOperationTransformerExampleAdapter
       columnName: 'name',
       iterable: false,
       type: String,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          QueryOperationTransformerExample instance,
-          DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    QueryOperationTransformerExample instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'QueryOperationTransformerExample';
 
   @override
   Future<QueryOperationTransformerExample> fromGraphql(
-          Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$QueryOperationTransformerExampleFromGraphql(input,
-          provider: provider, repository: repository);
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$QueryOperationTransformerExampleFromGraphql(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toGraphql(QueryOperationTransformerExample input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$QueryOperationTransformerExampleToGraphql(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toGraphql(
+    QueryOperationTransformerExample input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$QueryOperationTransformerExampleToGraphql(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
   Future<QueryOperationTransformerExample> fromSqlite(
-          Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$QueryOperationTransformerExampleFromSqlite(input,
-          provider: provider, repository: repository);
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$QueryOperationTransformerExampleFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(QueryOperationTransformerExample input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$QueryOperationTransformerExampleToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    QueryOperationTransformerExample input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$QueryOperationTransformerExampleToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 ''';
 

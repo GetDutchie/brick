@@ -7,31 +7,35 @@ const output = r'''
 part of '../brick.g.dart';
 
 Future<UndefinedCamelizedName> _$UndefinedCamelizedNameFromSupabase(
-    Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SupabaseProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return UndefinedCamelizedName(someLongField: data['some_long_field'] as int);
 }
 
 Future<Map<String, dynamic>> _$UndefinedCamelizedNameToSupabase(
-    UndefinedCamelizedName instance,
-    {required SupabaseProvider provider,
-    OfflineFirstRepository? repository}) async {
+  UndefinedCamelizedName instance, {
+  required SupabaseProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
 Future<UndefinedCamelizedName> _$UndefinedCamelizedNameFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return UndefinedCamelizedName(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$UndefinedCamelizedNameToSqlite(
-    UndefinedCamelizedName instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  UndefinedCamelizedName instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
@@ -49,7 +53,7 @@ class UndefinedCamelizedNameAdapter
     'someLongField': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'some_long_field',
-    )
+    ),
   };
   @override
   final ignoreDuplicates = false;
@@ -68,39 +72,56 @@ class UndefinedCamelizedNameAdapter
       columnName: 'some_long_field',
       iterable: false,
       type: int,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          UndefinedCamelizedName instance, DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    UndefinedCamelizedName instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'UndefinedCamelizedName';
 
   @override
-  Future<UndefinedCamelizedName> fromSupabase(Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$UndefinedCamelizedNameFromSupabase(input,
-          provider: provider, repository: repository);
+  Future<UndefinedCamelizedName> fromSupabase(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$UndefinedCamelizedNameFromSupabase(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSupabase(UndefinedCamelizedName input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$UndefinedCamelizedNameToSupabase(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSupabase(
+    UndefinedCamelizedName input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$UndefinedCamelizedNameToSupabase(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<UndefinedCamelizedName> fromSqlite(Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$UndefinedCamelizedNameFromSqlite(input,
-          provider: provider, repository: repository);
+  Future<UndefinedCamelizedName> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$UndefinedCamelizedNameFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(UndefinedCamelizedName input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$UndefinedCamelizedNameToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    UndefinedCamelizedName input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$UndefinedCamelizedNameToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 ''';
 

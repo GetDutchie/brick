@@ -5,121 +5,139 @@ import 'package:brick_offline_first_with_graphql/brick_offline_first_with_graphq
 
 const output = r'''
 Future<GraphqlConfigNoRename> _$GraphqlConfigNoRenameFromGraphql(
-    Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigNoRename(someLongField: data['someLongField'] as int);
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigNoRenameToGraphql(
-    GraphqlConfigNoRename instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigNoRename instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'someLongField': instance.someLongField};
 }
 
 Future<GraphqlConfigNoRename> _$GraphqlConfigNoRenameFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigNoRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigNoRenameToSqlite(
-    GraphqlConfigNoRename instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigNoRename instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
 Future<GraphqlConfigSnakeRename> _$GraphqlConfigSnakeRenameFromGraphql(
-    Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigSnakeRename(
-      someLongField: data['some_long_field'] as int);
+    someLongField: data['some_long_field'] as int,
+  );
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigSnakeRenameToGraphql(
-    GraphqlConfigSnakeRename instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigSnakeRename instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
 Future<GraphqlConfigSnakeRename> _$GraphqlConfigSnakeRenameFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigSnakeRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigSnakeRenameToSqlite(
-    GraphqlConfigSnakeRename instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigSnakeRename instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
 Future<GraphqlConfigKebabRename> _$GraphqlConfigKebabRenameFromGraphql(
-    Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigKebabRename(
-      someLongField: data['some-long-field'] as int);
+    someLongField: data['some-long-field'] as int,
+  );
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigKebabRenameToGraphql(
-    GraphqlConfigKebabRename instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigKebabRename instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some-long-field': instance.someLongField};
 }
 
 Future<GraphqlConfigKebabRename> _$GraphqlConfigKebabRenameFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigKebabRename(someLongField: data['some_long_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigKebabRenameToSqlite(
-    GraphqlConfigKebabRename instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigKebabRename instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 
 Future<GraphqlConfigPascalRename> _$GraphqlConfigPascalRenameFromGraphql(
-    Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigPascalRename(someLongField: data['SomeLongField'] as int);
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigPascalRenameToGraphql(
-    GraphqlConfigPascalRename instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigPascalRename instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'SomeLongField': instance.someLongField};
 }
 
 Future<GraphqlConfigPascalRename> _$GraphqlConfigPascalRenameFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return GraphqlConfigPascalRename(
-      someLongField: data['some_long_field'] as int)
-    ..primaryKey = data['_brick_id'] as int;
+    someLongField: data['some_long_field'] as int,
+  )..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$GraphqlConfigPascalRenameToSqlite(
-    GraphqlConfigPascalRename instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  GraphqlConfigPascalRename instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'some_long_field': instance.someLongField};
 }
 ''';
