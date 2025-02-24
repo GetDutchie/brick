@@ -27,7 +27,7 @@ void main() {
     test('#applyPolicyToQuery', () async {
       const policy = OfflineFirstGetPolicy.localOnly;
       final query = TestRepository().applyPolicyToQuery(const Query(), get: policy);
-      expect(query?.offset, policy.index);
+      expect(query?.action?.index, policy.index);
     });
 
     group('#delete', () {

@@ -84,9 +84,7 @@ class TestRepository extends OfflineFirstWithTestRepository {
     OfflineFirstGetPolicy? get,
     OfflineFirstUpsertPolicy? upsert,
   }) {
-    return query?.copyWith(
-      offset: get?.index,
-    );
+    return query?.copyWith(action: QueryAction.values[get?.index ?? 0]);
   }
 }
 
