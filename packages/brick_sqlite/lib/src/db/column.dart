@@ -55,21 +55,19 @@ enum Column {
 
   /// Convert native Dart to `Column`
   factory Column.fromDartPrimitive(Type type) {
-    switch (type) {
-      case bool:
-        return Column.boolean;
-      case DateTime:
-        return Column.datetime;
-      case double:
-        return Column.Double;
-      case int:
-        return Column.integer;
-      case core.num:
-        return Column.num;
-      case String:
-        return Column.varchar;
-      default:
-        return throw ArgumentError('$type not associated with a Column');
+    if (type == bool) {
+      return Column.boolean;
+    } else if (type == DateTime) {
+      return Column.datetime;
+    } else if (type == double) {
+      return Column.Double;
+    } else if (type == int) {
+      return Column.integer;
+    } else if (type == core.num) {
+      return Column.num;
+    } else if (type == String) {
+      return Column.varchar;
     }
+    throw ArgumentError('$type not associated with a Column');
   }
 }

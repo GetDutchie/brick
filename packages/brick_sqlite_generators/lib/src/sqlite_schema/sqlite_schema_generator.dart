@@ -10,7 +10,8 @@ import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart' show LibraryReader;
 import 'package:source_gen/source_gen.dart';
 
-final _formatter = dart_style.DartFormatter();
+final _formatter =
+    dart_style.DartFormatter(languageVersion: dart_style.DartFormatter.latestLanguageVersion);
 
 ///
 const migrationGenerator = MigrationGenerator();

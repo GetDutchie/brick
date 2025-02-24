@@ -68,7 +68,7 @@ void main() {
       final fieldses = map.values.first;
 
       final output = generator.createMigration(reader, fieldses, version: 1);
-      expect(output, contains(simple.migrationOutput));
+      expect(output, simple.migrationOutput);
     });
   });
 }

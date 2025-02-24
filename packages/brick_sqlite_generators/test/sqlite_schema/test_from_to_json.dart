@@ -9,15 +9,28 @@ import 'package:brick_sqlite/db.dart';
 final migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
-  SchemaTable('AllFieldTypes', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('assoc', Column.varchar),
-    SchemaColumn('iterable_assoc', Column.varchar),
-    SchemaColumn('nullable_iterable_assoc', Column.varchar)
-  }, indices: <SchemaIndex>{})
-});
+final schema = Schema(
+  0,
+  generatorVersion: 1,
+  tables: <SchemaTable>{
+    SchemaTable(
+      'AllFieldTypes',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('assoc', Column.varchar),
+        SchemaColumn('iterable_assoc', Column.varchar),
+        SchemaColumn('nullable_iterable_assoc', Column.varchar),
+      },
+      indices: <SchemaIndex>{},
+    ),
+  },
+);
 ''';
 
 /// [SqliteSerializable] **does not** produce code.

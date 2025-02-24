@@ -4,41 +4,52 @@ const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<ToFromJson> _$ToFromJsonFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<ToFromJson> _$ToFromJsonFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return ToFromJson(
-      assoc: ToFromJsonAssoc.fromJson(
-          jsonDecode(data['assoc'] as String) as String),
-      assocNullable: data['assoc_nullable'] == null
-          ? null
-          : ToFromJsonAssoc.fromJson(
-              jsonDecode(data['assoc_nullable'] as String) as String),
-      assocIterable: jsonDecode(data['assoc_iterable'])
-          .map((d) => ToFromJsonAssoc.fromJson(d as String))
-          .toList()
-          .cast<ToFromJsonAssoc>(),
-      assocIterableNullable: data['assoc_iterable_nullable'] == null
-          ? null
-          : jsonDecode(data['assoc_iterable_nullable'] ?? '[]')
-              .map((d) => ToFromJsonAssoc.fromJson(d as String))
-              .toList()
-              .cast<ToFromJsonAssoc>())
-    ..primaryKey = data['_brick_id'] as int;
+    assoc: ToFromJsonAssoc.fromJson(
+      jsonDecode(data['assoc'] as String) as String,
+    ),
+    assocNullable:
+        data['assoc_nullable'] == null
+            ? null
+            : ToFromJsonAssoc.fromJson(
+              jsonDecode(data['assoc_nullable'] as String) as String,
+            ),
+    assocIterable:
+        jsonDecode(data['assoc_iterable'])
+            .map((d) => ToFromJsonAssoc.fromJson(d as String))
+            .toList()
+            .cast<ToFromJsonAssoc>(),
+    assocIterableNullable:
+        data['assoc_iterable_nullable'] == null
+            ? null
+            : jsonDecode(data['assoc_iterable_nullable'] ?? '[]')
+                .map((d) => ToFromJsonAssoc.fromJson(d as String))
+                .toList()
+                .cast<ToFromJsonAssoc>(),
+  )..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$ToFromJsonToSqlite(ToFromJson instance,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$ToFromJsonToSqlite(
+  ToFromJson instance, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return {
     'assoc': jsonEncode(instance.assoc.toJson()),
-    'assoc_nullable': instance.assocNullable != null
-        ? jsonEncode(instance.assocNullable!.toJson())
-        : null,
+    'assoc_nullable':
+        instance.assocNullable != null
+            ? jsonEncode(instance.assocNullable!.toJson())
+            : null,
     'assoc_iterable': jsonEncode(instance.assocIterable),
-    'assoc_iterable_nullable': instance.assocIterableNullable != null
-        ? jsonEncode(instance.assocIterableNullable)
-        : null
+    'assoc_iterable_nullable':
+        instance.assocIterableNullable != null
+            ? jsonEncode(instance.assocIterableNullable)
+            : null,
   };
 }
 
@@ -83,25 +94,36 @@ class ToFromJsonAdapter extends SqliteAdapter<ToFromJson> {
       columnName: 'ignored_iterable',
       iterable: true,
       type: String,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          ToFromJson instance, DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    ToFromJson instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'ToFromJson';
 
   @override
-  Future<ToFromJson> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$ToFromJsonFromSqlite(input,
-          provider: provider, repository: repository);
+  Future<ToFromJson> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$ToFromJsonFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(ToFromJson input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$ToFromJsonToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    ToFromJson input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$ToFromJsonToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 ''';
 
