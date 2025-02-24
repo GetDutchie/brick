@@ -66,12 +66,10 @@ void main() {
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
 class PeopleRequestTransformer extends RestRequestTransformer {
-  final get = const RestRequest(
-    url: '/people',
-  );
+  final get = const RestRequest(url: '/people');
 
   const PeopleRequestTransformer(Query? query, RestModel? instance)
-      : super(query, instance);
+    : super(query, instance);
 }
 
 @ConnectOfflineFirstWithRest(
@@ -83,9 +81,7 @@ class PeopleRequestTransformer extends RestRequestTransformer {
 class People extends OfflineFirstModel {
   final String name;
 
-  People({
-    this.name,
-  });
+  People({this.name});
 }
 ''';
       test('from map', () async {
@@ -110,7 +106,7 @@ class People extends OfflineFirstModel {
         )..client = _generateResponse('{"people": [{"name": "Thomas"}]}');
 
         final output = await converter.generate();
-        expect(output, contains("topLevelKey: 'people',"));
+        expect(output, contains("topLevelKey: 'people'"));
       });
     });
 

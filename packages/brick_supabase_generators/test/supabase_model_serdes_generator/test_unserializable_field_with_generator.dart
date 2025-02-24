@@ -5,18 +5,20 @@ import 'package:brick_supabase/brick_supabase.dart';
 
 const output = r'''
 Future<SupabaseUnserializableFieldWithGenerator>
-    _$SupabaseUnserializableFieldWithGeneratorFromSupabase(
-        Map<String, dynamic> data,
-        {required SupabaseProvider provider,
-        SupabaseFirstRepository? repository}) async {
+_$SupabaseUnserializableFieldWithGeneratorFromSupabase(
+  Map<String, dynamic> data, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return SupabaseUnserializableFieldWithGenerator(withFrom: data['with_from']);
 }
 
 Future<Map<String, dynamic>>
-    _$SupabaseUnserializableFieldWithGeneratorToSupabase(
-        SupabaseUnserializableFieldWithGenerator instance,
-        {required SupabaseProvider provider,
-        SupabaseFirstRepository? repository}) async {
+_$SupabaseUnserializableFieldWithGeneratorToSupabase(
+  SupabaseUnserializableFieldWithGenerator instance, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return {'with_to': instance.withTo};
 }
 ''';
