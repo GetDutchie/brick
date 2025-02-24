@@ -3,30 +3,35 @@
 import 'package:brick_offline_first_with_rest/brick_offline_first_with_rest.dart';
 
 const output = r'''
-Future<OnlyStaticMembers> _$OnlyStaticMembersFromTest(Map<String, dynamic> data,
-    {required TestProvider provider,
-    OfflineFirstRepository? repository}) async {
+Future<OnlyStaticMembers> _$OnlyStaticMembersFromTest(
+  Map<String, dynamic> data, {
+  required TestProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return OnlyStaticMembers();
 }
 
 Future<Map<String, dynamic>> _$OnlyStaticMembersToTest(
-    OnlyStaticMembers instance,
-    {required TestProvider provider,
-    OfflineFirstRepository? repository}) async {
+  OnlyStaticMembers instance, {
+  required TestProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {};
 }
 
 Future<OnlyStaticMembers> _$OnlyStaticMembersFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return OnlyStaticMembers()..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$OnlyStaticMembersToSqlite(
-    OnlyStaticMembers instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  OnlyStaticMembers instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {};
 }
 ''';
