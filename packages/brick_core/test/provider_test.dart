@@ -13,7 +13,7 @@ void main() {
       expect(res.first.name, 'Thomas');
     });
 
-    test('#upsert', () async {
+    test('#upsert', () {
       final res = provider.upsert(DemoModel('Thomas'));
       expect(res, isTrue);
     });

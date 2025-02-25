@@ -5,16 +5,19 @@ import 'package:brick_rest/brick_rest.dart';
 
 const output = r'''
 Future<RestUnserializableFieldWithGenerator>
-    _$RestUnserializableFieldWithGeneratorFromRest(Map<String, dynamic> data,
-        {required RestProvider provider,
-        RestFirstRepository? repository}) async {
+_$RestUnserializableFieldWithGeneratorFromRest(
+  Map<String, dynamic> data, {
+  required RestProvider provider,
+  RestFirstRepository? repository,
+}) async {
   return RestUnserializableFieldWithGenerator(withFrom: data['with_from']);
 }
 
 Future<Map<String, dynamic>> _$RestUnserializableFieldWithGeneratorToRest(
-    RestUnserializableFieldWithGenerator instance,
-    {required RestProvider provider,
-    RestFirstRepository? repository}) async {
+  RestUnserializableFieldWithGenerator instance, {
+  required RestProvider provider,
+  RestFirstRepository? repository,
+}) async {
   return {'with_to': instance.withTo};
 }
 ''';

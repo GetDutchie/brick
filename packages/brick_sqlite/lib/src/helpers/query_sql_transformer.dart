@@ -24,10 +24,10 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   /// All other [SqliteAdapter]s and [SqliteModel]s known to the provider
   final SqliteModelDictionary modelDictionary;
 
-  final List<String> _statement = <String>[];
-  final List<String> _where = <String>[];
-  final Set<String> _innerJoins = <String>{};
-  final List<dynamic> _values = <dynamic>[];
+  final _statement = <String>[];
+  final _where = <String>[];
+  final _innerJoins = <String>{};
+  final _values = <dynamic>[];
 
   /// Must-haves for the [statement], mainly used to build clauses
   final Query? query;
@@ -377,7 +377,6 @@ class AllOtherClausesFragment {
   String toString() {
     final providerQuery = query?.providerQueries[SqliteProvider] as SqliteProviderQuery?;
     final argsToSqlStatments = {
-      ...?query?.providerArgs,
       if (providerQuery?.collate != null) 'collate': providerQuery?.collate,
       if (query?.limit != null) 'limit': query?.limit,
       if (query?.offset != null) 'offset': query?.offset,

@@ -31,9 +31,6 @@ class FieldAnnotation extends FieldSerializable {
   @override
   final String name;
 
-  @override
-  bool get nullable => false;
-
   FieldAnnotation(this.name);
 }
 

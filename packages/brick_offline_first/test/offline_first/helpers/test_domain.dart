@@ -11,7 +11,7 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import '__mocks__.dart';
 
 class TestProvider extends Provider<TestModel> {
-  List<String> methodsCalled = <String>[];
+  final methodsCalled = <String>[];
 
   @override
   final TestModelDictionary modelDictionary;
@@ -59,7 +59,7 @@ class TestProvider extends Provider<TestModel> {
 }
 
 /// Constructors that convert app models to and from REST
-abstract class TestAdapter<TModel extends TestModel> implements Adapter<TModel> {
+abstract mixin class TestAdapter<TModel extends TestModel> implements Adapter<TModel> {
   Future<TModel> fromTest(
     Map<String, dynamic> input, {
     required TestProvider provider,
@@ -79,7 +79,7 @@ class TestModelDictionary extends ModelDictionary<TestModel, TestAdapter<TestMod
 }
 
 /// Models accessible to the [TestProvider]
-abstract class TestModel implements Model {}
+abstract mixin class TestModel implements Model {}
 
 abstract class OfflineFirstWithTestModel extends OfflineFirstModel with TestModel {}
 

@@ -41,7 +41,7 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   final restRequest = MountyRequestTransformer.new;
 
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -55,7 +55,7 @@ class MountyAdapter extends OfflineFirstWithRestAdapter<Mounty> {
   Future<int?> primaryKeyByUniqueColumns(Mounty instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
   @override
-  final String tableName = 'Mounty';
+  final tableName = 'Mounty';
 
   @override
   Future<Mounty> fromRest(

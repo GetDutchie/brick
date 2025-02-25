@@ -156,17 +156,6 @@ void main() {
       test('orderBy', () {
         const result = 'select=id,name,custom_age&order=name.asc.nullslast';
 
-        const withProviderArgs = Query(providerArgs: {'orderBy': 'name asc'});
-        final providerQueryTransformer = _buildTransformer<Demo>(withProviderArgs);
-        final providerFilterBuilder =
-            providerQueryTransformer.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final providerTransformBuilder = providerQueryTransformer.applyQuery(providerFilterBuilder);
-
-        expect(
-          providerTransformBuilder.query,
-          result,
-        );
-
         const query = Query(orderBy: [OrderBy('name')]);
         final queryTransformer = _buildTransformer<Demo>(query);
         final filterBuilder =
@@ -181,17 +170,6 @@ void main() {
 
       test('orderBy with descending order', () {
         const result = 'select=id,name,custom_age&order=age.desc.nullslast';
-
-        const query0 = Query(providerArgs: {'orderBy': 'age desc'});
-        final queryTransformer0 = _buildTransformer<Demo>(query0);
-        final filterBuilder0 =
-            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
-
-        expect(
-          transformBuilder0.query,
-          result,
-        );
 
         const query = Query(orderBy: [OrderBy('age', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);
@@ -208,18 +186,6 @@ void main() {
       test('orderBy with referenced table', () {
         const result =
             'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.order=name.desc.nullslast';
-        const query0 = Query(
-          providerArgs: {'orderBy': 'name desc', 'orderByReferencedTable': 'demo_associations'},
-        );
-        final queryTransformer0 = _buildTransformer<DemoNestedAssociationModel>(query0);
-        final filterBuilder0 = queryTransformer0
-            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
-        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
-
-        expect(
-          transformBuilder0.query,
-          result,
-        );
 
         const query = Query(
           orderBy: [OrderBy.desc('nested', associationField: 'name')],
@@ -252,13 +218,6 @@ void main() {
 
       test('limit', () {
         const result = 'select=id,name,custom_age&limit=10';
-        const query0 = Query(providerArgs: {'limit': 10});
-        final queryTransformer0 = _buildTransformer<Demo>(query0);
-        final filterBuilder0 =
-            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
-
-        expect(transformBuilder0.query, result);
 
         const query = Query(limit: 10);
         final queryTransformer = _buildTransformer<Demo>(query);
@@ -272,14 +231,6 @@ void main() {
       test('limit with referenced table', () {
         const result =
             'select=id,nested_column:demo_associations(id,name,assoc_id:demos!assoc_id(id,name,custom_age),assocs:demos(id,name,custom_age))&demo_associations.limit=10';
-        const query0 =
-            Query(providerArgs: {'limit': 10, 'limitReferencedTable': 'demo_associations'});
-        final queryTransformer0 = _buildTransformer<DemoNestedAssociationModel>(query0);
-        final filterBuilder0 = queryTransformer0
-            .select(_supabaseClient.from(DemoNestedAssociationModelAdapter().supabaseTableName));
-        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
-
-        expect(transformBuilder0.query, result);
 
         const query = Query(limitBy: [LimitBy(10, evaluatedField: 'nested')]);
         final queryTransformer = _buildTransformer<DemoNestedAssociationModel>(query);
@@ -295,17 +246,6 @@ void main() {
 
       test('combined orderBy and limit', () {
         const result = 'select=id,name,custom_age&order=name.desc.nullslast&limit=20';
-
-        const query0 = Query(providerArgs: {'orderBy': 'name desc', 'limit': 20});
-        final queryTransformer0 = _buildTransformer<Demo>(query0);
-        final filterBuilder0 =
-            queryTransformer0.select(_supabaseClient.from(DemoAdapter().supabaseTableName));
-        final transformBuilder0 = queryTransformer0.applyQuery(filterBuilder0);
-
-        expect(
-          transformBuilder0.query,
-          result,
-        );
 
         const query = Query(limit: 20, orderBy: [OrderBy('name', ascending: false)]);
         final queryTransformer = _buildTransformer<Demo>(query);

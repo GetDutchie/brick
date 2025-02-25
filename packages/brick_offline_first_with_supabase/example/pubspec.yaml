@@ -16,10 +16,16 @@ dependency_overrides:
     path: ../../brick_supabase_generators
   brick_build:
     path: ../../brick_build
+  brick_json_generators:
+    path: ../../brick_json_generators
+  brick_offline_first:
+    path: ../../brick_offline_first
   brick_offline_first_with_supabase_build:
     path: ../../brick_offline_first_with_supabase_build
   brick_offline_first_build:
     path: ../../brick_offline_first_build
+  brick_sqlite_generators:
+    path: ../../brick_sqlite_generators
 
 dev_dependencies:
   build_runner:

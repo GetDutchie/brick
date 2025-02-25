@@ -121,7 +121,7 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   HorseAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'primaryKey': const RuntimeGraphqlDefinition(
       documentNodeName: '_brick_id',
       type: int,
@@ -139,7 +139,7 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   };
 
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -159,7 +159,7 @@ class HorseAdapter extends OfflineFirstWithGraphqlAdapter<Horse> {
   Future<int?> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
   @override
-  final String tableName = 'Horse';
+  final tableName = 'Horse';
   @override
   Future<void> afterSave(
     Horse instance, {

@@ -49,7 +49,7 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
     List<int>? reattemptForStatusCodes,
 
     /// A callback triggered when the response of a request has a status code
-    /// which is present in the [reattemptForStatusCodes] list.
+    /// which is present in the `reattemptForStatusCodes` list.
     ///
     /// Forwarded to [RestOfflineQueueClient].
     void Function(http.Request request, int statusCode)? onReattempt,
@@ -104,14 +104,6 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
           ),
         ),
       ],
-      providerArgs: {
-        ...query.providerArgs,
-        'headers': {
-          // This header is removed by the [RestOfflineQueueClient]
-          if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
-          ...?query.providerArgs['headers'] as Map<String, String>?,
-        },
-      },
     );
   }
 

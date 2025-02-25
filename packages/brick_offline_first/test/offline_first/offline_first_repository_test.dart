@@ -24,10 +24,10 @@ void main() {
       (TestRepository().remoteProvider as TestProvider).methodsCalled.clear();
     });
 
-    test('#applyPolicyToQuery', () async {
+    test('#applyPolicyToQuery', () {
       const policy = OfflineFirstGetPolicy.localOnly;
       final query = TestRepository().applyPolicyToQuery(const Query(), get: policy);
-      expect(query?.providerArgs, {'policy': policy.index});
+      expect(query?.action?.index, policy.index);
     });
 
     group('#delete', () {
@@ -176,7 +176,7 @@ void main() {
         expect(results.primaryKey, greaterThanOrEqualTo(1));
       });
 
-      test('OfflineFirstUpsertPolicy.requireRemote', () async {
+      test('OfflineFirstUpsertPolicy.requireRemote', () {
         final instance = Mounty(name: 'SqliteName');
         TestRepository.throwOnNextRemoteMutation = true;
         expect(
@@ -197,7 +197,7 @@ void main() {
     });
 
     group('#subscribe', () {
-      test('adds controller and query to #subscriptions', () async {
+      test('adds controller and query to #subscriptions', () {
         expect(TestRepository().subscriptions, hasLength(0));
         final query = Query.where('name', 'Thomas');
         TestRepository().subscribe<Mounty>(query: query);
@@ -207,7 +207,7 @@ void main() {
         expect(TestRepository().subscriptions[Mounty]!.entries.first.value, isNotNull);
       });
 
-      test('subscription succeeds when policy is non-default .awaitRemote', () async {
+      test('subscription succeeds when policy is non-default .awaitRemote', () {
         expect(TestRepository().subscriptions, hasLength(0));
         final query = Query.where('name', 'Thomas');
         TestRepository().subscribe<Mounty>(policy: OfflineFirstGetPolicy.awaitRemote, query: query);
@@ -215,7 +215,7 @@ void main() {
         expect(TestRepository().subscriptions[Mounty], hasLength(1));
       });
 
-      test('adds controller and null query to #subscriptions', () async {
+      test('adds controller and null query to #subscriptions', () {
         expect(TestRepository().subscriptions, hasLength(0));
         TestRepository().subscribe<Mounty>();
         expect(TestRepository().subscriptions, hasLength(1));
@@ -239,6 +239,7 @@ void main() {
         subscription.pause();
         expect(TestRepository().subscriptions, hasLength(1));
         expect(TestRepository().subscriptions[Mounty]!.entries.first.value.isPaused, isTrue);
+        await subscription.cancel();
       });
 
       test('stores fetched data', () async {

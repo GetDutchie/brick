@@ -36,7 +36,7 @@ class Schema {
 
   /// Generator used to produce this schema; not intended for public use
   // ignore: constant_identifier_names
-  static const int GENERATOR_VERSION = 1;
+  static const GENERATOR_VERSION = 1;
 
   ///
   @visibleForTesting

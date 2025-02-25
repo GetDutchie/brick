@@ -4,36 +4,42 @@ import 'package:brick_supabase/brick_supabase.dart';
 
 const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
-    Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SupabaseProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return SpecifyFieldName(
-      email: data['supa_email_address'] == null
-          ? null
-          : data['supa_email_address'] as String?);
+    email:
+        data['supa_email_address'] == null
+            ? null
+            : data['supa_email_address'] as String?,
+  );
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToSupabase(
-    SpecifyFieldName instance,
-    {required SupabaseProvider provider,
-    OfflineFirstRepository? repository}) async {
+  SpecifyFieldName instance, {
+  required SupabaseProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'supa_email_address': instance.email};
 }
 
-Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return SpecifyFieldName(
-      email: data['email_address'] == null
-          ? null
-          : data['email_address'] as String?)
-    ..primaryKey = data['_brick_id'] as int;
+    email:
+        data['email_address'] == null ? null : data['email_address'] as String?,
+  )..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
-    SpecifyFieldName instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  SpecifyFieldName instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'email_address': instance.email};
 }
 ''';

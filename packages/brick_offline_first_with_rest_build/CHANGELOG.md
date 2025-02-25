@@ -1,4 +1,8 @@
-## Unreleased
+## 4.0.0
+
+- **BREAKING CHANGE** `brick_offline_first_with_rest_build/builder.dart` has been renamed to `brick_offline_first_with_rest_build/brick_offline_first_with_rest_build.dart`. This will only affect implementations that have overridden `build.yaml`.
+- Dart minimum SDK is updated to `3.4.0`
+- All dependency restrictions are updated to include the minimum released version.
 
 ## 3.2.0
 

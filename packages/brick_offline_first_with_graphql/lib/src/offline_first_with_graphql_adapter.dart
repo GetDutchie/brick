@@ -7,7 +7,6 @@ export 'package:brick_graphql/src/runtime_graphql_definition.dart';
 
 /// This adapter fetches first from [SqliteProvider] then hydrates with [GraphqlProvider].
 abstract class OfflineFirstWithGraphqlAdapter<_Model extends OfflineFirstWithGraphqlModel>
-    // ignore: prefer_mixin
     extends OfflineFirstAdapter<_Model> with GraphqlAdapter<_Model> {
   /// This adapter fetches first from [SqliteProvider] then hydrates with [GraphqlProvider].
   OfflineFirstWithGraphqlAdapter();

@@ -2,19 +2,22 @@ import 'package:brick_supabase/brick_supabase.dart';
 
 const output = r'''
 Future<SupabaseIgnoreFromTo> _$SupabaseIgnoreFromToFromSupabase(
-    Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return SupabaseIgnoreFromTo(
-      ignoredTo: data['ignored_to'] as bool,
-      otherIgnoredTo: data['other_ignored_to'] as bool,
-      normal: data['normal'] as bool);
+    ignoredTo: data['ignored_to'] as bool,
+    otherIgnoredTo: data['other_ignored_to'] as bool,
+    normal: data['normal'] as bool,
+  );
 }
 
 Future<Map<String, dynamic>> _$SupabaseIgnoreFromToToSupabase(
-    SupabaseIgnoreFromTo instance,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+  SupabaseIgnoreFromTo instance, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return {'ignored_from': instance.ignoredFrom, 'normal': instance.normal};
 }
 ''';

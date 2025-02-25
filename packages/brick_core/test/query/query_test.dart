@@ -11,15 +11,6 @@ void main() {
       expect(q.action, QueryAction.delete);
     });
 
-    group('#providerArgs', () {
-      test('#providerArgs.page and #providerArgs.sort', () {
-        const q = Query(providerArgs: {'page': 1, 'sort': 'by_user_asc'});
-
-        expect(q.providerArgs['page'], 1);
-        expect(q.providerArgs['sort'], 'by_user_asc');
-      });
-    });
-
     test('#limit', () {
       const q0 = Query(limit: 0);
       expect(q0.limit, 0);
@@ -70,30 +61,30 @@ void main() {
       expect(q1, q2);
     });
 
-    test('providerArgs are the same', () {
-      const q1 = Query(providerArgs: {'name': 'Guy'});
-      const q2 = Query(providerArgs: {'name': 'Guy'});
+    test('where args are the same', () {
+      final q1 = Query.where('name', 'Guy');
+      final q2 = Query.where('name', 'Guy');
 
       expect(q1, q2);
     });
 
-    test('providerArgs have different values', () {
-      const q1 = Query(providerArgs: {'name': 'Thomas'});
-      const q2 = Query(providerArgs: {'name': 'Guy'});
+    test('where args have different values', () {
+      final q1 = Query.where('name', 'Thomas');
+      final q2 = Query.where('name', 'Guy');
 
       expect(q1, isNot(q2));
     });
 
-    test('providerArgs have different keys', () {
-      const q1 = Query(providerArgs: {'email': 'guy@guy.com'});
-      const q2 = Query(providerArgs: {'name': 'Guy'});
+    test('where args have different keys', () {
+      final q1 = Query.where('email', 'guy@guy.com');
+      final q2 = Query.where('name', 'Guy');
 
       expect(q1, isNot(q2));
     });
 
-    test('providerArgs are null', () {
+    test('where args are null', () {
       const q1 = Query();
-      const q2 = Query(providerArgs: {'name': 'Guy'});
+      final q2 = Query.where('name', 'Guy');
       expect(q1, isNot(q2));
 
       const q3 = Query();

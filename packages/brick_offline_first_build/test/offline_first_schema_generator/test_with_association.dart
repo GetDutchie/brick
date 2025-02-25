@@ -16,26 +16,54 @@ import 'package:brick_sqlite/db.dart';
 final migrations = <Migration>{};
 
 /// A consumable database structure including the latest generated migration.
-final schema = Schema(0, generatorVersion: 1, tables: <SchemaTable>{
-  SchemaTable('SqliteAssoc', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true)
-  }, indices: <SchemaIndex>{}),
-  SchemaTable('OneToOneAssocation', columns: <SchemaColumn>{
-    SchemaColumn('_brick_id', Column.integer,
-        autoincrement: true, nullable: false, isPrimaryKey: true),
-    SchemaColumn('assoc_SqliteAssoc_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'SqliteAssoc',
-        onDeleteCascade: false,
-        onDeleteSetDefault: false),
-    SchemaColumn('assoc2_SqliteAssoc_brick_id', Column.integer,
-        isForeignKey: true,
-        foreignTableName: 'SqliteAssoc',
-        onDeleteCascade: false,
-        onDeleteSetDefault: false)
-  }, indices: <SchemaIndex>{})
-});
+final schema = Schema(
+  0,
+  generatorVersion: 1,
+  tables: <SchemaTable>{
+    SchemaTable(
+      'SqliteAssoc',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+      },
+      indices: <SchemaIndex>{},
+    ),
+    SchemaTable(
+      'OneToOneAssocation',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn(
+          'assoc_SqliteAssoc_brick_id',
+          Column.integer,
+          isForeignKey: true,
+          foreignTableName: 'SqliteAssoc',
+          onDeleteCascade: false,
+          onDeleteSetDefault: false,
+        ),
+        SchemaColumn(
+          'assoc2_SqliteAssoc_brick_id',
+          Column.integer,
+          isForeignKey: true,
+          foreignTableName: 'SqliteAssoc',
+          onDeleteCascade: false,
+          onDeleteSetDefault: false,
+        ),
+      },
+      indices: <SchemaIndex>{},
+    ),
+  },
+);
 ''';
 
 @ConnectOfflineFirstWithRest()

@@ -9,7 +9,8 @@ import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
-final _formatter = dart_style.DartFormatter();
+final _formatter =
+    dart_style.DartFormatter(languageVersion: dart_style.DartFormatter.latestLanguageVersion);
 
 /// A generator that converts raw input into Dart code or Dart code into raw input. Most
 /// [Provider]s will require a `SerdesGenerator` to help the Repository normalize data.
@@ -83,6 +84,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
 
   /// Avoid linter error on subsequent passes for the repository.
   /// For example, if repository has already been casted to `!` it should not be recast
+  // ignore: omit_obvious_property_types
   bool repositoryHasBeenForceCast = false;
 
   /// For example, `OfflineFirst`

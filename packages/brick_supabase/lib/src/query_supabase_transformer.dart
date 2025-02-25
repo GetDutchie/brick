@@ -35,7 +35,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   ) {
     var computedBuilder = order(builder);
 
-    final offset = query?.offset ?? query?.providerArgs['offset'] as int?;
+    final offset = query?.offset;
     if (offset != null) {
       final url = builder.overrideSearchParams('offset', (offset).toString());
       computedBuilder = computedBuilder.copyWithUrl(url);
@@ -200,23 +200,14 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   ) {
     if (query == null) return builder;
 
-    final topLevelLimit = query?.providerArgs['limit'] as int? ?? query?.limit;
+    final topLevelLimit = query?.limit;
     final withTopLevelLimit = topLevelLimit != null
         ? PostgrestTransformBuilder(
             builder.copyWithUrl(builder.appendSearchParams('limit', topLevelLimit.toString())),
           )
         : builder;
 
-    final referencedTable = query?.providerArgs['limitReferencedTable'] as String?;
-    final key = referencedTable == null ? 'limit' : '$referencedTable.limit';
-    final withProviderArgs = topLevelLimit != null
-        ? PostgrestTransformBuilder(
-            withTopLevelLimit
-                .copyWithUrl(builder.appendSearchParams(key, topLevelLimit.toString())),
-          )
-        : withTopLevelLimit;
-
-    return query!.limitBy.fold(withProviderArgs, (acc, limitBy) {
+    return query!.limitBy.fold(withTopLevelLimit, (acc, limitBy) {
       final definition = adapter.fieldsToSupabaseColumns[limitBy.evaluatedField];
       final tableName = modelDictionary.adapterFor[definition?.associationType]?.supabaseTableName;
       if (tableName == null) return acc;
@@ -232,19 +223,9 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
   PostgrestFilterBuilder<List<Map<String, dynamic>>> order(
     PostgrestFilterBuilder<List<Map<String, dynamic>>> builder,
   ) {
-    if (query?.providerArgs['orderBy'] == null && (query?.orderBy.isEmpty ?? true)) return builder;
+    if (query?.orderBy.isEmpty ?? true) return builder;
 
-    final orderBy = query!.providerArgs['orderBy'] as String?;
-    final ascending = orderBy?.toLowerCase().endsWith(' asc') ?? true;
-    final referencedTable = query!.providerArgs['orderByReferencedTable'] as String?;
-    final key = referencedTable == null ? 'order' : '$referencedTable.order';
-    final fieldName = orderBy?.split(' ')[0];
-    final columnName = adapter.fieldsToSupabaseColumns[fieldName]?.columnName;
-    final url =
-        builder.overrideSearchParams(key, '$columnName.${ascending ? 'asc' : 'desc'}.nullslast');
-    final withProviderArgs = orderBy == null ? builder : builder.copyWithUrl(url);
-
-    return query!.orderBy.fold(withProviderArgs, (acc, orderBy) {
+    return query!.orderBy.fold(builder, (acc, orderBy) {
       final definition = adapter.fieldsToSupabaseColumns[orderBy.evaluatedField];
       final tableName = modelDictionary.adapterFor[definition?.associationType]?.supabaseTableName;
       final columnName = adapter

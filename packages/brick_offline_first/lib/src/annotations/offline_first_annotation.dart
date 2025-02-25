@@ -8,7 +8,7 @@ class OfflineFirst {
   ///
   /// For example, given the API: `{"classField" : true, "assoc": { "id": 12345 }}` and the `where`
   /// configuration `{'id' : "data['assoc']['id']"}`, a REST adapter would generate
-  /// ```
+  /// ```dart
   /// await repository?.getAssociation<Association>(
   ///   Query(where: [Where.exact('id', data['assoc']['id])], limit: 1)
   /// )
@@ -17,7 +17,7 @@ class OfflineFirst {
   /// When `false`, the output would generate assuming the full payload is present. Given the API
   /// `{"classField" : true, "assoc": { "id": 12345, "name": "class name" }}`, a REST adapter would
   /// generate
-  /// ```
+  /// ```dart
   /// await AssociationAdapter().fromRest(data['assoc'], provider: provider, repository: repository))
   /// ```
   final bool applyToRemoteDeserialization;
@@ -27,13 +27,13 @@ class OfflineFirst {
   /// If the field type is an `Iterable`, the map requires the field value to be an `Iterable`.
   ///
   /// For example, given an API: `{"classField" : true, "assoc": { "id": 12345 }}`,
-  /// ```
+  /// ```dart
   /// @OfflineFirst(where: {'id' : "data['assoc']['id']"})
   /// final Assoc assoc;
   /// ```
   ///
   /// Or given a list: `{"classField" : true, "assoc": { "ids": [12345, 6789] }}`
-  /// ```
+  /// ```dart
   /// @OfflineFirst(where: {'id' : "data['assoc']['ids']"})
   /// final List<Assoc> assocs;
   /// ```

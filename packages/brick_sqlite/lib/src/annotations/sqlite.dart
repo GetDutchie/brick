@@ -60,7 +60,6 @@ class Sqlite implements FieldSerializable {
   /// When `false`, the column will be inserted as `NOT NULL` and a value will be required in
   /// subsequent operations. Takes precedence over [SqliteSerializable]'s `#nullable`.
   /// Defaults to `true`.
-  @override
   final bool nullable;
 
   /// When true, deletion of the referenced record by `foreignKeyColumn` on the `foreignTableName`

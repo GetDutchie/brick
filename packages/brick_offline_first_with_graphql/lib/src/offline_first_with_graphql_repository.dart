@@ -58,14 +58,7 @@ abstract class OfflineFirstWithGraphqlRepository<
   }) {
     final queryContext =
         (query?.providerQueries[GraphqlProvider] as GraphqlProviderQuery?)?.context;
-    final argContextMap = query?.providerArgs['context'] as Map<String, ContextEntry>?;
-    final argContext = argContextMap != null
-        ? Context.fromMap(
-            Map<String, ContextEntry>.from(argContextMap)
-                .map((key, value) => MapEntry<Type, ContextEntry>(value.runtimeType, value)),
-          )
-        : null;
-    final context = (queryContext ?? argContext ?? const Context()).withEntry(
+    final context = (queryContext ?? const Context()).withEntry(
       OfflineFirstGraphqlPolicy(
         delete: delete,
         get: get,

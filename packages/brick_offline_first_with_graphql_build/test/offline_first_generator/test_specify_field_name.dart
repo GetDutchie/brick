@@ -4,36 +4,40 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 
 const output = r'''
 Future<SpecifyFieldName> _$SpecifyFieldNameFromGraphql(
-    Map<String, dynamic> data,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return SpecifyFieldName(
-      email: data['email_address'] == null
-          ? null
-          : data['email_address'] as String?);
+    email:
+        data['email_address'] == null ? null : data['email_address'] as String?,
+  );
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToGraphql(
-    SpecifyFieldName instance,
-    {required GraphqlProvider provider,
-    OfflineFirstRepository? repository}) async {
+  SpecifyFieldName instance, {
+  required GraphqlProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'email_address': instance.email};
 }
 
-Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return SpecifyFieldName(
-      email: data['email_address'] == null
-          ? null
-          : data['email_address'] as String?)
-    ..primaryKey = data['_brick_id'] as int;
+    email:
+        data['email_address'] == null ? null : data['email_address'] as String?,
+  )..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$SpecifyFieldNameToSqlite(
-    SpecifyFieldName instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  SpecifyFieldName instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {'email_address': instance.email};
 }
 ''';

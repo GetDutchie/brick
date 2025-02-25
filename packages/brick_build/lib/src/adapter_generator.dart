@@ -2,7 +2,8 @@ import 'package:brick_build/src/serdes_generator.dart';
 import 'package:dart_style/dart_style.dart' as dart_style;
 import 'package:source_gen/source_gen.dart';
 
-final _formatter = dart_style.DartFormatter();
+final _formatter =
+    dart_style.DartFormatter(languageVersion: dart_style.DartFormatter.latestLanguageVersion);
 
 /// Given a model, outputs generated code to use as a Brick adapter.
 class AdapterGenerator {

@@ -4,16 +4,20 @@ const output = r"""
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<SqliteUnique> _$SqliteUniqueFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<SqliteUnique> _$SqliteUniqueFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return SqliteUnique(someField: data['some_field'] as int)
     ..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$SqliteUniqueToSqlite(SqliteUnique instance,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$SqliteUniqueToSqlite(
+  SqliteUnique instance, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return {'some_field': instance.someField};
 }
 
@@ -34,14 +38,18 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
       columnName: 'some_field',
       iterable: false,
       type: int,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-      SqliteUnique instance, DatabaseExecutor executor) async {
-    final results = await executor.rawQuery('''
+    SqliteUnique instance,
+    DatabaseExecutor executor,
+  ) async {
+    final results = await executor.rawQuery(
+      '''
         SELECT * FROM `SqliteUnique` WHERE some_field = ? LIMIT 1''',
-        [instance.someField]);
+      [instance.someField],
+    );
 
     // SQFlite returns [{}] when no results are found
     if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) {
@@ -55,15 +63,25 @@ class SqliteUniqueAdapter extends SqliteAdapter<SqliteUnique> {
   final String tableName = 'SqliteUnique';
 
   @override
-  Future<SqliteUnique> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$SqliteUniqueFromSqlite(input,
-          provider: provider, repository: repository);
+  Future<SqliteUnique> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$SqliteUniqueFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(SqliteUnique input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$SqliteUniqueToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    SqliteUnique input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$SqliteUniqueToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 """;
 

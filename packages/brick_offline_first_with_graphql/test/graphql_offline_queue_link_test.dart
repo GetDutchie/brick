@@ -174,7 +174,7 @@ void main() {
         expect(capturedRequest, mutationRequest);
       });
 
-      test('callback is not triggered when request succeeds', () async {
+      test('callback is not triggered when request succeeds', () {
         Request? capturedRequest;
 
         final mockLink = MockLink();
@@ -228,7 +228,7 @@ void main() {
         expect(capturedonException.toString(), contains('Test failure'));
       });
 
-      test('callback is not triggered on successful response', () async {
+      test('callback is not triggered on successful response', () {
         Request? capturedRequest;
         Object? capturedException;
 

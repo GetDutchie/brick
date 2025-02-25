@@ -15,6 +15,7 @@ abstract class OfflineRequestQueue<TRequest> {
 
   /// This mutex ensures that concurrent writes to the DB will
   /// not occur as the Timer runs in sub routines or isolates
+  // ignore: omit_obvious_property_types
   bool _processingInBackground = false;
 
   /// How often requests are reattempted

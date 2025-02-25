@@ -48,7 +48,7 @@ class TestRepository extends OfflineFirstWithSupabaseRepository {
   }
 }
 
-void main() async {
+void main() {
   sqfliteFfiInit();
 
   final mock = SupabaseMockServer(modelDictionary: supabaseModelDictionary);

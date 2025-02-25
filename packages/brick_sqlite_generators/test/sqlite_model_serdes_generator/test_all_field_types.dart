@@ -6,59 +6,69 @@ const output = r'''
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<AllFieldTypes> _$AllFieldTypesFromSqlite(Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<AllFieldTypes> _$AllFieldTypesFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return AllFieldTypes(
-      integer: data['integer'] == null ? null : data['integer'] as int?,
-      boolean: data['boolean'] == null ? null : data['boolean'] == 1,
-      dub: data['dub'] == null ? null : data['dub'] as double?,
-      enumField: data['enum_field'] == null
-          ? null
-          : (data['enum_field'] > -1
-              ? Casing.values[data['enum_field'] as int]
-              : null),
-      enumList: jsonDecode(data['enum_list'])
-          .map((d) => d as int > -1 ? Casing.values[d] : null)
-          .whereType<Casing>()
-          .toList()
-          .cast<Casing>(),
-      longerCamelizedVariable: data['longer_camelized_variable'] == null
-          ? null
-          : data['longer_camelized_variable'] as String?,
-      map: jsonDecode(data['map']),
-      nullableList: data['nullable_list'] == null
-          ? null
-          : jsonDecode(data['nullable_list']).toList().cast<int>(),
-      nullableMap: data['nullable_map'] == null
-          ? null
-          : jsonDecode(data['nullable_map']),
-      string: data['string'] == null ? null : data['string'] as String?,
-      stringSet: jsonDecode(data['string_set']).toSet().cast<String>())
-    ..primaryKey = data['_brick_id'] as int;
+    integer: data['integer'] == null ? null : data['integer'] as int?,
+    boolean: data['boolean'] == null ? null : data['boolean'] == 1,
+    dub: data['dub'] == null ? null : data['dub'] as double?,
+    enumField:
+        data['enum_field'] == null
+            ? null
+            : (data['enum_field'] > -1
+                ? Casing.values[data['enum_field'] as int]
+                : null),
+    enumList:
+        jsonDecode(data['enum_list'])
+            .map((d) => d as int > -1 ? Casing.values[d] : null)
+            .whereType<Casing>()
+            .toList()
+            .cast<Casing>(),
+    longerCamelizedVariable:
+        data['longer_camelized_variable'] == null
+            ? null
+            : data['longer_camelized_variable'] as String?,
+    map: jsonDecode(data['map']),
+    nullableList:
+        data['nullable_list'] == null
+            ? null
+            : jsonDecode(data['nullable_list']).toList().cast<int>(),
+    nullableMap:
+        data['nullable_map'] == null ? null : jsonDecode(data['nullable_map']),
+    string: data['string'] == null ? null : data['string'] as String?,
+    stringSet: jsonDecode(data['string_set']).toSet().cast<String>(),
+  )..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(AllFieldTypes instance,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(
+  AllFieldTypes instance, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return {
     'integer': instance.integer,
     'boolean': instance.boolean == null ? null : (instance.boolean! ? 1 : 0),
     'dub': instance.dub,
-    'enum_field': instance.enumField != null
-        ? Casing.values.indexOf(instance.enumField!)
-        : null,
+    'enum_field':
+        instance.enumField != null
+            ? Casing.values.indexOf(instance.enumField!)
+            : null,
     'enum_list': jsonEncode(
-        instance.enumList.map((s) => Casing.values.indexOf(s)).toList()),
+      instance.enumList.map((s) => Casing.values.indexOf(s)).toList(),
+    ),
     'longer_camelized_variable': instance.longerCamelizedVariable,
     'map': jsonEncode(instance.map),
-    'nullable_list': instance.nullableList == null
-        ? null
-        : jsonEncode(instance.nullableList),
+    'nullable_list':
+        instance.nullableList == null
+            ? null
+            : jsonEncode(instance.nullableList),
     'nullable_map':
         instance.nullableMap != null ? jsonEncode(instance.nullableMap) : null,
     'string': instance.string,
-    'string_set': jsonEncode(instance.stringSet.toList())
+    'string_set': jsonEncode(instance.stringSet.toList()),
   };
 }
 
@@ -139,25 +149,36 @@ class AllFieldTypesAdapter extends SqliteAdapter<AllFieldTypes> {
       columnName: 'string_set',
       iterable: true,
       type: String,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          AllFieldTypes instance, DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    AllFieldTypes instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'AllFieldTypes';
 
   @override
-  Future<AllFieldTypes> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$AllFieldTypesFromSqlite(input,
-          provider: provider, repository: repository);
+  Future<AllFieldTypes> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$AllFieldTypesFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(AllFieldTypes input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$AllFieldTypesToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    AllFieldTypes input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$AllFieldTypesToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 ''';
 

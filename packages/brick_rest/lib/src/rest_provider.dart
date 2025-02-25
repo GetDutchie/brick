@@ -49,9 +49,8 @@ class RestProvider implements Provider<RestModel> {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter =
         adapter.restRequest != null ? adapter.restRequest!(query, instance).delete : null;
-    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-        (query?.providerArgs['request'] as RestRequest?) ??
-        fromAdapter;
+    final request =
+        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
@@ -77,9 +76,8 @@ class RestProvider implements Provider<RestModel> {
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
-    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-        (query?.providerArgs['request'] as RestRequest?) ??
-        fromAdapter;
+    final request =
+        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return false;
@@ -99,9 +97,8 @@ class RestProvider implements Provider<RestModel> {
   }) async {
     final adapter = modelDictionary.adapterFor[TModel]!;
     final fromAdapter = adapter.restRequest != null ? adapter.restRequest!(query, null).get : null;
-    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-        (query?.providerArgs['request'] as RestRequest?) ??
-        fromAdapter;
+    final request =
+        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return <TModel>[];
@@ -139,9 +136,8 @@ class RestProvider implements Provider<RestModel> {
     final body = await adapter.toRest(instance, provider: this, repository: repository);
     final fromAdapter =
         adapter.restRequest != null ? adapter.restRequest!(query, instance).upsert : null;
-    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-        (query?.providerArgs['request'] as RestRequest?) ??
-        fromAdapter;
+    final request =
+        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ?? fromAdapter;
 
     final url = request?.url;
     if (url == null) return null;
@@ -175,8 +171,7 @@ class RestProvider implements Provider<RestModel> {
   /// Expand a query into HTTP headers
   @protected
   Map<String, String> headersForQuery(Query? query, Map<String, String>? requestHeaders) {
-    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-        (query?.providerArgs['request'] as RestRequest?);
+    final request = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request;
     if ((query == null || request?.headers == null) &&
         requestHeaders == null &&
         defaultHeaders != null) {
@@ -216,9 +211,7 @@ class RestProvider implements Provider<RestModel> {
   }) async {
     final combinedBody = body ?? {};
     final url = Uri.parse([baseEndpoint, request.url!].join());
-    final requestFromQuery =
-        (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request ??
-            (query?.providerArgs['request'] as RestRequest?);
+    final requestFromQuery = (query?.providerQueries[RestProvider] as RestProviderQuery?)?.request;
     final method = requestFromQuery?.method ?? request.method ?? operation.httpMethod;
     final headers = headersForQuery(query, request.headers);
 

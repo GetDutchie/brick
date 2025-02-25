@@ -1,34 +1,42 @@
 import 'package:brick_supabase/brick_supabase.dart';
 
 const output = r'''
-Future<EnumAsString> _$EnumAsStringFromSupabase(Map<String, dynamic> data,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+Future<EnumAsString> _$EnumAsStringFromSupabase(
+  Map<String, dynamic> data, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return EnumAsString(
-      hat: Hat.values.byName(data['hat']),
-      nullableHat: data['nullable_hat'] == null
-          ? null
-          : Hat.values.byName(data['nullable_hat']),
-      hats: data['hats']
-          .whereType<String>()
-          .map(Hat.values.byName)
-          .toList()
-          .cast<Hat>(),
-      nullableHats: data['nullable_hats']
-          .whereType<String>()
-          .map(Hat.values.byName)
-          ?.toList()
-          .cast<Hat?>());
+    hat: Hat.values.byName(data['hat']),
+    nullableHat:
+        data['nullable_hat'] == null
+            ? null
+            : Hat.values.byName(data['nullable_hat']),
+    hats:
+        data['hats']
+            .whereType<String>()
+            .map(Hat.values.byName)
+            .toList()
+            .cast<Hat>(),
+    nullableHats:
+        data['nullable_hats']
+            .whereType<String>()
+            .map(Hat.values.byName)
+            ?.toList()
+            .cast<Hat?>(),
+  );
 }
 
-Future<Map<String, dynamic>> _$EnumAsStringToSupabase(EnumAsString instance,
-    {required SupabaseProvider provider,
-    SupabaseFirstRepository? repository}) async {
+Future<Map<String, dynamic>> _$EnumAsStringToSupabase(
+  EnumAsString instance, {
+  required SupabaseProvider provider,
+  SupabaseFirstRepository? repository,
+}) async {
   return {
     'hat': instance.hat.name,
     'nullable_hat': instance.nullableHat?.name,
     'hats': instance.hats.map((e) => e.name).toList(),
-    'nullable_hats': instance.nullableHats.map((e) => e.name).toList()
+    'nullable_hats': instance.nullableHats.map((e) => e.name).toList(),
   };
 }
 ''';

@@ -70,7 +70,7 @@ class HorseAdapter extends OfflineFirstWithTestAdapter<Horse> {
   HorseAdapter();
 
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -90,7 +90,7 @@ class HorseAdapter extends OfflineFirstWithTestAdapter<Horse> {
   Future<int?> primaryKeyByUniqueColumns(Horse instance, DatabaseExecutor executor) async =>
       instance.primaryKey;
   @override
-  final String tableName = 'Horse';
+  final tableName = 'Horse';
   @override
   Future<void> afterSave(
     Horse instance, {

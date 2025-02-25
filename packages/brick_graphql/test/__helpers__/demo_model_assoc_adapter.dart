@@ -29,7 +29,7 @@ class DemoModelAssocAdapter extends GraphqlAdapter<DemoModelAssoc> {
   DemoModelAssocAdapter();
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
+  final fieldsToGraphqlRuntimeDefinition = {
     'primaryKey': const RuntimeGraphqlDefinition(
       documentNodeName: 'primaryKey',
       type: int,
@@ -73,7 +73,7 @@ class DemoModelAssocWithSubfieldsAdapter extends GraphqlAdapter<DemoModelAssoc> 
   final queryOperationTransformer = _DemoModelAssocTransformer.new;
 
   @override
-  final Map<String, RuntimeGraphqlDefinition> fieldsToGraphqlRuntimeDefinition = {
+  final fieldsToGraphqlRuntimeDefinition = <String, RuntimeGraphqlDefinition>{
     'primaryKey': const RuntimeGraphqlDefinition(
       documentNodeName: '_brick_id',
       type: int,

@@ -30,13 +30,6 @@ class Graphql implements FieldSerializable {
   @override
   final String? name;
 
-  /// When `true`, `null` fields are handled gracefully when encoding from JSON.
-  /// This indicates that the payload from GraphQL could be `null` and is not related to
-  /// Dart nullability. Defaults to `false`.
-  @override
-  @Deprecated('Use a nullable type instead')
-  final bool nullable;
-
   /// Supply subfields that should be requested from the server.
   ///
   /// When blank, if the annotated field is not a Dart primitive, the class will be crawled
@@ -59,14 +52,12 @@ class Graphql implements FieldSerializable {
     bool? ignoreFrom,
     bool? ignoreTo,
     this.name,
-    @Deprecated('Use a nullable type instead') bool? nullable,
     this.subfields,
     this.toGenerator,
   })  : enumAsString = enumAsString ?? false,
         ignore = ignore ?? false,
         ignoreFrom = ignoreFrom ?? false,
-        ignoreTo = ignoreTo ?? false,
-        nullable = nullable ?? false;
+        ignoreTo = ignoreTo ?? false;
 
   /// An instance of [Graphql] with all fields set to their default values.
   static const defaults = Graphql();

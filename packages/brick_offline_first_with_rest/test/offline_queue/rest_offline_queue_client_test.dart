@@ -129,7 +129,7 @@ void main() {
 
       group('request is not deleted', () {
         test('after an unsuccessful response and is created', () async {
-          final inner = MockClient((req) async {
+          final inner = MockClient((req) {
             throw StateError('server not found');
           });
 
@@ -237,7 +237,7 @@ void main() {
           http.Request? capturedRequest;
           Object? capturedException;
 
-          final inner = MockClient((req) async {
+          final inner = MockClient((req) {
             throw const SocketException('test error');
           });
 

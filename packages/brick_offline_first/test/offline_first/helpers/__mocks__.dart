@@ -49,6 +49,7 @@ class TestRepository extends OfflineFirstWithTestRepository {
   static late TestRepository? _singleton;
 
   /// A hack to similuate a failure in the remote provider
+  // ignore: omit_obvious_property_types
   static bool throwOnNextRemoteMutation = false;
 
   factory TestRepository() => _singleton!;
@@ -84,11 +85,7 @@ class TestRepository extends OfflineFirstWithTestRepository {
     OfflineFirstGetPolicy? get,
     OfflineFirstUpsertPolicy? upsert,
   }) {
-    return query?.copyWith(
-      providerArgs: {
-        'policy': get?.index,
-      },
-    );
+    return query?.copyWith(action: QueryAction.values[get?.index ?? 0]);
   }
 }
 

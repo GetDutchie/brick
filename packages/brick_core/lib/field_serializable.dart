@@ -43,11 +43,6 @@ abstract class FieldSerializable {
   /// to the annotated field.
   String? get name;
 
-  /// When `true`, `null` fields are handled gracefully when serializing and deserializing.
-  /// For Dart >=2.12, the member type must also be nullable (i.e. `bool?`).
-  @Deprecated('Use a nullable type instead')
-  bool get nullable;
-
   /// Manipulates output for the field in the serialize generator.
   /// The serializing key is defined from [name] or the default naming of the field. While the build method is ultimately
   /// responsible for how the output is applied, it is most often directly injected as the

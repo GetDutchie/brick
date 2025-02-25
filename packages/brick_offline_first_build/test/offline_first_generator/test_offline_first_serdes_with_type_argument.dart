@@ -6,31 +6,37 @@ const output = r"""
 part of '../brick.g.dart';
 
 Future<OfflineFirstSerdesWithTypeArgument>
-    _$OfflineFirstSerdesWithTypeArgumentFromTest(Map<String, dynamic> data,
-        {required TestProvider provider,
-        OfflineFirstRepository? repository}) async {
+_$OfflineFirstSerdesWithTypeArgumentFromTest(
+  Map<String, dynamic> data, {
+  required TestProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return OfflineFirstSerdesWithTypeArgument();
 }
 
 Future<Map<String, dynamic>> _$OfflineFirstSerdesWithTypeArgumentToTest(
-    OfflineFirstSerdesWithTypeArgument instance,
-    {required TestProvider provider,
-    OfflineFirstRepository? repository}) async {
+  OfflineFirstSerdesWithTypeArgument instance, {
+  required TestProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {};
 }
 
 Future<OfflineFirstSerdesWithTypeArgument>
-    _$OfflineFirstSerdesWithTypeArgumentFromSqlite(Map<String, dynamic> data,
-        {required SqliteProvider provider,
-        OfflineFirstRepository? repository}) async {
+_$OfflineFirstSerdesWithTypeArgumentFromSqlite(
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return OfflineFirstSerdesWithTypeArgument()
     ..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$OfflineFirstSerdesWithTypeArgumentToSqlite(
-    OfflineFirstSerdesWithTypeArgument instance,
-    {required SqliteProvider provider,
-    OfflineFirstRepository? repository}) async {
+  OfflineFirstSerdesWithTypeArgument instance, {
+  required SqliteProvider provider,
+  OfflineFirstRepository? repository,
+}) async {
   return {};
 }
 
@@ -52,43 +58,56 @@ class OfflineFirstSerdesWithTypeArgumentAdapter
       columnName: 'some_field',
       iterable: false,
       type: SerdesWithTypeArgument,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          OfflineFirstSerdesWithTypeArgument instance,
-          DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    OfflineFirstSerdesWithTypeArgument instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'OfflineFirstSerdesWithTypeArgument';
 
   @override
   Future<OfflineFirstSerdesWithTypeArgument> fromTest(
-          Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentFromTest(input,
-          provider: provider, repository: repository);
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$OfflineFirstSerdesWithTypeArgumentFromTest(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toTest(OfflineFirstSerdesWithTypeArgument input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentToTest(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toTest(
+    OfflineFirstSerdesWithTypeArgument input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$OfflineFirstSerdesWithTypeArgumentToTest(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
   Future<OfflineFirstSerdesWithTypeArgument> fromSqlite(
-          Map<String, dynamic> input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentFromSqlite(input,
-          provider: provider, repository: repository);
+    Map<String, dynamic> input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$OfflineFirstSerdesWithTypeArgumentFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
   Future<Map<String, dynamic>> toSqlite(
-          OfflineFirstSerdesWithTypeArgument input,
-          {required provider,
-          covariant OfflineFirstRepository? repository}) async =>
-      await _$OfflineFirstSerdesWithTypeArgumentToSqlite(input,
-          provider: provider, repository: repository);
+    OfflineFirstSerdesWithTypeArgument input, {
+    required provider,
+    covariant OfflineFirstRepository? repository,
+  }) async => await _$OfflineFirstSerdesWithTypeArgumentToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 """;
 

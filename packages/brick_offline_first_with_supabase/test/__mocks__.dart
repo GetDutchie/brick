@@ -179,7 +179,7 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
   @override
   final uniqueFields = {};
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -215,7 +215,7 @@ class PizzaAdapter extends OfflineFirstWithSupabaseAdapter<Pizza> {
   }
 
   @override
-  final String tableName = 'Pizza';
+  final tableName = 'Pizza';
 
   @override
   Future<Pizza> fromSupabase(
@@ -352,7 +352,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   @override
   final uniqueFields = {};
   @override
-  final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
+  final fieldsToSqliteColumns = <String, RuntimeSqliteColumnDefinition>{
     'primaryKey': const RuntimeSqliteColumnDefinition(
       columnName: '_brick_id',
       type: int,
@@ -393,7 +393,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   }
 
   @override
-  final String tableName = 'Customer';
+  final tableName = 'Customer';
   @override
   Future<void> afterSave(
     Customer instance, {

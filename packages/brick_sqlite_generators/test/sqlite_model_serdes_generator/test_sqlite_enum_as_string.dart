@@ -5,26 +5,27 @@ const output = r"""
 part of '../brick.g.dart';
 
 Future<SqliteEnumAsString> _$SqliteEnumAsStringFromSqlite(
-    Map<String, dynamic> data,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+  Map<String, dynamic> data, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return SqliteEnumAsString(
-      someField: MyEnum.values.byName(data['some_field'] as String),
-      someFields: jsonDecode(data['some_fields'] ?? [])
-          .whereType<String>()
-          .map(MyEnum.values.byName)
-          .toList()
-          .cast<MyEnum>())
-    ..primaryKey = data['_brick_id'] as int;
+    someField: MyEnum.values.byName(data['some_field'] as String),
+    someFields:
+        jsonDecode(
+          data['some_fields'] ?? [],
+        ).whereType<String>().map(MyEnum.values.byName).toList().cast<MyEnum>(),
+  )..primaryKey = data['_brick_id'] as int;
 }
 
 Future<Map<String, dynamic>> _$SqliteEnumAsStringToSqlite(
-    SqliteEnumAsString instance,
-    {required SqliteProvider provider,
-    SqliteFirstRepository? repository}) async {
+  SqliteEnumAsString instance, {
+  required SqliteProvider provider,
+  SqliteFirstRepository? repository,
+}) async {
   return {
     'some_field': instance.someField.name,
-    'some_fields': jsonEncode(instance.someFields.map((s) => s.name).toList())
+    'some_fields': jsonEncode(instance.someFields.map((s) => s.name).toList()),
   };
 }
 
@@ -51,25 +52,36 @@ class SqliteEnumAsStringAdapter extends SqliteAdapter<SqliteEnumAsString> {
       columnName: 'some_fields',
       iterable: true,
       type: MyEnum,
-    )
+    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-          SqliteEnumAsString instance, DatabaseExecutor executor) async =>
-      instance.primaryKey;
+    SqliteEnumAsString instance,
+    DatabaseExecutor executor,
+  ) async => instance.primaryKey;
   @override
   final String tableName = 'SqliteEnumAsString';
 
   @override
-  Future<SqliteEnumAsString> fromSqlite(Map<String, dynamic> input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$SqliteEnumAsStringFromSqlite(input,
-          provider: provider, repository: repository);
+  Future<SqliteEnumAsString> fromSqlite(
+    Map<String, dynamic> input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$SqliteEnumAsStringFromSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
   @override
-  Future<Map<String, dynamic>> toSqlite(SqliteEnumAsString input,
-          {required provider, covariant SqliteRepository? repository}) async =>
-      await _$SqliteEnumAsStringToSqlite(input,
-          provider: provider, repository: repository);
+  Future<Map<String, dynamic>> toSqlite(
+    SqliteEnumAsString input, {
+    required provider,
+    covariant SqliteRepository? repository,
+  }) async => await _$SqliteEnumAsStringToSqlite(
+    input,
+    provider: provider,
+    repository: repository,
+  );
 }
 """;
 

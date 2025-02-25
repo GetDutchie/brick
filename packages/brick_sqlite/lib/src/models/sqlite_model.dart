@@ -8,7 +8,7 @@ const int? NEW_RECORD_ID = null;
 /// Models accessible to the [SqliteProvider].
 ///
 /// Why isn't this in the SQLite package? It's required by `OfflineFirstModel`.
-abstract class SqliteModel implements Model {
+abstract mixin class SqliteModel implements Model {
   /// DO NOT modify this in the end implementation code. The Repository will update it accordingly.
   /// It is strongly recommended that this field only be used by Brick's internal queries and not
   /// in the end implementation.

@@ -98,15 +98,20 @@ void main() {
 
     test('#generate', () {
       const defaultOutput = r'''
-Future<Simple> _$SimpleFromDefaultSerdes(Map<String, dynamic> data,
-    {required DefaultSerdesProvider provider,
-    ModelRepository? repository}) async {
+Future<Simple> _$SimpleFromDefaultSerdes(
+  Map<String, dynamic> data, {
+  required DefaultSerdesProvider provider,
+  ModelRepository? repository,
+}) async {
   return Simple();
 }
 ''';
       const customOutput = '''
-Future<Bar> unspecificPublicMethod(Map,
-    {provider, SomeRepository repository}) async {
+Future<Bar> unspecificPublicMethod(
+  Map, {
+  provider,
+  SomeRepository repository,
+}) async {
   return {'someField': instance.someField as int}..nullableField = true;
 }
 ''';

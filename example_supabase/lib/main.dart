@@ -48,6 +48,7 @@ class MyHomePage extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(20),
         child: FutureBuilder(
+          // necesary future
           // ignore: discarded_futures
           future: Repository().get<Pizza>(),
           builder: (context, AsyncSnapshot<List<Pizza>> pizzaList) {

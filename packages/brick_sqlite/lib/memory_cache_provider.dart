@@ -12,7 +12,7 @@ import 'package:meta/meta.dart';
 class MemoryCacheProvider<TProviderModel extends SqliteModel> extends Provider<TProviderModel> {
   ///
   @protected
-  final Logger logger = Logger('MemoryCacheProvider');
+  final logger = Logger('MemoryCacheProvider');
 
   /// The only model classes this instance should track.
   /// As storing objects in memory can be costly elsewhere in the app, models should be
