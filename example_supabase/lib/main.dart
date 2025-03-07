@@ -1,13 +1,26 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pizza_shoppe/brick/models/pizza.model.dart';
 import 'package:pizza_shoppe/brick/repository.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 const supabaseUrl = 'YOUR_SUPABASE_URL';
 const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
 
 Future<void> main() async {
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  } else if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   await Repository.initializeSupabaseAndConfigure(
     supabaseUrl: supabaseUrl,
     supabaseAnonKey: supabaseAnonKey,
@@ -21,45 +34,59 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(fontSize: 20),
+    return ProviderScope(
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(fontSize: 20),
+          ),
         ),
+        home: const MyHomePage(title: 'Flutter Demo Home Page'),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+
+
+
+final pizzaProvider = StreamProvider<List<Pizza>>(
+      (ref) => Repository().subscribe<Pizza>(),
+);
+
+class MyHomePage extends ConsumerWidget {
   final String title;
 
   const MyHomePage({super.key, required this.title});
 
+
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pizzas = ref.watch(pizzaProvider).value ?? [];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: FutureBuilder(
-          // necesary future
-          // ignore: discarded_futures
-          future: Repository().get<Pizza>(),
-          builder: (context, AsyncSnapshot<List<Pizza>> pizzaList) {
-            final pizzas = pizzaList.data;
-
-            return ListView.builder(
-              itemCount: pizzas?.length ?? 0,
-              itemBuilder: (ctx, index) =>
-                  pizzas?[index] == null ? Container() : PizzaTile(pizzas![index]),
-            );
-          },
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                await Repository().reset();
+              },
+              child: const Text('Reset db'),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: pizzas.length,
+              itemBuilder: (ctx, index) => PizzaTile(pizzas[index]),
+            ),
+          ],
         ),
       ),
     );
