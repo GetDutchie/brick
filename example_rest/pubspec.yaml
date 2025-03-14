@@ -18,6 +18,8 @@ dependencies:
 dependency_overrides:
   brick_sqlite_generators:
     path: ../packages/brick_sqlite_generators
+  brick_rest:
+    path: ../packages/brick_rest
 
 dev_dependencies:
   brick_offline_first_with_rest_build:
