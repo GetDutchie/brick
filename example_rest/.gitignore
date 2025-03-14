@@ -42,3 +42,4 @@ pubspec.lock
 web/
 linux/
 windows/
+macos/

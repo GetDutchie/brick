@@ -8,12 +8,15 @@ void main() {
       const shelf.Pipeline().addMiddleware(shelf.logRequests()).addHandler(_echoRequest);
 
   io.serve(handler, 'localhost', 8080).then((server) {
+    // ignore: avoid_print
     print('Serving at http://${server.address.host}:${server.port}');
   });
 }
 
 Future<shelf.Response> _echoRequest(shelf.Request request) async {
   final endpoints = ['customers', 'customer', 'pizzas', 'pizza'];
+  // ignore: avoid_print
+  print(request.headers);
 
   for (final endpoint in endpoints) {
     if (request.url.toString().startsWith(endpoint)) {

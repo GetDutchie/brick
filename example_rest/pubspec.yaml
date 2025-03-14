@@ -10,14 +10,25 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  shelf:
   sqflite: any
 
 dependency_overrides:
+  brick_rest_generators:
+    path: ../packages/brick_rest_generators
   brick_sqlite_generators:
     path: ../packages/brick_sqlite_generators
+  brick_rest:
+    path: ../packages/brick_rest
+  brick_sqlite:
+    path: ../packages/brick_sqlite
+  brick_offline_first:
+    path: ../packages/brick_offline_first
+  brick_offline_first_with_rest:
+    path: ../packages/brick_offline_first_with_rest
 
 dev_dependencies:
   brick_offline_first_with_rest_build:

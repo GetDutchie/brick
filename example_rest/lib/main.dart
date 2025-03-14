@@ -1,3 +1,4 @@
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:flutter/material.dart';
 import 'package:pizza_shoppe/brick/models/customer.model.dart';
 import 'package:pizza_shoppe/brick/repository.dart';
@@ -44,6 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (migrated) {
+      Repository().get<Customer>(policy: OfflineFirstGetPolicy.awaitRemote);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -88,11 +93,11 @@ class CustomerTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                for (var pizza in customer.pizzas!)
+                for (final pizza in customer.pizzas!)
                   Text('id: ${pizza.id}\nfrozen: ${pizza.frozen}'),
               ],
             ),
-          )
+          ),
       ],
     );
   }
