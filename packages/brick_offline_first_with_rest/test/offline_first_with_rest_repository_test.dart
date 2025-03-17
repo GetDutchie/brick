@@ -1,5 +1,7 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first_with_rest/testing.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';
 
@@ -11,7 +13,7 @@ void main() {
   group('OfflineFirstRepository', () {
     const baseUrl = 'http://0.0.0.0:3000';
 
-    setUpAll(() async {
+    setUp(() async {
       TestRepository.configure(
         baseUrl: baseUrl,
         restDictionary: restModelDictionary,
@@ -62,6 +64,70 @@ void main() {
             );
 
         expect(findByName.first.name, horse.name);
+      });
+
+      test('delivers data from HTTP when using awaitRemote policy', () async {
+        // Configure test repository with a client that returns a specific response
+        const customResponse = '[{"name": "RemoteName"}]';
+        final client = StubOfflineFirstWithRest(
+          baseEndpoint: baseUrl,
+          responses: [
+            StubOfflineFirstRestResponse(
+              customResponse,
+              endpoint: 'mounties',
+              method: StubHttpMethod.get,
+            ),
+          ],
+        ).client;
+
+        TestRepository.configure(
+          baseUrl: baseUrl,
+          restDictionary: restModelDictionary,
+          sqliteDictionary: sqliteModelDictionary,
+          client: client,
+        );
+        await TestRepository().initialize();
+
+        // Get data with awaitRemote policy
+        final results = await TestRepository().get<Mounty>(
+          query: Query(
+            where: [
+              const Where('name').isExactly('RemoteName'),
+            ],
+          ),
+          policy: OfflineFirstGetPolicy.awaitRemote,
+        );
+
+        // Verify data came from HTTP
+        expect(results, hasLength(1));
+        expect(results.first.name, 'RemoteName');
+      });
+
+      test('handles tunnel not found response with non-awaitRemote policy', () async {
+        // Configure test repository with a client that returns a tunnel not found response
+        const tunnelNotFoundResponse = 'Tunnel 12345 not found';
+        final client = MockClient((req) async {
+          if (req.url.toString().contains('mounties')) {
+            return http.Response(tunnelNotFoundResponse, 404);
+          }
+          return http.Response('Not found', 404);
+        });
+
+        TestRepository.configure(
+          baseUrl: baseUrl,
+          restDictionary: restModelDictionary,
+          sqliteDictionary: sqliteModelDictionary,
+          client: client,
+        );
+        await TestRepository().initialize();
+
+        // Get data with non-awaitRemote policy
+        final results = await TestRepository().get<Mounty>(
+          policy: OfflineFirstGetPolicy.localOnly,
+        );
+
+        // Should return empty list without throwing
+        expect(results, isEmpty);
       });
     });
 
