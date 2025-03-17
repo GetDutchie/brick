@@ -1,3 +1,7 @@
+## 4.0.1
+
+- Fixes a bug where `get` with `.awaitRemote` and a non-empty `Query` overrides the initial query and disregards the URL when being passed to the remote provider via `RestRequest`. Hat tip to @hortigado and @devj3ns #553
+
 ## 4.0.0
 
 - **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported. See #510 for migration steps.
