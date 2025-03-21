@@ -14,7 +14,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.6.1
   sqflite:
+  sqflite_common_ffi: ^2.3.4+4
+  sqflite_common_ffi_web: ^1.0.0
   supabase_flutter:
 
 dependency_overrides:
