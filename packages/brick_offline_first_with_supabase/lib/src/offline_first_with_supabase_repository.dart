@@ -102,6 +102,7 @@ abstract class OfflineFirstWithSupabaseRepository<
     try {
       return await super.get<TModel>(
         policy: policy,
+        policyForAssociations: policyForAssociations,
         query: query,
         seedOnly: seedOnly,
       );
