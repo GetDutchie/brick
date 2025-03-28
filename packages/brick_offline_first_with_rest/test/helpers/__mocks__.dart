@@ -79,7 +79,7 @@ class TestRepository extends OfflineFirstWithRestRepository {
         client: client,
       ),
       SqliteProvider(
-        '$inMemoryDatabasePath/repository',
+        '$inMemoryDatabasePath/repository${DateTime.now().microsecondsSinceEpoch}',
         databaseFactory: databaseFactoryFfi,
         modelDictionary: sqliteDictionary,
       ),

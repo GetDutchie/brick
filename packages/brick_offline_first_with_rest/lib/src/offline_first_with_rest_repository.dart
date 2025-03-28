@@ -84,25 +84,23 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
     OfflineFirstUpsertPolicy? upsert,
   }) {
     // The header value must be stringified because of how `http.Client` accepts the `headers` Map
-    final headerValue = delete?.toString().split('.').last ??
-        get?.toString().split('.').last ??
-        upsert?.toString().split('.').last;
-    final existingProviderQuery =
-        query?.providerQueries[RestProvider] as RestProviderQuery? ?? const RestProviderQuery();
-    final existingProviderQueryRequest = existingProviderQuery.request ?? const RestRequest();
+    final headerValue = delete?.name ?? get?.name ?? upsert?.name;
+    final existingProviderQuery = query?.providerQueries[RestProvider] as RestProviderQuery?;
+    final existingProviderQueryRequest = existingProviderQuery?.request;
 
     return query?.copyWith(
       forProviders: [
         ...query.forProviders,
-        existingProviderQuery.copyWith(
-          request: existingProviderQueryRequest.copyWith(
-            headers: {
-              // This header is removed by the [RestOfflineQueueClient]
-              if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
-              ...?existingProviderQueryRequest.headers,
-            },
+        if (existingProviderQuery != null)
+          existingProviderQuery.copyWith(
+            request: existingProviderQueryRequest?.copyWith(
+              headers: {
+                // This header is removed by the [RestOfflineQueueClient]
+                if (headerValue != null) RestOfflineQueueClient.policyHeader: headerValue,
+                ...?existingProviderQueryRequest.headers,
+              },
+            ),
           ),
-        ),
       ],
     );
   }

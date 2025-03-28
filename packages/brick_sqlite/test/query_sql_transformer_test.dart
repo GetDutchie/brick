@@ -291,6 +291,25 @@ void main() {
         sqliteStatementExpectation(statement, [1]);
       });
 
+      test('same field', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModelAssoc`.id = ? AND `DemoModel`.id = ? ORDER BY `DemoModel`.id ASC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(
+            where: [
+              Where.exact('assoc', Where.exact('id', 1)),
+              Where.exact('id', 2),
+            ],
+            orderBy: [OrderBy.asc('id')],
+          ),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [1, 2]);
+      });
+
       test('nested association', () async {
         const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.full_name = ?';
@@ -364,7 +383,7 @@ void main() {
       });
 
       test('#groupBy', () async {
-        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY id';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` GROUP BY `DemoModel`.id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: const Query(forProviders: [SqliteProviderQuery(groupBy: 'id')]),
@@ -376,7 +395,7 @@ void main() {
       });
 
       test('#having', () async {
-        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING id';
+        const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` HAVING `DemoModel`.id';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: const Query(forProviders: [SqliteProviderQuery(having: 'id')]),
@@ -425,7 +444,8 @@ void main() {
 
       group('#orderBy', () {
         test('simple', () async {
-          const statement = 'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY id DESC';
+          const statement =
+              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModel`.id DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
             query: const Query(orderBy: [OrderBy.desc('id')]),
@@ -438,7 +458,7 @@ void main() {
 
         test('discovered columns share similar names', () async {
           const statement =
-              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY last_name DESC';
+              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModel`.last_name DESC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
             query: const Query(orderBy: [OrderBy.desc('lastName')]),
@@ -464,7 +484,7 @@ void main() {
 
         test('compound values are expanded to column names', () async {
           const statement =
-              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, complex_field_name ASC';
+              'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY many_assoc DESC, `DemoModel`.complex_field_name ASC';
           final sqliteQuery = QuerySqlTransformer<DemoModel>(
             modelDictionary: dictionary,
             query: const Query(
@@ -480,7 +500,7 @@ void main() {
 
       test('fields convert to column names in providerArgs values', () async {
         const statement =
-            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name ASC GROUP BY complex_field_name HAVING complex_field_name > 1000';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModel`.complex_field_name ASC GROUP BY `DemoModel`.complex_field_name HAVING `DemoModel`.complex_field_name > 1000';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: const Query(
@@ -502,7 +522,7 @@ void main() {
 
       test('date time is converted', () async {
         const statement =
-            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(simple_time) DESC';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY datetime(`DemoModel`.simple_time) DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: const Query(orderBy: [OrderBy.desc('simpleTime')]),
@@ -519,7 +539,7 @@ void main() {
       // https://github.com/GetDutchie/brick/issues/429
       test('incorrectly cased columns are forwarded as is', () async {
         const statement =
-            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY complex_field_name DESC';
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` ORDER BY `DemoModel`.complex_field_name DESC';
         final sqliteQuery = QuerySqlTransformer<DemoModel>(
           modelDictionary: dictionary,
           query: const Query(orderBy: [OrderBy.desc('complex_field_name')]),

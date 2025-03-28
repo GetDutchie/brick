@@ -90,7 +90,7 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     if (_where.isNotEmpty) _statement.add(whereClause);
 
     _statement.add(
-      AllOtherClausesFragment(
+      AllOtherClausesFragment<_Model>(
         query,
         fieldsToColumns: adapter.fieldsToSqliteColumns,
         modelDictionary: modelDictionary,
@@ -175,7 +175,9 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     /// Finally add the column to the complete phrase
     final sqliteColumn = passedAdapter.tableName != adapter.tableName || _innerJoins.isNotEmpty
         ? '`${passedAdapter.tableName}`.${definition.columnName}'
-        : definition.columnName;
+        : _innerJoins.isNotEmpty
+            ? '`${adapter.tableName}`.${definition.columnName}'
+            : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
     return where.toString();
@@ -341,7 +343,7 @@ class WhereColumnFragment {
 }
 
 /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
-class AllOtherClausesFragment {
+class AllOtherClausesFragment<T extends SqliteModel> {
   ///
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToColumns;
 
@@ -350,21 +352,6 @@ class AllOtherClausesFragment {
 
   ///
   final Query? query;
-
-  /// Order matters. For example, LIMIT has to follow an ORDER BY but precede an OFFSET.
-  static const _supportedOperators = <String, String>{
-    'collate': 'COLLATE',
-    'orderBy': 'ORDER BY',
-    'groupBy': 'GROUP BY',
-    'having': 'HAVING',
-    'limit': 'LIMIT',
-    'offset': 'OFFSET',
-  };
-
-  /// These operators declare a column to compare against. The fields provided in
-  /// [Query] or [SqliteProviderQuery] will have to be converted to their column name.
-  /// For example, `orderBy: [OrderBy.asc('createdAt')]` must become `ORDER BY created_at ASC`.
-  static const _operatorsDeclaringFields = <String>{'ORDER BY', 'GROUP BY', 'HAVING'};
 
   /// Query modifiers such as `LIMIT`, `OFFSET`, etc. that require minimal logic.
   AllOtherClausesFragment(
@@ -376,71 +363,59 @@ class AllOtherClausesFragment {
   @override
   String toString() {
     final providerQuery = query?.providerQueries[SqliteProvider] as SqliteProviderQuery?;
-    final argsToSqlStatments = {
-      if (providerQuery?.collate != null) 'collate': providerQuery?.collate,
-      if (query?.limit != null) 'limit': query?.limit,
-      if (query?.offset != null) 'offset': query?.offset,
-      if (query?.orderBy.isNotEmpty ?? false)
-        'orderBy': query?.orderBy.map((p) {
-          final isAssociation = fieldsToColumns[p.evaluatedField]?.association ?? false;
-          if (!isAssociation) return p.toString();
+    final adapter = modelDictionary.adapterFor[T]!;
 
-          if (p.associationField == null) return p.toString();
-
-          final associationAdapter =
-              modelDictionary.adapterFor[fieldsToColumns[p.evaluatedField]?.type];
-
-          return '`${associationAdapter?.tableName}`.${associationAdapter?.fieldsToSqliteColumns[p.associationField]?.columnName} ${p.ascending ? 'ASC' : 'DESC'}';
-        }).join(', '),
-      if (providerQuery?.groupBy != null) 'groupBy': providerQuery?.groupBy,
-      if (providerQuery?.having != null) 'having': providerQuery?.having,
-    };
-
-    return _supportedOperators.entries.fold<List<String>>(<String>[], (acc, entry) {
-      final op = entry.value;
-      var value = argsToSqlStatments[entry.key];
-
-      if (value == null) return acc;
-
-      if (_operatorsDeclaringFields.contains(op)) {
-        value = value.toString().split(',').fold<String>(value.toString(),
-            (modValue, innerValueClause) {
-          // TODO(tshedor): revisit and remove providerArgs hacks here after
-          // providerArgs is fully deprecated
-          final fragment = innerValueClause.trim().split(' ');
-          if (fragment.isEmpty) return modValue;
-
-          final fieldName = fragment.first;
-          final columnDefinition = fieldsToColumns[fieldName];
-          var columnName = columnDefinition?.columnName;
-          if (columnName != null && modValue.contains(fieldName)) {
-            if (columnDefinition!.type == DateTime) {
-              columnName = 'datetime($columnName)';
-            }
-            return modValue.replaceAll(fieldName, columnName);
-          }
-
-          final tableFragment = innerValueClause.trim().split('.');
-          if (fragment.isEmpty) return modValue;
-
-          final tabledFieldName = tableFragment.last;
-          final tabledColumnDefinition = fieldsToColumns[fieldName];
-          var tabledColumnName = tabledColumnDefinition?.columnName;
-          if (tabledColumnName != null && modValue.contains(fieldName)) {
-            if (columnDefinition!.type == DateTime) {
-              tabledColumnName = 'datetime($tabledColumnName)';
-            }
-            return modValue.replaceAll(tabledFieldName, tabledColumnName);
-          }
-
-          return modValue;
-        });
+    final orderBy = query?.orderBy.map((p) {
+      final fieldDefinition = fieldsToColumns[p.evaluatedField];
+      final isAssociation = fieldDefinition?.association ?? false;
+      final field = '`${adapter.tableName}`.${fieldDefinition?.columnName ?? p.evaluatedField}';
+      if (!isAssociation) {
+        if (fieldDefinition?.type == DateTime) {
+          return 'datetime($field) ${p.ascending ? 'ASC' : 'DESC'}';
+        }
+        return '$field ${p.ascending ? 'ASC' : 'DESC'}';
       }
 
-      acc.add('$op $value');
+      if (p.associationField == null) {
+        return '${fieldDefinition?.columnName ?? p.evaluatedField} ${p.ascending ? 'ASC' : 'DESC'}';
+      }
 
-      return acc;
-    }).join(' ');
+      final associationAdapter = modelDictionary.adapterFor[fieldDefinition?.type];
+      final associationField =
+          '`${associationAdapter?.tableName}`.${associationAdapter?.fieldsToSqliteColumns[p.associationField]?.columnName ?? p.associationField}';
+      if (fieldDefinition?.type == DateTime) {
+        return 'datetime($associationField) ${p.ascending ? 'ASC' : 'DESC'}';
+      }
+      return '$associationField ${p.ascending ? 'ASC' : 'DESC'}';
+    }).join(', ');
+
+    return [
+      if (providerQuery?.collate != null)
+        'COLLATE ${_fieldToSqliteColumn(providerQuery!.collate!)}',
+      if (query?.orderBy.isNotEmpty ?? false) 'ORDER BY $orderBy',
+      if (providerQuery?.groupBy != null)
+        'GROUP BY ${_fieldToSqliteColumn(providerQuery!.groupBy!)}',
+      if (providerQuery?.having != null) 'HAVING ${_fieldToSqliteColumn(providerQuery!.having!)}',
+      if (query?.limit != null) 'LIMIT ${query?.limit}',
+      if (query?.offset != null) 'OFFSET ${query?.offset}',
+    ].join(' ');
+  }
+
+  String _fieldToSqliteColumn(String field) {
+    final adapter = modelDictionary.adapterFor[T]!;
+    // split on every whole word
+    final parts = field.split(RegExp(r'\b'));
+    var replacement = field;
+    for (final part in parts) {
+      final definition = fieldsToColumns[part];
+      if (definition != null) {
+        replacement = replacement.replaceAll(
+          part,
+          '`${adapter.tableName}`.${definition.columnName}',
+        );
+      }
+    }
+    return replacement;
   }
 }
 
