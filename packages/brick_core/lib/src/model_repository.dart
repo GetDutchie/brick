@@ -51,7 +51,12 @@ abstract class ModelRepository<ManagedModel extends Model> {
   upsert<TModel extends ManagedModel>(TModel model, {Query query});
 }
 
-/// Helper for mono provider systems
+/// Helper for mono provider systems. This is generally used to simplify code for package examples.
+/// It is discouraged to extend this class for practical applications.
+///
+/// If a single provider is necessary, access that provider directly (i.e. `RestProvider()`) or
+/// the backing client (e.g. `http.Client`, sqflite's `databaseFactory`) directly until your
+/// implementation requires multi-provider features.
 abstract class SingleProviderRepository<TModel extends Model> implements ModelRepository<TModel> {
   /// The only provider for the repository
   final Provider<TModel> provider;

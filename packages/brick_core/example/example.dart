@@ -34,7 +34,11 @@ class FileProvider implements Provider<FileModel> {
   FileProvider({required this.modelDictionary});
 
   @override
-  Future<bool> delete<T extends FileModel>(instance, {query, repository}) async {
+  Future<bool> delete<T extends FileModel>(
+    instance, {
+    Query? query,
+    ModelRepository<FileModel>? repository,
+  }) async {
     await instance.asFile.delete();
     return true;
   }
@@ -44,7 +48,10 @@ class FileProvider implements Provider<FileModel> {
 
   /// Query.where must always include `filePath`
   @override
-  Future<List<T>> get<T extends FileModel>({query, repository}) async {
+  Future<List<T>> get<T extends FileModel>({
+    Query? query,
+    ModelRepository<FileModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[T]!;
     if (query?.where != null) {
       final filePath = Where.firstByField('filePath', query?.where)?.value;
@@ -63,7 +70,11 @@ class FileProvider implements Provider<FileModel> {
   }
 
   @override
-  Future<T> upsert<T extends FileModel>(instance, {query, repository}) async {
+  Future<T> upsert<T extends FileModel>(
+    T instance, {
+    Query? query,
+    ModelRepository<FileModel>? repository,
+  }) async {
     final adapter = modelDictionary.adapterFor[T];
     final fileContents = await adapter?.toFile(instance, provider: this, repository: repository);
     await File(instance.fileName).writeAsString(fileContents ?? '');
@@ -71,7 +82,7 @@ class FileProvider implements Provider<FileModel> {
   }
 }
 
-abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
+abstract class FileAdapter<TModel extends FileModel> extends Adapter<TModel> {
   /// Folder to store all of these
   String get directory;
 
@@ -85,7 +96,7 @@ abstract class FileAdapter<_Model extends FileModel> extends Adapter<_Model> {
     ModelRepository<FileModel>? repository,
   });
   Future<String> toFile(
-    _Model instance, {
+    TModel instance, {
     required FileProvider provider,
     ModelRepository<FileModel>? repository,
   });
@@ -101,13 +112,21 @@ class UserAdapter extends FileAdapter<User> {
   UserAdapter();
 
   @override
-  Future<User> fromFile(input, {required provider, repository}) async {
+  Future<User> fromFile(
+    String input, {
+    required FileProvider provider,
+    ModelRepository<FileModel>? repository,
+  }) async {
     final contents = jsonDecode(input);
     return User(name: contents['name']);
   }
 
   @override
-  Future<String> toFile(instance, {required provider, repository}) async =>
+  Future<String> toFile(
+    User instance, {
+    required FileProvider provider,
+    ModelRepository<FileModel>? repository,
+  }) async =>
       jsonEncode({'name': instance.name});
 }
 

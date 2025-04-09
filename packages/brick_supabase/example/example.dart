@@ -8,14 +8,25 @@ import 'package:supabase/supabase.dart';
 /// such as brick_offline_first_with_supabase_build
 class UserAdapter extends SupabaseAdapter<User> {
   @override
-  Future<User> fromSupabase(data, {required provider, repository}) async {
+  final supabaseTableName = 'users';
+
+  @override
+  Future<User> fromSupabase(
+    Map<String, dynamic> data, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     return User(
       name: data['name'],
     );
   }
 
   @override
-  Future<Map<String, dynamic>> toSupabase(instance, {required provider, repository}) async {
+  Future<Map<String, dynamic>> toSupabase(
+    User instance, {
+    required SupabaseProvider provider,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
     return {
       'name': instance.name,
     };
@@ -26,7 +37,7 @@ class UserAdapter extends SupabaseAdapter<User> {
 
   @override
   final fieldsToSupabaseColumns = {
-    'name': RuntimeSupabaseColumnDefinition(columnName: 'name'),
+    'name': const RuntimeSupabaseColumnDefinition(columnName: 'name'),
   };
 
   @override
@@ -34,9 +45,6 @@ class UserAdapter extends SupabaseAdapter<User> {
 
   @override
   final onConflict = null;
-
-  @override
-  final tableName = 'users';
 
   @override
   final uniqueFields = {};
@@ -72,5 +80,6 @@ void main() async {
   final repository = MyRepository('http://localhost:8080', 'YOUR_API_KEY_HERE');
 
   final users = await repository.get<User>();
+  // ignore: avoid_print
   print(users);
 }
