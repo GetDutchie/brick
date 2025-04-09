@@ -14,6 +14,8 @@ And generate (de)serializing code to fetch to and from multiple providers:
 $ (flutter) pub run build_runner build
 ```
 
+!> `build_runner` will only generate necessary adapters and mappings if you're using a build package (e.g. `brick_offline_first_with_supabase_build`).
+
 ## Fetching Data
 
 A repository fetches and returns data across multiple providers. It's the single access point for data in your app:

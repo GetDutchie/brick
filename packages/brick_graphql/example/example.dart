@@ -3,12 +3,14 @@ import 'package:brick_graphql/brick_graphql.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 
 class UserQueryOperationTransformer extends GraphqlQueryOperationTransformer {
-  GraphqlOperation get get => GraphqlOperation(document: '''query AllUsers {
+  @override
+  GraphqlOperation get get => const GraphqlOperation(
+        document: '''query AllUsers {
       allUsers {}
-    }''');
+    }''',
+      );
 
-  const UserQueryOperationTransformer(Query? query, GraphqlModel? instance)
-      : super(query, instance);
+  const UserQueryOperationTransformer(super.query, GraphqlModel? super.instance);
 }
 
 /// This class and code is always generated.
@@ -22,22 +24,28 @@ class UserAdapter extends GraphqlAdapter<User> {
   @override
   Map<String, RuntimeGraphqlDefinition> get fieldsToGraphqlRuntimeDefinition => {
         'name': const RuntimeGraphqlDefinition(
-          association: false,
           documentNodeName: 'full_name',
-          iterable: false,
           type: String,
         ),
       };
 
   @override
-  Future<User> fromGraphql(data, {required provider, repository}) async {
+  Future<User> fromGraphql(
+    Map<String, dynamic> data, {
+    required GraphqlProvider provider,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     return User(
       name: data['name'],
     );
   }
 
   @override
-  Future<Map<String, dynamic>> toGraphql(instance, {required provider, repository}) async {
+  Future<Map<String, dynamic>> toGraphql(
+    User instance, {
+    required GraphqlProvider provider,
+    ModelRepository<GraphqlModel>? repository,
+  }) async {
     return {
       'name': instance.name,
     };
@@ -98,5 +106,6 @@ void main() async {
   final repository = MyRepository('http://localhost:4000');
 
   final users = await repository.get<User>();
+  // ignore: avoid_print
   print(users);
 }

@@ -11,14 +11,28 @@ To use a repository seamlessly with a state management system like BLoCs without
 ```dart
 import 'package:brick_core/core.dart';
 import 'package:brick_rest/brick_rest.dart';
-import 'package:my_app/brick/brick.g.dart' show restModelDictionary;
+import 'package:my_app/brick/brick.g.dart';
+import 'package:sqflite/sqflite.dart' show databaseFactory;
 
 // brick/repository.dart
-class MyRepository extends SingleProviderRepository<RestModel> {
+class MyRepository extends OfflineFirstWithRestRepository<RestModel> {
   MyRepository._({
     required String baseEndpoint,
   }) : super(
-    RestProvider(baseEndpoint, modelDictionary: restModelDictionary),
+    migrations: migrations,
+    restProvider: RestProvider(
+      'http://0.0.0.0:3000',
+      modelDictionary: restModelDictionary,
+    ),
+    sqliteProvider: SqliteProvider(
+      'my_brick_db_name.sqlite',
+      databaseFactory: databaseFactory,
+      modelDictionary: sqliteModelDictionary,
+    ),
+    offlineQueueManager: RestRequestSqliteCacheManager(
+      'brick_offline_queue.sqlite',
+      databaseFactory: databaseFactory,
+    ),
   );
   factory MyRepository() => _singleton!;
 
@@ -68,11 +82,11 @@ class MyRepository extends OfflineFirstRepository {
 
 There are several principles for repositories that should be considered beyond its implementation of `ModelRepository`:
 
-* [ ] The repository only fetches data from providers
-* [ ] The repository cannot (de)serialize models with a provider
-* [ ] The repository does not preserve model states
-* [ ] Every method returns from the same provider
-* [ ] `Query#action` is applied when it does not exist on a `query` from arguments
+- [ ] The repository only fetches data from providers
+- [ ] The repository cannot (de)serialize models with a provider
+- [ ] The repository does not preserve model states
+- [ ] Every method returns from the same provider
+- [ ] `Query#action` is applied when it does not exist on a `query` from arguments
 
 To generate code for a custom repository, please see [brick_build](https://github.com/GetDutchie/brick/tree/main/packages/brick_build#repository).
 
