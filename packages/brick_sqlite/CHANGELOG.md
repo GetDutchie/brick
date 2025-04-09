@@ -1,3 +1,7 @@
+## 4.0.2
+
+- Fix query statements with mixed non-association and association fields to permit any order (#573)
+
 ## 4.0.1
 
 - Fix ambiguous column in association queries with ORDER BY statements (#561)
