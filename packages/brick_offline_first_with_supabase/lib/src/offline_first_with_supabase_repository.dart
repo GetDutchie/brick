@@ -93,13 +93,16 @@ abstract class OfflineFirstWithSupabaseRepository<
 
   @override
   Future<List<TModel>> get<TModel extends TRepositoryModel>({
-    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    OfflineFirstGetPolicy? associationPolicy,
+    OfflineFirstGetPolicy policy =
+        OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
   }) async {
     try {
       return await super.get<TModel>(
         policy: policy,
+        associationPolicy: associationPolicy,
         query: query,
         seedOnly: seedOnly,
       );
@@ -257,6 +260,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
   /// See [_compareToFilterParam] for a precise breakdown.
   Stream<List<TModel>> subscribeToRealtime<TModel extends TRepositoryModel>({
+    OfflineFirstGetPolicy? associationPolicy,
     PostgresChangeEvent eventType = PostgresChangeEvent.all,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.alwaysHydrate,
     Query? query,
@@ -291,7 +295,7 @@ abstract class OfflineFirstWithSupabaseRepository<
               case PostgresChangeEvent.all:
                 final localResults = await sqliteProvider.get<TModel>(repository: this);
                 final remoteResults =
-                    await get<TModel>(query: query, policy: OfflineFirstGetPolicy.awaitRemote);
+                    await get<TModel>(query: query, policy: OfflineFirstGetPolicy.awaitRemote, associationPolicy: associationPolicy);
                 final toDelete = localResults.where((r) => !remoteResults.contains(r));
 
                 for (final deletableModel in toDelete) {
@@ -310,6 +314,7 @@ abstract class OfflineFirstWithSupabaseRepository<
                 final results = await get<TModel>(
                   query: query,
                   policy: OfflineFirstGetPolicy.localOnly,
+                  associationPolicy: associationPolicy,
                   seedOnly: true,
                 );
                 if (results.isEmpty) return;
@@ -328,6 +333,7 @@ abstract class OfflineFirstWithSupabaseRepository<
                   await get<TModel>(
                     query: query,
                     policy: OfflineFirstGetPolicy.alwaysHydrate,
+                    associationPolicy: associationPolicy,
                     seedOnly: true,
                   );
 
@@ -370,7 +376,9 @@ abstract class OfflineFirstWithSupabaseRepository<
 
     // Fetch initial data
     // ignore: discarded_futures
-    get<TModel>(query: query, policy: policy).then((results) {
+    get<TModel>(query: query,
+        policy: policy,
+        associationPolicy: associationPolicy,).then((results) {
       if (!controller.isClosed) controller.add(results);
     });
 
