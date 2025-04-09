@@ -18,6 +18,7 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
   Future<List<TModel>> get<TModel extends T>({
     bool forceLocalSyncFromRemote = false,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    OfflineFirstGetPolicy? associationPolicy,
     Query? query,
     bool seedOnly = false,
   }) async {
