@@ -249,7 +249,7 @@ abstract class OfflineFirstWithSupabaseRepository<
       return subscribe<TModel>(policy: policy, query: query);
     }
 
-    final channel = remoteProvider.subscribeToRealtime(
+    final channel = remoteProvider.subscribeToRealtime<TModel>(
       eventType: eventType,
       query: query,
       schema: schema,
