@@ -194,30 +194,6 @@ abstract class OfflineFirstWithSupabaseRepository<
     );
   }
 
-  /// Convert a query to a [PostgresChangeFilter] for use with [subscribeToRealtime].
-  @protected
-  @visibleForTesting
-  @visibleForOverriding
-  PostgresChangeFilter? queryToPostgresChangeFilter<TModel extends TRepositoryModel>(
-    Query query,
-  ) {
-    final adapter = remoteProvider.modelDictionary.adapterFor[TModel]!;
-    if (query.where?.isEmpty ?? true) return null;
-    final condition = query.where!.first;
-    final column = adapter.fieldsToSupabaseColumns[condition.evaluatedField]?.columnName;
-
-    if (column == null) return null;
-
-    final type = _compareToFilterParam(condition.compare);
-    if (type == null) return null;
-
-    return PostgresChangeFilter(
-      type: type,
-      column: column,
-      value: condition.value,
-    );
-  }
-
   @override
   Future<void> reset() async {
     await super.reset();
@@ -254,8 +230,7 @@ abstract class OfflineFirstWithSupabaseRepository<
   ///
   /// [query] is an optional query to filter the data. The query **must be** one level -
   /// `Query.where('user', Query.exact('name', 'Tom'))` is invalid but `Query.where('name', 'Tom')`
-  /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
-  /// See [_compareToFilterParam] for a precise breakdown.
+  /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent. See [SupabaseProvider.queryToPostgresChangeFilter] for more details.
   Stream<List<TModel>> subscribeToRealtime<TModel extends TRepositoryModel>({
     PostgresChangeEvent eventType = PostgresChangeEvent.all,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.alwaysHydrate,
@@ -274,80 +249,76 @@ abstract class OfflineFirstWithSupabaseRepository<
       return subscribe<TModel>(policy: policy, query: query);
     }
 
-    final channel = remoteProvider.client
-        .channel(adapter.supabaseTableName)
-        .onPostgresChanges(
-          event: eventType,
-          schema: schema,
-          table: adapter.supabaseTableName,
-          filter: queryToPostgresChangeFilter<TModel>(query),
-          callback: (payload) async {
-            switch (payload.eventType) {
-              // This code path is likely never hit; `PostgresChangeEvent.all` is used
-              // to listen to changes but as far as can be determined is not delivered within
-              // the payload of the callback.
-              //
-              // It's handled just in case this behavior changes.
-              case PostgresChangeEvent.all:
-                final localResults = await sqliteProvider.get<TModel>(repository: this);
-                final remoteResults =
-                    await get<TModel>(query: query, policy: OfflineFirstGetPolicy.awaitRemote);
-                final toDelete = localResults.where((r) => !remoteResults.contains(r));
+    final channel = remoteProvider.subscribeToRealtime(
+      eventType: eventType,
+      query: query,
+      schema: schema,
+      callback: (payload) async {
+        switch (payload.eventType) {
+          // This code path is likely never hit; `PostgresChangeEvent.all` is used
+          // to listen to changes but as far as can be determined is not delivered within
+          // the payload of the callback.
+          //
+          // It's handled just in case this behavior changes.
+          case PostgresChangeEvent.all:
+            final localResults = await sqliteProvider.get<TModel>(repository: this);
+            final remoteResults =
+                await get<TModel>(query: query, policy: OfflineFirstGetPolicy.awaitRemote);
+            final toDelete = localResults.where((r) => !remoteResults.contains(r));
 
-                for (final deletableModel in toDelete) {
-                  await sqliteProvider.delete<TModel>(deletableModel, repository: this);
-                  memoryCacheProvider.delete<TModel>(deletableModel, repository: this);
-                }
-
-              case PostgresChangeEvent.delete:
-                final query = queryFromSupabaseDeletePayload(
-                  payload.oldRecord,
-                  supabaseDefinitions: adapter.fieldsToSupabaseColumns,
-                );
-
-                if (query.where?.isEmpty ?? true) return;
-
-                final results = await get<TModel>(
-                  query: query,
-                  policy: OfflineFirstGetPolicy.localOnly,
-                  seedOnly: true,
-                );
-                if (results.isEmpty) return;
-
-                await sqliteProvider.delete<TModel>(results.first, repository: this);
-                memoryCacheProvider.delete<TModel>(results.first, repository: this);
-
-              case PostgresChangeEvent.insert || PostgresChangeEvent.update:
-                // The supabase payload is not configurable and will not supply associations.
-                // For models that have associations, an additional network call must be
-                // made to retrieve all scoped data.
-                final modelHasAssociations = adapter.fieldsToSupabaseColumns.entries
-                    .any((entry) => entry.value.association && !entry.value.associationIsNullable);
-
-                if (modelHasAssociations) {
-                  await get<TModel>(
-                    query: query,
-                    policy: OfflineFirstGetPolicy.alwaysHydrate,
-                    seedOnly: true,
-                  );
-
-                  return;
-                }
-
-                final instance = await adapter.fromSupabase(
-                  payload.newRecord,
-                  provider: remoteProvider,
-                  repository: this,
-                );
-
-                await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
-                memoryCacheProvider.upsert<TModel>(instance, repository: this);
+            for (final deletableModel in toDelete) {
+              await sqliteProvider.delete<TModel>(deletableModel, repository: this);
+              memoryCacheProvider.delete<TModel>(deletableModel, repository: this);
             }
 
-            await notifySubscriptionsWithLocalData<TModel>();
-          },
-        )
-        .subscribe();
+          case PostgresChangeEvent.delete:
+            final query = queryFromSupabaseDeletePayload(
+              payload.oldRecord,
+              supabaseDefinitions: adapter.fieldsToSupabaseColumns,
+            );
+
+            if (query.where?.isEmpty ?? true) return;
+
+            final results = await get<TModel>(
+              query: query,
+              policy: OfflineFirstGetPolicy.localOnly,
+              seedOnly: true,
+            );
+            if (results.isEmpty) return;
+
+            await sqliteProvider.delete<TModel>(results.first, repository: this);
+            memoryCacheProvider.delete<TModel>(results.first, repository: this);
+
+          case PostgresChangeEvent.insert || PostgresChangeEvent.update:
+            // The supabase payload is not configurable and will not supply associations.
+            // For models that have associations, an additional network call must be
+            // made to retrieve all scoped data.
+            final modelHasAssociations = adapter.fieldsToSupabaseColumns.entries
+                .any((entry) => entry.value.association && !entry.value.associationIsNullable);
+
+            if (modelHasAssociations) {
+              await get<TModel>(
+                query: query,
+                policy: OfflineFirstGetPolicy.alwaysHydrate,
+                seedOnly: true,
+              );
+
+              return;
+            }
+
+            final instance = await adapter.fromSupabase(
+              payload.newRecord,
+              provider: remoteProvider,
+              repository: this,
+            );
+
+            await sqliteProvider.upsert<TModel>(instance as TModel, repository: this);
+            memoryCacheProvider.upsert<TModel>(instance, repository: this);
+        }
+
+        await notifySubscriptionsWithLocalData<TModel>();
+      },
+    );
 
     final controller = StreamController<List<TModel>>(
       onCancel: () async {
@@ -393,29 +364,6 @@ abstract class OfflineFirstWithSupabaseRepository<
       }
 
       return instance;
-    }
-  }
-
-  PostgresChangeFilterType? _compareToFilterParam(Compare compare) {
-    switch (compare) {
-      case Compare.exact:
-        return PostgresChangeFilterType.eq;
-      case Compare.contains:
-        return PostgresChangeFilterType.inFilter;
-      case Compare.greaterThan:
-        return PostgresChangeFilterType.gt;
-      case Compare.greaterThanOrEqualTo:
-        return PostgresChangeFilterType.gte;
-      case Compare.lessThan:
-        return PostgresChangeFilterType.lt;
-      case Compare.lessThanOrEqualTo:
-        return PostgresChangeFilterType.lte;
-      case Compare.notEqual:
-        return PostgresChangeFilterType.neq;
-      case Compare.between:
-        return null;
-      case Compare.doesNotContain:
-        return null;
     }
   }
 
