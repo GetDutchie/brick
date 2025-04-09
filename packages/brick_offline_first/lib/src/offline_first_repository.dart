@@ -176,9 +176,9 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
   Future<List<TModel>> get<TModel extends TRepositoryModel>({
+    OfflineFirstGetPolicy? associationPolicy,
     OfflineFirstGetPolicy policy =
         OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-    OfflineFirstGetPolicy? associationPolicy,
     Query? query,
     bool seedOnly = false,
   }) async {
@@ -246,9 +246,9 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   Future<List<TModel>> getBatched<TModel extends TRepositoryModel>({
+    OfflineFirstGetPolicy? associationPolicy,
     int batchSize = 50,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-    OfflineFirstGetPolicy? associationPolicy,
     Query? query,
     bool seedOnly = false,
   }) async {
@@ -366,8 +366,8 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
   Stream<List<TModel>> subscribe<TModel extends TRepositoryModel>({
-    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.localOnly,
     OfflineFirstGetPolicy? associationPolicy,
+    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.localOnly,
     Query? query,
   }) {
     query ??= const Query();

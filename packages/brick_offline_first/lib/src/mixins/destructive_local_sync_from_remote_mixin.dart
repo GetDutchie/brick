@@ -16,9 +16,9 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
   /// are destroyed. Further, when `true`, all values from other parameters except [query] are ignored.
   @override
   Future<List<TModel>> get<TModel extends T>({
+    OfflineFirstGetPolicy? associationPolicy,
     bool forceLocalSyncFromRemote = false,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-    OfflineFirstGetPolicy? associationPolicy,
     Query? query,
     bool seedOnly = false,
   }) async {
