@@ -310,6 +310,25 @@ void main() {
         sqliteStatementExpectation(statement, [1, 2]);
       });
 
+      test('same field reverse order', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `DemoModelAssoc` ON `DemoModel`.assoc_DemoModelAssoc_brick_id = `DemoModelAssoc`._brick_id WHERE `DemoModel`.id = ? AND `DemoModelAssoc`.id = ? ORDER BY `DemoModel`.id ASC';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: const Query(
+            where: [
+              Where.exact('id', 2),
+              Where.exact('assoc', Where.exact('id', 1)),
+            ],
+            orderBy: [OrderBy.asc('id')],
+          ),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, [2, 1]);
+      });
+
       test('nested association', () async {
         const statement =
             'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` INNER JOIN `_brick_DemoModel_many_assoc` ON `DemoModel`._brick_id = `_brick_DemoModel_many_assoc`.l_DemoModel_brick_id INNER JOIN `DemoModelAssoc` ON `DemoModelAssoc`._brick_id = `_brick_DemoModel_many_assoc`.f_DemoModelAssoc_brick_id WHERE `DemoModelAssoc`.full_name = ?';

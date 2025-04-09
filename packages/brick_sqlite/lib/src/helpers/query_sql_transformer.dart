@@ -29,6 +29,8 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
   final _innerJoins = <String>{};
   final _values = <dynamic>[];
 
+  var _queryHasAssociations = false;
+
   /// Must-haves for the [statement], mainly used to build clauses
   final Query? query;
 
@@ -81,7 +83,12 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     final execute = outputAsSelect ? 'SELECT DISTINCT `${adapter.tableName}`.*' : 'SELECT COUNT(*)';
 
     _statement.add('$execute FROM `${adapter.tableName}`');
-    for (final condition in query?.where ?? []) {
+
+    _queryHasAssociations = query?.where
+            ?.any((e) => adapter.fieldsToSqliteColumns[e.evaluatedField]?.association ?? false) ??
+        false;
+
+    for (final condition in query?.where ?? <WhereCondition>[]) {
       final whereStatement = _expandCondition(condition);
       if (whereStatement.isNotEmpty) _where.add(whereStatement);
     }
@@ -173,9 +180,9 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
     }
 
     /// Finally add the column to the complete phrase
-    final sqliteColumn = passedAdapter.tableName != adapter.tableName || _innerJoins.isNotEmpty
+    final sqliteColumn = passedAdapter.tableName != adapter.tableName || _queryHasAssociations
         ? '`${passedAdapter.tableName}`.${definition.columnName}'
-        : _innerJoins.isNotEmpty
+        : _queryHasAssociations
             ? '`${adapter.tableName}`.${definition.columnName}'
             : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
