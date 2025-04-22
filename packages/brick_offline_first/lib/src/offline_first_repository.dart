@@ -342,7 +342,12 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     memoryCacheProvider.reset();
     for (final subscription in subscriptions.values) {
       for (final controller in subscription.values) {
-        await controller.close();
+        // https://github.com/GetDutchie/brick/issues/552
+        if (!controller.isClosed && controller.hasListener && !controller.isPaused) {
+          await controller.close();
+        } else {
+          unawaited(controller.close());
+        }
       }
     }
     subscriptions.clear();
