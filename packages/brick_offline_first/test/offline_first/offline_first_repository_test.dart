@@ -101,7 +101,7 @@ void main() {
           // The TestProvider does not have unique keys, so Brick can't compare based on the name,
           // giving the appearance of two distinct records
           expect(fetchAgain, hasLength(2));
-          expect((TestRepository().remoteProvider as TestProvider).methodsCalled, hasLength(2));
+          expect((TestRepository().remoteProvider as TestProvider).methodsCalled, hasLength(5));
         } finally {
           TestRepository().memoryCacheProvider.managedModelTypes.remove(Horse);
         }

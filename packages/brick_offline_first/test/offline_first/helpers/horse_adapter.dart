@@ -7,12 +7,17 @@ Future<Horse> _$HorseFromTest(
 }) async {
   return Horse(
     name: data['name'] as String?,
-    mounties: await Future.wait<Mounty>(
+    mounties: await Future.wait(
       data['mounties']
-              ?.map((d) => MountyAdapter().fromTest(d, provider: provider, repository: repository))
+              ?.map<Future<Mounty>>((d) => MountyAdapter()
+                  .fromTest(d, provider: provider, repository: repository),)
               .toList() ??
           [],
     ),
+    owner: data['owner'] == null
+        ? null
+        : await OwnerAdapter().fromTest(data['owner'],
+            provider: provider, repository: repository,),
   );
 }
 
@@ -25,9 +30,14 @@ Future<Map<String, dynamic>> _$HorseToTest(
     'name': instance.name,
     'mounties': await Future.wait<Map<String, dynamic>>(
       instance.mounties
-          .map((s) => MountyAdapter().toTest(s, provider: provider, repository: repository))
+          .map((s) => MountyAdapter()
+              .toTest(s, provider: provider, repository: repository),)
           .toList(),
     ),
+    'owner': instance.owner == null
+        ? null
+        : await OwnerAdapter().toTest(instance.owner!,
+            provider: provider, repository: repository,),
   };
 }
 
@@ -36,6 +46,13 @@ Future<Horse> _$HorseFromSqlite(
   required SqliteProvider provider,
   OfflineFirstWithTestRepository? repository,
 }) async {
+  final ownerId = data['_brick_owner_id'];
+  final owner = ownerId == null
+      ? null
+      : await repository!.getAssociation<Owner>(
+          Query.where('primaryKey', ownerId, limit1: true),
+        );
+
   return Horse(
     name: data['name'] == null ? null : data['name'] as String?,
     mounties: (await provider.rawQuery(
@@ -54,6 +71,7 @@ Future<Horse> _$HorseFromSqlite(
       );
     }))
         .toList(),
+    owner: owner?.firstOrNull,
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -62,7 +80,10 @@ Future<Map<String, dynamic>> _$HorseToSqlite(
   required SqliteProvider provider,
   OfflineFirstWithTestRepository? repository,
 }) async {
-  return {'name': instance.name};
+  return {
+    'name': instance.name,
+    '_brick_owner_id': instance.owner?.primaryKey,
+  };
 }
 
 /// Construct a [Horse]
@@ -84,6 +105,11 @@ class HorseAdapter extends OfflineFirstWithTestAdapter<Horse> {
       columnName: 'mounties',
       iterable: true,
       type: Mounty,
+    ),
+    'owner': const RuntimeSqliteColumnDefinition(
+      association: true,
+      columnName: '_brick_owner_id',
+      type: Owner,
     ),
   };
   @override

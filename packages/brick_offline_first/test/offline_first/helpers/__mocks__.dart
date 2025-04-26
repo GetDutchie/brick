@@ -11,6 +11,8 @@ part 'horse.dart';
 part 'horse_adapter.dart';
 part 'mounty.dart';
 part 'mounty_adapter.dart';
+part 'owner.dart';
+part 'owner_adapter.dart';
 
 /// The exact same as [Mounty], except this class is tracked by the Memory Cache Provider
 /// while [Mounty] is not.
@@ -40,6 +42,13 @@ class DemoModelMigration extends Migration {
               onDeleteCascade: true,
             ),
             InsertColumn('name', Column.varchar, onTable: 'Horse'),
+            InsertTable('Owner'),
+            InsertColumn('name', Column.varchar, onTable: 'Owner'),
+            InsertForeignKey(
+              'Horse',
+              'Owner',
+              foreignKeyColumn: '_brick_owner_id',
+            ),
           ],
           down: const <MigrationCommand>[],
         );
@@ -94,6 +103,7 @@ final Map<Type, TestAdapter<TestModel>> testMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
   Mounty: MountyAdapter(),
+  Owner: OwnerAdapter(),
 };
 final testModelDictionary = TestModelDictionary(testMappings);
 
@@ -102,5 +112,6 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   Horse: HorseAdapter(),
   MemoryDemoModel: MountyAdapter(),
   Mounty: MountyAdapter(),
+  Owner: OwnerAdapter(),
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);
