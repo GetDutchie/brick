@@ -121,6 +121,20 @@ void main() {
       });
     });
 
+    test('associationPolicy overrides policy for associations', () async {
+      await TestRepository().get<Horse>(policy: OfflineFirstGetPolicy.awaitRemote);
+
+      expect((TestRepository().remoteProvider as TestProvider).methodsCalled, hasLength(2));
+
+      await TestRepository().get<Horse>(
+        associationPolicy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineFirstGetPolicy.awaitRemote,
+      );
+
+      // Get is only invoked once if the associationPolicy is localOnly
+      expect((TestRepository().remoteProvider as TestProvider).methodsCalled, hasLength(3));
+    });
+
     test(
       '#hydrateSqlite / #get requireRest:true',
       () async {

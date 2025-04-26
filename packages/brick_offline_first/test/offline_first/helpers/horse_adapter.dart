@@ -82,7 +82,13 @@ Future<Map<String, dynamic>> _$HorseToSqlite(
 }) async {
   return {
     'name': instance.name,
-    '_brick_owner_id': instance.owner?.primaryKey,
+    '_brick_owner_id': (instance.owner == null)
+        ? null
+        : instance.owner?.primaryKey ??
+            await provider.upsert<Owner>(
+              instance.owner!,
+              repository: repository,
+            ),
   };
 }
 

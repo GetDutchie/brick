@@ -42,7 +42,8 @@ class TestProvider extends Provider<TestModel> {
         'mounties': [
           {'name': 'SqliteName'},
         ],
-      },
+        'owner': { 'name': 'SqliteName'},
+      }
     ];
     final results = data
         .map((e) => adapter.fromTest(e, provider: this, repository: repository))
