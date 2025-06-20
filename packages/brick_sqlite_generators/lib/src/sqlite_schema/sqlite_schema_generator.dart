@@ -234,7 +234,7 @@ class SqliteSchemaGenerator {
     } else if (checker.isEnum) {
       return SchemaColumn(
         column.name!,
-        Column.integer,
+        column.enumAsString ? Column.varchar : Column.integer,
         nullable: column.nullable,
         unique: column.unique,
       );
