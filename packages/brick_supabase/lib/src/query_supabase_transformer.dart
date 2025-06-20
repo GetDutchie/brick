@@ -270,8 +270,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
   String _quoteSupabaseValue(dynamic v) {
     if (v is String) {
-      // Escape single quotes by doubling them, then wrap in double quotes
-      final escaped = v.replaceAll("'", "''");
+      // Escape double quotes by doubling them, then wrap in double quotes
+      final escaped = v.replaceAll('"', '""');
       return '"$escaped"';
     }
     return v.toString();
