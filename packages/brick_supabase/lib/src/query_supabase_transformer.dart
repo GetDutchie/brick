@@ -188,7 +188,9 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
     return [
       {
-        queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
+        queryKey: condition.compare == Compare.inList
+            ? 'in.(${(condition.value as Iterable).join(',')})'
+            : '${_compareToSearchParam(condition.compare)}.${condition.value}',
       },
       ...associationConditions,
     ];
@@ -259,6 +261,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         return 'adj';
       case Compare.notEqual:
         return 'neq';
+      case Compare.inList:
+        return 'in';
     }
   }
 }

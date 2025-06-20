@@ -274,7 +274,9 @@ class WhereColumnFragment {
       if (condition.compare == Compare.between) {
         return _generateBetween();
       }
-
+      if (condition.compare == Compare.inList) {
+        return _generateInList();
+      }
       return _generateIterable();
     }
 
@@ -323,6 +325,8 @@ class WhereColumnFragment {
         return 'BETWEEN';
       case Compare.notEqual:
         return '!=';
+      case Compare.inList:
+        return 'IN';
     }
   }
 
@@ -346,6 +350,17 @@ class WhereColumnFragment {
     });
 
     return ' $matcher ${wherePrepared.join(' $matcher ')}';
+  }
+
+  String _generateInList() {
+    final list = condition.value as Iterable;
+    if (list.isEmpty) {
+      // If the list is empty, the query should return no results
+      return ' $matcher 0';
+    }
+    values.addAll(list.map((v) => sqlifiedValue(v, condition.compare)));
+    final placeholders = List.filled(list.length, '?').join(', ');
+    return ' $matcher $column IN ($placeholders)';
   }
 }
 
