@@ -89,7 +89,83 @@ void main() {
       expect(existsAfterDelete, isFalse);
     });
 
-    test('#migrate', () {}, skip: 'Write test');
+    group('#migrate', () {
+      late SqliteProvider cleanProvider;
+
+      setUp(() {
+        cleanProvider = SqliteProvider(
+          inMemoryDatabasePath,
+          databaseFactory: databaseFactoryFfi,
+          modelDictionary: dictionary,
+        );
+      });
+
+      tearDown(() async {
+        await cleanProvider.resetDb();
+      });
+
+      test('runs migrations for the first time', () async {
+        await cleanProvider.migrate([const DemoModelMigration()]);
+
+        final version = await cleanProvider.lastMigrationVersion();
+        expect(version, 2);
+
+        // Verify tables were created
+        final tables = await cleanProvider.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        );
+        final tableNames = tables.map((t) => t['name']).toList();
+        expect(tableNames, contains('DemoModelAssoc'));
+        expect(tableNames, contains('DemoModel'));
+      });
+
+      test('skips migrations when already at latest version', () async {
+        // Run migration first time
+        await cleanProvider.migrate([const DemoModelMigration()]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+
+        // Run again - should skip
+        await cleanProvider.migrate([const DemoModelMigration()]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+      });
+
+      test('enables foreign keys pragma', () async {
+        const migration = DemoModelMigration();
+
+        await cleanProvider.migrate([migration]);
+
+        final result = await cleanProvider.rawQuery('PRAGMA foreign_keys');
+        expect(result.first['foreign_keys'], 1);
+      });
+
+      test('tracks migration versions correctly', () async {
+        const migration1 = DemoModelMigration();
+        const migration2 = DemoModelMigration();
+
+        // No migrations initially
+        expect(await cleanProvider.lastMigrationVersion(), -1);
+
+        // After first migration
+        await cleanProvider.migrate([migration1]);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
+
+        // After second migration
+        await cleanProvider.migrate([migration1, migration2]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+
+        // Verify version records exist
+        final db = await cleanProvider.getDb();
+        final versions = await db.query('MigrationVersions', orderBy: 'version');
+        expect(versions, hasLength(2));
+        expect(versions[0]['version'], 1);
+        expect(versions[1]['version'], 2);
+      });
+
+      test('handles empty migration list', () async {
+        await cleanProvider.migrate([]);
+        expect(await cleanProvider.lastMigrationVersion(), -1);
+      });
+    });
 
     group('#exists', () {
       test('specific', () async {
