@@ -1,4 +1,5 @@
 - `#queryToSql` is added to support Brick Query debugging
+- Fix querying associations of the same table by specifying an `AS` name
 
 ## 4.0.2
 
