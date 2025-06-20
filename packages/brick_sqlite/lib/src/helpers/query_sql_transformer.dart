@@ -355,8 +355,8 @@ class WhereColumnFragment {
   String _generateInList() {
     final list = condition.value as Iterable;
     if (list.isEmpty) {
-      // Always false condition
-      return ' AND 1=0';
+      // Always false condition, use matcher for consistency
+      return ' $matcher 1=0';
     }
     values.addAll(list.map((v) => sqlifiedValue(v, condition.compare)));
     final placeholders = List.filled(list.length, '?').join(', ');
