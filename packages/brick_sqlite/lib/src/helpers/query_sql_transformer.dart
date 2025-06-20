@@ -353,13 +353,13 @@ class WhereColumnFragment {
   }
 
   String _generateInList() {
-    final list = condition.value as Iterable;
-    if (list.isEmpty) {
+    final value = condition.value;
+    if (value is! Iterable || value.isEmpty) {
       // Always false condition, use matcher for consistency
       return ' $matcher 1=0';
     }
-    values.addAll(list.map((v) => sqlifiedValue(v, condition.compare)));
-    final placeholders = List.filled(list.length, '?').join(', ');
+    values.addAll(value.map((v) => sqlifiedValue(v, condition.compare)));
+    final placeholders = List.filled(value.length, '?').join(', ');
     return ' $matcher $column IN ($placeholders)';
   }
 }
