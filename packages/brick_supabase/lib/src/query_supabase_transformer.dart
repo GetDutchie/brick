@@ -189,7 +189,9 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return [
       {
         queryKey: condition.compare == Compare.inList
-            ? 'in.(${(condition.value as Iterable).join(',')})'
+            ? (condition.value is Iterable && (condition.value as Iterable).isEmpty
+                ? 'eq.__NO_MATCH__'
+                : 'in.(${(condition.value as Iterable).map(_quoteSupabaseValue).join(',')})')
             : '${_compareToSearchParam(condition.compare)}.${condition.value}',
       },
       ...associationConditions,
@@ -264,5 +266,14 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
       case Compare.inList:
         return 'in';
     }
+  }
+
+  String _quoteSupabaseValue(dynamic v) {
+    if (v is String) {
+      // Escape single quotes by doubling them, then wrap in double quotes
+      final escaped = v.replaceAll("'", "''");
+      return '"$escaped"';
+    }
+    return v.toString();
   }
 }
