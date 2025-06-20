@@ -189,9 +189,9 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     return [
       {
         queryKey: condition.compare == Compare.inList
-            ? (condition.value is Iterable && (condition.value as Iterable).isEmpty
-                ? 'eq.__NO_MATCH__'
-                : 'in.(${(condition.value as Iterable).map(_quoteSupabaseValue).join(',')})')
+            ? (condition.value is Iterable && (condition.value as Iterable).isNotEmpty
+                ? 'in.(${(condition.value as Iterable).map(_quoteSupabaseValue).join(',')})'
+                : 'in.()')
             : '${_compareToSearchParam(condition.compare)}.${condition.value}',
       },
       ...associationConditions,
