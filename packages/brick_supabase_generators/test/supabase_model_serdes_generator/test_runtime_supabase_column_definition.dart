@@ -21,14 +21,13 @@ Future<SupabaseRuntime> _$SupabaseRuntimeFromSupabase(
       provider: provider,
       repository: repository,
     ),
-    nullableAssoc:
-        data['assocs_id'] == null
-            ? null
-            : await AssocAdapter().fromSupabase(
-              data['assocs_id'],
-              provider: provider,
-              repository: repository,
-            ),
+    nullableAssoc: data['assocs_id'] == null
+        ? null
+        : await AssocAdapter().fromSupabase(
+            data['assocs_id'],
+            provider: provider,
+            repository: repository,
+          ),
     queried: data['queried'] as bool,
     queriedMultiline: data['queried_multiline'] as bool,
   );
@@ -51,14 +50,13 @@ Future<Map<String, dynamic>> _$SupabaseRuntimeToSupabase(
       provider: provider,
       repository: repository,
     ),
-    'assocs_id':
-        instance.nullableAssoc != null
-            ? await AssocAdapter().toSupabase(
-              instance.nullableAssoc!,
-              provider: provider,
-              repository: repository,
-            )
-            : null,
+    'assocs_id': instance.nullableAssoc != null
+        ? await AssocAdapter().toSupabase(
+            instance.nullableAssoc!,
+            provider: provider,
+            repository: repository,
+          )
+        : null,
     'queried': instance.queried,
     'queried_multiline': instance.queriedMultiline,
   };

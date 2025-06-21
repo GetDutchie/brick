@@ -8,22 +8,19 @@ Future<EnumAsString> _$EnumAsStringFromSupabase(
 }) async {
   return EnumAsString(
     hat: Hat.values.byName(data['hat']),
-    nullableHat:
-        data['nullable_hat'] == null
-            ? null
-            : Hat.values.byName(data['nullable_hat']),
-    hats:
-        data['hats']
-            .whereType<String>()
-            .map(Hat.values.byName)
-            .toList()
-            .cast<Hat>(),
-    nullableHats:
-        data['nullable_hats']
-            .whereType<String>()
-            .map(Hat.values.byName)
-            ?.toList()
-            .cast<Hat?>(),
+    nullableHat: data['nullable_hat'] == null
+        ? null
+        : Hat.values.byName(data['nullable_hat']),
+    hats: data['hats']
+        .whereType<String>()
+        .map(Hat.values.byName)
+        .toList()
+        .cast<Hat>(),
+    nullableHats: data['nullable_hats']
+        .whereType<String>()
+        .map(Hat.values.byName)
+        ?.toList()
+        .cast<Hat?>(),
   );
 }
 

@@ -45,6 +45,12 @@ Future<void> generateExpectation(
 }) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
+
+  if (generated.trim() != output.trim()) {
+    // ignore: avoid_print
+    print(generated);
+  }
+
   expect(generated.trim(), output.trim());
 }
 
@@ -59,5 +65,11 @@ Future<void> generateAdapterExpectation(
     annotation.annotation,
     MockBuildStep(),
   );
+
+  if (generated.trim() != output.trim()) {
+    // ignore: avoid_print
+    print(generated);
+  }
+
   expect(generated.trim(), output.trim());
 }

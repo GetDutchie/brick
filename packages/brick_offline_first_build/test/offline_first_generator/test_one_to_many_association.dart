@@ -45,22 +45,21 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromTest(
               .cast<Future<SqliteAssoc>>() ??
           [],
     ),
-    nullableAssoc:
-        data['nullable_assoc'] == null
-            ? null
-            : await Future.wait<SqliteAssoc>(
-              data['nullable_assoc']
-                      ?.map(
-                        (d) => SqliteAssocAdapter().fromTest(
-                          d,
-                          provider: provider,
-                          repository: repository,
-                        ),
-                      )
-                      .toList()
-                      .cast<Future<SqliteAssoc>>() ??
-                  [],
-            ),
+    nullableAssoc: data['nullable_assoc'] == null
+        ? null
+        : await Future.wait<SqliteAssoc>(
+            data['nullable_assoc']
+                    ?.map(
+                      (d) => SqliteAssocAdapter().fromTest(
+                        d,
+                        provider: provider,
+                        repository: repository,
+                      ),
+                    )
+                    .toList()
+                    .cast<Future<SqliteAssoc>>() ??
+                [],
+          ),
   );
 }
 
@@ -104,40 +103,44 @@ Future<OneToManyAssociation> _$OneToManyAssociationFromSqlite(
   return OneToManyAssociation(
     assoc:
         (await provider
-            .rawQuery(
-              'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
-              [data['_brick_id'] as int],
-            )
-            .then((results) {
-              final ids = results.map((r) => r['f_SqliteAssoc_brick_id']);
-              return Future.wait<SqliteAssoc>(
-                ids.map(
-                  (primaryKey) => repository!
-                      .getAssociation<SqliteAssoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first),
-                ),
-              );
-            })).toList().cast<SqliteAssoc>(),
+                .rawQuery(
+                  'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
+                  [data['_brick_id'] as int],
+                )
+                .then((results) {
+                  final ids = results.map((r) => r['f_SqliteAssoc_brick_id']);
+                  return Future.wait<SqliteAssoc>(
+                    ids.map(
+                      (primaryKey) => repository!
+                          .getAssociation<SqliteAssoc>(
+                            Query.where('primaryKey', primaryKey, limit1: true),
+                          )
+                          .then((r) => r!.first),
+                    ),
+                  );
+                }))
+            .toList()
+            .cast<SqliteAssoc>(),
     nullableAssoc:
         (await provider
-            .rawQuery(
-              'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_nullable_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
-              [data['_brick_id'] as int],
-            )
-            .then((results) {
-              final ids = results.map((r) => r['f_SqliteAssoc_brick_id']);
-              return Future.wait<SqliteAssoc>(
-                ids.map(
-                  (primaryKey) => repository!
-                      .getAssociation<SqliteAssoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first),
-                ),
-              );
-            })).toList().cast<SqliteAssoc>(),
+                .rawQuery(
+                  'SELECT DISTINCT `f_SqliteAssoc_brick_id` FROM `_brick_OneToManyAssociation_nullable_assoc` WHERE l_OneToManyAssociation_brick_id = ?',
+                  [data['_brick_id'] as int],
+                )
+                .then((results) {
+                  final ids = results.map((r) => r['f_SqliteAssoc_brick_id']);
+                  return Future.wait<SqliteAssoc>(
+                    ids.map(
+                      (primaryKey) => repository!
+                          .getAssociation<SqliteAssoc>(
+                            Query.where('primaryKey', primaryKey, limit1: true),
+                          )
+                          .then((r) => r!.first),
+                    ),
+                  );
+                }))
+            .toList()
+            .cast<SqliteAssoc>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -192,8 +195,9 @@ class OneToManyAssociationAdapter
       final assocOldIds = assocOldColumns.map(
         (a) => a['f_SqliteAssoc_brick_id'],
       );
-      final assocNewIds =
-          instance.assoc.map((s) => s.primaryKey).whereType<int>();
+      final assocNewIds = instance.assoc
+          .map((s) => s.primaryKey)
+          .whereType<int>();
       final assocIdsToDelete = assocOldIds.where(
         (id) => !assocNewIds.contains(id),
       );
