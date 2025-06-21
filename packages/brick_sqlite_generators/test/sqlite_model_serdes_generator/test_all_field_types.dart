@@ -15,29 +15,26 @@ Future<AllFieldTypes> _$AllFieldTypesFromSqlite(
     integer: data['integer'] == null ? null : data['integer'] as int?,
     boolean: data['boolean'] == null ? null : data['boolean'] == 1,
     dub: data['dub'] == null ? null : data['dub'] as double?,
-    enumField:
-        data['enum_field'] == null
-            ? null
-            : (data['enum_field'] > -1
-                ? Casing.values[data['enum_field'] as int]
-                : null),
-    enumList:
-        jsonDecode(data['enum_list'])
-            .map((d) => d as int > -1 ? Casing.values[d] : null)
-            .whereType<Casing>()
-            .toList()
-            .cast<Casing>(),
-    longerCamelizedVariable:
-        data['longer_camelized_variable'] == null
-            ? null
-            : data['longer_camelized_variable'] as String?,
+    enumField: data['enum_field'] == null
+        ? null
+        : (data['enum_field'] > -1
+              ? Casing.values[data['enum_field'] as int]
+              : null),
+    enumList: jsonDecode(data['enum_list'])
+        .map((d) => d as int > -1 ? Casing.values[d] : null)
+        .whereType<Casing>()
+        .toList()
+        .cast<Casing>(),
+    longerCamelizedVariable: data['longer_camelized_variable'] == null
+        ? null
+        : data['longer_camelized_variable'] as String?,
     map: jsonDecode(data['map']),
-    nullableList:
-        data['nullable_list'] == null
-            ? null
-            : jsonDecode(data['nullable_list']).toList().cast<int>(),
-    nullableMap:
-        data['nullable_map'] == null ? null : jsonDecode(data['nullable_map']),
+    nullableList: data['nullable_list'] == null
+        ? null
+        : jsonDecode(data['nullable_list']).toList().cast<int>(),
+    nullableMap: data['nullable_map'] == null
+        ? null
+        : jsonDecode(data['nullable_map']),
     string: data['string'] == null ? null : data['string'] as String?,
     stringSet: jsonDecode(data['string_set']).toSet().cast<String>(),
   )..primaryKey = data['_brick_id'] as int;
@@ -52,21 +49,20 @@ Future<Map<String, dynamic>> _$AllFieldTypesToSqlite(
     'integer': instance.integer,
     'boolean': instance.boolean == null ? null : (instance.boolean! ? 1 : 0),
     'dub': instance.dub,
-    'enum_field':
-        instance.enumField != null
-            ? Casing.values.indexOf(instance.enumField!)
-            : null,
+    'enum_field': instance.enumField != null
+        ? Casing.values.indexOf(instance.enumField!)
+        : null,
     'enum_list': jsonEncode(
       instance.enumList.map((s) => Casing.values.indexOf(s)).toList(),
     ),
     'longer_camelized_variable': instance.longerCamelizedVariable,
     'map': jsonEncode(instance.map),
-    'nullable_list':
-        instance.nullableList == null
-            ? null
-            : jsonEncode(instance.nullableList),
-    'nullable_map':
-        instance.nullableMap != null ? jsonEncode(instance.nullableMap) : null,
+    'nullable_list': instance.nullableList == null
+        ? null
+        : jsonEncode(instance.nullableList),
+    'nullable_map': instance.nullableMap != null
+        ? jsonEncode(instance.nullableMap)
+        : null,
     'string': instance.string,
     'string_set': jsonEncode(instance.stringSet.toList()),
   };

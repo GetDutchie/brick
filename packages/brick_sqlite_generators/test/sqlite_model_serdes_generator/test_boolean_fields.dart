@@ -11,26 +11,24 @@ Future<BooleanFields> _$BooleanFieldsFromSqlite(
 }) async {
   return BooleanFields(
     someField: data['some_field'] == null ? null : data['some_field'] == 1,
-    nullableField:
-        data['nullable_field'] == null ? null : data['nullable_field'] == 1,
-    multipleFields:
-        data['multiple_fields'] == null
-            ? null
-            : jsonDecode(
-              data['multiple_fields'],
-            ).map((d) => d == 1).toList().cast<bool>(),
-    multipleNullableFields:
-        data['multiple_nullable_fields'] == null
-            ? null
-            : jsonDecode(
-              data['multiple_nullable_fields'],
-            ).map((d) => d == 1).toList().cast<bool>(),
-    multipleFutureFields:
-        data['multiple_future_fields'] == null
-            ? null
-            : jsonDecode(
-              data['multiple_future_fields'],
-            ).toList().cast<Future<bool>>(),
+    nullableField: data['nullable_field'] == null
+        ? null
+        : data['nullable_field'] == 1,
+    multipleFields: data['multiple_fields'] == null
+        ? null
+        : jsonDecode(
+            data['multiple_fields'],
+          ).map((d) => d == 1).toList().cast<bool>(),
+    multipleNullableFields: data['multiple_nullable_fields'] == null
+        ? null
+        : jsonDecode(
+            data['multiple_nullable_fields'],
+          ).map((d) => d == 1).toList().cast<bool>(),
+    multipleFutureFields: data['multiple_future_fields'] == null
+        ? null
+        : jsonDecode(
+            data['multiple_future_fields'],
+          ).toList().cast<Future<bool>>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -40,12 +38,12 @@ Future<Map<String, dynamic>> _$BooleanFieldsToSqlite(
   SqliteFirstRepository? repository,
 }) async {
   return {
-    'some_field':
-        instance.someField == null ? null : (instance.someField! ? 1 : 0),
-    'nullable_field':
-        instance.nullableField == null
-            ? null
-            : (instance.nullableField! ? 1 : 0),
+    'some_field': instance.someField == null
+        ? null
+        : (instance.someField! ? 1 : 0),
+    'nullable_field': instance.nullableField == null
+        ? null
+        : (instance.nullableField! ? 1 : 0),
     'multiple_fields': jsonEncode(
       instance.multipleFields
           .map((b) => b == null ? null : (b! ? 1 : 0))

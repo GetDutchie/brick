@@ -13,24 +13,21 @@ Future<ToFromJson> _$ToFromJsonFromSqlite(
     assoc: ToFromJsonAssoc.fromJson(
       jsonDecode(data['assoc'] as String) as String,
     ),
-    assocNullable:
-        data['assoc_nullable'] == null
-            ? null
-            : ToFromJsonAssoc.fromJson(
-              jsonDecode(data['assoc_nullable'] as String) as String,
-            ),
-    assocIterable:
-        jsonDecode(data['assoc_iterable'])
-            .map((d) => ToFromJsonAssoc.fromJson(d as String))
-            .toList()
-            .cast<ToFromJsonAssoc>(),
-    assocIterableNullable:
-        data['assoc_iterable_nullable'] == null
-            ? null
-            : jsonDecode(data['assoc_iterable_nullable'] ?? '[]')
-                .map((d) => ToFromJsonAssoc.fromJson(d as String))
-                .toList()
-                .cast<ToFromJsonAssoc>(),
+    assocNullable: data['assoc_nullable'] == null
+        ? null
+        : ToFromJsonAssoc.fromJson(
+            jsonDecode(data['assoc_nullable'] as String) as String,
+          ),
+    assocIterable: jsonDecode(data['assoc_iterable'])
+        .map((d) => ToFromJsonAssoc.fromJson(d as String))
+        .toList()
+        .cast<ToFromJsonAssoc>(),
+    assocIterableNullable: data['assoc_iterable_nullable'] == null
+        ? null
+        : jsonDecode(data['assoc_iterable_nullable'] ?? '[]')
+              .map((d) => ToFromJsonAssoc.fromJson(d as String))
+              .toList()
+              .cast<ToFromJsonAssoc>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -41,15 +38,13 @@ Future<Map<String, dynamic>> _$ToFromJsonToSqlite(
 }) async {
   return {
     'assoc': jsonEncode(instance.assoc.toJson()),
-    'assoc_nullable':
-        instance.assocNullable != null
-            ? jsonEncode(instance.assocNullable!.toJson())
-            : null,
+    'assoc_nullable': instance.assocNullable != null
+        ? jsonEncode(instance.assocNullable!.toJson())
+        : null,
     'assoc_iterable': jsonEncode(instance.assocIterable),
-    'assoc_iterable_nullable':
-        instance.assocIterableNullable != null
-            ? jsonEncode(instance.assocIterableNullable)
-            : null,
+    'assoc_iterable_nullable': instance.assocIterableNullable != null
+        ? jsonEncode(instance.assocIterableNullable)
+        : null,
   };
 }
 
