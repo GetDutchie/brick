@@ -9,17 +9,19 @@ Future<NullableField> _$NullableFieldFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return NullableField(
-    restFalse:
-        data['rest_false'] == null ? null : data['rest_false'] as String?,
-    nullableRestTrue:
-        data['nullable_rest_true'] == null
-            ? null
-            : data['nullable_rest_true'] as String?,
+    restFalse: data['rest_false'] == null
+        ? null
+        : data['rest_false'] as String?,
+    nullableRestTrue: data['nullable_rest_true'] == null
+        ? null
+        : data['nullable_rest_true'] as String?,
     restTrue: data['rest_true'] as String,
-    sqliteFalse:
-        data['sqlite_false'] == null ? null : data['sqlite_false'] as String?,
-    sqliteTrue:
-        data['sqlite_true'] == null ? null : data['sqlite_true'] as String?,
+    sqliteFalse: data['sqlite_false'] == null
+        ? null
+        : data['sqlite_false'] as String?,
+    sqliteTrue: data['sqlite_true'] == null
+        ? null
+        : data['sqlite_true'] as String?,
     constructorFieldNullabilityMismatch:
         data['constructor_field_nullability_mismatch'] as String?,
     constructorFieldTypeMismatch:
@@ -50,17 +52,19 @@ Future<NullableField> _$NullableFieldFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return NullableField(
-    restFalse:
-        data['rest_false'] == null ? null : data['rest_false'] as String?,
-    nullableRestTrue:
-        data['nullable_rest_true'] == null
-            ? null
-            : data['nullable_rest_true'] as String?,
+    restFalse: data['rest_false'] == null
+        ? null
+        : data['rest_false'] as String?,
+    nullableRestTrue: data['nullable_rest_true'] == null
+        ? null
+        : data['nullable_rest_true'] as String?,
     restTrue: data['rest_true'] as String,
-    sqliteFalse:
-        data['sqlite_false'] == null ? null : data['sqlite_false'] as String?,
-    sqliteTrue:
-        data['sqlite_true'] == null ? null : data['sqlite_true'] as String?,
+    sqliteFalse: data['sqlite_false'] == null
+        ? null
+        : data['sqlite_false'] as String?,
+    sqliteTrue: data['sqlite_true'] == null
+        ? null
+        : data['sqlite_true'] as String?,
     constructorFieldNullabilityMismatch:
         data['constructor_field_nullability_mismatch'] as String,
     constructorFieldTypeMismatch:

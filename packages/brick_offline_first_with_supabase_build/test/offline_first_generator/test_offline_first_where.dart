@@ -33,22 +33,21 @@ Future<SupabaseOfflineFirstWhere> _$SupabaseOfflineFirstWhereFromSupabase(
               .cast<Future<Assoc>>() ??
           [],
     ),
-    nullableAssociations:
-        data['nullable_associations'] == null
-            ? null
-            : await Future.wait<Assoc>(
-              data['nullable_associations']
-                      ?.map(
-                        (d) => AssocAdapter().fromSupabase(
-                          d,
-                          provider: provider,
-                          repository: repository,
-                        ),
-                      )
-                      .toList()
-                      .cast<Future<Assoc>>() ??
-                  [],
-            ),
+    nullableAssociations: data['nullable_associations'] == null
+        ? null
+        : await Future.wait<Assoc>(
+            data['nullable_associations']
+                    ?.map(
+                      (d) => AssocAdapter().fromSupabase(
+                        d,
+                        provider: provider,
+                        repository: repository,
+                      ),
+                    )
+                    .toList()
+                    .cast<Future<Assoc>>() ??
+                [],
+          ),
   );
 }
 
@@ -91,50 +90,53 @@ Future<SupabaseOfflineFirstWhere> _$SupabaseOfflineFirstWhereFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return SupabaseOfflineFirstWhere(
-    association:
-        (await repository!.getAssociation<Assoc>(
-          Query.where(
-            'primaryKey',
-            data['association_Assoc_brick_id'] as int,
-            limit1: true,
-          ),
-        ))!.first,
+    association: (await repository!.getAssociation<Assoc>(
+      Query.where(
+        'primaryKey',
+        data['association_Assoc_brick_id'] as int,
+        limit1: true,
+      ),
+    ))!.first,
     associations:
         (await provider
-            .rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_SupabaseOfflineFirstWhere_associations` WHERE l_SupabaseOfflineFirstWhere_brick_id = ?',
-              [data['_brick_id'] as int],
-            )
-            .then((results) {
-              final ids = results.map((r) => r['f_Assoc_brick_id']);
-              return Future.wait<Assoc>(
-                ids.map(
-                  (primaryKey) => repository
-                      .getAssociation<Assoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first),
-                ),
-              );
-            })).toList().cast<Assoc>(),
+                .rawQuery(
+                  'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_SupabaseOfflineFirstWhere_associations` WHERE l_SupabaseOfflineFirstWhere_brick_id = ?',
+                  [data['_brick_id'] as int],
+                )
+                .then((results) {
+                  final ids = results.map((r) => r['f_Assoc_brick_id']);
+                  return Future.wait<Assoc>(
+                    ids.map(
+                      (primaryKey) => repository
+                          .getAssociation<Assoc>(
+                            Query.where('primaryKey', primaryKey, limit1: true),
+                          )
+                          .then((r) => r!.first),
+                    ),
+                  );
+                }))
+            .toList()
+            .cast<Assoc>(),
     nullableAssociations:
         (await provider
-            .rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_SupabaseOfflineFirstWhere_nullable_associations` WHERE l_SupabaseOfflineFirstWhere_brick_id = ?',
-              [data['_brick_id'] as int],
-            )
-            .then((results) {
-              final ids = results.map((r) => r['f_Assoc_brick_id']);
-              return Future.wait<Assoc>(
-                ids.map(
-                  (primaryKey) => repository
-                      .getAssociation<Assoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first),
-                ),
-              );
-            })).toList().cast<Assoc>(),
+                .rawQuery(
+                  'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_SupabaseOfflineFirstWhere_nullable_associations` WHERE l_SupabaseOfflineFirstWhere_brick_id = ?',
+                  [data['_brick_id'] as int],
+                )
+                .then((results) {
+                  final ids = results.map((r) => r['f_Assoc_brick_id']);
+                  return Future.wait<Assoc>(
+                    ids.map(
+                      (primaryKey) => repository
+                          .getAssociation<Assoc>(
+                            Query.where('primaryKey', primaryKey, limit1: true),
+                          )
+                          .then((r) => r!.first),
+                    ),
+                  );
+                }))
+            .toList()
+            .cast<Assoc>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -238,8 +240,9 @@ class SupabaseOfflineFirstWhereAdapter
       final associationsOldIds = associationsOldColumns.map(
         (a) => a['f_Assoc_brick_id'],
       );
-      final associationsNewIds =
-          instance.associations.map((s) => s.primaryKey).whereType<int>();
+      final associationsNewIds = instance.associations
+          .map((s) => s.primaryKey)
+          .whereType<int>();
       final associationsIdsToDelete = associationsOldIds.where(
         (id) => !associationsNewIds.contains(id),
       );
