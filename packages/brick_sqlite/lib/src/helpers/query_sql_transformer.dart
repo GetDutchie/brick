@@ -274,7 +274,7 @@ class WhereColumnFragment {
       if (condition.compare == Compare.between) {
         return _generateBetween();
       }
-      if (condition.compare == Compare.inList) {
+      if (condition.compare == Compare.inIterable) {
         return _generateInList();
       }
       return _generateIterable();
@@ -325,7 +325,7 @@ class WhereColumnFragment {
         return 'BETWEEN';
       case Compare.notEqual:
         return '!=';
-      case Compare.inList:
+      case Compare.inIterable:
         return 'IN';
     }
   }

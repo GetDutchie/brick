@@ -78,6 +78,21 @@ void main() {
         expect(select.query, 'select=id,name,custom_age');
       });
 
+      test(
+        'inIterable',
+        () {
+          final query = Query(
+            where: [
+              const Where('name').isIn(['Jens', 'Thomas']),
+            ],
+          );
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+
+          expect(select.query, 'select=id,name,custom_age&name=in.(Jens,Thomas)');
+        },
+      );
+
       group('with query', () {
         group('eq', () {
           test('by field', () {

@@ -69,14 +69,14 @@ void main() {
     test('#isIn', () {
       expect(
         const Where('id').isIn([1, 2, 3]),
-        const Where('id', value: [1, 2, 3], compare: Compare.inList, isRequired: true),
+        const Where('id', value: [1, 2, 3], compare: Compare.inIterable, isRequired: true),
       );
     });
 
     test('#isIn with String', () {
       expect(
         const Where('name').isIn(['Alice', 'Bob']),
-        const Where('name', value: ['Alice', 'Bob'], compare: Compare.inList, isRequired: true),
+        const Where('name', value: ['Alice', 'Bob'], compare: Compare.inIterable, isRequired: true),
       );
     });
   });

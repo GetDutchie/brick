@@ -171,6 +171,23 @@ void main() {
         await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
         sqliteStatementExpectation(statement, ['%Thomas%']);
       });
+
+      test('.inIterable', () async {
+        const statement =
+            'SELECT DISTINCT `DemoModel`.* FROM `DemoModel` WHERE full_name IN (?, ?)';
+        final sqliteQuery = QuerySqlTransformer<DemoModel>(
+          modelDictionary: dictionary,
+          query: Query(
+            where: [
+              const Where('name').isIn(['Thomas', 'Guy']),
+            ],
+          ),
+        );
+
+        expect(sqliteQuery.statement, statement);
+        await db.rawQuery(sqliteQuery.statement, sqliteQuery.values);
+        sqliteStatementExpectation(statement, ['Thomas', 'Guy']);
+      });
     });
 
     group('SELECT COUNT', () {
