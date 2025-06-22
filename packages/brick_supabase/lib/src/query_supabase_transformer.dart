@@ -192,7 +192,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
             ? (condition.value is Iterable && (condition.value as Iterable).isNotEmpty
                 ? 'in.(${(condition.value as Iterable).map((v) => v is String ? v : _quoteSupabaseValue(v)).join(',')})'
                 : 'in.()')
-            : '${_compareToSearchParam(condition.compare)}.${condition.value}',
+            : '${_compareToSearchParam(condition.compare)}.${condition.value is String ? condition.value : _quoteSupabaseValue(condition.value)}',
       },
       ...associationConditions,
     ];
