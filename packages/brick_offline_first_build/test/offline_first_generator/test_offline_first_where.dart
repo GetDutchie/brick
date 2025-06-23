@@ -12,66 +12,61 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return OfflineFirstWhere(
-    assoc:
-        data['assoc'] == null
-            ? null
-            : repository!
-                .getAssociation<OtherAssoc>(
-                  Query(where: [Where.exact('id', data['id'])], limit: 1),
-                )
-                .then((r) => r!.first),
-    assocs:
-        data['assocs'] == null
-            ? null
-            : (data['assocs'] ?? [])
-                .map<Future<Assoc>>(
-                  (s) => repository
-                      .getAssociation<Assoc>(
-                        Query(
-                          where: [
-                            Where.exact('id', s),
-                            Where.exact('otherVar', s),
-                          ],
-                        ),
-                      )
-                      .then((r) => r!.first),
-                )
-                .toList(),
-    loadedAssoc:
-        data['loaded_assoc'] == null
-            ? null
-            : await repository
-                .getAssociation<Assoc>(
-                  Query(where: [Where.exact('id', data['id'])], limit: 1),
-                )
-                .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
-    loadedAssocs:
-        data['loaded_assocs'] == null
-            ? null
-            : (await Future.wait<Assoc?>(
-              (data['loaded_assocs'] ?? []).map<Future<Assoc?>>(
+    assoc: data['assoc'] == null
+        ? null
+        : repository!
+              .getAssociation<OtherAssoc>(
+                Query(where: [Where.exact('id', data['id'])], limit: 1),
+              )
+              .then((r) => r!.first),
+    assocs: data['assocs'] == null
+        ? null
+        : (data['assocs'] ?? [])
+              .map<Future<Assoc>>(
                 (s) => repository
-                    .getAssociation<Assoc>(Query(where: [Where.exact('id', s)]))
-                    .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
-              ),
-            )).whereType<Assoc>().toList(),
-    multiLookupCustomGenerator:
-        data['multi_lookup_custom_generator'] == null
-            ? null
-            : (data['multi_lookup_custom_generator'] ?? [])
-                .map<Future<Assoc>>(
-                  (s) => repository
-                      .getAssociation<Assoc>(
-                        Query(
-                          where: [
-                            Where.exact('id', s),
-                            Where.exact('otherVar', s),
-                          ],
-                        ),
-                      )
-                      .then((r) => r!.first),
-                )
-                .toList(),
+                    .getAssociation<Assoc>(
+                      Query(
+                        where: [
+                          Where.exact('id', s),
+                          Where.exact('otherVar', s),
+                        ],
+                      ),
+                    )
+                    .then((r) => r!.first),
+              )
+              .toList(),
+    loadedAssoc: data['loaded_assoc'] == null
+        ? null
+        : await repository
+              .getAssociation<Assoc>(
+                Query(where: [Where.exact('id', data['id'])], limit: 1),
+              )
+              .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
+    loadedAssocs: data['loaded_assocs'] == null
+        ? null
+        : (await Future.wait<Assoc?>(
+            (data['loaded_assocs'] ?? []).map<Future<Assoc?>>(
+              (s) => repository
+                  .getAssociation<Assoc>(Query(where: [Where.exact('id', s)]))
+                  .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
+            ),
+          )).whereType<Assoc>().toList(),
+    multiLookupCustomGenerator: data['multi_lookup_custom_generator'] == null
+        ? null
+        : (data['multi_lookup_custom_generator'] ?? [])
+              .map<Future<Assoc>>(
+                (s) => repository
+                    .getAssociation<Assoc>(
+                      Query(
+                        where: [
+                          Where.exact('id', s),
+                          Where.exact('otherVar', s),
+                        ],
+                      ),
+                    )
+                    .then((r) => r!.first),
+              )
+              .toList(),
   );
 }
 
@@ -94,18 +89,17 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return OfflineFirstWhere(
-    assoc:
-        data['assoc_OtherAssoc_brick_id'] == null
-            ? null
-            : repository
-                .getAssociation<OtherAssoc>(
-                  Query.where(
-                    'primaryKey',
-                    data['assoc_OtherAssoc_brick_id'] as int,
-                    limit1: true,
-                  ),
-                )
-                .then((r) => r!.first),
+    assoc: data['assoc_OtherAssoc_brick_id'] == null
+        ? null
+        : repository
+              .getAssociation<OtherAssoc>(
+                Query.where(
+                  'primaryKey',
+                  data['assoc_OtherAssoc_brick_id'] as int,
+                  limit1: true,
+                ),
+              )
+              .then((r) => r!.first),
     assocs: await provider
         .rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
@@ -123,36 +117,37 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
             ),
           );
         }),
-    loadedAssoc:
-        data['loaded_assoc_Assoc_brick_id'] == null
-            ? null
-            : (data['loaded_assoc_Assoc_brick_id'] > -1
-                ? (await repository.getAssociation<Assoc>(
+    loadedAssoc: data['loaded_assoc_Assoc_brick_id'] == null
+        ? null
+        : (data['loaded_assoc_Assoc_brick_id'] > -1
+              ? (await repository.getAssociation<Assoc>(
                   Query.where(
                     'primaryKey',
                     data['loaded_assoc_Assoc_brick_id'] as int,
                     limit1: true,
                   ),
                 ))?.first
-                : null),
+              : null),
     loadedAssocs:
         (await provider
-            .rawQuery(
-              'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
-              [data['_brick_id'] as int],
-            )
-            .then((results) {
-              final ids = results.map((r) => r['f_Assoc_brick_id']);
-              return Future.wait<Assoc>(
-                ids.map(
-                  (primaryKey) => repository
-                      .getAssociation<Assoc>(
-                        Query.where('primaryKey', primaryKey, limit1: true),
-                      )
-                      .then((r) => r!.first),
-                ),
-              );
-            })).toList().cast<Assoc>(),
+                .rawQuery(
+                  'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_loaded_assocs` WHERE l_OfflineFirstWhere_brick_id = ?',
+                  [data['_brick_id'] as int],
+                )
+                .then((results) {
+                  final ids = results.map((r) => r['f_Assoc_brick_id']);
+                  return Future.wait<Assoc>(
+                    ids.map(
+                      (primaryKey) => repository
+                          .getAssociation<Assoc>(
+                            Query.where('primaryKey', primaryKey, limit1: true),
+                          )
+                          .then((r) => r!.first),
+                    ),
+                  );
+                }))
+            .toList()
+            .cast<Assoc>(),
     multiLookupCustomGenerator: await provider
         .rawQuery(
           'SELECT DISTINCT `f_Assoc_brick_id` FROM `_brick_OfflineFirstWhere_multi_lookup_custom_generator` WHERE l_OfflineFirstWhere_brick_id = ?',
@@ -185,14 +180,13 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
           (await instance.assoc),
           repository: repository,
         ),
-    'loaded_assoc_Assoc_brick_id':
-        instance.loadedAssoc != null
-            ? instance.loadedAssoc!.primaryKey ??
-                await provider.upsert<Assoc>(
-                  instance.loadedAssoc!,
-                  repository: repository,
-                )
-            : null,
+    'loaded_assoc_Assoc_brick_id': instance.loadedAssoc != null
+        ? instance.loadedAssoc!.primaryKey ??
+              await provider.upsert<Assoc>(
+                instance.loadedAssoc!,
+                repository: repository,
+              )
+        : null,
   };
 }
 
@@ -201,26 +195,30 @@ class OfflineFirstWhereAdapter extends OfflineFirstAdapter<OfflineFirstWhere> {
   OfflineFirstWhereAdapter();
 
   @override
-  final fieldsToOfflineFirstRuntimeDefinition = <
-    String,
-    RuntimeOfflineFirstDefinition
-  >{
-    'assoc': const RuntimeOfflineFirstDefinition(
-      where: <String, String>{'id': "data['id']"},
-    ),
-    'assocs': const RuntimeOfflineFirstDefinition(
-      where: <String, String>{'id': "data['id']", 'otherVar': "data['var']"},
-    ),
-    'loadedAssoc': const RuntimeOfflineFirstDefinition(
-      where: <String, String>{'id': "data['id']"},
-    ),
-    'loadedAssocs': const RuntimeOfflineFirstDefinition(
-      where: <String, String>{'id': "data['id']"},
-    ),
-    'multiLookupCustomGenerator': const RuntimeOfflineFirstDefinition(
-      where: <String, String>{'id': "data['id']", 'otherVar': "data['var']"},
-    ),
-  };
+  final fieldsToOfflineFirstRuntimeDefinition =
+      <String, RuntimeOfflineFirstDefinition>{
+        'assoc': const RuntimeOfflineFirstDefinition(
+          where: <String, String>{'id': "data['id']"},
+        ),
+        'assocs': const RuntimeOfflineFirstDefinition(
+          where: <String, String>{
+            'id': "data['id']",
+            'otherVar': "data['var']",
+          },
+        ),
+        'loadedAssoc': const RuntimeOfflineFirstDefinition(
+          where: <String, String>{'id': "data['id']"},
+        ),
+        'loadedAssocs': const RuntimeOfflineFirstDefinition(
+          where: <String, String>{'id': "data['id']"},
+        ),
+        'multiLookupCustomGenerator': const RuntimeOfflineFirstDefinition(
+          where: <String, String>{
+            'id': "data['id']",
+            'otherVar': "data['var']",
+          },
+        ),
+      };
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(

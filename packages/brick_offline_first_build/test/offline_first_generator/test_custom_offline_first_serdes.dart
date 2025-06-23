@@ -8,17 +8,17 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return CustomOfflineFirstSerdes(
-    string:
-        data['string'] == null ? null : Serializable.fromTest(data['string']),
+    string: data['string'] == null
+        ? null
+        : Serializable.fromTest(data['string']),
     constructorFieldNullabilityMismatch:
         data['constructor_field_nullability_mismatch'] as bool?,
-    strings:
-        data['strings'] == null
-            ? null
-            : data['strings']
-                ?.map((c) => Serializable.fromTest(c as Map<String, dynamic>))
-                .toList()
-                .cast<Serializable>(),
+    strings: data['strings'] == null
+        ? null
+        : data['strings']
+              ?.map((c) => Serializable.fromTest(c as Map<String, dynamic>))
+              .toList()
+              .cast<Serializable>(),
   );
 }
 
@@ -41,19 +41,17 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return CustomOfflineFirstSerdes(
-    string:
-        data['string'] == null
-            ? null
-            : Serializable.fromSqlite(data['string'] as int),
+    string: data['string'] == null
+        ? null
+        : Serializable.fromSqlite(data['string'] as int),
     constructorFieldNullabilityMismatch:
         data['constructor_field_nullability_mismatch'] == 1,
-    strings:
-        data['strings'] == null
-            ? null
-            : jsonDecode(data['strings'])
-                .map((c) => Serializable.fromSqlite(c as int))
-                .toList()
-                .cast<Serializable>(),
+    strings: data['strings'] == null
+        ? null
+        : jsonDecode(data['strings'])
+              .map((c) => Serializable.fromSqlite(c as int))
+              .toList()
+              .cast<Serializable>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 
