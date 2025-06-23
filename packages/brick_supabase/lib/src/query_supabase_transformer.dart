@@ -188,7 +188,11 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
     return [
       {
-        queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
+        queryKey: condition.compare == Compare.inIterable
+            ? (condition.value is Iterable && (condition.value as Iterable).isNotEmpty
+                ? 'in.(${(condition.value as Iterable).map((v) => v is String ? v : _quoteSupabaseValue(v)).join(',')})'
+                : 'in.()')
+            : '${_compareToSearchParam(condition.compare)}.${condition.value is String ? condition.value : _quoteSupabaseValue(condition.value)}',
       },
       ...associationConditions,
     ];
@@ -259,6 +263,18 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         return 'adj';
       case Compare.notEqual:
         return 'neq';
+      default:
+        throw ArgumentError('Compare.inIterable is not supported by _compareToSearchParam.');
     }
+  }
+
+  String _quoteSupabaseValue(dynamic v) {
+    if (v == null) return 'null';
+    if (v is String) {
+      // Escape double quotes by doubling them, then wrap in double quotes
+      final escaped = v.replaceAll('"', '""');
+      return '"$escaped"';
+    }
+    return v.toString();
   }
 }
