@@ -1,3 +1,7 @@
+## 4.1.0
+
+- Add ability to run migrations `down` by calling `#migrate(down: true)` #594
+
 ## 4.0.2
 
 - Fix query statements with mixed non-association and association fields to permit any order (#573)
