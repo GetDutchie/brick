@@ -176,7 +176,9 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   @override
   Future<List<TModel>> get<TModel extends TRepositoryModel>({
-    OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+    OfflineFirstGetPolicy? associationPolicy,
+    OfflineFirstGetPolicy policy =
+        OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
     bool seedOnly = false,
   }) async {
@@ -189,7 +191,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
 
     try {
-      _latestGetPolicy = policy;
+      _latestGetPolicy = associationPolicy ?? policy;
 
       if (memoryCacheProvider.canFind<TModel>(query) && !requireRemote) {
         final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
@@ -244,6 +246,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// can be expensive for large datasets, making deserialization a significant hit when the result
   /// is ignorable (e.g. eager loading). Defaults to `false`.
   Future<List<TModel>> getBatched<TModel extends TRepositoryModel>({
+    OfflineFirstGetPolicy? associationPolicy,
     int batchSize = 50,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
     Query? query,
@@ -267,6 +270,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       final results = await get<TModel>(
         query: recursiveQuery,
         policy: policy,
+        associationPolicy: associationPolicy,
         seedOnly: seedOnly,
       );
       total.addAll(results);
@@ -367,6 +371,7 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
   /// with the assignment/subscription `.cancel()`'d as soon as the data is no longer needed.
   /// The stream will not close naturally.
   Stream<List<TModel>> subscribe<TModel extends TRepositoryModel>({
+    OfflineFirstGetPolicy? associationPolicy,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.localOnly,
     Query? query,
   }) {
@@ -389,7 +394,10 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     subscriptions[TModel]?[query] = controller;
 
     // ignore: discarded_futures
-    get<TModel>(query: query, policy: policy).then(
+    get<TModel>(
+            query: query,
+            policy: policy,
+            associationPolicy: associationPolicy,).then(
       (results) {
         if (!controller.isClosed) controller.add(results);
       },
