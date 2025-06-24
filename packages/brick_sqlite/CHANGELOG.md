@@ -1,3 +1,5 @@
+- `#queryToSql` is added to support Brick Query debugging
+
 ## 4.0.2
 
 - Fix query statements with mixed non-association and association fields to permit any order (#573)
