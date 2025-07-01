@@ -250,4 +250,19 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       repository: repository,
     );
   }
+
+  /// Insert or update multiple records in Supabase. Returns the upserted models.
+  Future<List<TModel>> upsertMany<TModel extends SupabaseModel>(
+    List<TModel> instances, {
+    Query? query,
+    ModelRepository<SupabaseModel>? repository,
+  }) async {
+    if (instances.isEmpty) return <TModel>[];
+    final results = <TModel>[];
+    for (final instance in instances) {
+      final upserted = await upsert<TModel>(instance, query: query, repository: repository);
+      results.add(upserted);
+    }
+    return results;
+  }
 }

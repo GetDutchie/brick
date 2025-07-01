@@ -306,4 +306,59 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     await instance.afterSave(provider: this, repository: repository);
     return id;
   }
+
+  /// Insert multiple records into SQLite. Returns the primary keys of the records inserted or updated.
+  Future<List<int>> upsertMany<TModel extends TProviderModel>(
+    List<TModel> instances, {
+    Query? query,
+    ModelRepository<TProviderModel>? repository,
+  }) async {
+    if (instances.isEmpty) return <int>[];
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    final db = await getDb();
+
+    // Prepare all beforeSave hooks
+    for (final instance in instances) {
+      await adapter.beforeSave(instance, provider: this, repository: repository);
+      await instance.beforeSave(provider: this, repository: repository);
+    }
+
+    final ids = await _lock.synchronized(() async {
+      return await db.transaction<List<int>>((txn) async {
+        final resultIds = <int>[];
+        for (final instance in instances) {
+          final data = await adapter.toSqlite(instance, provider: this, repository: repository);
+          final existingPrimaryKey = await adapter.primaryKeyByUniqueColumns(instance, txn);
+
+          int? id;
+          if (instance.isNewRecord && existingPrimaryKey == null) {
+            id = await txn.insert(
+              '`${adapter.tableName}`',
+              data,
+            );
+          } else {
+            final primaryKey = existingPrimaryKey ?? instance.primaryKey;
+            await txn.update(
+              '`${adapter.tableName}`',
+              data,
+              where: '${InsertTable.PRIMARY_KEY_COLUMN} = ?',
+              whereArgs: [primaryKey],
+            );
+            id = primaryKey;
+          }
+          instance.primaryKey = id;
+          resultIds.add(id!);
+        }
+        return resultIds;
+      });
+    });
+
+    // Prepare all afterSave hooks
+    for (final instance in instances) {
+      await adapter.afterSave(instance, provider: this, repository: repository);
+      await instance.afterSave(provider: this, repository: repository);
+    }
+
+    return ids;
+  }
 }

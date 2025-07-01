@@ -166,5 +166,35 @@ void main() {
         expect(inserted.name, instance.name);
       });
     });
+
+    group('#upsertMany', () {
+      test('insert multiple', () async {
+        const req1 = SupabaseRequest<Demo>(
+          requestMethod: 'POST',
+          filter: 'id=eq.1',
+          limit: 1,
+        );
+        const req2 = SupabaseRequest<Demo>(
+          requestMethod: 'POST',
+          filter: 'id=eq.2',
+          limit: 1,
+        );
+        final instance1 = Demo(age: 1, name: 'Demo 1', id: '1');
+        final instance2 = Demo(age: 2, name: 'Demo 2', id: '2');
+        final resp1 = SupabaseResponse(await mock.serialize(instance1));
+        final resp2 = SupabaseResponse(await mock.serialize(instance2));
+        mock.handle({req1: resp1, req2: resp2});
+
+        final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+        final inserted = await provider.upsertMany<Demo>([instance1, instance2]);
+        expect(inserted, hasLength(2));
+        expect(inserted[0].id, instance1.id);
+        expect(inserted[1].id, instance2.id);
+        expect(inserted[0].name, instance1.name);
+        expect(inserted[1].name, instance2.name);
+        expect(inserted[0].age, instance1.age);
+        expect(inserted[1].age, instance2.age);
+      });
+    });
   });
 }
