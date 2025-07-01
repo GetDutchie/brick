@@ -82,13 +82,17 @@ abstract class OfflineFirstWithSupabaseRepository<
       return await super.delete<TModel>(instance, policy: policy, query: query);
     } on PostgrestException catch (e) {
       logger.warning('#delete supabase failure: $e');
-
       if (policy == OfflineFirstDeletePolicy.requireRemote) {
         throw OfflineFirstException(e);
       }
-
-      return false;
+    } on AuthRetryableFetchException catch (e) {
+      logger.warning('#delete supabase failure: $e');
+      if (policy == OfflineFirstDeletePolicy.requireRemote) {
+        throw OfflineFirstException(e);
+      }
     }
+
+    return false;
   }
 
   @override
@@ -105,13 +109,17 @@ abstract class OfflineFirstWithSupabaseRepository<
       );
     } on PostgrestException catch (e) {
       logger.warning('#get supabase failure: $e');
-
       if (policy == OfflineFirstGetPolicy.awaitRemote) {
         throw OfflineFirstException(e);
       }
-
-      return <TModel>[];
+    } on AuthRetryableFetchException catch (e) {
+      logger.warning('#get supabase failure: $e');
+      if (policy == OfflineFirstGetPolicy.awaitRemote) {
+        throw OfflineFirstException(e);
+      }
     }
+
+    return <TModel>[];
   }
 
   @protected
@@ -123,6 +131,8 @@ abstract class OfflineFirstWithSupabaseRepository<
     try {
       return await super.hydrate<TModel>(deserializeSqlite: deserializeSqlite, query: query);
     } on PostgrestException catch (e) {
+      logger.warning('#hydrate supabase failure: $e');
+    } on AuthRetryableFetchException catch (e) {
       logger.warning('#hydrate supabase failure: $e');
     }
 
@@ -387,13 +397,17 @@ abstract class OfflineFirstWithSupabaseRepository<
       return await super.upsert<TModel>(instance, policy: policy, query: query);
     } on PostgrestException catch (e) {
       logger.warning('#upsert supabase failure: $e');
-
       if (policy == OfflineFirstUpsertPolicy.requireRemote) {
         throw OfflineFirstException(e);
       }
-
-      return instance;
+    } on AuthRetryableFetchException catch (e) {
+      logger.warning('#upsert supabase failure: $e');
+      if (policy == OfflineFirstUpsertPolicy.requireRemote) {
+        throw OfflineFirstException(e);
+      }
     }
+
+    return instance;
   }
 
   PostgresChangeFilterType? _compareToFilterParam(Compare compare) {
