@@ -1,4 +1,11 @@
-import 'package:brick_sqlite/db.dart';
+import 'package:brick_sqlite/src/db/column.dart';
+import 'package:brick_sqlite/src/db/migration.dart';
+import 'package:brick_sqlite/src/db/migration_commands/create_index.dart';
+import 'package:brick_sqlite/src/db/migration_commands/drop_table.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_column.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_foreign_key.dart';
+import 'package:brick_sqlite/src/db/migration_commands/insert_table.dart';
+import 'package:brick_sqlite/src/db/migration_commands/migration_command.dart';
 import 'package:brick_sqlite/src/models/sqlite_model.dart';
 import 'package:brick_sqlite/src/sqlite_adapter.dart';
 import 'package:brick_sqlite/src/sqlite_model_dictionary.dart';
@@ -50,11 +57,14 @@ const _demoModelDownMigrationCommands = [
 ];
 
 class DemoModelMigration extends Migration {
-  const DemoModelMigration()
-      : super(
-          version: 2,
-          up: _demoModelMigrationCommands,
-          down: _demoModelDownMigrationCommands,
+  const DemoModelMigration([
+    int version = 1,
+    List<MigrationCommand> up = _demoModelMigrationCommands,
+    List<MigrationCommand> down = _demoModelDownMigrationCommands,
+  ]) : super(
+          version: version,
+          up: up,
+          down: down,
         );
 }
 

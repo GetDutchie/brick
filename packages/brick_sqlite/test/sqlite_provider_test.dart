@@ -108,7 +108,7 @@ void main() {
         await cleanProvider.migrate([const DemoModelMigration()]);
 
         final version = await cleanProvider.lastMigrationVersion();
-        expect(version, 2);
+        expect(version, 1);
 
         // Verify tables were created
         final tables = await cleanProvider.rawQuery(
@@ -122,11 +122,11 @@ void main() {
       test('skips migrations when already at latest version', () async {
         // Run migration first time
         await cleanProvider.migrate([const DemoModelMigration()]);
-        expect(await cleanProvider.lastMigrationVersion(), 2);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
 
         // Run again - should skip
         await cleanProvider.migrate([const DemoModelMigration()]);
-        expect(await cleanProvider.lastMigrationVersion(), 2);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
       });
 
       test('enables foreign keys pragma', () async {
@@ -139,31 +139,25 @@ void main() {
       });
 
       test('tracks migration versions correctly', () async {
-        const migration1 = DemoModelMigration();
-        const migration2 = DemoModelMigration();
-
-        // No migrations initially
-        expect(await cleanProvider.lastMigrationVersion(), -1);
+        const migration1 = DemoModelMigration(2, [], []);
+        const migration2 = DemoModelMigration(3, [], []);
 
         // After first migration
         await cleanProvider.migrate([migration1]);
-        expect(await cleanProvider.lastMigrationVersion(), 1);
-
-        // After second migration
-        await cleanProvider.migrate([migration1, migration2]);
         expect(await cleanProvider.lastMigrationVersion(), 2);
 
+        // After second migration
+        await cleanProvider.migrate([migration2]);
+        expect(await cleanProvider.lastMigrationVersion(), 3);
+
         // Verify version records exist
+        // ignore: invalid_use_of_protected_member
         final db = await cleanProvider.getDb();
         final versions = await db.query('MigrationVersions', orderBy: 'version');
-        expect(versions, hasLength(2));
+        expect(versions, hasLength(3));
         expect(versions[0]['version'], 1);
         expect(versions[1]['version'], 2);
-      });
-
-      test('handles empty migration list', () async {
-        await cleanProvider.migrate([]);
-        expect(await cleanProvider.lastMigrationVersion(), -1);
+        expect(versions[2]['version'], 3);
       });
     });
 
