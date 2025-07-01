@@ -159,6 +159,29 @@ void main() {
         expect(versions[1]['version'], 2);
         expect(versions[2]['version'], 3);
       });
+
+      test('runs down migrations correctly', () async {
+        const migration1 = DemoModelMigration(2, [], []);
+        const migration2 = DemoModelMigration(3, [], []);
+
+        // After first migration
+        await cleanProvider.migrate([migration1]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+
+        // After second migration
+        await cleanProvider.migrate([migration2]);
+        expect(await cleanProvider.lastMigrationVersion(), 3);
+
+        await cleanProvider.migrate([migration1, migration2], down: true);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
+
+        // Verify version records exist
+        // ignore: invalid_use_of_protected_member
+        final db = await cleanProvider.getDb();
+        final versions = await db.query('MigrationVersions', orderBy: 'version');
+        expect(versions, hasLength(1));
+        expect(versions[0]['version'], 1);
+      });
     });
 
     group('#exists', () {
