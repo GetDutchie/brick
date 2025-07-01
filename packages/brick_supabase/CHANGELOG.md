@@ -1,3 +1,8 @@
+## 2.1.0
+
+- Add `SupabaseProvider#subscribeToRealtime` to subscribe to [Supabase channels](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart).
+- Add `SupabaseProvider#queryToPostgresChangeFilter` to convert `Query`s for Supabase subscriptions
+
 ## 2.0.0
 
 - **BREAKING CHANGE** `Query(providerArgs:)` is no longer supported; see [1.2.0](#1.2.0) for migration steps

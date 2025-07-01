@@ -41,6 +41,29 @@ class SupabaseProvider implements Provider<SupabaseModel> {
     required this.modelDictionary,
   }) : logger = Logger('SupabaseProvider');
 
+  PostgresChangeFilterType? _compareToFilterParam(Compare compare) {
+    switch (compare) {
+      case Compare.exact:
+        return PostgresChangeFilterType.eq;
+      case Compare.contains:
+        return PostgresChangeFilterType.inFilter;
+      case Compare.greaterThan:
+        return PostgresChangeFilterType.gt;
+      case Compare.greaterThanOrEqualTo:
+        return PostgresChangeFilterType.gte;
+      case Compare.lessThan:
+        return PostgresChangeFilterType.lt;
+      case Compare.lessThanOrEqualTo:
+        return PostgresChangeFilterType.lte;
+      case Compare.notEqual:
+        return PostgresChangeFilterType.neq;
+      case Compare.between:
+        return null;
+      case Compare.doesNotContain:
+        return null;
+    }
+  }
+
   /// Sends a DELETE request method to the endpoint
   @override
   Future<bool> delete<TModel extends SupabaseModel>(
@@ -115,6 +138,67 @@ class SupabaseProvider implements Provider<SupabaseModel> {
       query: query,
       repository: repository,
     ) as TModel;
+  }
+
+  /// Convert a query to a [PostgresChangeFilter] for use with [subscribeToRealtime].
+  PostgresChangeFilter? queryToPostgresChangeFilter<TModel extends SupabaseModel>(Query query) {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    if (query.where?.isEmpty ?? true) return null;
+    final condition = query.where!.first;
+
+    final definition = adapter.fieldsToSupabaseColumns[condition.evaluatedField];
+    if (definition == null) return null;
+    if (definition.association) return null;
+
+    final type = _compareToFilterParam(condition.compare);
+    if (type == null) return null;
+
+    return PostgresChangeFilter(
+      type: type,
+      column: definition.columnName,
+      value: condition.value,
+    );
+  }
+
+  /// Subscribes to realtime updates using
+  /// [Supabase channels](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart).
+  /// **This will only work if your Supabase table has realtime enabled.**
+  /// Follow [Supabase's documentation](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart#realtime-api)
+  /// to setup your table.
+  ///
+  /// The resulting stream will also notify for locally-made changes. In an online state, this
+  /// will result in duplicate events on the stream - the local copy is updated and notifies
+  /// the caller, then the Supabase realtime event is received and notifies the caller again.
+  ///
+  /// Supabase's channels can
+  /// [become expensive quickly](https://supabase.com/docs/guides/realtime/quotas);
+  /// please consider scale when utilizing this method.
+  ///
+  /// [eventType] is the triggering remote event.
+  ///
+  /// [query] is an optional query to filter the data. The query **must be** one level -
+  /// `Query.where('user', Query.exact('name', 'Tom'))` is invalid but `Query.where('name', 'Tom')`
+  /// is valid. The [Compare] operator is limited to a [PostgresChangeFilterType] equivalent.
+  /// See [_compareToFilterParam] for a precise breakdown.
+  ///
+  /// [RealtimeChannel.subscribe] is invoked before the [RealtimeChannel] is returned to the caller.
+  RealtimeChannel subscribeToRealtime<TModel extends SupabaseModel>({
+    required void Function(PostgresChangePayload payload) callback,
+    PostgresChangeEvent eventType = PostgresChangeEvent.all,
+    Query? query,
+    String schema = 'public',
+  }) {
+    final adapter = modelDictionary.adapterFor[TModel]!;
+    return client
+        .channel(adapter.supabaseTableName)
+        .onPostgresChanges(
+          event: eventType,
+          schema: schema,
+          table: adapter.supabaseTableName,
+          filter: queryToPostgresChangeFilter<TModel>(query ?? const Query()),
+          callback: callback,
+        )
+        .subscribe();
   }
 
   /// In almost all cases, use [upsert]. This method is provided for cases when a table's
