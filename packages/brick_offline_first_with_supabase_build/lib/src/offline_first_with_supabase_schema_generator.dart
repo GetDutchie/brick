@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_offline_first_build/brick_offline_first_build.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_offline_first_with_supabase_build/src/supabase_sql_generator.dart';
