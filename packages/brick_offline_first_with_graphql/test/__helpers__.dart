@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:gql/ast.dart';
+import 'package:gql/language.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 import 'package:mockito/mockito.dart';
@@ -55,3 +57,5 @@ class MockLink extends Mock implements Link {
         ),
       ) as Stream<Response>;
 }
+
+DocumentNode gql(String query) => parseString(query);
