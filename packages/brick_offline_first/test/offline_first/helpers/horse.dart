@@ -5,8 +5,7 @@ class Horse extends OfflineFirstWithTestModel {
 
   final List<Mounty> mounties;
 
-  Horse({
-    this.name,
-    this.mounties = const <Mounty>[],
-  });
+  final Owner? owner;
+
+  Horse({this.name, this.mounties = const <Mounty>[], this.owner});
 }
