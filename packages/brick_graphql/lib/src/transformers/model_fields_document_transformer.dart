@@ -91,7 +91,7 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
   String? get operationName {
     final node = sourceDocument.definitions.first as OperationDefinitionNode;
     if (hasSubfields) return null;
-    return (node.selectionSet.selections.first as FieldNode).name.value;
+    return node.name?.value;
   }
 
   /// The GraphQL document that was passed to the transformer.
