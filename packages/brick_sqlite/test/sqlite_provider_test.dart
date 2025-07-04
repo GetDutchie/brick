@@ -76,6 +76,48 @@ void main() {
       });
     });
 
+    group('#upsertMany', () {
+      test('insert multiple', () async {
+        final models = [
+          DemoModel(name: 'Multi1'),
+          DemoModel(name: 'Multi2'),
+        ];
+        final ids = await provider.upsertMany<DemoModel>(models);
+        expect(ids, hasLength(2));
+        final all = await provider.get<DemoModel>();
+        expect(all.map((m) => m.name), containsAll(['Multi1', 'Multi2']));
+      });
+
+      test('update multiple', () async {
+        final models = [
+          DemoModel(name: 'Guy')..primaryKey = 2,
+          DemoModel(name: 'Alice')..primaryKey = 3,
+        ];
+        final ids = await provider.upsertMany<DemoModel>(models);
+        expect(ids, containsAll([2, 3]));
+        final all = await provider.get<DemoModel>();
+        expect(all.firstWhere((m) => m.primaryKey == 2).name, 'Guy');
+        expect(all.firstWhere((m) => m.primaryKey == 3).name, 'Alice');
+      });
+
+      test('insert with associations', () async {
+        final models = [
+          DemoModel(
+            name: 'Assoc1',
+            manyAssoc: [DemoModelAssoc(name: 'AssocA')],
+          ),
+          DemoModel(
+            name: 'Assoc2',
+            manyAssoc: [DemoModelAssoc(name: 'AssocB')],
+          ),
+        ];
+        final ids = await provider.upsertMany<DemoModel>(models);
+        expect(ids, hasLength(2));
+        final assocs = await provider.get<DemoModelAssoc>();
+        expect(assocs.map((a) => a.name), containsAll(['AssocA', 'AssocB']));
+      });
+    });
+
     test('#delete', () async {
       final newModel = DemoModel(name: 'GuyDelete');
 

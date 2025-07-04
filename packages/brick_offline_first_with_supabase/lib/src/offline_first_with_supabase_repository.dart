@@ -416,6 +416,8 @@ abstract class OfflineFirstWithSupabaseRepository<
         return PostgresChangeFilterType.eq;
       case Compare.contains:
         return PostgresChangeFilterType.inFilter;
+      case Compare.inIterable:
+        return PostgresChangeFilterType.inFilter;
       case Compare.greaterThan:
         return PostgresChangeFilterType.gt;
       case Compare.greaterThanOrEqualTo:
