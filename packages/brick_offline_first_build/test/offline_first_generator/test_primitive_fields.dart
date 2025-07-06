@@ -9,52 +9,45 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return PrimitiveFields(
-    nullableInteger:
-        data['nullable_integer'] == null
-            ? null
-            : data['nullable_integer'] as int?,
-    nullableBoolean:
-        data['nullable_boolean'] == null
-            ? null
-            : data['nullable_boolean'] as bool?,
-    nullableDub:
-        data['nullable_dub'] == null ? null : data['nullable_dub'] as double?,
-    nullableString:
-        data['nullable_string'] == null
-            ? null
-            : data['nullable_string'] as String?,
-    nullableList:
-        data['nullable_list'] == null
-            ? null
-            : data['nullable_list']?.toList().cast<int>(),
-    nullableSet:
-        data['nullable_set'] == null
-            ? null
-            : data['nullable_set']?.toSet().cast<int>(),
+    nullableInteger: data['nullable_integer'] == null
+        ? null
+        : data['nullable_integer'] as int?,
+    nullableBoolean: data['nullable_boolean'] == null
+        ? null
+        : data['nullable_boolean'] as bool?,
+    nullableDub: data['nullable_dub'] == null
+        ? null
+        : data['nullable_dub'] as double?,
+    nullableString: data['nullable_string'] == null
+        ? null
+        : data['nullable_string'] as String?,
+    nullableList: data['nullable_list'] == null
+        ? null
+        : data['nullable_list']?.toList().cast<int>(),
+    nullableSet: data['nullable_set'] == null
+        ? null
+        : data['nullable_set']?.toSet().cast<int>(),
     nullableMap: data['nullable_map'] == null ? null : data['nullable_map'],
     nullableLongerCamelizedVariable:
         data['nullable_longer_camelized_variable'] == null
-            ? null
-            : data['nullable_longer_camelized_variable'] as String?,
-    nullableCasing:
-        data['nullable_casing'] == null
-            ? null
-            : data['nullable_casing'] is int
-            ? Casing.values[data['nullable_casing'] as int]
-            : null,
-    nullableListCasing:
-        data['nullable_list_casing'] == null
-            ? null
-            : data['nullable_list_casing']
-                .map((e) => Casing.values[e])
-                .toList()
-                .cast<Casing>(),
-    nullableDateTime:
-        data['nullable_date_time'] == null
-            ? null
-            : data['nullable_date_time'] == null
-            ? null
-            : DateTime.tryParse(data['nullable_date_time'] as String),
+        ? null
+        : data['nullable_longer_camelized_variable'] as String?,
+    nullableCasing: data['nullable_casing'] == null
+        ? null
+        : data['nullable_casing'] is int
+        ? Casing.values[data['nullable_casing'] as int]
+        : null,
+    nullableListCasing: data['nullable_list_casing'] == null
+        ? null
+        : data['nullable_list_casing']
+              .map((e) => Casing.values[e])
+              .toList()
+              .cast<Casing>(),
+    nullableDateTime: data['nullable_date_time'] == null
+        ? null
+        : data['nullable_date_time'] == null
+        ? null
+        : DateTime.tryParse(data['nullable_date_time'] as String),
     integer: data['integer'] as int,
     boolean: data['boolean'] as bool,
     dub: data['dub'] as double,
@@ -64,11 +57,10 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromTest(
     map: data['map'],
     longerCamelizedVariable: data['longer_camelized_variable'] as String,
     casing: Casing.values[data['casing'] as int],
-    listCasing:
-        data['list_casing']
-            .map((e) => Casing.values[e])
-            .toList()
-            .cast<Casing>(),
+    listCasing: data['list_casing']
+        .map((e) => Casing.values[e])
+        .toList()
+        .cast<Casing>(),
     dateTime: DateTime.parse(data['date_time'] as String),
   );
 }
@@ -88,14 +80,12 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToTest(
     'nullable_map': instance.nullableMap,
     'nullable_longer_camelized_variable':
         instance.nullableLongerCamelizedVariable,
-    'nullable_casing':
-        instance.nullableCasing != null
-            ? Casing.values.indexOf(instance.nullableCasing!)
-            : null,
-    'nullable_list_casing':
-        instance.nullableListCasing
-            ?.map((e) => Casing.values.indexOf(e))
-            .toList(),
+    'nullable_casing': instance.nullableCasing != null
+        ? Casing.values.indexOf(instance.nullableCasing!)
+        : null,
+    'nullable_list_casing': instance.nullableListCasing
+        ?.map((e) => Casing.values.indexOf(e))
+        .toList(),
     'nullable_date_time': instance.nullableDateTime?.toIso8601String(),
     'integer': instance.integer,
     'boolean': instance.boolean,
@@ -106,8 +96,9 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToTest(
     'map': instance.map,
     'longer_camelized_variable': instance.longerCamelizedVariable,
     'casing': Casing.values.indexOf(instance.casing),
-    'list_casing':
-        instance.listCasing.map((e) => Casing.values.indexOf(e)).toList(),
+    'list_casing': instance.listCasing
+        .map((e) => Casing.values.indexOf(e))
+        .toList(),
     'date_time': instance.dateTime.toIso8601String(),
   };
 }
@@ -118,52 +109,48 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return PrimitiveFields(
-    nullableInteger:
-        data['nullable_integer'] == null
-            ? null
-            : data['nullable_integer'] as int?,
-    nullableBoolean:
-        data['nullable_boolean'] == null ? null : data['nullable_boolean'] == 1,
-    nullableDub:
-        data['nullable_dub'] == null ? null : data['nullable_dub'] as double?,
-    nullableString:
-        data['nullable_string'] == null
-            ? null
-            : data['nullable_string'] as String?,
-    nullableList:
-        data['nullable_list'] == null
-            ? null
-            : jsonDecode(data['nullable_list']).toList().cast<int>(),
-    nullableSet:
-        data['nullable_set'] == null
-            ? null
-            : jsonDecode(data['nullable_set']).toSet().cast<int>(),
-    nullableMap:
-        data['nullable_map'] == null ? null : jsonDecode(data['nullable_map']),
+    nullableInteger: data['nullable_integer'] == null
+        ? null
+        : data['nullable_integer'] as int?,
+    nullableBoolean: data['nullable_boolean'] == null
+        ? null
+        : data['nullable_boolean'] == 1,
+    nullableDub: data['nullable_dub'] == null
+        ? null
+        : data['nullable_dub'] as double?,
+    nullableString: data['nullable_string'] == null
+        ? null
+        : data['nullable_string'] as String?,
+    nullableList: data['nullable_list'] == null
+        ? null
+        : jsonDecode(data['nullable_list']).toList().cast<int>(),
+    nullableSet: data['nullable_set'] == null
+        ? null
+        : jsonDecode(data['nullable_set']).toSet().cast<int>(),
+    nullableMap: data['nullable_map'] == null
+        ? null
+        : jsonDecode(data['nullable_map']),
     nullableLongerCamelizedVariable:
         data['nullable_longer_camelized_variable'] == null
-            ? null
-            : data['nullable_longer_camelized_variable'] as String?,
-    nullableCasing:
-        data['nullable_casing'] == null
-            ? null
-            : (data['nullable_casing'] > -1
-                ? Casing.values[data['nullable_casing'] as int]
-                : null),
-    nullableListCasing:
-        data['nullable_list_casing'] == null
-            ? null
-            : jsonDecode(data['nullable_list_casing'])
-                .map((d) => d as int > -1 ? Casing.values[d] : null)
-                ?.whereType<Casing>()
-                .toList()
-                .cast<Casing>(),
-    nullableDateTime:
-        data['nullable_date_time'] == null
-            ? null
-            : data['nullable_date_time'] == null
-            ? null
-            : DateTime.tryParse(data['nullable_date_time'] as String),
+        ? null
+        : data['nullable_longer_camelized_variable'] as String?,
+    nullableCasing: data['nullable_casing'] == null
+        ? null
+        : (data['nullable_casing'] > -1
+              ? Casing.values[data['nullable_casing'] as int]
+              : null),
+    nullableListCasing: data['nullable_list_casing'] == null
+        ? null
+        : jsonDecode(data['nullable_list_casing'])
+              .map((d) => d as int > -1 ? Casing.values[d] : null)
+              ?.whereType<Casing>()
+              .toList()
+              .cast<Casing>(),
+    nullableDateTime: data['nullable_date_time'] == null
+        ? null
+        : data['nullable_date_time'] == null
+        ? null
+        : DateTime.tryParse(data['nullable_date_time'] as String),
     integer: data['integer'] as int,
     boolean: data['boolean'] == 1,
     dub: data['dub'] as double,
@@ -173,12 +160,11 @@ Future<PrimitiveFields> _$PrimitiveFieldsFromSqlite(
     map: jsonDecode(data['map']),
     longerCamelizedVariable: data['longer_camelized_variable'] as String,
     casing: Casing.values[data['casing'] as int],
-    listCasing:
-        jsonDecode(data['list_casing'])
-            .map((d) => d as int > -1 ? Casing.values[d] : null)
-            .whereType<Casing>()
-            .toList()
-            .cast<Casing>(),
+    listCasing: jsonDecode(data['list_casing'])
+        .map((d) => d as int > -1 ? Casing.values[d] : null)
+        .whereType<Casing>()
+        .toList()
+        .cast<Casing>(),
     dateTime: DateTime.parse(data['date_time'] as String),
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -190,28 +176,25 @@ Future<Map<String, dynamic>> _$PrimitiveFieldsToSqlite(
 }) async {
   return {
     'nullable_integer': instance.nullableInteger,
-    'nullable_boolean':
-        instance.nullableBoolean == null
-            ? null
-            : (instance.nullableBoolean! ? 1 : 0),
+    'nullable_boolean': instance.nullableBoolean == null
+        ? null
+        : (instance.nullableBoolean! ? 1 : 0),
     'nullable_dub': instance.nullableDub,
     'nullable_string': instance.nullableString,
-    'nullable_list':
-        instance.nullableList == null
-            ? null
-            : jsonEncode(instance.nullableList),
-    'nullable_set':
-        instance.nullableSet == null
-            ? null
-            : jsonEncode(instance.nullableSet.toList()),
-    'nullable_map':
-        instance.nullableMap != null ? jsonEncode(instance.nullableMap) : null,
+    'nullable_list': instance.nullableList == null
+        ? null
+        : jsonEncode(instance.nullableList),
+    'nullable_set': instance.nullableSet == null
+        ? null
+        : jsonEncode(instance.nullableSet.toList()),
+    'nullable_map': instance.nullableMap != null
+        ? jsonEncode(instance.nullableMap)
+        : null,
     'nullable_longer_camelized_variable':
         instance.nullableLongerCamelizedVariable,
-    'nullable_casing':
-        instance.nullableCasing != null
-            ? Casing.values.indexOf(instance.nullableCasing!)
-            : null,
+    'nullable_casing': instance.nullableCasing != null
+        ? Casing.values.indexOf(instance.nullableCasing!)
+        : null,
     'nullable_list_casing': jsonEncode(
       instance.nullableListCasing
               ?.map((s) => Casing.values.indexOf(s))

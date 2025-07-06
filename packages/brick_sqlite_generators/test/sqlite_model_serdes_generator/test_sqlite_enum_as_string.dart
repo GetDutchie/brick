@@ -11,10 +11,9 @@ Future<SqliteEnumAsString> _$SqliteEnumAsStringFromSqlite(
 }) async {
   return SqliteEnumAsString(
     someField: MyEnum.values.byName(data['some_field'] as String),
-    someFields:
-        jsonDecode(
-          data['some_fields'] ?? [],
-        ).whereType<String>().map(MyEnum.values.byName).toList().cast<MyEnum>(),
+    someFields: jsonDecode(
+      data['some_fields'] ?? [],
+    ).whereType<String>().map(MyEnum.values.byName).toList().cast<MyEnum>(),
   )..primaryKey = data['_brick_id'] as int;
 }
 

@@ -12,8 +12,9 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return CustomOfflineFirstSerdes(
-    string:
-        data['string'] == null ? null : Serializable.fromTest(data['string']),
+    string: data['string'] == null
+        ? null
+        : Serializable.fromTest(data['string']),
   );
 }
 
@@ -31,10 +32,9 @@ Future<CustomOfflineFirstSerdes> _$CustomOfflineFirstSerdesFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return CustomOfflineFirstSerdes(
-    string:
-        data['string'] == null
-            ? null
-            : Serializable.fromSqlite(data['string'] as int),
+    string: data['string'] == null
+        ? null
+        : Serializable.fromSqlite(data['string'] as int),
   )..primaryKey = data['_brick_id'] as int;
 }
 

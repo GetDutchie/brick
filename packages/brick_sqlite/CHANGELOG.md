@@ -1,3 +1,6 @@
+## 4.1.0
+
+- Add ability to run migrations `down` by calling `#migrate(down: true)` #594
 - `#queryToSql` is added to support Brick Query debugging
 
 ## 4.0.2

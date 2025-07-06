@@ -9,10 +9,9 @@ Future<CustomSerdes> _$CustomSerdesFromGraphql(
   OfflineFirstRepository? repository,
 }) async {
   return CustomSerdes(
-    string:
-        data['string'] == null
-            ? null
-            : data['string'].split('').map((s) => '$s.1').join(''),
+    string: data['string'] == null
+        ? null
+        : data['string'].split('').map((s) => '$s.1').join(''),
   );
 }
 

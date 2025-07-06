@@ -7,6 +7,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 import 'sqlite_schema/test_all_field_types.dart' as all_field_types;
+import 'sqlite_schema/test_enum_as_string.dart' as enum_as_string;
 import 'sqlite_schema/test_from_to_json.dart' as from_to_json;
 import 'sqlite_schema/test_index_annotation.dart' as index_annotation;
 import 'sqlite_schema/test_nullable.dart' as nullable;
@@ -29,6 +30,11 @@ void main() {
       test('ColumnType', () async {
         final input = await generateInput('sqlite_column_type');
         expect(input, sqlite_column_type.output);
+      });
+
+      test('EnumAsString', () async {
+        final input = await generateInput('enum_as_string');
+        expect(input, enum_as_string.output);
       });
 
       test('Nullable', () async {

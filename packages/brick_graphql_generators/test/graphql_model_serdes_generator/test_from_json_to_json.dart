@@ -11,22 +11,19 @@ Future<ToFromJson> _$ToFromJsonFromGraphql(
 }) async {
   return ToFromJson(
     assoc: ToFromJsonAssoc.fromJson(data['assoc'] as String),
-    assocNullable:
-        data['assocNullable'] == null
-            ? null
-            : ToFromJsonAssoc.fromJson(data['assocNullable'] as String),
-    assocIterable:
-        data['assocIterable']
-            .map((d) => ToFromJsonAssoc.fromJson(d as String))
-            .toList()
-            .cast<ToFromJsonAssoc>(),
-    assocIterableNullable:
-        data['assocIterableNullable'] == null
-            ? null
-            : data['assocIterableNullable']
-                ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
-                .toList()
-                .cast<ToFromJsonAssoc>(),
+    assocNullable: data['assocNullable'] == null
+        ? null
+        : ToFromJsonAssoc.fromJson(data['assocNullable'] as String),
+    assocIterable: data['assocIterable']
+        .map((d) => ToFromJsonAssoc.fromJson(d as String))
+        .toList()
+        .cast<ToFromJsonAssoc>(),
+    assocIterableNullable: data['assocIterableNullable'] == null
+        ? null
+        : data['assocIterableNullable']
+              ?.map((d) => ToFromJsonAssoc.fromJson(d as String))
+              .toList()
+              .cast<ToFromJsonAssoc>(),
   );
 }
 
@@ -39,8 +36,9 @@ Future<Map<String, dynamic>> _$ToFromJsonToGraphql(
     'assoc': instance.assoc.toJson(),
     'assocNullable': instance.assocNullable?.toJson(),
     'assocIterable': instance.assocIterable.map((s) => s.toJson()).toList(),
-    'assocIterableNullable':
-        instance.assocIterableNullable?.map((s) => s.toJson()).toList(),
+    'assocIterableNullable': instance.assocIterableNullable
+        ?.map((s) => s.toJson())
+        .toList(),
   };
 }
 
