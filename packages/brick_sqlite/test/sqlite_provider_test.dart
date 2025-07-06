@@ -89,7 +89,100 @@ void main() {
       expect(existsAfterDelete, isFalse);
     });
 
-    test('#migrate', () {}, skip: 'Write test');
+    group('#migrate', () {
+      late SqliteProvider cleanProvider;
+
+      setUp(() {
+        cleanProvider = SqliteProvider(
+          inMemoryDatabasePath,
+          databaseFactory: databaseFactoryFfi,
+          modelDictionary: dictionary,
+        );
+      });
+
+      tearDown(() async {
+        await cleanProvider.resetDb();
+      });
+
+      test('runs migrations for the first time', () async {
+        await cleanProvider.migrate([const DemoModelMigration()]);
+
+        final version = await cleanProvider.lastMigrationVersion();
+        expect(version, 1);
+
+        // Verify tables were created
+        final tables = await cleanProvider.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        );
+        final tableNames = tables.map((t) => t['name']).toList();
+        expect(tableNames, contains('DemoModelAssoc'));
+        expect(tableNames, contains('DemoModel'));
+      });
+
+      test('skips migrations when already at latest version', () async {
+        // Run migration first time
+        await cleanProvider.migrate([const DemoModelMigration()]);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
+
+        // Run again - should skip
+        await cleanProvider.migrate([const DemoModelMigration()]);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
+      });
+
+      test('enables foreign keys pragma', () async {
+        const migration = DemoModelMigration();
+
+        await cleanProvider.migrate([migration]);
+
+        final result = await cleanProvider.rawQuery('PRAGMA foreign_keys');
+        expect(result.first['foreign_keys'], 1);
+      });
+
+      test('tracks migration versions correctly', () async {
+        const migration1 = DemoModelMigration(2, [], []);
+        const migration2 = DemoModelMigration(3, [], []);
+
+        // After first migration
+        await cleanProvider.migrate([migration1]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+
+        // After second migration
+        await cleanProvider.migrate([migration2]);
+        expect(await cleanProvider.lastMigrationVersion(), 3);
+
+        // Verify version records exist
+        // ignore: invalid_use_of_protected_member
+        final db = await cleanProvider.getDb();
+        final versions = await db.query('MigrationVersions', orderBy: 'version');
+        expect(versions, hasLength(3));
+        expect(versions[0]['version'], 1);
+        expect(versions[1]['version'], 2);
+        expect(versions[2]['version'], 3);
+      });
+
+      test('runs down migrations correctly', () async {
+        const migration1 = DemoModelMigration(2, [], []);
+        const migration2 = DemoModelMigration(3, [], []);
+
+        // After first migration
+        await cleanProvider.migrate([migration1]);
+        expect(await cleanProvider.lastMigrationVersion(), 2);
+
+        // After second migration
+        await cleanProvider.migrate([migration2]);
+        expect(await cleanProvider.lastMigrationVersion(), 3);
+
+        await cleanProvider.migrate([migration1, migration2], down: true);
+        expect(await cleanProvider.lastMigrationVersion(), 1);
+
+        // Verify version records exist
+        // ignore: invalid_use_of_protected_member
+        final db = await cleanProvider.getDb();
+        final versions = await db.query('MigrationVersions', orderBy: 'version');
+        expect(versions, hasLength(1));
+        expect(versions[0]['version'], 1);
+      });
+    });
 
     group('#exists', () {
       test('specific', () async {

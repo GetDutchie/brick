@@ -13,10 +13,9 @@ Future<Futures> _$FuturesFromTest(
   return Futures(
     string: data['string'] as Future<String>,
     strings: data['strings'].toList().cast<Future<String>>(),
-    futureStrings:
-        data['future_strings'] == null
-            ? null
-            : data['future_strings']?.toList().cast<String>(),
+    futureStrings: data['future_strings'] == null
+        ? null
+        : data['future_strings']?.toList().cast<String>(),
     assoc: AssocAdapter().fromTest(
       data['assoc'],
       provider: provider,
@@ -35,19 +34,18 @@ Future<Futures> _$FuturesFromTest(
               .cast<Future<Assoc>>() ??
           [],
     ),
-    futureAssocs:
-        data['future_assocs'] == null
-            ? null
-            : data['future_assocs']
-                ?.map(
-                  (d) => AssocAdapter().fromTest(
-                    d,
-                    provider: provider,
-                    repository: repository,
-                  ),
-                )
-                .toList()
-                .cast<Future<Assoc>>(),
+    futureAssocs: data['future_assocs'] == null
+        ? null
+        : data['future_assocs']
+              ?.map(
+                (d) => AssocAdapter().fromTest(
+                  d,
+                  provider: provider,
+                  repository: repository,
+                ),
+              )
+              .toList()
+              .cast<Future<Assoc>>(),
   );
 }
 
@@ -99,12 +97,9 @@ Future<Futures> _$FuturesFromSqlite(
   return Futures(
     string: data['string'] as Future<String>,
     strings: jsonDecode(data['strings']).toList().cast<String>(),
-    futureStrings:
-        data['future_strings'] == null
-            ? null
-            : jsonDecode(
-              data['future_strings'],
-            ).toList().cast<Future<String>>(),
+    futureStrings: data['future_strings'] == null
+        ? null
+        : jsonDecode(data['future_strings']).toList().cast<Future<String>>(),
     assoc: repository
         .getAssociation<Assoc>(
           Query.where(

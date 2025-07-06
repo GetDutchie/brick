@@ -9,8 +9,9 @@ Future<DefaultValue> _$DefaultValueFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return DefaultValue(
-    string:
-        data['string'] == null ? null : data['string'] as String? ?? "Thomas",
+    string: data['string'] == null
+        ? null
+        : data['string'] as String? ?? "Thomas",
   );
 }
 

@@ -171,7 +171,9 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
 
   /// Update database structure with latest migrations. Note that this will run
   /// the [migrations] in the order provided.
-  Future<void> migrate(List<Migration> migrations) async {
+  ///
+  /// If [down] is `true`, the migrations will be run in reverse order.
+  Future<void> migrate(List<Migration> migrations, {bool down = false}) async {
     final db = await getDb();
 
     // Ensure foreign keys are enabled
@@ -181,13 +183,15 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     final latestSqliteMigrationVersion = await lastMigrationVersion();
 
     // Guard if migration has already been committed.
-    if (latestSqliteMigrationVersion == latestMigrationVersion) {
+    if (latestSqliteMigrationVersion == latestMigrationVersion && !down) {
       _logger.info('Already at latest migration version ($latestMigrationVersion)');
       return;
     }
 
-    for (final migration in migrations) {
-      for (final command in migration.up) {
+    final migrationsToRun = down ? migrations.reversed.toList() : migrations;
+    for (final migration in migrationsToRun) {
+      final commands = down ? migration.down : migration.up;
+      for (final command in commands) {
         _logger.finer(
           'Running migration (${migration.version}): ${command.statement ?? command.forGenerator}',
         );
@@ -202,10 +206,17 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
         });
       }
 
-      await db.rawInsert(
-        'INSERT INTO $_migrationVersionsTableName(version) VALUES(?)',
-        [migration.version],
-      );
+      if (down) {
+        await db.rawDelete(
+          'DELETE FROM $_migrationVersionsTableName WHERE version = ?',
+          [migration.version],
+        );
+      } else {
+        await db.rawInsert(
+          'INSERT INTO $_migrationVersionsTableName(version) VALUES(?)',
+          [migration.version],
+        );
+      }
     }
   }
 

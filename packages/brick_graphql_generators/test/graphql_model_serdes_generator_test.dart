@@ -88,6 +88,12 @@ class TestGenerator extends AnnotationSuperGenerator<GraphqlSerializable> {
 Future<void> generateExpectation(String filename, String output, {TestGenerator? generator}) async {
   final reader = await generateReader(filename);
   final generated = await (generator ?? _generator).generate(reader, MockBuildStep());
+
+  if (generated.trim() != output.trim()) {
+    // ignore: avoid_print
+    print(generated);
+  }
+
   expect(generated.trim(), output.trim());
 }
 
@@ -98,5 +104,11 @@ Future<void> generateAdapterExpectation(String filename, String output) async {
     annotation.annotation,
     null,
   );
+
+  if (generated.trim() != output.trim()) {
+    // ignore: avoid_print
+    print(generated);
+  }
+
   expect(generated.trim(), output.trim());
 }

@@ -11,10 +11,9 @@ Future<EnumFactorySerialize> _$EnumFactorySerializeFromTest(
     withSerialize: WithSerializeMethod.values[data['with_serialize'] as int],
     withBoth: WithBoth.fromTest(data['with_both']),
     withBothIterable: data['with_both_iterable'].map(WithBoth.fromTest),
-    withBothNullable:
-        data['with_both_nullable'] == null
-            ? null
-            : WithBoth.fromTest(data['with_both_nullable']),
+    withBothNullable: data['with_both_nullable'] == null
+        ? null
+        : WithBoth.fromTest(data['with_both_nullable']),
     withJson: WithJson.values[data['with_json'] as int],
   );
 }
@@ -28,8 +27,9 @@ Future<Map<String, dynamic>> _$EnumFactorySerializeToTest(
     'with_factory': WithFactory.values.indexOf(instance.withFactory),
     'with_serialize': instance.withSerialize.toTest(),
     'with_both': instance.withBoth.toTest(),
-    'with_both_iterable':
-        instance.withBothIterable.map((e) => e.toTest()).toList(),
+    'with_both_iterable': instance.withBothIterable
+        .map((e) => e.toTest())
+        .toList(),
     'with_both_nullable': instance.withBothNullable?.toTest(),
     'with_json': instance.withJson.toTest(),
   };
@@ -44,18 +44,16 @@ Future<EnumFactorySerialize> _$EnumFactorySerializeFromSqlite(
     withFactory: WithFactory.values[data['with_factory'] as int],
     withSerialize: WithSerializeMethod.values[data['with_serialize'] as int],
     withBoth: WithBoth.values[data['with_both'] as int],
-    withBothIterable:
-        jsonDecode(data['with_both_iterable'])
-            .map((d) => d as int > -1 ? WithBoth.values[d] : null)
-            .whereType<WithBoth>()
-            .toList()
-            .cast<WithBoth>(),
-    withBothNullable:
-        data['with_both_nullable'] == null
-            ? null
-            : (data['with_both_nullable'] > -1
-                ? WithBoth.values[data['with_both_nullable'] as int]
-                : null),
+    withBothIterable: jsonDecode(data['with_both_iterable'])
+        .map((d) => d as int > -1 ? WithBoth.values[d] : null)
+        .whereType<WithBoth>()
+        .toList()
+        .cast<WithBoth>(),
+    withBothNullable: data['with_both_nullable'] == null
+        ? null
+        : (data['with_both_nullable'] > -1
+              ? WithBoth.values[data['with_both_nullable'] as int]
+              : null),
     withJson: WithJson.values[data['with_json'] as int],
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -74,10 +72,9 @@ Future<Map<String, dynamic>> _$EnumFactorySerializeToSqlite(
     'with_both_iterable': jsonEncode(
       instance.withBothIterable.map((s) => WithBoth.values.indexOf(s)).toList(),
     ),
-    'with_both_nullable':
-        instance.withBothNullable != null
-            ? WithBoth.values.indexOf(instance.withBothNullable!)
-            : null,
+    'with_both_nullable': instance.withBothNullable != null
+        ? WithBoth.values.indexOf(instance.withBothNullable!)
+        : null,
     'with_json': instance.withJson.toJson(),
   };
 }
