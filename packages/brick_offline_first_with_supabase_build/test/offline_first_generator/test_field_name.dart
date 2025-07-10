@@ -9,10 +9,9 @@ Future<SpecifyFieldName> _$SpecifyFieldNameFromSupabase(
   OfflineFirstRepository? repository,
 }) async {
   return SpecifyFieldName(
-    email:
-        data['supa_email_address'] == null
-            ? null
-            : data['supa_email_address'] as String?,
+    email: data['supa_email_address'] == null
+        ? null
+        : data['supa_email_address'] as String?,
   );
 }
 
@@ -30,8 +29,9 @@ Future<SpecifyFieldName> _$SpecifyFieldNameFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return SpecifyFieldName(
-    email:
-        data['email_address'] == null ? null : data['email_address'] as String?,
+    email: data['email_address'] == null
+        ? null
+        : data['email_address'] as String?,
   )..primaryKey = data['_brick_id'] as int;
 }
 

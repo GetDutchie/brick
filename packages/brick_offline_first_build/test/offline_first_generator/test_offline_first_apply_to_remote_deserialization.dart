@@ -12,22 +12,20 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromTest(
   OfflineFirstRepository? repository,
 }) async {
   return OfflineFirstWhere(
-    applied:
-        data['applied'] == null
-            ? null
-            : await repository
-                ?.getAssociation<Assoc>(
-                  Query(where: [Where.exact('id', data['id'])], limit: 1),
-                )
-                .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
-    notApplied:
-        data['not_applied'] == null
-            ? null
-            : await OtherAssocAdapter().fromTest(
-              data['not_applied'],
-              provider: provider,
-              repository: repository,
-            ),
+    applied: data['applied'] == null
+        ? null
+        : await repository
+              ?.getAssociation<Assoc>(
+                Query(where: [Where.exact('id', data['id'])], limit: 1),
+              )
+              .then((r) => r?.isNotEmpty ?? false ? r!.first : null),
+    notApplied: data['not_applied'] == null
+        ? null
+        : await OtherAssocAdapter().fromTest(
+            data['not_applied'],
+            provider: provider,
+            repository: repository,
+          ),
   );
 }
 
@@ -45,30 +43,28 @@ Future<OfflineFirstWhere> _$OfflineFirstWhereFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return OfflineFirstWhere(
-    applied:
-        data['applied_Assoc_brick_id'] == null
-            ? null
-            : (data['applied_Assoc_brick_id'] > -1
-                ? (await repository?.getAssociation<Assoc>(
+    applied: data['applied_Assoc_brick_id'] == null
+        ? null
+        : (data['applied_Assoc_brick_id'] > -1
+              ? (await repository?.getAssociation<Assoc>(
                   Query.where(
                     'primaryKey',
                     data['applied_Assoc_brick_id'] as int,
                     limit1: true,
                   ),
                 ))?.first
-                : null),
-    notApplied:
-        data['not_applied_OtherAssoc_brick_id'] == null
-            ? null
-            : (data['not_applied_OtherAssoc_brick_id'] > -1
-                ? (await repository?.getAssociation<OtherAssoc>(
+              : null),
+    notApplied: data['not_applied_OtherAssoc_brick_id'] == null
+        ? null
+        : (data['not_applied_OtherAssoc_brick_id'] > -1
+              ? (await repository?.getAssociation<OtherAssoc>(
                   Query.where(
                     'primaryKey',
                     data['not_applied_OtherAssoc_brick_id'] as int,
                     limit1: true,
                   ),
                 ))?.first
-                : null),
+              : null),
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -78,22 +74,20 @@ Future<Map<String, dynamic>> _$OfflineFirstWhereToSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return {
-    'applied_Assoc_brick_id':
-        instance.applied != null
-            ? instance.applied!.primaryKey ??
-                await provider.upsert<Assoc>(
-                  instance.applied!,
-                  repository: repository,
-                )
-            : null,
-    'not_applied_OtherAssoc_brick_id':
-        instance.notApplied != null
-            ? instance.notApplied!.primaryKey ??
-                await provider.upsert<OtherAssoc>(
-                  instance.notApplied!,
-                  repository: repository,
-                )
-            : null,
+    'applied_Assoc_brick_id': instance.applied != null
+        ? instance.applied!.primaryKey ??
+              await provider.upsert<Assoc>(
+                instance.applied!,
+                repository: repository,
+              )
+        : null,
+    'not_applied_OtherAssoc_brick_id': instance.notApplied != null
+        ? instance.notApplied!.primaryKey ??
+              await provider.upsert<OtherAssoc>(
+                instance.notApplied!,
+                repository: repository,
+              )
+        : null,
   };
 }
 

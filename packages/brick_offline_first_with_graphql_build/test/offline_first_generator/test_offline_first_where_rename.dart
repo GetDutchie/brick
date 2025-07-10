@@ -34,14 +34,13 @@ Future<GraphqlConfigEndpoint> _$GraphqlConfigEndpointFromSqlite(
   OfflineFirstRepository? repository,
 }) async {
   return GraphqlConfigEndpoint(
-    someField:
-        (await repository!.getAssociation<Assoc>(
-          Query.where(
-            'primaryKey',
-            data['some_field_Assoc_brick_id'] as int,
-            limit1: true,
-          ),
-        ))!.first,
+    someField: (await repository!.getAssociation<Assoc>(
+      Query.where(
+        'primaryKey',
+        data['some_field_Assoc_brick_id'] as int,
+        limit1: true,
+      ),
+    ))!.first,
   )..primaryKey = data['_brick_id'] as int;
 }
 

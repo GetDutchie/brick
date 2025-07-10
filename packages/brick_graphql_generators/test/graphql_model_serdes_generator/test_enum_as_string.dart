@@ -8,22 +8,19 @@ Future<EnumAsString> _$EnumAsStringFromGraphql(
 }) async {
   return EnumAsString(
     hat: Hat.values.byName(data['hat']),
-    nullableHat:
-        data['nullableHat'] == null
-            ? null
-            : Hat.values.byName(data['nullableHat']),
-    hats:
-        data['hats']
-            .whereType<String>()
-            .map(Hat.values.byName)
-            .toList()
-            .cast<Hat>(),
-    nullableHats:
-        data['nullableHats']
-            .whereType<String>()
-            .map(Hat.values.byName)
-            ?.toList()
-            .cast<Hat?>(),
+    nullableHat: data['nullableHat'] == null
+        ? null
+        : Hat.values.byName(data['nullableHat']),
+    hats: data['hats']
+        .whereType<String>()
+        .map(Hat.values.byName)
+        .toList()
+        .cast<Hat>(),
+    nullableHats: data['nullableHats']
+        .whereType<String>()
+        .map(Hat.values.byName)
+        ?.toList()
+        .cast<Hat?>(),
   );
 }
 

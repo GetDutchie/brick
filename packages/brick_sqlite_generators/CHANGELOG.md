@@ -1,3 +1,7 @@
+## 4.0.1
+
+- Fix: `@Sqlite(enumAsString:)` generates a varchar column instead of an integer
+
 ## 4.0.0
 
 - Dart minimum SDK is updated to `3.4.0`

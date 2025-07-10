@@ -4,6 +4,7 @@ import 'package:brick_core/query.dart';
 import 'package:brick_supabase/src/supabase_provider.dart';
 import 'package:brick_supabase/src/supabase_provider_query.dart';
 import 'package:brick_supabase/testing.dart';
+import 'package:supabase/supabase.dart';
 import 'package:test/test.dart';
 
 import '__mocks__.dart';
@@ -77,6 +78,122 @@ void main() {
       expect(inserted.id, instance.id);
       expect(inserted.age, instance.age);
       expect(inserted.name, instance.name);
+    });
+
+    group('#queryToPostgresChangeFilter', () {
+      late SupabaseProvider provider;
+
+      setUp(() {
+        provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+      });
+
+      group('returns null', () {
+        test('for complex queries', () {
+          final query = Query.where('assoc', const Where.exact('id', 2));
+          expect(provider.queryToPostgresChangeFilter<DemoAssociationModel>(query), isNull);
+        });
+
+        test('for empty queries', () {
+          const query = Query();
+          expect(provider.queryToPostgresChangeFilter<Demo>(query), isNull);
+        });
+
+        test('for missing columns', () {
+          final query = Query.where('unknown', 1);
+          expect(provider.queryToPostgresChangeFilter<Demo>(query), isNull);
+        });
+      });
+
+      group('Compare', () {
+        test('.between', () {
+          final query = Query(where: [const Where('id').isBetween(1, 2)]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+          expect(filter, isNull);
+        });
+
+        test('.doesNotContain', () {
+          final query = Query(where: [const Where('name').doesNotContain('Thomas')]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+          expect(filter, isNull);
+        });
+
+        test('.exact', () {
+          const query = Query(where: [Where.exact('name', 'Thomas')]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.eq);
+          expect(filter.column, 'name');
+          expect(filter.value, 'Thomas');
+        });
+
+        test('.greaterThan', () {
+          final query = Query(where: [const Where('age').isGreaterThan(5)]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.gt);
+          expect(filter.column, 'age');
+          expect(filter.value, 5);
+        });
+
+        test('.greaterThanOrEqualTo', () {
+          final query = Query(where: [const Where('age').isGreaterThanOrEqualTo(5)]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.gte);
+          expect(filter.column, 'age');
+          expect(filter.value, 5);
+        });
+
+        test('.lessThan', () {
+          final query = Query(where: [const Where('age').isLessThan(5)]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.lt);
+          expect(filter.column, 'age');
+          expect(filter.value, 5);
+        });
+
+        test('.lessThanOrEqualTo', () {
+          final query = Query(where: [const Where('age').isLessThanOrEqualTo(5)]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.lte);
+          expect(filter.column, 'age');
+          expect(filter.value, 5);
+        });
+
+        test('.notEqual', () {
+          final query = Query(where: [const Where('name').isNot('Thomas')]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.neq);
+          expect(filter.column, 'name');
+          expect(filter.value, 'Thomas');
+        });
+
+        test('.contains', () {
+          final query = Query(where: [const Where('name').contains('Thomas')]);
+          final filter = provider.queryToPostgresChangeFilter<Demo>(query);
+
+          expect(filter!.type, PostgresChangeFilterType.inFilter);
+          expect(filter.column, 'name');
+          expect(filter.value, 'Thomas');
+        });
+      });
+    });
+
+    test('#subscribeToRealtime', () {
+      final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
+      final stream = provider.subscribeToRealtime<Demo>(callback: (payload) {});
+
+      expect(stream, isNotNull);
+      // ignore: invalid_use_of_internal_member
+      expect(stream.joinRef, isNotNull);
+      expect(
+        // ignore: invalid_use_of_internal_member
+        stream.topic,
+        'realtime:${supabaseModelDictionary.adapterFor[Demo]!.supabaseTableName}',
+      );
     });
 
     test('#update', () async {
