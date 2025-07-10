@@ -164,6 +164,31 @@ void main() {
 
           expect(select.query, 'select=id,name,custom_age&name=not.like.search');
         });
+
+        test('with non-string values', () {
+          const query = Query(
+            where: [
+              Where('age', value: 30, compare: Compare.lessThan),
+              Where('id', value: 42, compare: Compare.exact),
+            ],
+          );
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+
+          expect(select.query, 'select=id,name,custom_age&age=lt.30&id=eq.42');
+        });
+
+        test('inIterable with non-string values', () {
+          final query = Query(
+            where: [
+              const Where('id').isIn([1, 2, 3]),
+            ],
+          );
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+
+          expect(select.query, 'select=id,name,custom_age&id=in.(1,2,3)');
+        });
       });
     });
 
