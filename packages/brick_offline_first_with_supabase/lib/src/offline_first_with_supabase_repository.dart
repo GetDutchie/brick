@@ -378,29 +378,7 @@ abstract class OfflineFirstWithSupabaseRepository<
       }
     }
 
-  PostgresChangeFilterType? _compareToFilterParam(Compare compare) {
-    switch (compare) {
-      case Compare.exact:
-        return PostgresChangeFilterType.eq;
-      case Compare.contains:
-        return PostgresChangeFilterType.inFilter;
-      case Compare.inIterable:
-        return PostgresChangeFilterType.inFilter;
-      case Compare.greaterThan:
-        return PostgresChangeFilterType.gt;
-      case Compare.greaterThanOrEqualTo:
-        return PostgresChangeFilterType.gte;
-      case Compare.lessThan:
-        return PostgresChangeFilterType.lt;
-      case Compare.lessThanOrEqualTo:
-        return PostgresChangeFilterType.lte;
-      case Compare.notEqual:
-        return PostgresChangeFilterType.neq;
-      case Compare.between:
-        return null;
-      case Compare.doesNotContain:
-        return null;
-    }
+    return instance;
   }
 
   /// This is a convenience method to create the basic offline client and queue.
