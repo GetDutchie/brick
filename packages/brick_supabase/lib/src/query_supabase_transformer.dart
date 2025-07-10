@@ -190,7 +190,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
       {
         queryKey: condition.compare == Compare.inIterable
             ? (condition.value is Iterable && (condition.value as Iterable).isNotEmpty
-                ? 'in.(${(condition.value as Iterable).join(',')})'
+                ? 'in.(${(condition.value as Iterable).map((v) => v is String ? '"$v"' : v.toString()).join(',')})'
                 : 'in.()')
             : '${_compareToSearchParam(condition.compare)}.${condition.value}',
       },

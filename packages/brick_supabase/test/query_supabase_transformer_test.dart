@@ -89,7 +89,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,custom_age&name=in.(Jens,Thomas)');
+          expect(select.query, 'select=id,name,custom_age&name=in.("Jens","Thomas")');
         },
       );
 
@@ -188,6 +188,30 @@ void main() {
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
           expect(select.query, 'select=id,name,custom_age&id=in.(1,2,3)');
+        });
+
+        test('inIterable with string values that might need quoting', () {
+          final query = Query(
+            where: [
+              const Where('name').isIn(['John Doe', 'Jane Smith']),
+            ],
+          );
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+
+          expect(select.query, 'select=id,name,custom_age&name=in.("John Doe","Jane Smith")');
+        });
+
+        test('inIterable with empty list', () {
+          final query = Query(
+            where: [
+              const Where('id').isIn([]),
+            ],
+          );
+          final select = _buildTransformer<Demo>(query)
+              .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
+
+          expect(select.query, 'select=id,name,custom_age&id=in.()');
         });
       });
     });
