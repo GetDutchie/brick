@@ -263,7 +263,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         return 'adj';
       case Compare.notEqual:
         return 'neq';
-      default:
+      case Compare.inIterable:
         throw ArgumentError('Compare.inIterable is not supported by _compareToSearchParam.');
     }
   }
