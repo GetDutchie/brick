@@ -49,6 +49,7 @@ class GraphqlRequest<TModel extends GraphqlModel> {
     return Request(
       operation: Operation(
         document: defaultOperation.document,
+        operationName: defaultOperation.operationName,
       ),
       variables: requestVariables ?? {},
       context: context ?? const Context(),
