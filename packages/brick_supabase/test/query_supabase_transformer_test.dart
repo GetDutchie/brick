@@ -89,7 +89,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,custom_age&name=in.("Jens","Thomas")');
+          expect(select.query, 'select=id,name,custom_age&name=in.(Jens,Thomas)');
         },
       );
 
@@ -199,7 +199,7 @@ void main() {
           final select = _buildTransformer<Demo>(query)
               .select(_supabaseClient.from(DemoAdapter().supabaseTableName));
 
-          expect(select.query, 'select=id,name,custom_age&name=in.("John Doe","Jane Smith")');
+          expect(select.query, 'select=id,name,custom_age&name=in.(John Doe,Jane Smith)');
         });
 
         test('inIterable with empty list', () {
