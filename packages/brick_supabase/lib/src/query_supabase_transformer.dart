@@ -186,9 +186,20 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     final queryKey = (leadingAssociations != null ? '${leadingAssociations.join('.')}.' : '') +
         definition.columnName;
 
+    String queryValue;
+    if (condition.compare == Compare.inIterable) {
+      if (condition.value is Iterable && (condition.value as Iterable).isNotEmpty) {
+        queryValue = 'in.(${(condition.value as Iterable).join(',')})';
+      } else {
+        queryValue = 'in.()';
+      }
+    } else {
+      queryValue = '${_compareToSearchParam(condition.compare)}.${condition.value}';
+    }
+
     return [
       {
-        queryKey: '${_compareToSearchParam(condition.compare)}.${condition.value}',
+        queryKey: queryValue,
       },
       ...associationConditions,
     ];
@@ -259,6 +270,8 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
         return 'adj';
       case Compare.notEqual:
         return 'neq';
+      case Compare.inIterable:
+        throw ArgumentError('Compare.inIterable is not supported by _compareToSearchParam.');
     }
   }
 }
