@@ -186,20 +186,11 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
     final queryKey = (leadingAssociations != null ? '${leadingAssociations.join('.')}.' : '') +
         definition.columnName;
 
-    String queryValue;
-    if (condition.compare == Compare.inIterable) {
-      if (condition.value is Iterable && (condition.value as Iterable).isNotEmpty) {
-        queryValue = 'in.(${(condition.value as Iterable).join(',')})';
-      } else {
-        queryValue = 'in.()';
-      }
-    } else {
-      queryValue = '${_compareToSearchParam(condition.compare)}.${condition.value}';
-    }
-
     return [
       {
-        queryKey: queryValue,
+        queryKey: condition.compare == Compare.inIterable && condition.value is Iterable
+            ? 'in.(${(condition.value as Iterable).join(',')})'
+            : '${_compareToSearchParam(condition.compare)}.${condition.value}',
       },
       ...associationConditions,
     ];
