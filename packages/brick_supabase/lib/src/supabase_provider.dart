@@ -61,6 +61,8 @@ class SupabaseProvider implements Provider<SupabaseModel> {
         return null;
       case Compare.doesNotContain:
         return null;
+      case Compare.inIterable:
+        return null;
     }
   }
 
