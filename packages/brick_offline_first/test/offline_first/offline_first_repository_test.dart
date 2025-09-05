@@ -52,6 +52,18 @@ void main() {
           throwsA(const TypeMatcher<SocketException>()),
         );
       });
+
+      test('OfflineFirstDeletePolicy.localOnly', () async {
+        final instance = Mounty(name: 'SqliteName');
+        final upserted = await TestRepository().upsert<Mounty>(instance);
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), hasLength(1));
+        (TestRepository().remoteProvider as TestProvider).methodsCalled.clear();
+
+        await TestRepository().delete<Mounty>(upserted, policy: OfflineFirstDeletePolicy.localOnly);
+
+        expect(await TestRepository().sqliteProvider.get<Mounty>(), isEmpty);
+        expect((TestRepository().remoteProvider as TestProvider).methodsCalled, isEmpty);
+      });
     });
 
     group('#get', () {

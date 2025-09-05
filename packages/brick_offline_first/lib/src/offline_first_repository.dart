@@ -114,26 +114,29 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
 
     final optimisticLocal = policy == OfflineFirstDeletePolicy.optimisticLocal;
     final requireRemote = policy == OfflineFirstDeletePolicy.requireRemote;
+    final localOnly = policy == OfflineFirstDeletePolicy.localOnly;
 
     var rowsDeleted = 0;
 
-    if (optimisticLocal) {
+    if (optimisticLocal || localOnly) {
       rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
       await notifySubscriptionsWithLocalData<TModel>();
     }
 
-    try {
-      await remoteProvider.delete<TModel>(instance, query: query, repository: this);
-      if (requireRemote) {
-        rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
-        await notifySubscriptionsWithLocalData<TModel>();
+    if (!localOnly) {
+      try {
+        await remoteProvider.delete<TModel>(instance, query: query, repository: this);
+        if (requireRemote) {
+          rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
+          await notifySubscriptionsWithLocalData<TModel>();
+        }
+      } on ClientException catch (e) {
+        logger.warning('#delete client failure: $e');
+        if (requireRemote) rethrow;
+      } on SocketException catch (e) {
+        logger.warning('#delete socket failure: $e');
+        if (requireRemote) rethrow;
       }
-    } on ClientException catch (e) {
-      logger.warning('#delete client failure: $e');
-      if (requireRemote) rethrow;
-    } on SocketException catch (e) {
-      logger.warning('#delete socket failure: $e');
-      if (requireRemote) rethrow;
     }
 
     // ignore: unawaited_futures
