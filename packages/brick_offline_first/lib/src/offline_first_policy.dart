@@ -38,4 +38,7 @@ enum OfflineFirstUpsertPolicy {
   /// Save results to local after remote responds;
   /// local results are not saved if remote responds with any exception
   requireRemote,
+
+  /// Save results to local only; do not send any request to the remote provider
+  localOnly,
 }

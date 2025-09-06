@@ -197,6 +197,22 @@ void main() {
           throwsA(const TypeMatcher<SocketException>()),
         );
       });
+
+      test('OfflineFirstUpsertPolicy.localOnly', () async {
+        final instance = Mounty(name: 'LocalOnlyMounty');
+        (TestRepository().remoteProvider as TestProvider).methodsCalled.clear();
+
+        final result = await TestRepository()
+            .upsert<Mounty>(instance, policy: OfflineFirstUpsertPolicy.localOnly);
+
+        expect(result.name, 'LocalOnlyMounty');
+        expect(result.primaryKey, greaterThanOrEqualTo(1));
+
+        final sqliteResults = await TestRepository().sqliteProvider.get<Mounty>();
+        expect(sqliteResults.where((m) => m.name == 'LocalOnlyMounty'), hasLength(1));
+
+        expect((TestRepository().remoteProvider as TestProvider).methodsCalled, isEmpty);
+      });
     });
 
     test('#reset', () async {

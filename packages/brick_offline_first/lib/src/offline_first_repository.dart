@@ -419,25 +419,28 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
 
     final optimisticLocal = policy == OfflineFirstUpsertPolicy.optimisticLocal;
     final requireRemote = policy == OfflineFirstUpsertPolicy.requireRemote;
+    final localOnly = policy == OfflineFirstUpsertPolicy.localOnly;
 
-    if (optimisticLocal) {
+    if (optimisticLocal || localOnly) {
       instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
       await notifySubscriptionsWithLocalData<TModel>();
     }
 
-    try {
-      await remoteProvider.upsert<TModel>(instance, query: query, repository: this);
+    if (!localOnly) {
+      try {
+        await remoteProvider.upsert<TModel>(instance, query: query, repository: this);
 
-      if (requireRemote) {
-        instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
-        await notifySubscriptionsWithLocalData<TModel>();
+        if (requireRemote) {
+          instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
+          await notifySubscriptionsWithLocalData<TModel>();
+        }
+      } on ClientException catch (e) {
+        logger.warning('#upsert client failure: $e');
+        if (requireRemote) rethrow;
+      } on SocketException catch (e) {
+        logger.warning('#upsert socket failure: $e');
+        if (requireRemote) rethrow;
       }
-    } on ClientException catch (e) {
-      logger.warning('#upsert client failure: $e');
-      if (requireRemote) rethrow;
-    } on SocketException catch (e) {
-      logger.warning('#upsert socket failure: $e');
-      if (requireRemote) rethrow;
     }
 
     // ignore: unawaited_futures
