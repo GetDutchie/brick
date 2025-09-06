@@ -20,6 +20,12 @@ enum OfflineFirstGetPolicy {
   /// An empty array will be returned if the app is offline.
   awaitRemote,
 
+  /// Ensures results must be updated from the remote provider(s) before returning if the app is online.
+  /// After fetching from remote, any local data (SQLite and memory cache) that is not present
+  /// in the remote results will be deleted to maintain consistency.
+  /// An empty array will be returned if the app is offline.
+  awaitRemoteAndOverwriteLocal,
+
   /// Retrieves from the remote provider(s) if the query returns no results from the local provider(s).
   awaitRemoteWhenNoneExist,
 

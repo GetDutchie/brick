@@ -119,6 +119,28 @@ void main() {
 
         expect(results, isNotEmpty);
       });
+
+      test('OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal', () async {
+        final localMounty1 = Mounty(name: 'LocalMounty1');
+        final localMounty2 = Mounty(name: 'LocalMounty2');
+        await TestRepository().upsert<Mounty>(localMounty1);
+        await TestRepository().upsert<Mounty>(localMounty2);
+
+        final localResults =
+            await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.localOnly);
+        expect(localResults, hasLength(2));
+
+        final results = await TestRepository()
+            .get<Mounty>(policy: OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal);
+
+        expect(results, hasLength(1));
+        expect(results.first.name, 'SqliteName');
+
+        final finalLocalResults =
+            await TestRepository().get<Mounty>(policy: OfflineFirstGetPolicy.localOnly);
+        expect(finalLocalResults, hasLength(1));
+        expect(finalLocalResults.first.name, 'SqliteName');
+      });
     });
 
     test(

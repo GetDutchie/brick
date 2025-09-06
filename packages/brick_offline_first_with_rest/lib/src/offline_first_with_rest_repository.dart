@@ -141,7 +141,8 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
       logger.warning('#get rest failure: $e');
 
       if (RestOfflineQueueClient.isATunnelNotFoundResponse(e.response) &&
-          policy != OfflineFirstGetPolicy.awaitRemote) {
+          policy != OfflineFirstGetPolicy.awaitRemote &&
+          policy != OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal) {
         return <TModel>[];
       }
 

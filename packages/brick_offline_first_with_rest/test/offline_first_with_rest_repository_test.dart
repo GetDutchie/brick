@@ -129,6 +129,35 @@ void main() {
         // Should return empty list without throwing
         expect(results, isEmpty);
       });
+
+      test(
+          'throws OfflineFirstException with awaitRemoteAndOverwriteLocal policy on tunnel not found',
+          () async {
+        // Configure test repository with a client that returns a tunnel not found response
+        const tunnelNotFoundResponse = 'Tunnel 12345 not found';
+        final client = MockClient((req) async {
+          if (req.url.toString().contains('mounties')) {
+            return http.Response(tunnelNotFoundResponse, 404);
+          }
+          return http.Response('Not found', 404);
+        });
+
+        TestRepository.configure(
+          baseUrl: baseUrl,
+          restDictionary: restModelDictionary,
+          sqliteDictionary: sqliteModelDictionary,
+          client: client,
+        );
+        await TestRepository().initialize();
+
+        // Should throw with awaitRemoteAndOverwriteLocal policy
+        expect(
+          () => TestRepository().get<Mounty>(
+            policy: OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal,
+          ),
+          throwsA(const TypeMatcher<OfflineFirstException>()),
+        );
+      });
     });
 
     test('#getBatched', () async {

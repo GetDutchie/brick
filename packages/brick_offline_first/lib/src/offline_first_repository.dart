@@ -185,13 +185,16 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
     logger.finest('#get: $TModel $query');
 
     final requireRemote = policy == OfflineFirstGetPolicy.awaitRemote;
+    final awaitRemoteAndOverwrite = policy == OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal;
     final hydrateUnexisting = policy == OfflineFirstGetPolicy.awaitRemoteWhenNoneExist;
     final alwaysHydrate = policy == OfflineFirstGetPolicy.alwaysHydrate;
 
     try {
       _latestGetPolicy = policy;
 
-      if (memoryCacheProvider.canFind<TModel>(query) && !requireRemote) {
+      if (memoryCacheProvider.canFind<TModel>(query) &&
+          !requireRemote &&
+          !awaitRemoteAndOverwrite) {
         final memoryCacheResults = memoryCacheProvider.get<TModel>(query: query, repository: this);
 
         if (alwaysHydrate) {
@@ -205,8 +208,12 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
 
       final modelExists = await exists<TModel>(query: query);
 
-      if (requireRemote || (hydrateUnexisting && !modelExists)) {
-        return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
+      if (requireRemote || awaitRemoteAndOverwrite || (hydrateUnexisting && !modelExists)) {
+        if (awaitRemoteAndOverwrite) {
+          return await hydrateAndOverwriteLocal<TModel>(query: query, deserializeSqlite: !seedOnly);
+        } else {
+          return await hydrate<TModel>(query: query, deserializeSqlite: !seedOnly);
+        }
       } else if (alwaysHydrate) {
         // start round trip for fresh data
         // ignore: unawaited_futures
@@ -485,6 +492,70 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       logger.warning('#hydrate client failure: $e');
     } on SocketException catch (e) {
       logger.warning('#hydrate socket failure: $e');
+    }
+
+    return <TModel>[];
+  }
+
+  /// Fetch and store results from [remoteProvider] into SQLite and the memory cache,
+  /// and delete any local data that is not present in the remote results.
+  ///
+  /// This method is similar to [hydrate] but ensures that local storage (both SQLite and memory cache)
+  /// only contains data that exists in the remote provider. Any extra local data will be deleted.
+  ///
+  /// [deserializeSqlite] loads data from SQLite after they've been inserted. Association queries
+  /// can be expensive for large datasets, making deserialization a significant hit when the result
+  /// is ignorable. Defaults to `true`.
+  @protected
+  Future<List<TModel>> hydrateAndOverwriteLocal<TModel extends TRepositoryModel>({
+    bool deserializeSqlite = true,
+    Query? query,
+  }) async {
+    try {
+      logger.finest('#hydrateAndOverwriteLocal: $TModel $query');
+
+      final localResults = await sqliteProvider.get<TModel>(query: query, repository: this);
+      final modelsFromRemote = await remoteProvider.get<TModel>(query: query, repository: this);
+
+      if (modelsFromRemote != null) {
+        final modelsIntoSqlite =
+            await storeRemoteResults<TModel>(modelsFromRemote, shouldNotify: false);
+        memoryCacheProvider.hydrate<TModel>(modelsIntoSqlite);
+
+        final toDelete = localResults.where((localModel) {
+          if (localModel.primaryKey == null) return false;
+
+          return !modelsIntoSqlite.any(
+            (remoteModel) =>
+                remoteModel.primaryKey != null && remoteModel.primaryKey == localModel.primaryKey,
+          );
+        }).toList();
+
+        for (final deletableModel in toDelete) {
+          await sqliteProvider.delete<TModel>(deletableModel, repository: this);
+          memoryCacheProvider.delete<TModel>(deletableModel, repository: this);
+        }
+
+        await notifySubscriptionsWithLocalData<TModel>();
+
+        if (!deserializeSqlite) return modelsIntoSqlite;
+      } else {
+        for (final localModel in localResults) {
+          await sqliteProvider.delete<TModel>(localModel, repository: this);
+          memoryCacheProvider.delete<TModel>(localModel, repository: this);
+        }
+
+        await notifySubscriptionsWithLocalData<TModel>();
+        return <TModel>[];
+      }
+
+      return await sqliteProvider
+          .get<TModel>(query: query, repository: this)
+          .then((d) => memoryCacheProvider.hydrate<TModel>(d));
+    } on ClientException catch (e) {
+      logger.warning('#hydrateAndOverwriteLocal client failure: $e');
+    } on SocketException catch (e) {
+      logger.warning('#hydrateAndOverwriteLocal socket failure: $e');
     }
 
     return <TModel>[];

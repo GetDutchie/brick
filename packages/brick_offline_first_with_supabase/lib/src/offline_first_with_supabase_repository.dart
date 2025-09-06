@@ -109,12 +109,14 @@ abstract class OfflineFirstWithSupabaseRepository<
       );
     } on PostgrestException catch (e) {
       logger.warning('#get supabase failure: $e');
-      if (policy == OfflineFirstGetPolicy.awaitRemote) {
+      if (policy == OfflineFirstGetPolicy.awaitRemote ||
+          policy == OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal) {
         throw OfflineFirstException(e);
       }
     } on AuthRetryableFetchException catch (e) {
       logger.warning('#get supabase failure: $e');
-      if (policy == OfflineFirstGetPolicy.awaitRemote) {
+      if (policy == OfflineFirstGetPolicy.awaitRemote ||
+          policy == OfflineFirstGetPolicy.awaitRemoteAndOverwriteLocal) {
         throw OfflineFirstException(e);
       }
     }
