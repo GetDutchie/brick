@@ -3,15 +3,7 @@
   "dart.lineLength": 100,
   "dart.previewFlutterUiGuides": true,
   "dart.previewFlutterUiGuidesCustomTracking": true,
-  "dart.insertArgumentPlaceholders": false,
   "dart.debugSdkLibraries": false,
-  "dart.debugExternalPackageLibraries": false,
-  "dart.analysisExcludedFolders": [
-    "**/example/",
-    "example_rest/",
-    "example_graphql/",
-    "example_supabase/"
-  ],
   // File handling
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
@@ -26,12 +18,11 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "pubspec.yaml": "pubspec.lock,analysis_options.yaml,.metadata",
-    "*.dart": "*.g.dart,*.freezed.dart",
+    "*.dart": "*.g.dart",
     "README.md": "CHANGELOG.md,LICENSE,CODEOWNERS"
   },
   // Editor formatting
   "editor.formatOnSave": true,
-  "editor.formatOnType": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
@@ -44,11 +35,6 @@
   "editor.detectIndentation": false,
   // Language specific settings
   "[dart]": {
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "editor.rulers": [
-      100
-    ],
     "editor.selectionHighlight": false,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.suggestSelection": "first",
@@ -78,7 +64,6 @@
   "search.exclude": {
     "**/.dart_tool/**": true,
     "**/build/**": true,
-    "**/*.g.dart": true,
     "**/node_modules/**": true,
     "**/.git/**": true
   },
