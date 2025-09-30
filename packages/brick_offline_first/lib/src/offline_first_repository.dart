@@ -123,22 +123,23 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       await notifySubscriptionsWithLocalData<TModel>();
     }
 
-    if (!localOnly) {
-      try {
-        await remoteProvider.delete<TModel>(instance, query: query, repository: this);
-        if (requireRemote) {
-          rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
-          await notifySubscriptionsWithLocalData<TModel>();
-        }
-      } on ClientException catch (e) {
-        logger.warning('#delete client failure: $e');
-        if (requireRemote) rethrow;
-      } on SocketException catch (e) {
-        logger.warning('#delete socket failure: $e');
-        if (requireRemote) rethrow;
-      }
+    if (localOnly) {
+      return rowsDeleted > 0;
     }
 
+    try {
+      await remoteProvider.delete<TModel>(instance, query: query, repository: this);
+      if (requireRemote) {
+        rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
+        await notifySubscriptionsWithLocalData<TModel>();
+      }
+    } on ClientException catch (e) {
+      logger.warning('#delete client failure: $e');
+      if (requireRemote) rethrow;
+    } on SocketException catch (e) {
+      logger.warning('#delete socket failure: $e');
+      if (requireRemote) rethrow;
+    }
     // ignore: unawaited_futures
     if (autoHydrate) hydrate<TModel>(query: query);
 
@@ -426,21 +427,23 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       await notifySubscriptionsWithLocalData<TModel>();
     }
 
-    if (!localOnly) {
-      try {
-        await remoteProvider.upsert<TModel>(instance, query: query, repository: this);
+    if (localOnly) {
+      return instance;
+    }
 
-        if (requireRemote) {
-          instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
-          await notifySubscriptionsWithLocalData<TModel>();
-        }
-      } on ClientException catch (e) {
-        logger.warning('#upsert client failure: $e');
-        if (requireRemote) rethrow;
-      } on SocketException catch (e) {
-        logger.warning('#upsert socket failure: $e');
-        if (requireRemote) rethrow;
+    try {
+      await remoteProvider.upsert<TModel>(instance, query: query, repository: this);
+
+      if (requireRemote) {
+        instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
+        await notifySubscriptionsWithLocalData<TModel>();
       }
+    } on ClientException catch (e) {
+      logger.warning('#upsert client failure: $e');
+      if (requireRemote) rethrow;
+    } on SocketException catch (e) {
+      logger.warning('#upsert socket failure: $e');
+      if (requireRemote) rethrow;
     }
 
     // ignore: unawaited_futures
