@@ -49,8 +49,6 @@ mixin DestructiveLocalSyncFromRemoteMixin<T extends OfflineFirstModel>
     }
 
     final modelsIntoSqlite = await storeRemoteResults<TModel>(remoteResults);
-    final modelsIntoMemory = memoryCacheProvider.hydrate<TModel>(modelsIntoSqlite);
-
-    return modelsIntoMemory;
+    return memoryCacheProvider.hydrate<TModel>(modelsIntoSqlite);
   }
 }
