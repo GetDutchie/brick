@@ -24,7 +24,7 @@ abstract class BaseBuilder<_ClassAnnotation> implements Builder {
   String get outputExtension;
 
   ///
-  final typeChecker = TypeChecker.fromRuntime(_ClassAnnotation);
+  final typeChecker = TypeChecker.typeNamed(_ClassAnnotation);
 
   ///
   static const aggregateExtension = '.brick_aggregate';

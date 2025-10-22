@@ -23,7 +23,7 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
         ignoreFrom: Supabase.defaults.ignoreFrom,
         ignoreTo: Supabase.defaults.ignoreTo,
         name: renameField(
-          element.name,
+          element.name!,
           config?.fieldRename,
           SupabaseSerializable.defaults.fieldRename,
         ),
@@ -41,7 +41,7 @@ class SupabaseAnnotationFinder extends AnnotationFinder<Supabase>
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Supabase.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ??
           renameField(
-            element.name,
+            element.name!,
             config?.fieldRename,
             SupabaseSerializable.defaults.fieldRename,
           ),

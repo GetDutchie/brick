@@ -7,7 +7,7 @@ import 'package:source_gen/source_gen.dart';
 
 /// Find an [Annotation] per field.
 abstract class AnnotationFinder<Annotation extends Object> {
-  final _columnChecker = TypeChecker.fromRuntime(Annotation);
+  final _columnChecker = TypeChecker.typeNamed(Annotation);
 
   /// Holder of previously generated [Annotation]s
   final _columnExpando = Expando<Annotation>();

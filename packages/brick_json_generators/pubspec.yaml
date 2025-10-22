@@ -4,14 +4,15 @@ homepage: https://github.com/GetDutchie/brick/tree/main/packages/brick_json_gene
 issue_tracker: https://github.com/GetDutchie/brick/issues
 repository: https://github.com/GetDutchie/brick
 
-version: 4.0.1
+version: 4.1.0
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
-  analyzer: ">=6.11.0 <8.0.0"
-  brick_build: ">=4.0.0 <5.0.0"
+  analyzer: ">=6.11.0 <9.0.0"
+  brick_build:
+    path: ../brick_build
   brick_core: ">=2.0.0 <3.0.0"
   build: ">=2.4.2 <5.0.0"
   dart_style: ">=3.0.0 <4.0.0"

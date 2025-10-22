@@ -3,16 +3,16 @@ import 'package:brick_sqlite/db.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
-const _migrationAnnotationChecker = TypeChecker.fromRuntime(Migratable);
-const _createIndexChecker = TypeChecker.fromRuntime(CreateIndex);
-const _dropIndexChecker = TypeChecker.fromRuntime(DropIndex);
-const _dropColumnChecker = TypeChecker.fromRuntime(DropColumn);
-const _dropTableChecker = TypeChecker.fromRuntime(DropTable);
-const _insertColumnChecker = TypeChecker.fromRuntime(InsertColumn);
-const _insertForeignKeyChecker = TypeChecker.fromRuntime(InsertForeignKey);
-const _insertTableChecker = TypeChecker.fromRuntime(InsertTable);
-const _renameColumnChecker = TypeChecker.fromRuntime(RenameColumn);
-const _renameTableChecker = TypeChecker.fromRuntime(RenameTable);
+const _migrationAnnotationChecker = TypeChecker.typeNamed(Migratable);
+const _createIndexChecker = TypeChecker.typeNamed(CreateIndex);
+const _dropIndexChecker = TypeChecker.typeNamed(DropIndex);
+const _dropColumnChecker = TypeChecker.typeNamed(DropColumn);
+const _dropTableChecker = TypeChecker.typeNamed(DropTable);
+const _insertColumnChecker = TypeChecker.typeNamed(InsertColumn);
+const _insertForeignKeyChecker = TypeChecker.typeNamed(InsertForeignKey);
+const _insertTableChecker = TypeChecker.typeNamed(InsertTable);
+const _renameColumnChecker = TypeChecker.typeNamed(RenameColumn);
+const _renameTableChecker = TypeChecker.typeNamed(RenameTable);
 
 /// [Migration] is an abstract class; this is a library-specific implementation
 /// to access migration properties.
@@ -151,11 +151,33 @@ class MigrationGenerator extends Generator {
 
   /// Find all annotated migrations and bundle them with their source path.
   /// Useful for generating an import or list of all migrations.
+  /// Note: In analyzer 8.4.0+, Element.source was removed. Extracting filename from library path.
   static Map<String, String> allMigrationsByFilePath(LibraryReader library) {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
     return {
       for (final annotation in annotations)
-        '${annotation.element.name}': annotation.element.source!.shortName,
+        '${annotation.element.name}': _extractFilename(annotation.element.library!.identifier),
     };
+  }
+
+  /// Extract filename from library identifier path
+  static String _extractFilename(String libraryPath) {
+    if (libraryPath == 'unknown') return libraryPath;
+
+    // Handle file:// URIs
+    if (libraryPath.startsWith('file://')) {
+      final uri = Uri.parse(libraryPath);
+      return uri.pathSegments.last;
+    }
+
+    // Handle package: URIs
+    if (libraryPath.startsWith('package:')) {
+      final parts = libraryPath.split('/');
+      return parts.last;
+    }
+
+    // Fallback: extract everything after the last slash
+    final parts = libraryPath.split('/');
+    return parts.isNotEmpty ? parts.last : libraryPath;
   }
 }

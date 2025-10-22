@@ -21,7 +21,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
   final doesDeserialize = false;
 
   ///
-  String get tableName => element.name;
+  String? get tableName => element.name;
 
   @override
   List<String> get instanceFieldsAndMethods {
@@ -272,12 +272,14 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
       checker = checkerForType(checker.argType);
     }
 
-    final joinsTable =
-        InsertForeignKey.joinsTableName(annotation.name!, localTableName: fields.element.name);
+    final joinsTable = InsertForeignKey.joinsTableName(
+      annotation.name!,
+      localTableName: fields.element.name!,
+    );
     final joinsForeignColumn = InsertForeignKey.joinsTableForeignColumnName(
       SharedChecker.withoutNullability(checker.unFuturedArgType),
     );
-    final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name);
+    final joinsLocalColumn = InsertForeignKey.joinsTableLocalColumnName(fields.element.name!);
 
     // Iterable<Future<SqliteModel>>
     final insertStatement =
@@ -295,7 +297,7 @@ class SqliteSerialize<_Model extends SqliteModel> extends SqliteSerdesGenerator<
 
     final removeStaleAssociations = field.isPublic
         ? _removeStaleAssociations(
-            field.name,
+            field.name!,
             joinsForeignColumn,
             joinsLocalColumn,
             joinsTable,

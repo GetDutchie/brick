@@ -24,7 +24,7 @@ class RestAnnotationFinder extends AnnotationFinder<Rest>
         ignoreFrom: Rest.defaults.ignoreFrom,
         ignoreTo: Rest.defaults.ignoreTo,
         name: renameField(
-          element.name,
+          element.name!,
           config?.fieldRename,
           RestSerializable.defaults.fieldRename,
         ),
@@ -40,7 +40,11 @@ class RestAnnotationFinder extends AnnotationFinder<Rest>
       ignoreFrom: obj.getField('ignoreFrom')!.toBoolValue() ?? Rest.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')!.toBoolValue() ?? Rest.defaults.ignoreTo,
       name: obj.getField('name')!.toStringValue() ??
-          renameField(element.name, config?.fieldRename, RestSerializable.defaults.fieldRename),
+          renameField(
+            element.name!,
+            config?.fieldRename,
+            RestSerializable.defaults.fieldRename,
+          ),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );
   }
