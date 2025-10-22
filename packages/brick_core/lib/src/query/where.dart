@@ -191,6 +191,10 @@ class Where extends WhereCondition {
   Where isNot(dynamic value) =>
       Where(evaluatedField, value: value, compare: Compare.notEqual, isRequired: isRequired);
 
+  /// Convenience function to create a [Where] with [Compare.inIterable].
+  Where isIn(Iterable<dynamic> values) =>
+      Where(evaluatedField, value: values, compare: Compare.inIterable, isRequired: isRequired);
+
   /// Recursively find conditions that evaluate a specific field. A field is a member on a model,
   /// such as `myUserId` in `final String myUserId`.
   /// If the use case for the field only requires one result, say `id` or `primaryKey`,
@@ -329,4 +333,7 @@ enum Compare {
 
   /// The query value does not match the field value.
   notEqual,
+
+  /// The field value is in the query value iterable.
+  inIterable,
 }
