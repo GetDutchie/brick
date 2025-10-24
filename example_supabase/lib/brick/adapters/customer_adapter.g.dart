@@ -1,50 +1,39 @@
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<Customer> _$CustomerFromSupabase(
-  Map<String, dynamic> data, {
-  required SupabaseProvider provider,
-  OfflineFirstWithSupabaseRepository? repository,
-}) async {
-  return Customer();
+Future<Customer> _$CustomerFromSupabase(Map<String, dynamic> data,
+    {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
+  return Customer(
+      id: data['id'] as String,
+      firstName: data['first_name'] as String?,
+      lastName: data['last_name'] as String?);
 }
 
-Future<Map<String, dynamic>> _$CustomerToSupabase(
-  Customer instance, {
-  required SupabaseProvider provider,
-  OfflineFirstWithSupabaseRepository? repository,
-}) async {
-  return {
-    'id': instance.id,
-    'first_name': instance.firstName,
-    'last_name': instance.lastName,
-  };
+Future<Map<String, dynamic>> _$CustomerToSupabase(Customer instance,
+    {required SupabaseProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
+  return {'id': instance.id, 'first_name': instance.firstName, 'last_name': instance.lastName};
 }
 
-Future<Customer> _$CustomerFromSqlite(
-  Map<String, dynamic> data, {
-  required SqliteProvider provider,
-  OfflineFirstWithSupabaseRepository? repository,
-}) async {
-  return Customer()..primaryKey = data['_brick_id'] as int;
+Future<Customer> _$CustomerFromSqlite(Map<String, dynamic> data,
+    {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
+  return Customer(
+      id: data['id'] as String,
+      firstName: data['first_name'] == null ? null : data['first_name'] as String?,
+      lastName: data['last_name'] == null ? null : data['last_name'] as String?)
+    ..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$CustomerToSqlite(
-  Customer instance, {
-  required SqliteProvider provider,
-  OfflineFirstWithSupabaseRepository? repository,
-}) async {
-  return {
-    'id': instance.id,
-    'first_name': instance.firstName,
-    'last_name': instance.lastName,
-  };
+Future<Map<String, dynamic>> _$CustomerToSqlite(Customer instance,
+    {required SqliteProvider provider, OfflineFirstWithSupabaseRepository? repository}) async {
+  return {'id': instance.id, 'first_name': instance.firstName, 'last_name': instance.lastName};
 }
 
 /// Construct a [Customer]
 class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   CustomerAdapter();
 
+  @override
+  final supabaseTableName = 'customers';
   @override
   final defaultToNull = true;
   @override
@@ -60,7 +49,7 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
     'lastName': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'last_name',
-    ),
+    )
   };
   @override
   final ignoreDuplicates = false;
@@ -91,18 +80,12 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
       columnName: 'last_name',
       iterable: false,
       type: String,
-    ),
+    )
   };
   @override
-  Future<int?> primaryKeyByUniqueColumns(
-    Customer instance,
-    DatabaseExecutor executor,
-  ) async {
-    final results = await executor.rawQuery(
-      '''
-        SELECT * FROM `Customer` WHERE id = ? LIMIT 1''',
-      [instance.id],
-    );
+  Future<int?> primaryKeyByUniqueColumns(Customer instance, DatabaseExecutor executor) async {
+    final results = await executor.rawQuery('''
+        SELECT * FROM `Customer` WHERE id = ? LIMIT 1''', [instance.id]);
 
     // SQFlite returns [{}] when no results are found
     if (results.isEmpty || (results.length == 1 && results.first.isEmpty)) {
@@ -116,43 +99,19 @@ class CustomerAdapter extends OfflineFirstWithSupabaseAdapter<Customer> {
   final String tableName = 'Customer';
 
   @override
-  Future<Customer> fromSupabase(
-    Map<String, dynamic> input, {
-    required provider,
-    covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$CustomerFromSupabase(
-    input,
-    provider: provider,
-    repository: repository,
-  );
+  Future<Customer> fromSupabase(Map<String, dynamic> input,
+          {required provider, covariant OfflineFirstWithSupabaseRepository? repository}) async =>
+      await _$CustomerFromSupabase(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSupabase(
-    Customer input, {
-    required provider,
-    covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$CustomerToSupabase(
-    input,
-    provider: provider,
-    repository: repository,
-  );
+  Future<Map<String, dynamic>> toSupabase(Customer input,
+          {required provider, covariant OfflineFirstWithSupabaseRepository? repository}) async =>
+      await _$CustomerToSupabase(input, provider: provider, repository: repository);
   @override
-  Future<Customer> fromSqlite(
-    Map<String, dynamic> input, {
-    required provider,
-    covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$CustomerFromSqlite(
-    input,
-    provider: provider,
-    repository: repository,
-  );
+  Future<Customer> fromSqlite(Map<String, dynamic> input,
+          {required provider, covariant OfflineFirstWithSupabaseRepository? repository}) async =>
+      await _$CustomerFromSqlite(input, provider: provider, repository: repository);
   @override
-  Future<Map<String, dynamic>> toSqlite(
-    Customer input, {
-    required provider,
-    covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$CustomerToSqlite(
-    input,
-    provider: provider,
-    repository: repository,
-  );
+  Future<Map<String, dynamic>> toSqlite(Customer input,
+          {required provider, covariant OfflineFirstWithSupabaseRepository? repository}) async =>
+      await _$CustomerToSqlite(input, provider: provider, repository: repository);
 }
