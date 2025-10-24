@@ -156,28 +156,7 @@ class MigrationGenerator extends Generator {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
     return {
       for (final annotation in annotations)
-        '${annotation.element.name}': _extractFilename(annotation.element.library!.identifier),
+        '${annotation.element.name}': library.element.uri.pathSegments.last,
     };
-  }
-
-  /// Extract filename from library identifier path
-  static String _extractFilename(String libraryPath) {
-    if (libraryPath == 'unknown') return libraryPath;
-
-    // Handle file:// URIs
-    if (libraryPath.startsWith('file://')) {
-      final uri = Uri.parse(libraryPath);
-      return uri.pathSegments.last;
-    }
-
-    // Handle package: URIs
-    if (libraryPath.startsWith('package:')) {
-      final parts = libraryPath.split('/');
-      return parts.last;
-    }
-
-    // Fallback: extract everything after the last slash
-    final parts = libraryPath.split('/');
-    return parts.isNotEmpty ? parts.last : libraryPath;
   }
 }

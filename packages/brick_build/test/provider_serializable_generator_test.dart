@@ -1,6 +1,3 @@
-@Timeout(Duration(seconds: 45))
-library;
-
 import 'package:brick_build/generators.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
