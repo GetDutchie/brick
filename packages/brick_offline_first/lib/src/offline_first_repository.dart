@@ -114,12 +114,17 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
 
     final optimisticLocal = policy == OfflineFirstDeletePolicy.optimisticLocal;
     final requireRemote = policy == OfflineFirstDeletePolicy.requireRemote;
+    final localOnly = policy == OfflineFirstDeletePolicy.localOnly;
 
     var rowsDeleted = 0;
 
-    if (optimisticLocal) {
+    if (optimisticLocal || localOnly) {
       rowsDeleted = await _deleteLocal<TModel>(instance, query: query);
       await notifySubscriptionsWithLocalData<TModel>();
+    }
+
+    if (localOnly) {
+      return rowsDeleted > 0;
     }
 
     try {
@@ -135,7 +140,6 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
       logger.warning('#delete socket failure: $e');
       if (requireRemote) rethrow;
     }
-
     // ignore: unawaited_futures
     if (autoHydrate) hydrate<TModel>(query: query);
 
@@ -416,10 +420,15 @@ abstract class OfflineFirstRepository<TRepositoryModel extends OfflineFirstModel
 
     final optimisticLocal = policy == OfflineFirstUpsertPolicy.optimisticLocal;
     final requireRemote = policy == OfflineFirstUpsertPolicy.requireRemote;
+    final localOnly = policy == OfflineFirstUpsertPolicy.localOnly;
 
-    if (optimisticLocal) {
+    if (optimisticLocal || localOnly) {
       instance.primaryKey = await _upsertLocal<TModel>(instance, query: query);
       await notifySubscriptionsWithLocalData<TModel>();
+    }
+
+    if (localOnly) {
+      return instance;
     }
 
     try {
