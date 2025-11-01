@@ -1,3 +1,7 @@
+## 4.0.1
+
+- Utilize `operationName` attribute on request (#618)
+
 ## 4.0.0
 
 - **BREAKING CHANGE** Remove `Graphql#nullable`. See [3.3.0](#3.3.0) for migration steps.

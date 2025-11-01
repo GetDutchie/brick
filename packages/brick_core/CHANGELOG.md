@@ -1,3 +1,6 @@
+## 2.1.0
+
+- Add support for `#isIn` and `Compare.inIterable` to `Where` queries (#602)
 - Add additional API documentation discouraging `SingleProviderRepository` usage in practical implementations.
 
 ## 2.0.0
