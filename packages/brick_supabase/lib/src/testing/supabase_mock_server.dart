@@ -41,12 +41,6 @@ class SupabaseMockServer {
   /// The stubbed websocket that can be listed to for streams
   WebSocket? webSocket;
 
-  /// Whether the server request loop has been started
-  var _serverLoopStarted = false;
-
-  /// Active responses used by the running server loop
-  Map<SupabaseRequest, SupabaseResponse> _activeResponses = const {};
-
   /// An all-in-one mock for Supabase repsonses in unit tests.
   SupabaseMockServer({this.apiKey = 'supabaseKey', required this.modelDictionary});
 
@@ -64,28 +58,20 @@ class SupabaseMockServer {
     await webSocket?.close();
 
     await server.close(force: true);
-
-    _serverLoopStarted = false;
-    _activeResponses = const {};
   }
 
   /// Invoke within a test block before any calls are made to a Supabase server
   // https://github.com/supabase/supabase-flutter/blob/main/packages/supabase/test/mock_test.dart#L21
   Future<void> handle(Map<SupabaseRequest, SupabaseResponse> responses) async {
-    _activeResponses = responses;
-
-    if (_serverLoopStarted) return;
-    _serverLoopStarted = true;
-
     await for (final request in server) {
       final url = request.uri.toString();
       if (url.startsWith('/rest')) {
-        final resp = handleRest(request, _activeResponses);
+        final resp = handleRest(request, responses);
         await resp.close();
         // Borrowed from
         // https://github.com/supabase/supabase-flutter/blob/main/packages/supabase/test/mock_test.dart#L101-L202
       } else if (url.startsWith('/realtime')) {
-        await handleRealtime(request, _activeResponses);
+        await handleRealtime(request, responses);
       }
     }
   }
@@ -122,33 +108,32 @@ class SupabaseMockServer {
       final matching = responses.entries
           .firstWhereOrNull((r) => r.key.realtime && realtimeFilter == r.key.filter);
 
-      // Always acknowledge the join with a phx_reply, regardless of event filter
-      final replyString = jsonEncode({
-        'event': 'phx_reply',
-        'payload': {
-          'response': {
-            'postgres_changes': matching == null
-                ? []
-                : matching.value.flattenedResponses.map((r) {
-                    final data = Map<String, dynamic>.from(r.data as Map);
-
-                    return {
-                      'id': data['payload']['ids'][0],
-                      'event': data['payload']['data']['type'],
-                      'schema': data['payload']['data']['schema'],
-                      'table': data['payload']['data']['table'],
-                      if (realtimeFilter != null) 'filter': realtimeFilter,
-                    };
-                  }).toList(),
-          },
-          'status': 'ok',
-        },
-        'ref': ref,
-        'topic': topic,
-      });
-      webSocket!.add(replyString);
-
       if (matching == null) return;
+
+      if (requestJson['payload']['config']['postgres_changes'].first['event'] != '*') {
+        final replyString = jsonEncode({
+          'event': 'phx_reply',
+          'payload': {
+            'response': {
+              'postgres_changes': matching.value.flattenedResponses.map((r) {
+                final data = Map<String, dynamic>.from(r.data as Map);
+
+                return {
+                  'id': data['payload']['ids'][0],
+                  'event': data['payload']['data']['type'],
+                  'schema': data['payload']['data']['schema'],
+                  'table': data['payload']['data']['table'],
+                  if (realtimeFilter != null) 'filter': realtimeFilter,
+                };
+              }).toList(),
+            },
+            'status': 'ok',
+          },
+          'ref': ref,
+          'topic': topic,
+        });
+        webSocket!.add(replyString);
+      }
 
       for (final realtimeResponses in matching.value.flattenedResponses) {
         await Future.delayed(matching.value.realtimeSubsequentReplyDelay);
@@ -269,9 +254,5 @@ class SupabaseMockServer {
   Future<void> setUp() async {
     server = await HttpServer.bind('localhost', 0);
     client = SupabaseClient(serverUrl, apiKey);
-    // Ensure the server loop is running so realtime subscriptions can join even if
-    // tests don't explicitly register responses for realtime.
-    // This call updates the active responses map and starts the loop once.
-    unawaited(handle(const {}));
   }
 }
