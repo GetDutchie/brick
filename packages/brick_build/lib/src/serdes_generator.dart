@@ -224,7 +224,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     if (!doesDeserialize) return checkerForType(field.type);
     final defaultConstructor = _firstWhereOrNull<ConstructorElement>(
       element.constructors,
-      (e) => !e.isFactory && (e.name?.isEmpty ?? true),
+      (e) => !e.isFactory && ((e.name?.isEmpty ?? true) || e.name == 'new'),
     );
     final defaultConstructorParameter = defaultConstructor?.formalParameters != null
         ? _firstWhereOrNull<FormalParameterElement>(
