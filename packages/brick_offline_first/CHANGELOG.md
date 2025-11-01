@@ -1,3 +1,7 @@
+## 4.0.2
+
+- Hydrate the memory cache when using destructiveLocalSyncFromRemote (#640)
+
 ## 4.0.1
 
 - Fix never-completing Future on `#reset` (#552)
