@@ -38,7 +38,7 @@ class SupabaseSerialize extends SupabaseSerdesGenerator
       definition += ')';
       fieldsToColumns.add(definition);
 
-      if (annotation.unique) uniqueFields.add(field.name);
+      if (annotation.unique) uniqueFields.add(field.name!);
     }
 
     return [

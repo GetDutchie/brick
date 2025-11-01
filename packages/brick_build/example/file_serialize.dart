@@ -1,5 +1,8 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_core/src/model.dart';
 
+import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
 /// Generate serialized code for each field to write to a file
@@ -14,7 +17,12 @@ class FileSerialize<_Model extends FileModel> extends FileSerdesGenerator<_Model
   final doesDeserialize = false;
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required File fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
 
     // DateTime

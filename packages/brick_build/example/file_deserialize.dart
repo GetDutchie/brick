@@ -1,21 +1,28 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:brick_build/generators.dart';
+import 'package:brick_core/src/model.dart';
+
 import 'file_fields.dart';
 import 'file_serdes_generator.dart';
 
 /// Read from a file's contents to produce a model
 class FileDeserialize extends FileSerdesGenerator {
   FileDeserialize(
-    ClassElement element,
-    FileFields fields, {
-    required String repositoryName,
-  }) : super(element, fields, repositoryName: repositoryName);
+    super.element,
+    FileFields super.fields, {
+    required super.repositoryName,
+  });
 
   @override
   final doesDeserialize = true;
 
   @override
-  String? coderForField(field, checker, {required wrappedInFuture, required fieldAnnotation}) {
+  String? coderForField(
+    FieldElement field,
+    SharedChecker<Model> checker, {
+    required bool wrappedInFuture,
+    required File fieldAnnotation,
+  }) {
     final fieldValue = serdesValueForField(field, fieldAnnotation.name, checker: checker);
     final defaultValue = SerdesGenerator.defaultValueSuffix(fieldAnnotation);
 
@@ -33,15 +40,21 @@ class FileDeserialize extends FileSerdesGenerator {
     } else if (checker.isIterable) {
       final argType = checker.unFuturedArgType;
       final argTypeChecker = checkerForType(checker.argType);
-      final castIterable = SerdesGenerator.iterableCast(argType,
-          isSet: checker.isSet,
-          isList: checker.isList,
-          isFuture: wrappedInFuture || checker.isFuture);
+      final castIterable = SerdesGenerator.iterableCast(
+        argType,
+        isSet: checker.isSet,
+        isList: checker.isList,
+        isFuture: wrappedInFuture || checker.isFuture,
+      );
 
       // Iterable<OfflineFirstModel>, Iterable<Future<OfflineFirstModel>>
       if (checker.isArgTypeASibling) {
-        final fromFileCast = SerdesGenerator.iterableCast(argType,
-            isSet: checker.isSet, isList: checker.isList, isFuture: true);
+        final fromFileCast = SerdesGenerator.iterableCast(
+          argType,
+          isSet: checker.isSet,
+          isList: checker.isList,
+          isFuture: true,
+        );
 
         var deserializeMethod = '''
           $fieldValue?.map((d) =>

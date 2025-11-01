@@ -26,7 +26,7 @@ const offlineFirstGenerator = OfflineFirstWithSupabaseGenerator(
 );
 
 /// These functions act as builder factories used by `build.yaml`
-Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
+Builder offlineFirstAggregateBuilder(BuilderOptions options) => const AggregateBuilder(
       requiredImports: [
         "import 'package:brick_offline_first/brick_offline_first.dart';",
         "import 'package:brick_core/query.dart';",
@@ -35,11 +35,11 @@ Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
     );
 
 ///
-Builder offlineFirstAdaptersBuilder(_) =>
+Builder offlineFirstAdaptersBuilder(BuilderOptions options) =>
     AdapterBuilder<ConnectOfflineFirstWithSupabase>(offlineFirstGenerator);
 
 ///
-Builder offlineFirstModelDictionaryBuilder(_) =>
+Builder offlineFirstModelDictionaryBuilder(BuilderOptions options) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithSupabase>(
       const OfflineFirstModelDictionaryGenerator('Supabase'),
       expectedImportRemovals: [
@@ -49,7 +49,7 @@ Builder offlineFirstModelDictionaryBuilder(_) =>
     );
 
 ///
-Builder offlineFirstNewMigrationBuilder(_) => OfflineFirstMigrationBuilder();
+Builder offlineFirstNewMigrationBuilder(BuilderOptions options) => OfflineFirstMigrationBuilder();
 
 ///
-Builder offlineFirstSchemaBuilder(_) => OfflineFirstSchemaBuilder();
+Builder offlineFirstSchemaBuilder(BuilderOptions options) => OfflineFirstSchemaBuilder();

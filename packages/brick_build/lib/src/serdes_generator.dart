@@ -40,7 +40,7 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
   String get adapterMethodOutputType => doesDeserialize ? className : serializeOutputType;
 
   ///
-  String get className => element.name;
+  String get className => element.name!;
 
   /// Discover factories within the class that rely on the provider.
   /// For example `factory User.fromRest`
@@ -224,11 +224,11 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     if (!doesDeserialize) return checkerForType(field.type);
     final defaultConstructor = _firstWhereOrNull<ConstructorElement>(
       element.constructors,
-      (e) => !e.isFactory && e.name.isEmpty,
+      (e) => !e.isFactory && ((e.name?.isEmpty ?? true) || e.name == 'new'),
     );
-    final defaultConstructorParameter = defaultConstructor?.parameters != null
-        ? _firstWhereOrNull<ParameterElement>(
-            defaultConstructor!.parameters,
+    final defaultConstructorParameter = defaultConstructor?.formalParameters != null
+        ? _firstWhereOrNull<FormalParameterElement>(
+            defaultConstructor!.formalParameters,
             (e) => e.name == field.name,
           )
         : null;
@@ -283,11 +283,11 @@ abstract class SerdesGenerator<FieldAnnotation extends FieldSerializable,
     final name = providerNameForField(annotation.name, checker: checker);
 
     if (doesDeserialize && annotation.fromGenerator != null) {
-      return digestPlaceholders(annotation.fromGenerator, name, field.name);
+      return digestPlaceholders(annotation.fromGenerator, name, field.name!);
     }
 
     if (!doesDeserialize && annotation.toGenerator != null) {
-      return digestPlaceholders(annotation.toGenerator, name, field.name);
+      return digestPlaceholders(annotation.toGenerator, name, field.name!);
     }
 
     return null;

@@ -272,8 +272,6 @@ class SupabaseMockServer {
     // Ensure the server loop is running so realtime subscriptions can join even if
     // tests don't explicitly register responses for realtime.
     // This call updates the active responses map and starts the loop once.
-    // Intentionally not awaited.
-    // ignore: discarded_futures
-    handle(const {});
+    unawaited(handle(const {}));
   }
 }

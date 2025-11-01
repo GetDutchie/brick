@@ -78,7 +78,7 @@ void main() {
         expect(streamConsumed, isTrue);
       });
 
-      test('#transmitRequest with errors', () async {
+      test('#transmitRequest with errors', () {
         final mockLink = MockLink();
         when(mockLink.request(any)).thenAnswer(
           (_) => Stream.error(Exception('Network error')),

@@ -79,7 +79,7 @@ void main() {
   });
 }
 
-const annotationChecker = TypeChecker.fromRuntime(SqliteSerializable);
+const annotationChecker = TypeChecker.typeNamed(SqliteSerializable);
 Future<Map<LibraryReader, List<SqliteFields>>> generateSchemaMap(String filename) async {
   final reader = await generateReader(filename);
 

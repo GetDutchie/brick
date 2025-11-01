@@ -26,7 +26,7 @@ const offlineFirstGenerator = OfflineFirstWithRestGenerator(
 );
 
 /// These functions act as builder factories used by `build.yaml`
-Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
+Builder offlineFirstAggregateBuilder(BuilderOptions options) => const AggregateBuilder(
       requiredImports: [
         "import 'package:brick_offline_first_abstract/annotations.dart';",
         "import 'package:brick_offline_first/brick_offline_first.dart';",
@@ -36,11 +36,11 @@ Builder offlineFirstAggregateBuilder(_) => const AggregateBuilder(
     );
 
 ///
-Builder offlineFirstAdaptersBuilder(_) =>
+Builder offlineFirstAdaptersBuilder(BuilderOptions options) =>
     AdapterBuilder<ConnectOfflineFirstWithRest>(offlineFirstGenerator);
 
 ///
-Builder offlineFirstModelDictionaryBuilder(_) =>
+Builder offlineFirstModelDictionaryBuilder(BuilderOptions options) =>
     ModelDictionaryBuilder<ConnectOfflineFirstWithRest>(
       const OfflineFirstModelDictionaryGenerator('Rest'),
       expectedImportRemovals: [
@@ -52,7 +52,7 @@ Builder offlineFirstModelDictionaryBuilder(_) =>
     );
 
 ///
-Builder offlineFirstNewMigrationBuilder(_) => OfflineFirstMigrationBuilder();
+Builder offlineFirstNewMigrationBuilder(BuilderOptions options) => OfflineFirstMigrationBuilder();
 
 ///
-Builder offlineFirstSchemaBuilder(_) => OfflineFirstSchemaBuilder();
+Builder offlineFirstSchemaBuilder(BuilderOptions options) => OfflineFirstSchemaBuilder();
