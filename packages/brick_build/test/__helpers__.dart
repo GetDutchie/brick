@@ -38,7 +38,7 @@ class FieldAnnotationFinder extends AnnotationFinder<FieldAnnotation> {
   FieldAnnotationFinder();
 
   @override
-  FieldAnnotation from(FieldElement element) => FieldAnnotation(element.name);
+  FieldAnnotation from(FieldElement element) => FieldAnnotation(element.name!);
 }
 
 class TestFields extends FieldsForClass<FieldAnnotation> {
@@ -105,7 +105,7 @@ class CustomSerdes extends SerdesGenerator<FieldAnnotation, Model> {
   final repositoryName = 'Some';
 
   @override
-  String coderForField(
+  String? coderForField(
     FieldElement field,
     SharedChecker<Model> checker, {
     required FieldAnnotation fieldAnnotation,

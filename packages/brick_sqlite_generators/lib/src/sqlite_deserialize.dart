@@ -97,7 +97,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
         ''';
         final argTypeAsString = SharedChecker.withoutNullability(argType);
         final sqlStatement =
-            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name)} = ?';
+            'SELECT DISTINCT `${InsertForeignKey.joinsTableForeignColumnName(argTypeAsString)}` FROM `${InsertForeignKey.joinsTableName(fieldAnnotation.name!, localTableName: fields.element.name!)}` WHERE ${InsertForeignKey.joinsTableLocalColumnName(fields.element.name!)} = ?';
 
         final method = '''
           provider
@@ -159,7 +159,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       // Iterable<fromJson>
       if (argTypeChecker.fromJsonConstructor != null) {
         final klass = argTypeChecker.targetType.element! as ClassElement;
-        final parameterType = argTypeChecker.fromJsonConstructor!.parameters.first.type;
+        final parameterType = argTypeChecker.fromJsonConstructor!.formalParameters.first.type;
         final nullableSuffix = checker.isNullable ? " ?? '[]'" : '';
 
         return '''jsonDecode($fieldValue$nullableSuffix).map(
@@ -220,7 +220,7 @@ class SqliteDeserialize<_Model extends SqliteModel> extends SqliteSerdesGenerato
       return 'jsonDecode($fieldValue)';
     } else if (checker.fromJsonConstructor != null) {
       final klass = checker.targetType.element! as ClassElement;
-      final parameterType = checker.fromJsonConstructor!.parameters.first.type;
+      final parameterType = checker.fromJsonConstructor!.formalParameters.first.type;
       return '${klass.displayName}.fromJson(jsonDecode($fieldValue as String) as ${parameterType.getDisplayString()})';
     }
 

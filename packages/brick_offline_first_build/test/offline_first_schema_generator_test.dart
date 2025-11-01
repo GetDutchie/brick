@@ -12,7 +12,7 @@ import 'offline_first_schema_generator/test_with_serdes.dart' as with_serdes;
 
 final generator = OfflineFirstSchemaGenerator();
 final generateLibrary = generateLibraryForFolder('offline_first_schema_generator');
-const annotationChecker = TypeChecker.fromRuntime(ConnectOfflineFirstWithRest);
+const annotationChecker = TypeChecker.typeNamed(ConnectOfflineFirstWithRest);
 
 Future<String> generateOutputForFile(String fileName) async {
   final reader = await generateLibrary(fileName);

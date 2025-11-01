@@ -82,10 +82,11 @@ class GraphqlSerialize extends GraphqlSerdesGenerator with JsonSerialize<Graphql
         }).whereType<FieldElement>();
 
         return subfields.fold<Map<String, Map<String, dynamic>>>({}, (acc, field) {
+          assert(field.name != null, 'Field $field has no name');
           final fieldChecker = checkerForField(field);
           final isSerializable =
               fieldChecker.toJsonMethod != null && checker.toJsonMethod!.returnType.isDartCoreMap;
-          acc[field.name] = isSerializable ? _subfieldsForType(field.type) : {};
+          acc[field.name!] = isSerializable ? _subfieldsForType(field.type) : {};
           return acc;
         });
       }

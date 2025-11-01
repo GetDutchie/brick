@@ -1,3 +1,9 @@
+## 4.1.0
+
+- Support `analyzer` `>=8.0.0 <10.0.0`
+- Support `build` `>=3.0.0 <5.0.0`
+- Support `source_gen` `>=3.0.0 <5.0.0`
+
 ## 4.0.1
 
 - Fix: `@Sqlite(enumAsString:)` generates a varchar column instead of an integer

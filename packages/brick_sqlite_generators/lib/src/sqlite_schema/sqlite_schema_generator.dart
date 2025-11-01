@@ -72,7 +72,7 @@ class SqliteSchemaGenerator {
         for (final iterableSibling in iterableAssociations) {
           acc.add(
             _createJoinsTable(
-              localTableName: fields.element.name,
+              localTableName: fields.element.name!,
               foreignTableColumnDefinition: fields.finder.annotationForField(iterableSibling),
               checker: checkerForField(iterableSibling),
             ),
@@ -80,7 +80,7 @@ class SqliteSchemaGenerator {
         }
       }
 
-      acc.add(_createTable(fields.element.name, fields));
+      acc.add(_createTable(fields.element.name!, fields));
       return acc;
     });
 
