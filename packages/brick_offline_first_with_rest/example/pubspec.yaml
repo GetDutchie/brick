@@ -6,6 +6,8 @@ environment:
   sdk: ">=3.4.0 <4.0.0"
 
 dependency_overrides:
+  brick_build:
+    path: ../../brick_build
   brick_offline_first_with_rest:
     path: ../
   brick_json_generators:
