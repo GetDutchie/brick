@@ -182,7 +182,7 @@ void main() {
       });
     });
 
-    test('#subscribeToRealtime', () {
+    test('#subscribeToRealtime', () async {
       final provider = SupabaseProvider(mock.client, modelDictionary: supabaseModelDictionary);
       final stream = provider.subscribeToRealtime<Demo>(callback: (payload) {});
 
@@ -194,6 +194,8 @@ void main() {
         stream.topic,
         'realtime:${supabaseModelDictionary.adapterFor[Demo]!.supabaseTableName}',
       );
+
+      await mock.client.removeAllChannels();
     });
 
     test('#update', () async {

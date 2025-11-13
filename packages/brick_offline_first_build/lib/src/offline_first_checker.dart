@@ -2,7 +2,7 @@ import 'package:brick_build/generators.dart' show SharedChecker;
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:source_gen/source_gen.dart' show TypeChecker;
 
-const _serdesClassChecker = TypeChecker.fromRuntime(OfflineFirstSerdes);
+const _serdesClassChecker = TypeChecker.typeNamed(OfflineFirstSerdes);
 
 ///
 class OfflineFirstChecker extends SharedChecker<OfflineFirstModel> {

@@ -1,3 +1,7 @@
+## 2.1.1
+
+- Fix test timeouts caused by `SupabaseMockServer`
+
 ## 2.1.0
 
 - Add `SupabaseProvider#subscribeToRealtime` to subscribe to [Supabase channels](https://supabase.com/docs/guides/realtime?queryGroups=language&language=dart).

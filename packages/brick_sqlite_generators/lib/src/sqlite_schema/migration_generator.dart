@@ -167,11 +167,12 @@ class MigrationGenerator extends Generator {
 
   /// Find all annotated migrations and bundle them with their source path.
   /// Useful for generating an import or list of all migrations.
+  /// Note: In analyzer 8.4.0+, Element.source was removed. Extracting filename from library path.
   static Map<String, String> allMigrationsByFilePath(LibraryReader library) {
     final annotations = library.annotatedWith(_migrationAnnotationChecker);
     return {
       for (final annotation in annotations)
-        '${annotation.element.name}': annotation.element.source!.shortName,
+        '${annotation.element.name}': library.element.uri.pathSegments.last,
     };
   }
 }

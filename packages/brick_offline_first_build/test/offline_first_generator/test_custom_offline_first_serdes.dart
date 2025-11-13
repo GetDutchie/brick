@@ -77,7 +77,7 @@ class Serializable extends OfflineFirstSerdes<Map<String, dynamic>, int> {
     return Serializable(data['age']);
   }
 
-  factory Serializable.fromSqlite(age) {
+  factory Serializable.fromSqlite(int age) {
     return Serializable(age);
   }
 }

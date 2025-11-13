@@ -8,8 +8,8 @@ const _mapChecker = TypeChecker.fromUrl('dart:core#Map');
 const _iterableChecker = TypeChecker.fromUrl('dart:core#Iterable');
 const _listChecker = TypeChecker.fromUrl('dart:core#List');
 const _setChecker = TypeChecker.fromUrl('dart:core#Set');
-const _stringChecker = TypeChecker.fromRuntime(String);
-const _numChecker = TypeChecker.fromRuntime(num);
+const _stringChecker = TypeChecker.typeNamed(String);
+const _numChecker = TypeChecker.typeNamed(num);
 const _dateTimeChecker = TypeChecker.fromUrl('dart:core#DateTime');
 
 /// A utility to legibly assert a [DartType] against core types
@@ -17,7 +17,7 @@ const _dateTimeChecker = TypeChecker.fromUrl('dart:core#DateTime');
 /// Optionally declare a model to discover "sibling" models, or models that share
 /// the same domain or provider (e.g. `SqliteModel`).
 class SharedChecker<_SiblingModel extends Model> {
-  final _siblingClassChecker = TypeChecker.fromRuntime(_SiblingModel);
+  final _siblingClassChecker = TypeChecker.typeNamed(_SiblingModel);
 
   /// The checked type
   final DartType targetType;

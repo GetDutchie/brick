@@ -18,6 +18,7 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
   @override
   Graphql from(FieldElement element) {
     final obj = objectForField(element);
+    assert(element.name != null, 'Field $element has no name');
 
     if (obj == null) {
       return Graphql(
@@ -25,7 +26,7 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
         ignoreFrom: Graphql.defaults.ignoreFrom,
         ignoreTo: Graphql.defaults.ignoreTo,
         name: renameField(
-          element.name,
+          element.name!,
           config?.fieldRename,
           GraphqlSerializable.defaults.fieldRename,
         ),
@@ -41,7 +42,7 @@ class GraphqlAnnotationFinder extends AnnotationFinder<Graphql>
       ignoreFrom: obj.getField('ignoreFrom')?.toBoolValue() ?? Graphql.defaults.ignoreFrom,
       ignoreTo: obj.getField('ignoreTo')?.toBoolValue() ?? Graphql.defaults.ignoreTo,
       name: obj.getField('name')?.toStringValue() ??
-          renameField(element.name, config?.fieldRename, GraphqlSerializable.defaults.fieldRename),
+          renameField(element.name!, config?.fieldRename, GraphqlSerializable.defaults.fieldRename),
       subfields: _convertMapToMap(obj.getField('subfields')?.toMapValue()),
       toGenerator: obj.getField('toGenerator')!.toStringValue(),
     );

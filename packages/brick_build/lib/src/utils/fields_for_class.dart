@@ -48,8 +48,8 @@ abstract class FieldsForClass<FieldAnnotation extends Object> {
   const FieldsForClass({required this.element});
 
   /// Returns `true` for `int get name => 5`
-  static bool isComputedGetter(FieldElement field) =>
-      !field.getter.runtimeType.toString().contains('ImplicitGetter');
+  /// In later analyzer releases, `ImplicitGetter` was removed
+  static bool isComputedGetter(FieldElement field) => !field.getter!.isSynthetic;
 }
 
 /// Ensures uniqueness of accessible fields within a [ClassElement]
@@ -76,17 +76,17 @@ class _FieldSet implements Comparable<_FieldSet> {
   int compareTo(_FieldSet other) => _sortByLocation(sortField, other.sortField);
 
   static int _sortByLocation(FieldElement a, FieldElement b) {
-    final checkerA = TypeChecker.fromStatic((a.enclosingElement3 as ClassElement).thisType);
+    final checkerA = TypeChecker.fromStatic((a.enclosingElement as ClassElement).thisType);
 
-    if (!checkerA.isExactly(b.enclosingElement3)) {
+    if (!checkerA.isExactly(b.enclosingElement)) {
       // in this case, you want to prioritize the enclosingElement that is more "super".
-      if (checkerA.isAssignableFrom(b.enclosingElement3)) {
+      if (checkerA.isAssignableFrom(b.enclosingElement)) {
         return -1;
       }
 
-      final checkerB = TypeChecker.fromStatic((b.enclosingElement3 as ClassElement).thisType);
+      final checkerB = TypeChecker.fromStatic((b.enclosingElement as ClassElement).thisType);
 
-      if (checkerB.isAssignableFrom(a.enclosingElement3)) {
+      if (checkerB.isAssignableFrom(a.enclosingElement)) {
         return 1;
       }
     }
@@ -98,8 +98,8 @@ class _FieldSet implements Comparable<_FieldSet> {
   /// preference for the getter if it's defined.
   static int _offsetFor(FieldElement e) {
     if (e.isSynthetic) {
-      return (e.getter ?? e.setter)!.nameOffset;
+      return (e.getter ?? e.setter)!.id;
     }
-    return e.nameOffset;
+    return e.id;
   }
 }

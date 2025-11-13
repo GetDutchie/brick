@@ -37,7 +37,7 @@ class QuerySupabaseTransformer<_Model extends SupabaseModel> {
 
     final offset = query?.offset;
     if (offset != null) {
-      final url = builder.overrideSearchParams('offset', (offset).toString());
+      final url = computedBuilder.overrideSearchParams('offset', (offset).toString());
       computedBuilder = computedBuilder.copyWithUrl(url);
     }
 

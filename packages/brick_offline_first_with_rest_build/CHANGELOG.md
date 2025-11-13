@@ -1,3 +1,9 @@
+## 4.1.0
+
+- Support `analyzer` `>=8.0.0 <10.0.0`
+- Support `build` `>=3.0.0 <5.0.0`
+- Support `source_gen` `>=3.0.0 <5.0.0`
+
 ## 4.0.0
 
 - **BREAKING CHANGE** `brick_offline_first_with_rest_build/builder.dart` has been renamed to `brick_offline_first_with_rest_build/brick_offline_first_with_rest_build.dart`. This will only affect implementations that have overridden `build.yaml`.
