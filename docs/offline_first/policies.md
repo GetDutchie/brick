@@ -12,6 +12,10 @@ Delete local results before waiting for the remote provider to respond.
 
 Delete local results after remote responds; local results are not deleted if remote responds with any exception.
 
+### `localOnly`
+
+Delete local results only; do not send any request to the remote provider.
+
 ## OfflineFirstGetPolicy
 
 ### `alwaysHydrate`
@@ -39,3 +43,7 @@ Save results to local before waiting for the remote provider to respond.
 ### `requireRemote`
 
 Save results to local after remote responds; local results are not saved if remote responds with any exception.
+
+### `localOnly`
+
+Save results to local only; do not send any request to the remote provider.
