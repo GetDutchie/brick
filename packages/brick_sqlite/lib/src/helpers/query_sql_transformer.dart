@@ -181,9 +181,9 @@ class QuerySqlTransformer<_Model extends SqliteModel> {
 
     /// Finally add the column to the complete phrase
     final sqliteColumn = passedAdapter.tableName != adapter.tableName || _queryHasAssociations
-        ? '`${passedAdapter.tableName}`.${definition.columnName}'
+        ? '${AssociationFragment.joinName(passedAdapter.tableName, definition.columnName)}.${definition.columnName}'
         : _queryHasAssociations
-            ? '`${adapter.tableName}`.${definition.columnName}'
+            ? '${AssociationFragment.joinName(adapter.tableName, definition.columnName)}.${definition.columnName}'
             : definition.columnName;
     final where = WhereColumnFragment(condition, sqliteColumn);
     _values.addAll(where.values);
@@ -218,7 +218,7 @@ class AssociationFragment {
 
     if (oneToOneAssociation) {
       return [
-        'INNER JOIN `$foreignTableName` ON $localTableColumn = `$foreignTableName`.$primaryKeyColumn',
+        'INNER JOIN `$foreignTableName` AS ${joinName(foreignTableName, definition.columnName)} ON $localTableColumn = `$foreignTableName`.$primaryKeyColumn',
       ];
     }
 
@@ -226,10 +226,16 @@ class AssociationFragment {
         InsertForeignKey.joinsTableName(localColumnName, localTableName: localTableName);
     // ['1','2','3','4']
     return [
-      'INNER JOIN `$joinsTableName` ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableLocalColumnName(localTableName)}',
-      'INNER JOIN `$foreignTableName` ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}',
+      'INNER JOIN `$joinsTableName` AS ${joinName(localTableName, definition.columnName)} ON `$localTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableLocalColumnName(localTableName)}',
+      'INNER JOIN `$foreignTableName` AS ${joinName(foreignTableName, definition.columnName)} ON `$foreignTableName`.$primaryKeyColumn = `$joinsTableName`.${InsertForeignKey.joinsTableForeignColumnName(foreignTableName)}',
     ];
   }
+
+  /// Generate a unique name for the join table association.
+  /// This naming permits queries to reference associations of the same table.
+  /// Further discussion: https://github.com/GetDutchie/brick/issues/590
+  static String joinName(String tableName, String columnName) =>
+      '`_brick_join_${columnName}_$tableName`';
 }
 
 /// Column and iterable comparison
@@ -389,7 +395,11 @@ class AllOtherClausesFragment<T extends SqliteModel> {
     final orderBy = query?.orderBy.map((p) {
       final fieldDefinition = fieldsToColumns[p.evaluatedField];
       final isAssociation = fieldDefinition?.association ?? false;
-      final field = '`${adapter.tableName}`.${fieldDefinition?.columnName ?? p.evaluatedField}';
+      final tablePrefix = AssociationFragment.joinName(
+        adapter.tableName,
+        fieldDefinition?.columnName ?? p.evaluatedField,
+      );
+      final field = '$tablePrefix.${fieldDefinition?.columnName ?? p.evaluatedField}';
       if (!isAssociation) {
         if (fieldDefinition?.type == DateTime) {
           return 'datetime($field) ${p.ascending ? 'ASC' : 'DESC'}';
@@ -403,7 +413,7 @@ class AllOtherClausesFragment<T extends SqliteModel> {
 
       final associationAdapter = modelDictionary.adapterFor[fieldDefinition?.type];
       final associationField =
-          '`${associationAdapter?.tableName}`.${associationAdapter?.fieldsToSqliteColumns[p.associationField]?.columnName ?? p.associationField}';
+          '$tablePrefix.${associationAdapter?.fieldsToSqliteColumns[p.associationField]?.columnName ?? p.associationField}';
       if (fieldDefinition?.type == DateTime) {
         return 'datetime($associationField) ${p.ascending ? 'ASC' : 'DESC'}';
       }
@@ -432,7 +442,7 @@ class AllOtherClausesFragment<T extends SqliteModel> {
       if (definition != null) {
         replacement = replacement.replaceAll(
           part,
-          '`${adapter.tableName}`.${definition.columnName}',
+          '${AssociationFragment.joinName(adapter.tableName, definition.columnName)}.${definition.columnName}',
         );
       }
     }

@@ -220,6 +220,16 @@ class SqliteProvider<TProviderModel extends SqliteModel> implements Provider<TPr
     }
   }
 
+  /// Extension to print the SQL for a query. Writing and using SQL directly is
+  /// an antipattern; [Query] should always be used as the translation for multiple,
+  /// disparate providers.
+  String queryToSql<TModel extends SqliteModel>(Query query) {
+    return QuerySqlTransformer<TModel>(
+      modelDictionary: modelDictionary,
+      query: query,
+    ).statement;
+  }
+
   /// Fetch results for model with a custom SQL statement.
   /// It is recommended to use [get] whenever possible. **Advanced use only**.
   Future<List<TModel>> rawGet<TModel extends TProviderModel>(
