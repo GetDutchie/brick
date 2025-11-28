@@ -13,6 +13,7 @@ const _insertForeignKeyChecker = TypeChecker.typeNamed(InsertForeignKey);
 const _insertTableChecker = TypeChecker.typeNamed(InsertTable);
 const _renameColumnChecker = TypeChecker.typeNamed(RenameColumn);
 const _renameTableChecker = TypeChecker.typeNamed(RenameTable);
+const _migrationCommandChecker = TypeChecker.typeNamed(MigrationCommand);
 
 /// [Migration] is an abstract class; this is a library-specific implementation
 /// to access migration properties.
@@ -49,90 +50,105 @@ class MigrationGenerator extends Generator {
   }
 
   /// Convert [MigrationCommand]s in constant form to [MigrationCommand]s
-  List<MigrationCommand> _migrationCommandsFromReader(List<DartObject> rawCommands) {
-    return rawCommands.map((object) {
-      final reader = ConstantReader(object);
-      if (_createIndexChecker.isExactlyType(object.type!)) {
-        if (!reader.read('columns').isList) {
-          throw ArgumentError(
-            'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns',
-          );
-        }
-        final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
+  List<MigrationCommand> _migrationCommandsFromReader(
+    List<DartObject> rawCommands,
+  ) {
+    return rawCommands
+        .map((object) {
+          final reader = ConstantReader(object);
+          if (_createIndexChecker.isExactlyType(object.type!)) {
+            if (!reader.read('columns').isList) {
+              throw ArgumentError(
+                'CreateIndex on ${reader.read('onTable').stringValue} has malformed columns',
+              );
+            }
+            final columns = reader.read('columns').listValue.map((o) => o.toStringValue());
 
-        return CreateIndex(
-          columns: columns.toList().cast<String>(),
-          onTable: reader.read('onTable').stringValue,
-          unique: reader.read('unique').boolValue,
-        );
-      } else if (_dropColumnChecker.isExactlyType(object.type!)) {
-        return DropColumn(
-          reader.read('name').stringValue,
-          onTable: reader.read('onTable').stringValue,
-        );
-      } else if (_dropIndexChecker.isExactlyType(object.type!)) {
-        return DropIndex(reader.read('name').stringValue);
-      } else if (_dropTableChecker.isExactlyType(object.type!)) {
-        return DropTable(
-          reader.read('name').stringValue,
-        );
-      } else if (_insertColumnChecker.isExactlyType(object.type!)) {
-        final definitionObject = reader.read('definitionType').objectValue;
-        final columnIndex = definitionObject.getField('index')!.toIntValue()!;
-        final definitionValue = Column.values[columnIndex];
-        return InsertColumn(
-          reader.read('name').stringValue,
-          definitionValue,
-          autoincrement: reader.read('autoincrement').isNull
-              ? InsertColumn.defaults.autoincrement
-              : reader.read('autoincrement').boolValue,
-          defaultValue: reader.read('defaultValue').isNull
-              ? InsertColumn.defaults.defaultValue
-              : reader.read('defaultValue').literalValue,
-          nullable: reader.read('nullable').isNull
-              ? InsertColumn.defaults.nullable
-              : reader.read('nullable').boolValue,
-          onTable: reader.read('onTable').stringValue,
-          unique: reader.read('unique').isNull
-              ? InsertColumn.defaults.unique
-              : reader.read('unique').boolValue,
-        );
-      } else if (_insertForeignKeyChecker.isExactlyType(object.type!)) {
-        return InsertForeignKey(
-          reader.read('localTableName').stringValue,
-          reader.read('foreignTableName').stringValue,
-          foreignKeyColumn: reader.read('foreignKeyColumn').isNull
-              ? null
-              : reader.read('foreignKeyColumn').stringValue,
-          onDeleteCascade:
-              !reader.read('onDeleteCascade').isNull && reader.read('onDeleteCascade').boolValue,
-          onDeleteSetDefault: !reader.read('onDeleteSetDefault').isNull &&
-              reader.read('onDeleteSetDefault').boolValue,
-        );
-      } else if (_insertTableChecker.isExactlyType(object.type!)) {
-        return InsertTable(
-          reader.read('name').stringValue,
-        );
-      } else if (_renameColumnChecker.isExactlyType(object.type!)) {
-        return RenameColumn(
-          reader.read('oldName').stringValue,
-          reader.read('newName').stringValue,
-          onTable: reader.read('onTable').stringValue,
-        );
-      } else if (_renameTableChecker.isExactlyType(object.type!)) {
-        return RenameTable(
-          reader.read('oldName').stringValue,
-          reader.read('newName').stringValue,
-        );
-      } else {
-        throw UnimplementedError('Cannot create migration line for ${object.type}');
-      }
-    }).toList();
+            return CreateIndex(
+              columns: columns.toList().cast<String>(),
+              onTable: reader.read('onTable').stringValue,
+              unique: reader.read('unique').boolValue,
+            );
+          } else if (_dropColumnChecker.isExactlyType(object.type!)) {
+            return DropColumn(
+              reader.read('name').stringValue,
+              onTable: reader.read('onTable').stringValue,
+            );
+          } else if (_dropIndexChecker.isExactlyType(object.type!)) {
+            return DropIndex(reader.read('name').stringValue);
+          } else if (_dropTableChecker.isExactlyType(object.type!)) {
+            return DropTable(
+              reader.read('name').stringValue,
+            );
+          } else if (_insertColumnChecker.isExactlyType(object.type!)) {
+            final definitionObject = reader.read('definitionType').objectValue;
+            final columnIndex = definitionObject.getField('index')!.toIntValue()!;
+            final definitionValue = Column.values[columnIndex];
+            return InsertColumn(
+              reader.read('name').stringValue,
+              definitionValue,
+              autoincrement: reader.read('autoincrement').isNull
+                  ? InsertColumn.defaults.autoincrement
+                  : reader.read('autoincrement').boolValue,
+              defaultValue: reader.read('defaultValue').isNull
+                  ? InsertColumn.defaults.defaultValue
+                  : reader.read('defaultValue').literalValue,
+              nullable: reader.read('nullable').isNull
+                  ? InsertColumn.defaults.nullable
+                  : reader.read('nullable').boolValue,
+              onTable: reader.read('onTable').stringValue,
+              unique: reader.read('unique').isNull
+                  ? InsertColumn.defaults.unique
+                  : reader.read('unique').boolValue,
+            );
+          } else if (_insertForeignKeyChecker.isExactlyType(object.type!)) {
+            return InsertForeignKey(
+              reader.read('localTableName').stringValue,
+              reader.read('foreignTableName').stringValue,
+              foreignKeyColumn: reader.read('foreignKeyColumn').isNull
+                  ? null
+                  : reader.read('foreignKeyColumn').stringValue,
+              onDeleteCascade: !reader.read('onDeleteCascade').isNull &&
+                  reader.read('onDeleteCascade').boolValue,
+              onDeleteSetDefault: !reader.read('onDeleteSetDefault').isNull &&
+                  reader.read('onDeleteSetDefault').boolValue,
+            );
+          } else if (_insertTableChecker.isExactlyType(object.type!)) {
+            return InsertTable(
+              reader.read('name').stringValue,
+            );
+          } else if (_renameColumnChecker.isExactlyType(object.type!)) {
+            return RenameColumn(
+              reader.read('oldName').stringValue,
+              reader.read('newName').stringValue,
+              onTable: reader.read('onTable').stringValue,
+            );
+          } else if (_renameTableChecker.isExactlyType(object.type!)) {
+            return RenameTable(
+              reader.read('oldName').stringValue,
+              reader.read('newName').stringValue,
+            );
+          } else if (_migrationCommandChecker.isAssignableFromType(object.type!)) {
+            return null;
+          } else {
+            throw UnimplementedError(
+              'Cannot create migration line for ${object.type}',
+            );
+          }
+        })
+        .where((command) => command != null)
+        .cast<MigrationCommand>()
+        .toList();
   }
 
   /// Creates a new migration from the delta between the existing migration and a new schema
   @override
-  String? generate(LibraryReader library, BuildStep? buildStep, {Schema? newSchema, int? version}) {
+  String? generate(
+    LibraryReader library,
+    BuildStep? buildStep, {
+    Schema? newSchema,
+    int? version,
+  }) {
     final allMigrations = expandAllMigrations(library);
     final oldSchema = Schema.fromMigrations(allMigrations.toSet());
 
