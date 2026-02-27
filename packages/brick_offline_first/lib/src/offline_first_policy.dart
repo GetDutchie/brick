@@ -5,6 +5,9 @@ enum OfflineFirstDeletePolicy {
 
   /// Delete local results after remote responds; local results are not deleted if remote responds with any exception
   requireRemote,
+
+  /// Delete local results only; do not send any request to the remote provider
+  localOnly,
 }
 
 /// Data will **always** be returned from local providers and never directly
@@ -35,4 +38,7 @@ enum OfflineFirstUpsertPolicy {
   /// Save results to local after remote responds;
   /// local results are not saved if remote responds with any exception
   requireRemote,
+
+  /// Save results to local only; do not send any request to the remote provider
+  localOnly,
 }

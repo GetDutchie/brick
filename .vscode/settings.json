@@ -1,11 +1,74 @@
 {
+  // Dart/Flutter specific settings
   "dart.lineLength": 100,
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.debugSdkLibraries": false,
+  // File handling
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/.dart_tool/**": true,
+    "**/build/**": true,
+    "**/*.g.dart": true,
+    "**/*.iml": true
+  },
+  // Explorer settings for better project navigation
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "pubspec.yaml": "pubspec.lock,analysis_options.yaml,.metadata",
+    "*.dart": "*.g.dart",
+    "README.md": "CHANGELOG.md,LICENSE,CODEOWNERS"
+  },
+  // Editor formatting
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.expand": false,
-  "files.insertFinalNewline": true
+  "editor.rulers": [
+    100
+  ],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  // Language specific settings
+  "[dart]": {
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "[yaml]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    },
+    "editor.suggest.showWords": false,
+    "editor.formatOnSave": false
+  },
+  // Search settings
+  "search.exclude": {
+    "**/.dart_tool/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true
+  },
+  // Workbench settings
+  "workbench.editorAssociations": {
+    "*.md": "default"
+  }
 }
