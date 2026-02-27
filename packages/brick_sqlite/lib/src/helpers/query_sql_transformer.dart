@@ -306,28 +306,18 @@ class WhereColumnFragment {
 
   /// Convert [Compare] values to SQLite-usable operators
   static String compareSign(Compare compare) {
-    switch (compare) {
-      case Compare.exact:
-        return '=';
-      case Compare.contains:
-        return 'LIKE';
-      case Compare.doesNotContain:
-        return 'NOT LIKE';
-      case Compare.greaterThan:
-        return '>';
-      case Compare.greaterThanOrEqualTo:
-        return '>=';
-      case Compare.lessThan:
-        return '<';
-      case Compare.lessThanOrEqualTo:
-        return '<=';
-      case Compare.between:
-        return 'BETWEEN';
-      case Compare.notEqual:
-        return '!=';
-      case Compare.inIterable:
-        return 'IN';
-    }
+    return switch (compare) {
+      Compare.exact => '=',
+      Compare.between => 'BETWEEN',
+      Compare.contains => 'LIKE',
+      Compare.doesNotContain => 'NOT LIKE',
+      Compare.lessThan => '<',
+      Compare.lessThanOrEqualTo => '<=',
+      Compare.greaterThan => '>',
+      Compare.greaterThanOrEqualTo => '>=',
+      Compare.notEqual => '!=',
+      Compare.inIterable => 'IN',
+    };
   }
 
   String _generateBetween() {
