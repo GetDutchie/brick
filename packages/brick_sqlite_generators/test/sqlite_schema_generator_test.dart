@@ -7,6 +7,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 import 'sqlite_schema/test_all_field_types.dart' as all_field_types;
+import 'sqlite_schema/test_default_value.dart' as default_value;
 import 'sqlite_schema/test_enum_as_string.dart' as enum_as_string;
 import 'sqlite_schema/test_from_to_json.dart' as from_to_json;
 import 'sqlite_schema/test_index_annotation.dart' as index_annotation;
@@ -65,6 +66,11 @@ void main() {
       test('FromToJson', () async {
         final input = await generateInput('from_to_json');
         expect(input, from_to_json.output);
+      });
+
+      test('DefaultValue', () async {
+        final input = await generateInput('default_value');
+        expect(input, default_value.output);
       });
     });
 

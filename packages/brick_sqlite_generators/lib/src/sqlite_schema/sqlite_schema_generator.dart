@@ -219,6 +219,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         column.name!,
         column.columnType!,
+        defaultValue: column.defaultValue,
         nullable: column.nullable,
         unique: column.unique,
       );
@@ -228,6 +229,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         column.name!,
         Column.fromDartPrimitive(checker.asPrimitive),
+        defaultValue: column.defaultValue,
         nullable: column.nullable,
         unique: column.unique,
       );
@@ -235,6 +237,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         column.name!,
         column.enumAsString ? Column.varchar : Column.integer,
+        defaultValue: column.defaultValue,
         nullable: column.nullable,
         unique: column.unique,
       );
@@ -256,6 +259,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         column.name!,
         Column.varchar,
+        defaultValue: column.defaultValue,
         nullable: column.nullable,
         unique: column.unique,
       );
@@ -263,6 +267,7 @@ class SqliteSchemaGenerator {
       return SchemaColumn(
         column.name!,
         Column.varchar,
+        defaultValue: column.defaultValue,
         nullable: column.nullable,
         unique: column.unique,
       );
