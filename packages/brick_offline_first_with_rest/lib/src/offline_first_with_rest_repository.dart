@@ -151,11 +151,11 @@ abstract class OfflineFirstWithRestRepository<TRepositoryModel extends OfflineFi
 
   @override
   @mustCallSuper
-  Future<void> initialize() async {
+  Future<void> initialize({bool autoStartQueue = true}) async {
     await super.initialize();
 
     // Start queue processing
-    offlineRequestQueue.start();
+    if (autoStartQueue) offlineRequestQueue.start();
   }
 
   @override
